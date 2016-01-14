@@ -1,4 +1,4 @@
 package com.sksamuel.ktest
 
-class KTest {
+open class KTest {
 }
