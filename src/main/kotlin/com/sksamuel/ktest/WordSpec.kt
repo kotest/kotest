@@ -2,11 +2,11 @@ package com.sksamuel.ktest
 
 import java.util.*
 
-abstract class FreeSpec : TestBase() {
+abstract class WordSpec : TestBase() {
 
   var current = root
 
-  infix operator fun String.minus(init: () -> Unit): Unit {
+  infix fun String.should(init: () -> Unit): Unit {
     val suite = TestSuite(this, ArrayList<TestSuite>(), ArrayList<TestCase>())
     current.suites.add(suite)
     val temp = current
@@ -19,6 +19,3 @@ abstract class FreeSpec : TestBase() {
     current.cases.add(TestCase(this, test))
   }
 }
-
-data class TestSuite(val name: String, val suites: MutableList<TestSuite>, val cases: MutableList<TestCase>)
-data class TestCase(val name: String, val test: () -> Unit)

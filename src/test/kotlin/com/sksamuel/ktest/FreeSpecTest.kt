@@ -1,7 +1,5 @@
 package com.sksamuel.ktest
 
-import org.junit.runner.RunWith
-
 class FreeSpecTest : Matchers, FreeSpec() {
   init {
     "given a ListStack" - {

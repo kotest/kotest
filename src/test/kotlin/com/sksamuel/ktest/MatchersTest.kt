@@ -15,7 +15,7 @@ class MatchersTest : FreeSpec(), Matchers {
         "a" shouldEqual "a"
       }
     }
-    "Matcher .should have size x" - {
+    "Matcher should have size x" - {
       "should compare sizes of iterables" with {
         listOf(1, 2, 3) should have size 3
       }
