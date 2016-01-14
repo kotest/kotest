@@ -20,5 +20,10 @@ class MatchersTest : FreeSpec(), Matchers {
         listOf(1, 2, 3) should have size 3
       }
     }
+    "Matchers.should start with x" - {
+      "should compare prefix of string" with {
+        "bibble" should start with "bib"
+      }
+    }
   }
 }
