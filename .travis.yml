@@ -1,0 +1,11 @@
+language: java
+
+jdk:
+  - oraclejdk7
+
+sudo: false
+
+cache:
+  directories:
+  - $HOME/.m2
+  - $HOME/.gradle
