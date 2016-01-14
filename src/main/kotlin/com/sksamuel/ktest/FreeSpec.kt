@@ -7,7 +7,7 @@ abstract class FreeSpec : TestBase() {
   var current = root
 
   infix operator fun String.minus(init: () -> Unit): Unit {
-    val suite = TestSuite(this, ArrayList<TestSuite>(), ArrayList<TestCase>())
+    val suite = TestSuite.empty(this)
     current.suites.add(suite)
     val temp = current
     current = suite
@@ -20,5 +20,10 @@ abstract class FreeSpec : TestBase() {
   }
 }
 
-data class TestSuite(val name: String, val suites: MutableList<TestSuite>, val cases: MutableList<TestCase>)
+data class TestSuite(val name: String, val suites: MutableList<TestSuite>, val cases: MutableList<TestCase>) {
+  companion object {
+    fun empty(name: String) = TestSuite(name, ArrayList<TestSuite>(), ArrayList<TestCase>())
+  }
+}
+
 data class TestCase(val name: String, val test: () -> Unit)
