@@ -1,20 +1,87 @@
 buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0-beta-4584'
-  }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0-beta-4584'
+    }
 }
 
+group = "com.sksamuel.ktest"
+version = "0.90.1-SNAPSHOT"
+
 apply plugin: "kotlin"
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 repositories {
-  mavenCentral()
+    mavenCentral()
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
 }
 
 dependencies {
-  compile 'com.google.guava:guava:18.0'
-  compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.0-beta-4584'
-  compile 'junit:junit:4.12'
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.0-beta-4584'
+    compile 'junit:junit:4.12'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'KTest'
+                packaging 'jar'
+                description 'Kotlin Test Framework'
+                url 'http://www.github.com/sksamuel/ktest'
+
+                scm {
+                    connection 'scm:git:http://www.github.com/sksamuel/ktest/'
+                    developerConnection 'scm:git:http://github.com/sksamuel/'
+                    url 'http://www.github.com/sksamuel/ktest/'
+                }
+
+                licenses {
+                    license {
+                        name 'The MIT License'
+                        url 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'sksamuel'
+                        name 'Stephen Samuel'
+                        email 'sam@sksamuel.com'
+                    }
+                }
+            }
+        }
+    }
 }
