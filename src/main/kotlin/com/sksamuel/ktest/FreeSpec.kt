@@ -20,9 +20,5 @@ abstract class FreeSpec : TestBase() {
   }
 }
 
-abstract class TestBase {
-  val root = TestSuite("root", ArrayList<TestSuite>(), ArrayList<TestCase>())
-}
-
 data class TestSuite(val name: String, val suites: MutableList<TestSuite>, val cases: MutableList<TestCase>)
 data class TestCase(val name: String, val test: () -> Unit)

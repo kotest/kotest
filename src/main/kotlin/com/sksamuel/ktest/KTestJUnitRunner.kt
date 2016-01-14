@@ -43,7 +43,7 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
       try {
         testcase.test()
         notifier.fireTestFinished(desc)
-      } catch(e: Exception) {
+      } catch(e: TestFailedException) {
         notifier.fireTestFailure(Failure(desc, e))
       }
     }
