@@ -12,6 +12,7 @@ class MyTests : WordSpec {
     // tests here
   }
 }
+```
 
 #### Flat Spec
 
