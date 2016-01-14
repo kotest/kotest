@@ -10,4 +10,6 @@ cache:
   - $HOME/.m2
   - $HOME/.gradle
 
+install: /bin/true
+
 script: gradle test
