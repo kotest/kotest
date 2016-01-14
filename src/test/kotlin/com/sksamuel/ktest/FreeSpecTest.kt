@@ -2,9 +2,7 @@ package com.sksamuel.ktest
 
 import org.junit.runner.RunWith
 
-@RunWith(KTestJUnitRunner::class)
 class FreeSpecTest : Matchers, FreeSpec() {
-
   init {
     "given a ListStack" - {
       "pop" - {
