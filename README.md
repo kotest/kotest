@@ -1,6 +1,6 @@
 # ktest
 
-KTest is a flexible and comprehensive testing tool for the Kotlin ecosystem based on and heavily inspired by the superb Scalatest. KTest offers KTest offers several styles of test layout so that your team can pick the style they are most happy with.
+KTest is a flexible and comprehensive testing tool for the Kotlin ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KTest offers KTest offers several styles of test layout so that your team can pick the style they are most happy with.
 
 ### Testing Styles
 
