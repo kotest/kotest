@@ -1,10 +1,7 @@
 package com.sksamuel.ktest
 
 import kotlin.collections.collectionSizeOrDefault
-import kotlin.text.endsWith
-import kotlin.text.startsWith
-import kotlin.text.take
-import kotlin.text.takeLast
+import kotlin.text.*
 
 interface Matchers {
 
@@ -29,6 +26,7 @@ interface Matchers {
   public object end : EndWord
 
   public infix fun <T> Iterable<T>.should(have: HaveWord) = IterableMatchers(this)
+  public infix fun String.should(have: HaveWord) = SubstringMatcher(this)
   public infix fun String.should(start: StartWord) = StartStringMatcher(this)
   public infix fun String.should(end: EndWord) = EndStringMatcher(this)
 }
@@ -39,6 +37,14 @@ class IterableMatchers<T>(val iterable: kotlin.Iterable<T>) {
     if (size != k) throw TestFailedException("Iterable was expected to have size $k but had size $size")
   }
 }
+
+class SubstringMatcher(val string: String) {
+  public infix fun substring(substr: String): Unit {
+    if (!string.contains(substr))
+      throw TestFailedException("String does not have substring $substr")
+  }
+}
+
 
 class StartStringMatcher(val string: String) {
   public infix fun with(prefix: String): Unit {
