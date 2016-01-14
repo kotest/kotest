@@ -1,7 +1,8 @@
 package com.sksamuel.ktest
 
-import kotlin.collections.listOf
 import com.sksamuel.ktest.Matchers.*
+import java.util.*
+import kotlin.collections.listOf
 
 class MatchersTest : FreeSpec(), Matchers {
   init {
@@ -39,6 +40,12 @@ class MatchersTest : FreeSpec(), Matchers {
         "bibble" should have substring ""
         "bibble" should have substring "bb"
         "bibble" should have substring "bibble"
+      }
+    }
+    "Matchers should be an x" - {
+      "should test that an instance is the required type" with {
+        "bibble" should be a String::class
+        ArrayList<String>() should be a List::class
       }
     }
   }
