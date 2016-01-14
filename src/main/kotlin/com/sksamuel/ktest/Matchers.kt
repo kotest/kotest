@@ -1,41 +1,55 @@
 package com.sksamuel.ktest
 
 import kotlin.collections.collectionSizeOrDefault
+import kotlin.text.endsWith
 import kotlin.text.startsWith
 import kotlin.text.take
+import kotlin.text.takeLast
 
 interface Matchers {
 
-  infix fun Any.shouldEqual(any: Any): Unit = shouldBe(any)
+  public infix fun Any.shouldEqual(any: Any): Unit = shouldBe(any)
 
-  infix fun Any.shouldBe(any: Any): Unit {
+  public infix fun Any.shouldBe(any: Any): Unit {
     if (!this.equals(any)) throw TestFailedException(this.toString() + " did not equal $any")
   }
 
-  fun fail(msg: String) = throw TestFailedException(msg)
+  public fun fail(msg: String) = throw TestFailedException(msg)
 
   interface HaveWord
 
-  object have : HaveWord
+  public object have : HaveWord
 
   interface StartWord
 
-  object start : StartWord
+  public object start : StartWord
 
-  infix fun <T> Iterable<T>.should(have: HaveWord) = IterableMatchers(this)
-  infix fun String.should(start: StartWord) = StartStringMatcher(this)
+  interface EndWord
+
+  public object end : EndWord
+
+  public infix fun <T> Iterable<T>.should(have: HaveWord) = IterableMatchers(this)
+  public infix fun String.should(start: StartWord) = StartStringMatcher(this)
+  public infix fun String.should(end: EndWord) = EndStringMatcher(this)
 }
 
 class IterableMatchers<T>(val iterable: kotlin.Iterable<T>) {
-  infix fun size(k: Int): Unit {
+  public infix fun size(k: Int): Unit {
     val size = iterable.collectionSizeOrDefault(0)
     if (size != k) throw TestFailedException("Iterable was expected to have size $k but had size $size")
   }
 }
 
 class StartStringMatcher(val string: String) {
-  infix fun with(prefix: String): Unit {
+  public infix fun with(prefix: String): Unit {
     if (!string.startsWith(prefix))
-      throw TestFailedException("String does not start wtih $prefix but with ${string.take(10)}")
+      throw TestFailedException("String does not start with $prefix but with ${string.take(prefix.length)}")
+  }
+}
+
+class EndStringMatcher(val string: String) {
+  public infix fun with(suffix: String): Unit {
+    if (!string.endsWith(suffix))
+      throw TestFailedException("String does not end with $suffix but with ${string.takeLast(suffix.length)}")
   }
 }

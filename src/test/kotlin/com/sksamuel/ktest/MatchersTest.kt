@@ -22,7 +22,16 @@ class MatchersTest : FreeSpec(), Matchers {
     }
     "Matchers.should start with x" - {
       "should compare prefix of string" with {
+        "bibble" should start with ""
         "bibble" should start with "bib"
+        "bibble" should start with "bibble"
+      }
+    }
+    "Matchers.should end with x" - {
+      "should compare prefix of string" with {
+        "bibble" should end with ""
+        "bibble" should end with "ble"
+        "bibble" should end with "bibble"
       }
     }
   }
