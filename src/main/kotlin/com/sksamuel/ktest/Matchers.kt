@@ -38,6 +38,60 @@ interface Matchers {
   public infix fun String.should(end: EndWord) = EndStringMatcher(this)
 }
 
+class IntMatchers(val int: Int) {
+
+  public infix fun gt(other: Int): Unit {
+    if (int <= other) {
+      throw TestFailedException("$int is not greater than $other")
+    }
+  }
+
+  public infix fun lt(other: Int): Unit {
+    if (int >= other) {
+      throw TestFailedException("$int is not less than $other")
+    }
+  }
+
+  public infix fun gte(other: Int): Unit {
+    if (int <= other) {
+      throw TestFailedException("$int is not greater than or equal to $other")
+    }
+  }
+
+  public infix fun lte(other: Int): Unit {
+    if (int >= other) {
+      throw TestFailedException("$int is not less than or equal to $other")
+    }
+  }
+}
+
+class LongMatchers(val long: Long) {
+
+  public infix fun gt(other: Long): Unit {
+    if (long <= other) {
+      throw TestFailedException("$long is not greater than $other")
+    }
+  }
+
+  public infix fun lt(other: Long): Unit {
+    if (long >= other) {
+      throw TestFailedException("$long is not less than $other")
+    }
+  }
+
+  public infix fun gte(other: Long): Unit {
+    if (long <= other) {
+      throw TestFailedException("$long is not greater than or equal to $other")
+    }
+  }
+
+  public infix fun lte(other: Long): Unit {
+    if (long >= other) {
+      throw TestFailedException("$long is not less than or equal to $other")
+    }
+  }
+}
+
 class TypeMatchers(val any: Any) {
   public infix fun a(expected: KClass<*>): Unit = an(expected)
   public infix fun an(expected: KClass<*>) {
@@ -60,7 +114,6 @@ class SubstringMatcher(val string: String) {
       throw TestFailedException("String does not have substring $substr")
   }
 }
-
 
 class StartStringMatcher(val string: String) {
   public infix fun with(prefix: String): Unit {
