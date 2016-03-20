@@ -1,6 +1,6 @@
-package com.sksamuel.kotlintest
+package io.kotlintest
 
-import com.sksamuel.kotlintest.Matchers.*
+import io.kotlintest.Matchers.*
 
 class StringMatchersTest : FreeSpec(), Matchers {
   init {

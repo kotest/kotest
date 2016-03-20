@@ -1,3 +1,3 @@
-package com.sksamuel.kotlintest
+package io.kotlintest
 
 class TestFailedException(reason: String) : RuntimeException(reason)

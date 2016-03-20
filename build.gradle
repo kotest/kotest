@@ -7,7 +7,7 @@ buildscript {
     }
 }
 
-group = "com.sksamuel.kotlintest"
+group = "io.kotlintest"
 version = "0.90.1-SNAPSHOT"
 
 apply plugin: 'kotlin'
