@@ -1,9 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
 import io.kotlintest.specs.FlatSpec
 
-class FlatSpecTest : Matchers, FlatSpec() {
+class FlatSpecTest : FlatSpec() {
   init {
     "ListStack.pop" should "return the last element from stack" with {
       val stack = ListStack<String>()
