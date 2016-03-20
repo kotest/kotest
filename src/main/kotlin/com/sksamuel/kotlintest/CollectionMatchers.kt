@@ -1,8 +1,12 @@
 package com.sksamuel.kotlintest
 
-class CollectionMatchers<T>(val iterable: Collection<T>) {
-  public infix fun size(k: Int): Unit {
-    val size = iterable.size
-    if (size != k) throw TestFailedException("Iterable was expected to have size $k but had size $size")
+interface CollectionMatchers {
+
+  infix fun Have<out Collection<*>>.size(expected: Int): (Collection<*>) -> Unit {
+    return { collection ->
+      val size = collection.size
+      if (size != expected)
+        throw TestFailedException("Collection was expected to have size $expected but had size $size")
+    }
   }
 }

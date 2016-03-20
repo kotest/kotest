@@ -2,11 +2,14 @@ package com.sksamuel.kotlintest
 
 import kotlin.reflect.KClass
 
-class TypeMatchers(val any: Any) {
-  public infix fun a(expected: KClass<*>): Unit = an(expected)
-  public infix fun an(expected: KClass<*>) {
-    if (!expected.java.isAssignableFrom(any.javaClass)) {
-      throw TestFailedException("Value is not of type $expected")
+interface TypeMatchers {
+
+  infix fun Be<*>.a(expected: KClass<*>): (Any) -> Unit = an(expected)
+
+  infix fun Be<*>.an(expected: KClass<*>): (Any) -> Unit {
+    return { any ->
+      if (!expected.java.isAssignableFrom(any.javaClass))
+        throw TestFailedException("Value is not of type $expected")
     }
   }
 }

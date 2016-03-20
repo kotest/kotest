@@ -6,7 +6,7 @@ class StringMatchersTest : FreeSpec(), Matchers {
   init {
     "Matchers should start with x" - {
       "should compare prefix of string" with {
-        "bibble" should start with ""
+        "bibble" should start with "qqqq"
         "bibble" should start with "bib"
         "bibble" should start with "bibble"
       }
