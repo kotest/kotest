@@ -1,5 +1,8 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.Matchers
+import io.kotlintest.specs.FreeSpec
+
 class FreeSpecTest : Matchers, FreeSpec() {
   init {
     "given a ListStack" - {

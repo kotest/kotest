@@ -1,5 +1,8 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.Matchers
+import io.kotlintest.specs.WordSpec
+
 class WordSpecTest : Matchers, WordSpec() {
   init {
     "ListStack.pop" should {

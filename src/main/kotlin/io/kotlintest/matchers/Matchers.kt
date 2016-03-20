@@ -1,6 +1,24 @@
-package io.kotlintest
+package io.kotlintest.matchers
+
+import io.kotlintest.TestFailedException
+
+interface Keyword
+
+object have : Keyword
+
+object be : Keyword
+
+object end : Keyword
+
+object start : Keyword
+
+object contain : Keyword
+
+object include : Keyword
 
 interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers {
+
+  fun fail(msg: String) = throw TestFailedException(msg)
 
   infix fun Any.shouldBe(any: Any): Unit = shouldEqual(any)
   infix fun Any.shouldEqual(any: Any): Unit {
@@ -18,33 +36,11 @@ interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatche
   infix fun <T> T.should(x: be): Be<T> = Be(this)
   infix fun <T> T.should(x: contain): Contain<T> = Contain(this)
   infix fun <T> T.should(x: include): Include<T> = Include(this)
-
-  interface Keyword
-
-  object have : Keyword
-
-  object be : Keyword
-
-  object end : Keyword
-
-  object start : Keyword
-
-  object contain : Keyword
-
-  object include : Keyword
 }
 
-class Have<T>(override val value: T) : Assertable<T>
-class Be<T>(override val value: T) : Assertable<T>
-class Start<T>(override val value: T) : Assertable<T>
-class End<T>(override val value: T) : Assertable<T>
-class Include<T>(override val value: T) : Assertable<T>
-class Contain<T>(override val value: T) : Assertable<T>
-
-interface Assertable<T> {
-  val value: T
-  infix fun T.should(matcher: (T) -> Unit): Unit = matcher(value)
-  infix fun T.shouldHave(matcher: (T) -> Unit): Unit = matcher(value)
-  infix fun T.shouldBe(matcher: (T) -> Unit): Unit = matcher(value)
-}
-
+class Have<T>(val value: T)
+class Be<T>(val value: T)
+class Start<T>(val value: T)
+class End<T>(val value: T)
+class Include<T>(val value: T)
+class Contain<T>(val value: T)

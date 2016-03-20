@@ -1,5 +1,8 @@
-package io.kotlintest
+package io.kotlintest.specs
 
+import io.kotlintest.TestBase
+import io.kotlintest.TestCase
+import io.kotlintest.TestSuite
 import java.util.*
 import kotlin.collections.getOrPut
 
