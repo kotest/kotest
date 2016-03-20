@@ -1,4 +1,4 @@
-package com.sksamuel.ktest
+package com.sksamuel.kotlintest
 
 interface Stack<T> {
     fun push(t: T): Unit

@@ -1,4 +1,4 @@
-package com.sksamuel.ktest
+package com.sksamuel.kotlintest
 
 import org.junit.runner.Description
 import org.junit.runner.Runner

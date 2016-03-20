@@ -1,4 +1,4 @@
-package com.sksamuel.ktest
+package com.sksamuel.kotlintest
 
 import org.junit.runner.RunWith
 import java.util.*

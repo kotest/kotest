@@ -1,4 +1,4 @@
-package com.sksamuel.ktest
+package com.sksamuel.kotlintest
 
 class FreeSpecTest : Matchers, FreeSpec() {
   init {

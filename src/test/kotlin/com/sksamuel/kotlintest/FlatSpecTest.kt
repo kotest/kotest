@@ -1,4 +1,4 @@
-package com.sksamuel.ktest
+package com.sksamuel.kotlintest
 
 class FlatSpecTest : Matchers, FlatSpec() {
   init {

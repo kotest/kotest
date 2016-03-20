@@ -3,14 +3,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0-beta-4584'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0'
     }
 }
 
-group = "com.sksamuel.ktest"
+group = "com.sksamuel.kotlintest"
 version = "0.90.1-SNAPSHOT"
 
-apply plugin: "kotlin"
+apply plugin: 'kotlin'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
@@ -38,7 +38,7 @@ signing {
 
 dependencies {
     compile 'com.google.guava:guava:18.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.0-beta-4584'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.0'
     compile 'junit:junit:4.12'
 }
 
@@ -56,15 +56,15 @@ uploadArchives {
             }
 
             pom.project {
-                name 'KTest'
+                name 'KotlinTest'
                 packaging 'jar'
                 description 'Kotlin Test Framework'
-                url 'http://www.github.com/sksamuel/ktest'
+                url 'http://www.github.com/kotlintest/kotlintest'
 
                 scm {
-                    connection 'scm:git:http://www.github.com/sksamuel/ktest/'
+                    connection 'scm:git:http://www.github.com/kotlintest/kotlintest/'
                     developerConnection 'scm:git:http://github.com/sksamuel/'
-                    url 'http://www.github.com/sksamuel/ktest/'
+                    url 'http://www.github.com/kotlintest/kotlintest/'
                 }
 
                 licenses {
@@ -84,4 +84,7 @@ uploadArchives {
             }
         }
     }
+}
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
 }
