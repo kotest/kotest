@@ -16,7 +16,7 @@ object contain : Keyword
 
 object include : Keyword
 
-interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers {
+interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers, ExceptionMatchers {
 
   fun fail(msg: String) = throw TestFailedException(msg)
 
