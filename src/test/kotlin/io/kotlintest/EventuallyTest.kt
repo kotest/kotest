@@ -20,8 +20,10 @@ class EventuallyTest : WordSpec(), Eventually {
         }
       }
       "fail tests that do not complete within the time allowed" with {
-        eventually(2, TimeUnit.SECONDS) {
-          throw RuntimeException("foo")
+        expecting(TestFailedException::class) {
+          eventually(2, TimeUnit.SECONDS) {
+            throw RuntimeException("foo")
+          }
         }
       }
     }
