@@ -6,14 +6,16 @@ import kotlin.reflect.KClass
 interface ExceptionMatchers {
 
   fun expecting(kclass: KClass<*>, thunk: () -> Any): Unit {
-    try {
+    val exception = try {
       thunk()
-      throw TestFailedException("Expected exception $kclass but no exception was thrown")
+      null
     } catch (exception: Exception) {
-      if (exception.javaClass != kclass.java) {
-        throw TestFailedException("Expected exception $kclass but $exception was thrown")
-      }
+      exception
+    }
+    if (exception == null)
+      throw TestFailedException("Expected exception $kclass but no exception was thrown")
+    else if (exception.javaClass != kclass.java) {
+      throw TestFailedException("Expected exception $kclass but $exception was thrown")
     }
   }
-
 }

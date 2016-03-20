@@ -1,5 +1,6 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.Inspectors
 import io.kotlintest.TestFailedException
 
 interface Keyword
@@ -16,7 +17,7 @@ object contain : Keyword
 
 object include : Keyword
 
-interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers, ExceptionMatchers {
+interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers, ExceptionMatchers, Inspectors {
 
   fun fail(msg: String) = throw TestFailedException(msg)
 

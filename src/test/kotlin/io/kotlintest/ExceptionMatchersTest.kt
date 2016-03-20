@@ -6,7 +6,7 @@ import io.kotlintest.specs.FreeSpec
 class ExceptionMatchersTest : FreeSpec(), Matchers {
 
   init {
-    "throwException" - {
+    "expecting" - {
       "should test for presence of exception" with {
         expecting(IllegalAccessException::class) {
           throw IllegalAccessException("bibble")
