@@ -6,7 +6,7 @@ Kotlin Test is a flexible and comprehensive testing tool for the [Kotlin](https:
 
 ### Testing Styles
 
-You can choose a testing style by extending in FlatSpec, WordSpec, or FlatSpec in your test class, and writing your tests inside an init {} block
+You can choose a testing style by extending FlatSpec, WordSpec, FunSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
 ```kotlin
 class MyTests : WordSpec {
@@ -33,6 +33,30 @@ Word spec offers the keywords `should`, and `with`, and allows those to be used 
   stack.push("world")
   stack.pop()
   stack.size() shouldBe 1
+}
+```
+
+#### Fun Spec
+
+Fun spec allows you to create tests similar to the junit style. You invoke a method called test, with a parameter to describe the test, and then the test itself:
+
+```kotlin
+test("ListStack.pop should remove the last element from stack") {
+  val stack = ListStack<String>()
+  stack.push("hello")
+  stack.push("world")
+  stack.size() shouldBe 2
+  stack.pop() shouldBe "world"
+  stack.size() shouldBe 1
+}
+
+test("ListStack.peek should leave the stack unmodified") {
+  val stack = ListStack<String>()
+  stack.push("hello")
+  stack.push("world")
+  stack.size() shouldBe 2
+  stack.peek() shouldBe "world"
+  stack.size() shouldBe 2
 }
 ```
 
