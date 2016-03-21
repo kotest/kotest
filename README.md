@@ -18,7 +18,7 @@ class MyTests : WordSpec {
 
 #### Flat Spec
 
-Word spec offers the keywords `should`, and `with`, and allows those to be used inline, as such:
+Flat spec offers the keywords `should`, and `with`, and allows those to be used inline, as such:
 
 ```kotlin
 "ListStack.pop" should "return the last element from stack" with {
