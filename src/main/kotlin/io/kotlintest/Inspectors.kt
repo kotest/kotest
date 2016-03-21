@@ -27,6 +27,7 @@ interface Inspectors {
   }
 
   fun <T> forAny(col: Collection<T>, f: (T) -> Unit): Unit = forAtLeast(1, col, f)
+  fun <T> forAtLeastOne(col: Collection<T>, f: (T) -> Unit): Unit = forAtLeast(1, col, f)
 
   fun <T> forAtLeast(k: Int, col: Collection<T>, f: (T) -> Unit): Unit {
     val passed = count(col, f)
