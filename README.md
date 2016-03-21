@@ -109,6 +109,6 @@ Flat spec allows you to nest arbitary levels of depth using the keywords `-` (mi
 
 ### How to use
 
-KTest is published to maven central, so to use, simply add the dependency in test scope to your gradle build:
+KotlinTest is published to maven central, so to use, simply add the dependency in test scope to your gradle build:
 
-`testCompile 'com.sksamuel.ktest:ktest:0.90.0'`
+`testCompile 'io.kotlintest:kotlintest:xxx'`
