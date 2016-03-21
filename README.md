@@ -171,6 +171,16 @@ The full list of inspectors are:
 * `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
 * `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
 
+### Eventually
+
+When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
+
+```kotlin
+eventually(5, TimeUnit.SECONDS) {
+ // code here that should complete in 5 seconds but takes an indetermistic amount of time.
+}
+```
+
 ### How to use
 
 KotlinTest is published to maven central, so to use, simply add the dependency in test scope to your gradle build:
