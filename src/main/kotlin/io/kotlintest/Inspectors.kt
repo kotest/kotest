@@ -2,7 +2,7 @@ package io.kotlintest
 
 interface Inspectors {
 
-  fun <T> forEach(col: Collection<T>, f: (T) -> Unit): Unit {
+  fun <T> forAll(col: Collection<T>, f: (T) -> Unit): Unit {
     val size = col.size
     val passed = count(col, f)
     if (size != passed)
