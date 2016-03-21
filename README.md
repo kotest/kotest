@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/kotlintest/kotlintest.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest) [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest*.svg?label=latest%20release"/>](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22kotlintest)
 
-Kotlin Test is a flexible and comprehensive testing tool for the [Kotlin](https://kotlinlang.org/) ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KTest offers KTest offers several styles of test layout so that your team can pick the style they are most happy with.
+KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https://kotlinlang.org/) ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KotlinTest provides several ways to lay out your test so that your team can pick the style they are most happy with. It also includes many matchers which allow you to write many different types of assertions easily and in a human readable way. Finally, there's helpers for things like collection testing, and future testing.
 
 ### Testing Styles
 
@@ -106,6 +106,24 @@ Flat spec allows you to nest arbitary levels of depth using the keywords `-` (mi
   }
 }
 ```
+
+### Matchers
+
+KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`.
+
+#### String Matchers
+
+To assert that a string starts with a given prefix use `x should start with y`.
+To assert that a string ends with a given suffix use `x should end with y`.
+To assert that a string contains a given substring use `x should have substring y`.
+
+#### Long / Int Matchers
+
+To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
+
+#### Collection Matchers
+
+To assert that a collection has a given size use `col should have size 4`. This is the same as `(col,size == 4) shouldBe true` but more readable.
 
 ### How to use
 
