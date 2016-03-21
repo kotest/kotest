@@ -113,17 +113,62 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 #### String Matchers
 
-To assert that a string starts with a given prefix use `x should start with y`.
-To assert that a string ends with a given suffix use `x should end with y`.
-To assert that a string contains a given substring use `x should have substring y`.
+* To assert that a string starts with a given prefix use `x should start with y`.
+* To assert that a string ends with a given suffix use `x should end with y`.
+* To assert that a string contains a given substring use `x should have substring y`.
 
 #### Long / Int Matchers
 
-To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
+* To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
 
 #### Collection Matchers
 
-To assert that a collection has a given size use `col should have size 4`. This is the same as `(col,size == 4) shouldBe true` but more readable.
+* To assert that a collection has a given size use `col should have size 4`. This is the same as `(col,size == 4) shouldBe true` but more readable.
+
+### Exceptions
+
+To assert that a given block of code throws an exception, one can use the expecting(exception) block. Eg,
+
+```kotlin
+expecting(IllegalAccessException::class) {
+  // code in here that you expect to throw a IllegalAccessException
+}
+```
+
+### Inspectors
+
+Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
+
+```kotlin
+val xs = // some collection
+forAll(xs) { x =>
+  x should have substring "qwerty"
+  x should start with "q"
+}
+```
+
+Similarly, if we wanted to asset that NO elements in a collection passed some assertions, we can do:
+
+```kotlin
+val xs = // some collection
+forNone(xs) { x =>
+  x should have substring "qwerty"
+  x should start with "q"
+}
+```
+
+The full list of inspectors are:
+
+* `forAll` which asserts every element passes the assertions
+* `forNone` which asserts no element passes
+* `forOne` which asserts only a single element passed
+* `forAtMostOne` which asserts that either 0 or 1 elements pass
+* `forAtLeastOne` which asserts that 1 or more elements passed
+* `forAtLeast(k)` which is a generalization that k or more elements passed
+* `forAtMost(k)` which is a generalization that k or fewer elements passed
+* `forAny` which is an alias for `forAtLeastOne`
+* `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
+* `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
 
 ### How to use
 
