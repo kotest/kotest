@@ -42,6 +42,12 @@ interface Inspectors {
       throw TestFailedException("$passed passed tests but expected at most $k")
   }
 
+  fun <T> forNone(k: Int, col: Collection<T>, f: (T) -> Unit): Unit {
+    val passed = count(col, f)
+    if (passed > 0)
+      throw TestFailedException("$passed passed tests but expected 0")
+  }
+
   fun <T> count(col: Collection<T>, f: (T) -> Unit): Int {
     return col.map { t ->
       try {
