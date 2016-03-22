@@ -9,6 +9,11 @@ interface TypeMatchers {
 
   infix fun Be<*>.an(expected: KClass<*>): Unit {
     if (!expected.java.isAssignableFrom(value?.javaClass))
-      throw TestFailedException("Value is not of type $expected")
+      throw TestFailedException("$value is not of type $expected")
+  }
+
+  infix fun <T> Be<T>.theSameInstanceAs(ref: T): Unit {
+    if (value !== ref)
+      throw TestFailedException("$value is not the same reference as $ref")
   }
 }
