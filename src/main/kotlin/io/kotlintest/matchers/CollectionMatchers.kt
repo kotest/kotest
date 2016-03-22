@@ -4,6 +4,13 @@ import io.kotlintest.TestFailedException
 
 interface CollectionMatchers {
 
+  fun beEmpty(): (Collection<*>) -> Unit {
+    return { value ->
+      if (value.isNotEmpty())
+        throw TestFailedException("Collection was expected to be empty but has size ${value.size}")
+    }
+  }
+
   infix fun Have<out Collection<*>>.size(expected: Int): Unit {
     val size = value.size
     if (size != expected)

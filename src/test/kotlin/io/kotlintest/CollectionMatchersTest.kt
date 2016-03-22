@@ -2,6 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.matchers.contain
 import io.kotlintest.specs.WordSpec
+import java.util.*
 
 class CollectionMatchersTest : WordSpec() {
 
@@ -10,10 +11,24 @@ class CollectionMatchersTest : WordSpec() {
     "CollectionMatchers.contain" should {
       "should test that a collection contains an element" with {
         val col = listOf(1, 2, 3)
+
         col should contain element 2
         expecting(TestFailedException::class) {
           col should contain element 4
         }
+
+      }
+    }
+
+    "CollectionMatchers.empty" should {
+      "should test that a collection contains an element" with {
+        val col = listOf(1, 2, 3)
+
+        expecting(TestFailedException::class) {
+          col should beEmpty()
+        }
+
+        ArrayList<String>() should beEmpty()
       }
     }
   }
