@@ -21,16 +21,13 @@ interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatche
 
   fun fail(msg: String) = throw TestFailedException(msg)
 
-  infix fun Any.shouldBe(any: Any): Unit = shouldEqual(any)
-  infix fun Any.shouldEqual(any: Any): Unit {
-    if (!this.equals(any))
+  infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
+  infix fun <T> T.shouldEqual(any: Any?): Unit {
+    if (this?.equals(any) == false)
       throw TestFailedException(this.toString() + " did not equal $any")
   }
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
-  infix fun <T> T.shouldHave(matcher: (T) -> Unit): Unit = matcher(this)
-  infix fun <T> T.shouldBe(matcher: (T) -> Unit): Unit = matcher(this)
-
   infix fun <T> T.should(x: have): Have<T> = Have(this)
   infix fun <T> T.should(x: start): Start<T> = Start(this)
   infix fun <T> T.should(x: end): End<T> = End(this)

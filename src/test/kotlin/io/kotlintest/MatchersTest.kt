@@ -13,6 +13,20 @@ class MatchersTest : FreeSpec(), Matchers {
       "should compare equality" with {
         "a" shouldBe "a"
       }
+      "should support matching null with null" with {
+        val name: String? = null
+        name shouldBe null
+      }
+      "should support matching non null with null" with {
+        expecting(TestFailedException::class) {
+          val name: String? = "nullornot"
+          name shouldBe null
+        }
+        expecting(TestFailedException::class) {
+          val name: String = "notnull"
+          name shouldBe null
+        }
+      }
     }
     "Matchers.shouldEqual" - {
       "should compare equality" with {
