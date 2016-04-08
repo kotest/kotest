@@ -109,7 +109,7 @@ Flat spec allows you to nest arbitary levels of depth using the keywords `-` (mi
 
 ### Matchers
 
-KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`.
+KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`.
 
 #### String Matchers
 
