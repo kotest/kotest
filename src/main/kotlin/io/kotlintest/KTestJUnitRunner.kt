@@ -15,7 +15,8 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
 
   val map: MutableMap<TestCase, Description> = HashMap()
   val counter = AtomicInteger()
-  val root = testClass.newInstance().root
+  val instance = testClass.newInstance()
+  val root = instance.root
 
   override fun getDescription(): Description? {
     return descriptionForSuite(root)
@@ -37,6 +38,7 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
   }
 
   override fun run(notifier: RunNotifier?) {
+    instance.beforeAll()
     getTests(root).forEach { testcase ->
       val desc = map[testcase]
       notifier!!.fireTestStarted(desc)
@@ -47,6 +49,7 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
         notifier.fireTestFailure(Failure(desc, e))
       }
     }
+    instance.afterAll()
   }
 
   private fun getTests(suite: TestSuite): List<TestCase> {
