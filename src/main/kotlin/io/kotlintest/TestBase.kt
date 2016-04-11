@@ -9,9 +9,9 @@ abstract class TestBase : Matchers {
 
   val root = TestSuite(this.javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
 
-  fun beforeAll(): Unit {
+  open fun beforeAll(): Unit {
   }
 
-  fun afterAll(): Unit {
+  open fun afterAll(): Unit {
   }
 }
