@@ -9,7 +9,7 @@ KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https:/
 You can choose a testing style by extending FlatSpec, WordSpec, FunSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
 ```kotlin
-class MyTests : WordSpec {
+class MyTests : WordSpec() {
   init {
     // tests here
   }
