@@ -145,6 +145,12 @@ override fun beforeAll() {
 }
 ```
 
+```kotlin
+override fun afterAll() {
+  println("Cleaning up after my tests")
+}
+```
+
 ### Inspectors
 
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
