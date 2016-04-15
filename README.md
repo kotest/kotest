@@ -4,6 +4,23 @@
 
 KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https://kotlinlang.org/) ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KotlinTest provides several ways to lay out your test so that your team can pick the style they are most happy with. It also includes many matchers which allow you to write many different types of assertions easily and in a human readable way. Finally, there's helpers for things like collection testing, and future testing.
 
+### How to use
+
+KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file:
+
+Gradle:
+
+    testCompile 'io.kotlintest:kotlintest:xxx'
+
+Maven:
+
+    <dependency>
+        <groupId>io.kotlintest</groupId>
+        <artifactId>kotlintest</artifactId>
+        <version>xxx</version>
+        <scope>test</scope>
+    </dependency>
+
 ### Testing Styles
 
 You can choose a testing style by extending FlatSpec, WordSpec, FunSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
@@ -195,9 +212,3 @@ eventually(5, TimeUnit.SECONDS) {
  // code here that should complete in 5 seconds but takes an indetermistic amount of time.
 }
 ```
-
-### How to use
-
-KotlinTest is published to maven central, so to use, simply add the dependency in test scope to your gradle build:
-
-`testCompile 'io.kotlintest:kotlintest:xxx'`
