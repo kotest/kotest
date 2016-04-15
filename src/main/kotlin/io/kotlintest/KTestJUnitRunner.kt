@@ -23,7 +23,7 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
   }
 
   private fun descriptionForSuite(suite: TestSuite): Description? {
-    val desc = Description.createSuiteDescription(suite.name, counter.andIncrement)
+    val desc = Description.createSuiteDescription(suite.name.replace(".", " "), counter.andIncrement)
     suite.suites.forEach { suite ->
       desc.addChild(descriptionForSuite(suite))
     }

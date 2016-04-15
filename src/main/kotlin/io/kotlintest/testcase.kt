@@ -1,10 +1,8 @@
 package io.kotlintest
 
-import java.util.*
-
 data class TestSuite(val name: String, val suites: MutableList<TestSuite>, val cases: MutableList<io.kotlintest.TestCase>) {
   companion object {
-    fun empty(name: String) = TestSuite(name, ArrayList<TestSuite>(), ArrayList<io.kotlintest.TestCase>())
+    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<io.kotlintest.TestCase>())
   }
 }
 
