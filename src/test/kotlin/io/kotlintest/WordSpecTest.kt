@@ -1,12 +1,11 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
 import io.kotlintest.specs.WordSpec
 
-class WordSpecTest : Matchers, WordSpec() {
+class WordSpecTest : WordSpec() {
   init {
     "ListStack.pop" should {
-      "remove the last element from stack" with {
+      "remove the last element from stack" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")

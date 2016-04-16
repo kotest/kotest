@@ -1,9 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
 import io.kotlintest.specs.FreeSpec
 
-class FreeSpecTest : Matchers, FreeSpec() {
+class FreeSpecTest : FreeSpec() {
   init {
     "given a ListStack" - {
       "pop" - {

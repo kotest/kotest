@@ -18,6 +18,8 @@ abstract class WordSpec : TestBase() {
     current = temp
   }
 
+  infix operator fun String.invoke(test: () -> Unit): Unit = with(test)
+
   infix fun String.with(test: () -> Unit): Unit {
     current.cases.add(TestCase(this, test))
   }

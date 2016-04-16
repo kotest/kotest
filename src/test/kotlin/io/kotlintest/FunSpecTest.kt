@@ -1,10 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
 import io.kotlintest.specs.FunSpec
 
-class FunSpecTest : Matchers, FunSpec() {
-
+class FunSpecTest : FunSpec() {
   init {
 
     test("ListStack.pop should remove the last element from stack") {
