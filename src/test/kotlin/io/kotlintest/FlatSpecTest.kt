@@ -4,7 +4,7 @@ import io.kotlintest.specs.FlatSpec
 
 class FlatSpecTest : FlatSpec() {
   init {
-    "ListStack.pop" should "return the last element from stack" with {
+    "ListStack.pop" should "return the last element from stack" {
       val stack = ListStack<String>()
       stack.push("hello")
       stack.push("world")

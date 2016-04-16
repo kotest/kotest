@@ -12,6 +12,19 @@ abstract class FlatSpec : TestBase() {
 
   infix fun String.should(msg: String): TestBuilder = TestBuilder(this, msg)
 
+  class TestHolder(val test: () -> Unit)
+
+  infix operator fun String.invoke(test: () -> Unit): () -> Unit = test
+
+  infix fun String.should(test: () -> Unit): Unit {
+    val suite = suites.getOrPut(this, {
+      val suite = TestSuite.empty(this)
+      root.suites.add(suite)
+      suite
+    })
+    suite.cases.add(TestCase(this, test))
+  }
+
   inner class TestBuilder(val suiteName: String, val testName: String) {
     infix fun with(test: () -> Unit): Unit {
       val suite = suites.getOrPut(suiteName, {
