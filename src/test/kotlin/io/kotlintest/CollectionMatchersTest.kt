@@ -9,7 +9,7 @@ class CollectionMatchersTest : WordSpec() {
   init {
 
     "CollectionMatchers.contain" should {
-      "should test that a collection contains an element" with {
+      "test that a collection contains an element" with {
         val col = listOf(1, 2, 3)
 
         col should contain element 2
@@ -21,7 +21,7 @@ class CollectionMatchersTest : WordSpec() {
     }
 
     "CollectionMatchers.empty" should {
-      "should test that a collection contains an element" with {
+      "test that a collection contains an element" with {
         val col = listOf(1, 2, 3)
 
         expecting(TestFailedException::class) {

@@ -1,3 +1,3 @@
 package io.kotlintest
 
-class TestFailedException(reason: String) : RuntimeException(reason)
+class TestFailedException(message: String) : RuntimeException(message)

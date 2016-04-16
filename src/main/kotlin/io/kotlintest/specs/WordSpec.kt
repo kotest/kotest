@@ -21,6 +21,6 @@ abstract class WordSpec : TestBase() {
   infix operator fun String.invoke(test: () -> Unit): Unit = with(test)
 
   infix fun String.with(test: () -> Unit): Unit {
-    current.cases.add(TestCase(this, test))
+    current.cases.add(TestCase("should " + this, test))
   }
 }

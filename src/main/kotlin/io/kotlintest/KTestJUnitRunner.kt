@@ -34,7 +34,7 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
   }
 
   private fun descriptionForTest(suite: TestSuite, testcase: TestCase): Description? {
-    return map.getOrPut(testcase, { Description.createTestDescription(suite.name, testcase.name, counter.andIncrement) })
+    return map.getOrPut(testcase, { Description.createTestDescription(suite.name.replace(".", " "), testcase.name, counter.andIncrement) })
   }
 
   override fun run(notifier: RunNotifier?) {
@@ -44,10 +44,10 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
       notifier!!.fireTestStarted(desc)
       try {
         testcase.test()
-        notifier.fireTestFinished(desc)
-      } catch(e: TestFailedException) {
+      } catch(e: Exception) {
         notifier.fireTestFailure(Failure(desc, e))
       }
+      notifier.fireTestFinished(desc)
     }
     instance.afterAll()
   }

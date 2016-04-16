@@ -12,6 +12,7 @@ class WordSpecTest : WordSpec() {
         stack.size() shouldBe 2
         stack.pop() shouldBe "world"
         stack.size() shouldBe 1
+        //false shouldBe true
       }
     }
     "ListStack.peek" should {
