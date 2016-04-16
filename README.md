@@ -38,18 +38,11 @@ class MyTests : WordSpec() {
 Flat spec offers the keywords `should`, and `with`, and allows those to be used inline, as such:
 
 ```kotlin
-"ListStack.pop" should "return the last element from stack" with {
+"ListStack.pop" should "return the last element from stack" {
   val stack = ListStack<String>()
   stack.push("hello")
   stack.push("world")
   stack.pop() shouldBe "world"
-}
-"ListStack.pop" should "remove the element from the stack" with {
-  val stack = ListStack<String>()
-  stack.push("hello")
-  stack.push("world")
-  stack.pop()
-  stack.size() shouldBe 1
 }
 ```
 
@@ -66,30 +59,51 @@ test("ListStack.pop should remove the last element from stack") {
   stack.pop() shouldBe "world"
   stack.size() shouldBe 1
 }
+```
 
-test("ListStack.peek should leave the stack unmodified") {
+#### Should spec
+
+Should spec is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
+
+```kotlin
+should("remove the last element from stack") {
   val stack = ListStack<String>()
   stack.push("hello")
   stack.push("world")
   stack.size() shouldBe 2
-  stack.peek() shouldBe "world"
-  stack.size() shouldBe 2
+  stack.pop() shouldBe "world"
+  stack.size() shouldBe 1
+}
+```
+
+This can be nested in context strings too, eg
+
+```kotlin
+"List.pop" {
+  should("remove the last element from stack") {
+    val stack = ListStack<String>()
+    stack.push("hello")
+    stack.push("world")
+    stack.size() shouldBe 2
+    stack.pop() shouldBe "world"
+    stack.size() shouldBe 1
+  }
 }
 ```
 
 #### Word Spec
 
-Word spec offers the keywords `should`, and `with`, and allows those to be nested, as such:
+Word spec uses the keyword `should` and uses that to nest test blocks after a context string, eg:
 
 ```kotlin
 "ListStack.pop" should {
-  "return the last element from stack" with {
+  "return the last element from stack" {
     val stack = ListStack<String>()
     stack.push("hello")
     stack.push("world")
     stack.pop() shouldBe "world"
   }
-  "remove the element from the stack" with {
+  "remove the element from the stack" {
     val stack = ListStack<String>()
     stack.push("hello")
     stack.push("world")
