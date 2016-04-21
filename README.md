@@ -115,18 +115,18 @@ Word spec uses the keyword `should` and uses that to nest test blocks after a co
 
 #### Flat Spec
 
-Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus) and `with`, as such:
+Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
 
 ```kotlin
 "given a ListStack" - {
    "then pop" - {
-     "should return the last element from stack" with {
+     "should return the last element from stack" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")
         stack.pop() shouldBe "world"
       }
-      "should remove the element from the stack" with {
+      "should remove the element from the stack" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")
@@ -166,9 +166,26 @@ expecting(IllegalAccessException::class) {
   // code in here that you expect to throw a IllegalAccessException
 }
 ```
-### Before and After
 
-If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class ,eg
+### Before and After Each
+
+If you need to run a method before each test and/or after each test (perhaps to reset some values to defaults etc), then simply override the `beforeEach` and `afterEach` methods in your test class, eg:
+
+```kotlin
+override fun beforeEach() {
+  println("Test starting")
+}
+```
+
+```kotlin
+override fun afterEach() {
+  println("Test completed")
+}
+```
+
+### Before and After All
+
+If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class, eg:
 
 ```kotlin
 override fun beforeAll() {
@@ -179,6 +196,19 @@ override fun beforeAll() {
 ```kotlin
 override fun afterAll() {
   println("Cleaning up after my tests")
+}
+```
+
+### One Instance Per Test
+
+By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the `oneInstancePerTest` value and set it to true, eg:
+
+```kotlin
+class MyTests : ShouldSpec() {
+  override val oneInstancePerTest = true
+  init {
+    // tests here
+  }
 }
 ```
 
