@@ -199,6 +199,19 @@ override fun afterAll() {
 }
 ```
 
+### One Instance Per Test
+
+By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the oneInstancePerTest value and set it to true, eg:
+
+```kotlin
+class MyTests : ShouldSpec() {
+  override val oneInstancePerTest = true
+  init {
+    // tests here
+  }
+}
+```
+
 ### Inspectors
 
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
