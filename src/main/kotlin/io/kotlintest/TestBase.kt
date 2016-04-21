@@ -14,4 +14,10 @@ abstract class TestBase : Matchers {
 
   open fun afterAll(): Unit {
   }
+
+  open fun beforeEach(): Unit {
+  }
+
+  open fun afterEach(): Unit {
+  }
 }

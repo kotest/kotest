@@ -43,9 +43,12 @@ class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
       val desc = map[testcase]
       notifier!!.fireTestStarted(desc)
       try {
+        instance.beforeEach()
         testcase.test()
       } catch(e: Exception) {
         notifier.fireTestFailure(Failure(desc, e))
+      } finally {
+        instance.afterEach()
       }
       notifier.fireTestFinished(desc)
     }
