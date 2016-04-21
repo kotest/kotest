@@ -115,18 +115,18 @@ Word spec uses the keyword `should` and uses that to nest test blocks after a co
 
 #### Flat Spec
 
-Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus) and `with`, as such:
+Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
 
 ```kotlin
 "given a ListStack" - {
    "then pop" - {
-     "should return the last element from stack" with {
+     "should return the last element from stack" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")
         stack.pop() shouldBe "world"
       }
-      "should remove the element from the stack" with {
+      "should remove the element from the stack" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")
