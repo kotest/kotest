@@ -14,10 +14,10 @@ abstract class PropSpec : TestBase() {
   class PropertyTestBuilder(val suite: TestSuite, val name: String) {
 
     inline fun <reified A> forAll(noinline fn: (a: A) -> Boolean): Unit {
-      forAll(Generator.default<A>(), fn)
+      forAll(Gen.default<A>(), fn)
     }
 
-    fun <A> forAll(gena: Generator<A>, fn: (a: A) -> Boolean): Unit {
+    fun <A> forAll(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
         for (k in 0..1000) {
           val a = gena.generate()
@@ -30,10 +30,10 @@ abstract class PropSpec : TestBase() {
     }
 
     inline fun <reified A, reified B> forAll(noinline fn: (a: A, b: B) -> Boolean): Unit {
-      forAll(Generator.default<A>(), Generator.default<B>(), fn)
+      forAll(Gen.default<A>(), Gen.default<B>(), fn)
     }
 
-    fun <A, B> forAll(gena: Generator<A>, genb: Generator<B>, fn: (a: A, b: B) -> Boolean): Unit {
+    fun <A, B> forAll(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
       for (k in 0..1000) {
         val a = gena.generate()
@@ -47,10 +47,10 @@ abstract class PropSpec : TestBase() {
     }
 
     inline fun <reified A, reified B, reified C> forAll(noinline fn: (a: A, b: B, c: C) -> Boolean): Unit {
-      forAll(Generator.default<A>(), Generator.default<B>(), Generator.default<C>(), fn)
+      forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), fn)
     }
 
-    fun <A, B, C> forAll(gena: Generator<A>, genb: Generator<B>, genc: Generator<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
+    fun <A, B, C> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
       for (k in 0..1000) {
         val a = gena.generate()
@@ -65,10 +65,10 @@ abstract class PropSpec : TestBase() {
     }
 
     inline fun <reified A, reified B, reified C, reified D> forAll(noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
-      forAll(Generator.default<A>(), Generator.default<B>(), Generator.default<C>(), Generator.default<D>(), fn)
+      forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), fn)
     }
 
-    fun <A, B, C, D> forAll(gena: Generator<A>, genb: Generator<B>, genc: Generator<C>, gend: Generator<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
+    fun <A, B, C, D> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
       for (k in 0..1000) {
         val a = gena.generate()
@@ -84,10 +84,10 @@ abstract class PropSpec : TestBase() {
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E> forAll(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-      forAll(Generator.default<A>(), Generator.default<B>(), Generator.default<C>(), Generator.default<D>(), Generator.default<E>(), fn)
+      forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), fn)
     }
 
-    fun <A, B, C, D, E> forAll(gena: Generator<A>, genb: Generator<B>, genc: Generator<C>, gend: Generator<D>, gene: Generator<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
+    fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
       for (k in 0..1000) {
         val a = gena.generate()
@@ -104,10 +104,10 @@ abstract class PropSpec : TestBase() {
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-      forAll(Generator.default<A>(), Generator.default<B>(), Generator.default<C>(), Generator.default<D>(), Generator.default<E>(), Generator.default<F>(), fn)
+      forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), Gen.default<F>(), fn)
     }
 
-    fun <A, B, C, D, E, F> forAll(gena: Generator<A>, genb: Generator<B>, genc: Generator<C>, gend: Generator<D>, gene: Generator<E>, genf: Generator<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
+    fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
       suite.cases.add(TestCase(name, {
       for (k in 0..1000) {
         val a = gena.generate()

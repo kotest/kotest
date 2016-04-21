@@ -3,7 +3,7 @@ package io.kotlintest.properties
 class PropSpecTest : PropSpec() {
   init {
 
-    property("startsWith").forAll(Generator.string(), Generator.string(), { a, b ->
+    property("startsWith").forAll(Gen.string(), Gen.string(), { a, b ->
       (a + b).startsWith(a)
     })
 
@@ -11,7 +11,7 @@ class PropSpecTest : PropSpec() {
       (a + b).length == a.length + b.length
     })
 
-    property("explicitGenerators").forAll(Generator.string(), Generator.string(), Generator.string(), { a, b, c ->
+    property("explicitGenerators").forAll(Gen.string(), Gen.string(), Gen.string(), { a, b, c ->
       (a + b + c).contains(b)
     })
 
@@ -24,6 +24,10 @@ class PropSpecTest : PropSpec() {
 
     property("pad").forAll { a: Int, b: String ->
       a <= 0 || a > 100 || b.padStart(a, ' ').length >= a
+    }
+
+    property("double").forAll { a: Double, b: Double ->
+      a < b || a >= b
     }
   }
 }
