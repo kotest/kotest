@@ -10,7 +10,7 @@ abstract class ShouldSpec : TestBase() {
 
   operator fun String.invoke(init: () -> Unit): Unit {
     val suite = TestSuite.empty(this)
-    current.suites.add(suite)
+    current.nestedSuites.add(suite)
     val temp = current
     current = suite
     init()
@@ -18,6 +18,6 @@ abstract class ShouldSpec : TestBase() {
   }
 
   fun should(name: String, test: () -> Unit): Unit {
-    current.cases.add(TestCase(name, test))
+    current.cases.add(TestCase(current, "should $name", test))
   }
 }

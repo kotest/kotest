@@ -1,6 +1,6 @@
-package io.kotlintest
+package io.kotlintest.specs
 
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.ListStack
 
 class FunSpecTest : FunSpec() {
   init {

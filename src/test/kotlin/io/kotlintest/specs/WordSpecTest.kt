@@ -1,6 +1,6 @@
-package io.kotlintest
+package io.kotlintest.specs
 
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.ListStack
 
 class WordSpecTest : WordSpec() {
   init {
@@ -12,11 +12,18 @@ class WordSpecTest : WordSpec() {
         stack.size() shouldBe 2
         stack.pop() shouldBe "world"
         stack.size() shouldBe 1
-        //false shouldBe true
+      }
+      "remove the last element from stack again" {
+        val stack = ListStack<String>()
+        stack.push("hello")
+        stack.push("world")
+        stack.size() shouldBe 2
+        stack.pop() shouldBe "world"
+        stack.size() shouldBe 1
       }
     }
     "ListStack.peek" should {
-      "should leave the stack unmodified" with {
+      "should leave the stack unmodified" {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")

@@ -11,16 +11,14 @@ abstract class WordSpec : TestBase() {
 
   infix fun String.should(init: () -> Unit): Unit {
     val suite = TestSuite(this, ArrayList<TestSuite>(), ArrayList<TestCase>())
-    current.suites.add(suite)
+    current.nestedSuites.add(suite)
     val temp = current
     current = suite
     init()
     current = temp
   }
 
-  infix operator fun String.invoke(test: () -> Unit): Unit = with(test)
-
-  infix fun String.with(test: () -> Unit): Unit {
-    current.cases.add(TestCase("should " + this, test))
+  infix operator fun String.invoke(test: () -> Unit): Unit {
+    current.cases.add(TestCase(current, "should " + this, test))
   }
 }

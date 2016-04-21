@@ -1,6 +1,6 @@
-package io.kotlintest
+package io.kotlintest.specs
 
-import io.kotlintest.specs.FlatSpec
+import io.kotlintest.ListStack
 
 class FlatSpecTest : FlatSpec() {
   init {
@@ -10,14 +10,14 @@ class FlatSpecTest : FlatSpec() {
       stack.push("world")
       stack.pop() shouldBe "world"
     }
-    "ListStack.pop" should "remove the element from the stack" with {
+    "ListStack.pop" should "remove the element from the stack" {
       val stack = ListStack<String>()
       stack.push("hello")
       stack.push("world")
       stack.pop()
       stack.size() shouldBe 1
     }
-    "ListStack.peek" should "should leave the stack unmodified" with {
+    "ListStack.peek" should "should leave the stack unmodified" {
       val stack = ListStack<String>()
       stack.push("hello")
       stack.push("world")

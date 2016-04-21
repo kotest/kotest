@@ -18,7 +18,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A> forAll(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val passed = fn(a)
@@ -34,7 +34,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B> forAll(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite,name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -51,7 +51,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite,name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -69,7 +69,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite,name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -88,7 +88,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -108,7 +108,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -129,7 +129,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val passed = fn(a)
@@ -145,7 +145,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B> forNone(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -162,7 +162,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -180,7 +180,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -199,7 +199,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -219,7 +219,7 @@ abstract class PropSpec : TestBase() {
     }
 
     fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-      suite.cases.add(TestCase(name, {
+      suite.cases.add(TestCase(suite, name, {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()

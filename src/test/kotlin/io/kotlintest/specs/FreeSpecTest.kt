@@ -1,5 +1,6 @@
-package io.kotlintest
+package io.kotlintest.specs
 
+import io.kotlintest.ListStack
 import io.kotlintest.specs.FreeSpec
 
 class FreeSpecTest : FreeSpec() {

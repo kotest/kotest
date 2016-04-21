@@ -8,31 +8,20 @@ import kotlin.collections.getOrPut
 
 abstract class FlatSpec : TestBase() {
 
-  val suites: MutableMap<String, TestSuite> = HashMap()
+  protected val suites: MutableMap<String, TestSuite> = HashMap()
 
-  infix fun String.should(msg: String): TestBuilder = TestBuilder(this, msg)
+  // allows us to write "name of test" { test here }
+  operator fun String.invoke(test: () -> Unit): Pair<String, () -> Unit> = Pair(this, test)
 
-  class TestHolder(val test: () -> Unit)
-
-  infix operator fun String.invoke(test: () -> Unit): () -> Unit = test
-
-  infix fun String.should(test: () -> Unit): Unit {
-    val suite = suites.getOrPut(this, {
-      val suite = TestSuite.empty(this)
-      root.suites.add(suite)
+  // combines the suite name and "name of test" with the keyword should
+  infix fun String.should(pair: Pair<String, () -> Unit>): Unit {
+    val suiteName = this
+    val (testName, test) = pair
+    val suite = suites.getOrPut(suiteName, {
+      val suite = TestSuite.empty(suiteName)
+      root.nestedSuites.add(suite)
       suite
     })
-    suite.cases.add(TestCase(this, test))
-  }
-
-  inner class TestBuilder(val suiteName: String, val testName: String) {
-    infix fun with(test: () -> Unit): Unit {
-      val suite = suites.getOrPut(suiteName, {
-        val suite = TestSuite.empty(suiteName)
-        root.suites.add(suite)
-        suite
-      })
-      suite.cases.add(TestCase(testName, test))
-    }
+    suite.cases.add(TestCase(suite, testName, test))
   }
 }

@@ -10,7 +10,7 @@ abstract class FreeSpec : TestBase() {
 
   infix operator fun String.minus(init: () -> Unit): Unit {
     val suite = TestSuite.empty(this)
-    current.suites.add(suite)
+    current.nestedSuites.add(suite)
     val temp = current
     current = suite
     init()
@@ -18,10 +18,10 @@ abstract class FreeSpec : TestBase() {
   }
 
   infix fun String.with(test: () -> Unit): Unit {
-    current.cases.add(TestCase(this, test))
+    current.cases.add(TestCase(current, this, test))
   }
 
   infix operator fun String.invoke(test: () -> Unit): Unit {
-    current.cases.add(TestCase(this, test))
+    current.cases.add(TestCase(current, this, test))
   }
 }

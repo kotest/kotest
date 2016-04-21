@@ -1,6 +1,6 @@
-package io.kotlintest
+package io.kotlintest.specs
 
-import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.ListStack
 
 class ShouldSpecTest : ShouldSpec() {
 
@@ -9,7 +9,7 @@ class ShouldSpecTest : ShouldSpec() {
     // should allow nested
     "List" {
       "pop" {
-        should("should remove the last element from stack") {
+        should("remove the last element from stack") {
           val stack = ListStack<String>()
           stack.push("hello")
           stack.push("world")
@@ -18,11 +18,19 @@ class ShouldSpecTest : ShouldSpec() {
           stack.size() shouldBe 1
         }
       }
+      should("remove the last element from stack") {
+        val stack = ListStack<String>()
+        stack.push("hello")
+        stack.push("world")
+        stack.size() shouldBe 2
+        stack.pop() shouldBe "world"
+        stack.size() shouldBe 1
+      }
     }
 
     // should allow nested
     "List.pop" {
-      should("should remove the last element from stack") {
+      should("remove the last element from stack") {
         val stack = ListStack<String>()
         stack.push("hello")
         stack.push("world")
@@ -33,7 +41,7 @@ class ShouldSpecTest : ShouldSpec() {
     }
 
     // and un-nested
-    should("should leave the stack unmodified") {
+    should("leave the stack unmodified") {
       val stack = ListStack<String>()
       stack.push("hello")
       stack.push("world")

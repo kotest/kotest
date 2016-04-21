@@ -8,7 +8,7 @@ class TypeMatchersTest : WordSpec() {
   init {
 
     "TypeMatchers.theSameInstanceAs" should {
-      "should test that references are equal" with {
+      "should test that references are equal" {
         val b = listOf(1, 2, 3)
         val a = b
         val c = listOf(1, 2, 3)
