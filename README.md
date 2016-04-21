@@ -166,9 +166,26 @@ expecting(IllegalAccessException::class) {
   // code in here that you expect to throw a IllegalAccessException
 }
 ```
-### Before and After
 
-If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class ,eg
+### Before and After Each
+
+If you need to run a method before each test and/or after each test (perhaps to reset some values to defaults etc), then simply override the `beforeEach` and `afterEach` methods in your test class, eg:
+
+```kotlin
+override fun beforeEach() {
+  println("Test starting")
+}
+```
+
+```kotlin
+override fun afterEach() {
+  println("Test completed")
+}
+```
+
+### Before and After All
+
+If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class, eg:
 
 ```kotlin
 override fun beforeAll() {
