@@ -201,7 +201,7 @@ override fun afterAll() {
 
 ### One Instance Per Test
 
-By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the oneInstancePerTest value and set it to true, eg:
+By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the `oneInstancePerTest` value and set it to true, eg:
 
 ```kotlin
 class MyTests : ShouldSpec() {
