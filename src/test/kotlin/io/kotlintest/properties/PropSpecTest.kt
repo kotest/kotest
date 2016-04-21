@@ -21,5 +21,9 @@ class PropSpecTest : PropSpec() {
       (a + b + c + d).contains(c)
       (a + b + c + d).contains(d)
     }
+
+    property("pad").forAll { a: Int, b: String ->
+      a <= 0 || a > 100 || b.padStart(a, ' ').length >= a
+    }
   }
 }

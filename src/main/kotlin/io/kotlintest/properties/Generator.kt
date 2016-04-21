@@ -23,6 +23,14 @@ interface Generator<T> {
       override fun generate(): String = nextPrintableString(Random.default.nextInt(100))
     }
 
+    fun int() = object : Generator<Int> {
+      override fun generate(): Int = Random.default.nextInt()
+    }
+
+    fun long() = object : Generator<Long> {
+      override fun generate(): Long = Random.default.nextLong()
+    }
+
     fun bool() = object : Generator<Boolean> {
       override fun generate(): Boolean = Random.default.nextBoolean()
     }
@@ -37,13 +45,13 @@ interface Generator<T> {
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> default(): Generator<T> {
-      return when (T::class) {
-        String::class -> Generator.string() as Generator<T>
-        Int::class -> Generator.choose(Integer.MIN_VALUE, Integer.MAX_VALUE) as Generator<T>
-        Long::class -> Generator.choose(Long.MIN_VALUE, Long.MAX_VALUE) as Generator<T>
-        Boolean::class -> Generator.bool() as Generator<T>
-        Float::class -> Generator.float() as Generator<T>
-        Double::class -> Generator.double() as Generator<T>
+      return when (T::class.simpleName) {
+        String::class.simpleName -> Generator.string() as Generator<T>
+        Int::class.simpleName -> Generator.int() as Generator<T>
+        Long::class.simpleName -> Generator.long() as Generator<T>
+        Boolean::class.simpleName -> Generator.bool() as Generator<T>
+        Float::class.simpleName -> Generator.float() as Generator<T>
+        Double::class.simpleName -> Generator.double() as Generator<T>
         else -> throw IllegalArgumentException("Cannot infer generator for ${T::class.simpleName}; specify generators explicitly")
       }
     }
