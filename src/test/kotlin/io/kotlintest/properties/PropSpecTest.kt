@@ -29,5 +29,13 @@ class PropSpecTest : PropSpec() {
     property("double").forAll { a: Double, b: Double ->
       a < b || a >= b
     }
+
+    property("forNoneTestStrings").forNone { a: String, b: String ->
+      a + 1 == b + 2
+    }
+
+    property("forNoneTestBooleanDouble").forNone { a: Boolean, b: Double ->
+      a.toString() == b.toString()
+    }
   }
 }
