@@ -167,6 +167,13 @@ expecting(IllegalAccessException::class) {
 }
 ```
 
+or since 1.1.1
+```kotlin
+shouldThrow<IllegalAccessException> {
+  // code in here that you expect to throw a IllegalAccessException
+}
+```
+
 ### Before and After Each
 
 If you need to run a method before each test and/or after each test (perhaps to reset some values to defaults etc), then simply override the `beforeEach` and `afterEach` methods in your test class, eg:
