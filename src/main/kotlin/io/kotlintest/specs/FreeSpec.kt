@@ -17,10 +17,6 @@ abstract class FreeSpec : TestBase() {
     current = temp
   }
 
-  infix fun String.with(test: () -> Unit): Unit {
-    current.cases.add(TestCase(current, this, test))
-  }
-
   infix operator fun String.invoke(test: () -> Unit): Unit {
     current.cases.add(TestCase(current, this, test))
   }

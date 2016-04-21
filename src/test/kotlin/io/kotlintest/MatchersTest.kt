@@ -10,14 +10,14 @@ import kotlin.collections.listOf
 class MatchersTest : FreeSpec(), Matchers {
   init {
     "Matchers.shouldBe" - {
-      "should compare equality" with {
+      "should compare equality" {
         "a" shouldBe "a"
       }
-      "should support matching null with null" with {
+      "should support matching null with null" {
         val name: String? = null
         name shouldBe null
       }
-      "should support matching non null with null" with {
+      "should support matching non null with null" {
         expecting(TestFailedException::class) {
           val name: String? = "nullornot"
           name shouldBe null
@@ -29,17 +29,17 @@ class MatchersTest : FreeSpec(), Matchers {
       }
     }
     "Matchers.shouldEqual" - {
-      "should compare equality" with {
+      "should compare equality" {
         "a" shouldEqual "a"
       }
     }
     "Matcher should have size x" - {
-      "should compare sizes of iterables" with {
+      "should compare sizes of iterables" {
         listOf(1, 2, 3) should have size 3
       }
     }
     "Matchers should be an x" - {
-      "should test that an instance is the required type" with {
+      "should test that an instance is the required type" {
         "bibble" should be a String::class
         ArrayList<String>() should be a List::class
       }

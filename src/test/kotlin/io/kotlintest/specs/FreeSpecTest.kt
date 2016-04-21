@@ -1,13 +1,12 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
-import io.kotlintest.specs.FreeSpec
 
 class FreeSpecTest : FreeSpec() {
   init {
     "given a ListStack" - {
       "pop" - {
-        "should remove the last element from stack" with {
+        "should remove the last element from stack" {
           val stack = ListStack<String>()
           stack.push("hello")
           stack.push("world")
@@ -17,7 +16,7 @@ class FreeSpecTest : FreeSpec() {
         }
       }
       "peek" - {
-        "should leave the stack unmodified" with {
+        "should leave the stack unmodified" {
           val stack = ListStack<String>()
           stack.push("hello")
           stack.push("world")
