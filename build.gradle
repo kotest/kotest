@@ -39,7 +39,8 @@ signing {
 dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.sksamuel.koors:koors:0.90.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.1'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.1-2'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.1-2'
     compile 'junit:junit:4.12'
 }
 
