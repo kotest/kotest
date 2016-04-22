@@ -43,6 +43,10 @@ interface Gen<T> {
       override fun generate(): Float = Random.default.nextFloat()
     }
 
+    fun <T> create(fn: () -> T): Gen<T> = object : Gen<T> {
+      override fun generate(): T = fn()
+    }
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> default(): Gen<T> {
       return when (T::class.simpleName) {
