@@ -1,12 +1,12 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import io.kotlintest.properties.PropertyTesting
 import java.util.*
 import kotlin.collections.getOrPut
 
-abstract class FlatSpec : TestBase() {
+abstract class FlatSpec : PropertyTesting() {
 
   protected val suites: MutableMap<String, TestSuite> = HashMap()
 

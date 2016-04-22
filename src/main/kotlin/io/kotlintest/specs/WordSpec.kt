@@ -1,11 +1,11 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import io.kotlintest.properties.PropertyTesting
 import java.util.*
 
-abstract class WordSpec : TestBase() {
+abstract class WordSpec : PropertyTesting() {
 
   var current = root
 

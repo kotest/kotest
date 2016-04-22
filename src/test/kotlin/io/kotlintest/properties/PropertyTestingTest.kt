@@ -1,6 +1,6 @@
 package io.kotlintest.properties
 
-class PropSpecTest : PropSpec() {
+class PropertyTestingTest : PropertyTesting() {
   init {
 
     property("startsWith").forAll(Gen.string(), Gen.string(), { a, b ->

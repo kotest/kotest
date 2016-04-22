@@ -5,7 +5,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestFailedException
 import io.kotlintest.TestSuite
 
-abstract class PropSpec : TestBase() {
+abstract class PropertyTesting : TestBase() {
 
   fun property(name: String): PropertyTestBuilder {
     return PropertyTestBuilder(root, name)
