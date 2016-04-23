@@ -6,7 +6,7 @@ KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https:/
 
 ### How to use
 
-KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file:
+KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file. You can get the latest version from the little badge at the top of the readme.
 
 Gradle:
 
