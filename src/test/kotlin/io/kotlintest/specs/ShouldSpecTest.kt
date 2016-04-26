@@ -5,7 +5,6 @@ import io.kotlintest.ListStack
 class ShouldSpecTest : ShouldSpec() {
 
   init {
-
     // should allow nested
     "List" {
       "pop" {
