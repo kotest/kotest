@@ -23,7 +23,11 @@ interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatche
 
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
-    if (this?.equals(any) == false)
+    if (this == null && any != null)
+      throw TestFailedException(this.toString() + " did not equal $any")
+    if (this != null && any == null)
+      throw TestFailedException(this.toString() + " did not equal $any")
+    if (this != any)
       throw TestFailedException(this.toString() + " did not equal $any")
   }
 

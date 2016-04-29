@@ -39,8 +39,8 @@ class InspectorsTest : WordSpec(), Matchers {
 
     "forOne" should {
       "pass if one elements pass test"  {
-        forOne(list) { t ->
-          t shouldBe 3
+        forOne(list) {
+          it shouldBe 3
         }
       }
       "fail if > 1 elements pass test"  {
