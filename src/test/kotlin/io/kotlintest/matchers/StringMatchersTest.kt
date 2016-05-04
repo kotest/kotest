@@ -1,9 +1,5 @@
-package io.kotlintest
+package io.kotlintest.matchers
 
-import io.kotlintest.matchers.Matchers
-import io.kotlintest.matchers.end
-import io.kotlintest.matchers.have
-import io.kotlintest.matchers.start
 import io.kotlintest.specs.FreeSpec
 
 class StringMatchersTest : FreeSpec(), Matchers {
@@ -54,6 +50,13 @@ class StringMatchersTest : FreeSpec(), Matchers {
           false
         }
         t shouldBe false
+      }
+    }
+    "String should match regex" - {
+      "should test string matches regular expression" {
+        "sam" should match("sam")
+        "bibble" should match("bibb..")
+        "foo" should match(".*")
       }
     }
   }

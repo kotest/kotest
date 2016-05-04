@@ -32,12 +32,17 @@ interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatche
   }
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
+  infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
   infix fun <T> T.should(x: have): Have<T> = Have(this)
   infix fun <T> T.should(x: start): Start<T> = Start(this)
   infix fun <T> T.should(x: end): End<T> = End(this)
   infix fun <T> T.should(x: be): Be<T> = Be(this)
   infix fun <T> T.should(x: contain): Contain<T> = Contain(this)
   infix fun <T> T.should(x: include): Include<T> = Include(this)
+}
+
+interface Matcher<T> {
+  fun test(value: T)
 }
 
 class Have<T>(val value: T)

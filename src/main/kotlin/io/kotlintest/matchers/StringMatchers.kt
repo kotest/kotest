@@ -18,4 +18,11 @@ interface StringMatchers {
     if (!value.endsWith(suffix))
       throw TestFailedException("String does not end with $suffix but with ${value.takeLast(suffix.length)}")
     }
+
+  fun match(regex: String): Matcher<String> = object : Matcher<String> {
+    override fun test(value: String) {
+      if (!value.matches(regex.toRegex()))
+        throw TestFailedException("String $value does not match regex $regex")
+    }
+  }
 }
