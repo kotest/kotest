@@ -1,6 +1,6 @@
-package io.kotlintest
+package io.kotlintest.matchers
 
-import io.kotlintest.matchers.Matchers
+import io.kotlintest.TestFailedException
 import io.kotlintest.specs.FreeSpec
 
 class ExceptionMatchersTest : FreeSpec(), Matchers {
@@ -11,6 +11,12 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
         shouldThrow<IllegalAccessException> {
           throw IllegalAccessException("bibble")
         }
+      }
+      "return matched exception" {
+        val e = shouldThrow<IllegalAccessException> {
+          throw IllegalAccessException("bibble")
+        }
+        e.message shouldBe "bibble"
       }
     }
     "expecting" - {

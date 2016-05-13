@@ -9,17 +9,15 @@ import java.util.*
 abstract class TestBase : Matchers {
 
   // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T> shouldThrow(thunk: () -> Any): Unit {
-    val exception = try {
+  inline fun <reified T> shouldThrow(thunk: () -> Any): T {
+    try {
       thunk()
-      null
-    } catch (exception: Exception) {
-      exception
-    }
-    if (exception == null)
       throw TestFailedException("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    else if (exception.javaClass.name != T::class.qualifiedName) {
-      throw TestFailedException("Expected exception ${T::class.qualifiedName} but ${exception.javaClass.name} was thrown")
+    } catch (exception: Exception) {
+      if (exception.javaClass.name != T::class.qualifiedName)
+        throw TestFailedException("Expected exception ${T::class.qualifiedName} but ${exception.javaClass.name} was thrown")
+      else
+        return exception as T
     }
   }
 
