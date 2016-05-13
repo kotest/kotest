@@ -164,15 +164,24 @@ To assert that a given block of code throws an exception, one can use the expect
 
 ```kotlin
 expecting(IllegalAccessException::class) {
-  // code in here that you expect to throw a IllegalAccessException
+  // code in here that you expect to throw an IllegalAccessException
 }
 ```
 
 or since 1.1.1
 ```kotlin
 shouldThrow<IllegalAccessException> {
-  // code in here that you expect to throw a IllegalAccessException
+  // code in here that you expect to throw an IllegalAccessException
 }
+```
+
+You can also check the caught exception:
+
+```kotlin
+val exception = shouldThrow<IllegalAccessException> {
+  // code in here that you expect to throw an IllegalAccessException
+}
+exception.message should start with "Something went wrong"
 ```
 
 ### Before and After Each (since 1.1.0)
