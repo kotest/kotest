@@ -147,6 +147,7 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 * To assert that a string starts with a given prefix use `x should start with y`.
 * To assert that a string ends with a given suffix use `x should end with y`.
 * To assert that a string contains a given substring use `x should have substring y`.
+* To assert that a string matches a given regular expression, use `x should match("regex")`.
 
 #### Long / Int Matchers
 
