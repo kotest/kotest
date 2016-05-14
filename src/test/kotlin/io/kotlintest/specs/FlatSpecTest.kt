@@ -1,9 +1,13 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 class FlatSpecTest : FlatSpec() {
+
   init {
+
     "ListStack.pop" should "return the last element from stack" {
       val stack = ListStack<String>()
       stack.push("hello")
