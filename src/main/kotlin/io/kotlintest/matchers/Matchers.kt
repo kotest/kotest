@@ -19,7 +19,7 @@ object include : Keyword
 
 interface Matchers : StringMatchers, LongMatchers, IntMatchers, CollectionMatchers, TypeMatchers, ExceptionMatchers, Inspectors {
 
-  fun fail(msg: String) = throw TestFailedException(msg)
+  fun fail(msg: String): Nothing = throw TestFailedException(msg)
 
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {

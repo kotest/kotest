@@ -12,6 +12,15 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
           throw IllegalAccessException("bibble")
         }
       }
+      "should test for correct exception" {
+        try {
+          shouldThrow<IllegalStateException> {
+            throw IllegalAccessException("bibble")
+          }
+          throw RuntimeException("If we get here its a bug")
+        } catch (e: TestFailedException) {
+        }
+      }
       "return matched exception" {
         val e = shouldThrow<IllegalAccessException> {
           throw IllegalAccessException("bibble")
