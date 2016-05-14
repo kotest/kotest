@@ -3,6 +3,7 @@ package io.kotlintest.specs
 import io.kotlintest.ListStack
 
 class FunSpecTest : FunSpec() {
+
   init {
 
     test("ListStack.pop should remove the last element from stack") {
@@ -22,5 +23,8 @@ class FunSpecTest : FunSpec() {
       stack.peek() shouldBe "world"
       stack.size() shouldBe 2
     }
+
+    test("FunSpec should support config syntax") {
+    }.config(invocations = 5)
   }
 }

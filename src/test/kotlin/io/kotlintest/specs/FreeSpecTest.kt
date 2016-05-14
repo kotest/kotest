@@ -26,5 +26,10 @@ class FreeSpecTest : FreeSpec() {
         }
       }
     }
+
+    "params" - {
+      "support config" {
+      }.config(invocations = 5)
+    }
   }
 }

@@ -3,13 +3,8 @@ package io.kotlintest.specs
 import io.kotlintest.ListStack
 
 class FlatSpecTest : FlatSpec() {
+
   init {
-    "ListStack.pop" should "return the last element from stack" {
-      val stack = ListStack<String>()
-      stack.push("hello")
-      stack.push("world")
-      stack.pop() shouldBe "world"
-    }
     "ListStack.pop" should "remove the element from the stack" {
       val stack = ListStack<String>()
       stack.push("hello")
@@ -24,6 +19,8 @@ class FlatSpecTest : FlatSpec() {
       stack.size() shouldBe 2
       stack.peek() shouldBe "world"
       stack.size() shouldBe 2
+    }
+    "FlatSpec".config(invocations = 3) should "support config syntax" {
     }
   }
 }

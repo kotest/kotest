@@ -1,11 +1,13 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 class ShouldSpecTest : ShouldSpec() {
 
   init {
-    // should allow nested
+    // should allow multi nested
     "List" {
       "pop" {
         should("remove the last element from stack") {
@@ -48,5 +50,8 @@ class ShouldSpecTest : ShouldSpec() {
       stack.peek() shouldBe "world"
       stack.size() shouldBe 2
     }
+
+    should("support config") {
+    }.config(invocations = 5)
   }
 }

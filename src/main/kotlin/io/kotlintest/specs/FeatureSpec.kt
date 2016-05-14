@@ -18,8 +18,10 @@ abstract class FeatureSpec : PropertyTesting() {
     current = temp
   }
 
-  fun scenario(name: String, test: () -> Unit): Unit {
-    current.cases.add(TestCase(current, "Scenario: $name", test))
+  fun scenario(name: String, test: () -> Unit): TestCase {
+    val tc = TestCase(current, "Scenario: $name", test)
+    current.cases.add(tc)
+    return tc
   }
 
 }

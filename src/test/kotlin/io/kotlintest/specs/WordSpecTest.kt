@@ -3,6 +3,7 @@ package io.kotlintest.specs
 import io.kotlintest.ListStack
 
 class WordSpecTest : WordSpec() {
+
   init {
     "ListStack.pop" should {
       "remove the last element from stack" {
@@ -31,6 +32,10 @@ class WordSpecTest : WordSpec() {
         stack.peek() shouldBe "world"
         stack.size() shouldBe 2
       }
+    }
+    "WordSpec" should {
+      "support config syntax" {
+      }.config(invocations = 3)
     }
   }
 }
