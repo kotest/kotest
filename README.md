@@ -23,7 +23,7 @@ Maven:
 
 ### Testing Styles
 
-You can choose a testing style by extending FlatSpec, WordSpec, FunSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
+You can choose a testing style by extending WordSpec, FunSpec, ShouldSpec, FlatSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
 ```kotlin
 class MyTests : WordSpec() {
@@ -38,26 +38,28 @@ class MyTests : WordSpec() {
 Flat spec offers the keywords `should`, and `with`, and allows those to be used inline, as such:
 
 ```kotlin
-"ListStack.pop" should "return the last element from stack" {
-  val stack = ListStack<String>()
-  stack.push("hello")
-  stack.push("world")
-  stack.pop() shouldBe "world"
+class MyTests : FlatSpec() {
+  init {
+    "String.length" should "return the length of the string" {
+      "sammy".length shouldBe 5
+      "".length shouldBe 0
+    }
+  }
 }
 ```
 
 #### Fun Spec
 
-Fun spec allows you to create tests similar to the junit style. You invoke a method called test, with a parameter to describe the test, and then the test itself:
+Fun spec allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
 
 ```kotlin
-test("ListStack.pop should remove the last element from stack") {
-  val stack = ListStack<String>()
-  stack.push("hello")
-  stack.push("world")
-  stack.size() shouldBe 2
-  stack.pop() shouldBe "world"
-  stack.size() shouldBe 1
+class MyTests : FunSpec() {
+  init {
+    test("String.length should return the length of the string") {
+      "sammy".length shouldBe 5
+      "".length shouldBe 0
+    }
+  }
 }
 ```
 
@@ -66,27 +68,27 @@ test("ListStack.pop should remove the last element from stack") {
 Should spec is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
 
 ```kotlin
-should("remove the last element from stack") {
-  val stack = ListStack<String>()
-  stack.push("hello")
-  stack.push("world")
-  stack.size() shouldBe 2
-  stack.pop() shouldBe "world"
-  stack.size() shouldBe 1
+class MyTests : ShouldSpec() {
+  init {
+    should("String.length should return the length of the string") {
+      "sammy".length shouldBe 5
+      "".length shouldBe 0
+    }
+  }
 }
 ```
 
 This can be nested in context strings too, eg
 
 ```kotlin
-"List.pop" {
-  should("remove the last element from stack") {
-    val stack = ListStack<String>()
-    stack.push("hello")
-    stack.push("world")
-    stack.size() shouldBe 2
-    stack.pop() shouldBe "world"
-    stack.size() shouldBe 1
+class MyTests : ShouldSpec() {
+  init {
+    "String.length" {
+      should("return the length of the string") {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+      }
+    }
   }
 }
 ```
@@ -96,19 +98,14 @@ This can be nested in context strings too, eg
 Word spec uses the keyword `should` and uses that to nest test blocks after a context string, eg:
 
 ```kotlin
-"ListStack.pop" should {
-  "return the last element from stack" {
-    val stack = ListStack<String>()
-    stack.push("hello")
-    stack.push("world")
-    stack.pop() shouldBe "world"
-  }
-  "remove the element from the stack" {
-    val stack = ListStack<String>()
-    stack.push("hello")
-    stack.push("world")
-    stack.pop()
-    stack.size() shouldBe 1
+class MyTests : WordSpec() {
+  init {
+    "String.length" should {
+      "return the length of the string" {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+      }
+    }
   }
 }
 ```
@@ -118,20 +115,12 @@ Word spec uses the keyword `should` and uses that to nest test blocks after a co
 Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
 
 ```kotlin
-"given a ListStack" - {
-   "then pop" - {
-     "should return the last element from stack" {
-        val stack = ListStack<String>()
-        stack.push("hello")
-        stack.push("world")
-        stack.pop() shouldBe "world"
-      }
-      "should remove the element from the stack" {
-        val stack = ListStack<String>()
-        stack.push("hello")
-        stack.push("world")
-        stack.pop()
-        stack.size() shouldBe 1
+class MyTests : FlatSpec() {
+  init {
+    "String.length" - {
+      "should return the length of the string" {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
       }
     }
   }
@@ -269,7 +258,13 @@ The full list of inspectors are:
 When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin
-eventually(5, TimeUnit.SECONDS) {
- // code here that should complete in 5 seconds but takes an indetermistic amount of time.
+class MyTests : ShouldSpec() {
+  init {
+    should("do something") {
+      eventually(5, TimeUnit.SECONDS) {
+        // code here that should complete in 5 seconds but takes an indetermistic amount of time.
+      }
+    }
+  }
 }
 ```
