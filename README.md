@@ -70,7 +70,7 @@ Should spec is similar to fun spec, but uses the keyword `should` instead of `te
 ```kotlin
 class MyTests : ShouldSpec() {
   init {
-    should("String.length should return the length of the string") {
+    should("return the length of the string") {
       "sammy".length shouldBe 5
       "".length shouldBe 0
     }
