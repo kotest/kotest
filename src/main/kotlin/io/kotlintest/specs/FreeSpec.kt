@@ -17,7 +17,9 @@ abstract class FreeSpec : PropertyTesting() {
     current = temp
   }
 
-  infix operator fun String.invoke(test: () -> Unit): Unit {
-    current.cases.add(TestCase(current, this, test))
+  infix operator fun String.invoke(test: () -> Unit): TestCase {
+    val tc = TestCase(current, this, test)
+    current.cases.add(tc)
+    return tc
   }
 }

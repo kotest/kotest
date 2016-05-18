@@ -5,7 +5,9 @@ import io.kotlintest.properties.PropertyTesting
 
 abstract class FunSpec : PropertyTesting() {
 
-  fun test(name: String, test: () -> Unit): Unit {
-    root.cases.add(TestCase(root, name, test))
+  fun test(name: String, test: () -> Unit): TestCase {
+    val tc = TestCase(root, name, test)
+    root.cases.add(tc)
+    return tc
   }
 }
