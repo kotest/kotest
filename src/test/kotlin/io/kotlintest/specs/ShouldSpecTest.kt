@@ -59,21 +59,21 @@ class ShouldSpecTest : ShouldSpec() {
     should("support invocation parameter") {
       // this test should run 5 times
       invocationCounter.incrementAndGet()
-    }.params(invocations = 5)
+    }.config(invocations = 5)
 
     should("support ignored") {
       System.exit(1)
-    }.params(ignored = true)
+    }.config(ignored = true)
 
     System.setProperty("testTags", "bibble,fibble,foo")
 
     should("support single tag") {
       singleTagShouldHaveRun.set(true)
-    }.params(tag = "foo")
+    }.config(tag = "foo")
 
     should("support multiple tags") {
       multiTagShouldHaveRun.set(true)
-    }.params(tags = listOf("foo", "boo"))
+    }.config(tags = listOf("foo", "boo"))
 
     // if we have 100 threads, and each one sleeps for 1000 seconds, then the total time should still be
     // approx 1000. So we set the timeout an order of magnitude higher, and it should never hit
@@ -81,7 +81,7 @@ class ShouldSpecTest : ShouldSpec() {
       // this test should timeout
       Thread.sleep(1000)
       theadCounter.incrementAndGet()
-    }.params(timeout = 10000, threads = 100, invocations = 100)
+    }.config(timeout = 10000, threads = 100, invocations = 100)
   }
 
   override fun afterAll(): Unit {

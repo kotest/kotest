@@ -18,7 +18,7 @@ data class TestCase(val suite: TestSuite,
                     var threads: Int = 1,
                     var tags: List<String> = listOf()) {
 
-  fun params(invocations: Int = 1,
+  fun config(invocations: Int = 1,
              ignored: Boolean = false,
              timeout: Long = 0,
              timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
