@@ -13,7 +13,7 @@ abstract class TestBase : Matchers {
     val e = try {
       thunk()
       null
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
       e
     }
 
