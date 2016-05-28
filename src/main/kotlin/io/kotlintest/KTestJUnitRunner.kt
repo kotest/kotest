@@ -23,7 +23,7 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
         instance2.beforeEach()
         notifier.fireTestStarted(desc)
         testcase.test()
-      } catch(e: Exception) {
+      } catch(e: Throwable) {
         notifier.fireTestFailure(Failure(desc, e))
       } finally {
         notifier.fireTestFinished(desc)
@@ -42,7 +42,7 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
         notifier.fireTestStarted(desc)
         instance.beforeEach()
         testcase.test()
-      } catch(e: Exception) {
+      } catch(e: Throwable) {
         notifier.fireTestFailure(Failure(desc, e))
       } finally {
         notifier.fireTestFinished(desc)
