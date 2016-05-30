@@ -7,6 +7,7 @@ import io.kotlintest.specs.WordSpec
 class InspectorsTest : WordSpec(), Matchers {
 
   val list = listOf(1, 2, 3, 4, 5)
+  val array = arrayOf(1, 2, 3, 4, 5)
 
   init {
 
@@ -23,7 +24,7 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "fail if no elements pass test"  {
         expecting(TestFailedException::class) {
-          forSome(list) { t ->
+          forSome(array) { t ->
             t should be lt 0
           }
         }
@@ -52,7 +53,7 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "fail if no elements pass test"  {
         expecting(TestFailedException::class) {
-          forOne(list) { t ->
+          forOne(array) { t ->
             t shouldBe 22
           }
         }
@@ -72,7 +73,7 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "fail if no elements pass test"  {
         expecting(TestFailedException::class) {
-          forAny(list) { t ->
+          forAny(array) { t ->
             t shouldBe 6
           }
         }
@@ -94,7 +95,7 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "fail if less elements pass test"  {
         expecting(TestFailedException::class) {
-          forExactly(2, list) { t ->
+          forExactly(2, array) { t ->
             t should be lt 2
           }
         }
