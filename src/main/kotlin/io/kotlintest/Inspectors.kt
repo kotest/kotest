@@ -2,7 +2,7 @@ package io.kotlintest
 
 interface Inspectors {
 
-  fun <T> forAll(col: Array<T>, fn: (T) -> Unit): Unit = forAll(col.asList(), fn)
+  fun <T> forAll(array: Array<T>, fn: (T) -> Unit): Unit = forAll(array.asList(), fn)
   fun <T> forAll(col: Collection<T>, fn: (T) -> Unit): Unit {
     val size = col.size
     val passed = count(col, fn)
@@ -10,7 +10,7 @@ interface Inspectors {
       throw TestFailedException("$passed passed tests but expected $size")
   }
 
-  fun <T> forOne(array: Array<T>, fn: (T) -> Unit): Unit = forOne(array, fn)
+  fun <T> forOne(array: Array<T>, fn: (T) -> Unit): Unit = forOne(array.asList(), fn)
   fun <T> forOne(col: Collection<T>, f: (T) -> Unit): Unit = forExactly(1, col, f)
 
   fun <T> forExactly(k: Int, array: Array<T>, f: (T) -> Unit): Unit = forExactly(k, array.asList(), f)
@@ -20,7 +20,7 @@ interface Inspectors {
       throw TestFailedException("$passed passed tests but expected $k")
   }
 
-  fun <T> forSome(col: Array<T>, f: (T) -> Unit): Unit = forSome(col, f)
+  fun <T> forSome(array: Array<T>, f: (T) -> Unit): Unit = forSome(array.asList(), f)
   fun <T> forSome(col: Collection<T>, f: (T) -> Unit): Unit {
     val size = col.size
     val passed = count(col, f)
@@ -30,10 +30,10 @@ interface Inspectors {
       throw TestFailedException("No elements passed tests but expected > 0")
   }
 
-  fun <T> forAny(array: Array<T>, f: (T) -> Unit): Unit = forAny(array, f)
+  fun <T> forAny(array: Array<T>, f: (T) -> Unit): Unit = forAny(array.asList(), f)
   fun <T> forAny(col: Collection<T>, f: (T) -> Unit): Unit = forAtLeast(1, col, f)
 
-  fun <T> forAtLeastOne(array: Array<T>, f: (T) -> Unit): Unit = forAtLeastOne(array, f)
+  fun <T> forAtLeastOne(array: Array<T>, f: (T) -> Unit): Unit = forAtLeastOne(array.asList(), f)
   fun <T> forAtLeastOne(col: Collection<T>, f: (T) -> Unit): Unit = forAtLeast(1, col, f)
 
   fun <T> forAtLeast(k: Int, array: Array<T>, f: (T) -> Unit): Unit = forAtLeast(k, array.asList(), f)
@@ -52,8 +52,8 @@ interface Inspectors {
       throw TestFailedException("$passed passed tests but expected at most $k")
   }
 
-  fun <T> forNone(k: Int, array: Array<T>, f: (T) -> Unit): Unit = forNone(k, array, f)
-  fun <T> forNone(k: Int, col: Collection<T>, f: (T) -> Unit): Unit {
+  fun <T> forNone(array: Array<T>, f: (T) -> Unit): Unit = forNone(array.asList(), f)
+  fun <T> forNone(col: Collection<T>, f: (T) -> Unit): Unit {
     val passed = count(col, f)
     if (passed > 0)
       throw TestFailedException("$passed passed tests but expected 0")

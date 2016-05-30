@@ -11,6 +11,33 @@ class InspectorsTest : WordSpec(), Matchers {
 
   init {
 
+    "forNone" should {
+      "pass if no elements pass fn test for a list" {
+        forNone(list) {
+          it shouldBe 10
+        }
+      }
+      "pass if no elements pass fn test for an array" {
+        forNone(array) {
+          it shouldBe 10
+        }
+      }
+      "fail if one elements passes fn test" {
+        shouldThrow<TestFailedException> {
+          forNone(list) {
+            it shouldBe 4
+          }
+        }
+      }
+      "fail if all elements pass fn test" {
+        shouldThrow<TestFailedException> {
+          forNone(list) {
+            it should be gt 0
+          }
+        }
+      }
+    }
+
     "forSome" should {
       "pass if one elements pass test"  {
         forSome(list) { t ->
@@ -23,14 +50,14 @@ class InspectorsTest : WordSpec(), Matchers {
         }
       }
       "fail if no elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forSome(array) { t ->
             t should be lt 0
           }
         }
       }
       "fail if all elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forSome(list) { t ->
             t should be gt 0
           }
@@ -72,7 +99,7 @@ class InspectorsTest : WordSpec(), Matchers {
         }
       }
       "fail if no elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forAny(array) { t ->
             t shouldBe 6
           }
@@ -87,14 +114,14 @@ class InspectorsTest : WordSpec(), Matchers {
         }
       }
       "fail if more elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forExactly(2, list) { t ->
             t should be gt 2
           }
         }
       }
       "fail if less elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forExactly(2, array) { t ->
             t should be lt 2
           }
