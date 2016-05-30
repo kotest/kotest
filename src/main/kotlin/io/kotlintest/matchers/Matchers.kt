@@ -28,14 +28,20 @@ interface Matchers : StringMatchers,
 
   fun fail(msg: String): Nothing = throw TestFailedException(msg)
 
+  infix fun Double.shouldBe(other: Double): Unit = ToleranceMatcher(other, 0.0).test(this)
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
-    if (this == null && any != null)
-      throw TestFailedException(this.toString() + " did not equal $any")
-    if (this != null && any == null)
-      throw TestFailedException(this.toString() + " did not equal $any")
-    if (this != any)
-      throw TestFailedException(this.toString() + " did not equal $any")
+    when (any) {
+      is io.kotlintest.matchers.Matcher<*> -> (any as Matcher<T>).test(this)
+      else -> {
+        if (this == null && any != null)
+          throw TestFailedException(this.toString() + " did not equal $any")
+        if (this != null && any == null)
+          throw TestFailedException(this.toString() + " did not equal $any")
+        if (this != any)
+          throw TestFailedException(this.toString() + " did not equal $any")
+      }
+    }
   }
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)

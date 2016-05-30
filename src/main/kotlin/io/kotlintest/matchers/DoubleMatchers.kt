@@ -3,16 +3,18 @@ package io.kotlintest.matchers
 import io.kotlintest.TestFailedException
 
 interface DoubleMatchers {
-  infix fun equal(value: Double): DoubleValueMatcher = DoubleValueMatcher(value)
+  infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(this, tolerance)
 }
 
-class DoubleValueMatcher(val expected: Double, val tolerance: Double = 0.0) : Matcher<Double> {
+class ToleranceMatcher(val expected: Double, val tolerance: Double) : Matcher<Double> {
 
   override fun test(value: Double) {
+    if (tolerance == 0.0)
+      println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe b plusOrMinus c")
     val diff = Math.abs(value - expected)
     if (diff > tolerance)
       throw TestFailedException("$value is not equal to $expected")
   }
 
-  infix fun plusOrMinus(tolerance: Double): DoubleValueMatcher = DoubleValueMatcher(expected, tolerance)
+  infix fun plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(expected, tolerance)
 }
