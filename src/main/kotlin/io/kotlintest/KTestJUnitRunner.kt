@@ -49,18 +49,18 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
 
   private fun isTagged(testcase: TestCase): Boolean {
     val systemTags = (System.getProperty("testTags") ?: "").split(',')
-    return systemTags.isEmpty() || testcase.tags.isEmpty() || systemTags.intersect(testcase.tags).isNotEmpty()
+    return systemTags.isEmpty() || testcase.config.tags.isEmpty() || systemTags.intersect(testcase.config.tags).isNotEmpty()
   }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, desc: Description): Unit {
 
     fun executorForTests(): ExecutorService =
-        if (testcase.threads < 2) Executors.newSingleThreadExecutor()
-        else Executors.newFixedThreadPool(testcase.threads)
+        if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
+        else Executors.newFixedThreadPool(testcase.config.threads)
 
     val executor = executorForTests()
     notifier.fireTestStarted(desc)
-    for (j in 1..testcase.invocations) {
+    for (j in 1..testcase.config.invocations) {
       executor.submit {
         try {
           testcase.test()
@@ -71,16 +71,14 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
     }
     notifier.fireTestFinished(desc)
     executor.shutdown()
-    if (testcase.timeout > 0) {
-      if (!executor.awaitTermination(testcase.timeout, testcase.timeoutUnit)) {
-        notifier.fireTestFailure(Failure(desc, TestTimedOutException(testcase.timeout, testcase.timeoutUnit)))
+    if (testcase.config.timeout > 0) {
+      if (!executor.awaitTermination(testcase.config.timeout, testcase.config.timeoutUnit)) {
+        notifier.fireTestFailure(Failure(desc, TestTimedOutException(testcase.config.timeout, testcase.config.timeoutUnit)))
       }
     } else {
       executor.awaitTermination(1, TimeUnit.DAYS)
     }
   }
-
-
 
   override fun run(notifier: RunNotifier?): Unit {
     if (instance.oneInstancePerTest) runOneInstancePerTest(notifier!!)

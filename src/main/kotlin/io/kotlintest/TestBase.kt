@@ -48,7 +48,7 @@ abstract class TestBase : Matchers {
   }
 
   internal fun descriptionForTest(case: TestCase): Description? {
-    val text = if (case.invocations < 2) case.name else case.name + " (${case.invocations} invocations)"
+    val text = if (case.config.invocations < 2) case.name else case.name + " (${case.config.invocations} invocations)"
     return Description.createTestDescription(case.suite.name.replace('.', ' '), text)
   }
 
