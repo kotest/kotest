@@ -191,6 +191,7 @@ override fun afterEach() {
 }
 ```
 
+
 ### Before and After All
 
 If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class, eg:
@@ -224,11 +225,11 @@ class MyTests : ShouldSpec() {
 
 Each test can be configured with various parameters. After the test block, invoke the config method passing in the parameters you wish to set. The available parameters are:
 
-* invocations - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
-* threads - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
-* ignored - If set to true then this test is ignored. Can be useful if a test needs to be temporarily disabled.
-* timeout / timeoutUnit - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish.
-* tags - a list of String tags that can be set on a test. Then by invoking the test runner with a system property of testTags, you can control which tests are run. For example, tests that require a linux based O/S might be tagged with "linux" then gradle could be invoked with gradle test -DtestTags=linux. Another example might be tagging database tags that you only want to run on a server that has a database installed. Any test that has no tags is always run.
+* `invocations` - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
+* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
+* `ignored` - If set to true then this test is ignored. Can be useful if a test needs to be temporarily disabled.
+* `timeout` / `timeoutUnit` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish.
+* `tag` / `tags` - a list of String tags that can be set on a test. Then by invoking the test runner with a system property of testTags, you can control which tests are run. For example, tests that require a linux based O/S might be tagged with "linux" then gradle could be invoked with gradle test -DtestTags=linux. Another example might be tagging database tags that you only want to run on a server that has a database installed. Any test that has no tags is always run.
 
 Examples of setting config:
 
@@ -256,6 +257,14 @@ class MyTests : WordSpec() {
 }
 ```
 
+```kotlin
+class FunSpecTest : FunSpec() {
+  init {
+    test("FunSpec should support config syntax") {
+    }.config(tags = listOf("database", "linux"))
+  }
+}
+```
 
 ### Inspectors
 
