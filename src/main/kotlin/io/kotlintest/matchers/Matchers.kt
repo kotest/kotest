@@ -46,21 +46,21 @@ interface Matchers : StringMatchers,
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
   infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
-  infix fun <T> T.should(x: have): Have<T> = Have(this)
-  infix fun <T> T.should(x: start): Start<T> = Start(this)
-  infix fun <T> T.should(x: end): End<T> = End(this)
-  infix fun <T> T.should(x: be): Be<T> = Be(this)
-  infix fun <T> T.should(x: contain): Contain<T> = Contain(this)
-  infix fun <T> T.should(x: include): Include<T> = Include(this)
+  infix fun <T> T.should(x: have): HaveWrapper<T> = HaveWrapper(this)
+  infix fun <T> T.should(x: start): StartWrapper<T> = StartWrapper(this)
+  infix fun <T> T.should(x: end): EndWrapper<T> = EndWrapper(this)
+  infix fun <T> T.should(x: be): BeWrapper<T> = BeWrapper(this)
+  infix fun <T> T.should(x: contain): ContainWrapper<T> = ContainWrapper(this)
+  infix fun <T> T.should(x: include): IncludeWrapper<T> = IncludeWrapper(this)
 }
 
 interface Matcher<T> {
   fun test(value: T)
 }
 
-class Have<T>(val value: T)
-class Be<T>(val value: T)
-class Start<T>(val value: T)
-class End<T>(val value: T)
-class Include<T>(val value: T)
-class Contain<T>(val value: T)
+class HaveWrapper<T>(val value: T)
+class BeWrapper<T>(val value: T)
+class StartWrapper<T>(val value: T)
+class EndWrapper<T>(val value: T)
+class IncludeWrapper<T>(val value: T)
+class ContainWrapper<T>(val value: T)
