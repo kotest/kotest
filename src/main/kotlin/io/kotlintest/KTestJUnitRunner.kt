@@ -52,31 +52,29 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
     return systemTags.isEmpty() || testcase.config.tags.isEmpty() || systemTags.intersect(testcase.config.tags).isNotEmpty()
   }
 
-  private fun runTest(testcase: TestCase, notifier: RunNotifier, desc: Description): Unit {
+  private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
 
     fun executorForTests(): ExecutorService =
         if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
         else Executors.newFixedThreadPool(testcase.config.threads)
 
     val executor = executorForTests()
-    notifier.fireTestStarted(desc)
+    notifier.fireTestStarted(description)
     for (j in 1..testcase.config.invocations) {
       executor.submit {
         try {
           testcase.test()
         } catch(e: Throwable) {
-          notifier.fireTestFailure(Failure(desc, e))
+          notifier.fireTestFailure(Failure(description, e))
         }
       }
     }
-    notifier.fireTestFinished(desc)
+    notifier.fireTestFinished(description)
     executor.shutdown()
-    if (testcase.config.timeout > 0) {
-      if (!executor.awaitTermination(testcase.config.timeout, testcase.config.timeoutUnit)) {
-        notifier.fireTestFailure(Failure(desc, TestTimedOutException(testcase.config.timeout, testcase.config.timeoutUnit)))
-      }
-    } else {
-      executor.awaitTermination(1, TimeUnit.DAYS)
+    val timeout = testcase.config.timeout
+    val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
+    if (!terminated) {
+      notifier.fireTestFailure(Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit)))
     }
   }
 

@@ -1,7 +1,5 @@
 package io.kotlintest
 
-import java.util.concurrent.TimeUnit
-
 data class TestSuite(val name: String, val nestedSuites: MutableList<TestSuite>, val cases: MutableList<io.kotlintest.TestCase>) {
   companion object {
     fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<io.kotlintest.TestCase>())
@@ -10,8 +8,7 @@ data class TestSuite(val name: String, val nestedSuites: MutableList<TestSuite>,
 
 data class TestConfig(var ignored: Boolean = false,
                       var invocations: Int = 1,
-                      var timeout: Long = 0,
-                      var timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
+                      var timeout: Duration = Duration.unlimited,
                       var threads: Int = 1,
                       var tags: List<String> = listOf())
 
@@ -22,15 +19,13 @@ data class TestCase(val suite: TestSuite,
 
   fun config(invocations: Int = 1,
              ignored: Boolean = false,
-             timeout: Long = 0,
-             timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
+             timeout: Duration = Duration.unlimited,
              threads: Int = 1,
              tag: String? = null,
              tags: List<String> = listOf()): Unit {
     config.invocations = invocations
     config.ignored = ignored
     config.timeout = timeout
-    config.timeoutUnit = timeoutUnit
     config.threads = threads
     config.tags = tags
     if (tag != null)
