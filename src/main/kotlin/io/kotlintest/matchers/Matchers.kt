@@ -18,12 +18,13 @@ object contain : Keyword
 object include : Keyword
 
 interface Matchers : StringMatchers,
-    LongMatchers,
-    IntMatchers,
-    DoubleMatchers,
     CollectionMatchers,
-    TypeMatchers,
+    DoubleMatchers,
     ExceptionMatchers,
+    IntMatchers,
+    LongMatchers,
+    MapMatchers,
+    TypeMatchers,
     Inspectors {
 
   fun fail(msg: String): Nothing = throw TestFailedException(msg)
@@ -55,7 +56,7 @@ interface Matchers : StringMatchers,
 }
 
 interface Matcher<T> {
-  fun test(value: T)
+  fun test(map: T)
 }
 
 class HaveWrapper<T>(val value: T)

@@ -148,6 +148,12 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 * To assert that a collection has a given size use `col should have size 4`. This is the same as `(col.size == 4) shouldBe true` but more readable.
 * To assert that a collection contains a given element use `col should contain element x`.
+* To assert that a collection has a given collection of elements in any order, you can use `col should containInAnyOrder(xs)`
+
+#### Map Matchers
+
+* To assert that a map has a given key, use `map should haveKey(key)`
+* To assert that a map has a given value, use `map should haveValue(value)`
 
 ### Exceptions
 
