@@ -3,6 +3,7 @@ package io.kotlintest
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import io.kotlintest.Duration.Companion.milliseconds
 
 class ConfigTest : WordSpec() {
 
@@ -38,7 +39,7 @@ class ConfigTest : WordSpec() {
         // this test should timeout
         Thread.sleep(1000)
         theadCounter.incrementAndGet()
-      }.config(timeout = 10000, threads = 100, invocations = 100)
+      }.config(timeout = 10000.milliseconds, threads = 100, invocations = 100)
     }
   }
 
