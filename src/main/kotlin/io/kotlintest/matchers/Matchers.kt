@@ -56,7 +56,7 @@ interface Matchers : StringMatchers,
 }
 
 interface Matcher<T> {
-  fun test(map: T)
+  fun test(value: T)
 }
 
 class HaveWrapper<T>(val value: T)

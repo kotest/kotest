@@ -31,6 +31,8 @@ val map = mapOf(Pair(1, "a"), Pair(2, "b"))
 map should haveValue("a")
 ```
 
+* `beTheSameInstanceAs` reference matcher. This is an alias for `x should be theSameInstanceAs(y)`, allowing `x should beTheSameInstanceAs(y)` which fits in with new matcher style.
+
 ### Changed
 
 #### Replaced `timeout` + `timeUnit` with `Duration` ([#29](https://github.com/kotlintest/kotlintest/issues/29))

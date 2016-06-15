@@ -16,4 +16,11 @@ interface TypeMatchers {
     if (value !== ref)
       throw TestFailedException("$value is not the same reference as $ref")
   }
+
+  infix fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
+    override fun test(value: T) {
+      if (value !== ref)
+        throw TestFailedException("$value is not the same reference as $ref")
+    }
+  }
 }

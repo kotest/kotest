@@ -23,9 +23,9 @@ interface CollectionMatchers {
   }
 
   fun <T> containInAnyOrder(vararg ts: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-    override fun test(map: Collection<T>) {
+    override fun test(value: Collection<T>) {
       for (t in ts) {
-        if (!map.contains(t))
+        if (!value.contains(t))
           throw TestFailedException("Collection did not contain value $t")
       }
     }
