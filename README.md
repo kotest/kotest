@@ -155,6 +155,10 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 * To assert that a map has a given key, use `map should haveKey(key)`
 * To assert that a map has a given value, use `map should haveValue(value)`
 
+#### References
+
+* To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
+
 ### Exceptions
 
 To assert that a given block of code throws an exception, one can use the expecting(exception) block. Eg,

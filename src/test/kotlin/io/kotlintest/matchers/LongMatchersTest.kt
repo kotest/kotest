@@ -1,6 +1,5 @@
-package io.kotlintest
+package io.kotlintest.matchers
 
-import io.kotlintest.matchers.be
 import io.kotlintest.specs.FreeSpec
 
 class LongMatchersTest : FreeSpec() {
