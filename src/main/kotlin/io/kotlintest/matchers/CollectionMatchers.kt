@@ -21,4 +21,13 @@ interface CollectionMatchers {
     if (!value.contains(expected))
       throw TestFailedException("Collection did not have expected element $expected")
   }
+
+  fun <T> containInAnyOrder(vararg ts: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+    override fun test(value: Collection<T>) {
+      for (t in ts) {
+        if (!value.contains(t))
+          throw TestFailedException("Collection did not contain value $t")
+      }
+    }
+  }
 }
