@@ -1,5 +1,6 @@
 package io.kotlintest.specs
 
+import io.kotlintest.Duration
 import io.kotlintest.TestCase
 import io.kotlintest.TestConfig
 import io.kotlintest.TestSuite
@@ -14,12 +15,11 @@ abstract class FlatSpec : PropertyTesting() {
 
   fun String.config(invocations: Int = 1,
                     ignored: Boolean = false,
-                    timeout: Long = 0,
-                    timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
+                    timeout: Duration = Duration.unlimited,
                     threads: Int = 1,
                     tag: String? = null,
                     tags: List<String> = listOf()): Pair<String, TestConfig> =
-      Pair(this, TestConfig(ignored, invocations, timeout, timeoutUnit, threads, tags))
+      Pair(this, TestConfig(ignored, invocations, timeout, threads, tags))
 
   // allows us to write "name of test" { test here }
   operator fun String.invoke(test: () -> Unit): Pair<String, () -> Unit> = Pair(this, test)
