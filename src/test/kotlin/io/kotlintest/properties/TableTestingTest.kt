@@ -16,7 +16,7 @@ class TableTestingTest : TableTesting() {
         row(3, 7)
     )
 
-    "numbers should be prime".forAll(table2) { a, b ->
+    "numbers should add up to ten".forAll(table2) { a, b ->
       a + b == 10
     }
 
@@ -41,5 +41,6 @@ class TableTestingTest : TableTesting() {
     "testing triple concat".forAll(table4) { a, b, c, d ->
       a + b + c shouldBe d
     }
+
   }
 }
