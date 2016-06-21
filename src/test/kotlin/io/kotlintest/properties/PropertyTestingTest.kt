@@ -37,5 +37,13 @@ class PropertyTestingTest : PropertyTesting() {
     property("forNoneTestBooleanDouble").forNone { a: Boolean, b: Double ->
       a.toString() == b.toString()
     }
+
+    property("sets").forAll { a: Set<String>, b: Set<Int>, c: Set<Double>, d: Set<Boolean> ->
+      a.plus(b).plus(c).plus(d).size == a.size + b.size + c.size + d.size
+    }
+
+    property("lists").forAll { a: List<String>, b: List<Int>, c: List<Double>, d: List<Boolean> ->
+      a.plus(b).plus(c).plus(d).size == a.size + b.size + c.size + d.size
+    }
   }
 }

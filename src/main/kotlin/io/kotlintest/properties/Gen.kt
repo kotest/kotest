@@ -1,6 +1,9 @@
 package io.kotlintest.properties
 
 import com.sksamuel.koors.Random
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+import java.lang.reflect.WildcardType
 
 interface Gen<T> {
   fun generate(): T
@@ -47,16 +50,48 @@ interface Gen<T> {
       override fun generate(): T = fn()
     }
 
+    fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
+      override fun generate(): Set<T> = (0..Random.default.nextInt(100)).map { gen.generate() }.toSet()
+    }
+
+    fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
+      override fun generate(): List<T> = (0..Random.default.nextInt(100)).map { gen.generate() }.toList()
+    }
+
+    fun forClassName(className: String): Gen<*> {
+      return when (className) {
+        "java.lang.String" -> Gen.string()
+        "kotlin.String" -> Gen.string()
+        "java.lang.Integer" -> Gen.int()
+        "kotlin.Int" -> Gen.int()
+        "java.lang.Long" -> Gen.long()
+        "kotlin.Long" -> Gen.long()
+        "java.lang.Boolean" -> Gen.bool()
+        "kotlin.Boolean" -> Gen.bool()
+        "java.lang.Float" -> Gen.float()
+        "kotlin.Float" -> Gen.float()
+        "java.lang.Double" -> Gen.double()
+        "kotlin.Double" -> Gen.double()
+        else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
+      }
+    }
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> default(): Gen<T> {
-      return when (T::class.simpleName) {
-        String::class.simpleName -> Gen.string() as Gen<T>
-        Int::class.simpleName -> Gen.int() as Gen<T>
-        Long::class.simpleName -> Gen.long() as Gen<T>
-        Boolean::class.simpleName -> Gen.bool() as Gen<T>
-        Float::class.simpleName -> Gen.float() as Gen<T>
-        Double::class.simpleName -> Gen.double() as Gen<T>
-        else -> throw IllegalArgumentException("Cannot infer generator for ${T::class.simpleName}; specify generators explicitly")
+      return when (T::class.qualifiedName) {
+        List::class.qualifiedName -> {
+          val type = object : TypeReference<T>() {}.type as ParameterizedType
+          val first = type.actualTypeArguments.first() as WildcardType
+          val upper = first.upperBounds.first() as Class<*>
+          list(forClassName(upper.name)) as Gen<T>
+        }
+        Set::class.qualifiedName -> {
+          val type = object : TypeReference<T>() {}.type as ParameterizedType
+          val first = type.actualTypeArguments.first() as WildcardType
+          val upper = first.upperBounds.first() as Class<*>
+          set(forClassName(upper.name)) as Gen<T>
+        }
+        else -> forClassName(T::class.qualifiedName!!) as Gen<T>
       }
     }
   }
@@ -64,4 +99,10 @@ interface Gen<T> {
   fun nextPrintableString(length: Int): String {
     return (0..length).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
   }
+}
+
+// need some supertype that types a type param so it gets baked into the class file
+abstract class TypeReference<T> : Comparable<TypeReference<T>> {
+  val type: Type = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0]
+  override fun compareTo(other: TypeReference<T>) = 0
 }
