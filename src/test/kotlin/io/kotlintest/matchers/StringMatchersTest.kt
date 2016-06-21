@@ -1,5 +1,6 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.TestFailedException
 import io.kotlintest.specs.FreeSpec
 
 class StringMatchersTest : FreeSpec(), Matchers {
@@ -18,6 +19,15 @@ class StringMatchersTest : FreeSpec(), Matchers {
           false
         }
         t shouldBe false
+      }
+    }
+    "should haveLength(5)" - {
+      "should compare length of string" {
+        "bibble" should haveLength(6)
+        "" should haveLength(0)
+        shouldThrow<TestFailedException> {
+          "" should haveLength(3)
+        }
       }
     }
     "Matchers should end with x" - {
