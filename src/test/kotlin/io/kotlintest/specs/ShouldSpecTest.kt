@@ -1,8 +1,6 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 
 class ShouldSpecTest : ShouldSpec() {
 
