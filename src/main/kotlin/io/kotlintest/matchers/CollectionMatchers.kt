@@ -30,4 +30,11 @@ interface CollectionMatchers {
       }
     }
   }
+
+  fun <T> haveSize(size: Int): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+    override fun test(value: Collection<T>) {
+      if (value.size != size)
+        throw TestFailedException("Collection did not have size $size")
+    }
+  }
 }

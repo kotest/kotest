@@ -20,6 +20,22 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "haveSize" should {
+      "test that a collection has a certain size" {
+        val col1 = listOf(1, 2, 3)
+        col1 should haveSize(3)
+        shouldThrow<TestFailedException> {
+          col1 should haveSize(2)
+        }
+
+        val col2 = emptyList<String>()
+        col2 should haveSize(0)
+        shouldThrow<TestFailedException> {
+          col2 should haveSize(1)
+        }
+      }
+    }
+
     "CollectionMatchers.empty" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)

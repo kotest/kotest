@@ -53,6 +53,13 @@ class TableExample : TableTesting() {
 someString should haveLength(10)
 ```
 
+
+* `haveSize` matcher. You can now write for collections:
+
+```kotlin
+myCollection should haveSize(4)
+```
+
 * `containInAnyOrder` matcher. You can now write
 
 ```kotlin
