@@ -10,6 +10,26 @@ Version 1.3.0, released YYYY-MM-DD TODO
 
 ### Added
 
+* Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for edge cases and other specific values you want to test. An example of using a table consisting of two-value tuples:
+
+```kotlin
+class TableExample : TableTesting() {
+  init {
+    val table = table(
+      headers("a", "b"),
+      row(5, 5),
+      row(4, 6),
+      row(3, 7)
+    )
+    "numbers should be prime".forAll(table) { a, b ->
+      a + b == 10
+    }
+  }
+}
+```
+
+The headers are used for when values fail, the output can show you what inputs were used for what labels.
+
 * `containInAnyOrder` matcher. You can now write
 
 ```kotlin
