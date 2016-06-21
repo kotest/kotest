@@ -27,7 +27,9 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-* Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for edge cases and other specific values you want to test. An example of using a table consisting of two-value tuples:
+* Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for 
+edge cases and other specific values you want to test. The headers are used for when values fail, 
+the output can show you what inputs were used for what labels. An example of using a table consisting of two-value tuples:
 
 ```kotlin
 class TableExample : TableTesting() {
@@ -45,7 +47,11 @@ class TableExample : TableTesting() {
 }
 ```
 
-The headers are used for when values fail, the output can show you what inputs were used for what labels.
+* `haveLength` matcher. You can now write for strings:
+
+```kotlin
+someString should haveLength(10)
+```
 
 * `containInAnyOrder` matcher. You can now write
 
