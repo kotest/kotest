@@ -10,6 +10,23 @@ Version 1.3.0, released YYYY-MM-DD TODO
 
 ### Added
 
+* StringSpec. You can use simply use Strings as the basis for tests, eg:
+
+```kotlin
+class StringSpecExample : StringSpec() {
+  init {
+    "strings.size should return size of string" {
+      "hello".length shouldBe 5
+      "hello" should haveLength(5)
+    }
+
+    "strings should support config" {
+      "hello".length shouldBe 5
+    }.config(invocations = 5)
+  }
+}
+```
+
 * Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for edge cases and other specific values you want to test. An example of using a table consisting of two-value tuples:
 
 ```kotlin
