@@ -28,16 +28,31 @@ Maven:
 You can choose a testing style by extending WordSpec, FunSpec, ShouldSpec, FlatSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
 ```kotlin
-class MyTests : WordSpec() {
+class MyTests : StringSpec() {
   init {
     // tests here
   }
 }
 ```
 
+#### String Spec
+
+`StringSpec` reduces the syntax to the absolute minimum. Just write a string folled by a lambda expression with your test code. If in doubt, use this style.
+
+```kotlin
+class StringSpecExample : StringSpec() {
+  init {
+    "strings.size should return size of string" {
+      "hello".length shouldBe 5
+      "hello" should haveLength(5)
+    }
+  }
+}
+```
+
 #### Flat Spec
 
-Flat spec offers the keywords `should`, and `with`, and allows those to be used inline, as such:
+`FlatSpec` offers the keywords `should`, and `with`, and allows those to be used inline, as such:
 
 ```kotlin
 class MyTests : FlatSpec() {
@@ -52,7 +67,7 @@ class MyTests : FlatSpec() {
 
 #### Fun Spec
 
-Fun spec allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
+`FunSpec` allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
 
 ```kotlin
 class MyTests : FunSpec() {
@@ -67,7 +82,7 @@ class MyTests : FunSpec() {
 
 #### Should spec
 
-Should spec is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
+`ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
 
 ```kotlin
 class MyTests : ShouldSpec() {
@@ -97,7 +112,7 @@ class MyTests : ShouldSpec() {
 
 #### Word Spec
 
-Word spec uses the keyword `should` and uses that to nest test blocks after a context string, eg:
+`WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string, eg:
 
 ```kotlin
 class MyTests : WordSpec() {
@@ -114,7 +129,7 @@ class MyTests : WordSpec() {
 
 #### Free Spec
 
-Free spec allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
+`FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
 class MyTests : FreeSpec() {
