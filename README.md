@@ -42,9 +42,8 @@ class MyTests : StringSpec() {
 ```kotlin
 class StringSpecExample : StringSpec() {
   init {
-    "strings.size should return size of string" {
+    "strings.length should return size of string" {
       "hello".length shouldBe 5
-      "hello" should haveLength(5)
     }
   }
 }
