@@ -37,7 +37,7 @@ class MyTests : StringSpec() {
 
 #### String Spec
 
-`StringSpec` reduces the syntax to the absolute minimum. Just write a string folled by a lambda expression with your test code. If in doubt, use this style.
+`StringSpec` reduces the syntax to the absolute minimum. Just write a string followed by a lambda expression with your test code. If in doubt, use this style.
 
 ```kotlin
 class StringSpecExample : StringSpec() {
