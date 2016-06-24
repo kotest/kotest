@@ -7,43 +7,49 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
 
-  val instance = testClass.newInstance()
-  val root = instance.root
+  private val instance = testClass.newInstance()
+  private val root: TestSuite = instance.root
 
   override fun getDescription(): Description? = instance.getDescription()
 
+  override fun run(notifier: RunNotifier?): Unit {
+    if (instance.oneInstancePerTest) runOneInstancePerTest(notifier!!)
+    else runSharedInstance(notifier!!)
+  }
+
+  // TODO try to move logic to execute performAfterAll, afterEach, beforeEach, beforeAll to TestBase
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = getTests(root).size
+    val testCount = getTests(root).size // TODO move to TestSuite
     for (k in (0..testCount - 1)) {
       val instance2 = testClass.newInstance()
       val testcase = getTests(instance2.root)[k]
       if (testcase.active() && isTagged(testcase)) {
         val desc = instance.descriptionForTest(testcase)
-        instance2.beforeAll()
-        instance2.beforeEach()
+        instance2.performBeforeAll()
+        instance2.performAfterEach()
         runTest(testcase, notifier, desc!!)
-        instance2.afterEach()
-        instance2.afterAll()
+        instance2.performAfterEach()
+        instance2.performAfterAll()
       }
     }
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    instance.beforeAll()
+    instance.performBeforeAll()
     val tests = getTests(root)
     tests.filter { isTagged(it) }.filter { it.active() }.forEach { testcase ->
       val desc = instance.descriptionForTest(testcase)
-      instance.beforeEach()
+      instance.performBeforeEach()
       runTest(testcase, notifier, desc!!)
-      instance.afterEach()
+      instance.performAfterEach()
     }
-    instance.afterAll()
+    instance.performAfterAll()
   }
 
+  // TODO move to TestStuite (and remove `get` prefix)
   private fun getTests(suite: TestSuite): List<TestCase> =
       suite.cases + suite.nestedSuites.flatMap { suite -> getTests(suite) }
 
@@ -53,7 +59,7 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
   }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
-
+    // TODO inline
     fun executorForTests(): ExecutorService =
         if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
         else Executors.newFixedThreadPool(testcase.config.threads)
@@ -76,10 +82,5 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
     if (!terminated) {
       notifier.fireTestFailure(Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit)))
     }
-  }
-
-  override fun run(notifier: RunNotifier?): Unit {
-    if (instance.oneInstancePerTest) runOneInstancePerTest(notifier!!)
-    else runSharedInstance(notifier!!)
   }
 }
