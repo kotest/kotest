@@ -8,7 +8,6 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.TestTimedOutException
 import java.io.Closeable
 import java.util.*
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @RunWith(KTestJUnitRunner::class)
@@ -115,19 +114,19 @@ abstract class TestBase : Matchers {
     return desc
   }
 
-  open fun beforeAll(): Unit {
+  protected open fun beforeAll(): Unit {
   }
 
-  open fun beforeEach(): Unit {
+  protected open fun beforeEach(): Unit {
   }
 
-  open fun afterEach(): Unit {
+  protected open fun afterEach(): Unit {
   }
 
-  open fun afterAll(): Unit {
+  protected open fun afterAll(): Unit {
   }
 
-  internal fun performAfterAll() {
+  private fun performAfterAll() {
     afterAll()
     closeablesInReverseOrder.forEach { it.close() }
   }
