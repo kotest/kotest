@@ -52,6 +52,12 @@ data class TestCase(val suite: TestSuite,
       config.tags = config.tags.plus(tag)
   }
 
+  internal val isTagged: Boolean
+    get() {
+      val systemTags = (System.getProperty("testTags") ?: "").split(',')
+      return systemTags.isEmpty() || config.tags.isEmpty() || systemTags.intersect(config.tags).isNotEmpty()
+    }
+
   @Deprecated(
           message = "use overload instead",
           replaceWith = ReplaceWith("config(invocations, ignored, timeout, threads, tag, tags)"))

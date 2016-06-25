@@ -59,7 +59,7 @@ abstract class TestBase : Matchers {
     for (k in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = listTests(instance.root)[k]
-      if (testcase.active() && isTagged(testcase)) {
+      if (testcase.active() && testcase.isTagged) {
         val desc = testcase.description
         instance.beforeAll()
         instance.afterEach()
@@ -73,7 +73,7 @@ abstract class TestBase : Matchers {
   private fun runSharedInstance(notifier: RunNotifier): Unit {
     beforeAll()
     val tests = listTests(root)
-    tests.filter { isTagged(it) }.filter { it.active() }.forEach { testcase ->
+    tests.filter { it.isTagged }.filter { it.active() }.forEach { testcase ->
       val desc = testcase.description
       beforeEach()
       runTest(testcase, notifier, desc!!)
@@ -82,14 +82,9 @@ abstract class TestBase : Matchers {
     performAfterAll()
   }
 
-  // TODO move to TestStuite (and remove `get` prefix)
+  // TODO move to TestStuite
   private fun listTests(suite: TestSuite): List<TestCase> =
           suite.cases + suite.nestedSuites.flatMap { suite -> listTests(suite) }
-
-  private fun isTagged(testcase: TestCase): Boolean {
-    val systemTags = (System.getProperty("testTags") ?: "").split(',')
-    return systemTags.isEmpty() || testcase.config.tags.isEmpty() || systemTags.intersect(testcase.config.tags).isNotEmpty()
-  }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
     val executor =
