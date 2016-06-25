@@ -2,10 +2,22 @@ package io.kotlintest
 
 import java.util.concurrent.TimeUnit
 
-data class TestSuite(val name: String, val nestedSuites: MutableList<TestSuite>, val cases: MutableList<io.kotlintest.TestCase>) {
+data class TestSuite(
+        val name: String,
+        val nestedSuites: MutableList<TestSuite>,
+        val cases: MutableList<TestCase>) {
+
   companion object {
-    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<io.kotlintest.TestCase>())
+    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
   }
+
+  internal val tests: List<TestCase> = listTests(this)
+  
+  private fun listTests(s: TestSuite): List<TestCase> =
+          s.cases + nestedSuites.flatMap { s -> listTests(s) }
+
+  internal val size = tests.size
+
 }
 
 data class TestConfig(var ignored: Boolean = false,

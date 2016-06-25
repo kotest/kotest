@@ -3,13 +3,30 @@ package io.kotlintest
 import io.kotlintest.matchers.Matchers
 import org.junit.runner.Description
 import org.junit.runner.RunWith
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunNotifier
+import org.junit.runners.model.TestTimedOutException
 import java.io.Closeable
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @RunWith(KTestJUnitRunner::class)
 abstract class TestBase : Matchers {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
+
+  // the root test suite which uses the simple name of the class as the name of the suite
+  // spec implementations will add their tests to this suite
+  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
+
+  // returns a jUnit Description for the currently registered tests
+  internal fun getDescription(): Description = descriptionForSuite(root)
+
+  internal fun run(notifier: RunNotifier) {
+    if (oneInstancePerTest) runOneInstancePerTest(notifier)
+    else runSharedInstance(notifier)
+  }
 
   protected fun <T: Closeable>autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
@@ -33,18 +50,70 @@ abstract class TestBase : Matchers {
       return e as T
   }
 
+  // TODO try to move logic to execute performAfterAll, afterEach, beforeEach, beforeAll to TestBase
+  private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
+    val testCount = listTests(root).size // TODO move to TestSuite
+    for (k in (0..testCount - 1)) {
+      val instance = javaClass.newInstance()
+      val testcase = listTests(instance.root)[k]
+      if (testcase.active() && isTagged(testcase)) {
+        val desc = descriptionForTest(testcase)
+        instance.performBeforeAll()
+        instance.performAfterEach()
+        runTest(testcase, notifier, desc!!)
+        instance.performAfterEach()
+        instance.performAfterAll()
+      }
+    }
+  }
+
+
+  private fun runSharedInstance(notifier: RunNotifier): Unit {
+    performBeforeAll()
+    val tests = listTests(root)
+    tests.filter { isTagged(it) }.filter { it.active() }.forEach { testcase ->
+      val desc = descriptionForTest(testcase)
+      performBeforeEach()
+      runTest(testcase, notifier, desc!!)
+      performAfterEach()
+    }
+    performAfterAll()
+  }
+
+  // TODO move to TestStuite (and remove `get` prefix)
+  private fun listTests(suite: TestSuite): List<TestCase> =
+          suite.cases + suite.nestedSuites.flatMap { suite -> listTests(suite) }
+
+  private fun isTagged(testcase: TestCase): Boolean {
+    val systemTags = (System.getProperty("testTags") ?: "").split(',')
+    return systemTags.isEmpty() || testcase.config.tags.isEmpty() || systemTags.intersect(testcase.config.tags).isNotEmpty()
+  }
+
+  private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
+    val executor = 
+            if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
+            else Executors.newFixedThreadPool(testcase.config.threads)
+    notifier.fireTestStarted(description)
+    for (j in 1..testcase.config.invocations) {
+      executor.submit {
+        try {
+          testcase.test()
+        } catch(e: Throwable) {
+          notifier.fireTestFailure(Failure(description, e))
+        }
+      }
+    }
+    notifier.fireTestFinished(description)
+    executor.shutdown()
+    val timeout = testcase.config.timeout
+    val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
+    if (!terminated) {
+      notifier.fireTestFailure(Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit)))
+    }
+  }
+
   // TODO change to true, because one instance per test is a safer default
   open val oneInstancePerTest = false
-
-  // the root test suite which uses the simple name of the class as the name of the suite
-  // spec implementations will add their tests to this suite
-  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
-
-  // TODO transform to property
-  // returns a jUnit Description for the currently registered tests
-  internal fun getDescription(): Description {
-    return descriptionForSuite(root)
-  }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
     val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
