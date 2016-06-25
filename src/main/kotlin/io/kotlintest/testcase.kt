@@ -76,7 +76,7 @@ data class TestCase(val suite: TestSuite,
       config.tags = config.tags.plus(tag)
   }
 
-  val isActive: Boolean
+  internal val isActive: Boolean
     get() = !config.ignored && isTagged
 
   // TODO rename since even not tagged test cases are supposedly tagged
