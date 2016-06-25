@@ -31,6 +31,9 @@ abstract class TestBase : Matchers {
     else runSharedInstance(notifier)
   }
 
+  /**
+   * Registers a field for auto closing after all tests have run.
+   */
   protected fun <T: Closeable>autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable

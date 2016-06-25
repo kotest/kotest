@@ -47,6 +47,16 @@ class TableExample : TableTesting() {
 }
 ```
 
+* autoClose. Fields of type `Closeable` can be registered for automatic resource closing:
+
+```kotlin
+class StringSpecExample : StringSpec() {
+  val reader = autoClose(StringReader("xyz"))
+  
+  ...
+}
+```
+
 * `haveLength` matcher. You can now write for strings:
 
 ```kotlin

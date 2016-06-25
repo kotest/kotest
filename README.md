@@ -290,6 +290,25 @@ class FunSpecTest : FunSpec() {
 }
 ```
 
+### Closing resource automatically (since 1.3.0)
+
+You can let KotlinTest close resources automatically after all tests have been run:
+
+```kotlin
+class StringSpecExample : StringSpec() {
+
+  val reader = autoClose(StringReader("xyz"))
+
+  init {
+    "your test case" {
+      // use resource reader here
+    }
+  }
+}
+
+Resource that should be closed this way must implement `Closeable`. Closing is performed in the 
+reversed order of declaration after `afterAll()` was executed.
+
 ### Inspectors
 
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
