@@ -60,7 +60,7 @@ abstract class TestBase : Matchers {
       val instance = javaClass.newInstance()
       val testcase = listTests(instance.root)[k]
       if (testcase.active() && isTagged(testcase)) {
-        val desc = descriptionForTest(testcase)
+        val desc = testcase.description
         instance.beforeAll()
         instance.afterEach()
         runTest(testcase, notifier, desc!!)
@@ -74,7 +74,7 @@ abstract class TestBase : Matchers {
     beforeAll()
     val tests = listTests(root)
     tests.filter { isTagged(it) }.filter { it.active() }.forEach { testcase ->
-      val desc = descriptionForTest(testcase)
+      val desc = testcase.description
       beforeEach()
       runTest(testcase, notifier, desc!!)
       afterEach()
@@ -120,14 +120,9 @@ abstract class TestBase : Matchers {
       desc.addChild(descriptionForSuite(nestedSuite))
     }
     for (case in suite.cases) {
-      desc.addChild(descriptionForTest(case))
+      desc.addChild(case.description)
     }
     return desc
-  }
-
-  internal fun descriptionForTest(case: TestCase): Description? {
-    val text = if (case.config.invocations < 2) case.name else case.name + " (${case.config.invocations} invocations)"
-    return Description.createTestDescription(case.suite.name.replace('.', ' '), text)
   }
 
   open fun beforeAll(): Unit {

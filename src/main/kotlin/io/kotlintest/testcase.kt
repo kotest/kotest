@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import org.junit.runner.Description
 import java.util.concurrent.TimeUnit
 
 data class TestSuite(
@@ -10,14 +11,6 @@ data class TestSuite(
   companion object {
     fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
   }
-
-  internal val tests: List<TestCase> = listTests(this)
-  
-  private fun listTests(s: TestSuite): List<TestCase> =
-          s.cases + nestedSuites.flatMap { s -> listTests(s) }
-
-  internal val size = tests.size
-
 }
 
 data class TestConfig(var ignored: Boolean = false,
@@ -38,6 +31,11 @@ data class TestCase(val suite: TestSuite,
                     val name: String,
                     val test: () -> Unit,
                     val config: TestConfig = TestConfig()) {
+
+  val description: Description =
+          Description.createTestDescription(
+                  suite.name.replace('.', ' '),
+                  if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
 
   fun config(invocations: Int = 1,
              ignored: Boolean = false,
