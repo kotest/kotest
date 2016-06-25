@@ -8,7 +8,6 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.TestTimedOutException
 import java.io.Closeable
 import java.util.*
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @RunWith(KTestJUnitRunner::class)
@@ -60,10 +59,9 @@ abstract class TestBase : Matchers {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[k]
       if (testcase.active() && testcase.isTagged) {
-        val desc = testcase.description
         instance.beforeAll()
         instance.afterEach()
-        runTest(testcase, notifier, desc!!)
+        runTest(testcase, notifier, testcase.description)
         instance.afterEach()
         instance.performAfterAll()
       }
@@ -74,9 +72,8 @@ abstract class TestBase : Matchers {
     beforeAll()
     val tests = root.tests()
     tests.filter { it.isTagged }.filter { it.active() }.forEach { testcase ->
-      val desc = testcase.description
       beforeEach()
-      runTest(testcase, notifier, desc!!)
+      runTest(testcase, notifier, testcase.description)
       afterEach()
     }
     performAfterAll()
