@@ -46,7 +46,7 @@ abstract class TestBase : Matchers {
     }
 
     if (e == null)
-      throw TestFailedException("Expected exception ${T::class.qualifiedName} but no exception was thrown") // TODO move to try block
+      throw TestFailedException("Expected exception ${T::class.qualifiedName} but no exception was thrown")
     else if (e.javaClass.name != T::class.qualifiedName)
       throw TestFailedException("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown")
     else
