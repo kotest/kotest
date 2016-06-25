@@ -23,7 +23,8 @@ abstract class TestBase : Matchers {
   internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
 
   // returns a jUnit Description for the currently registered tests
-  internal fun getDescription(): Description = descriptionForSuite(root)
+  internal val description: Description
+    get() = descriptionForSuite(root)
 
   internal fun run(notifier: RunNotifier) {
     if (oneInstancePerTest) runOneInstancePerTest(notifier)

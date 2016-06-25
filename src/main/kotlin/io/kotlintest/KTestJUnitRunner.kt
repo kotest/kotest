@@ -8,7 +8,7 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
 
   private val instance = testClass.newInstance()
 
-  override fun getDescription(): Description? = instance.getDescription()
+  override fun getDescription(): Description? = instance.description
 
   override fun run(notifier: RunNotifier?): Unit {
     instance.run(notifier!!)
