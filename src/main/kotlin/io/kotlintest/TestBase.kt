@@ -59,7 +59,7 @@ abstract class TestBase : Matchers {
     for (k in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[k]
-      if (testcase.active() && testcase.isTagged) {
+      if (testcase.isActive) {
         instance.beforeAll()
         instance.afterEach()
         runTest(testcase, notifier, testcase.description)
@@ -72,7 +72,7 @@ abstract class TestBase : Matchers {
   private fun runSharedInstance(notifier: RunNotifier): Unit {
     beforeAll()
     val tests = root.tests()
-    tests.filter { it.isTagged }.filter { it.active() }.forEach { testcase ->
+    tests.filter { it.isActive }.forEach { testcase ->
       beforeEach()
       runTest(testcase, notifier, testcase.description)
       afterEach()
