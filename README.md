@@ -305,6 +305,7 @@ class StringSpecExample : StringSpec() {
     }
   }
 }
+```
 
 Resource that should be closed this way must implement `Closeable`. Closing is performed in the 
 reversed order of declaration after `afterAll()` was executed.
