@@ -10,7 +10,6 @@ class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
 
   override fun getDescription(): Description? = instance.getDescription()
 
-  // ok
   override fun run(notifier: RunNotifier?): Unit {
     instance.run(notifier!!)
   }
