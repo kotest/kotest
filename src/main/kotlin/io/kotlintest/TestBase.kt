@@ -55,10 +55,10 @@ abstract class TestBase : Matchers {
 
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = listTests(root).size // TODO move to TestSuite
+    val testCount = root.tests().size // TODO move to TestSuite
     for (k in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
-      val testcase = listTests(instance.root)[k]
+      val testcase = instance.root.tests()[k]
       if (testcase.active() && testcase.isTagged) {
         val desc = testcase.description
         instance.beforeAll()
@@ -72,7 +72,7 @@ abstract class TestBase : Matchers {
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
     beforeAll()
-    val tests = listTests(root)
+    val tests = root.tests()
     tests.filter { it.isTagged }.filter { it.active() }.forEach { testcase ->
       val desc = testcase.description
       beforeEach()
@@ -81,10 +81,6 @@ abstract class TestBase : Matchers {
     }
     performAfterAll()
   }
-
-  // TODO move to TestStuite
-  private fun listTests(suite: TestSuite): List<TestCase> =
-          suite.cases + suite.nestedSuites.flatMap { suite -> listTests(suite) }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
     val executor =
@@ -105,7 +101,8 @@ abstract class TestBase : Matchers {
     val timeout = testcase.config.timeout
     val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
     if (!terminated) {
-      notifier.fireTestFailure(Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit)))
+      val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
+      notifier.fireTestFailure(failure)
     }
   }
 

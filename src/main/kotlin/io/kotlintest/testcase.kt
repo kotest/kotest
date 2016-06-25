@@ -11,6 +11,9 @@ data class TestSuite(
   companion object {
     fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
   }
+
+  internal fun tests(suite: TestSuite = this): List<TestCase> =
+          suite.cases + suite.nestedSuites.flatMap { suite -> tests(suite) }
 }
 
 data class TestConfig(var ignored: Boolean = false,
