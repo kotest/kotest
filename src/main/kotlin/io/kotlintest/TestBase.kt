@@ -16,6 +16,9 @@ abstract class TestBase : Matchers {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
+  // TODO change to true, because one instance per test is a safer default
+  open val oneInstancePerTest = false
+
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
   internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
@@ -50,7 +53,7 @@ abstract class TestBase : Matchers {
       return e as T
   }
 
-  // TODO try to move logic to execute performAfterAll, afterEach, beforeEach, beforeAll to TestBase
+
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
     val testCount = listTests(root).size // TODO move to TestSuite
     for (k in (0..testCount - 1)) {
@@ -58,24 +61,23 @@ abstract class TestBase : Matchers {
       val testcase = listTests(instance.root)[k]
       if (testcase.active() && isTagged(testcase)) {
         val desc = descriptionForTest(testcase)
-        instance.performBeforeAll()
-        instance.performAfterEach()
+        instance.beforeAll()
+        instance.afterEach()
         runTest(testcase, notifier, desc!!)
-        instance.performAfterEach()
+        instance.afterEach()
         instance.performAfterAll()
       }
     }
   }
 
-
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    performBeforeAll()
+    beforeAll()
     val tests = listTests(root)
     tests.filter { isTagged(it) }.filter { it.active() }.forEach { testcase ->
       val desc = descriptionForTest(testcase)
-      performBeforeEach()
+      beforeEach()
       runTest(testcase, notifier, desc!!)
-      performAfterEach()
+      afterEach()
     }
     performAfterAll()
   }
@@ -90,7 +92,7 @@ abstract class TestBase : Matchers {
   }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
-    val executor = 
+    val executor =
             if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
             else Executors.newFixedThreadPool(testcase.config.threads)
     notifier.fireTestStarted(description)
@@ -112,9 +114,6 @@ abstract class TestBase : Matchers {
     }
   }
 
-  // TODO change to true, because one instance per test is a safer default
-  open val oneInstancePerTest = false
-
   internal fun descriptionForSuite(suite: TestSuite): Description {
     val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
     for (nestedSuite in suite.nestedSuites) {
@@ -131,23 +130,6 @@ abstract class TestBase : Matchers {
     return Description.createTestDescription(case.suite.name.replace('.', ' '), text)
   }
 
-  internal fun performBeforeAll() {
-    beforeAll()
-  }
-
-  internal fun performBeforeEach() {
-    beforeEach()
-  }
-
-  internal fun performAfterEach() {
-    afterEach()
-  }
-
-  internal fun performAfterAll() {
-    afterAll()
-    closeablesInReverseOrder.forEach { it.close() }
-  }
-
   open fun beforeAll(): Unit {
   }
 
@@ -158,5 +140,10 @@ abstract class TestBase : Matchers {
   }
 
   open fun afterAll(): Unit {
+  }
+
+  internal fun performAfterAll() {
+    afterAll()
+    closeablesInReverseOrder.forEach { it.close() }
   }
 }
