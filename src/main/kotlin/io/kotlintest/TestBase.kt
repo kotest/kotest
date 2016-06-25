@@ -8,6 +8,7 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.TestTimedOutException
 import java.io.Closeable
 import java.util.*
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @RunWith(KTestJUnitRunner::class)
@@ -54,7 +55,7 @@ abstract class TestBase : Matchers {
 
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = root.size
+    val testCount = root.tests().size
     for (k in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[k]
@@ -81,8 +82,8 @@ abstract class TestBase : Matchers {
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
     val executor =
-            if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
-            else Executors.newFixedThreadPool(testcase.config.threads)
+        if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
+        else Executors.newFixedThreadPool(testcase.config.threads)
     notifier.fireTestStarted(description)
     for (j in 1..testcase.config.invocations) {
       executor.submit {
