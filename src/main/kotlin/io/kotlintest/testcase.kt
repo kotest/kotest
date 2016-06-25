@@ -14,6 +14,8 @@ data class TestSuite(
 
   internal fun tests(suite: TestSuite = this): List<TestCase> =
           suite.cases + suite.nestedSuites.flatMap { suite -> tests(suite) }
+
+  internal val size = tests().size
 }
 
 data class TestConfig(var ignored: Boolean = false,

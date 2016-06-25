@@ -55,7 +55,7 @@ abstract class TestBase : Matchers {
 
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = root.tests().size // TODO move to TestSuite
+    val testCount = root.size
     for (k in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[k]
