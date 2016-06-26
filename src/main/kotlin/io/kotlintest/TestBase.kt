@@ -67,7 +67,7 @@ abstract class TestBase : Matchers {
         instance.afterEach()
         runTest(testcase, notifier, testcase.description)
         instance.afterEach()
-        instance.performAfterAll()
+        instance.performAfterAll(notifier)
       }
     }
   }
@@ -80,7 +80,7 @@ abstract class TestBase : Matchers {
       runTest(testcase, notifier, testcase.description)
       afterEach()
     }
-    performAfterAll()
+    performAfterAll(notifier)
   }
 
   private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
@@ -130,8 +130,14 @@ abstract class TestBase : Matchers {
   protected open fun afterAll(): Unit {
   }
 
-  private fun performAfterAll() {
+  private fun performAfterAll(notifier: RunNotifier) {
     afterAll()
-    closeablesInReverseOrder.forEach { it.close() }
+    closeablesInReverseOrder.forEach {
+      try {
+        it.close()
+      } catch(exception: AssertionError) {
+        notifier.fireTestFailure(Failure(description, exception))
+      }
+    }
   }
 }
