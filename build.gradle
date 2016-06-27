@@ -42,7 +42,6 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.1-2'
     compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.1-2'
     compile 'org.mockito:mockito-all:1.10.19'
-    compile 'junit:junit:4.12'
 }
 
 uploadArchives {
