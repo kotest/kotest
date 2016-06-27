@@ -28,7 +28,7 @@ Maven:
 Testing Styles
 --------------
 
-You can choose a testing style by extending WordSpec, FunSpec, ShouldSpec, FlatSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FlatSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
 ```kotlin
 class MyTests : StringSpec() {
@@ -129,12 +129,57 @@ class MyTests : WordSpec() {
 }
 ```
 
-### Free Spec
+### Feature Spec
 
-`FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
+`FeatureSpec` allows you to use `feature` and `scenario`, as such:
 
 ```kotlin
-class MyTests : FreeSpec() {
+class MyTests : FlatSpec() {
+  init {
+    feature("the thingy bob") {
+      scenario("should explode when I touch it") {
+        // test here
+      }
+      scenario("and should do this when I wibble it") {
+        // test heree
+      }
+    }
+  }
+}
+```
+
+### Behavior Spec
+
+`BehaviorSpec` allows you to use `given`, `when`, `then`, as such:
+
+```kotlin
+class MyTests : FlatSpec() {
+  init {
+    given("a broomstick") {
+      `when`("I sit on it") {
+        then("I should be able to fly") {
+          // test code
+        }
+      }
+      `when`("I throw it away") {
+        then("it should come back") {
+          // test code
+        }
+      }
+    }
+  }
+}
+```
+
+Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
+available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
+
+### Free Spec
+
+`FlatSpec` allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
+
+```kotlin
+class MyTests : FlatSpec() {
   init {
     "String.length" - {
       "should return the length of the string" {
