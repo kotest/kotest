@@ -32,16 +32,18 @@ edge cases and other specific values you want to test. The headers are used for 
 the output can show you what inputs were used for what labels. An example of using a table consisting of two-value tuples:
 
 ```kotlin
-class TableExample : TableTesting() {
+class TableExample : StringSpec(), TableTesting {
   init {
-    val table = table(
-      headers("a", "b"),
-      row(5, 5),
-      row(4, 6),
-      row(3, 7)
-    )
-    "numbers should be prime".forAll(table) { a, b ->
-      a + b == 10
+    "numbers should be prime" {
+      val table = table(
+          headers("a", "b"),
+          row(5, 5),
+          row(4, 6),
+          row(3, 7)
+      )
+      forAll(table) { a, b ->
+        a + b == 10
+      }
     }
   }
 }

@@ -151,30 +151,32 @@ Property-based Testing
 
 ### Table-driven Testing
 
-To test your code with a lot parameter combinations, you can use tables as input for your test 
+To test your code with different parameter combinations, you can use tables as input for your test 
 cases. 
 
-Extend your specification class with `TableTesting`. Create a table with the `table` function and 
-pass a headers and one or more row objects. You create the headers with the `headers` function, and
+Your test class should extend from the interface `TableTesting`. Create a table with the `table` function and 
+pass a header and one or more row objects. You create the headers with the `headers` function, and
 a row with the `row` function. A row can have up to 22 entries. Headers and and rows must all have
 the same number of entries.
 
-To use a table in a testcase, write a string description followed by a call of `forAll(table)` and a 
-closure with the actual test code. The entries of the rows are passed as parameters to the closure.
+To use the table, you invoke `forAll(table)` inside a test plan and pass a closure with the actual test code.
+The entries of the rows are passed as parameters to the closure.
+
+Table testing can be used with any spec. Here is an example using `StringSpec`.
 
 
 ```kotlin
-class StringSpecExample : TableTesting() {
-
+class StringSpecExample : StringSpec(), TableTesting {
   init {
-    val myTable = table(
-        headers("a", "b", "result"),
-        row(1, 2, 3),
-        row(1, 1, 2)
-    )
-
-    "should add".forAll(myTable) { a, b, result ->
-        a + b shouldBe result
+    "should add" {
+       val myTable = table(
+         headers("a", "b", "result"),
+         row(1, 2, 3),
+         row(1, 1, 2)
+       )
+       forAll(myTable) { a, b, result ->
+         a + b shouldBe result
+       }
     }
   }
 }
