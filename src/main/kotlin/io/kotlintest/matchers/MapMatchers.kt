@@ -17,4 +17,11 @@ interface MapMatchers {
         throw TestFailedException("Map did not contain value $v")
     }
   }
+
+  fun <K, V> contain(key: K, value: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
+    override fun test(value: Map<K, V>) {
+      if (value.get(key) != value)
+        throw TestFailedException("Map did not contain mapping $key=$value")
+    }
+  }
 }

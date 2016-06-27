@@ -100,6 +100,13 @@ val map = mapOf(Pair(1, "a"), Pair(2, "b"))
 map should haveValue("a")
 ```
 
+* `contain` Map<K,V> matcher. You can now write
+
+```kotlin
+val map = mapOf(Pair(1, "a"), Pair(2, "b"))
+map should contain(1, "a")
+```
+
 * `beTheSameInstanceAs` reference matcher. This is an alias for `x should be theSameInstanceAs(y)`, allowing `x should beTheSameInstanceAs(y)` which fits in with new matcher style.
 
 ### Changed

@@ -5,9 +5,6 @@ import io.kotlintest.specs.ShouldSpec
 
 class DoubleMatchersTest : ShouldSpec() {
   init {
-    with("qweqwe") {
-      length
-    }
     should("fail outside of tolerance") {
       shouldThrow<TestFailedException> {
         1.0 shouldBe (1.3 plusOrMinus 0.2)

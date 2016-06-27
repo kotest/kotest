@@ -26,5 +26,15 @@ class MapMatchersTest : WordSpec() {
         }
       }
     }
+
+    "contain" should {
+      "test that a map contains the given pair" {
+        val map = mapOf(Pair(1, "a"), Pair(2, "b"))
+        map should contain(Pair(1, "a"))
+        shouldThrow<TestFailedException> {
+          map should contain(Pair(2, "a"))
+        }
+      }
+    }
   }
 }

@@ -258,6 +258,12 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 * To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
 
+### Map Matchers
+
+* To assert that a map contains a given key use `map should haveKey(k)`.
+* To assert that a map contains a given value use `map should haveValue(v)`.
+* To assert that a map contains a given mappings use `col should contain(k,v)`.
+
 Exceptions
 ----------
 
