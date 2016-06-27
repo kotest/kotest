@@ -3,7 +3,12 @@ package io.kotlintest.properties
 class TableTestingTest : TableTesting() {
   init {
 
-    val table1 = table(headers("name"), row("sam"), row("billy"), row("christian"))
+    val table1 = table(
+            headers("name"),
+            row("sam"),
+            row("billy"),
+            row("christian")
+    )
 
     "names should not be empty strings".forAll(table1) {
       it.isEmpty() shouldBe false
@@ -42,5 +47,14 @@ class TableTestingTest : TableTesting() {
       a + b + c shouldBe d
     }
 
+    val table5 = table(
+        headers("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "result"),
+        row(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 231),
+        row(1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   1,  1 , 1, 1,  1,  1,  1,  1,  1,  1,  1, 21)
+    )
+
+    "should add".forAll(table5) {a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, result ->
+      a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u  shouldBe result
+    }
   }
 }

@@ -28,7 +28,7 @@ abstract class TableTesting : TestBase() {
     fun headers(a: String, b: String, c: String, d: String, e: String, f: String, g: String, h: String, i: String, j: String, k: String, l: String, m: String, n: String, o: String, p: String, q: String, r: String, s: String, t: String) = Headers20(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
     fun headers(a: String, b: String, c: String, d: String, e: String, f: String, g: String, h: String, i: String, j: String, k: String, l: String, m: String, n: String, o: String, p: String, q: String, r: String, s: String, t: String, u: String) = Headers21(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
     fun headers(a: String, b: String, c: String, d: String, e: String, f: String, g: String, h: String, i: String, j: String, k: String, l: String, m: String, n: String, o: String, p: String, q: String, r: String, s: String, t: String, u: String, v: String) = Headers22(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
-    fun headers(a: String, b: String, c: String, d: String, e: String, f: String, g: String, h: String, i: String, j: String, k: String, l: String, m: String, n: String, o: String, p: String, q: String, r: String, s: String, t: String, u: String, v: String, w: String) = Headers23(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w)
+
 
 
     fun <A> row(a: A) = Row1(a)
@@ -53,8 +53,6 @@ abstract class TableTesting : TestBase() {
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> row(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T) = Row20(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> row(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U) = Row21(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> row(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V) = Row22(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
-    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W> row(a: A, b: B, c: C, d: D, e: E, f: F, g: G, h: H, i: I, j: J, k: K, l: L, m: M, n: N, o: O, p: P, q: Q, r: R, s: S, t: T, u: U, v: V, w: W) = Row23(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w)
-
 
     fun <A> table(headers: Headers1, vararg rows: Row1<A>) = Table1(headers, rows.asList())
     fun <A, B> table(headers: Headers2, vararg rows: Row2<A, B>) = Table2(headers, rows.asList())
@@ -78,7 +76,6 @@ abstract class TableTesting : TestBase() {
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> table(headers: Headers20, vararg rows: Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>) = Table20(headers, rows.asList())
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> table(headers: Headers21, vararg rows: Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>) = Table21(headers, rows.asList())
     fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> table(headers: Headers22, vararg rows: Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>) = Table22(headers, rows.asList())
-    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W> table(headers: Headers23, vararg rows: Row23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>) = Table23(headers, rows.asList())
 
     fun error(e: TestFailedException, headers: List<String>, values: List<*>): TestFailedException {
         val params = headers.zip(values).joinToString(", ")
@@ -147,6 +144,210 @@ abstract class TableTesting : TestBase() {
         }))
     }
 
+
+    fun <A, B, C, D, E, F> String.forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G> String.forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H> String.forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I> String.forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J> String.forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K> String.forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L> String.forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M> String.forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> String.forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> String.forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> String.forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> String.forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> String.forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> String.forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> String.forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> String.forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
+
+    fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> String.forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit): Unit {
+        root.cases.add(TestCase(root, this, {
+            for (row in table.rows) {
+                try {
+                    fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
+                } catch (e: TestFailedException) {
+                    throw error(e, table.headers.values(), row.values())
+                }
+            }
+        }))
+    }
 }
 
 data class Table1<A>(val headers: Headers1, val rows: List<Row1<A>>)
@@ -171,7 +372,6 @@ data class Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(val 
 data class Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
 data class Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
 data class Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
-data class Table23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>(val headers: Headers23, val rows: List<Row23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>>)
 
 data class Headers1(val labelA: String) {
     fun values() = listOf(labelA)
@@ -261,10 +461,6 @@ data class Headers22(val labelA: String, val labelB: String, val labelC: String,
     fun values() = listOf(labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ, labelK, labelL, labelM, labelN, labelO, labelP, labelQ, labelR, labelS, labelT, labelU, labelV)
 }
 
-data class Headers23(val labelA: String, val labelB: String, val labelC: String, val labelD: String, val labelE: String, val labelF: String, val labelG: String, val labelH: String, val labelI: String, val labelJ: String, val labelK: String, val labelL: String, val labelM: String, val labelN: String, val labelO: String, val labelP: String, val labelQ: String, val labelR: String, val labelS: String, val labelT: String, val labelU: String, val labelV: String, val labelW: String) {
-    fun values() = listOf(labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ, labelK, labelL, labelM, labelN, labelO, labelP, labelQ, labelR, labelS, labelT, labelU, labelV, labelW)
-}
-
 data class Row1<A>(val a: A) {
     fun values() = listOf(a)
 }
@@ -351,8 +547,4 @@ data class Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(
 
 data class Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V) {
     fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
-}
-
-data class Row23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V, val w: W) {
-    fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w)
 }
