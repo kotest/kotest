@@ -72,6 +72,13 @@ someString should haveLength(10)
 myCollection should haveSize(4)
 ```
 
+* `contain` matcher. You can now write
+
+```kotlin
+val col = listOf(1,2,3,4,5)
+col should contain(4)
+```
+
 * `containInAnyOrder` matcher. You can now write
 
 ```kotlin

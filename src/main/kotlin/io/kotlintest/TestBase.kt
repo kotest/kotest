@@ -16,6 +16,7 @@ abstract class TestBase : Matchers {
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
   // TODO change to true, because one instance per test is a safer default
+  // TODO sam: goes against the junit default though and perhaps its better to stick with what people know?
   open val oneInstancePerTest = false
 
   // the root test suite which uses the simple name of the class as the name of the suite

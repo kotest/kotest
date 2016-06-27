@@ -36,6 +36,16 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "col should contain(x)" should {
+      "test that a collection contains element x"  {
+        val col = listOf(1, 2, 3)
+        shouldThrow<TestFailedException> {
+          col should contain(4)
+        }
+        col should contain(2)
+      }
+    }
+
     "CollectionMatchers.empty" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)

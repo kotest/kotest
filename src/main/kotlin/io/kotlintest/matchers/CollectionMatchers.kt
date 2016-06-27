@@ -37,4 +37,11 @@ interface CollectionMatchers {
         throw TestFailedException("Collection did not have size $size")
     }
   }
+
+  fun <T> contain(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+    override fun test(value: Collection<T>) {
+      if (!value.contains(t))
+        throw TestFailedException("Collection did not contain element $t")
+    }
+  }
 }

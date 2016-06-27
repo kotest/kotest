@@ -77,10 +77,9 @@ data class TestCase(val suite: TestSuite,
   }
 
   internal val isActive: Boolean
-    get() = !config.ignored && isTagged
+    get() = !config.ignored && isTaggedOrNoTagsSet
 
-  // TODO rename since even not tagged test cases are supposedly tagged
-  private  val isTagged: Boolean
+  private val isTaggedOrNoTagsSet: Boolean
     get() {
       val systemTags = (System.getProperty("testTags") ?: "").split(',')
       return systemTags.isEmpty() || config.tags.isEmpty() || systemTags.intersect(config.tags).isNotEmpty()
