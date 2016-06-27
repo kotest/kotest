@@ -1,10 +1,12 @@
-# kotlintest
+kotlintest
+==========
 
 [![Build Status](https://travis-ci.org/kotlintest/kotlintest.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest) [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest*.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
 KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https://kotlinlang.org/) ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KotlinTest provides several ways to lay out your test so that your team can pick the style they are most happy with. It also includes many matchers which allow you to write many different types of assertions easily and in a human readable way. Finally, there's helpers for things like collection testing, and future testing.
 
-### How to use
+How to use
+----------
 
 KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file. You can get the latest version from the little badge at the top of the readme.
 
@@ -23,7 +25,8 @@ Maven:
 </dependency>
 ```
 
-### Testing Styles
+Testing Styles
+--------------
 
 You can choose a testing style by extending WordSpec, FunSpec, ShouldSpec, FlatSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
 
@@ -35,7 +38,7 @@ class MyTests : StringSpec() {
 }
 ```
 
-#### String Spec
+### String Spec
 
 `StringSpec` reduces the syntax to the absolute minimum. Just write a string followed by a lambda expression with your test code. If in doubt, use this style.
 
@@ -49,7 +52,7 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-#### Flat Spec
+### Flat Spec
 
 `FlatSpec` offers the keywords `should`, and `with`, and allows those to be used inline, as such:
 
@@ -64,7 +67,7 @@ class MyTests : FlatSpec() {
 }
 ```
 
-#### Fun Spec
+### Fun Spec
 
 `FunSpec` allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
 
@@ -79,7 +82,7 @@ class MyTests : FunSpec() {
 }
 ```
 
-#### Should spec
+### Should Spec
 
 `ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
 
@@ -109,7 +112,7 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-#### Word Spec
+### Word Spec
 
 `WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string, eg:
 
@@ -126,7 +129,7 @@ class MyTests : WordSpec() {
 }
 ```
 
-#### Free Spec
+### Free Spec
 
 `FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
@@ -143,37 +146,73 @@ class MyTests : FreeSpec() {
 }
 ```
 
-### Matchers
+Property-based Testing
+----------------------
+
+### Table-driven Testing
+
+To test your code with a lot parameter combinations, you can use tables as input for your test 
+cases. 
+
+Extend your specification class with `TableTesting`. Create a table with the `table` function and 
+pass a headers and one or more row objects. You create the headers with the `headers` function, and
+a row with the `row` function. A row can have up to 22 entries. Headers and and rows must all have
+the same number of entries.
+
+To use a table in a testcase, write a string description followed by a call of `forAll(table)` and a 
+closure with the actual test code. The entries of the rows are passed as parameters to the closure.
+
+
+```kotlin
+class StringSpecExample : TableTesting() {
+
+  init {
+    val myTable = table(
+        headers("a", "b", "result"),
+        row(1, 2, 3),
+        row(1, 1, 2)
+    )
+
+    "should add".forAll(myTable) { a, b, result ->
+        a + b shouldBe result
+    }
+  }
+}
+```
+
+Matchers
+--------
 
 KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`.
 
-#### String Matchers
+### String Matchers
 
 * To assert that a string starts with a given prefix use `x should start with y`.
 * To assert that a string ends with a given suffix use `x should end with y`.
 * To assert that a string contains a given substring use `x should have substring y`.
 * To assert that a string matches a given regular expression, use `x should match("regex")`.
 
-#### Long / Int Matchers
+### Long / Int Matchers
 
 * To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
 
-#### Collection Matchers
+### Collection Matchers
 
 * To assert that a collection has a given size use `col should have size 4`. This is the same as `(col.size == 4) shouldBe true` but more readable.
 * To assert that a collection contains a given element use `col should contain element x`.
 * To assert that a collection has a given collection of elements in any order, you can use `col should containInAnyOrder(xs)`
 
-#### Map Matchers
+### Map Matchers
 
 * To assert that a map has a given key, use `map should haveKey(key)`
 * To assert that a map has a given value, use `map should haveValue(value)`
 
-#### References
+### References
 
 * To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
 
-### Exceptions
+Exceptions
+----------
 
 To assert that a given block of code throws an exception, one can use the expecting(exception) block. Eg,
 
@@ -199,7 +238,8 @@ val exception = shouldThrow<IllegalAccessException> {
 exception.message should start with "Something went wrong"
 ```
 
-### Before and After Each (since 1.1.0)
+Before and After Each (since 1.1.0)
+-----------------------------------
 
 If you need to run a method before each test and/or after each test (perhaps to reset some values to defaults etc), then simply override the `beforeEach` and `afterEach` methods in your test class, eg:
 
@@ -216,7 +256,8 @@ override fun afterEach() {
 ```
 
 
-### Before and After All
+Before and After All
+--------------------
 
 If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class, eg:
 
@@ -232,7 +273,8 @@ override fun afterAll() {
 }
 ```
 
-### One Instance Per Test (since 1.1.0)
+One Instance Per Test (since 1.1.0)
+-----------------------------------
 
 By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the `oneInstancePerTest` value and set it to true, eg:
 
@@ -245,7 +287,8 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-### Testing Config (since 1.2.0)
+Testing Config (since 1.2.0)
+----------------------------
 
 Each test can be configured with various parameters. After the test block, invoke the config method passing in the parameters you wish to set. The available parameters are:
 
@@ -290,7 +333,8 @@ class FunSpecTest : FunSpec() {
 }
 ```
 
-### Closing resource automatically (since 1.3.0)
+Closing resource automatically (since 1.3.0)
+--------------------------------------------
 
 You can let KotlinTest close resources automatically after all tests have been run:
 
@@ -310,7 +354,8 @@ class StringSpecExample : StringSpec() {
 Resource that should be closed this way must implement `Closeable`. Closing is performed in the 
 reversed order of declaration after `afterAll()` was executed.
 
-### Inspectors
+Inspectors
+----------
 
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
 
@@ -345,7 +390,8 @@ The full list of inspectors are:
 * `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
 * `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
 
-### Eventually
+Eventually
+----------
 
 When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
 
