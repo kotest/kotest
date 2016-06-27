@@ -344,7 +344,7 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-Resource that should be closed this way must implement `Closeable`. Closing is performed in the 
+Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in  
 reversed order of declaration after `afterAll()` was executed.
 
 Inspectors
