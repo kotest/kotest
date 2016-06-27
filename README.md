@@ -1,4 +1,4 @@
-kotlintest
+KotlinTest
 ==========
 
 [![Build Status](https://travis-ci.org/kotlintest/kotlintest.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest) [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest*.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
@@ -214,15 +214,8 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 Exceptions
 ----------
 
-To assert that a given block of code throws an exception, one can use the expecting(exception) block. Eg,
+To assert that a given block of code throws an exception, one can use the `shouldThrow` function. Eg,
 
-```kotlin
-expecting(IllegalAccessException::class) {
-  // code in here that you expect to throw an IllegalAccessException
-}
-```
-
-or since 1.1.1
 ```kotlin
 shouldThrow<IllegalAccessException> {
   // code in here that you expect to throw an IllegalAccessException
