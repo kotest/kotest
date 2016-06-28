@@ -69,6 +69,8 @@ abstract class TestBase : Matchers {
         runTest(testcase, notifier, testcase.description)
         instance.afterEach()
         instance.performAfterAll(notifier)
+      } else {
+        notifier.fireTestIgnored(testcase.description)
       }
     }
   }
@@ -76,10 +78,17 @@ abstract class TestBase : Matchers {
   private fun runSharedInstance(notifier: RunNotifier): Unit {
     beforeAll()
     val tests = root.tests()
-    tests.filter { it.isActive }.forEach { testcase ->
-      beforeEach()
-      runTest(testcase, notifier, testcase.description)
-      afterEach()
+    tests.forEach {
+      when {
+        it.isActive -> {
+          beforeEach()
+          runTest(it, notifier, it.description)
+          afterEach()
+        }
+        else -> {
+          notifier.fireTestIgnored(it.description)
+        }
+      }
     }
     performAfterAll(notifier)
   }
