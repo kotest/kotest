@@ -126,4 +126,4 @@ nothing
 
 ### Fixed
 
-nothing
+* Ignored tests now display properly. https://github.com/kotlintest/kotlintest/issues/43
