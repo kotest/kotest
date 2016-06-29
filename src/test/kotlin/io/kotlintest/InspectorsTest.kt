@@ -72,14 +72,14 @@ class InspectorsTest : WordSpec(), Matchers {
         }
       }
       "fail if > 1 elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forOne(list) { t ->
             t should be gt 2
           }
         }
       }
       "fail if no elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forOne(array) { t ->
             t shouldBe 22
           }
@@ -128,7 +128,7 @@ class InspectorsTest : WordSpec(), Matchers {
         }
       }
       "fail if no elements pass test"  {
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           forExactly(2, list) { t ->
             t shouldBe 33
           }

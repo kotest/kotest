@@ -14,7 +14,7 @@ class TypeMatchersTest : WordSpec() {
         val c = listOf(1, 2, 3)
 
         a should be theSameInstanceAs b
-        expecting(TestFailedException::class) {
+        shouldThrow<TestFailedException> {
           a should be theSameInstanceAs c
         }
       }

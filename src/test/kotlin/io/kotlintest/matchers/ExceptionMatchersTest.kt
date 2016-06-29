@@ -39,13 +39,13 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
     }
     "expecting" - {
       "should test for presence of exception" {
-        expecting(IllegalAccessException::class) {
+        shouldThrow<IllegalAccessException> {
           throw IllegalAccessException("bibble")
         }
       }
       "error if no exception throw" {
         val result = try {
-          expecting(IllegalAccessException::class) {
+          shouldThrow<IllegalAccessException> {
             listOf(1, 2, 3)
           }
           true
@@ -56,7 +56,7 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
       }
       "error if wrong exception throw" {
         val result = try {
-          expecting(IllegalAccessException::class) {
+          shouldThrow<IllegalAccessException> {
             throw UnsupportedOperationException("bibble")
           }
           true
