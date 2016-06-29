@@ -445,7 +445,7 @@ When testing future based code, it's handy to be able to say "I expect these ass
 class MyTests : ShouldSpec() {
   init {
     should("do something") {
-      eventually(5, TimeUnit.SECONDS) {
+      eventually(5.seconds) {
         // code here that should complete in 5 seconds but takes an indetermistic amount of time.
       }
     }
