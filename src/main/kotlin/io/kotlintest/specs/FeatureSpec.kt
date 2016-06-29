@@ -19,7 +19,7 @@ abstract class FeatureSpec : PropertyTesting() {
   }
 
   fun scenario(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(current, "Scenario: $name", test)
+    val tc = TestCase(current, "Scenario: $name", test, defaultTestCaseConfig)
     current.cases.add(tc)
     return tc
   }

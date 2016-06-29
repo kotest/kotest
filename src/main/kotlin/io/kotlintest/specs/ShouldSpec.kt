@@ -18,8 +18,9 @@ abstract class ShouldSpec : PropertyTesting() {
   }
 
   fun should(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(current, "should $name", test)
-    current.cases.add(tc)
-    return tc
+    val testCase = TestCase(
+        suite = current, name = "should $name", test = test, config = defaultTestCaseConfig)
+    current.cases.add(testCase)
+    return testCase
   }
 }

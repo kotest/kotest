@@ -19,6 +19,15 @@ abstract class TestBase : Matchers {
   // TODO sam: goes against the junit default though and perhaps its better to stick with what people know?
   open val oneInstancePerTest = false
 
+  /**
+   * Config applied to each test case if not overridden per test case.
+   *
+   * Initialize this property by calling the config method.
+   * @see config
+   * @see TestBase.config
+   */
+  open val defaultTestCaseConfig: TestConfig = config()
+
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
   internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
@@ -31,6 +40,13 @@ abstract class TestBase : Matchers {
     if (oneInstancePerTest) runOneInstancePerTest(notifier)
     else runSharedInstance(notifier)
   }
+
+  protected fun config(ignored: Boolean = false,
+                       invocations: Int = 1,
+                       timeout: Duration = Duration.unlimited,
+                       threads: Int = 1,
+                       tags: List<String> = listOf()) =
+          TestConfig(ignored, invocations, timeout, threads, tags)
 
   /**
    * Registers a field for auto closing after all tests have run.

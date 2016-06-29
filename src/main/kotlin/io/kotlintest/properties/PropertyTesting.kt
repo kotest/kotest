@@ -1,24 +1,21 @@
 package io.kotlintest.properties
 
-import io.kotlintest.TestBase
-import io.kotlintest.TestCase
-import io.kotlintest.TestFailedException
-import io.kotlintest.TestSuite
+import io.kotlintest.*
 
 abstract class PropertyTesting : TestBase() {
 
   fun property(name: String): PropertyTestBuilder {
-    return PropertyTestBuilder(root, name)
+    return PropertyTestBuilder(root, name, defaultTestCaseConfig)
   }
 
-  class PropertyTestBuilder(val suite: TestSuite, val name: String) {
+  class PropertyTestBuilder(val suite: TestSuite, val name: String, val config: TestConfig) {
 
     inline fun <reified A> forAll(noinline fn: (a: A) -> Boolean): Unit {
       forAll(Gen.default<A>(), fn)
     }
 
     fun <A> forAll(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val passed = fn(a)
@@ -26,7 +23,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for\n$a")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B> forAll(noinline fn: (a: A, b: B) -> Boolean): Unit {
@@ -34,7 +32,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B> forAll(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite,name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -43,7 +41,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for\n$a\n$b)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite,name, test, config))
     }
 
     inline fun <reified A, reified B, reified C> forAll(noinline fn: (a: A, b: B, c: C) -> Boolean): Unit {
@@ -51,7 +50,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite,name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -61,7 +60,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for\n$a\n$b\n$c)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite,name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D> forAll(noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
@@ -69,7 +69,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite,name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -80,7 +80,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E> forAll(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
@@ -88,7 +89,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -100,7 +101,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
@@ -108,7 +110,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -121,7 +123,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e\n$f")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A> forNone(noinline fn: (a: A) -> Boolean): Unit {
@@ -129,7 +132,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val passed = fn(a)
@@ -137,7 +140,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for\n$a")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B> forNone(noinline fn: (a: A, b: B) -> Boolean): Unit {
@@ -145,7 +149,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B> forNone(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -154,7 +158,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for\n$a\n$b)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C> forNone(noinline fn: (a: A, b: B, c: C) -> Boolean): Unit {
@@ -162,7 +167,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -172,7 +177,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for\n$a\n$b\n$c)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D> forNone(noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
@@ -180,7 +186,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -191,7 +197,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d)")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
@@ -199,7 +206,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -211,7 +218,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
 
     inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
@@ -219,7 +227,7 @@ abstract class PropertyTesting : TestBase() {
     }
 
     fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-      suite.cases.add(TestCase(suite, name, {
+      val test = {
         for (k in 0..1000) {
           val a = gena.generate()
           val b = genb.generate()
@@ -232,7 +240,8 @@ abstract class PropertyTesting : TestBase() {
             throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e\n$f")
           }
         }
-      }))
+      }
+      suite.cases.add(TestCase(suite, name, test, config))
     }
   }
 }

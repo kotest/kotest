@@ -31,6 +31,6 @@ abstract class BehaviorSpec : PropertyTesting() {
 
   fun Then(name: String, test: () -> Unit): Unit = then(name, test)
   fun then(name: String, test: () -> Unit): Unit {
-    current.cases.add(TestCase(current, "Then $name", test))
+    current.cases.add(TestCase(current, "Then $name", test, defaultTestCaseConfig))
   }
 }

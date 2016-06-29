@@ -19,8 +19,9 @@ abstract class WordSpec : PropertyTesting() {
   }
 
   infix operator fun String.invoke(test: () -> Unit): TestCase {
-    val tc = TestCase(current, "should " + this, test)
-    current.cases.add(tc)
-    return tc
+    val testCase = TestCase(
+        suite = current, name = "should " + this, test = test, config = defaultTestCaseConfig.copy())
+    current.cases.add(testCase)
+    return testCase
   }
 }

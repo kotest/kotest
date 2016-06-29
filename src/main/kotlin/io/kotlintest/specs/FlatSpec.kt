@@ -44,7 +44,7 @@ abstract class FlatSpec : PropertyTesting() {
       root.nestedSuites.add(suite)
       suite
     })
-    suite.cases.add(TestCase(suite, testName, test, this.second))
+    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig))
   }
 
   infix fun String.should(pair: Pair<String, () -> Unit>): Unit {
@@ -55,6 +55,6 @@ abstract class FlatSpec : PropertyTesting() {
       root.nestedSuites.add(suite)
       suite
     })
-    suite.cases.add(TestCase(suite, testName, test))
+    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig))
   }
 }
