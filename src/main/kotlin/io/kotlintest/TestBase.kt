@@ -63,14 +63,15 @@ abstract class TestBase : Matchers {
       e
     }
 
+    val exceptionClassName = T::class.qualifiedName
+
     if (e == null)
-      throw TestFailedException("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    else if (e.javaClass.name != T::class.qualifiedName)
-      throw TestFailedException("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown")
+      throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
+    else if (e.javaClass.canonicalName != exceptionClassName)
+      throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
     else
       return e as T
   }
-
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
     val testCount = root.tests().size
@@ -116,7 +117,7 @@ abstract class TestBase : Matchers {
       executor.submit {
         try {
           testcase.test()
-        } catch(e: Throwable) {
+        } catch(e: AssertionError) {
           notifier.fireTestFailure(Failure(description, e))
         }
       }

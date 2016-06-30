@@ -12,7 +12,7 @@ class NullTests : WordSpec() {
   init {
     "null" should {
       "not match value" {
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           getNull() shouldBe "q"
         }
       }
@@ -25,7 +25,7 @@ class NullTests : WordSpec() {
         notNull() shouldBe "qwerty"
       }
       "not match null" {
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           notNull() shouldBe null
         }
       }

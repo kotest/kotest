@@ -1,6 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
 import io.kotlintest.specs.WordSpec
 
 class TypeMatchersTest : WordSpec() {
@@ -14,7 +13,7 @@ class TypeMatchersTest : WordSpec() {
         val c = listOf(1, 2, 3)
 
         a should be theSameInstanceAs b
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           a should be theSameInstanceAs c
         }
       }
@@ -27,7 +26,7 @@ class TypeMatchersTest : WordSpec() {
         val c = listOf(1, 2, 3)
 
         a should beTheSameInstanceAs(b)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           a should be theSameInstanceAs c
         }
       }

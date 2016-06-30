@@ -1,7 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
-
 interface DoubleMatchers {
   infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(this, tolerance)
 }
@@ -13,7 +11,7 @@ class ToleranceMatcher(val expected: Double, val tolerance: Double) : Matcher<Do
       println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe b plusOrMinus c")
     val diff = Math.abs(value - expected)
     if (diff > tolerance)
-      throw TestFailedException("$value is not equal to $expected")
+      throw AssertionError("$value is not equal to $expected")
   }
 
   infix fun plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(expected, tolerance)

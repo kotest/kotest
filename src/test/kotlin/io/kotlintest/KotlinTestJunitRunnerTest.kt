@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class KotlinTestJunitRunnerTest : StringSpec() {
   init {
-    "should handle throwables" {
+    "should handle AssertionError" {
       System.setProperty("internal", "true")
       val runner = KTestJUnitRunner(ThrowsThrowable::class.java as Class<TestBase>)
       val n = RunNotifier()
@@ -45,7 +45,7 @@ class ThrowsThrowable : ShouldSpec() {
   init {
     should("throw throwable") {
       if (System.getProperty("internal") == "true")
-        throw Throwable("hello")
+        throw AssertionError("hello")
     }
   }
 }

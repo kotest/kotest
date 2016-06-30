@@ -21,11 +21,11 @@ class MatchersTest : FreeSpec(), Matchers {
       }
 
       "should support matching non null with null" {
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           val name: String? = "nullornot"
           name shouldBe null
         }
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           val name: String = "notnull"
           name shouldBe null
         }

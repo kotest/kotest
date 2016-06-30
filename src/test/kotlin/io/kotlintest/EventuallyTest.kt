@@ -21,7 +21,7 @@ class EventuallyTest : WordSpec(), Eventually {
         }
       }
       "fail tests that do not complete within the time allowed"  {
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           eventually(2.seconds) {
             throw RuntimeException("foo")
           }

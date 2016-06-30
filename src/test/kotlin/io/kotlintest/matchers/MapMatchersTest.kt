@@ -1,6 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
 import io.kotlintest.specs.WordSpec
 
 class MapMatchersTest : WordSpec() {
@@ -11,7 +10,7 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given key" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should haveKey(1)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           map should haveKey(3)
         }
       }
@@ -21,7 +20,7 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given value" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should haveValue("a")
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           map should haveValue("c")
         }
       }
@@ -31,7 +30,7 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given pair" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should contain(1, "a")
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           map should contain(2, "a")
         }
       }

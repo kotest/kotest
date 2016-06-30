@@ -1,6 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -14,7 +13,7 @@ class CollectionMatchersTest : WordSpec() {
 
         col should contain element 2
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should contain element 4
         }
       }
@@ -24,13 +23,13 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection has a certain size" {
         val col1 = listOf(1, 2, 3)
         col1 should haveSize(3)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col1 should haveSize(2)
         }
 
         val col2 = emptyList<String>()
         col2 should haveSize(0)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col2 should haveSize(1)
         }
       }
@@ -39,7 +38,7 @@ class CollectionMatchersTest : WordSpec() {
     "col should contain(x)" should {
       "test that a collection contains element x"  {
         val col = listOf(1, 2, 3)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should contain(4)
         }
         col should contain(2)
@@ -50,7 +49,7 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should beEmpty()
         }
 
@@ -69,19 +68,19 @@ class CollectionMatchersTest : WordSpec() {
         col should containInAnyOrder(1)
         col should containInAnyOrder(5)
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should containInAnyOrder(1, 2, 6)
         }
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should containInAnyOrder(6)
         }
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should containInAnyOrder(0, 1, 2)
         }
 
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           col should containInAnyOrder(3, 2, 0)
         }
       }

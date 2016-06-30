@@ -1,7 +1,6 @@
 package io.kotlintest.properties
 
 import io.kotlintest.TestBase
-import io.kotlintest.TestFailedException
 
 interface TableTesting {
 
@@ -76,16 +75,16 @@ interface TableTesting {
   fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> table(headers: Headers21, vararg rows: Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>) = Table21(headers, rows.asList())
   fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> table(headers: Headers22, vararg rows: Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>) = Table22(headers, rows.asList())
 
-  fun error(e: TestFailedException, headers: List<String>, values: List<*>): TestFailedException {
+  fun error(e: AssertionError, headers: List<String>, values: List<*>): AssertionError {
     val params = headers.zip(values).joinToString(", ")
-    return TestFailedException("Test failed for $params with error ${e.message}")
+    return AssertionError("Test failed for $params with error ${e.message}")
   }
 
   fun <A> forAll(table: Table1<A>, fn: (A) -> Unit): Unit {
     for (row in table.rows) {
       try {
         fn(row.a)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -95,7 +94,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -106,7 +105,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -116,7 +115,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -127,7 +126,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -139,7 +138,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -150,7 +149,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -161,7 +160,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -172,7 +171,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -183,7 +182,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -194,7 +193,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -205,7 +204,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -216,7 +215,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -227,7 +226,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -238,7 +237,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -249,7 +248,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -260,7 +259,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -271,7 +270,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -282,7 +281,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -293,7 +292,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -304,7 +303,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }
@@ -315,7 +314,7 @@ interface TableTesting {
     for (row in table.rows) {
       try {
         fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
-      } catch (e: TestFailedException) {
+      } catch (e: AssertionError) {
         throw error(e, table.headers.values(), row.values())
       }
     }

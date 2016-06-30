@@ -1,6 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
 import io.kotlintest.specs.FreeSpec
 
 class StringMatchersTest : FreeSpec(), Matchers {
@@ -15,7 +14,7 @@ class StringMatchersTest : FreeSpec(), Matchers {
         val t = try {
           "bibble" should start with "vv"
           true
-        } catch(e: RuntimeException) {
+        } catch(e: AssertionError) {
           false
         }
         t shouldBe false
@@ -25,7 +24,7 @@ class StringMatchersTest : FreeSpec(), Matchers {
       "should compare length of string" {
         "bibble" should haveLength(6)
         "" should haveLength(0)
-        shouldThrow<TestFailedException> {
+        shouldThrow<AssertionError> {
           "" should haveLength(3)
         }
       }
@@ -40,7 +39,7 @@ class StringMatchersTest : FreeSpec(), Matchers {
         val t = try {
           "bibble" should end with "qwe"
           true
-        } catch(e: Exception) {
+        } catch(e: AssertionError) {
           false
         }
         t shouldBe false
@@ -56,7 +55,7 @@ class StringMatchersTest : FreeSpec(), Matchers {
         val t = try {
           "bibble" should have substring "qweqwe"
           true
-        } catch(e: Exception) {
+        } catch(e: AssertionError) {
           false
         }
         t shouldBe false

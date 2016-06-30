@@ -20,7 +20,7 @@ abstract class PropertyTesting : TestBase() {
           val a = gena.generate()
           val passed = fn(a)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for\n$a")
+            throw AssertionError("Property '$name' failed for\n$a")
           }
         }
       }
@@ -38,7 +38,7 @@ abstract class PropertyTesting : TestBase() {
           val b = genb.generate()
           val passed = fn(a, b)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for\n$a\n$b)")
+            throw AssertionError("Property '$name' failed for\n$a\n$b)")
           }
         }
       }
@@ -57,7 +57,7 @@ abstract class PropertyTesting : TestBase() {
           val c = genc.generate()
           val passed = fn(a, b, c)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for\n$a\n$b\n$c)")
+            throw AssertionError("Property '$name' failed for\n$a\n$b\n$c)")
           }
         }
       }
@@ -77,7 +77,7 @@ abstract class PropertyTesting : TestBase() {
           val d = gend.generate()
           val passed = fn(a, b, c, d)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d)")
+            throw AssertionError("Property '$name' failed for \n$a\n$b\n$c\n$d)")
           }
         }
       }
@@ -98,7 +98,7 @@ abstract class PropertyTesting : TestBase() {
           val e = gene.generate()
           val passed = fn(a, b, c, d, e)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e")
+            throw AssertionError("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e")
           }
         }
       }
@@ -120,7 +120,7 @@ abstract class PropertyTesting : TestBase() {
           val f = genf.generate()
           val passed = fn(a, b, c, d, e, f)
           if (!passed) {
-            throw TestFailedException("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e\n$f")
+            throw AssertionError("Property '$name' failed for \n$a\n$b\n$c\n$d\n$e\n$f")
           }
         }
       }
@@ -137,7 +137,7 @@ abstract class PropertyTesting : TestBase() {
           val a = gena.generate()
           val passed = fn(a)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for\n$a")
+            throw AssertionError("Property '$name' passed for\n$a")
           }
         }
       }
@@ -155,7 +155,7 @@ abstract class PropertyTesting : TestBase() {
           val b = genb.generate()
           val passed = fn(a, b)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for\n$a\n$b)")
+            throw AssertionError("Property '$name' passed for\n$a\n$b)")
           }
         }
       }
@@ -174,7 +174,7 @@ abstract class PropertyTesting : TestBase() {
           val c = genc.generate()
           val passed = fn(a, b, c)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for\n$a\n$b\n$c)")
+            throw AssertionError("Property '$name' passed for\n$a\n$b\n$c)")
           }
         }
       }
@@ -194,7 +194,7 @@ abstract class PropertyTesting : TestBase() {
           val d = gend.generate()
           val passed = fn(a, b, c, d)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d)")
+            throw AssertionError("Property '$name' passed for \n$a\n$b\n$c\n$d)")
           }
         }
       }
@@ -215,7 +215,7 @@ abstract class PropertyTesting : TestBase() {
           val e = gene.generate()
           val passed = fn(a, b, c, d, e)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e")
+            throw AssertionError("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e")
           }
         }
       }
@@ -237,7 +237,7 @@ abstract class PropertyTesting : TestBase() {
           val f = genf.generate()
           val passed = fn(a, b, c, d, e, f)
           if (passed) {
-            throw TestFailedException("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e\n$f")
+            throw AssertionError("Property '$name' passed for \n$a\n$b\n$c\n$d\n$e\n$f")
           }
         }
       }

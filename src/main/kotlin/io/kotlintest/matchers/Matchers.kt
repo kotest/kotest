@@ -1,7 +1,6 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.Inspectors
-import io.kotlintest.TestFailedException
 
 interface Keyword
 
@@ -27,7 +26,7 @@ interface Matchers : StringMatchers,
     TypeMatchers,
     Inspectors {
 
-  fun fail(msg: String): Nothing = throw TestFailedException(msg)
+  fun fail(msg: String): Nothing = throw AssertionError(msg)
 
   infix fun Double.shouldBe(other: Double): Unit = ToleranceMatcher(other, 0.0).test(this)
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
@@ -36,11 +35,11 @@ interface Matchers : StringMatchers,
       is io.kotlintest.matchers.Matcher<*> -> (any as Matcher<T>).test(this)
       else -> {
         if (this == null && any != null)
-          throw TestFailedException(this.toString() + " did not equal $any")
+          throw AssertionError(this.toString() + " did not equal $any")
         if (this != null && any == null)
-          throw TestFailedException(this.toString() + " did not equal $any")
+          throw AssertionError(this.toString() + " did not equal $any")
         if (this != any)
-          throw TestFailedException(this.toString() + " did not equal $any")
+          throw AssertionError(this.toString() + " did not equal $any")
       }
     }
   }

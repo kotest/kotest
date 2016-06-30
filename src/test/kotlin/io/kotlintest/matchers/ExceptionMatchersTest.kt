@@ -1,6 +1,5 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.TestFailedException
 import io.kotlintest.specs.FreeSpec
 
 class ExceptionMatchersTest : FreeSpec(), Matchers {
@@ -18,7 +17,7 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
             throw IllegalAccessException("bibble")
           }
           throw RuntimeException("If we get here its a bug")
-        } catch (e: TestFailedException) {
+        } catch (e: AssertionError) {
         }
       }
       "should test for throwables" {
@@ -27,7 +26,7 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
             throw Throwable("bibble")
           }
           throw RuntimeException("If we get here its a bug")
-        } catch (e: TestFailedException) {
+        } catch (e: AssertionError) {
         }
       }
       "return matched exception" {
@@ -49,7 +48,7 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
             listOf(1, 2, 3)
           }
           true
-        } catch (ex: TestFailedException) {
+        } catch (ex: AssertionError) {
           false
         }
         result shouldBe false
@@ -60,7 +59,7 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
             throw UnsupportedOperationException("bibble")
           }
           true
-        } catch (ex: TestFailedException) {
+        } catch (ex: AssertionError) {
           false
         }
         result shouldBe false
