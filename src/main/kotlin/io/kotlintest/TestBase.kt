@@ -113,23 +113,27 @@ abstract class TestBase : Matchers {
         if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
         else Executors.newFixedThreadPool(testcase.config.threads)
     notifier.fireTestStarted(description)
+    var failed = false
     for (j in 1..testcase.config.invocations) {
       executor.submit {
         try {
           testcase.test()
         } catch(e: AssertionError) {
           notifier.fireTestFailure(Failure(description, e))
+          failed = true
         }
       }
     }
-    notifier.fireTestFinished(description)
     executor.shutdown()
     val timeout = testcase.config.timeout
     val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
     if (!terminated) {
       val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
       notifier.fireTestFailure(failure)
+      failed = true
     }
+    if (!failed)
+      notifier.fireTestFinished(description)
   }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
