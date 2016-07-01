@@ -1,7 +1,5 @@
 package io.kotlintest.properties
 
-import io.kotlintest.TestBase
-
 interface TableTesting {
 
   fun headers(a: String) = Headers1(a)

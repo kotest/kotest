@@ -1,6 +1,8 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.Matchers
+import io.kotlintest.properties.PropertyTesting
+import io.kotlintest.properties.TableTesting
 import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.junit.runner.notification.Failure
@@ -11,7 +13,7 @@ import java.util.*
 import java.util.concurrent.Executors
 
 @RunWith(KTestJUnitRunner::class)
-abstract class TestBase : Matchers {
+abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
