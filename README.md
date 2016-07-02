@@ -112,12 +112,12 @@ class MyTests : WordSpec() {
 }
 ```
 
-#### Flat Spec
+#### Free Spec
 
-Flat spec allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
+Free spec allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : FreeSpec() {
   init {
     "String.length" - {
       "should return the length of the string" {
