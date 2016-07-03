@@ -143,3 +143,4 @@ nothing
 ### Fixed
 
 * Ignored tests now display properly. https://github.com/kotlintest/kotlintest/issues/43
+* Failing tests reported as a success AND a failure https://github.com/kotlintest/kotlintest/issues/42
