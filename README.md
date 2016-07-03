@@ -5,6 +5,7 @@ KotlinTest
 
 KotlinTest is a flexible and comprehensive testing tool for the [Kotlin](https://kotlinlang.org/) ecosystem based on and heavily inspired by the superb [Scalatest](http://www.scalatest.org/). KotlinTest provides several ways to lay out your test so that your team can pick the style they are most happy with. It also includes many matchers which allow you to write many different types of assertions easily and in a human readable way. Finally, there's helpers for things like collection testing, and future testing.
 
+For latest updates see [Changelog](CHANGELOG.md)
 How to use
 ----------
 
@@ -176,7 +177,7 @@ available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
 ### Free Spec
 
-`FreeSpec` allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
+`FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
 class MyTests : FreeSpec() {
