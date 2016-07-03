@@ -3,6 +3,13 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
+Version 1.3.1, released 2016-06-03
+----------------------------------
+
+### Changed
+
+* Bumped Kotlin version to 1.0.3
+
 Version 1.3.0, released 2016-06-03
 ----------------------------------
 
