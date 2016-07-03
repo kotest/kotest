@@ -49,6 +49,24 @@ class TableExample : StringSpec(), TableTesting {
 }
 ```
 
+* Property tests. Property tests automatically generate values for testings. You provide, or have KotlinTest provide for you,
+`generators`, which will generate a set of values and the unit test will be executed for each of those values. An example
+using two strings and asserting that the lengths are correct:
+
+```kotlin
+class PropertyExample: StringSpec() {
+
+  "String size" {
+    forAll({ a: String, b: String ->
+      (a + b).length == a.length + b.length
+    })
+  }
+
+}
+```
+
+That test will be executed 100 times with random values in each test. See more in the readme.
+
 * autoClose. Fields of type `Closeable` can be registered for automatic resource closing:
 
 ```kotlin

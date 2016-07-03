@@ -194,6 +194,56 @@ class MyTests : FlatSpec() {
 Property-based Testing
 ----------------------
 
+### Property Testing
+
+To automatically test your code with many combinations of values, you can allow KotlinTest to do the boilerplate
+by using property testing with `generators`. You invoke `forAll` or `forNone` and pass in a function, where the function
+parameters are populated automatically with many different values. The function must specify explcitly the parameter
+types as KotlinTest will use those to determine what types of values to pass in. 
+
+For example, here is a property test that checks that for any two Strings, the length of `a + b` 
+is the same as the length of `a` plus the length of `b`. In this example KotlinTest would 
+execute the test 100 tests for random String combinations.
+
+```kotlin
+class PropertyExample: StringSpec() {
+
+  "String size" {
+    forAll({ a: String, b: String ->
+      (a + b).length == a.length + b.length
+    })
+  }
+
+}
+```
+
+There are generators for all the common types - String, Ints, Sets, etc. If you need to generate custom types
+then you can simply specify the generator manually (and write your own). For example here is the same test again but
+with the generators specified.
+
+```kotlin
+class PropertyExample: StringSpec() {
+
+  "String size" {
+    forAll(Gen.string(), Gen.string(), { a: String, b: String ->
+      (a + b).length == a.length + b.length
+    })
+  }
+
+}
+```
+
+To write your own generator for a type T, you just implement the interface `Gen<T>`. For example you could write
+a `Gen` that supports a custom class called `Person`:
+
+```kotlin
+data class Person(val name: String, val age: Int)
+class PersonGenerator : Gen<Person> {
+  override fun generate(): Person = Person(Gen.string().generate(), Gen.int().generate())
+}
+```
+ 
+
 ### Table-driven Testing
 
 To test your code with different parameter combinations, you can use tables as input for your test 
@@ -211,7 +261,7 @@ Table testing can be used with any spec. Here is an example using `StringSpec`.
 
 
 ```kotlin
-class StringSpecExample : StringSpec(), TableTesting {
+class StringSpecExample : StringSpec() {
   init {
     "should add" {
        val myTable = table(
