@@ -3,7 +3,7 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
-Version 1.3.0, released YYYY-MM-DD TODO
+Version 1.3.0, released 2016-06-03
 ----------------------------------
 
 [Closed Issues](https://github.com/kotlintest/kotlintest/issues?utf8=%E2%9C%93&q=is%3Aclosed+milestone%3A2.0)
@@ -49,9 +49,7 @@ class TableExample : StringSpec(), TableTesting {
 }
 ```
 
-* Property tests. Property tests automatically generate values for testings. You provide, or have KotlinTest provide for you,
-`generators`, which will generate a set of values and the unit test will be executed for each of those values. An example
-using two strings and asserting that the lengths are correct:
+* Property tests. Property tests automatically generate values for testings. You provide, or have KotlinTest provide for you, `generators`, which will generate a set of values and the unit test will be executed for each of those values. An example using two strings and asserting that the lengths are correct:
 
 ```kotlin
 class PropertyExample: StringSpec() {
