@@ -1,15 +1,10 @@
 package io.kotlintest.specs
 
-import io.kotlintest.Duration
-import io.kotlintest.TestCase
-import io.kotlintest.TestConfig
-import io.kotlintest.TestSuite
-import io.kotlintest.properties.PropertyTesting
+import io.kotlintest.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.getOrPut
 
-abstract class FlatSpec : PropertyTesting() {
+abstract class FlatSpec : TestBase() {
 
   protected val suites: MutableMap<String, TestSuite> = HashMap()
 
