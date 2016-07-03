@@ -4,6 +4,35 @@ import io.kotlintest.specs.FreeSpec
 
 class StringMatchersTest : FreeSpec(), Matchers {
   init {
+
+    "should endWith" - {
+      "should test strings" {
+        "hello" should endWith("o")
+        "hello" should startWith("")
+        "" should startWith("")
+        shouldThrow<AssertionError> {
+          "" should endWith("h")
+        }
+        shouldThrow<AssertionError> {
+          "hello" should endWith("goodbye")
+        }
+      }
+    }
+
+    "should startWith" - {
+      "should test strings" {
+        "hello" should startWith("h")
+        "hello" should startWith("")
+        "" should startWith("")
+        shouldThrow<AssertionError> {
+          "" should startWith("h")
+        }
+        shouldThrow<AssertionError> {
+          "hello" should startWith("goodbye")
+        }
+      }
+    }
+
     "Matchers should start with x" - {
       "should compare prefix of string" {
         "bibble" should start with ""

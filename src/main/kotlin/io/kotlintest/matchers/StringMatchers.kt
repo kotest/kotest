@@ -17,6 +17,20 @@ interface StringMatchers {
       throw AssertionError("String does not end with $suffix but with ${value.takeLast(suffix.length)}")
   }
 
+  fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
+    override fun test(value: String) {
+      if (!value.startsWith(prefix))
+        throw AssertionError("String $value does not start with $prefix")
+    }
+  }
+
+  fun endWith(suffix: String): Matcher<String> = object : Matcher<String> {
+    override fun test(value: String) {
+      if (!value.endsWith(suffix))
+        throw AssertionError("String $value does not end with with $suffix")
+    }
+  }
+
   fun match(regex: String): Matcher<String> = object : Matcher<String> {
     override fun test(value: String) {
       if (!value.matches(regex.toRegex()))
