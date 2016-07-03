@@ -54,7 +54,7 @@ class StringSpecExample : StringSpec() {
 
 ### Flat Spec
 
-`FlatSpec` offers the keywords `should`, and `with`, and allows those to be used inline, as such:
+`FlatSpec` offers the keywords `should` and allows that to be used inline, as such:
 
 ```kotlin
 class MyTests : FlatSpec() {
@@ -176,10 +176,10 @@ available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
 ### Free Spec
 
-`FlatSpec` allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
+`FreeSpec` allows you to nest arbitary levels of depth using the keywords `-` (minus), as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : FreeSpec() {
   init {
     "String.length" - {
       "should return the length of the string" {
@@ -284,10 +284,11 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 ### String Matchers
 
-* To assert that a string starts with a given prefix use `x should start with y`.
-* To assert that a string ends with a given suffix use `x should end with y`.
-* To assert that a string contains a given substring use `x should have substring y`.
-* To assert that a string matches a given regular expression, use `x should match("regex")`.
+* To assert that a string starts with a given prefix use `str should startWith(y)`.
+* To assert that a string ends with a given suffix use `str should endWith(y)`.
+* To assert that a string contains a given substring use `str should have substring y`.
+* To assert that a string matches a given regular expression, use `str should match("regex")`.
+* To assert that a string has a given length, use `str should haveLength(10)`
 
 ### Long / Int Matchers
 
@@ -295,24 +296,19 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 ### Collection Matchers
 
-* To assert that a collection has a given size use `col should have size 4`. This is the same as `(col.size == 4) shouldBe true` but more readable.
-* To assert that a collection contains a given element use `col should contain element x`.
+* To assert that a collection has a given size use `col should haveSize(4)`. This is the same as `(col.size == 4) shouldBe true` but more readable.
+* To assert that a collection contains a given element use `col should contain(x)`.
 * To assert that a collection has a given collection of elements in any order, you can use `col should containInAnyOrder(xs)`
-
-### Map Matchers
-
-* To assert that a map has a given key, use `map should haveKey(key)`
-* To assert that a map has a given value, use `map should haveValue(value)`
-
-### References
-
-* To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
 
 ### Map Matchers
 
 * To assert that a map contains a given key use `map should haveKey(k)`.
 * To assert that a map contains a given value use `map should haveValue(v)`.
 * To assert that a map contains a given mappings use `col should contain(k,v)`.
+
+### References
+
+* To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
 
 Exceptions
 ----------
