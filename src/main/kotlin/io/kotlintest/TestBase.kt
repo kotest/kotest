@@ -10,7 +10,9 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.TestTimedOutException
 import java.io.Closeable
 import java.util.*
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 @RunWith(KTestJUnitRunner::class)
 abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
@@ -115,27 +117,31 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
         if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
         else Executors.newFixedThreadPool(testcase.config.threads)
     notifier.fireTestStarted(description)
-    var failed = false
+    val results = ArrayList<Future<Any>>()
     for (j in 1..testcase.config.invocations) {
-      executor.submit {
+      val callable = Callable {
         try {
           testcase.test()
         } catch (e: Throwable) {
-          notifier.fireTestFailure(Failure(description, e))
-          failed = true
+          Failure(description, e)
         }
       }
+      results.add(executor.submit(callable))
     }
     executor.shutdown()
     val timeout = testcase.config.timeout
     val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
+    results.forEach {
+      val result = it.get()
+      if (result is Failure) {
+        notifier.fireTestFailure(result)
+      }
+    }
     if (!terminated) {
       val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
       notifier.fireTestFailure(failure)
-      failed = true
     }
-    if (!failed)
-      notifier.fireTestFinished(description)
+    notifier.fireTestFinished(description)
   }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
