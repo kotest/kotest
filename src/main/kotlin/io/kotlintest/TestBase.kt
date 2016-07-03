@@ -120,7 +120,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
       executor.submit {
         try {
           testcase.test()
-        } catch(e: AssertionError) {
+        } catch (e: Throwable) {
           notifier.fireTestFailure(Failure(description, e))
           failed = true
         }

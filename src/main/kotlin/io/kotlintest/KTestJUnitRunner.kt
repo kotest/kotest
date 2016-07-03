@@ -4,7 +4,7 @@ import org.junit.runner.Description
 import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 
-class KTestJUnitRunner(val testClass: Class<TestBase>) : Runner() {
+class KTestJUnitRunner(testClass: Class<TestBase>) : Runner() {
 
   private val instance = testClass.newInstance()
 
