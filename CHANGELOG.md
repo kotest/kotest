@@ -3,6 +3,16 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
+Version 1.3.2, released 2016-06-05
+----------------------------------
+
+### Changed
+
+* Added `a shouldBe exactly(b)` matcher for doubles
+
+* `kotlintest` only pulls in `mockito-core` now instead of `mockito-all`
+
+
 Version 1.3.1, released 2016-06-03
 ----------------------------------
 
