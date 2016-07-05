@@ -4,7 +4,8 @@ import io.kotlintest.TestBase
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 
-abstract class FreeSpec : TestBase() {
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : TestBase() {
+  init { body(this) }
 
   var current = root
 
