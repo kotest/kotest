@@ -5,7 +5,8 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 import java.util.*
 
-abstract class BehaviorSpec : TestBase() {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : TestBase() {
+  init { body(this) }
 
   var current = root
 

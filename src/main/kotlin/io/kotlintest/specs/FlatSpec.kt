@@ -4,7 +4,8 @@ import io.kotlintest.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-abstract class FlatSpec : TestBase() {
+abstract class FlatSpec(body: FlatSpec.() -> Unit = {}) : TestBase() {
+  init { body(this) }
 
   protected val suites: MutableMap<String, TestSuite> = HashMap()
 

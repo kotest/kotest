@@ -14,3 +14,11 @@ class StringSpecTest : StringSpec() {
     }.config(invocations = 5)
   }
 }
+
+class StringSpecConstructorTest : StringSpec({
+
+  "strings.size should return size of string" {
+    "hello".length shouldBe 5
+    "hello" should haveLength(5)
+  }
+})

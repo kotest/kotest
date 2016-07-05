@@ -4,7 +4,8 @@ import io.kotlintest.TestBase
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 
-abstract class ShouldSpec : TestBase() {
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : TestBase() {
+  init { body(this) }
 
   var current = root
 
