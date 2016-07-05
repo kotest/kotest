@@ -2,6 +2,13 @@ package io.kotlintest.matchers
 
 interface DoubleMatchers {
   infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(this, tolerance)
+
+  fun exactly(d: Double): Matcher<Double> = object : Matcher<Double> {
+    override fun test(value: Double) {
+      if (value != d)
+        throw AssertionError("$value is not equal to expected value $d")
+    }
+  }
 }
 
 class ToleranceMatcher(val expected: Double, val tolerance: Double) : Matcher<Double> {

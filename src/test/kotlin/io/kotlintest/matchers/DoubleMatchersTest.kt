@@ -15,5 +15,11 @@ class DoubleMatchersTest : ShouldSpec() {
     should("match exactly without tolerance") {
       1.0 shouldBe 1.0
     }
+    should("match exactly") {
+      1.0 shouldBe exactly(1.0)
+      shouldThrow<AssertionError> {
+        1.0 shouldBe exactly(1.1)
+      }
+    }
   }
 }
