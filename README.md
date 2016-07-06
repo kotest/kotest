@@ -298,6 +298,7 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 ### Long / Int Matchers
 
 * To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
+* To assert that a value is within a given range, you can do `x shouldBe between(y,z)`
 
 ### Double Matchers
 

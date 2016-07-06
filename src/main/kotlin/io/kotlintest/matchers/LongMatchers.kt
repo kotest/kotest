@@ -21,4 +21,11 @@ interface LongMatchers {
     if (value > expected)
       throw AssertionError("$value is not less than or equal to $expected")
   }
+
+  fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
+    override fun test(value: Long) {
+      if (a > value || b < value)
+        throw AssertionError("$value is not between ($a, $b)")
+    }
+  }
 }

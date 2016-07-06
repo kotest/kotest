@@ -2,21 +2,17 @@ package io.kotlintest.matchers
 
 import io.kotlintest.specs.StringSpec
 
-class LongMatchersTest : StringSpec() {
+class IntMatchersTest : StringSpec() {
   init {
-
-    "Ge should be valid" {
-      1 should be gt 0
-    }
 
     "between should test for valid interval" {
 
       val table = table(
           headers("a", "b"),
-          row(0L, 2L),
-          row(1L, 2L),
-          row(0L, 1L),
-          row(1L, 1L)
+          row(0, 2),
+          row(1, 2),
+          row(0, 1),
+          row(1, 1)
       )
 
       forAll(table) { a, b ->
@@ -28,10 +24,10 @@ class LongMatchersTest : StringSpec() {
 
       val table = table(
           headers("a", "b"),
-          row(0L, 2L),
-          row(2L, 2L),
-          row(4L, 5L),
-          row(4L, 6L)
+          row(0, 2),
+          row(2, 2),
+          row(4, 5),
+          row(4, 6)
       )
 
       forNone(table) { a, b ->

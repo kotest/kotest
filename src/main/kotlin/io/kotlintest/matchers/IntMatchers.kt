@@ -21,4 +21,11 @@ interface IntMatchers {
     if (value > expected)
       throw AssertionError("$value is not less than or equal to $expected")
   }
+
+  fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
+    override fun test(value: Int) {
+      if (a > value || b < value)
+        throw AssertionError("$value is not between ($a, $b)")
+    }
+  }
 }

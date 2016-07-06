@@ -3,7 +3,7 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
-Version 2.0.0, released 2016-06-05
+Version 2.0.0, released ???
 ----------------------------------
 
 ### Added
@@ -18,8 +18,27 @@ class StringSpecExample : StringSpec({
   }
 })
 
+* Added `forNone` for table tests, eg
 
-Version 1.3.2, released 2016-06-05
+```kotlin
+val table = table(
+    headers("a", "b"),
+    row(0L, 2L),
+    row(2L, 2L),
+    row(4L, 5L),
+    row(4L, 6L)
+)
+
+forNone(table) { a, b ->
+  3 shouldBe between(a, b)
+}
+``` 
+
+* Added `between` matcher for int and long, eg
+
+```3 shouldBe between(2, 5)```
+
+Version 1.3.2, released 2016-07-05
 ----------------------------------
 
 ### Changed
@@ -29,14 +48,14 @@ Version 1.3.2, released 2016-06-05
 * `kotlintest` only pulls in `mockito-core` now instead of `mockito-all`
 
 
-Version 1.3.1, released 2016-06-03
+Version 1.3.1, released 2016-07-03
 ----------------------------------
 
 ### Changed
 
 * Bumped Kotlin version to 1.0.3
 
-Version 1.3.0, released 2016-06-03
+Version 1.3.0, released 2016-07-03
 ----------------------------------
 
 [Closed Issues](https://github.com/kotlintest/kotlintest/issues?utf8=%E2%9C%93&q=is%3Aclosed+milestone%3A2.0)
