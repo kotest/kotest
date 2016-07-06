@@ -1,7 +1,5 @@
 package io.kotlintest.matchers
 
-import org.junit.Assert
-
 interface Matcher<T> {
 
   fun test(value: T)

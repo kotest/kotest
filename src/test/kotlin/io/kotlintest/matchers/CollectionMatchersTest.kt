@@ -7,6 +7,15 @@ class CollectionMatchersTest : WordSpec() {
 
   init {
 
+    "sorted" should {
+      "test that a collect is sorted" {
+        listOf(1, 2, 3, 4) shouldBe sorted<Int>()
+        shouldThrow<AssertionError> {
+          listOf(2, 1) shouldBe sorted<Int>()
+        }
+      }
+    }
+
     "singleElement" should {
       "test that a collection contains a single given element"  {
         listOf(1) shouldBe singleElement(1)

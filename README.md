@@ -311,6 +311,7 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 * To assert that a collection contains a given element use `col should contain(x)`.
 * To assert that a collection has a given collection of elements in any order, you can use `col should containInAnyOrder(xs)`
 * To assert that a collection has a single given element use `col shouldBe singleElement(y)`
+* To assert that a collection is sorted use `listOf(1,2,3) shouldBe sorted<Int>()`
 
 ### Map Matchers
 

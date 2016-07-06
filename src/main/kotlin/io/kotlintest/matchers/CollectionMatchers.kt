@@ -51,4 +51,11 @@ interface CollectionMatchers {
         throw AssertionError("Collection contains a single element but it is not equal to $t")
     }
   }
+
+  fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
+    override fun test(value: List<T>) {
+      if (value.sorted() != value)
+        throw AssertionError("Collection $value is not sorted")
+    }
+  }
 }

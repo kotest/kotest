@@ -42,6 +42,10 @@ forNone(table) { a, b ->
 
 ```x shouldBe singleElement(y)```
 
+* Added `sorted` matcher for collections, eg
+
+```listOf(1,2,3) shouldBe sorted<Int>()```
+
 Version 1.3.2, released 2016-07-05
 ----------------------------------
 
