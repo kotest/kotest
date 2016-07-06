@@ -29,7 +29,7 @@ Maven:
 Testing Styles
 --------------
 
-You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FlatSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests inside an init {} block. _In ScalaTest, the body of the class is the constructor, so you write tests directly in the class body. The KotlinTest equivalent is the init block._
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FlatSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 ```kotlin
 class MyTests : StringSpec() {
@@ -37,6 +37,10 @@ class MyTests : StringSpec() {
     // tests here
   }
 }
+
+class MyTests : StringSpec({
+  // tests here
+})
 ```
 
 ### String Spec
@@ -44,7 +48,7 @@ class MyTests : StringSpec() {
 `StringSpec` reduces the syntax to the absolute minimum. Just write a string followed by a lambda expression with your test code. If in doubt, use this style.
 
 ```kotlin
-class StringSpecExample : StringSpec() {
+class MyTests : StringSpec() {
   init {
     "strings.length should return size of string" {
       "hello".length shouldBe 5
