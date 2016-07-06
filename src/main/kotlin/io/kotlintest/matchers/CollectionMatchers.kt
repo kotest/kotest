@@ -42,4 +42,13 @@ interface CollectionMatchers {
         throw AssertionError("Collection did not contain element $t")
     }
   }
+
+  fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+    override fun test(value: Collection<T>) {
+      if (value.size != 1)
+        throw AssertionError("Collection is not a single element but contains ${value.size} elements")
+      if (value.first() != t)
+        throw AssertionError("Collection contains a single element but it is not equal to $t")
+    }
+  }
 }

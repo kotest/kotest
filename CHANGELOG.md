@@ -38,6 +38,10 @@ forNone(table) { a, b ->
 
 ```3 shouldBe between(2, 5)```
 
+* Added `singleElement` matcher for collections, eg
+
+```x shouldBe singleElement(y)```
+
 Version 1.3.2, released 2016-07-05
 ----------------------------------
 

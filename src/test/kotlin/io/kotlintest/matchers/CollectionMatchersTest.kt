@@ -7,6 +7,18 @@ class CollectionMatchersTest : WordSpec() {
 
   init {
 
+    "singleElement" should {
+      "test that a collection contains a single given element"  {
+        listOf(1) shouldBe singleElement(1)
+        shouldThrow<AssertionError> {
+          listOf(1) shouldBe singleElement(2)
+        }
+        shouldThrow<AssertionError> {
+          listOf(1, 2) shouldBe singleElement(2)
+        }
+      }
+    }
+
     "CollectionMatchers.contain" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
