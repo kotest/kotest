@@ -11,11 +11,17 @@ interface Gen<T> {
   companion object {
 
     fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
-      override fun generate(): Int = Random.default.nextInt(max - min) + min
+      override fun generate(): Int = Random.default.nextInt((max.toLong() - min.toLong()).toInt()) + min
     }
 
     fun choose(min: Long, max: Long): Gen<Long> = object : Gen<Long> {
-      override fun generate(): Long = (Random.default.nextLong() + min) % max
+      override fun generate(): Long {
+        var rand = (Random.default.nextLong() % (max - min));
+        if(rand < 0) {
+          rand += max - min;
+        }
+        return rand + min;
+      }
     }
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
@@ -97,7 +103,7 @@ interface Gen<T> {
   }
 
   fun nextPrintableString(length: Int): String {
-    return (0..length).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
+    return (0..length - 1).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
   }
 }
 
