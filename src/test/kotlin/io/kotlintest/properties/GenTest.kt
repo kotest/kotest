@@ -16,8 +16,13 @@ class GenTest : WordSpec() {
                 var rand = random.nextInt(10000);
                 if (rand <= 0)
                     rand = 0 - rand;
+                val string = Gen.string().nextPrintableString(rand);
 
-                Gen.string().nextPrintableString(rand).length shouldBe rand
+                string.forEach {
+                    it.toInt() should be gte 33
+                    it.toInt() should be lt 127
+                }
+                string.length shouldBe rand
             }.config(invocations = 100, threads = 8)
         }
         "Gen.choose<int, int>" should {
