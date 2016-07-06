@@ -32,7 +32,7 @@ interface Matchers : StringMatchers,
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
     when (any) {
-      is io.kotlintest.matchers.Matcher<*> -> (any as Matcher<T>).test(this)
+      is Matcher<*> -> (any as Matcher<T>).test(this)
       else -> {
         if (this == null && any != null)
           throw AssertionError(this.toString() + " did not equal $any")
@@ -52,10 +52,6 @@ interface Matchers : StringMatchers,
   infix fun <T> T.should(x: be): BeWrapper<T> = BeWrapper(this)
   infix fun <T> T.should(x: contain): ContainWrapper<T> = ContainWrapper(this)
   infix fun <T> T.should(x: include): IncludeWrapper<T> = IncludeWrapper(this)
-}
-
-interface Matcher<T> {
-  fun test(value: T)
 }
 
 class HaveWrapper<T>(val value: T)
