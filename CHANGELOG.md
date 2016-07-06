@@ -3,6 +3,22 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
+Version 2.0.0, released 2016-06-05
+----------------------------------
+
+### Added
+
+* You can write tests alternatively into a lambda parameter in the class constructor, eg:
+
+```kotlin
+class StringSpecExample : StringSpec({
+  "strings.size should return size of string" {
+    "hello".length shouldBe 5
+    "hello" should haveLength(5)
+  }
+})
+
+
 Version 1.3.2, released 2016-06-05
 ----------------------------------
 
