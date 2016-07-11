@@ -1,9 +1,12 @@
 package io.kotlintest.properties
 
-import com.sksamuel.koors.Random
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.util.*
+
+/** A shared random number generator. */
+private val RANDOM = Random()
 
 interface Gen<T> {
   fun generate(): T
@@ -11,45 +14,45 @@ interface Gen<T> {
   companion object {
 
     fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
-      override fun generate(): Int = Random.default.nextInt((max.toLong() - min.toLong()).toInt()) + min
+      override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
     }
 
     fun choose(min: Long, max: Long): Gen<Long> = object : Gen<Long> {
       override fun generate(): Long {
-        var rand = (Random.default.nextLong() % (max - min));
-        if(rand < 0) {
-          rand += max - min;
+        var rand = (RANDOM.nextLong() % (max - min))
+        if (rand < 0) {
+          rand += max - min
         }
-        return rand + min;
+        return rand + min
       }
     }
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = Random.default.shuffle(values).first()
+      override fun generate(): T = values[RANDOM.nextInt(values.size - 1)]
     }
 
     fun string(): Gen<String> = object : Gen<String> {
-      override fun generate(): String = nextPrintableString(Random.default.nextInt(100))
+      override fun generate(): String = nextPrintableString(RANDOM.nextInt(100))
     }
 
     fun int() = object : Gen<Int> {
-      override fun generate(): Int = Random.default.nextInt()
+      override fun generate(): Int = RANDOM.nextInt()
     }
 
     fun long() = object : Gen<Long> {
-      override fun generate(): Long = Random.default.nextLong()
+      override fun generate(): Long = RANDOM.nextLong()
     }
 
     fun bool() = object : Gen<Boolean> {
-      override fun generate(): Boolean = Random.default.nextBoolean()
+      override fun generate(): Boolean = RANDOM.nextBoolean()
     }
 
     fun double() = object : Gen<Double> {
-      override fun generate(): Double = Random.default.nextDouble()
+      override fun generate(): Double = RANDOM.nextDouble()
     }
 
     fun float() = object : Gen<Float> {
-      override fun generate(): Float = Random.default.nextFloat()
+      override fun generate(): Float = RANDOM.nextFloat()
     }
 
     fun <T> create(fn: () -> T): Gen<T> = object : Gen<T> {
@@ -57,11 +60,11 @@ interface Gen<T> {
     }
 
     fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
-      override fun generate(): Set<T> = (0..Random.default.nextInt(100)).map { gen.generate() }.toSet()
+      override fun generate(): Set<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toSet()
     }
 
     fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
-      override fun generate(): List<T> = (0..Random.default.nextInt(100)).map { gen.generate() }.toList()
+      override fun generate(): List<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toList()
     }
 
     fun forClassName(className: String): Gen<*> {
@@ -102,8 +105,18 @@ interface Gen<T> {
     }
   }
 
+  /**
+   * Returns the next pseudorandom, uniformly distributed value
+   * from the ASCII range 33-126.
+   */
+  private fun Random.nextPrintableChar(): Char {
+    val low = 33
+    val high = 127
+    return (nextInt(high - low) + low).toChar()
+  }
+
   fun nextPrintableString(length: Int): String {
-    return (0..length - 1).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
+    return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
   }
 }
 
