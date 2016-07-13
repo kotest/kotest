@@ -47,7 +47,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
                        invocations: Int = 1,
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
-                       tags: List<String> = listOf()) =
+                       tags: List<Tag> = listOf()) =
       TestConfig(ignored, invocations, timeout, threads, tags)
 
   /**

@@ -19,8 +19,8 @@ data class TestCase(
       ignored: Boolean = false,
       timeout: Duration = Duration.unlimited,
       threads: Int = 1,
-      tag: String? = null,
-      tags: List<String> = listOf()): Unit {
+      tag: Tag? = null,
+      tags: List<Tag> = listOf()): Unit {
     val mergedTags = if (tag != null) tags + tag else config.tags
     config = config.copy(ignored, invocations, timeout, threads, mergedTags)
   }
@@ -30,13 +30,14 @@ data class TestCase(
 
   private val isActiveAccordingToTags: Boolean
     get() {
+      val testCaseTags = config.tags.map { it.toString() }
       val includedTags = readProperty("includeTags")
       val excludedTags = readProperty("excludeTags")
       val includedTagsEmpty = includedTags.isEmpty() || includedTags == listOf("")
       return when {
-        excludedTags.intersect(config.tags).isNotEmpty() -> false
+        excludedTags.intersect(testCaseTags).isNotEmpty() -> false
         includedTagsEmpty -> true
-        includedTags.intersect(config.tags).isNotEmpty() -> true
+        includedTags.intersect(testCaseTags).isNotEmpty() -> true
         else -> false
       }
     }
