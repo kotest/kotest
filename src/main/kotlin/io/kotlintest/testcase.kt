@@ -3,38 +3,6 @@ package io.kotlintest
 import org.junit.runner.Description
 import java.util.concurrent.TimeUnit
 
-data class TestSuite(
-    val name: String,
-    val nestedSuites: MutableList<TestSuite>,
-    val cases: MutableList<TestCase>) {
-
-  companion object {
-    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
-  }
-
-  internal fun tests(suite: TestSuite = this): List<TestCase> =
-      suite.cases + suite.nestedSuites.flatMap { suite -> tests(suite) }
-
-  internal val size = tests().size
-}
-
-data class TestConfig(
-    val ignored: Boolean = false,
-    val invocations: Int = 1,
-    val timeout: Duration = Duration.unlimited,
-    val threads: Int = 1,
-    val tags: List<String> = listOf()) {
-
-  @Deprecated("use the constructor with Duration instead")
-  constructor(
-      ignored: Boolean,
-      invocations: Int,
-      timeout: Long = 0,
-      timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
-      threads: Int,
-      tags: List<String>) : this(ignored, invocations, Duration(timeout, timeoutUnit), threads, tags)
-}
-
 data class TestCase(
     val suite: TestSuite,
     val name: String,
@@ -73,9 +41,9 @@ data class TestCase(
   }
 
   internal val isActive: Boolean
-    get() = !config.ignored && isTaggedOrNoTagsSet
+    get() = !config.ignored && isActiveAccordingToTags
 
-  private val isTaggedOrNoTagsSet: Boolean
+  private val isActiveAccordingToTags: Boolean
     get() {
       val includedTags = readProperty("includeTags")
       val excludedTags = readProperty("excludeTags")

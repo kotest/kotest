@@ -48,7 +48,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
                        tags: List<String> = listOf()) =
-          TestConfig(ignored, invocations, timeout, threads, tags)
+      TestConfig(ignored, invocations, timeout, threads, tags)
 
   /**
    * Registers a field for auto closing after all tests have run.
