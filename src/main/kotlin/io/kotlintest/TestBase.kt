@@ -19,7 +19,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  open val oneInstancePerTest = true
+  open val oneInstancePerTest = false
 
   /**
    * Config applied to each test case if not overridden per test case.

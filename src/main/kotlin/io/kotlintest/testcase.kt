@@ -25,21 +25,6 @@ data class TestCase(
     config = config.copy(ignored, invocations, timeout, threads, mergedTags)
   }
 
-  @Deprecated(
-      message = "use overload instead",
-      replaceWith = ReplaceWith("config(invocations, ignored, timeout, threads, tag, tags)"))
-  fun config(
-      invocations: Int = 1,
-      ignored: Boolean = false,
-      timeout: Long = 0,
-      timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
-      threads: Int = 1,
-      tag: String? = null,
-      tags: List<String> = listOf()): Unit {
-    val mergedTags = if (tag != null) tags + tag else config.tags
-    config = config.copy(ignored, invocations, Duration(timeout, timeoutUnit), threads, mergedTags)
-  }
-
   internal val isActive: Boolean
     get() = !config.ignored && isActiveAccordingToTags
 

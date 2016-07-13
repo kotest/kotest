@@ -17,18 +17,6 @@ abstract class FlatSpec(body: FlatSpec.() -> Unit = {}) : TestBase() {
                     tags: List<String> = listOf()): Pair<String, TestConfig> =
       Pair(this, TestConfig(ignored, invocations, timeout, threads, tags))
 
-  @Deprecated(
-          message = "use overload instead",
-          replaceWith = ReplaceWith("String.config(invocations, ignored, timeout, threads, tag, tags)"))
-  fun String.config(invocations: Int = 1,
-                    ignored: Boolean = false,
-                    timeout: Long = 0,
-                    timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
-                    threads: Int = 1,
-                    tag: String? = null,
-                    tags: List<String> = listOf()): Pair<String, TestConfig> =
-          Pair(this, TestConfig(ignored, invocations, timeout, timeoutUnit, threads, tags))
-
   // allows us to write "name of test" { test here }
   operator fun String.invoke(test: () -> Unit): Pair<String, () -> Unit> = Pair(this, test)
 

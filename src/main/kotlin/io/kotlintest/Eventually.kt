@@ -18,19 +18,4 @@ interface Eventually {
     }
     throw AssertionError("Test failed after ${duration.amount} ${duration.timeUnit}; attempted $times times")
   }
-
-  @Deprecated("use the overload with Duration instead", replaceWith = ReplaceWith("eventually(duration, f)"))
-  fun eventually(duration: Long, unit: TimeUnit, f: () -> Unit): Unit {
-    val end = System.nanoTime() + unit.toNanos(duration)
-    var times = 0
-    while (System.nanoTime() < end) {
-      try {
-        f()
-        return
-      } catch (e: Exception) {
-      }
-      times++
-    }
-    throw AssertionError("Test failed after $duration $unit; attempted $times times")
-  }
 }
