@@ -77,7 +77,17 @@ data class TestCase(
 
   private val isTaggedOrNoTagsSet: Boolean
     get() {
-      val systemTags = (System.getProperty("testTags") ?: "").split(',')
-      return systemTags.isEmpty() || config.tags.isEmpty() || systemTags.intersect(config.tags).isNotEmpty()
+      val includedTags = readProperty("includeTags")
+      val excludedTags = readProperty("excludeTags")
+      val includedTagsEmpty = includedTags.isEmpty() || includedTags == listOf("")
+      return when {
+        excludedTags.intersect(config.tags).isNotEmpty() -> false
+        includedTagsEmpty -> true
+        includedTags.intersect(config.tags).isNotEmpty() -> true
+        else -> false
+      }
     }
+
+  private fun readProperty(name: String): List<String> =
+      (System.getProperty(name) ?: "").split(',').map { it.trim() }
 }
