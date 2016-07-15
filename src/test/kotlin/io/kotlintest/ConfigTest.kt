@@ -12,8 +12,6 @@ class ConfigTest : WordSpec() {
   val invocationCounter = AtomicInteger(0)
   val invocationCounter2 = AtomicInteger(0)
   val threadCounter = AtomicInteger(0)
-  val singleTagShouldHaveRun = AtomicBoolean(false)
-  val multiTagShouldHaveRun = AtomicBoolean(false)
 
   init {
     "TestCase config" should {
@@ -25,16 +23,6 @@ class ConfigTest : WordSpec() {
       "support ignored" {
         fail("shouldn't run")
       }.config(ignored = true)
-
-      System.setProperty("testTags", "bibble,fibble,foo")
-
-      "support single tag" {
-        singleTagShouldHaveRun.set(true)
-      }.config(tag = "foo", invocations = 1)
-
-      "support multiple tags" {
-        multiTagShouldHaveRun.set(true)
-      }.config(tags = listOf("foo", "boo"), invocations = 1)
 
       // if we have 100 threads, and each one sleeps for 1000 seconds, then the total time should still be
       // approx 1000. So we set the timeout an order of magnitude higher, and it should never hit
@@ -54,7 +42,5 @@ class ConfigTest : WordSpec() {
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3
     threadCounter.get() shouldBe 100
-    singleTagShouldHaveRun.get() shouldBe true
-    multiTagShouldHaveRun.get() shouldBe true
   }
 }
