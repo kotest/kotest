@@ -401,7 +401,7 @@ Each test can be configured with various parameters. After the test block, invok
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
 * `ignored` - If set to true then this test is ignored. Can be useful if a test needs to be temporarily disabled.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
-* `tag` / `tags` - a list of String tags that can be set on a test. Then by invoking the test runner with a system property of `includeTags` and/or `excludeTags`, you can control which tests are run.  For example, tests that require a linux based O/S might be tagged with "linux" then gradle could be invoked with gradle test -DincludeTags=linux. Another example might be tagging database tags that you only want to run on a server that has a database installed. If you use `includeTags` and `excludeTags` in combination, only the tests tagged with a tag from `includeTags` but not tagged with a tag from `excludeTags` are run. If you use only `excludeTags` all tests but the tests tagged with the given tags are are run.
+* `tag` / `tags` - a set of tags that can be used to group tests (see detailed description below).
 
 Examples of setting config:
 
@@ -433,10 +433,62 @@ class MyTests : WordSpec() {
 class FunSpecTest : FunSpec() {
   init {
     test("FunSpec should support config syntax") {
-    }.config(tags = listOf("database", "linux"))
+    }.config(tags = setOf(Database, Linux))
   }
 }
 ```
+
+Grouping Tests with Tags
+------------------------
+
+Sometimes you don't want to run all tests and KotlinTests provides tags to be able to run only
+certain tests. Tags are objects inheriting from `io.kotlintest.Tag`.
+
+To define tags for grouping tests by operating system you could define the following tags:
+
+```kotlin
+object Linux : Tag()
+object Windows: Tag()
+```
+
+Test cases are marked with tags with the `config` function:
+
+```kotlin
+class MyTest : StringSpec {
+  init {
+    "should run on Windows" {
+      ...
+    }.config(tag = Windows)
+
+    "should run on Linux" {
+      ...
+    }.config(tag = Linux)
+
+    "should run on Windows and Linux" {
+      ...
+    }.config(tags = setOf(Windows, Linux))
+  }
+}
+```
+
+Then by invoking the test runner with a system property of `includeTags` and/or `excludeTags`, you
+can control which tests are run. If you provide more than one tag for `includeTags` or
+`excludeTags`, a test case with at least one of the given tags is included/excluded.
+
+Provide the simple tag object names (without package) as tag names. Please pay attention to the use
+of upper case and lower case! If two tag objects have the same simple name (in different name
+spaces) they are treated as the same tag.
+
+Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
+Gradle like this:
+
+```
+gradle test -DincludeTags=Linux -DexcludeTags=Database
+```
+
+If you use `includeTags` and `excludeTags` in combination, only the tests tagged with a tag from
+`includeTags` but not tagged with a tag from `excludeTags` are run. If you use only `excludeTags`
+all tests but the tests tagged with the given tags are are run.
 
 Closing resource automatically (since 1.3.0)
 --------------------------------------------

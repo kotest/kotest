@@ -13,8 +13,8 @@ abstract class FlatSpec(body: FlatSpec.() -> Unit = {}) : TestBase() {
                     ignored: Boolean = false,
                     timeout: Duration = Duration.unlimited,
                     threads: Int = 1,
-                    tag: String? = null,
-                    tags: List<String> = listOf()): Pair<String, TestConfig> =
+                    tag: Tag? = null,
+                    tags: Set<Tag> = setOf()): Pair<String, TestConfig> =
       Pair(this, TestConfig(ignored, invocations, timeout, threads, tags))
 
   // allows us to write "name of test" { test here }

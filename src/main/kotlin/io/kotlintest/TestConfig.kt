@@ -5,4 +5,4 @@ data class TestConfig(
     val invocations: Int = 1,
     val timeout: Duration = Duration.unlimited,
     val threads: Int = 1,
-    val tags: List<String> = listOf())
+    val tags: Set<Tag> = setOf())
