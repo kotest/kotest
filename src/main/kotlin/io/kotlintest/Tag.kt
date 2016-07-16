@@ -1,12 +1,20 @@
 package io.kotlintest
 
+
 /**
- * Base class for all tags. If you don't provide a string representation explitely, the name of the
- * derived class will be used.
+ * Base class for all tags. The simple name (without packages) of the singleton derived from this
+ * class will be used as name. Two tag object with the same simple name (same object names in
+ * different packages) are treated as a single tag.
  */
-abstract class Tag(representation: String? = null) {
+abstract class Tag() {
 
-  val representation: String = representation ?: javaClass.simpleName
+  /**
+   * Simple name of the singleton/class derived from this class.
+   */
+  val name: String = javaClass.simpleName
 
-  override fun toString() = representation
+  /**
+   * Same as [name].
+   */
+  override fun toString() = name
 }

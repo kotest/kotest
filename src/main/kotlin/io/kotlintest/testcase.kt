@@ -20,7 +20,7 @@ data class TestCase(
       timeout: Duration = Duration.unlimited,
       threads: Int = 1,
       tag: Tag? = null,
-      tags: List<Tag> = listOf()): Unit {
+      tags: Set<Tag> = setOf()): Unit {
     val mergedTags = if (tag != null) tags + tag else config.tags
     config = config.copy(ignored, invocations, timeout, threads, mergedTags)
   }
