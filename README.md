@@ -29,7 +29,7 @@ Maven:
 Testing Styles
 --------------
 
-You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FlatSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 ```kotlin
 class MyTests : StringSpec() {
@@ -52,21 +52,6 @@ class MyTests : StringSpec() {
   init {
     "strings.length should return size of string" {
       "hello".length shouldBe 5
-    }
-  }
-}
-```
-
-### Flat Spec
-
-`FlatSpec` offers the keywords `should` and allows that to be used inline, as such:
-
-```kotlin
-class MyTests : FlatSpec() {
-  init {
-    "String.length" should "return the length of the string" {
-      "sammy".length shouldBe 5
-      "".length shouldBe 0
     }
   }
 }
@@ -139,7 +124,7 @@ class MyTests : WordSpec() {
 `FeatureSpec` allows you to use `feature` and `scenario`, as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : FeatureSpec() {
   init {
     feature("the thingy bob") {
       scenario("should explode when I touch it") {
@@ -158,7 +143,7 @@ class MyTests : FlatSpec() {
 `BehaviorSpec` allows you to use `given`, `when`, `then`, as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : BehaviorSpec() {
   init {
     given("a broomstick") {
       `when`("I sit on it") {
