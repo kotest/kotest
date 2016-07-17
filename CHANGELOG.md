@@ -6,6 +6,8 @@ This project follows [semantic versioning](http://semver.org/).
 Version 2.0.0, released ???
 ----------------------------------
 
+[Closed Issues](https://github.com/kotlintest/kotlintest/milestone/4?closed=1)
+
 ### Added
 
 * You can write tests alternatively into a lambda parameter in the class constructor, eg:
@@ -45,6 +47,20 @@ forNone(table) { a, b ->
 * Added `sorted` matcher for collections, eg
 
 ```listOf(1,2,3) shouldBe sorted<Int>()```
+
+### Changed
+
+* Tags are objects derived from `Tag` class now.
+* Tags can now be included and/or exluded. It is no longer the case that all untagged tests are
+always executed.
+
+### Removed
+
+* FlatSpec was removed because it has an irregular syntax with `config` and is essentially the same
+as StringSpec, but more complicated.
+* Deprecated method overloads with `duration: Long, unit: TimeUnit`
+* `expecting` for testing exceptions (use shouldThrow now)
+
 
 Version 1.3.2, released 2016-07-05
 ----------------------------------
