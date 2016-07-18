@@ -8,6 +8,7 @@ import io.kotlintest.Duration.Companion.milliseconds
 class ConfigTest : WordSpec() {
 
   override val defaultTestCaseConfig: TestConfig = config(invocations = 3)
+  override val oneInstancePerTest = false
 
   val invocationCounter = AtomicInteger(0)
   val invocationCounter2 = AtomicInteger(0)

@@ -4,6 +4,8 @@ import io.kotlintest.specs.ShouldSpec
 
 class SharedInstanceForTestsTest : ShouldSpec() {
 
+  override val oneInstancePerTest = false
+
   init {
     var count = 0
     should("be 0") {

@@ -19,7 +19,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  open val oneInstancePerTest = false
+  open val oneInstancePerTest = true
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -78,20 +78,20 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
+    beforeAll()
     val testCount = root.tests().size
-    for (k in (0..testCount - 1)) {
+    for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
-      val testcase = instance.root.tests()[k]
+      val testcase = instance.root.tests()[testCaseIndex]
       if (testcase.isActive) {
-        instance.beforeAll()
         instance.beforeEach()
         runTest(testcase, notifier, testcase.description)
         instance.afterEach()
-        instance.performAfterAll(notifier)
       } else {
         notifier.fireTestIgnored(testcase.description)
       }
     }
+    performAfterAll(notifier)
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
