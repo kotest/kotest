@@ -148,6 +148,22 @@ class GenTest : WordSpec() {
             }
         }
         "Gen.oneOf list<T> " should {
+            "choose a random member and not the same one every time" {
+                val list = listOf("a", "b", "c", "d", "e")
+                val gen = Gen.oneOf(list)
+
+                val map: MutableMap<String, Int> = mutableMapOf()
+
+                list.forEach { map.put(it, 0) }
+
+                (0..1000000).forEach {
+                    val key = gen.generate()
+                    map.put(key, map[key]?.plus(1)!!)
+                }
+
+                map.forEach { it.value should be gt 0 }
+
+            }
             "select one of a given list" {
 
                 forAll(Gen.list(Gen.int())) {

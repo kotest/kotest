@@ -33,7 +33,7 @@ interface Gen<T> {
     }
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = values[RANDOM.nextInt(values.size - 1)]
+      override fun generate(): T = values[RANDOM.nextInt(values.size)]
     }
 
     fun string(): Gen<String> = object : Gen<String> {
