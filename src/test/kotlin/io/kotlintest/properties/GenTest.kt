@@ -27,24 +27,24 @@ class GenTest : WordSpec() {
         }
         "Gen.choose<int, int>" should {
             "only give out numbers in the given range" {
-                val random = Random();
+                val random = Random()
 
-                val max = random.nextInt(10000) + 10000;
-                val min = random.nextInt(10000) - 10000;
+                val max = random.nextInt(10000) + 10000
+                val min = random.nextInt(10000) - 10000
 
-                val rand = Gen.choose(min, max).generate();
+                val rand = Gen.choose(min, max).generate()
                 rand should be gte min
                 rand should be lt max
             }.config(invocations = 10000, threads = 8)
         }
         "Gen.choose<long, long>" should {
             "only give out numbers in the given range" {
-                val random = Random();
+                val random = Random()
 
-                val max = random.nextInt(10000) + 10000;
-                val min = random.nextInt(10000) - 10000;
+                val max = random.nextInt(10000) + 10000
+                val min = random.nextInt(10000) - 10000
 
-                val rand = Gen.choose(min.toLong(), max.toLong()).generate();
+                val rand = Gen.choose(min.toLong(), max.toLong()).generate()
                 rand should be gte min.toLong()
                 rand should be lt max.toLong()
 
@@ -147,7 +147,7 @@ class GenTest : WordSpec() {
                 }
             }
         }
-        "gen.oneOf" should {
+        "Gen.oneOf list<T> " should {
             "select one of a given list" {
 
                 forAll(Gen.list(Gen.int())) {
@@ -159,6 +159,32 @@ class GenTest : WordSpec() {
                             }
                 }
             }
+        }
+        "Gen.oneOf list<Gen<T>> " should {
+            "choose one of the given Generators and generate a value from it" {
+                val gen = Gen.oneOf(Gen.create { 5 },
+                        Gen.create { 2 },
+                        Gen.create { 1 })
+                forAll(gen) {
+                    i ->
+                    listOf(1,2,5).contains(i)
+                }
+            }
+
+            "always chose one of the given generators" {
+                var counter = 0
+                val counterGen = Gen.create { ++counter }
+                val gen = Gen.oneOf(counterGen, counterGen, counterGen, counterGen, counterGen)
+
+                var i = 0
+                forAll(gen) {
+                    test ->
+                    i++
+                    i == test
+                }
+
+            }
+
         }
     }
 }
