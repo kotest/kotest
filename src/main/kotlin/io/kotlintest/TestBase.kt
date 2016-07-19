@@ -84,7 +84,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
       val testcase = instance.root.tests()[k]
       if (testcase.isActive) {
         instance.beforeAll()
-        instance.afterEach()
+        instance.beforeEach()
         runTest(testcase, notifier, testcase.description)
         instance.afterEach()
         instance.performAfterAll(notifier)
