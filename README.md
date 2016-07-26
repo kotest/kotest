@@ -161,7 +161,7 @@ class MyTests : FlatSpec() {
 `BehaviorSpec` allows you to use `given`, `when`, `then`, as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : BehaviorSpec() {
   init {
     given("a broomstick") {
       `when`("I sit on it") {
