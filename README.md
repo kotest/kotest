@@ -142,7 +142,7 @@ class MyTests : WordSpec() {
 `FeatureSpec` allows you to use `feature` and `scenario`, as such:
 
 ```kotlin
-class MyTests : FlatSpec() {
+class MyTests : FeatureSpec() {
   init {
     feature("the thingy bob") {
       scenario("should explode when I touch it") {
