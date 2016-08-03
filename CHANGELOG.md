@@ -34,7 +34,11 @@ val table = table(
 forNone(table) { a, b ->
   3 shouldBe between(a, b)
 }
-``` 
+```
+
+* added `include` matcher for strings as an alternative to existing `should have substring(x)`, eg
+
+```"hello" should include("l")```
 
 * Added `between` matcher for int and long, eg
 
