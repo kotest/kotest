@@ -24,6 +24,13 @@ interface StringMatchers {
     }
   }
 
+  fun include(substr: String): Matcher<String> = object : Matcher<String> {
+    override fun test(value: String) {
+      if (!value.contains(substr))
+        throw AssertionError("String $value does not include substring $substr")
+    }
+  }
+
   fun endWith(suffix: String): Matcher<String> = object : Matcher<String> {
     override fun test(value: String) {
       if (!value.endsWith(suffix))

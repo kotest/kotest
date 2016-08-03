@@ -5,6 +5,19 @@ import io.kotlintest.specs.FreeSpec
 class StringMatchersTest : FreeSpec(), Matchers {
   init {
 
+    "should contain" - {
+      "should test that a string contains substring" {
+        "hello" should include("h")
+        "hello" should include("o")
+        "hello" should include("ell")
+        "hello" should include("hello")
+        "hello" should include("")
+        shouldThrow<AssertionError> {
+          "hello" should include("allo")
+        }
+      }
+    }
+
     "should endWith" - {
       "should test strings" {
         "hello" should endWith("o")
