@@ -501,7 +501,7 @@ Eventually
 When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin
-class MyTests : ShouldSpec() {
+class MyTests : ShouldSpec(), Eventually {
   init {
     should("do something") {
       eventually(5.seconds) {
