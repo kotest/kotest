@@ -28,7 +28,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * @see config
    * @see TestBase.config
    */
-  open val defaultTestCaseConfig: TestConfig = config()
+  open val defaultTestCaseConfig: TestConfig = TestConfig()
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
@@ -43,12 +43,14 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     else runSharedInstance(notifier)
   }
 
+  // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
   protected fun config(ignored: Boolean = false,
                        invocations: Int = 1,
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
-                       tags: Set<Tag> = setOf()) =
-      TestConfig(ignored, invocations, timeout, threads, tags)
+                       tags: Set<Tag> = setOf(),
+                       tag: Tag? = null): TestConfig =
+      TestConfig(ignored, invocations, timeout, threads, tags, tag)
 
   /**
    * Registers a field for auto closing after all tests have run.
