@@ -466,7 +466,7 @@ Inspectors allow us to test elements in a collection. For example, if we had a c
 
 ```kotlin
 val xs = // some collection
-forAll(xs) { x =>
+forAll(xs) { x ->
   x should have substring "qwerty"
   x should start with "q"
 }
@@ -476,7 +476,7 @@ Similarly, if we wanted to asset that NO elements in a collection passed some as
 
 ```kotlin
 val xs = // some collection
-forNone(xs) { x =>
+forNone(xs) { x ->
   x should have substring "qwerty"
   x should start with "q"
 }
