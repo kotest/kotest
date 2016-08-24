@@ -6,7 +6,7 @@ import io.kotlintest.TestSuite
 import java.util.*
 
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : TestBase() {
-  init { body(this) }
+  init { body() }
 
   var current = root
 

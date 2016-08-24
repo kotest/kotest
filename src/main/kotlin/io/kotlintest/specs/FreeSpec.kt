@@ -5,7 +5,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : TestBase() {
-  init { body(this) }
+  init { body() }
 
   var current = root
 

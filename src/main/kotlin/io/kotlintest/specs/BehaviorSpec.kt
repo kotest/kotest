@@ -6,7 +6,7 @@ import io.kotlintest.TestSuite
 import java.util.*
 
 abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : TestBase() {
-  init { body(this) }
+  init { body() }
 
   var current = root
 
