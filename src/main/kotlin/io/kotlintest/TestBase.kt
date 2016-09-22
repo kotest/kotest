@@ -59,7 +59,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   }
 
   // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T> shouldThrow(thunk: () -> Any): T {
+  inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
     val e = try {
       thunk()
       null
