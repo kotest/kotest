@@ -121,11 +121,15 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
         val callable = Callable {
           performBeforeEach(spec, testCase)
           try {
-            testCase.test()
-            performAfterEach(spec, testCase, null)
+            try {
+              testCase.test()
+              performAfterEach(spec, testCase, null)
+            } catch (exception: Throwable) {
+              performAfterEach(spec, testCase, exception)
+              // afterEach would need to rethrow the exception, to gain a failure
+              // alternative: throw exception
+            }
           } catch (e: Throwable) {
-            performAfterEach(spec, testCase, e)
-            // TODO is it correct to create a Failure in any case although the performAfterEach method could handle the exception?
             Failure(testCase.description, e)
           }
         }
