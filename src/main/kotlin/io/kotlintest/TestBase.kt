@@ -17,18 +17,7 @@ import java.util.concurrent.Future
 @RunWith(KTestJUnitRunner::class)
 abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
-  private val closeablesInReverseOrder = LinkedList<Closeable>()
-
-  open val oneInstancePerTest = true
-
-  /**
-   * Config applied to each test case if not overridden per test case.
-   *
-   * Initialize this property by calling the config method.
-   * @see config
-   * @see TestBase.config
-   */
-  open val defaultTestCaseConfig: TestConfig = TestConfig()
+  protected open val oneInstancePerTest = true
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
@@ -38,9 +27,33 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   internal val description: Description
     get() = descriptionForSuite(root)
 
+  /**
+   * Config applied to each test case if not overridden per test case.
+   *
+   * Initialize this property by calling the config method.
+   * @see config
+   * @see TestBase.config
+   */
+  protected open val defaultTestCaseConfig: TestConfig = TestConfig()
+
+  /**
+   * Extensions with methods to be executed before or after the tests. Extensions will be processed
+   * from left to right.
+   */
+  protected open val extensions: List<SpecExtension> = listOf()
+
+  private val closeablesInReverseOrder = LinkedList<Closeable>()
+
   internal fun run(notifier: RunNotifier) {
-    if (oneInstancePerTest) runOneInstancePerTest(notifier)
-    else runSharedInstance(notifier)
+    performBeforeAll()
+
+    if (oneInstancePerTest)
+      runOneInstancePerTest(notifier)
+    else
+      runSharedInstance(notifier)
+
+    performAfterAll(notifier)
+
   }
 
   // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
@@ -55,7 +68,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   /**
    * Registers a field for auto closing after all tests have run.
    */
-  protected fun <T: Closeable>autoClose(closeable: T): T {
+  protected fun <T : Closeable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
   }
@@ -80,70 +93,61 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    beforeAll()
     val testCount = root.tests().size
     for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[testCaseIndex]
-      if (testcase.isActive) {
-        instance.beforeEach()
-        runTest(testcase, notifier, testcase.description)
-        instance.afterEach()
-      } else {
-        notifier.fireTestIgnored(testcase.description)
-      }
+      runTest(instance, testcase, notifier)
     }
-    performAfterAll(notifier)
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    beforeAll()
     val tests = root.tests()
-    tests.forEach {
-      when {
-        it.isActive -> {
-          beforeEach()
-          runTest(it, notifier, it.description)
-          afterEach()
-        }
-        else -> {
-          notifier.fireTestIgnored(it.description)
-        }
-      }
-    }
-    performAfterAll(notifier)
+    tests.forEach { runTest(this, it, notifier) }
   }
 
-  private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
-    val executor =
-        if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
-        else Executors.newFixedThreadPool(testcase.config.threads)
-    notifier.fireTestStarted(description)
-    val results = ArrayList<Future<Any>>()
-    for (j in 1..testcase.config.invocations) {
-      val callable = Callable {
-        try {
-          testcase.test()
-        } catch (e: Throwable) {
-          Failure(description, e)
+  // TODO beautify
+  private fun runTest(
+      spec: TestBase,
+      testCase: TestCase,
+      notifier: RunNotifier): Unit {
+    if (testCase.isActive) {
+      val executor =
+          if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()
+          else Executors.newFixedThreadPool(testCase.config.threads)
+      notifier.fireTestStarted(testCase.description)
+      val results = ArrayList<Future<Any>>()
+      for (j in 1..testCase.config.invocations) {
+        val callable = Callable {
+          performBeforeEach(spec, testCase)
+          try {
+            testCase.test()
+            performAfterEach(spec, testCase, null)
+          } catch (e: Throwable) {
+            performAfterEach(spec, testCase, e)
+            // TODO is it correct to create a Failure in any case although the performAfterEach method could handle the exception?
+            Failure(testCase.description, e)
+          }
+        }
+        results.add(executor.submit(callable))
+      }
+      executor.shutdown()
+      val timeout = testCase.config.timeout
+      val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
+      results.forEach {
+        val result = it.get()
+        if (result is Failure) {
+          notifier.fireTestFailure(result)
         }
       }
-      results.add(executor.submit(callable))
-    }
-    executor.shutdown()
-    val timeout = testcase.config.timeout
-    val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
-    results.forEach {
-      val result = it.get()
-      if (result is Failure) {
-        notifier.fireTestFailure(result)
+      if (!terminated) {
+        val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
+        notifier.fireTestFailure(failure)
       }
+      notifier.fireTestFinished(description)
+    } else {
+      notifier.fireTestIgnored(testCase.description)
     }
-    if (!terminated) {
-      val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
-      notifier.fireTestFailure(failure)
-    }
-    notifier.fireTestFinished(description)
   }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
@@ -169,8 +173,33 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   protected open fun afterAll(): Unit {
   }
 
+  private fun performBeforeAll(): Unit {
+    Project.beforeAll()
+    extensions.forEach { extension -> extension.beforeAll(this) }
+    beforeAll()
+  }
+
+  private fun performBeforeEach(spec: TestBase, testCase: TestCase): Unit {
+    spec.extensions.forEach { extension ->
+      val context = TestCaseContext(spec = this, testCase = testCase)
+      extension.beforeEach(context)
+    }
+    spec.beforeEach()
+    beforeEach()
+  }
+
+  private fun performAfterEach(spec: TestBase, testCase: TestCase, failure: Throwable?): Unit {
+    spec.afterEach()
+    spec.extensions.forEach { extension ->
+      val context = TestCaseContext(spec = this, testCase = testCase, failure = failure)
+      extension.afterEach(context)
+    }
+  }
+
   private fun performAfterAll(notifier: RunNotifier) {
     afterAll()
+    extensions.forEach { extension -> extension.afterAll(this) }
+    Project.afterAll()
     closeablesInReverseOrder.forEach {
       try {
         it.close()

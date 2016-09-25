@@ -1,9 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.specs.WordSpec
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 import io.kotlintest.Duration.Companion.milliseconds
+import io.kotlintest.specs.WordSpec
+import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {
 
