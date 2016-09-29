@@ -116,14 +116,14 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
       notifier.fireTestStarted(testCase.description)
 
       val initial = object : TestCaseInterceptor {
-        override fun invoke(context: TestCaseContext, callable: () -> Unit) {
-          aroundTest(context, { callable() })
+        override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
+          aroundTest(context, { testCase() })
         }
       }
       val interceptorChain = extensions.reversed().fold(initial) { a: TestCaseInterceptor, b: TestCaseInterceptor ->
         object : TestCaseInterceptor {
-          override fun invoke(context: TestCaseContext, callable: () -> Unit) {
-            b.invoke(context, { a.invoke(context, { callable() }) })
+          override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
+            b.invoke(context, { a.invoke(context, { testCase() }) })
           }
         }
       }

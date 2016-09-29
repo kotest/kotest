@@ -72,23 +72,23 @@ class ConfigTest : WordSpec() {
 }
 
 object InterceptorA : TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
     println("A") // TODO replace with assertion
-    test()
+    testCase()
   }
 }
 
 object InterceptorB : TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
     println("B") // TODO replace with assertion
-    test()
+    testCase()
   }
 }
 
 object InterceptorC: TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
     try {
-      test()
+      testCase()
     } catch (ex: RuntimeException) {
       println("caught") // TODO replace with assertion
     }

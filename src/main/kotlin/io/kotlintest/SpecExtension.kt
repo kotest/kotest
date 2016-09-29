@@ -3,8 +3,8 @@ package io.kotlintest
 import org.reflections.Reflections
 
 interface TestCaseInterceptor {
-  operator fun invoke(context: TestCaseContext, callable: () -> Unit) {
-    callable()
+  operator fun invoke(context: TestCaseContext, testCase: () -> Unit) {
+    testCase()
   }
 }
 
