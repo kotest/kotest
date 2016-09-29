@@ -2,23 +2,29 @@ package io.kotlintest
 
 import org.reflections.Reflections
 
-interface SpecExtension {
-  fun beforeAll(context: TestBase) {}
-  fun beforeEach(context: TestCaseContext) {}
-  fun afterEach(context: TestCaseContext) {}
-  fun afterAll(context: TestBase) {}
+interface TestCaseInterceptor {
+  operator fun invoke(context: TestCaseContext, callable: () -> Unit) {
+    callable()
+  }
 }
 
+interface SpecInterceptor {
+  operator fun invoke(context: TestBase, callable: () -> Unit) {
+    callable()
+  }
+}
 
 data class TestCaseContext(
     val spec: TestBase,
-    val testCase: TestCase,
-    val failure: Throwable? = null)
+    val testCase: TestCase)
 
 
 interface ProjectExtension {
   fun beforeAll() {}
   fun afterAll() {}
+  fun aroundProject(project: () -> Unit) {
+    project()
+  }
 }
 
 

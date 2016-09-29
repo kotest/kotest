@@ -21,10 +21,10 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
-  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
+  val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
 
   // returns a jUnit Description for the currently registered tests
-  internal val description: Description
+  val description: Description
     get() = descriptionForSuite(root)
 
   /**
@@ -40,20 +40,18 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * Extensions with methods to be executed before or after the tests. Extensions will be processed
    * from left to right.
    */
-  protected open val extensions: List<SpecExtension> = listOf()
+  protected open val extensions: List<TestCaseInterceptor> = listOf()
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  internal fun run(notifier: RunNotifier) {
-    performBeforeAll()
-
+  fun run(notifier: RunNotifier) {
+    Project.beforeAll()
     if (oneInstancePerTest)
       runOneInstancePerTest(notifier)
     else
       runSharedInstance(notifier)
-
-    performAfterAll(notifier)
-
+    closeResources(notifier)
+    Project.afterAll()
   }
 
   // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
@@ -116,21 +114,28 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
           if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(testCase.config.threads)
       notifier.fireTestStarted(testCase.description)
+
+      val initial = object : TestCaseInterceptor {
+        override fun invoke(context: TestCaseContext, callable: () -> Unit) {
+          aroundTest(context, { callable() })
+        }
+      }
+      val interceptorChain = extensions.reversed().fold(initial) { a: TestCaseInterceptor, b: TestCaseInterceptor ->
+        object : TestCaseInterceptor {
+          override fun invoke(context: TestCaseContext, callable: () -> Unit) {
+            b.invoke(context, { a.invoke(context, { callable() }) })
+          }
+        }
+      }
+
+      val testCaseContext = TestCaseContext(spec, testCase)
       val results = ArrayList<Future<Any>>()
       for (j in 1..testCase.config.invocations) {
         val callable = Callable {
-          performBeforeEach(spec, testCase)
           try {
-            try {
-              testCase.test()
-              performAfterEach(spec, testCase, null)
-            } catch (exception: Throwable) {
-              performAfterEach(spec, testCase, exception)
-              // afterEach would need to rethrow the exception, to gain a failure
-              // alternative: throw exception
-            }
-          } catch (e: Throwable) {
-            Failure(testCase.description, e)
+            interceptorChain.invoke(testCaseContext, { testCase.test() })
+          } catch (exception: Throwable) {
+            Failure(testCase.description, exception)
           }
         }
         results.add(executor.submit(callable))
@@ -165,45 +170,15 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     return desc
   }
 
-  protected open fun beforeAll(): Unit {
+  protected open fun aroundTest(context: TestCaseContext, test: () -> Unit) {
+    test()
   }
 
-  protected open fun beforeEach(): Unit {
+  protected open fun aroundSpec(context: TestBase, spec: () -> Unit) {
+    spec()
   }
 
-  protected open fun afterEach(): Unit {
-  }
-
-  protected open fun afterAll(): Unit {
-  }
-
-  private fun performBeforeAll(): Unit {
-    Project.beforeAll()
-    extensions.forEach { extension -> extension.beforeAll(this) }
-    beforeAll()
-  }
-
-  private fun performBeforeEach(spec: TestBase, testCase: TestCase): Unit {
-    spec.extensions.forEach { extension ->
-      val context = TestCaseContext(spec = this, testCase = testCase)
-      extension.beforeEach(context)
-    }
-    spec.beforeEach()
-    beforeEach()
-  }
-
-  private fun performAfterEach(spec: TestBase, testCase: TestCase, failure: Throwable?): Unit {
-    spec.afterEach()
-    spec.extensions.forEach { extension ->
-      val context = TestCaseContext(spec = this, testCase = testCase, failure = failure)
-      extension.afterEach(context)
-    }
-  }
-
-  private fun performAfterAll(notifier: RunNotifier) {
-    afterAll()
-    extensions.forEach { extension -> extension.afterAll(this) }
-    Project.afterAll()
+  private fun closeResources(notifier: RunNotifier) {
     closeablesInReverseOrder.forEach {
       try {
         it.close()

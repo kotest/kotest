@@ -10,6 +10,7 @@ class ConfigTest : WordSpec() {
 
   override val defaultTestCaseConfig: TestConfig = config(invocations = 3, tag = TagA)
   override val oneInstancePerTest = false
+  override val extensions = listOf(InterceptorA, InterceptorB, InterceptorC)
 
   val invocationCounter = AtomicInteger(0)
   val invocationCounter2 = AtomicInteger(0)
@@ -53,13 +54,43 @@ class ConfigTest : WordSpec() {
         testCase.config.invocations shouldBe 3
         testCase.config.threads shouldBe 1
         testCase.config.tags shouldEqual setOf(TagA)
+      }.config(invocations = 1)
+
+      "should handle exception with interceptor" {
+        throw RuntimeException()
       }
     }
   }
 
-  override fun afterAll(): Unit {
+  override fun aroundSpec(context: TestBase, spec: () -> Unit): Unit {
+    spec()
+
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3
     threadCounter.get() shouldBe 100
+  }
+}
+
+object InterceptorA : TestCaseInterceptor {
+  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+    println("A") // TODO replace with assertion
+    test()
+  }
+}
+
+object InterceptorB : TestCaseInterceptor {
+  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+    println("B") // TODO replace with assertion
+    test()
+  }
+}
+
+object InterceptorC: TestCaseInterceptor {
+  override fun invoke(context: TestCaseContext, test: () -> Unit) {
+    try {
+      test()
+    } catch (ex: RuntimeException) {
+      println("caught") // TODO replace with assertion
+    }
   }
 }

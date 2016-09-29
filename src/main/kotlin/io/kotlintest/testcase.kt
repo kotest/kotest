@@ -13,6 +13,7 @@ data class TestCase(
         suite.name.replace('.', ' '),
         if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
 
+  // TODO add interceptors
   fun config(
       invocations: Int? = null,
       ignored: Boolean? = null,
@@ -30,7 +31,7 @@ data class TestCase(
             tag)
   }
 
-  internal val isActive: Boolean
+  val isActive: Boolean
     get() = !config.ignored && isActiveAccordingToTags
 
   private val isActiveAccordingToTags: Boolean
