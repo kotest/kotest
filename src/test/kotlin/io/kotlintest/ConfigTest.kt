@@ -8,9 +8,13 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
-  override val defaultTestCaseConfig: TestConfig = config(invocations = 3, tag = TagA)
+  override val defaultTestCaseConfig: TestConfig =
+      config(
+          invocations = 3,
+          tag = TagA,
+          interceptors = listOf(InterceptorA, InterceptorB, InterceptorC))
+
   override val oneInstancePerTest = false
-  override val extensions = listOf(InterceptorA, InterceptorB, InterceptorC)
 
   val invocationCounter = AtomicInteger(0)
   val invocationCounter2 = AtomicInteger(0)
@@ -58,7 +62,11 @@ class ConfigTest : WordSpec() {
 
       "should handle exception with interceptor" {
         throw RuntimeException()
-      }
+      }.config(invocations = 1)
+
+      "should override interceptors" {
+        // TODO test, that no interceptor has been called
+      }.config(interceptors = listOf())
     }
   }
 
@@ -85,7 +93,7 @@ object InterceptorB : TestCaseInterceptor {
   }
 }
 
-object InterceptorC: TestCaseInterceptor {
+object InterceptorC : TestCaseInterceptor {
   override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
     try {
       testCase()

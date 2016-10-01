@@ -36,12 +36,6 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    */
   protected open val defaultTestCaseConfig: TestConfig = TestConfig()
 
-  /**
-   * Extensions with methods to be executed before or after the tests. Extensions will be processed
-   * from left to right.
-   */
-  protected open val extensions: List<TestCaseInterceptor> = listOf()
-
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
   fun run(notifier: RunNotifier) {
@@ -60,8 +54,9 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
-                       tag: Tag? = null): TestConfig =
-      TestConfig(ignored, invocations, timeout, threads, tags, tag)
+                       tag: Tag? = null,
+                       interceptors: Iterable<TestCaseInterceptor> = listOf()): TestConfig =
+      TestConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.
@@ -120,7 +115,8 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
           aroundTest(context, { testCase() })
         }
       }
-      val interceptorChain = extensions.reversed().fold(initial) { a: TestCaseInterceptor, b: TestCaseInterceptor ->
+      val interceptorChain = testCase.config.interceptors.reversed().fold(initial) {
+        a: TestCaseInterceptor, b: TestCaseInterceptor ->
         object : TestCaseInterceptor {
           override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
             b.invoke(context, { a.invoke(context, { testCase() }) })
