@@ -7,8 +7,15 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.researchgate.release' version '2.4.0'
+}
+
+release {
+    failOnPublishNeeded = false
+}
+
 group = "io.kotlintest"
-version = "1.3.3"
 
 apply plugin: 'kotlin'
 apply plugin: 'maven'
@@ -34,6 +41,10 @@ artifacts {
 
 signing {
     sign configurations.archives
+}
+
+build {
+    afterReleaseBuild.dependsOn uploadArchives
 }
 
 dependencies {
