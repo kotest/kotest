@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.3'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.4'
     }
 }
 
@@ -39,8 +39,8 @@ signing {
 dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.sksamuel.koors:koors:0.90.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.3'
-    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.3'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.4'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.4'
     compile 'org.mockito:mockito-core:1.10.19'
 }
 
