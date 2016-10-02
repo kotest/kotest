@@ -36,14 +36,21 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    */
   protected open val defaultTestCaseConfig: TestConfig = TestConfig()
 
+  protected open val interceptors: Iterable<(TestBase, () -> Unit) -> Unit> = listOf()
+
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
   fun run(notifier: RunNotifier) {
     Project.beforeAll()
-    if (oneInstancePerTest)
-      runOneInstancePerTest(notifier)
-    else
-      runSharedInstance(notifier)
+
+    val interceptorChain = createSpecInterceptorChain(this)
+    interceptorChain(this, {
+      if (oneInstancePerTest)
+        runOneInstancePerTest(notifier)
+      else
+        runSharedInstance(notifier)
+    })
+
     closeResources(notifier)
     Project.afterAll()
   }
@@ -109,25 +116,13 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
           if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(testCase.config.threads)
       notifier.fireTestStarted(testCase.description)
-
-      val initial = { context: TestCaseContext, testCase: () -> Unit ->
-        interceptTestCase(context, { testCase() })
-      }
-
-      val interceptorChain = testCase.config.interceptors.reversed().fold(initial) { a, b ->
-        {
-          context: TestCaseContext, testCase: () -> Unit ->
-          b.invoke(context, { a.invoke(context, { testCase() }) })
-        }
-
-      }
-
+      val interceptorChain = createTestCaseInterceptorChain(testCase)
       val testCaseContext = TestCaseContext(spec, testCase)
       val results = ArrayList<Future<Any>>()
       for (j in 1..testCase.config.invocations) {
         val callable = Callable {
           try {
-            interceptorChain.invoke(testCaseContext, { testCase.test() })
+            interceptorChain(testCaseContext, { testCase.test() })
           } catch (exception: Throwable) {
             Failure(testCase.description, exception)
           }
@@ -164,11 +159,40 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     return desc
   }
 
+  // TODO combine this method and createTestCaseInterceptorChain to one generic method
+  private fun createSpecInterceptorChain(spec: TestBase): (TestBase, () -> Unit) -> Unit {
+    val initial = { context: TestBase, testCase: () -> Unit ->
+      interceptSpec(context, { testCase() })
+    }
+    val interceptorChain = spec.interceptors.reversed().fold(initial) { a, b ->
+      {
+        context: TestBase, testCase: () -> Unit ->
+        b.invoke(context, { a.invoke(context, { testCase() }) })
+      }
+
+    }
+    return interceptorChain
+  }
+
+  private fun createTestCaseInterceptorChain(testCase: TestCase): (TestCaseContext, () -> Unit) -> Unit {
+    val initial = { context: TestCaseContext, testCase: () -> Unit ->
+      interceptTestCase(context, { testCase() })
+    }
+    val interceptorChain = testCase.config.interceptors.reversed().fold(initial) { a, b ->
+      {
+        context: TestCaseContext, testCase: () -> Unit ->
+        b.invoke(context, { a.invoke(context, { testCase() }) })
+      }
+
+    }
+    return interceptorChain
+  }
+
   protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
   }
 
-  protected open fun aroundSpec(context: TestBase, spec: () -> Unit) {
+  protected open fun interceptSpec(context: TestBase, spec: () -> Unit) {
     spec()
   }
 

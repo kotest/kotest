@@ -14,6 +14,8 @@ class ConfigTest : WordSpec() {
           tag = TagA,
           interceptors = listOf(::interceptorA, ::interceptorB, ::interceptorC))
 
+  override val interceptors = listOf(::specInterceptorA, ::specInterceptorB)
+
   override val oneInstancePerTest = false
 
   val invocationCounter = AtomicInteger(0)
@@ -70,13 +72,26 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  override fun aroundSpec(context: TestBase, spec: () -> Unit): Unit {
+  override fun interceptSpec(context: TestBase, spec: () -> Unit): Unit {
     spec()
 
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3
     threadCounter.get() shouldBe 100
   }
+}
+
+fun specInterceptorA(context: TestBase, spec: () -> Unit) {
+  println("A before spec")
+  spec()
+  println("A after spec")
+}
+
+
+fun specInterceptorB(context: TestBase, spec: () -> Unit) {
+  println("B before spec")
+  spec()
+  println("B after spec")
 }
 
 fun interceptorA(context: TestCaseContext, testCase: () -> Unit) {

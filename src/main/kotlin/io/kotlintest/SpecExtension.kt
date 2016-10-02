@@ -4,21 +4,14 @@ package io.kotlintest
 
 import org.reflections.Reflections
 
-interface SpecInterceptor {
-  operator fun invoke(context: TestBase, callable: () -> Unit) {
-    callable()
-  }
-}
-
 data class TestCaseContext(
     val spec: TestBase,
     val testCase: TestCase)
 
-
 interface ProjectExtension {
   fun beforeAll() {}
   fun afterAll() {}
-  fun aroundProject(project: () -> Unit) {
+  fun interceptProject(project: () -> Unit) {
     project()
   }
 }
