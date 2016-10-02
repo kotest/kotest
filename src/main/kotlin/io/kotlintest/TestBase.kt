@@ -36,6 +36,10 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    */
   protected open val defaultTestCaseConfig: TestConfig = TestConfig()
 
+  /**
+   * Interceptors that intercepts the execution of the whole spec. Interceptors are executed from
+   * left to right.
+   */
   protected open val interceptors: Iterable<(TestBase, () -> Unit) -> Unit> = listOf()
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
@@ -177,10 +181,12 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     }
   }
 
+  // TODO write documentation
   protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
   }
 
+  // TODO write documentation
   protected open fun interceptSpec(context: TestBase, spec: () -> Unit) {
     spec()
   }

@@ -51,7 +51,7 @@ object Project {
     synchronized(executedAfter) {
       if (!executedAfter) {
         projectConfig?.extensions?.forEach { extension -> extension.afterAll() }
-        executedAfter = false
+        executedAfter = true
       }
     }
   }
