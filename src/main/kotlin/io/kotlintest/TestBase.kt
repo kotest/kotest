@@ -43,7 +43,11 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   fun run(notifier: RunNotifier) {
     Project.beforeAll()
 
-    val interceptorChain = createSpecInterceptorChain(this)
+    val initialInterceptor = { context: TestBase, testCase: () -> Unit ->
+      interceptSpec(context, { testCase() })
+    }
+    val interceptorChain = createInterceptorChain(interceptors, initialInterceptor)
+
     interceptorChain(this, {
       if (oneInstancePerTest)
         runOneInstancePerTest(notifier)
@@ -116,7 +120,10 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
           if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(testCase.config.threads)
       notifier.fireTestStarted(testCase.description)
-      val interceptorChain = createTestCaseInterceptorChain(testCase)
+      val initialInterceptor = { context: TestCaseContext, testCase: () -> Unit ->
+        interceptTestCase(context, { testCase() })
+      }
+      val interceptorChain = createInterceptorChain(testCase.config.interceptors, initialInterceptor)
       val testCaseContext = TestCaseContext(spec, testCase)
       val results = ArrayList<Future<Any>>()
       for (j in 1..testCase.config.invocations) {
@@ -159,33 +166,15 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     return desc
   }
 
-  // TODO combine this method and createTestCaseInterceptorChain to one generic method
-  private fun createSpecInterceptorChain(spec: TestBase): (TestBase, () -> Unit) -> Unit {
-    val initial = { context: TestBase, testCase: () -> Unit ->
-      interceptSpec(context, { testCase() })
-    }
-    val interceptorChain = spec.interceptors.reversed().fold(initial) { a, b ->
+  private fun <CONTEXT> createInterceptorChain(
+      interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
+      initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
+    return interceptors.reversed().fold(initialInterceptor) { a, b ->
       {
-        context: TestBase, testCase: () -> Unit ->
-        b.invoke(context, { a.invoke(context, { testCase() }) })
+        context: CONTEXT, testCase: () -> Unit ->
+        b(context, { a.invoke(context, { testCase() }) })
       }
-
     }
-    return interceptorChain
-  }
-
-  private fun createTestCaseInterceptorChain(testCase: TestCase): (TestCaseContext, () -> Unit) -> Unit {
-    val initial = { context: TestCaseContext, testCase: () -> Unit ->
-      interceptTestCase(context, { testCase() })
-    }
-    val interceptorChain = testCase.config.interceptors.reversed().fold(initial) { a, b ->
-      {
-        context: TestCaseContext, testCase: () -> Unit ->
-        b.invoke(context, { a.invoke(context, { testCase() }) })
-      }
-
-    }
-    return interceptorChain
   }
 
   protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
