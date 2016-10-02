@@ -7,7 +7,9 @@ import io.kotlintest.Duration.Companion.milliseconds
 
 class ConfigTest : WordSpec() {
 
-  override val defaultTestCaseConfig: TestConfig = config(invocations = 3)
+  object TagA : Tag()
+
+  override val defaultTestCaseConfig: TestConfig = config(invocations = 3, tag = TagA)
   override val oneInstancePerTest = false
 
   val invocationCounter = AtomicInteger(0)
@@ -35,6 +37,23 @@ class ConfigTest : WordSpec() {
 
       "use default config" {
         invocationCounter2.incrementAndGet()
+      }
+
+      "override only actually set values" {
+        val testCase = "some test case" {}
+        testCase.config(invocations = 2, threads = 4)
+
+        testCase.config.invocations shouldBe 2
+        testCase.config.threads shouldBe 4
+        testCase.config.tags shouldEqual setOf(TagA)
+      }
+
+      "use default config, if no test case config is given" {
+        val testCase = "some test case" {}
+
+        testCase.config.invocations shouldBe 3
+        testCase.config.threads shouldBe 1
+        testCase.config.tags shouldEqual setOf(TagA)
       }
     }
   }

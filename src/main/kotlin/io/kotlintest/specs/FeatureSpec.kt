@@ -6,7 +6,7 @@ import io.kotlintest.TestSuite
 import java.util.*
 
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : TestBase() {
-  init { body(this) }
+  init { body() }
 
   var current = root
 
