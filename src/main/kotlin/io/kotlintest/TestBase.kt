@@ -114,10 +114,9 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
         interceptTestCase(context, { testCase() })
       }
 
-      val interceptorChain = testCase.config.interceptors.reversed().fold<(TestCaseContext, () -> Unit) -> Unit, (TestCaseContext, () -> Unit) -> Unit>(initial) {
-        a, b ->
-
-        { context: TestCaseContext, testCase: () -> Unit ->
+      val interceptorChain = testCase.config.interceptors.reversed().fold(initial) { a, b ->
+        {
+          context: TestCaseContext, testCase: () -> Unit ->
           b.invoke(context, { a.invoke(context, { testCase() }) })
         }
 
