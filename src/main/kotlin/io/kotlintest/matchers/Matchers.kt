@@ -2,19 +2,11 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Inspectors
 
-interface Keyword
+interface ShouldKeyword<K> {
+  fun <T> wrapper(value: T): ShouldBuilder<K, T> = ShouldBuilder<K, T>(value)
+}
 
-object have : Keyword
-
-object be : Keyword
-
-object end : Keyword
-
-object start : Keyword
-
-object contain : Keyword
-
-object include : Keyword
+class ShouldBuilder<K, T>(val value: T)
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
@@ -45,17 +37,5 @@ interface Matchers : StringMatchers,
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
   infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
-  infix fun <T> T.should(x: have): HaveWrapper<T> = HaveWrapper(this)
-  infix fun <T> T.should(x: start): StartWrapper<T> = StartWrapper(this)
-  infix fun <T> T.should(x: end): EndWrapper<T> = EndWrapper(this)
-  infix fun <T> T.should(x: be): BeWrapper<T> = BeWrapper(this)
-  infix fun <T> T.should(x: contain): ContainWrapper<T> = ContainWrapper(this)
-  infix fun <T> T.should(x: include): IncludeWrapper<T> = IncludeWrapper(this)
+  infix fun <K, T> T.should(keyword: ShouldKeyword<K>): ShouldBuilder<K, T> = keyword.wrapper(this)
 }
-
-class HaveWrapper<T>(val value: T)
-class BeWrapper<T>(val value: T)
-class StartWrapper<T>(val value: T)
-class EndWrapper<T>(val value: T)
-class IncludeWrapper<T>(val value: T)
-class ContainWrapper<T>(val value: T)

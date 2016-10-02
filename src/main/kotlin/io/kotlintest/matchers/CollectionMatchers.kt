@@ -1,5 +1,18 @@
 package io.kotlintest.matchers
 
+object contain : ShouldKeyword<contain>
+
+infix fun ShouldBuilder<have, out Collection<*>>.size(expected: Int): Unit {
+  val size = value.size
+  if (size != expected)
+    throw AssertionError("Collection was expected to have size $expected but had size $size")
+}
+
+infix fun <T> ShouldBuilder<contain, out Collection<T>>.element(expected: T): Unit {
+  if (!value.contains(expected))
+    throw AssertionError("Collection did not have expected element $expected")
+}
+
 interface CollectionMatchers {
 
   fun beEmpty(): (Collection<*>) -> Unit {
@@ -7,17 +20,6 @@ interface CollectionMatchers {
       if (value.isNotEmpty())
         throw AssertionError("Collection was expected to be empty but has size ${value.size}")
     }
-  }
-
-  infix fun HaveWrapper<out Collection<*>>.size(expected: Int): Unit {
-    val size = value.size
-    if (size != expected)
-      throw AssertionError("Collection was expected to have size $expected but had size $size")
-  }
-
-  infix fun <T> ContainWrapper<out Collection<T>>.element(expected: T): Unit {
-    if (!value.contains(expected))
-      throw AssertionError("Collection did not have expected element $expected")
   }
 
   fun <T> containInAnyOrder(vararg ts: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {

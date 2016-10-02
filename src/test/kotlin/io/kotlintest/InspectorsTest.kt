@@ -2,6 +2,8 @@ package io.kotlintest
 
 import io.kotlintest.matchers.Matchers
 import io.kotlintest.matchers.be
+import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.lt
 import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec(), Matchers {

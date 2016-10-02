@@ -1,21 +1,26 @@
 package io.kotlintest.matchers
 
+object have : ShouldKeyword<have>
+object start : ShouldKeyword<start>
+object end : ShouldKeyword<end>
+
+@JvmName("startWith") infix fun ShouldBuilder<start, String>.with(prefix: String): Unit {
+  if (!value.startsWith(prefix))
+    throw AssertionError("String does not start with $prefix but with ${value.take(prefix.length)}")
+}
+
+@JvmName("endWith") infix fun ShouldBuilder<end, String>.with(suffix: String): Unit {
+  if (!value.endsWith(suffix))
+    throw AssertionError("String does not end with $suffix but with ${value.takeLast(suffix.length)}")
+}
+
+infix fun ShouldBuilder<have, String>.substring(substr: String): Unit {
+  if (!value.contains(substr))
+    throw AssertionError("String does not have substring $substr")
+}
+
+
 interface StringMatchers {
-
-  infix fun HaveWrapper<String>.substring(substr: String): Unit {
-    if (!value.contains(substr))
-      throw AssertionError("String does not have substring $substr")
-  }
-
-  infix fun StartWrapper<String>.with(prefix: String): Unit {
-    if (!value.startsWith(prefix))
-      throw AssertionError("String does not start with $prefix but with ${value.take(prefix.length)}")
-  }
-
-  infix fun EndWrapper<String>.with(suffix: String): Unit {
-    if (!value.endsWith(suffix))
-      throw AssertionError("String does not end with $suffix but with ${value.takeLast(suffix.length)}")
-  }
 
   fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
     override fun test(value: String) {
