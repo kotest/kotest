@@ -1,12 +1,8 @@
 package io.kotlintest
 
-import org.reflections.Reflections
+// TODO rename and split file
 
-interface TestCaseInterceptor {
-  operator fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-    testCase()
-  }
-}
+import org.reflections.Reflections
 
 interface SpecInterceptor {
   operator fun invoke(context: TestBase, callable: () -> Unit) {

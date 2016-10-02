@@ -12,7 +12,7 @@ class ConfigTest : WordSpec() {
       config(
           invocations = 3,
           tag = TagA,
-          interceptors = listOf(InterceptorA, InterceptorB, InterceptorC))
+          interceptors = listOf(::interceptorA, ::interceptorB, ::interceptorC))
 
   override val oneInstancePerTest = false
 
@@ -79,26 +79,22 @@ class ConfigTest : WordSpec() {
   }
 }
 
-object InterceptorA : TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-    println("A") // TODO replace with assertion
-    testCase()
-  }
+fun interceptorA(context: TestCaseContext, testCase: () -> Unit) {
+  println("A") // TODO replace with assertion
+  testCase()
 }
 
-object InterceptorB : TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-    println("B") // TODO replace with assertion
-    testCase()
-  }
+
+fun interceptorB(context: TestCaseContext, testCase: () -> Unit) {
+  println("B") // TODO replace with assertion
+  testCase()
 }
 
-object InterceptorC : TestCaseInterceptor {
-  override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-    try {
-      testCase()
-    } catch (ex: RuntimeException) {
-      println("caught") // TODO replace with assertion
-    }
+
+fun interceptorC(context: TestCaseContext, testCase: () -> Unit) {
+  try {
+    testCase()
+  } catch (ex: RuntimeException) {
+    println("caught") // TODO replace with assertion
   }
 }

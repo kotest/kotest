@@ -7,7 +7,7 @@ class TestConfig(
     val threads: Int = 1,
     tags: Set<Tag> = setOf(),
     tag: Tag? = null,
-    val interceptors: Iterable<TestCaseInterceptor> = listOf()) {
+    val interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()) {
 
   val tags = if (tag != null) tags + tag else tags
 
@@ -17,7 +17,7 @@ class TestConfig(
       timeout: Duration = this.timeout,
       threads: Int = this.threads,
       tags: Set<Tag> = this.tags,
-      interceptors: Iterable<TestCaseInterceptor> = this.interceptors) =
+      interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = this.interceptors) =
       TestConfig(
           ignored = ignored,
           invocations = invocations,

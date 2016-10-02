@@ -24,7 +24,7 @@ data class TestCase(
       threads: Int? = null,
       tag: Tag? = null,
       tags: Set<Tag>? = null,
-      interceptors: Iterable<TestCaseInterceptor>? = null) {
+      interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit>? = null) {
     config =
         TestConfig(
             ignored ?: config.ignored,

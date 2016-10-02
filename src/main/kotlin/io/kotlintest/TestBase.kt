@@ -55,7 +55,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
                        tag: Tag? = null,
-                       interceptors: Iterable<TestCaseInterceptor> = listOf()): TestConfig =
+                       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestConfig =
       TestConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
 
   /**
@@ -110,18 +110,17 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
           else Executors.newFixedThreadPool(testCase.config.threads)
       notifier.fireTestStarted(testCase.description)
 
-      val initial = object : TestCaseInterceptor {
-        override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-          aroundTest(context, { testCase() })
-        }
+      val initial = { context: TestCaseContext, testCase: () -> Unit ->
+        interceptTestCase(context, { testCase() })
       }
-      val interceptorChain = testCase.config.interceptors.reversed().fold(initial) {
-        a: TestCaseInterceptor, b: TestCaseInterceptor ->
-        object : TestCaseInterceptor {
-          override fun invoke(context: TestCaseContext, testCase: () -> Unit) {
-            b.invoke(context, { a.invoke(context, { testCase() }) })
-          }
+
+      val interceptorChain = testCase.config.interceptors.reversed().fold<(TestCaseContext, () -> Unit) -> Unit, (TestCaseContext, () -> Unit) -> Unit>(initial) {
+        a, b ->
+
+        { context: TestCaseContext, testCase: () -> Unit ->
+          b.invoke(context, { a.invoke(context, { testCase() }) })
         }
+
       }
 
       val testCaseContext = TestCaseContext(spec, testCase)
@@ -166,7 +165,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     return desc
   }
 
-  protected open fun aroundTest(context: TestCaseContext, test: () -> Unit) {
+  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
   }
 
