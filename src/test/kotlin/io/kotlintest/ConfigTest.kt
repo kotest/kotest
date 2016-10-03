@@ -8,13 +8,43 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
+  val specInterceptorA = { context: TestBase, spec: () -> Unit ->
+    println("A before spec")
+    spec()
+    println("A after spec")
+  }
+
+  val specInterceptorB = { context: TestBase, spec: () -> Unit ->
+    println("B before spec")
+    spec()
+    println("B after spec")
+  }
+
+  val interceptorA = { context: TestCaseContext, testCase: () -> Unit ->
+    println("A") // TODO replace with assertion
+    testCase()
+  }
+
+  val interceptorB = {context: TestCaseContext, testCase: () -> Unit ->
+    println("B") // TODO replace with assertion
+    testCase()
+  }
+
+  val interceptorC = {context: TestCaseContext, testCase: () -> Unit ->
+    try {
+      testCase()
+    } catch (ex: RuntimeException) {
+      println("caught") // TODO replace with assertion
+    }
+  }
+
   override val defaultTestCaseConfig: TestConfig =
       config(
           invocations = 3,
           tag = TagA,
-          interceptors = listOf(::interceptorA, ::interceptorB, ::interceptorC))
+          interceptors = listOf(interceptorA, interceptorB, interceptorC))
 
-  override val interceptors = listOf(::specInterceptorA, ::specInterceptorB)
+  override val interceptors = listOf(specInterceptorA, specInterceptorB)
 
   override val oneInstancePerTest = false
 
@@ -79,37 +109,8 @@ class ConfigTest : WordSpec() {
     invocationCounter2.get() shouldBe 3
     threadCounter.get() shouldBe 100
   }
-}
 
-fun specInterceptorA(context: TestBase, spec: () -> Unit) {
-  println("A before spec")
-  spec()
-  println("A after spec")
+
 }
 
 
-fun specInterceptorB(context: TestBase, spec: () -> Unit) {
-  println("B before spec")
-  spec()
-  println("B after spec")
-}
-
-fun interceptorA(context: TestCaseContext, testCase: () -> Unit) {
-  println("A") // TODO replace with assertion
-  testCase()
-}
-
-
-fun interceptorB(context: TestCaseContext, testCase: () -> Unit) {
-  println("B") // TODO replace with assertion
-  testCase()
-}
-
-
-fun interceptorC(context: TestCaseContext, testCase: () -> Unit) {
-  try {
-    testCase()
-  } catch (ex: RuntimeException) {
-    println("caught") // TODO replace with assertion
-  }
-}

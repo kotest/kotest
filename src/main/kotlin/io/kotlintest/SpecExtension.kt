@@ -44,7 +44,6 @@ object Project {
         executedBefore = true
       }
     }
-
   }
 
   fun afterAll() {
