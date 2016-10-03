@@ -8,43 +8,56 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
-  val specInterceptorA = { context: TestBase, spec: () -> Unit ->
-    println("A before spec")
+  val specInterceptorLog = StringBuilder()
+  val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = ThreadLocal.withInitial { StringBuilder() }
+
+  val verificationInterceptor: (TestBase, () -> Unit) -> Unit = { context, spec ->
     spec()
-    println("A after spec")
+    val expectedLog = "A1.B1.C1.D1.test call.D2.C2.B2.A2."
+    specInterceptorLog.toString() shouldEqual expectedLog
   }
 
-  val specInterceptorB = { context: TestBase, spec: () -> Unit ->
-    println("B before spec")
+  val specInterceptorA: (TestBase, () -> Unit) -> Unit = { context, spec ->
+    specInterceptorLog.append("A1.")
     spec()
-    println("B after spec")
+    specInterceptorLog.append("A2.")
   }
 
-  val interceptorA = { context: TestCaseContext, testCase: () -> Unit ->
-    println("A") // TODO replace with assertion
+  val specInterceptorB: (TestBase, () -> Unit) -> Unit = { context, spec ->
+    specInterceptorLog.append("B1.")
+    spec()
+    specInterceptorLog.append("B2.")
+  }
+
+  val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+    testCaseInterceptorLog!!.get().append("C1.")
     testCase()
+    testCaseInterceptorLog!!.get().append("C2.")
   }
 
-  val interceptorB = {context: TestCaseContext, testCase: () -> Unit ->
-    println("B") // TODO replace with assertion
+  val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+    testCaseInterceptorLog!!.get().append("D1.")
     testCase()
+    testCaseInterceptorLog!!.get().append("D2.")
   }
 
-  val interceptorC = {context: TestCaseContext, testCase: () -> Unit ->
+  val testCaseInterceptorE = { context: TestCaseContext, testCase: () -> Unit ->
     try {
       testCase()
     } catch (ex: RuntimeException) {
-      println("caught") // TODO replace with assertion
+      // ignore
     }
   }
+
+  val testCaseInterceptors = listOf(testCaseinterceptorC, testCaseInterceptorD, testCaseInterceptorE)
 
   override val defaultTestCaseConfig: TestConfig =
       config(
           invocations = 3,
           tag = TagA,
-          interceptors = listOf(interceptorA, interceptorB, interceptorC))
+          interceptors = testCaseInterceptors)
 
-  override val interceptors = listOf(specInterceptorA, specInterceptorB)
+  override val interceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
 
   override val oneInstancePerTest = false
 
@@ -63,8 +76,9 @@ class ConfigTest : WordSpec() {
         fail("shouldn't run")
       }.config(ignored = true)
 
-      // if we have 100 threads, and each one sleeps for 1000 seconds, then the total time should still be
-      // approx 1000. So we set the timeout an order of magnitude higher, and it should never hit
+      // If we have 100 threads, and each one sleeps for 1000 milliseconds, then the total time
+      // should still be approx 1000 ms. So we set the timeout an order of magnitude higher, and it
+      // should never hit.
       "support threads parameter" {
         // this test should timeout
         Thread.sleep(1000)
@@ -92,12 +106,20 @@ class ConfigTest : WordSpec() {
         testCase.config.tags shouldEqual setOf(TagA)
       }.config(invocations = 1)
 
+      val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+        testCase()
+        specInterceptorLog.append(testCaseInterceptorLog!!.get().toString())
+      }
+      "should call interceptors in order of definition" {
+        testCaseInterceptorLog!!.get().append("test call.")
+      }.config(invocations = 1, interceptors = listOf(orderVerificationInterceptor) + testCaseInterceptors) // TODO introcude "additionalInterceptors"?
+
       "should handle exception with interceptor" {
         throw RuntimeException()
       }.config(invocations = 1)
 
       "should override interceptors" {
-        // TODO test, that no interceptor has been called
+        testCaseInterceptorLog!!.get().toString() should haveLength(0)
       }.config(interceptors = listOf())
     }
   }
@@ -109,8 +131,6 @@ class ConfigTest : WordSpec() {
     invocationCounter2.get() shouldBe 3
     threadCounter.get() shouldBe 100
   }
-
-
 }
 
 
