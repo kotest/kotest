@@ -1,6 +1,8 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.Matcher
 import io.kotlintest.matchers.Matchers
+import io.kotlintest.matchers.Result
 import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.TableTesting
 import org.junit.runner.Description
@@ -58,6 +60,12 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   protected fun <T: Closeable>autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
+  }
+
+  // this should live in some matchers class, but can't inline in an interface :(
+  inline fun <reified T : Any> beOfType() = object : Matcher<T> {
+    val exceptionClassName = T::class.qualifiedName
+    override fun test(value: T) = Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
   }
 
   // this should live in some matchers class, but can't inline in an interface :(

@@ -1,8 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
-import io.kotlintest.matchers.be
-import io.kotlintest.matchers.have
+import io.kotlintest.matchers.*
 import io.kotlintest.specs.FreeSpec
 import java.util.*
 import kotlin.collections.listOf
