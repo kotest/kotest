@@ -5,6 +5,14 @@ import io.kotlintest.specs.FreeSpec
 class StringMatchersTest : FreeSpec(), Matchers {
   init {
 
+    "string shouldBe other" - {
+      "should show divergence in error message" {
+        shouldThrow<AssertionError> {
+          "la tour eiffel" shouldBe "la tour tower london"
+        }.message shouldBe "String la tour eiffel should be equal to la tour tower london (diverged at index 8)"
+      }
+    }
+
     "should contain" - {
       "should test that a string contains substring" {
         "hello" should include("h")
@@ -43,6 +51,11 @@ class StringMatchersTest : FreeSpec(), Matchers {
         shouldThrow<AssertionError> {
           "hello" should startWith("goodbye")
         }
+      }
+      "should show divergence in error message" {
+        shouldThrow<AssertionError> {
+          "la tour eiffel" should startWith("la tour tower london")
+        }.message shouldBe "String la tour eiffel should start with la tour tower london (diverged at index 8)"
       }
     }
 

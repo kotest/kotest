@@ -25,6 +25,19 @@ interface Matchers : StringMatchers,
 
   infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
 
+  infix fun String.shouldBe(other: String) {
+    var msg = "String $this should be equal to $other"
+    if (this != other) {
+      for (k in 0..Math.min(this.length, other.length) - 1) {
+        if (this[k] != other[k]) {
+          msg = "$msg (diverged at index $k)"
+          break
+        }
+      }
+    }
+    throw AssertionError(msg)
+  }
+
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
     when (any) {
@@ -42,7 +55,7 @@ interface Matchers : StringMatchers,
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
 
-  @Deprecated("This message is deprecated, use `value should match`")
+  @Deprecated("This syntax is deprecated, use `value should match`")
   infix fun <K, T> T.should(keyword: Keyword<K>) = MatcherBuilder<K, T>(this)
 
   infix fun <T> T.should(matcher: Matcher<T>): Unit {

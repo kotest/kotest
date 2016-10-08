@@ -28,7 +28,19 @@ infix fun MatcherBuilder<have, String>.substring(substr: String): Unit {
 interface StringMatchers {
 
   fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
-    override fun test(value: String) = Result(value.startsWith(prefix), "String $value should start with $prefix")
+    override fun test(value: String): Result {
+      val ok = value.startsWith(prefix)
+      var msg = "String $value should start with $prefix"
+      if (!ok) {
+        for (k in 0..Math.min(value.length, prefix.length) - 1) {
+          if (value[k] != prefix[k]) {
+            msg = "$msg (diverged at index $k)"
+            break
+          }
+        }
+      }
+      return Result(ok, msg)
+    }
   }
 
   fun include(substr: String): Matcher<String> = object : Matcher<String> {
