@@ -26,16 +26,16 @@ interface Matchers : StringMatchers,
   infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
 
   infix fun String.shouldBe(other: String) {
-    var msg = "String $this should be equal to $other"
     if (this != other) {
+      var msg = "String $this should be equal to $other"
       for (k in 0..Math.min(this.length, other.length) - 1) {
         if (this[k] != other[k]) {
           msg = "$msg (diverged at index $k)"
           break
         }
       }
+      throw AssertionError(msg)
     }
-    throw AssertionError(msg)
   }
 
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
