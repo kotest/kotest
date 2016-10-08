@@ -6,7 +6,39 @@ class LongMatchersTest : StringSpec() {
   init {
 
     "Ge should be valid" {
-      1 should be gt 0
+      1L should be gt 0L
+    }
+
+    "beGreaterThan" {
+      1L should beGreaterThan(0L)
+
+      shouldThrow<AssertionError> {
+        2L should beGreaterThan(3L)
+      }
+    }
+
+    "beLessThan" {
+      1L should beLessThan(2L)
+
+      shouldThrow<AssertionError> {
+        2L should beLessThan(1L)
+      }
+    }
+
+    "beLessThanOrEqualTo" {
+      1L should beLessThanOrEqualTo(2L)
+
+      shouldThrow<AssertionError> {
+        2L should beLessThanOrEqualTo(1L)
+      }
+    }
+
+    "greaterThan" {
+      1L should beGreaterThanOrEqualTo(0L)
+
+      shouldThrow<AssertionError> {
+        2L should beGreaterThanOrEqualTo(3L)
+      }
     }
 
     "between should test for valid interval" {

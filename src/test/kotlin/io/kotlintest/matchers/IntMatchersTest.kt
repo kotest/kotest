@@ -5,6 +5,38 @@ import io.kotlintest.specs.StringSpec
 class IntMatchersTest : StringSpec() {
   init {
 
+    "beGreaterThan" {
+      1 should beGreaterThan(0)
+
+      shouldThrow<AssertionError> {
+        2 should beGreaterThan(3)
+      }
+    }
+
+    "beLessThan" {
+      1 should beLessThan(2)
+
+      shouldThrow<AssertionError> {
+        2 should beLessThan(1)
+      }
+    }
+
+    "beLessThanOrEqualTo" {
+      1 should beLessThanOrEqualTo(2)
+
+      shouldThrow<AssertionError> {
+        2 should beLessThanOrEqualTo(1)
+      }
+    }
+
+    "greaterThan" {
+      1 should beGreaterThanOrEqualTo(0)
+
+      shouldThrow<AssertionError> {
+        2 should beGreaterThanOrEqualTo(3)
+      }
+    }
+
     "between should test for valid interval" {
 
       val table = table(

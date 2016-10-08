@@ -21,7 +21,7 @@ class LogicalMatchOperatorsTest : StringSpec({
   }
 
   "or should pass if both tests pass" {
-    1 shouldBe (between(0, 2) or between(1, 3))
+    1 shouldBe (between(0, 2) or between(0, 3))
   }
 
   "or should pass if first test fails and second passes" {

@@ -315,6 +315,26 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 * To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
 
+Custom Matchers
+--------------
+
+It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match again.
+For example to add a matcher that checks that a string contains a substring, we can do the following:
+
+```kotlin
+fun hasSubstring(substr: String) = object : Matcher<String> {
+  override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr")
+}
+```
+
+The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result. The Result contains a boolean to indicate if the test passed or failed, and a message. The message should always be in the positive, ie, indicate what "should" happen.
+This matcher could then be used as follows:
+
+```kotlin
+"hello" should haveSubstring("ell")
+"hello" shouldNot haveSubstring("olleh")
+```
+
 Exceptions
 ----------
 

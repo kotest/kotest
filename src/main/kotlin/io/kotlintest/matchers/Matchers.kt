@@ -2,11 +2,11 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Inspectors
 
-interface ShouldKeyword<K> {
-  fun <T> wrapper(value: T): ShouldBuilder<K, T> = ShouldBuilder<K, T>(value)
-}
+interface Keyword<K>
 
-class ShouldBuilder<K, T>(val value: T)
+class MatcherBuilder<K, T>(val value: T)
+
+interface MatchBuilder<K>
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
@@ -17,13 +17,18 @@ interface Matchers : StringMatchers,
     TypeMatchers,
     Inspectors {
 
+  fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
+    override fun test(value: T): Result = Result(this == value, "$expected should equal $value")
+  }
+
   fun fail(msg: String): Nothing = throw AssertionError(msg)
 
-  infix fun Double.shouldBe(other: Double): Unit = ToleranceMatcher(other, 0.0).test(this)
+  infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
+
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
     when (any) {
-      is Matcher<*> -> (any as Matcher<T>).test(this)
+      is Matcher<*> -> should(any as Matcher<T>)
       else -> {
         if (this == null && any != null)
           throw AssertionError(this.toString() + " did not equal $any")
@@ -36,6 +41,26 @@ interface Matchers : StringMatchers,
   }
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
-  infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
-  infix fun <K, T> T.should(keyword: ShouldKeyword<K>): ShouldBuilder<K, T> = keyword.wrapper(this)
+
+  @Deprecated("This message is deprecated, use `value should match`")
+  infix fun <K, T> T.should(keyword: Keyword<K>) = MatcherBuilder<K, T>(this)
+
+  infix fun <T> T.should(matcher: Matcher<T>): Unit {
+    val result = matcher.test(this)
+    if (!result.passed)
+      throw AssertionError(result.message)
+  }
+
+  infix fun <T> T.shouldNotBe(any: Any?): Unit {
+    when (any) {
+      is Matcher<*> -> shouldNot(any as Matcher<T>)
+      else -> shouldNot(equalityMatcher(this))
+    }
+  }
+
+  infix fun <T> T.shouldNot(matcher: Matcher<T>): Unit {
+    val result = matcher.test(this)
+    if (result.passed)
+      throw AssertionError("Test passed which should have failed: " + result.message)
+  }
 }
