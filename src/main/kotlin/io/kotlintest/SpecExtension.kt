@@ -11,14 +11,16 @@ data class TestCaseContext(
 interface ProjectExtension {
   fun beforeAll() {}
   fun afterAll() {}
-  fun interceptProject(project: () -> Unit) {
-    project()
-  }
 }
 
 
 abstract class ProjectConfig {
+
   open val extensions: List<ProjectExtension> = listOf()
+
+  open fun beforeAll() {}
+
+  open fun afterAll() {}
 }
 
 
@@ -41,6 +43,7 @@ object Project {
     synchronized(executedBefore) {
       if (!executedBefore) {
         projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
+        projectConfig?.beforeAll()
         executedBefore = true
       }
     }
@@ -49,6 +52,7 @@ object Project {
   fun afterAll() {
     synchronized(executedAfter) {
       if (!executedAfter) {
+        projectConfig?.afterAll()
         projectConfig?.extensions?.forEach { extension -> extension.afterAll() }
         executedAfter = true
       }

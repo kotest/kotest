@@ -335,23 +335,129 @@ val exception = shouldThrow<IllegalAccessException> {
 exception.message should start with "Something went wrong"
 ```
 
-Before and After Each (since 1.1.0)
------------------------------------
+Interceptors
+------------
 
-If you need to run a method before each test and/or after each test (perhaps to reset some values to defaults etc), then simply override the `beforeEach` and `afterEach` methods in your test class, eg:
+TODO explain execution order or interceptors
+
+If you need to execute some logic before and/or after each test case, then you can use an interceptor. This is for example useful to cleanup a database after the test have run. 
+
+Interceptors replace `beforeEach`, `afterEach`, `beforeAll`, and `afterAll` functions from KotlinTest 1.x.
+
+### Intercepting a test case
+
+Override `interceptTestCase` in a spec class to provide logic that should be called before and after each test case. 
+
+You could for example create a stopwatch by overriding `interceptTestCase`:
 
 ```kotlin
-override fun beforeEach() {
-  println("Test starting")
+override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+  // before
+  val started = System.currentTimeMillis()
+
+  test() // don't forget to call test()!
+
+  // after
+  val finished = System.currentTimeMillis()
+  val time = finished - started
+  println("time [ms]: $time")
+} 
+```
+
+As you can see, you can keep some state, since an interceptor is really just a function and all local variables, like `started`, are just lying on the stack.
+
+**Attention: Don't forget to call `test()` in your interceptor! Otherwise the test case wouldn't be called.**
+
+### Intercepting a spec
+
+To run logic before and after a spec, you can override `interceptSpec`. The principle is the same as above:
+
+```kotlin
+protected fun interceptSpec(context: TestBase, spec: () -> Unit) {
+  println("before spec")
+  spec() // don't forget to call spec()!
+  println("after spec")
 }
 ```
 
+### Resusable Interceptors
+
+Interceptors are just functions and can be reused between specs or even between projects. Just pass interceptors to the `config` on test case or spec level.
+
 ```kotlin
-override fun afterEach() {
-  println("Test completed")
+"should do it correctly" {
+  ...
+}.config(interceptors = listof(myTestCaseInterceptor))
+```
+
+An interceptor would look like this:
+
+```kotlin
+val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+  println("before")
+  testCase() // Don't forget to call testCase()!
+  println("after)
 }
 ```
 
+### Executing code before and after a whole project
+
+To run test before the very first test case or after the very last test case of you your project you can define a ProjectConfig singleton object derived from `ProjectConfig` somewhere in your test folder (it will be found per reflection, so the location is not important as long as the object is on the class path).
+
+Override `beforeAll` and/or `afterAll`, to provide logic to be run before or after all tests of the project.
+
+Example:
+
+```kotlin
+object DemoConfig : ProjectConfig() {
+
+  override val extensions = listOf(TestExtension)
+
+  private var started: Long = 0
+
+  override fun beforeAll() {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterAll() {
+    val time = System.currentTimeMillis() - started
+    println("overall time [ms]: " + time)
+  }
+}
+```
+
+### Project extensions
+
+To provide resuable beforeAll and afterAll callbacks you can implement the interface `ProjectExtension`:
+
+```kotlin
+interface ProjectExtension {
+  fun beforeAll() {}
+  fun afterAll() {}
+}
+```
+
+Extensions are registered with the project config:
+
+```kotlin
+object DemoConfig : ProjectConfig() {
+  override val extensions = listOf(MyProjectExtension)
+}
+```
+
+An implementation would look like this:
+
+```kotlin
+object TestExtension : ProjectExtension {
+  override fun beforeAll() {
+    println("before all extension")
+  }
+
+  override fun afterAll() {
+    println("after all extension")
+  }
+}
+```
 
 Before and After All
 --------------------
@@ -555,3 +661,50 @@ class MyTests : ShouldSpec() {
   }
 }
 ```
+
+Migrating from KotlinTest 1.x
+-----------------------------
+
+### Migrating beforeAll, beforeEach, afterEach, afterAll
+
+Each `Spec` class like `StringSpec` inherited the following callback methods from `TestBase`:
+
+```kotlin
+protected open fun beforeEach(): Unit
+protected open fun afterEach(): Unit
+protected open fun beforeAll(): Unit
+protected open fun afterAll(): Unit
+```
+
+By overriding them, you could add behavior that should be executed before or after a single test or all tests of the spec.
+
+This mechanism is superseded by: 
+
+```kotlin
+protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit)
+protected open fun interceptSpec(context: TestBase, spec: () -> Unit)
+```
+
+The before/after each pair can be replaced with `interceptTestCase`. An example makes it more clear:
+
+```kotlin
+override protected fun beforeEach(): Unit {
+  println("before")
+}
+
+protected open fun afterEach(): Unit {
+  println("after)
+} 
+```
+
+Gets transformed to an interceptor that is around (before and after) the test case call:
+
+```kotlin
+override protected fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+  println("before")
+  test() // Don't forget to call the test itself!
+  println("after)
+}
+```
+
+The principle applies also to beforeAll and afterAll what has to be transformed to `interceptSpec`.
