@@ -109,9 +109,10 @@ class ConfigTest : WordSpec() {
         testCase()
         DemoConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
       }
+
       "should call interceptors in order of definition" {
         testCaseInterceptorLog!!.get().append("test call.")
-      }.config(invocations = 1, interceptors = listOf(orderVerificationInterceptor) + testCaseInterceptors) // TODO introcude "additionalInterceptors"?
+      }.config(invocations = 1, interceptors = listOf(orderVerificationInterceptor) + testCaseInterceptors)
 
       "should handle exception with interceptor" {
         throw RuntimeException()

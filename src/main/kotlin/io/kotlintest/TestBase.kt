@@ -181,12 +181,22 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     }
   }
 
-  // TODO write documentation
+  /**
+   * Intercepts the call of each test case.
+   *
+   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
+   * executed.
+   */
   protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
   }
 
-  // TODO write documentation
+  /**
+   * Intercepts the call of whole spec.
+   *
+   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
+   * executed.
+   */
   protected open fun interceptSpec(context: TestBase, spec: () -> Unit) {
     spec()
   }

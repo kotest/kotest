@@ -1,28 +1,6 @@
 package io.kotlintest
 
-// TODO rename and split file
-
 import org.reflections.Reflections
-
-data class TestCaseContext(
-    val spec: TestBase,
-    val testCase: TestCase)
-
-interface ProjectExtension {
-  fun beforeAll() {}
-  fun afterAll() {}
-}
-
-
-abstract class ProjectConfig {
-
-  open val extensions: List<ProjectExtension> = listOf()
-
-  open fun beforeAll() {}
-
-  open fun afterAll() {}
-}
-
 
 object Project {
 
@@ -59,6 +37,3 @@ object Project {
     }
   }
 }
-
-
-class InvalidConfigException(message: String) : Exception(message)
