@@ -338,13 +338,33 @@ exception.message should start with "Something went wrong"
 Interceptors
 ------------
 
-TODO explain execution order or interceptors
-
 If you need to execute some logic before and/or after each test case, then you can use an interceptor. This is for example useful to cleanup a database after the test have run. 
+
+In the `ProjectConfig` (see below) you can override `beforeAll` and `afterAll` or add extentions with such methods to the ProjectConfig. Logic in theses methods will be executed before and/or after the first/last test of the project.
+
+In a spec class you can intercept the spec execution by overriding the `interceptors` property and providing a list of interceptors or by overriding `interceptSpec`.
+
+A single test case can be intercepted by overriding `interceptTestCase` or by providing a list of interceptors in the `defaultTestCaseConfig` or in the `config` of a test case.
 
 Interceptors replace `beforeEach`, `afterEach`, `beforeAll`, and `afterAll` functions from KotlinTest 1.x.
 
-### Intercepting a test case
+### Interceptor Execution Order
+
+There are several points where you can hook in the test execution. 
+
+* ProjectConfig.extentions beforeAll
+  * ProjectConfig.beforeAll
+    * Spec.interceptors
+      * Spec.interceptSpec
+        * test case
+      * Spec.interceptSpec (interceptor from above continued)
+    * Spec.interceptors (interceptors from above continued)
+  * ProjectConfig.afterAll
+* ProjectConfig.extensions afterAll
+
+The general philoshopy is here that the closer an interceptor is to a test case, the closer it is to the test case in the execution order. 
+
+### Intercepting a Test Case
 
 Override `interceptTestCase` in a spec class to provide logic that should be called before and after each test case. 
 
@@ -363,12 +383,55 @@ override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
   println("time [ms]: $time")
 } 
 ```
-
-As you can see, you can keep some state, since an interceptor is really just a function and all local variables, like `started`, are just lying on the stack.
-
 **Attention: Don't forget to call `test()` in your interceptor! Otherwise the test case wouldn't be called.**
 
-### Intercepting a spec
+As you can see, you can keep some state, since an interceptor is really just a function and all variables are kept in this scope for the duration of the execution.
+
+You can even use interceptors to catch exceptions:
+
+```kotlin
+override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+  try {
+    test()
+  } 
+  catch (exception: SomeException) {
+    // ok
+  }
+  catch (exception: Exception) {
+    throw exception
+  }
+} 
+```
+
+If you define a separate interceptor function, you add it to the `defaultTestCaseConfig` or to the `config` of a test case:
+
+```kotlin
+  val interceptorA: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+    println("A before")
+    testCase()
+    println("A after")
+  }
+
+  val interceptorB: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+    println("B before")
+    testCase()
+    println("B after")
+  }
+
+class MySpec : StringSpec {
+
+  override val defaultTestCaseConfig: TestConfig =
+      config(interceptors = listOf(interceptorA, interceptorB))
+
+  init {
+    "should do something" {
+      ...
+    }.config(interceptors = listOf(interceptorA)) // overrides the interceptors from above
+  }
+}
+```
+
+### Intercepting a Spec
 
 To run logic before and after a spec, you can override `interceptSpec`. The principle is the same as above:
 
@@ -400,7 +463,7 @@ val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, te
 }
 ```
 
-### Executing code before and after a whole project
+### Executing Code Before and After a Whole Project
 
 To run test before the very first test case or after the very last test case of you your project you can define a ProjectConfig singleton object derived from `ProjectConfig` somewhere in your test folder (it will be found per reflection, so the location is not important as long as the object is on the class path).
 
@@ -426,7 +489,7 @@ object DemoConfig : ProjectConfig() {
 }
 ```
 
-### Project extensions
+### Project Extensions
 
 To provide resuable beforeAll and afterAll callbacks you can implement the interface `ProjectExtension`:
 
@@ -607,7 +670,7 @@ class StringSpecExample : StringSpec() {
 ```
 
 Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in  
-reversed order of declaration after `afterAll()` was executed.
+reversed order of declaration after the return of the last spec interceptor.
 
 Inspectors
 ----------

@@ -8,37 +8,36 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
-  val specInterceptorLog = StringBuilder()
   val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = ThreadLocal.withInitial { StringBuilder() }
 
   val verificationInterceptor: (TestBase, () -> Unit) -> Unit = { context, spec ->
     spec()
-    val expectedLog = "A1.B1.C1.D1.test call.D2.C2.B2.A2."
-    specInterceptorLog.toString() shouldEqual expectedLog
+    val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
+    DemoConfig.intercepterLog.toString() shouldEqual expectedLog
   }
 
   val specInterceptorA: (TestBase, () -> Unit) -> Unit = { context, spec ->
-    specInterceptorLog.append("A1.")
+    DemoConfig.intercepterLog.append("C1.")
     spec()
-    specInterceptorLog.append("A2.")
+    DemoConfig.intercepterLog.append("C2.")
   }
 
   val specInterceptorB: (TestBase, () -> Unit) -> Unit = { context, spec ->
-    specInterceptorLog.append("B1.")
+    DemoConfig.intercepterLog.append("D1.")
     spec()
-    specInterceptorLog.append("B2.")
+    DemoConfig.intercepterLog.append("D2.")
   }
 
   val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
-    testCaseInterceptorLog!!.get().append("C1.")
+    testCaseInterceptorLog!!.get().append("E1.")
     testCase()
-    testCaseInterceptorLog!!.get().append("C2.")
+    testCaseInterceptorLog!!.get().append("E2.")
   }
 
   val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
-    testCaseInterceptorLog!!.get().append("D1.")
+    testCaseInterceptorLog!!.get().append("F1.")
     testCase()
-    testCaseInterceptorLog!!.get().append("D2.")
+    testCaseInterceptorLog!!.get().append("F2.")
   }
 
   val testCaseInterceptorE = { context: TestCaseContext, testCase: () -> Unit ->
@@ -108,7 +107,7 @@ class ConfigTest : WordSpec() {
 
       val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
         testCase()
-        specInterceptorLog.append(testCaseInterceptorLog!!.get().toString())
+        DemoConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
       }
       "should call interceptors in order of definition" {
         testCaseInterceptorLog!!.get().append("test call.")
