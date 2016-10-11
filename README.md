@@ -39,12 +39,14 @@ Testing Styles
 You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 ```kotlin
+// test cases in init block
 class MyTests : StringSpec() {
   init {
     // tests here
   }
 }
 
+// test cases in lambda expression
 class MyTests : StringSpec({
   // tests here
 })
