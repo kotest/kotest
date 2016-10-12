@@ -31,7 +31,7 @@ object Project {
     synchronized(executedAfter) {
       if (!executedAfter) {
         projectConfig?.afterAll()
-        projectConfig?.extensions?.forEach { extension -> extension.afterAll() }
+        projectConfig?.extensions?.reversed()?.forEach { extension -> extension.afterAll() }
         executedAfter = true
       }
     }

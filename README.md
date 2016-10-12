@@ -467,9 +467,9 @@ val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, te
 }
 ```
 
-### Executing Code Before and After a Whole Project
+###  Executing Code Before and After a Whole Project
 
-To run test before the very first test case or after the very last test case of you your project you can define a ProjectConfig singleton object derived from `ProjectConfig` somewhere in your test folder (it will be found per reflection, so the location is not important as long as the object is on the class path).
+To run some logic before the very first test case or after the very last test case of you your project you can define a ProjectConfig singleton object derived from `ProjectConfig` somewhere in your test folder (preferably in the top-level test folder, but it will be found anywhere on the class path).
 
 Override `beforeAll` and/or `afterAll`, to provide logic to be run before or after all tests of the project.
 
@@ -512,7 +512,15 @@ object DemoConfig : ProjectConfig() {
 }
 ```
 
-An implementation would look like this:
+The `beforeAll` methods of the extensions are executed in the order of extensions (from left to right). The `afterAll` methods are executed in reversed order (from right to left). If you had two extensions `listOf(A, B)` the order of execution would be:
+
+* `A.beforeAll`
+  * `B.beforeAll`
+    * test execution
+  * `B.afterAll`
+* `A.afterAll`.
+
+A `ProjectExtension` implementation would look like this:
 
 ```kotlin
 object TestExtension : ProjectExtension {
@@ -523,23 +531,6 @@ object TestExtension : ProjectExtension {
   override fun afterAll() {
     println("after all extension")
   }
-}
-```
-
-Before and After All
---------------------
-
-If you need to run a setup/tear down function before and after all the tests have run, then simply override the `beforeAll` and `afterAll` methods in your test class, eg:
-
-```kotlin
-override fun beforeAll() {
-  println("Setting up my tests")
-}
-```
-
-```kotlin
-override fun afterAll() {
-  println("Cleaning up after my tests")
 }
 ```
 
