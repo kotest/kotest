@@ -56,7 +56,7 @@ class ConfigTest : WordSpec() {
           tag = TagA,
           interceptors = testCaseInterceptors)
 
-  override val interceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
+  override val specInterceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
 
   override val oneInstancePerTest = false
 
