@@ -20,20 +20,19 @@ object Project {
 
   fun beforeAll() {
     synchronized(executedBefore) {
-      if (!executedBefore.get()) {
+      if (executedBefore.compareAndSet(false, true)) {
         projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
         projectConfig?.beforeAll()
-        executedBefore.compareAndSet(false, true)
+
       }
     }
   }
 
   fun afterAll() {
     synchronized(executedAfter) {
-      if (!executedAfter.get()) {
+      if (executedAfter.compareAndSet(false, true)) {
         projectConfig?.afterAll()
         projectConfig?.extensions?.reversed()?.forEach { extension -> extension.afterAll() }
-        executedAfter.compareAndSet(false, true)
       }
     }
   }
