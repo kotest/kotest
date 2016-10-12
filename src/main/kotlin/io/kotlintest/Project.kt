@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 object Project {
 
   private var projectConfig: ProjectConfig? = null
-  private var executedBefore = AtomicBoolean(false)
-  private var executedAfter = AtomicBoolean(false)
+  private val executedBefore = AtomicBoolean(false)
+  private val executedAfter = AtomicBoolean(false)
 
   init {
     val configClasses = Reflections("io.kotlintest").getSubTypesOf(ProjectConfig::class.java)
@@ -23,7 +23,7 @@ object Project {
       if (!executedBefore.get()) {
         projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
         projectConfig?.beforeAll()
-        executedBefore.set(true)
+        executedBefore.compareAndSet(false, true)
       }
     }
   }
@@ -33,7 +33,7 @@ object Project {
       if (!executedAfter.get()) {
         projectConfig?.afterAll()
         projectConfig?.extensions?.reversed()?.forEach { extension -> extension.afterAll() }
-        executedAfter.set(true)
+        executedAfter.compareAndSet(false, true)
       }
     }
   }
