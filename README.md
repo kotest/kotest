@@ -364,7 +364,7 @@ There are several points where you can hook in the test execution.
   * ProjectConfig.afterAll
 * ProjectConfig.extensions afterAll
 
-The general philoshopy is here that the closer an interceptor is to a test case, the closer it is to the test case in the execution order.
+The general philoshopy here, is that the closer an interceptor is to a test case, the closer it is to the test case in the execution order.
 
 The execution order within an interceptor collection (`ProjectConfig.extentions`, `Spec.interceptors`) is from left to right.
 
