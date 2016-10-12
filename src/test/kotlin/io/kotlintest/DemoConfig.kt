@@ -6,11 +6,8 @@ object DemoConfig : ProjectConfig() {
 
   val intercepterLog = StringBuilder()
 
-  private var started: Long = 0
-
   override fun beforeAll() {
     intercepterLog.append("B1.")
-    started = System.currentTimeMillis()
   }
 }
 

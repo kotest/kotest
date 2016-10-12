@@ -1,12 +1,13 @@
 package io.kotlintest
 
 import org.reflections.Reflections
+import java.util.concurrent.atomic.AtomicBoolean
 
 object Project {
 
   private var projectConfig: ProjectConfig? = null
-  private var executedBefore = false
-  private var executedAfter = false
+  private var executedBefore = AtomicBoolean(false)
+  private var executedAfter = AtomicBoolean(false)
 
   init {
     val configClasses = Reflections("io.kotlintest").getSubTypesOf(ProjectConfig::class.java)
@@ -19,20 +20,20 @@ object Project {
 
   fun beforeAll() {
     synchronized(executedBefore) {
-      if (!executedBefore) {
+      if (!executedBefore.get()) {
         projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
         projectConfig?.beforeAll()
-        executedBefore = true
+        executedBefore.set(true)
       }
     }
   }
 
   fun afterAll() {
     synchronized(executedAfter) {
-      if (!executedAfter) {
+      if (!executedAfter.get()) {
         projectConfig?.afterAll()
         projectConfig?.extensions?.reversed()?.forEach { extension -> extension.afterAll() }
-        executedAfter = true
+        executedAfter.set(true)
       }
     }
   }
