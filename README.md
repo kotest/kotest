@@ -417,7 +417,7 @@ class FunSpecTest : FunSpec() {
 Grouping Tests with Tags
 ------------------------
 
-Sometimes you don't want to run all tests and KotlinTests provides tags to be able to run only
+Sometimes you don't want to run all tests and KotlinTest provides tags to be able to run only
 certain tests. Tags are objects inheriting from `io.kotlintest.Tag`.
 
 To define tags for grouping tests by operating system you could define the following tags:
