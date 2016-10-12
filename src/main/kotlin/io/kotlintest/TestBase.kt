@@ -42,7 +42,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * Interceptors that intercepts the execution of the whole spec. Interceptors are executed from
    * left to right.
    */
-  protected open val specInterceptors: Iterable<(TestBase, () -> Unit) -> Unit> = listOf()
+  protected open val specInterceptors: List<(TestBase, () -> Unit) -> Unit> = listOf()
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
