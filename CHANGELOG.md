@@ -36,9 +36,11 @@ forNone(table) { a, b ->
 }
 ```
 
-* added `include` matcher for strings as an alternative to existing `should have substring(x)`, eg
+* Simplified ability to add custom matchers. Simple implement `Matcher<T>` interface. See readme for more information.
 
-```"hello" should include("l")```
+* Added `shouldNot` to invert matchers. Eg, `"hello" shouldNot include("hallo")`
+
+* Deprecated matchers which do not implement Matcher<T>. Eg, `should have substring(x)` has been deprecated in favour of `"hello" should include("l")`. This is because instances of Matcher<T> can be combined with `or` and `and` and can be negated with `shouldNot`.
 
 * Added `between` matcher for int and long, eg
 

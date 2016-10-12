@@ -2,19 +2,11 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Inspectors
 
-interface Keyword
+interface Keyword<K>
 
-object have : Keyword
+class MatcherBuilder<K, T>(val value: T)
 
-object be : Keyword
-
-object end : Keyword
-
-object start : Keyword
-
-object contain : Keyword
-
-object include : Keyword
+interface MatchBuilder<K>
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
@@ -25,13 +17,31 @@ interface Matchers : StringMatchers,
     TypeMatchers,
     Inspectors {
 
+  fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
+    override fun test(value: T): Result = Result(this == value, "$expected should equal $value")
+  }
+
   fun fail(msg: String): Nothing = throw AssertionError(msg)
 
-  infix fun Double.shouldBe(other: Double): Unit = ToleranceMatcher(other, 0.0).test(this)
+  infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
+
+  infix fun String.shouldBe(other: String) {
+    if (this != other) {
+      var msg = "String $this should be equal to $other"
+      for (k in 0..Math.min(this.length, other.length) - 1) {
+        if (this[k] != other[k]) {
+          msg = "$msg (diverged at index $k)"
+          break
+        }
+      }
+      throw AssertionError(msg)
+    }
+  }
+
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
     when (any) {
-      is Matcher<*> -> (any as Matcher<T>).test(this)
+      is Matcher<*> -> should(any as Matcher<T>)
       else -> {
         if (this == null && any != null)
           throw AssertionError(this.toString() + " did not equal $any")
@@ -44,18 +54,26 @@ interface Matchers : StringMatchers,
   }
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
-  infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
-  infix fun <T> T.should(x: have): HaveWrapper<T> = HaveWrapper(this)
-  infix fun <T> T.should(x: start): StartWrapper<T> = StartWrapper(this)
-  infix fun <T> T.should(x: end): EndWrapper<T> = EndWrapper(this)
-  infix fun <T> T.should(x: be): BeWrapper<T> = BeWrapper(this)
-  infix fun <T> T.should(x: contain): ContainWrapper<T> = ContainWrapper(this)
-  infix fun <T> T.should(x: include): IncludeWrapper<T> = IncludeWrapper(this)
-}
 
-class HaveWrapper<T>(val value: T)
-class BeWrapper<T>(val value: T)
-class StartWrapper<T>(val value: T)
-class EndWrapper<T>(val value: T)
-class IncludeWrapper<T>(val value: T)
-class ContainWrapper<T>(val value: T)
+  @Deprecated("This syntax is deprecated, use `value should match`")
+  infix fun <K, T> T.should(keyword: Keyword<K>) = MatcherBuilder<K, T>(this)
+
+  infix fun <T> T.should(matcher: Matcher<T>): Unit {
+    val result = matcher.test(this)
+    if (!result.passed)
+      throw AssertionError(result.message)
+  }
+
+  infix fun <T> T.shouldNotBe(any: Any?): Unit {
+    when (any) {
+      is Matcher<*> -> shouldNot(any as Matcher<T>)
+      else -> shouldNot(equalityMatcher(this))
+    }
+  }
+
+  infix fun <T> T.shouldNot(matcher: Matcher<T>): Unit {
+    val result = matcher.test(this)
+    if (result.passed)
+      throw AssertionError("Test passed which should have failed: " + result.message)
+  }
+}

@@ -279,43 +279,27 @@ class StringSpecExample : StringSpec() {
 Matchers
 --------
 
-KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`.
+KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`. To see a full list of current matchers click here [matchers list](matchers.md).
 
-### String Matchers
+Custom Matchers
+--------------
 
-* To assert that a string starts with a given prefix use `str should startWith(y)`.
-* To assert that a string ends with a given suffix use `str should endWith(y)`.
-* To assert that a string contains a given substring use `str should have substring y`.
-* To assert that a string matches a given regular expression, use `str should match("regex")`.
-* To assert that a string has a given length, use `str should haveLength(10)`
+It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match again.
+For example to add a matcher that checks that a string contains a substring, we can do the following:
 
-### Long / Int Matchers
+```kotlin
+fun hasSubstring(substr: String) = object : Matcher<String> {
+  override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr")
+}
+```
 
-* To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
-* To assert that a value is within a given range, you can do `x shouldBe between(y,z)`
+The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result. The Result contains a boolean to indicate if the test passed or failed, and a message. The message should always be in the positive, ie, indicate what "should" happen.
+This matcher could then be used as follows:
 
-### Double Matchers
-
-* To assert that a double is exactly equal to another double use `d shouldBe exactly(e)`
-* To assert that a double is equal within some tolerance range, use `d shouldBe (e plusOrMinus y)`
-
-### Collection Matchers
-
-* To assert that a collection has a given size use `col should haveSize(4)`. This is the same as `(col.size == 4) shouldBe true` but more readable.
-* To assert that a collection contains a given element use `col should contain(x)`.
-* To assert that a collection has a given collection of elements in any order, you can use `col should containInAnyOrder(xs)`
-* To assert that a collection has a single given element use `col shouldBe singleElement(y)`
-* To assert that a collection is sorted use `listOf(1,2,3) shouldBe sorted<Int>()`
-
-### Map Matchers
-
-* To assert that a map contains a given key use `map should haveKey(k)`.
-* To assert that a map contains a given value use `map should haveValue(v)`.
-* To assert that a map contains a given mappings use `col should contain(k,v)`.
-
-### References
-
-* To assert that two instances are the same reference, you can use `x should beTheSameInstanceAs(y)`
+```kotlin
+"hello" should haveSubstring("ell")
+"hello" shouldNot haveSubstring("olleh")
+```
 
 Exceptions
 ----------
