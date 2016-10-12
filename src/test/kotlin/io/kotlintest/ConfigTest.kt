@@ -8,7 +8,9 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
-  val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = ThreadLocal.withInitial { StringBuilder() }
+  val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = object : ThreadLocal<StringBuilder>() {
+    override fun initialValue() = StringBuilder()
+  }
 
   val verificationInterceptor: (TestBase, () -> Unit) -> Unit = { context, spec ->
     spec()
