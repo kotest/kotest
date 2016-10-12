@@ -11,7 +11,7 @@ object Project {
   init {
     val configClasses = Reflections("io.kotlintest").getSubTypesOf(ProjectConfig::class.java)
     if (configClasses.size > 1)  {
-      val configClassNames = configClasses.map { config -> config.typeName }
+      val configClassNames = configClasses.map { config -> config.simpleName }
       throw InvalidConfigException("Duplicate GlobalConfig found: $configClassNames")
     }
     projectConfig = configClasses.firstOrNull()?.kotlin?.objectInstance
