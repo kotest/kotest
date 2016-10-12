@@ -438,7 +438,7 @@ Interceptors are just functions and can be reused between specs or even between 
 ```kotlin
 "should do it correctly" {
   ...
-}.config(interceptors = listof(myTestCaseInterceptor))
+}.config(interceptors = listOf(myTestCaseInterceptor))
 ```
 
 An interceptor would look like this:
