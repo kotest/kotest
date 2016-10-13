@@ -13,13 +13,18 @@ data class TestCase(
         suite.name.replace('.', ' '),
         if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
 
+  /**
+   * @param interceptors Interceptors around the test case. Interceptors are processed from left to
+   * right.
+   */
   fun config(
       invocations: Int? = null,
       ignored: Boolean? = null,
       timeout: Duration? = null,
       threads: Int? = null,
       tag: Tag? = null,
-      tags: Set<Tag>? = null) {
+      tags: Set<Tag>? = null,
+      interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit>? = null) {
     config =
         TestConfig(
             ignored ?: config.ignored,
@@ -27,10 +32,11 @@ data class TestCase(
             timeout ?: config.timeout,
             threads ?: config.threads,
             tags ?: config.tags,
-            tag)
+            tag,
+            interceptors ?: config.interceptors)
   }
 
-  internal val isActive: Boolean
+  val isActive: Boolean
     get() = !config.ignored && isActiveAccordingToTags
 
   private val isActiveAccordingToTags: Boolean

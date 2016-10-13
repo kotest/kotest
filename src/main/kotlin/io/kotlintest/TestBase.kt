@@ -19,9 +19,15 @@ import java.util.concurrent.Future
 @RunWith(KTestJUnitRunner::class)
 abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
-  private val closeablesInReverseOrder = LinkedList<Closeable>()
+  protected open val oneInstancePerTest = true
 
-  open val oneInstancePerTest = true
+  // the root test suite which uses the simple name of the class as the name of the suite
+  // spec implementations will add their tests to this suite
+  val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
+
+  // returns a jUnit Description for the currently registered tests
+  val description: Description
+    get() = descriptionForSuite(root)
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -30,19 +36,33 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * @see config
    * @see TestBase.config
    */
-  open val defaultTestCaseConfig: TestConfig = TestConfig()
+  protected open val defaultTestCaseConfig: TestConfig = TestConfig()
 
-  // the root test suite which uses the simple name of the class as the name of the suite
-  // spec implementations will add their tests to this suite
-  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
+  /**
+   * Interceptors that intercepts the execution of the whole spec. Interceptors are executed from
+   * left to right.
+   */
+  protected open val specInterceptors: List<(TestBase, () -> Unit) -> Unit> = listOf()
 
-  // returns a jUnit Description for the currently registered tests
-  internal val description: Description
-    get() = descriptionForSuite(root)
+  private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  internal fun run(notifier: RunNotifier) {
-    if (oneInstancePerTest) runOneInstancePerTest(notifier)
-    else runSharedInstance(notifier)
+  fun run(notifier: RunNotifier) {
+    Project.beforeAll()
+
+    val initialInterceptor = { context: TestBase, testCase: () -> Unit ->
+      interceptSpec(context, { testCase() })
+    }
+    val interceptorChain = createInterceptorChain(specInterceptors, initialInterceptor)
+
+    interceptorChain(this, {
+      if (oneInstancePerTest)
+        runOneInstancePerTest(notifier)
+      else
+        runSharedInstance(notifier)
+    })
+
+    closeResources(notifier)
+    Project.afterAll()
   }
 
   // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
@@ -51,13 +71,14 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
-                       tag: Tag? = null): TestConfig =
-      TestConfig(ignored, invocations, timeout, threads, tags, tag)
+                       tag: Tag? = null,
+                       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestConfig =
+      TestConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.
    */
-  protected fun <T: Closeable>autoClose(closeable: T): T {
+  protected fun <T : Closeable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
   }
@@ -88,70 +109,62 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    beforeAll()
     val testCount = root.tests().size
     for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
       val testcase = instance.root.tests()[testCaseIndex]
-      if (testcase.isActive) {
-        instance.beforeEach()
-        runTest(testcase, notifier, testcase.description)
-        instance.afterEach()
-      } else {
-        notifier.fireTestIgnored(testcase.description)
-      }
+      runTest(instance, testcase, notifier)
     }
-    performAfterAll(notifier)
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    beforeAll()
     val tests = root.tests()
-    tests.forEach {
-      when {
-        it.isActive -> {
-          beforeEach()
-          runTest(it, notifier, it.description)
-          afterEach()
-        }
-        else -> {
-          notifier.fireTestIgnored(it.description)
-        }
-      }
-    }
-    performAfterAll(notifier)
+    tests.forEach { runTest(this, it, notifier) }
   }
 
-  private fun runTest(testcase: TestCase, notifier: RunNotifier, description: Description): Unit {
-    val executor =
-        if (testcase.config.threads < 2) Executors.newSingleThreadExecutor()
-        else Executors.newFixedThreadPool(testcase.config.threads)
-    notifier.fireTestStarted(description)
-    val results = ArrayList<Future<Any>>()
-    for (j in 1..testcase.config.invocations) {
-      val callable = Callable {
-        try {
-          testcase.test()
-        } catch (e: Throwable) {
-          Failure(description, e)
+  // TODO beautify
+  private fun runTest(
+      spec: TestBase,
+      testCase: TestCase,
+      notifier: RunNotifier): Unit {
+    if (testCase.isActive) {
+      val executor =
+          if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()
+          else Executors.newFixedThreadPool(testCase.config.threads)
+      notifier.fireTestStarted(testCase.description)
+      val initialInterceptor = { context: TestCaseContext, testCase: () -> Unit ->
+        interceptTestCase(context, { testCase() })
+      }
+      val interceptorChain = createInterceptorChain(testCase.config.interceptors, initialInterceptor)
+      val testCaseContext = TestCaseContext(spec, testCase)
+      val results = ArrayList<Future<Any>>()
+      for (j in 1..testCase.config.invocations) {
+        val callable = Callable {
+          try {
+            interceptorChain(testCaseContext, { testCase.test() })
+          } catch (exception: Throwable) {
+            Failure(testCase.description, exception)
+          }
+        }
+        results.add(executor.submit(callable))
+      }
+      executor.shutdown()
+      val timeout = testCase.config.timeout
+      val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
+      results.forEach {
+        val result = it.get()
+        if (result is Failure) {
+          notifier.fireTestFailure(result)
         }
       }
-      results.add(executor.submit(callable))
-    }
-    executor.shutdown()
-    val timeout = testcase.config.timeout
-    val terminated = executor.awaitTermination(timeout.amount, timeout.timeUnit)
-    results.forEach {
-      val result = it.get()
-      if (result is Failure) {
-        notifier.fireTestFailure(result)
+      if (!terminated) {
+        val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
+        notifier.fireTestFailure(failure)
       }
+      notifier.fireTestFinished(description)
+    } else {
+      notifier.fireTestIgnored(testCase.description)
     }
-    if (!terminated) {
-      val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
-      notifier.fireTestFailure(failure)
-    }
-    notifier.fireTestFinished(description)
   }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
@@ -165,20 +178,38 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
     return desc
   }
 
-  protected open fun beforeAll(): Unit {
+  private fun <CONTEXT> createInterceptorChain(
+      interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
+      initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
+    return interceptors.reversed().fold(initialInterceptor) { a, b ->
+      {
+        context: CONTEXT, testCase: () -> Unit ->
+        b(context, { a.invoke(context, { testCase() }) })
+      }
+    }
   }
 
-  protected open fun beforeEach(): Unit {
+  /**
+   * Intercepts the call of each test case.
+   *
+   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
+   * executed.
+   */
+  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+    test()
   }
 
-  protected open fun afterEach(): Unit {
+  /**
+   * Intercepts the call of whole spec.
+   *
+   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
+   * executed.
+   */
+  protected open fun interceptSpec(context: TestBase, spec: () -> Unit) {
+    spec()
   }
 
-  protected open fun afterAll(): Unit {
-  }
-
-  private fun performAfterAll(notifier: RunNotifier) {
-    afterAll()
+  private fun closeResources(notifier: RunNotifier) {
     closeablesInReverseOrder.forEach {
       try {
         it.close()

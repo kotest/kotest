@@ -31,7 +31,8 @@ class TestCaseTest : StringSpec() {
     }.config(tag = TagA)
   }
 
-  override fun afterEach() {
+  override fun interceptTestCase(contex: TestCaseContext, test: () -> Unit) {
+    test()
     System.clearProperty("excludeTags")
     System.clearProperty("includeTags")
   }
