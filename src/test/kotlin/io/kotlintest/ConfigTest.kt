@@ -52,7 +52,7 @@ class ConfigTest : WordSpec() {
 
   val testCaseInterceptors = listOf(testCaseinterceptorC, testCaseInterceptorD, testCaseInterceptorE)
 
-  override val defaultTestCaseConfig: TestConfig =
+  override val defaultTestCaseConfig: TestCaseConfig =
       config(
           invocations = 3,
           tag = TagA,

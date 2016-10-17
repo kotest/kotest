@@ -6,7 +6,7 @@ data class TestCase(
     val suite: TestSuite,
     val name: String,
     val test: () -> Unit,
-    var config: TestConfig) {
+    var config: TestCaseConfig) {
 
   val description: Description
     get() = Description.createTestDescription(
@@ -26,7 +26,7 @@ data class TestCase(
       tags: Set<Tag>? = null,
       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit>? = null) {
     config =
-        TestConfig(
+        TestCaseConfig(
             ignored ?: config.ignored,
             invocations ?: config.invocations,
             timeout ?: config.timeout,

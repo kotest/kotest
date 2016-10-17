@@ -1,6 +1,6 @@
 package io.kotlintest
 
-class TestConfig(
+class TestCaseConfig(
     val ignored: Boolean = false,
     val invocations: Int = 1,
     val timeout: Duration = Duration.unlimited,
@@ -18,7 +18,7 @@ class TestConfig(
       threads: Int = this.threads,
       tags: Set<Tag> = this.tags,
       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = this.interceptors) =
-      TestConfig(
+      TestCaseConfig(
           ignored = ignored,
           invocations = invocations,
           timeout = timeout,

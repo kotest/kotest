@@ -36,7 +36,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
    * @see config
    * @see Spec.config
    */
-  protected open val defaultTestCaseConfig: TestConfig = TestConfig()
+  protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
 
   /**
    * Interceptors that intercepts the execution of the whole spec. Interceptors are executed from
@@ -72,8 +72,8 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
                        tag: Tag? = null,
-                       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestConfig =
-      TestConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
+                       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestCaseConfig =
+      TestCaseConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.
