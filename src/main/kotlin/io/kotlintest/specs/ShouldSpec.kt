@@ -1,10 +1,10 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 
-abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : TestBase() {
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   var current = root

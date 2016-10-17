@@ -1,9 +1,9 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : TestBase() {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   fun test(name: String, test: () -> Unit): TestCase {

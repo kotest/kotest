@@ -1,11 +1,11 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 import java.util.*
 
-abstract class WordSpec(body: WordSpec.() -> Unit = {}) : TestBase() {
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   var current = root

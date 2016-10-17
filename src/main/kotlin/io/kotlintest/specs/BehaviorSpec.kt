@@ -1,11 +1,11 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 import java.util.*
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : TestBase() {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   var current = root

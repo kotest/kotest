@@ -12,19 +12,19 @@ class ConfigTest : WordSpec() {
     override fun initialValue() = StringBuilder()
   }
 
-  val verificationInterceptor: (TestBase, () -> Unit) -> Unit = { context, spec ->
+  val verificationInterceptor: (Spec, () -> Unit) -> Unit = { context, spec ->
     spec()
     val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
     DemoConfig.intercepterLog.toString() shouldEqual expectedLog
   }
 
-  val specInterceptorA: (TestBase, () -> Unit) -> Unit = { context, spec ->
+  val specInterceptorA: (Spec, () -> Unit) -> Unit = { context, spec ->
     DemoConfig.intercepterLog.append("C1.")
     spec()
     DemoConfig.intercepterLog.append("C2.")
   }
 
-  val specInterceptorB: (TestBase, () -> Unit) -> Unit = { context, spec ->
+  val specInterceptorB: (Spec, () -> Unit) -> Unit = { context, spec ->
     DemoConfig.intercepterLog.append("D1.")
     spec()
     DemoConfig.intercepterLog.append("D2.")
@@ -126,7 +126,7 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  override fun interceptSpec(context: TestBase, spec: () -> Unit): Unit {
+  override fun interceptSpec(context: Spec, spec: () -> Unit): Unit {
     spec()
 
     invocationCounter.get() shouldBe 5

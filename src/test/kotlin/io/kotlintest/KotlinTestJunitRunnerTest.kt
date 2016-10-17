@@ -13,7 +13,7 @@ class KotlinTestJunitRunnerTest : StringSpec() {
   init {
     "should handle AssertionError" {
       System.setProperty("internal", "true")
-      val runner = KTestJUnitRunner(ThrowsAssertionError::class.java as Class<TestBase>)
+      val runner = KTestJUnitRunner(ThrowsAssertionError::class.java as Class<Spec>)
       val n = RunNotifier()
       val latch = CountDownLatch(1)
       n.addListener(object : RunListener() {
@@ -27,7 +27,7 @@ class KotlinTestJunitRunnerTest : StringSpec() {
     }
 
     "should handle ignored tests" {
-      val runner = KTestJUnitRunner(HasIgnoredTest::class.java as Class<TestBase>)
+      val runner = KTestJUnitRunner(HasIgnoredTest::class.java as Class<Spec>)
       val n = RunNotifier()
       val latch = CountDownLatch(1)
       n.addListener(object : RunListener() {
@@ -41,7 +41,7 @@ class KotlinTestJunitRunnerTest : StringSpec() {
 
     "should report exceptions as an error" {
       System.setProperty("internal", "true")
-      val runner = KTestJUnitRunner(ThrowsRuntimeException::class.java as Class<TestBase>)
+      val runner = KTestJUnitRunner(ThrowsRuntimeException::class.java as Class<Spec>)
       val n = RunNotifier()
       val latch = CountDownLatch(1)
       n.addListener(object : RunListener() {

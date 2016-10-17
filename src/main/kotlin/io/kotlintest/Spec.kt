@@ -17,7 +17,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 @RunWith(KTestJUnitRunner::class)
-abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
+abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   protected open val oneInstancePerTest = true
 
@@ -34,7 +34,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    *
    * Initialize this property by calling the config method.
    * @see config
-   * @see TestBase.config
+   * @see Spec.config
    */
   protected open val defaultTestCaseConfig: TestConfig = TestConfig()
 
@@ -42,14 +42,14 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * Interceptors that intercepts the execution of the whole spec. Interceptors are executed from
    * left to right.
    */
-  protected open val specInterceptors: List<(TestBase, () -> Unit) -> Unit> = listOf()
+  protected open val specInterceptors: List<(Spec, () -> Unit) -> Unit> = listOf()
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
   fun run(notifier: RunNotifier) {
     Project.beforeAll()
 
-    val initialInterceptor = { context: TestBase, testCase: () -> Unit ->
+    val initialInterceptor = { context: Spec, testCase: () -> Unit ->
       interceptSpec(context, { testCase() })
     }
     val interceptorChain = createInterceptorChain(specInterceptors, initialInterceptor)
@@ -124,7 +124,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   // TODO beautify
   private fun runTest(
-      spec: TestBase,
+      spec: Spec,
       testCase: TestCase,
       notifier: RunNotifier): Unit {
     if (testCase.isActive) {
@@ -205,7 +205,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
    * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
    * executed.
    */
-  protected open fun interceptSpec(context: TestBase, spec: () -> Unit) {
+  protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
     spec()
   }
 

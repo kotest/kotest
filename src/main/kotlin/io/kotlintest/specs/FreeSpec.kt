@@ -1,10 +1,10 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 
-abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : TestBase() {
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   var current = root

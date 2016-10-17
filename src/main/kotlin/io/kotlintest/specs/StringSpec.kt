@@ -1,9 +1,9 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 
-abstract class StringSpec(body: StringSpec.() -> Unit = {}) : TestBase() {
+abstract class StringSpec(body: StringSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
   operator fun String.invoke(test: () -> Unit): TestCase {
