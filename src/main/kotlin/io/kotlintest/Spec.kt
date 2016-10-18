@@ -66,13 +66,13 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   }
 
   // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
-  protected fun config(ignored: Boolean = false,
+  protected fun config(enabled: Boolean = true,
                        invocations: Int = 1,
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
                        interceptors: List<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestCaseConfig =
-      TestCaseConfig(ignored, invocations, timeout, threads, tags, interceptors)
+      TestCaseConfig(enabled, invocations, timeout, threads, tags, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.

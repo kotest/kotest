@@ -539,7 +539,7 @@ Each test can be configured with various parameters. After the test block, invok
 
 * `invocations` - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
-* `ignored` - If set to true then this test is ignored. Can be useful if a test needs to be temporarily disabled.
+* `enabled` - If set to `false` then this test is enabled. Can be useful if a test needs to be temporarily disabled.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
 

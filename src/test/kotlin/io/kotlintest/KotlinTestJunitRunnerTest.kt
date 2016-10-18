@@ -77,6 +77,6 @@ class ThrowsRuntimeException : ShouldSpec() {
 class HasIgnoredTest : StringSpec() {
   init {
     "ignored test" {
-    }.config(ignored = true)
+    }.config(enabled = false)
   }
 }

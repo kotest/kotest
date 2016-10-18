@@ -33,13 +33,13 @@ class ConfigTest : WordSpec() {
   val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
     testCaseInterceptorLog!!.get().append("E1.")
     testCase()
-    testCaseInterceptorLog!!.get().append("E2.")
+    testCaseInterceptorLog.get().append("E2.")
   }
 
   val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
     testCaseInterceptorLog!!.get().append("F1.")
     testCase()
-    testCaseInterceptorLog!!.get().append("F2.")
+    testCaseInterceptorLog.get().append("F2.")
   }
 
   val testCaseInterceptorE = { context: TestCaseContext, testCase: () -> Unit ->
@@ -75,7 +75,7 @@ class ConfigTest : WordSpec() {
 
       "support ignored" {
         fail("shouldn't run")
-      }.config(ignored = true)
+      }.config(enabled = false)
 
       // If we have 100 threads, and each one sleeps for 1000 milliseconds, then the total time
       // should still be approx 1000 ms. So we set the timeout an order of magnitude higher, and it

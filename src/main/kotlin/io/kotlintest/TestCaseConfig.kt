@@ -1,7 +1,7 @@
 package io.kotlintest
 
 data class TestCaseConfig(
-    val ignored: Boolean = false,
+    val enabled: Boolean = true,
     val invocations: Int = 1,
     val timeout: Duration = Duration.unlimited,
     val threads: Int = 1,

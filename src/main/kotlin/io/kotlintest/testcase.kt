@@ -19,14 +19,14 @@ data class TestCase(
    */
   fun config(
       invocations: Int? = null,
-      ignored: Boolean? = null,
+      enabled: Boolean? = null,
       timeout: Duration? = null,
       threads: Int? = null,
       tags: Set<Tag>? = null,
       interceptors: List<(TestCaseContext, () -> Unit) -> Unit>? = null) {
     config =
         TestCaseConfig(
-            ignored ?: config.ignored,
+            enabled ?: config.enabled,
             invocations ?: config.invocations,
             timeout ?: config.timeout,
             threads ?: config.threads,
@@ -35,7 +35,7 @@ data class TestCase(
   }
 
   val isActive: Boolean
-    get() = !config.ignored && isActiveAccordingToTags
+    get() = config.enabled && isActiveAccordingToTags
 
   private val isActiveAccordingToTags: Boolean
     get() {
