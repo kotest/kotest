@@ -22,7 +22,6 @@ data class TestCase(
       ignored: Boolean? = null,
       timeout: Duration? = null,
       threads: Int? = null,
-      tag: Tag? = null,
       tags: Set<Tag>? = null,
       interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit>? = null) {
     config =
@@ -32,7 +31,6 @@ data class TestCase(
             timeout ?: config.timeout,
             threads ?: config.threads,
             tags ?: config.tags,
-            tag,
             interceptors ?: config.interceptors)
   }
 

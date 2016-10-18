@@ -9,12 +9,12 @@ class TestCaseTest : StringSpec() {
 
   init {
     val testTaggedA: TestCase = "should be tagged with tagA" { }
-    testTaggedA.config(tag = TagA)
+    testTaggedA.config(tags = setOf(TagA))
 
     val untaggedTest = "should be untagged" { }
 
     val testTaggedB = "should be tagged with tagB" { }
-    testTaggedB.config(tag = TagB)
+    testTaggedB.config(tags = setOf(TagB))
 
     "only tests without excluded tags should be active" {
       System.setProperty("excludeTags", "TagB")
@@ -28,7 +28,7 @@ class TestCaseTest : StringSpec() {
       testTaggedA.isActive shouldBe true
       untaggedTest.isActive shouldBe false
       testTaggedB.isActive shouldBe false
-    }.config(tag = TagA)
+    }.config(tags = setOf(TagA))
   }
 
   override fun interceptTestCase(contex: TestCaseContext, test: () -> Unit) {

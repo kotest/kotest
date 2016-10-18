@@ -541,7 +541,7 @@ Each test can be configured with various parameters. After the test block, invok
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
 * `ignored` - If set to true then this test is ignored. Can be useful if a test needs to be temporarily disabled.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
-* `tag` / `tags` - a set of tags that can be used to group tests (see detailed description below).
+* `tags` - a set of tags that can be used to group tests (see detailed description below).
 
 Examples of setting config:
 
@@ -584,7 +584,7 @@ Grouping Tests with Tags
 Sometimes you don't want to run all tests and KotlinTest provides tags to be able to run only
 certain tests. Tags are objects inheriting from `io.kotlintest.Tag`.
 
-To define tags for grouping tests by operating system you could define the following tags:
+To group tests by operating system you could define the following tags:
 
 ```kotlin
 object Linux : Tag()
@@ -598,11 +598,11 @@ class MyTest : StringSpec {
   init {
     "should run on Windows" {
       ...
-    }.config(tag = Windows)
+    }.config(tags = setOf(Windows)
 
     "should run on Linux" {
       ...
-    }.config(tag = Linux)
+    }.config(tags = setOf(Linux))
 
     "should run on Windows and Linux" {
       ...
@@ -615,9 +615,7 @@ Then by invoking the test runner with a system property of `includeTags` and/or 
 can control which tests are run. If you provide more than one tag for `includeTags` or
 `excludeTags`, a test case with at least one of the given tags is included/excluded.
 
-Provide the simple tag object names (without package) as tag names. Please pay attention to the use
-of upper case and lower case! If two tag objects have the same simple name (in different name
-spaces) they are treated as the same tag.
+Provide the simple names of tag object (without package) when you run the tests. Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
 
 Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
 Gradle like this:

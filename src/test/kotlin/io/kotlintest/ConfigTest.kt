@@ -55,7 +55,7 @@ class ConfigTest : WordSpec() {
   override val defaultTestCaseConfig: TestCaseConfig =
       config(
           invocations = 3,
-          tag = TagA,
+          tags = setOf(TagA),
           interceptors = testCaseInterceptors)
 
   override val specInterceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)

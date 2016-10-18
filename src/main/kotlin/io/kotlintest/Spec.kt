@@ -71,9 +71,8 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
                        timeout: Duration = Duration.unlimited,
                        threads: Int = 1,
                        tags: Set<Tag> = setOf(),
-                       tag: Tag? = null,
                        interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestCaseConfig =
-      TestCaseConfig(ignored, invocations, timeout, threads, tags, tag, interceptors)
+      TestCaseConfig(ignored, invocations, timeout, threads, tags, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.
