@@ -539,7 +539,7 @@ Each test can be configured with various parameters. After the test block, invok
 
 * `invocations` - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
-* `enabled` - If set to `false` then this test is enabled. Can be useful if a test needs to be temporarily disabled.
+* `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
 
@@ -577,6 +577,28 @@ class FunSpecTest : FunSpec() {
   }
 }
 ```
+
+Disabling Test Cases and Running Test Cases Conditionally
+---------------------------------------------------------
+
+You can disable a test case simply by setting the config parameter `enabled` to `false`. If you're looking for something like JUnit's `@Ignore`, this is for you.
+
+```kotlin
+"should do something" {
+  ...
+}.config(enabled = false)
+```
+
+You can use the same mechanism to run tests only under certain conditions. For example you could run certain tests only on Linux systems using [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
+
+```kotlin
+"should do something" {
+  ...
+}.config(enabled = IS_OS_LINUX)
+```
+
+`isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
+
 
 Grouping Tests with Tags
 ------------------------
@@ -748,3 +770,21 @@ override protected fun interceptTestCase(context: TestCaseContext, test: () -> U
 ```
 
 The principle applies also to beforeAll and afterAll what has to be transformed to `interceptSpec`.
+
+### Migrating `ignored` config parameter
+
+`config` has been changed to `enabled` and the logic was inverted accordingly. If you have a disabled test like this:
+
+```kotlin
+"should do something" {
+  ...
+}.config(ignored = true)
+```
+
+You need to change it to:
+
+```kotlin
+"should do something" {
+  ...
+}.config(enabled = false)
+```
