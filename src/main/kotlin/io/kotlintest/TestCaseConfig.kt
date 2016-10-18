@@ -6,4 +6,4 @@ data class TestCaseConfig(
     val timeout: Duration = Duration.unlimited,
     val threads: Int = 1,
     val tags: Set<Tag> = setOf(),
-    val interceptors: Iterable<(TestCaseContext, () -> Unit) -> Unit> = listOf())
+    val interceptors: List<(TestCaseContext, () -> Unit) -> Unit> = listOf())
