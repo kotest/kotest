@@ -532,8 +532,8 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-Testing Config (since 1.2.0)
-----------------------------
+Test Case Config (since 1.2.0)
+------------------------------
 
 Each test can be configured with various parameters. After the test block, invoke the config method passing in the parameters you wish to set. The available parameters are:
 

@@ -160,7 +160,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
         val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
         notifier.fireTestFailure(failure)
       }
-      notifier.fireTestFinished(description)
+      notifier.fireTestFinished(testCase.description)
     } else {
       notifier.fireTestIgnored(testCase.description)
     }
@@ -182,8 +182,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
       initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
     return interceptors.reversed().fold(initialInterceptor) { a, b ->
       {
-        context: CONTEXT, testCase: () -> Unit ->
-        b(context, { a.invoke(context, { testCase() }) })
+        context: CONTEXT, testCase: () -> Unit -> b(context, { a.invoke(context, { testCase() }) })
       }
     }
   }
