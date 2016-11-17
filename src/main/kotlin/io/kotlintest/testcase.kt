@@ -53,4 +53,7 @@ data class TestCase(
 
   private fun readProperty(name: String): List<String> =
       (System.getProperty(name) ?: "").split(',').map { it.trim() }
+
+  // required to avoid StackOverflowError due to mutable data structures in this class (suite)
+  override fun toString(): String = name
 }
