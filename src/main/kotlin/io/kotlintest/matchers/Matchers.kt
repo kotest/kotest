@@ -13,6 +13,7 @@ interface Matchers : StringMatchers,
     DoubleMatchers,
     IntMatchers,
     LongMatchers,
+    FileMatchers,
     MapMatchers,
     TypeMatchers,
     Inspectors {
