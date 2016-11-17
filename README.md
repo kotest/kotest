@@ -338,7 +338,7 @@ Interceptors replace `beforeEach`, `afterEach`, `beforeAll`, and `afterAll` func
 
 There are several points where you can hook in the test execution. 
 
-* ProjectConfig.extentions beforeAll
+* ProjectConfig.extensions beforeAll
   * ProjectConfig.beforeAll
     * Spec.interceptors
       * Spec.interceptSpec
