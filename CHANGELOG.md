@@ -59,6 +59,7 @@ forNone(table) { a, b ->
 * Tags are objects derived from `Tag` class now.
 * Tags can now be included and/or exluded. It is no longer the case that all untagged tests are
 always executed.
+* Fixed bugs with parenthesis breaking layout in Intellij #112
 
 ### Removed
 
