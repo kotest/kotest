@@ -36,6 +36,8 @@ forNone(table) { a, b ->
 }
 ```
 
+* Interceptors have been added. Interceptors allow code to be executed before and after a test. See the main readme for more info.
+
 * Simplified ability to add custom matchers. Simple implement `Matcher<T>` interface. See readme for more information.
 
 * Added `shouldNot` to invert matchers. Eg, `"hello" shouldNot include("hallo")`
