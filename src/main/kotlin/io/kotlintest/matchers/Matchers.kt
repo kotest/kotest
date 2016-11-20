@@ -39,6 +39,31 @@ interface Matchers : StringMatchers,
     }
   }
 
+  infix fun BooleanArray.shouldBe(other: BooleanArray): Unit {
+    if (this.toList() != other.toList())
+      throw AssertionError("Array not equal: $this != $other")
+  }
+
+  infix fun IntArray.shouldBe(other: IntArray): Unit {
+    if (this.toList() != other.toList())
+      throw AssertionError("Array not equal: $this != $other")
+  }
+
+  infix fun DoubleArray.shouldBe(other: DoubleArray): Unit {
+    if (this.toList() != other.toList())
+      throw AssertionError("Array not equal: $this != $other")
+  }
+
+  infix fun LongArray.shouldBe(other: LongArray): Unit {
+    if (this.toList() != other.toList())
+      throw AssertionError("Array not equal: $this != $other")
+  }
+
+  infix fun <T> Array<T>.shouldBe(other: Array<T>): Unit {
+    if (this.toList() != other.toList())
+      throw AssertionError("Array not equal: $this != $other")
+  }
+
   infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
   infix fun <T> T.shouldEqual(any: Any?): Unit {
     when (any) {

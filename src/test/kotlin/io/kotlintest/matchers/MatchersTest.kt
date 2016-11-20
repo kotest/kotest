@@ -1,11 +1,11 @@
-package io.kotlintest
+package io.kotlintest.matchers
 
-import io.kotlintest.matchers.*
 import io.kotlintest.specs.FreeSpec
 import java.util.*
 import kotlin.collections.listOf
 
 class MatchersTest : FreeSpec(), Matchers {
+
   init {
     "Matchers.shouldBe" - {
 
