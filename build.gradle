@@ -8,7 +8,7 @@ buildscript {
 }
 
 group = "io.kotlintest"
-version = "1.3.4"
+version = "2.0.0-SNAPSHOT"
 
 apply plugin: 'kotlin'
 apply plugin: 'maven'
