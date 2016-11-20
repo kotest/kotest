@@ -29,7 +29,7 @@ interface CollectionMatchers {
     override fun test(value: Collection<T>): Result = Result(value.isEmpty(), "Collection should be empty")
   }
 
-  fun <T> containInAnyOrder(vararg ts: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+  fun <T> containsAll(vararg ts: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
     override fun test(value: Collection<T>) =
         Result(ts.all { value.contains(it) }, "Collection should contain values $ts")
   }

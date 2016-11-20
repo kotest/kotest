@@ -71,7 +71,7 @@ class CollectionMatchersTest : WordSpec() {
         val col = listOf(1, 2, 3)
 
         shouldThrow<AssertionError> {
-          col should beEmpty()
+            col should beEmpty()
         }
 
         ArrayList<String>() should beEmpty()
@@ -82,27 +82,27 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains all the elements but in any order" {
         val col = listOf(1, 2, 3, 4, 5)
 
-        col should containInAnyOrder(1, 2, 3)
-        col should containInAnyOrder(3, 2, 1)
-        col should containInAnyOrder(5, 1)
-        col should containInAnyOrder(1, 5)
-        col should containInAnyOrder(1)
-        col should containInAnyOrder(5)
+        col should containsAll(1, 2, 3)
+        col should containsAll(3, 2, 1)
+        col should containsAll(5, 1)
+        col should containsAll(1, 5)
+        col should containsAll(1)
+        col should containsAll(5)
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(1, 2, 6)
+          col should containsAll(1, 2, 6)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(6)
+          col should containsAll(6)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(0, 1, 2)
+          col should containsAll(0, 1, 2)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(3, 2, 0)
+          col should containsAll(3, 2, 0)
         }
       }
     }
