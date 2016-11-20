@@ -1,9 +1,12 @@
 package io.kotlintest.properties
 
 import com.sksamuel.koors.Random
+import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.nio.file.Files
+import java.nio.file.Paths
 
 interface Gen<T> {
   fun generate(): T
@@ -49,6 +52,10 @@ interface Gen<T> {
             return next
         }
       }
+    }
+
+    fun file() = object : Gen<File> {
+      override fun generate(): File = File(string().generate())
     }
 
     fun long() = object : Gen<Long> {
