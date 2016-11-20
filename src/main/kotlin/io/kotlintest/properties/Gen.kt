@@ -30,11 +30,22 @@ interface Gen<T> {
       override fun generate(): Int = Random.default.nextInt()
     }
 
+    fun positiveIntegers() = nats()
     fun nats() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
           val next = Random.default.nextInt()
           if (next >= 0)
+            return next
+        }
+      }
+    }
+
+    fun negativeIntegers() = object : Gen<Int> {
+      override fun generate(): Int {
+        while (true) {
+          val next = Random.default.nextInt()
+          if (next < 0)
             return next
         }
       }
