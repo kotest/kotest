@@ -1,9 +1,12 @@
 package io.kotlintest.specs
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import org.junit.runner.RunWith
 
+@RunWith(KTestJUnitRunner::class)
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
   init { body() }
 

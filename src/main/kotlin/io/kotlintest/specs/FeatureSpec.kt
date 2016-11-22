@@ -1,10 +1,13 @@
 package io.kotlintest.specs
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import org.junit.runner.RunWith
 import java.util.*
 
+@RunWith(KTestJUnitRunner::class)
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
