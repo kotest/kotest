@@ -1,9 +1,12 @@
 package io.kotlintest.properties
 
 import com.sksamuel.koors.Random
+import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.nio.file.Files
+import java.nio.file.Paths
 
 interface Gen<T> {
   fun generate(): T
@@ -28,6 +31,31 @@ interface Gen<T> {
 
     fun int() = object : Gen<Int> {
       override fun generate(): Int = Random.default.nextInt()
+    }
+
+    fun positiveIntegers() = nats()
+    fun nats() = object : Gen<Int> {
+      override fun generate(): Int {
+        while (true) {
+          val next = Random.default.nextInt()
+          if (next >= 0)
+            return next
+        }
+      }
+    }
+
+    fun negativeIntegers() = object : Gen<Int> {
+      override fun generate(): Int {
+        while (true) {
+          val next = Random.default.nextInt()
+          if (next < 0)
+            return next
+        }
+      }
+    }
+
+    fun file() = object : Gen<File> {
+      override fun generate(): File = File(string().generate())
     }
 
     fun long() = object : Gen<Long> {

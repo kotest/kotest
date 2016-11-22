@@ -10,10 +10,10 @@ object Project {
   private val executedAfter = AtomicBoolean(false)
 
   init {
-    val configClasses = Reflections("io.kotlintest").getSubTypesOf(ProjectConfig::class.java)
+    val configClasses = Reflections().getSubTypesOf(ProjectConfig::class.java)
     if (configClasses.size > 1)  {
       val configClassNames = configClasses.map { config -> config.simpleName }
-      throw InvalidConfigException("Duplicate GlobalConfig found: $configClassNames")
+      throw InvalidConfigException("Multiple ProjectConfigs found: $configClassNames")
     }
     projectConfig = configClasses.firstOrNull()?.kotlin?.objectInstance
   }

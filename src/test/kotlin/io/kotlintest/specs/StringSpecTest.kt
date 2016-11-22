@@ -22,3 +22,10 @@ class StringSpecConstructorTest : StringSpec({
     "hello" should haveLength(5)
   }
 })
+
+class StringSpecParenthesisTest : StringSpec() {
+  init {
+    "parenthesis (here) " {
+    }
+  }
+}
