@@ -8,7 +8,10 @@ import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
-  init { body() }
+
+  init {
+    body()
+  }
 
   var current = root
 
@@ -22,7 +25,11 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
   }
 
   infix operator fun String.invoke(test: () -> Unit): TestCase {
-    val tc = TestCase(suite = current, name = sanitizeSpecName(this), test = test, config = defaultTestCaseConfig)
+    val tc = TestCase(
+        suite = current,
+        name = sanitizeSpecName(this),
+        test = test,
+        config = defaultTestCaseConfig)
     current.cases.add(tc)
     return tc
   }

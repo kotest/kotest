@@ -9,7 +9,10 @@ import java.util.*
 
 @RunWith(KTestJUnitRunner::class)
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
-  init { body() }
+
+  init {
+    body()
+  }
 
   var current = root
 

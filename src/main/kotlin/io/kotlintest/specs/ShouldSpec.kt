@@ -8,7 +8,10 @@ import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
-  init { body() }
+
+  init {
+    body()
+  }
 
   var current = root
 

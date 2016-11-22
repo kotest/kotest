@@ -9,7 +9,10 @@ import java.util.*
 
 @RunWith(KTestJUnitRunner::class)
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
-  init { body() }
+
+  init {
+    body()
+  }
 
   var current = root
 

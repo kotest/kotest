@@ -7,7 +7,10 @@ import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class)
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : Spec() {
-  init { body() }
+
+  init {
+    body()
+  }
 
   fun test(name: String, test: () -> Unit): TestCase {
     val tc = TestCase(suite = root, name = name, test = test, config = defaultTestCaseConfig)
