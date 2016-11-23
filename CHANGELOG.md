@@ -56,6 +56,8 @@ forNone(table) { a, b ->
 
 ```listOf(1,2,3) shouldBe sorted<Int>()```
 
+* Now supports comparsion of arrays #116
+
 ### Changed
 
 * Tags are objects derived from `Tag` class now.
