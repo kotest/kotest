@@ -14,7 +14,7 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : Spec() {
 
   operator fun String.invoke(test: () -> Unit): TestCase {
     val tc = TestCase(suite = root, name = this, test = test, config = defaultTestCaseConfig)
-    root.cases.add(tc)
+    root.testCases.add(tc)
     return tc
   }
 }

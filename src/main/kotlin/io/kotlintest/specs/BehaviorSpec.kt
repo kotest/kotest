@@ -38,6 +38,6 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   fun Then(name: String, test: () -> Unit): Unit = then(name, test)
 
   fun then(name: String, test: () -> Unit): Unit {
-    current.cases.add(TestCase(current, "Then ${sanitizeSpecName(name)}", test, defaultTestCaseConfig))
+    current.testCases.add(TestCase(current, "Then ${sanitizeSpecName(name)}", test, defaultTestCaseConfig))
   }
 }
