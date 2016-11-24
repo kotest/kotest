@@ -30,7 +30,7 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
         name = sanitizeSpecName(this),
         test = test,
         config = defaultTestCaseConfig)
-    current.testCases.add(tc)
+    current.addTestCase(tc)
     return tc
   }
 }

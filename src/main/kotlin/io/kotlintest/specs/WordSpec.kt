@@ -28,7 +28,7 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
   infix operator fun String.invoke(test: () -> Unit): TestCase {
     val testCase = TestCase(
         suite = current, name = "should " + this, test = test, config = defaultTestCaseConfig.copy())
-    current.testCases.add(testCase)
+    current.addTestCase(testCase)
     return testCase
   }
 }

@@ -27,7 +27,7 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
 
   fun scenario(name: String, test: () -> Unit): TestCase {
     val tc = TestCase(current, "Scenario: ${sanitizeSpecName(name)}", test, defaultTestCaseConfig)
-    current.testCases.add(tc)
+    current.addTestCase(tc)
     return tc
   }
 

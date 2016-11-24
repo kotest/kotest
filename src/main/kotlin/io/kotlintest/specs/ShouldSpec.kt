@@ -27,7 +27,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
   fun should(name: String, test: () -> Unit): TestCase {
     val testCase = TestCase(
         suite = current, name = "should $name", test = test, config = defaultTestCaseConfig)
-    current.testCases.add(testCase)
+    current.addTestCase(testCase)
     return testCase
   }
 }
