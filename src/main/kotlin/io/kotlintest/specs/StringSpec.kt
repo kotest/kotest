@@ -5,7 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import org.junit.runner.RunWith
 
-@RunWith(KTestJUnitRunner::class)
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class StringSpec(body: StringSpec.() -> Unit = {}) : Spec() {
 
   init {

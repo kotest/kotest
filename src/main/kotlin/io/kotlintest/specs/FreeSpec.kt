@@ -6,7 +6,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
 import org.junit.runner.RunWith
 
-@RunWith(KTestJUnitRunner::class)
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
 
   init {
