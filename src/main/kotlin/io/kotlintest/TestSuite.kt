@@ -1,13 +1,9 @@
 package io.kotlintest
 
-data class TestSuite(
-    val name: String,
-    val nestedSuites: MutableList<TestSuite>,
-    val cases: MutableList<TestCase>) {
+data class TestSuite(val name: String) {
 
-  companion object {
-    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
-  }
+  val nestedSuites: MutableList<TestSuite> = mutableListOf()
+  val cases: MutableList<TestCase> = mutableListOf()
 
   fun tests(suite: TestSuite = this): List<TestCase> =
       suite.cases + suite.nestedSuites.flatMap { suite -> tests(suite) }

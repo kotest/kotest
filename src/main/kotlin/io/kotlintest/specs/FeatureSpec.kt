@@ -17,7 +17,7 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
   var current = root
 
   fun feature(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}", ArrayList<TestSuite>(), ArrayList<TestCase>())
+    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}")
     current.nestedSuites.add(suite)
     val temp = current
     current = suite

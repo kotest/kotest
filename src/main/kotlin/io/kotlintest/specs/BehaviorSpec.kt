@@ -16,7 +16,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   fun Given(name: String, init: () -> Unit): Unit = given(name, init)
 
   fun given(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("Given ${sanitizeSpecName(name)}", ArrayList<TestSuite>(), ArrayList<TestCase>())
+    val suite = TestSuite("Given ${sanitizeSpecName(name)}")
     current.nestedSuites.add(suite)
     val temp = current
     current = suite
@@ -27,7 +27,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   fun When(name: String, init: () -> Unit): Unit = `when`(name, init)
 
   fun `when`(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("When ${sanitizeSpecName(name)}", ArrayList<TestSuite>(), ArrayList<TestCase>())
+    val suite = TestSuite("When ${sanitizeSpecName(name)}")
     current.nestedSuites.add(suite)
     val temp = current
     current = suite

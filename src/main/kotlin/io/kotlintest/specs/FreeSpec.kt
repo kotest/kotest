@@ -16,7 +16,7 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
   var current = root
 
   infix operator fun String.minus(init: () -> Unit): Unit {
-    val suite = TestSuite.empty(sanitizeSpecName(this))
+    val suite = TestSuite(sanitizeSpecName(this))
     current.nestedSuites.add(suite)
     val temp = current
     current = suite
