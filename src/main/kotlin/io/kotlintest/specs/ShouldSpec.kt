@@ -17,7 +17,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
 
   operator fun String.invoke(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))
-    current.nestedSuites.add(suite)
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()

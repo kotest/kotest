@@ -18,7 +18,7 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
 
   infix fun String.should(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))
-    current.nestedSuites.add(suite)
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()

@@ -28,8 +28,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   val testCases = root.testCases
 
   // returns a jUnit Description for the currently registered tests
-  val description: Description
-    get() = descriptionForSuite(root)
+  val description: Description = root.description
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -110,17 +109,17 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = root.tests().size
+    val testCount = root.testCasesIncludingChildren().size
     for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
-      val testcase = instance.root.tests()[testCaseIndex]
-      runTest(instance, testcase, notifier)
+      val testCase = instance.root[testCaseIndex]
+      runTest(instance, testCase, notifier)
     }
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    val tests = root.tests()
-    tests.forEach { runTest(this, it, notifier) }
+    val testCases = root.testCasesIncludingChildren()
+    testCases.forEach { runTest(this, it, notifier) }
   }
 
   // TODO beautify
@@ -166,17 +165,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
     } else {
       notifier.fireTestIgnored(testCase.description)
     }
-  }
-
-  internal fun descriptionForSuite(suite: TestSuite): Description {
-    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
-    for (nestedSuite in suite.nestedSuites) {
-      desc.addChild(descriptionForSuite(nestedSuite))
-    }
-    for (case in suite.testCases) {
-      desc.addChild(case.description)
-    }
-    return desc
   }
 
   private fun <CONTEXT> createInterceptorChain(

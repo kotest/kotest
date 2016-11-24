@@ -1,12 +1,31 @@
 package io.kotlintest
 
+import org.junit.runner.Description
+
 data class TestSuite(val name: String) {
 
-  val nestedSuites: MutableList<TestSuite> = mutableListOf()
   val testCases: MutableList<TestCase> = mutableListOf()
+  private val nestedSuites: MutableList<TestSuite> = mutableListOf()
 
-  fun tests(suite: TestSuite = this): List<TestCase> =
-      suite.testCases + suite.nestedSuites.flatMap { suite -> tests(suite) }
+  fun addNestedSuite(nested: TestSuite) {
+    nestedSuites.add(nested)
+  }
 
-  internal val size = tests().size
+  fun testCasesIncludingChildren(suite: TestSuite = this): List<TestCase> =
+      suite.testCases + suite.nestedSuites.flatMap { suite -> testCasesIncludingChildren(suite) }
+
+  operator fun get(index: Int) = testCasesIncludingChildren()[index]
+
+  val description: Description = description(this)
+
+  private fun description(suite: TestSuite = this): Description {
+    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
+    for (nestedSuite in suite.nestedSuites) {
+      desc.addChild(description(nestedSuite))
+    }
+    for (case in suite.testCases) {
+      desc.addChild(case.description)
+    }
+    return desc
+  }
 }
