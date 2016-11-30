@@ -9,8 +9,6 @@ inline fun <reified T> mock(): T {
   return t
 }
 
-fun <T> spy(instance: T) = Mockito.spy(instance)
-
 inline fun <reified T : Any> spy() = Mockito.spy(T::class.java)
 
 fun <A> `when`(methodCall: A): OngoingStubbing<A> = Mockito.`when`(methodCall)
