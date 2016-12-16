@@ -18,6 +18,7 @@ object include : Keyword
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
+    ComparableMatchers,
     DoubleMatchers,
     ExceptionMatchers,
     IntMatchers,
