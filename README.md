@@ -302,6 +302,10 @@ KotlinTest has many built in matchers, along a similar line to the popular [hamc
 
 * To assert that a value is greater than a given value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
 
+### Comparable<T> Matchers
+
+* To assert that a comparable value is greater than a given comparable value use `x should be gt y`. This is the same as doing `(x > y) shouldBe true`. Choose whatever style you prefer. The same goes for the other operators lt, gte, lte.
+
 ### Double Matchers
 
 * To assert that a double is exactly equal to another double use `d shouldBe exactly(e)`
