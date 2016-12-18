@@ -4,7 +4,7 @@ import org.junit.runner.Description
 
 data class TestSuite(val name: String) {
 
-  private val testCases: MutableList<TestCase> = mutableListOf()
+  internal val testCases: MutableList<TestCase> = mutableListOf()
   private val nestedSuites: MutableList<TestSuite> = mutableListOf()
 
   fun addTestCase(testCase: TestCase) {

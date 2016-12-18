@@ -25,6 +25,11 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   // spec implementations will add their tests to this suite
   val root = TestSuite(javaClass.simpleName)
 
+  /**
+   * Read-only list of all test cases of this spec.
+   */
+  val testCases: List<TestCase> = root.testCases
+
   // returns a jUnit Description for the currently registered tests
   val description: Description = root.description
 
