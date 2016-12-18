@@ -12,65 +12,30 @@ interface Gen<T> {
   fun generate(): T
 
   companion object {
-
-    fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
-      override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
-    }
-
-    fun choose(min: Long, max: Long): Gen<Long> = object : Gen<Long> {
-      override fun generate(): Long {
-        var rand = (RANDOM.nextLong() % (max - min))
-        if (rand < 0) {
-          rand += max - min
-        }
-        return rand + min
-      }
-    }
-
-    fun <T> oneOf(vararg generators: Gen<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = Gen.oneOf(generators.toList()).generate().generate()
-
-    }
-
-    fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = values[RANDOM.nextInt(values.size)]
-    }
-
-    fun string(): Gen<String> = object : Gen<String> {
-      override fun generate(): String = nextPrintableString(RANDOM.nextInt(100))
-    }
-
-    fun int() = object : Gen<Int> {
-      override fun generate(): Int = RANDOM.nextInt()
-    }
-
-    fun long() = object : Gen<Long> {
-      override fun generate(): Long = RANDOM.nextLong()
-    }
-
-    fun bool() = object : Gen<Boolean> {
-      override fun generate(): Boolean = RANDOM.nextBoolean()
-    }
-
-    fun double() = object : Gen<Double> {
-      override fun generate(): Double = RANDOM.nextDouble()
-    }
-
-    fun float() = object : Gen<Float> {
-      override fun generate(): Float = RANDOM.nextFloat()
-    }
-
-    fun <T> create(fn: () -> T): Gen<T> = object : Gen<T> {
+    inline fun <T> create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
       override fun generate(): T = fn()
     }
 
-    fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
-      override fun generate(): Set<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toSet()
+    fun choose(min: Int, max: Int) = create { RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min }
+    fun choose(min: Long, max: Long) = create {
+      var rand = (RANDOM.nextLong() % (max - min))
+      if (rand < 0) {
+        rand += max - min
+      }
+      return rand + min
     }
 
-    fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
-      override fun generate(): List<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toList()
-    }
+    fun <T> oneOf(vararg generators: Gen<T>) = create { Gen.oneOf(generators.toList()).generate().generate() }
+    fun <T> oneOf(values: List<T>) = create { values[RANDOM.nextInt(values.size)] }
+    fun string() = create { nextPrintableString(RANDOM.nextInt(100)) }
+    fun int() = create { RANDOM.nextInt() }
+    fun long() = create { RANDOM.nextLong() }
+    fun bool() = create { RANDOM.nextBoolean() }
+    fun double() = create { RANDOM.nextDouble() }
+    fun float() = create { RANDOM.nextFloat() }
+    fun <T> set(gen: Gen<T>) = create { (0..RANDOM.nextInt(100)).map { gen.generate() }.toSet() }
+    fun <T> list(gen: Gen<T>) = create { (0..RANDOM.nextInt(100)).map { gen.generate() } }
+    fun <T> nullable(gen: Gen<T>) = create { oneOf(create { null }, gen).generate() }
 
     fun forClassName(className: String): Gen<*> {
       return when (className) {
