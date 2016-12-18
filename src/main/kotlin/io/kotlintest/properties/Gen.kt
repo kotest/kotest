@@ -89,6 +89,11 @@ interface Gen<out T> {
       return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
     }
   }
+
+  @Deprecated("this function is deprecated, use Gen.nextPrintableString() instead", ReplaceWith("Gen.nextPrintableString(length)"), DeprecationLevel.ERROR)
+  fun nextPrintableString(length: Int): String {
+      return Gen.nextPrintableString(length)
+  }
 }
 
 // need some supertype that types a type param so it gets baked into the class file
