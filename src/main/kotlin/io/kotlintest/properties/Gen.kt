@@ -8,7 +8,7 @@ import java.util.*
 /** A shared random number generator. */
 private val RANDOM = Random()
 
-interface Gen<T> {
+interface Gen<out T> {
   fun generate(): T
 
   companion object {
@@ -22,7 +22,7 @@ interface Gen<T> {
       if (rand < 0) {
         rand += max - min
       }
-      return rand + min
+      rand + min
     }
 
     fun <T> oneOf(vararg generators: Gen<T>) = create { Gen.oneOf(generators.toList()).generate().generate() }
@@ -73,20 +73,20 @@ interface Gen<T> {
         else -> forClassName(T::class.qualifiedName!!) as Gen<T>
       }
     }
-  }
 
-  /**
-   * Returns the next pseudorandom, uniformly distributed value
-   * from the ASCII range 33-126.
-   */
-  private fun Random.nextPrintableChar(): Char {
-    val low = 33
-    val high = 127
-    return (nextInt(high - low) + low).toChar()
-  }
+    /**
+     * Returns the next pseudorandom, uniformly distributed value
+     * from the ASCII range 33-126.
+     */
+    private fun Random.nextPrintableChar(): Char {
+      val low = 33
+      val high = 127
+      return (nextInt(high - low) + low).toChar()
+    }
 
-  fun nextPrintableString(length: Int): String {
-    return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
+    fun nextPrintableString(length: Int): String {
+      return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
+    }
   }
 }
 
