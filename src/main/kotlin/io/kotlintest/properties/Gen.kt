@@ -27,14 +27,15 @@ interface Gen<out T> {
 
     fun <T> oneOf(vararg generators: Gen<T>) = create { Gen.oneOf(generators.toList()).generate().generate() }
     fun <T> oneOf(values: List<T>) = create { values[RANDOM.nextInt(values.size)] }
+    fun <T> oneOf(values: Array<T>) = oneOf(values.toList())
     fun string() = create { nextPrintableString(RANDOM.nextInt(100)) }
     fun int() = create { RANDOM.nextInt() }
     fun long() = create { RANDOM.nextLong() }
     fun bool() = create { RANDOM.nextBoolean() }
     fun double() = create { RANDOM.nextDouble() }
     fun float() = create { RANDOM.nextFloat() }
-    fun <T> set(gen: Gen<T>) = create { (0..RANDOM.nextInt(100)).map { gen.generate() }.toSet() }
     fun <T> list(gen: Gen<T>) = create { (0..RANDOM.nextInt(100)).map { gen.generate() } }
+    fun <T> set(gen: Gen<T>) = create { list(gen).generate().toSet() }
     fun <T> nullable(gen: Gen<T>) = create { oneOf(create { null }, gen).generate() }
 
     fun forClassName(className: String): Gen<*> {
