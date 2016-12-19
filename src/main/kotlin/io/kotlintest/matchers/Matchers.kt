@@ -10,6 +10,7 @@ interface MatchBuilder<K>
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
+    ComparableMatchers,
     DoubleMatchers,
     IntMatchers,
     LongMatchers,
