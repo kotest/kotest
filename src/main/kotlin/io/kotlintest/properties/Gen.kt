@@ -27,10 +27,7 @@ interface Gen<T> {
       }
     }
 
-    fun <T> oneOf(vararg generators: Gen<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = Gen.oneOf(generators.toList()).generate().generate()
-
-    }
+    fun <T> oneOf(vararg generators: Gen<T>): Gen<T> = oneOf(generators.toList())
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
       override fun generate(): T = values[RANDOM.nextInt(values.size)]
