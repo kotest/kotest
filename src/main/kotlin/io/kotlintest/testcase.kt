@@ -8,7 +8,7 @@ data class TestCase(
     val test: () -> Unit,
     var config: TestCaseConfig) {
 
-  val description: Description
+  internal val description: Description
     get() = Description.createTestDescription(
         suite.name.replace('.', ' '),
         if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
