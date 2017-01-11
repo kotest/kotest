@@ -23,7 +23,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
-  val root = TestSuite(javaClass.simpleName)
+  protected val root = TestSuite(javaClass.simpleName)
 
   /**
    * Read-only list of all test cases of this spec.
