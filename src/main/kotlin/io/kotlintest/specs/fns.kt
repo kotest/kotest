@@ -1,3 +1,3 @@
 package io.kotlintest.specs
 
-fun sanitizeSpecName(name: String) = name.replace("(", " ").replace(")", " ")
+internal fun sanitizeSpecName(name: String) = name.replace("(", " ").replace(")", " ")
