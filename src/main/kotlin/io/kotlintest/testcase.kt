@@ -34,7 +34,7 @@ data class TestCase(
             interceptors ?: config.interceptors)
   }
 
-  val isActive: Boolean
+  internal val isActive: Boolean
     get() = config.enabled && isActiveAccordingToTags
 
   private val isActiveAccordingToTags: Boolean
