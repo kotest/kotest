@@ -45,7 +45,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  fun run(notifier: RunNotifier) {
+  internal fun run(notifier: RunNotifier) {
     Project.beforeAll()
 
     val initialInterceptor = { context: Spec, testCase: () -> Unit ->
