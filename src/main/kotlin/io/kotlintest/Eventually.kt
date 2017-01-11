@@ -1,7 +1,5 @@
 package io.kotlintest
 
-import java.util.concurrent.TimeUnit
-
 interface Eventually {
 
   fun eventually(duration: Duration, f: () -> Unit): Unit {
