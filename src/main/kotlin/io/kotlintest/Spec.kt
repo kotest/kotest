@@ -26,7 +26,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   protected val root = TestSuite(javaClass.simpleName)
 
   // returns a jUnit Description for the currently registered tests
-  val description: Description = root.description
+  internal val description: Description = root.description
 
   /**
    * Config applied to each test case if not overridden per test case.
