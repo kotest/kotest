@@ -86,6 +86,26 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
     return closeable
   }
 
+  /**
+   * Intercepts the call of each test case.
+   *
+   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
+   * executed.
+   */
+  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+    test()
+  }
+
+  /**
+   * Intercepts the call of whole spec.
+   *
+   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
+   * executed.
+   */
+  protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
+    spec()
+  }
+
   // this should live in some matchers class, but can't inline in an interface :(
   inline fun <reified T : Any> beOfType() = object : Matcher<T> {
     val exceptionClassName = T::class.qualifiedName
@@ -178,26 +198,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
         context: CONTEXT, testCase: () -> Unit -> b(context, { a.invoke(context, { testCase() }) })
       }
     }
-  }
-
-  /**
-   * Intercepts the call of each test case.
-   *
-   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
-   * executed.
-   */
-  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-    test()
-  }
-
-  /**
-   * Intercepts the call of whole spec.
-   *
-   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
-   * executed.
-   */
-  protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
-    spec()
   }
 
   private fun closeResources(notifier: RunNotifier) {

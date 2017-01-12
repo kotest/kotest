@@ -34,6 +34,7 @@ interface Gen<T> {
     }
 
     fun positiveIntegers() = nats()
+
     fun nats() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
