@@ -1,29 +1,5 @@
 package io.kotlintest.matchers
 
-@Deprecated("Use `value shouldBe gt(x)` or `value should beGreaterThan(x)`")
-infix fun MatcherBuilder<be, Long>.gt(expected: Long): Unit {
-  if (value <= expected)
-    throw AssertionError("$value is not greater than $expected")
-}
-
-@Deprecated("Use `value shouldBe lt(x)` or `value should beLessThan(x)`")
-infix fun MatcherBuilder<be, Long>.lt(expected: Long): Unit {
-  if (value >= expected)
-    throw AssertionError("$value is not less than $expected")
-}
-
-@Deprecated("Use `value shouldBe gte(x)` or `value should beGreaterThanOrEqualTo(x)`")
-infix fun MatcherBuilder<be, Long>.gte(expected: Long): Unit {
-  if (value < expected)
-    throw AssertionError("$value is not greater than or equal to $expected")
-}
-
-@Deprecated("Use `value shouldBe lte(x)` or `value should beLessOrEqualTo(x)`")
-infix fun MatcherBuilder<be, Long>.lte(expected: Long): Unit {
-  if (value > expected)
-    throw AssertionError("$value is not less than or equal to $expected")
-}
-
 interface LongMatchers {
 
   fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {

@@ -6,7 +6,7 @@ class LongMatchersTest : StringSpec() {
   init {
 
     "Ge should be valid" {
-      1L should be gt 0L
+      1L should beGreaterThan(0L)
     }
 
     "beGreaterThan" {

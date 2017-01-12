@@ -1,9 +1,6 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.Matchers
-import io.kotlintest.matchers.be
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.lt
 import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec(), Matchers {
@@ -34,7 +31,7 @@ class InspectorsTest : WordSpec(), Matchers {
       "fail if all elements pass fn test" {
         shouldThrow<AssertionError> {
           forNone(list) {
-            it should be gt 0
+            it should beGreaterThan(0)
           }
         }
       }
@@ -48,20 +45,20 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "pass if size-1 elements pass test"  {
         forSome(list) {
-          it should be gt 1
+          it should beGreaterThan(1)
         }
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
           forSome(array) {
-            it should be lt 0
+            it should beLessThan(0)
           }
         }
       }
       "fail if all elements pass test"  {
         shouldThrow<AssertionError> {
           forSome(list) {
-            it should be gt 0
+            it should beGreaterThan(0)
           }
         }
       }
@@ -76,7 +73,7 @@ class InspectorsTest : WordSpec(), Matchers {
       "fail if > 1 elements pass test"  {
         shouldThrow<AssertionError> {
           forOne(list) { t ->
-            t should be gt 2
+            t should beGreaterThan(2)
           }
         }
       }
@@ -97,7 +94,7 @@ class InspectorsTest : WordSpec(), Matchers {
       }
       "pass if at least elements pass test"  {
         forAny(list) { t ->
-          t should be gt 2
+          t should beGreaterThan(2)
         }
       }
       "fail if no elements pass test"  {
@@ -112,20 +109,20 @@ class InspectorsTest : WordSpec(), Matchers {
     "forExactly" should {
       "pass if exactly k elements pass"  {
         forExactly(2, list) { t ->
-          t should be lt 3
+          t should beLessThan(3)
         }
       }
       "fail if more elements pass test"  {
         shouldThrow<AssertionError> {
           forExactly(2, list) { t ->
-            t should be gt 2
+            t should beGreaterThan(2)
           }
         }
       }
       "fail if less elements pass test"  {
         shouldThrow<AssertionError> {
           forExactly(2, array) { t ->
-            t should be lt 2
+            t should beLessThan(2)
           }
         }
       }

@@ -1,30 +1,5 @@
 package io.kotlintest.matchers
 
-object have : Keyword<have>
-
-object start : Keyword<start>
-
-object end : Keyword<end>
-
-@Deprecated("Use `str should startWith(\"xyz\")`")
-@JvmName("startWith") infix fun MatcherBuilder<start, String>.with(prefix: String): Unit {
-  if (!value.startsWith(prefix))
-    throw AssertionError("String does not start with $prefix but with ${value.take(prefix.length)}")
-}
-
-@Deprecated("Use `str should endWith(\"xyz\")`")
-@JvmName("endWith") infix fun MatcherBuilder<end, String>.with(suffix: String): Unit {
-  if (!value.endsWith(suffix))
-    throw AssertionError("String does not end with $suffix but with ${value.takeLast(suffix.length)}")
-}
-
-@Deprecated("Use `str should include(\"xyz\")`")
-infix fun MatcherBuilder<have, String>.substring(substr: String): Unit {
-  if (!value.contains(substr))
-    throw AssertionError("String does not have substring $substr")
-}
-
-
 interface StringMatchers {
 
   fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {

@@ -22,9 +22,10 @@ class TypeMatchersTest : WordSpec() {
         val a = b
         val c = listOf(1, 2, 3)
 
-        a should be theSameInstanceAs b
+        a should beTheSameInstanceAs(b)
+
         shouldThrow<AssertionError> {
-          a should be theSameInstanceAs c
+          a should beTheSameInstanceAs(c)
         }
       }
     }
@@ -37,7 +38,7 @@ class TypeMatchersTest : WordSpec() {
 
         a should beTheSameInstanceAs(b)
         shouldThrow<AssertionError> {
-          a should be theSameInstanceAs c
+          a should beTheSameInstanceAs(c)
         }
       }
     }

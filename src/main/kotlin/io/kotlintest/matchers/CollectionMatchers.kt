@@ -2,19 +2,6 @@ package io.kotlintest.matchers
 
 object contain : Keyword<contain>
 
-@Deprecated("Use `collection should haveSize(x)`")
-infix fun MatcherBuilder<have, out Collection<*>>.size(expected: Int): Unit {
-  val size = value.size
-  if (size != expected)
-    throw AssertionError("Collection was expected to have size $expected but had size $size")
-}
-
-@Deprecated("Use `collection should contain(el)`")
-infix fun <T> MatcherBuilder<contain, out Collection<T>>.element(expected: T): Unit {
-  if (!value.contains(expected))
-    throw AssertionError("Collection did not have expected element $expected")
-}
-
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(value.size == size, "Collection should have size $size")
 }
