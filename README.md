@@ -10,7 +10,7 @@ For latest updates see [Changelog](CHANGELOG.md)
 Community
 ---------
 * [Forum](https://groups.google.com/forum/#!forum/kotlintest)
-* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotlintest) (ask the first question there and don't forget to use the tag "kotlintest")
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotlintest) (don't forget to use the tag "kotlintest")
 * [Contribute](https://github.com/kotlintest/kotlintest/wiki/contribute)
 
 How to use
