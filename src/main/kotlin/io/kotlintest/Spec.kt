@@ -19,11 +19,16 @@ import java.util.concurrent.Future
 @RunWith(KTestJUnitRunner::class)
 abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
-  protected open val oneInstancePerTest = true
-
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
   protected val rootTestSuite = TestSuite(javaClass.simpleName)
+
+  /**
+   * Read-only list of all test cases of this spec for use in interceptors.
+   */
+  val testCases: List<TestCase> = rootTestSuite.testCases
+
+  protected open val oneInstancePerTest = true
 
   // returns a jUnit Description for the currently registered tests
   internal val description: Description = rootTestSuite.description
