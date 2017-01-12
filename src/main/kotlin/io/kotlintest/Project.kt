@@ -18,7 +18,7 @@ object Project {
     projectConfig = configClasses.firstOrNull()?.kotlin?.objectInstance
   }
 
-  fun beforeAll() {
+  internal fun beforeAll() {
     synchronized(executedBefore) {
       if (executedBefore.compareAndSet(false, true)) {
         projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
@@ -28,7 +28,7 @@ object Project {
     }
   }
 
-  fun afterAll() {
+  internal fun afterAll() {
     synchronized(executedAfter) {
       if (executedAfter.compareAndSet(false, true)) {
         projectConfig?.afterAll()
