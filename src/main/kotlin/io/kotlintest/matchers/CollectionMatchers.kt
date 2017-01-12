@@ -1,6 +1,6 @@
 package io.kotlintest.matchers
 
-object contain : Keyword<contain>
+object contain : Keyword
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(value.size == size, "Collection should have size $size")

@@ -2,7 +2,7 @@ package io.kotlintest.matchers
 
 import kotlin.reflect.KClass
 
-object be : Keyword<be>
+object be : Keyword
 
 interface TypeMatchers {
 

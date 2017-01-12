@@ -2,11 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Inspectors
 
-interface Keyword<K>
-
-class MatcherBuilder<K, T>(val value: T)
-
-interface MatchBuilder<K>
+interface Keyword
 
 interface Matchers : StringMatchers,
     CollectionMatchers,
