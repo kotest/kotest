@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   init { body() }
 
-  private var current = root
+  private var current = rootTestSuite
 
   fun Given(name: String, init: () -> Unit): Unit = given(name, init)
 

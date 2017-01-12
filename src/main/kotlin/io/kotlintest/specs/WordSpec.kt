@@ -14,7 +14,7 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
-  private var current = root
+  private var current = rootTestSuite
 
   infix fun String.should(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))

@@ -23,10 +23,10 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
-  protected val root = TestSuite(javaClass.simpleName)
+  protected val rootTestSuite = TestSuite(javaClass.simpleName)
 
   // returns a jUnit Description for the currently registered tests
-  internal val description: Description = root.description
+  internal val description: Description = rootTestSuite.description
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -107,16 +107,16 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = root.testCasesIncludingChildren().size
+    val testCount = rootTestSuite.testCasesIncludingChildren().size
     for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
-      val testCase = instance.root[testCaseIndex]
+      val testCase = instance.rootTestSuite[testCaseIndex]
       runTest(instance, testCase, notifier)
     }
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    val testCases = root.testCasesIncludingChildren()
+    val testCases = rootTestSuite.testCasesIncludingChildren()
     testCases.forEach { runTest(this, it, notifier) }
   }
 

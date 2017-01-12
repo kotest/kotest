@@ -13,7 +13,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
-  private var current = root
+  private var current = rootTestSuite
 
   operator fun String.invoke(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))
