@@ -81,9 +81,6 @@ interface Matchers : StringMatchers,
 
   infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
 
-  @Deprecated("This syntax is deprecated, use `value should match`")
-  infix fun <K, T> T.should(keyword: Keyword<K>) = MatcherBuilder<K, T>(this)
-
   infix fun <T> T.should(matcher: Matcher<T>): Unit {
     val result = matcher.test(this)
     if (!result.passed)
