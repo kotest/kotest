@@ -58,6 +58,8 @@ forNone(table) { a, b ->
 
 * Now supports comparsion of arrays #116
 
+* Added Gen.oneOf<Enum> to create a generator that returns one of the values for the given Enum class.
+
 ### Changed
 
 * Tags are objects derived from `Tag` class now.
