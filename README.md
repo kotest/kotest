@@ -408,8 +408,7 @@ If you define a separate interceptor function, you add it to the `defaultTestCas
 
 class MySpec : StringSpec {
 
-  override val defaultTestCaseConfig: TestConfig =
-      config(interceptors = listOf(interceptorA, interceptorB))
+  override val defaultTestCaseConfig = TestCaseConfig(interceptors = listOf(interceptorA, interceptorB))
 
   init {
     "should do something" {
@@ -577,6 +576,19 @@ class FunSpecTest : FunSpec() {
   }
 }
 ```
+
+You can also specify a default TestCaseConfig for all test cases of a Spec:
+
+```kotlin
+class MySpec : StringSpec {
+
+  override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
+
+  init {
+    // your test cases ...
+  }
+}
+
 
 Disabling Test Cases and Running Test Cases Conditionally
 ---------------------------------------------------------

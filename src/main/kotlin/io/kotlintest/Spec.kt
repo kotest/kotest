@@ -35,10 +35,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   /**
    * Config applied to each test case if not overridden per test case.
-   *
-   * Initialize this property by calling the config method.
-   * @see config
-   * @see Spec.config
    */
   protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
 
@@ -68,15 +64,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
     closeResources(notifier)
     Project.afterAll()
   }
-
-  // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
-  protected fun config(enabled: Boolean = true,
-                       invocations: Int = 1,
-                       timeout: Duration = Duration.unlimited,
-                       threads: Int = 1,
-                       tags: Set<Tag> = setOf(),
-                       interceptors: List<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestCaseConfig =
-      TestCaseConfig(enabled, invocations, timeout, threads, tags, interceptors)
 
   /**
    * Registers a field for auto closing after all tests have run.
