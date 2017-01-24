@@ -179,7 +179,7 @@ class MyTests : BehaviorSpec() {
 }
 ```
 
-Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
+Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are pascal case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
 ### Free Spec
