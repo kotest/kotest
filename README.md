@@ -13,7 +13,7 @@ For latest updates see [Changelog](CHANGELOG.md).
 Test with Style
 ---------------
 
-Write simple and beatiful tests with the StringSpec style:
+Write simple and beautiful tests with the StringSpec style:
 
 ```kotlin
 class MyTests : StringSpec() {
