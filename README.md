@@ -97,7 +97,7 @@ class MySpec : StringSpec() {
   init {
     "should use config" {
       // ...
-    }.config(timeout = 2.seconds, invocations=10, threads=2, tags = setOf(Database, Linux))
+    }.config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux))
   }
 }
 ```

@@ -206,13 +206,15 @@ execute the test 100 tests for random String combinations.
 
 ```kotlin
 class PropertyExample: StringSpec() {
+  init {
 
-  "String size" {
-    forAll({ a: String, b: String ->
-      (a + b).length == a.length + b.length
-    })
+    "String size" {
+      forAll({ a: String, b: String ->
+        (a + b).length == a.length + b.length
+      })
+    }
+
   }
-
 }
 ```
 
@@ -222,13 +224,15 @@ with the generators specified.
 
 ```kotlin
 class PropertyExample: StringSpec() {
+  init {
 
-  "String size" {
-    forAll(Gen.string(), Gen.string(), { a: String, b: String ->
-      (a + b).length == a.length + b.length
-    })
+    "String size" {
+      forAll(Gen.string(), Gen.string(), { a: String, b: String ->
+        (a + b).length == a.length + b.length
+      })
+    }
+    
   }
-
 }
 ```
 
@@ -549,7 +553,7 @@ class MyTests : ShouldSpec() {
     should("return the length of the string") {
       "sammy".length shouldBe 5
       "".length shouldBe 0
-    }.config(invocations=10, threads=2)
+    }.config(invocations = 10, threads = 2)
   }
 }
 ```
