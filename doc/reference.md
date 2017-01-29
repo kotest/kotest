@@ -231,7 +231,7 @@ class PropertyExample: StringSpec() {
         (a + b).length == a.length + b.length
       })
     }
-    
+
   }
 }
 ```
@@ -282,7 +282,7 @@ class StringSpecExample : StringSpec() {
 Matchers <a name="matchers"></a>
 --------
 
-KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`. To see a full list of current matchers click here [matchers list](matchers.md).
+KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`. See the [full list of matchers](matchers.md).
 
 Custom Matchers
 --------------
