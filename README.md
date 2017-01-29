@@ -1,5 +1,3 @@
-KotlinTest
-
 ![KotlinTest](doc/logo.png)
 ==========
 
