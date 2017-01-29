@@ -87,7 +87,7 @@ exception.message should start with "Something went wrong"
 Fine Tune Test Execution
 ------------------------
 
-You can specify the number of threads, invocations, and a timeout to run a test. Or you can group tests by tags or disable them conditionally. You do all this with [`config`](doc/reference.md#config):
+You can specify the number of threads, invocations, and a timeout for each test or for all tests. And you can group tests by tags or disable them conditionally. All you need is [`config`](doc/reference.md#config):
 
 ```kotlin
 class MySpec : StringSpec() {
@@ -107,11 +107,11 @@ And More ...
 
 This page gives you just a short overview over KotlinTest. There are some more useful things:
 
-* [Inspectors](doc/reference.md#inspectors) to check whole collections
-* Elegant [matcher DSL](doc/reference.md#matchers): `"hello" should haveSubstring("ell")`
-* [Interceptors](doc/reference.md#interceptors) for reusable test logic like set up, and tear down.
+* Check whole collections with [Inspectors](doc/reference.md#inspectors).
+* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello" should haveSubstring("ell")`.
+* Reuse test logic, e. g. for setup or tear down, with [Interceptors](doc/reference.md#interceptors).
 * Let KotlinTest [close ressources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
-* Test asynchronous code with [`eventually`](doc/reference.md#eventually)
+* Test asynchronous code with [`eventually`](doc/reference.md#eventually).
 
 See [full documentation](doc/reference.md).
 
