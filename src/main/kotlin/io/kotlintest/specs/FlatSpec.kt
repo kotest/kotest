@@ -6,6 +6,10 @@ import java.util.concurrent.TimeUnit
 
 abstract class FlatSpec : TestBase() {
 
+  companion object {
+    data class SpecDef(val name: String, val test: () -> Unit, val annotations: List<Annotation> = emptyList())
+  }
+
   protected val suites: MutableMap<String, TestSuite> = HashMap()
 
   fun String.config(invocations: Int = 1,
@@ -29,27 +33,28 @@ abstract class FlatSpec : TestBase() {
           Pair(this, TestConfig(ignored, invocations, timeout, timeoutUnit, threads, tags))
 
   // allows us to write "name of test" { test here }
-  operator fun String.invoke(test: () -> Unit): Pair<String, () -> Unit> = Pair(this, test)
+  operator fun String.invoke(annotations: List<Annotation> = emptyList(), test: () -> Unit): SpecDef = SpecDef(this, test, annotations)
+  operator fun String.invoke(vararg annotations: Annotation = emptyArray(), test: () -> Unit): SpecDef = this(annotations.toList(), test)
 
   // combines the suite name and "name of test" with the keyword should
-  infix fun Pair<String, TestConfig>.should(pair: Pair<String, () -> Unit>): Unit {
-    val (testName, test) = pair
+  infix fun Pair<String, TestConfig>.should(pair: SpecDef): Unit {
+    val (testName, test, annotations) = pair
     val suite = suites.getOrPut(this.first, {
       val suite = TestSuite.empty(this.first)
       root.nestedSuites.add(suite)
       suite
     })
-    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig))
+    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig, annotations))
   }
 
-  infix fun String.should(pair: Pair<String, () -> Unit>): Unit {
+  infix fun String.should(pair: SpecDef): Unit {
     val suiteName = this
-    val (testName, test) = pair
+    val (testName, test, annotations) = pair
     val suite = suites.getOrPut(suiteName, {
       val suite = TestSuite.empty(suiteName)
       root.nestedSuites.add(suite)
       suite
     })
-    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig))
+    suite.cases.add(TestCase(suite, testName, test, defaultTestCaseConfig, annotations))
   }
 }

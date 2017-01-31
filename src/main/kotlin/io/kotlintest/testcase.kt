@@ -6,7 +6,8 @@ import java.util.concurrent.TimeUnit
 data class TestSuite(
     val name: String,
     val nestedSuites: MutableList<TestSuite>,
-    val cases: MutableList<TestCase>) {
+    val cases: MutableList<TestCase>,
+    val annotations: List<Annotation> = emptyList()) {
 
   companion object {
     fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
@@ -39,12 +40,13 @@ data class TestCase(
     val suite: TestSuite,
     val name: String,
     val test: () -> Unit,
-    var config: TestConfig) {
+    var config: TestConfig,
+    val annotations: List<Annotation> = emptyList()) {
 
   val description: Description
     get() = Description.createTestDescription(
         suite.name.replace('.', ' '),
-        if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
+        if (config.invocations < 2) name else name + " (${config.invocations} invocations)", *annotations.toTypedArray())
 
   fun config(
       invocations: Int = 1,

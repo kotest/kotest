@@ -13,9 +13,16 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import io.kotlintest.util.a as a_
 
 @RunWith(KTestJUnitRunner::class)
 abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
+
+  companion object {
+    inline fun <reified T : Annotation> a(valueArg: Any?): T = a_(valueArg)
+    inline fun <reified T : Annotation> a(args: Map<String, Any?>): T = a_(args)
+    inline fun <reified T : Annotation> a(vararg args: Pair<String, Any?> = emptyArray()): T = a_(*args)
+  }
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
@@ -32,7 +39,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
-  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>())
+  internal val root = TestSuite(javaClass.simpleName, ArrayList<TestSuite>(), ArrayList<TestCase>(), javaClass.annotations.toList())
 
   // returns a jUnit Description for the currently registered tests
   internal val description: Description
@@ -53,7 +60,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   /**
    * Registers a field for auto closing after all tests have run.
    */
-  protected fun <T: Closeable>autoClose(closeable: T): T {
+  protected fun <T : Closeable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
   }
@@ -145,7 +152,7 @@ abstract class TestBase : PropertyTesting(), Matchers, TableTesting {
   }
 
   internal fun descriptionForSuite(suite: TestSuite): Description {
-    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
+    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '), *suite.annotations.toTypedArray())
     for (nestedSuite in suite.nestedSuites) {
       desc.addChild(descriptionForSuite(nestedSuite))
     }

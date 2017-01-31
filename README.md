@@ -214,7 +214,7 @@ is the same as the length of `a` plus the length of `b`. In this example KotlinT
 execute the test 100 tests for random String combinations.
 
 ```kotlin
-class PropertyExample: StringSpec() {
+class PropertyExample: StringSpec() { init {
 
   "String size" {
     forAll({ a: String, b: String ->
@@ -222,7 +222,7 @@ class PropertyExample: StringSpec() {
     })
   }
 
-}
+} }
 ```
 
 There are generators for all the common types - String, Ints, Sets, etc. If you need to generate custom types
@@ -230,7 +230,7 @@ then you can simply specify the generator manually (and write your own). For exa
 with the generators specified.
 
 ```kotlin
-class PropertyExample: StringSpec() {
+class PropertyExample: StringSpec() { init {
 
   "String size" {
     forAll(Gen.string(), Gen.string(), { a: String, b: String ->
@@ -238,7 +238,7 @@ class PropertyExample: StringSpec() {
     })
   }
 
-}
+} }
 ```
 
 To write your own generator for a type T, you just implement the interface `Gen<T>`. For example you could write
@@ -510,4 +510,26 @@ class MyTests : ShouldSpec(), Eventually {
     }
   }
 }
+```
+
+
+Annotations on tests
+--------------------
+
+If you need to provide some annotations to, for example, your test result reporting framework you should search for additional
+arguments on `should`'s, `when`'s, `then`'s and so on:
+
+```kotlin
+@Features(arrayOf("feature 1", "feature 2")) // All annotations from test class definition will be carefully preserved ;)
+class MyTest : BehaviorSpec() { init {
+
+  given("some condition", a<Issue>("KT-190")) {
+    `when`("some event", a<Title>("value" to "myTest")) { // equivalent for a<Title>("myTest")
+      then("some check", a<Severity>(mapOf("value" to BLOCKER))) { // equivalent for a<Severity>("value" to BLOCKER)
+        // your test
+      }
+    }
+  }
+  
+} }
 ```
