@@ -64,6 +64,6 @@ inline fun <reified T : Annotation> handleCommonAnnotationMethods(instance: T, c
 fun extractAnnotationValues(annotation: Annotation): Sequence<Pair<String, Any?>> {
   return annotation.annotationClass.java.declaredMethods.asSequence()
       .filter { it.name !in arrayOf("equals", "hashCode", "toString", "annotationType") }
-      .filter { it.parameters.isEmpty() }
+      .filter { it.parameterTypes.isEmpty() }
       .map({ it.name to it.invoke(annotation) })
 }
