@@ -23,10 +23,19 @@ inline fun <reified T : Annotation> createAnnotationStub(
   return Proxy.newProxyInstance(T::class.java.classLoader, arrayOf(T::class.java)) { proxy, method, args: Array<Any?>? ->
     val self = proxy as T
     handleCommonAnnotationMethods(self, method, args) ?:
-        if (handledCase(method))
-          handler(self, method, args)
-        else
+        if (handledCase(method)) {
+          val result = handler(self, method, args)
+          val methodReturn = method?.returnType
+          if (methodReturn?.isArray ?: false && result?.javaClass != methodReturn && result != null) {
+            val arrayResult = ReflectArray.newInstance(methodReturn?.componentType, 1)
+            ReflectArray.set(arrayResult, 0, result)
+            arrayResult
+          } else {
+            result
+          }
+        } else {
           extractDefaultsIfAny(method)
+        }
   } as T
 }
 
@@ -34,7 +43,7 @@ fun extractDefaultsIfAny(method: Method): Any? {
   return if (method.defaultValue != null) {
     method.defaultValue
   } else if (method.returnType.isArray) {
-    java.lang.reflect.Array.newInstance(method.returnType.componentType, 0)
+    ReflectArray.newInstance(method.returnType.componentType, 0)
   } else {
     null
   }

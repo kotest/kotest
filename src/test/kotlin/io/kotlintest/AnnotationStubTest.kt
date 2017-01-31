@@ -65,4 +65,17 @@ class AnnotationStubTest {
     // Can't just use equals, cause result strings have different order of properties
     assertThat("Strings are similar", 0, equalTo((actual.toString().toSet() - expectedAnnotation.toString().toSet()).size))
   }
+
+  @Test
+  fun `test AnnotationHelper single argument array`() {
+    val testValue = "test value"
+    val annotation = a<TestAnnotation>("test" to testValue)
+
+    assertThat(annotation, instanceOf(TestAnnotation::class.java))
+    assertThat(annotation.test, notNullValue())
+    assertThat(annotation.test.size, equalTo(1))
+    assertThat(annotation.test[0], equalTo(testValue))
+  }
+
+  annotation class TestAnnotation(vararg val test: String)
 }
