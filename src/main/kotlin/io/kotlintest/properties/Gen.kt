@@ -5,8 +5,6 @@ import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
-import java.nio.file.Files
-import java.nio.file.Paths
 
 interface Gen<T> {
   fun generate(): T

@@ -1,5 +1,6 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.properties.*
 import io.kotlintest.specs.StringSpec
 
 class LongMatchersTest : StringSpec() {

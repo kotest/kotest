@@ -1,5 +1,9 @@
 package io.kotlintest.specs
 
+import io.kotlintest.matchers.haveLength
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldBe
+
 class StringSpecTest : StringSpec() {
 
   init {

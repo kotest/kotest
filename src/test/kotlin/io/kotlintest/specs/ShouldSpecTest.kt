@@ -1,6 +1,7 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
+import io.kotlintest.matchers.shouldBe
 
 class ShouldSpecTest : ShouldSpec() {
 
