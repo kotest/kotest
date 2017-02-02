@@ -81,7 +81,7 @@ Testing for [exceptions](doc/reference.md#exceptions) is easy with KotlinTest:
 val exception = shouldThrow<IllegalAccessException> {
   // code in here that you expect to throw an IllegalAccessException
 }
-exception.message should start with "Something went wrong"
+exception.message should startWith("Something went wrong")
 ```
 
 Fine Tune Test Execution
