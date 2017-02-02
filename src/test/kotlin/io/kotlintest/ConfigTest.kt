@@ -1,8 +1,8 @@
 package io.kotlintest
 
 import io.kotlintest.Duration.Companion.milliseconds
+import io.kotlintest.matchers.*
 import io.kotlintest.specs.WordSpec
-import org.junit.runner.RunWith
 import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {

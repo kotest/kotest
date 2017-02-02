@@ -1,12 +1,9 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.specs.FreeSpec
-import org.junit.runner.RunWith
 import java.util.*
-import kotlin.collections.listOf
 
-class MatchersTest : FreeSpec(), Matchers {
+class MatchersTest : FreeSpec() {
 
   init {
     "Matchers.shouldBe" - {

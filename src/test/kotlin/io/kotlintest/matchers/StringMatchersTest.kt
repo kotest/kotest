@@ -2,7 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
 
-class StringMatchersTest : FreeSpec(), Matchers {
+class StringMatchersTest : FreeSpec() {
   init {
 
     "string shouldBe other" - {

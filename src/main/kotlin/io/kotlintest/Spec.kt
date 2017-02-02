@@ -1,10 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matcher
-import io.kotlintest.matchers.Matchers
-import io.kotlintest.matchers.Result
-import io.kotlintest.properties.PropertyTesting
-import io.kotlintest.properties.TableTesting
 import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.junit.runner.notification.Failure
@@ -17,7 +12,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 @RunWith(KTestJUnitRunner::class)
-abstract class Spec : PropertyTesting(), Matchers, TableTesting {
+abstract class Spec {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
@@ -91,31 +86,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
    */
   protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
     spec()
-  }
-
-  // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T : Any> beOfType() = object : Matcher<T> {
-    val exceptionClassName = T::class.qualifiedName
-    override fun test(value: T) = Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
-  }
-
-  // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T> shouldThrow(thunk: () -> Any): T {
-    val e = try {
-      thunk()
-      null
-    } catch (e: Throwable) {
-      e
-    }
-
-    val exceptionClassName = T::class.qualifiedName
-
-    if (e == null)
-      throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    else if (e.javaClass.canonicalName != exceptionClassName)
-      throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
-    else
-      return e as T
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {

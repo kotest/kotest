@@ -1,9 +1,9 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matchers
+import io.kotlintest.matchers.*
 import io.kotlintest.specs.WordSpec
 
-class InspectorsTest : WordSpec(), Matchers {
+class InspectorsTest : WordSpec() {
 
   val list = listOf(1, 2, 3, 4, 5)
   val array = arrayOf(1, 2, 3, 4, 5)
