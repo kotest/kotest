@@ -39,9 +39,9 @@ class PropertyExample: StringSpec() {
   init {
 
     "String size" {
-      forAll({ a: String, b: String ->
+      forAll { a: String, b: String ->
         (a + b).length == a.length + b.length
-      })
+      }
     }
 
   }
