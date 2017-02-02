@@ -39,6 +39,8 @@ Testing Styles<a name="styles"></a>
 You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 ```kotlin
+import io.kotlintest.specs.StringSpec
+
 // test cases in init block
 class MyTests : StringSpec() {
   init {
@@ -57,6 +59,9 @@ class MyTests : StringSpec({
 `StringSpec` reduces the syntax to the absolute minimum. Just write a string followed by a lambda expression with your test code. If in doubt, use this style.
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.StringSpec
+
 class MyTests : StringSpec() {
   init {
     "strings.length should return size of string" {
@@ -71,6 +76,9 @@ class MyTests : StringSpec() {
 `FunSpec` allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.FunSpec
+
 class MyTests : FunSpec() {
   init {
     test("String.length should return the length of the string") {
@@ -86,6 +94,9 @@ class MyTests : FunSpec() {
 `ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.ShouldSpec
+
 class MyTests : ShouldSpec() {
   init {
     should("return the length of the string") {
@@ -99,6 +110,9 @@ class MyTests : ShouldSpec() {
 This can be nested in context strings too, eg
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.ShouldSpec
+
 class MyTests : ShouldSpec() {
   init {
     "String.length" {
@@ -116,6 +130,9 @@ class MyTests : ShouldSpec() {
 `WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string, eg:
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.WordSpec
+
 class MyTests : WordSpec() {
   init {
     "String.length" should {
@@ -133,6 +150,8 @@ class MyTests : WordSpec() {
 `FeatureSpec` allows you to use `feature` and `scenario`, as such:
 
 ```kotlin
+import io.kotlintest.specs.FeatureSpec
+
 class MyTests : FeatureSpec() {
   init {
     feature("the thingy bob") {
@@ -152,6 +171,8 @@ class MyTests : FeatureSpec() {
 `BehaviorSpec` allows you to use `given`, `when`, `then`, as such:
 
 ```kotlin
+import io.kotlintest.specs.BehaviorSpec
+
 class MyTests : BehaviorSpec() {
   init {
     given("a broomstick") {
@@ -178,6 +199,9 @@ available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 `FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.FreeSpec
+
 class MyTests : FreeSpec() {
   init {
     "String.length" - {
@@ -198,13 +222,16 @@ Property-based Testing <a name="property-based"></a>
 To automatically test your code with many combinations of values, you can allow KotlinTest to do the boilerplate
 by using property testing with `generators`. You invoke `forAll` or `forNone` and pass in a function, where the function
 parameters are populated automatically with many different values. The function must specify explcitly the parameter
-types as KotlinTest will use those to determine what types of values to pass in. 
+types as KotlinTest will use those to determine what types of values to pass in.
 
 For example, here is a property test that checks that for any two Strings, the length of `a + b` 
 is the same as the length of `a` plus the length of `b`. In this example KotlinTest would 
 execute the test 100 tests for random String combinations.
 
 ```kotlin
+import io.kotlintest.properties.*
+import io.kotlintest.specs.StringSpec
+
 class PropertyExample: StringSpec() {
   init {
 
@@ -223,6 +250,9 @@ then you can simply specify the generator manually (and write your own). For exa
 with the generators specified.
 
 ```kotlin
+import io.kotlintest.properties.*
+import io.kotlintest.specs.StringSpec
+
 class PropertyExample: StringSpec() {
   init {
 
@@ -251,29 +281,32 @@ class PersonGenerator : Gen<Person> {
 To test your code with different parameter combinations, you can use tables as input for your test 
 cases. 
 
-Your test class should extend from the interface `TableTesting`. Create a table with the `table` function and 
-pass a header and one or more row objects. You create the headers with the `headers` function, and
-a row with the `row` function. A row can have up to 22 entries. Headers and and rows must all have
-the same number of entries.
+Your test class should import `io.kotlintest.properties.*` for table testing support. Create a table
+with the `table` function and pass a header and one or more row objects. You create the headers with
+the `headers` function, and a row with the `row` function. A row can have up to 22 entries. Headers
+and and rows must all have the same number of entries.
 
 To use the table, you invoke `forAll(table)` inside a test plan and pass a closure with the actual test code.
 The entries of the rows are passed as parameters to the closure.
 
 Table testing can be used with any spec. Here is an example using `StringSpec`.
 
-
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.properties.*
+import io.kotlintest.specs.StringSpec
+
 class StringSpecExample : StringSpec() {
   init {
     "should add" {
-       val myTable = table(
-         headers("a", "b", "result"),
-         row(1, 2, 3),
-         row(1, 1, 2)
-       )
-       forAll(myTable) { a, b, result ->
-         a + b shouldBe result
-       }
+      val myTable = table(
+          headers("a", "b", "result"),
+          row(1, 2, 3),
+          row(1, 1, 2)
+      )
+      forAll(myTable) { a, b, result ->
+        a + b shouldBe result
+      }
     }
   }
 }
@@ -283,6 +316,12 @@ Matchers <a name="matchers"></a>
 --------
 
 KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`. See the [full list of matchers](matchers.md).
+
+Just import the matchers package to use them:
+
+```kotlin
+import io.kotlintest.matchers.*
+```
 
 Custom Matchers
 --------------
@@ -548,6 +587,9 @@ Each test can be configured with various parameters. After the test block, invok
 Examples of setting config:
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.ShouldSpec
+
 class MyTests : ShouldSpec() {
   init {
     should("return the length of the string") {
@@ -559,6 +601,9 @@ class MyTests : ShouldSpec() {
 ```
 
 ```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.WordSpec
+
 class MyTests : WordSpec() {
   init {
     "String.length" should {
@@ -568,13 +613,15 @@ class MyTests : WordSpec() {
       }.config(timeout = 2.seconds)
     }
   }
-}
-```
+}```
 
 ```kotlin
+import io.kotlintest.specs.FunSpec
+
 class FunSpecTest : FunSpec() {
   init {
     test("FunSpec should support config syntax") {
+      // ...
     }.config(tags = setOf(Database, Linux))
   }
 }
@@ -583,6 +630,8 @@ class FunSpecTest : FunSpec() {
 You can also specify a default TestCaseConfig for all test cases of a Spec:
 
 ```kotlin
+import io.kotlintest.specs.StringSpec
+
 class MySpec : StringSpec() {
 
   override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
@@ -591,6 +640,7 @@ class MySpec : StringSpec() {
     // your test cases ...
   }
 }
+```
 
 
 Disabling Test Cases and Running Test Cases Conditionally
@@ -631,18 +681,20 @@ object Windows: Tag()
 Test cases are marked with tags with the `config` function:
 
 ```kotlin
-class MyTest : StringSpec {
+import io.kotlintest.specs.StringSpec
+
+class MyTest : StringSpec() {
   init {
     "should run on Windows" {
-      ...
-    }.config(tags = setOf(Windows)
+      // ...
+    }.config(tags = setOf(Windows))
 
     "should run on Linux" {
-      ...
+      // ...
     }.config(tags = setOf(Linux))
 
     "should run on Windows and Linux" {
-      ...
+      // ...
     }.config(tags = setOf(Windows, Linux))
   }
 }
@@ -671,6 +723,9 @@ Closing resource automatically (since 1.3.0) <a name="autoclose"></a>
 You can let KotlinTest close resources automatically after all tests have been run:
 
 ```kotlin
+import io.kotlintest.specs.StringSpec
+import java.io.StringReader
+
 class StringSpecExample : StringSpec() {
 
   val reader = autoClose(StringReader("xyz"))
@@ -692,10 +747,20 @@ Inspectors <a name="inspectors"></a>
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
 
 ```kotlin
-val xs = // some collection
-forAll(xs) { x =>
-  x should have substring "qwerty"
-  x should start with "q"
+import io.kotlintest.matchers.*
+import io.kotlintest.specs.StringSpec
+
+class StringSpecExample : StringSpec() {
+
+  init {
+    "your test case" {
+      val xs = listOf("aasdf", "basdf", "casdf")
+          forAll(xs) { x ->
+            x should include("as")
+            x should startWith("q")
+          }
+    }
+  }
 }
 ```
 
@@ -704,8 +769,8 @@ Similarly, if we wanted to asset that NO elements in a collection passed some as
 ```kotlin
 val xs = // some collection
 forNone(xs) { x =>
-  x should have substring "qwerty"
-  x should start with "q"
+  x should include("qwerty")
+  x should startWith("q")
 }
 ```
 
@@ -728,6 +793,8 @@ Eventually <a name="eventually"></a>
 When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin
+import io.kotlintest.specs.ShouldSpec
+
 class MyTests : ShouldSpec() {
   init {
     should("do something") {

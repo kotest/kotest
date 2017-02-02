@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.StringSpec
 
 class EnumGenTest : StringSpec() {

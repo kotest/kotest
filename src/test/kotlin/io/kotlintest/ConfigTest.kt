@@ -1,6 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.Duration.Companion.milliseconds
 import io.kotlintest.matchers.*
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
