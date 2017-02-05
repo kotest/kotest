@@ -33,7 +33,9 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
       val testCase =
           TestCase(
               nestedSuite,
-              "Then ${sanitizeSpecName(description)}", check, defaultTestCaseConfig)
+              "Then ${sanitizeSpecName(description)}",
+              check,
+              defaultTestCaseConfig)
       nestedSuite.addTestCase(testCase)
       check()
       return testCase
