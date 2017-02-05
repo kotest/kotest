@@ -1,43 +1,42 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
+import io.kotlintest.*
 import org.junit.runner.RunWith
 
 @RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
-  init { body() }
 
-  private var current = rootTestSuite
-
-  fun Given(name: String, init: () -> Unit): Unit = given(name, init)
-
-  fun given(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("Given ${sanitizeSpecName(name)}")
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  init {
+    body()
   }
 
-  fun When(name: String, init: () -> Unit): Unit = `when`(name, init)
-
-  fun `when`(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("When ${sanitizeSpecName(name)}")
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  fun given(description: String, init: Given.() -> Unit): Given {
+    val suite = TestSuite("Given ${sanitizeSpecName(description)}")
+    rootTestSuite.addNestedSuite(suite)
+    val given = Given(suite)
+    given.init()
+    return given
   }
 
-  fun Then(name: String, test: () -> Unit): Unit = then(name, test)
+  inner class Given(val nestedSuite: TestSuite) {
+    fun `when`(description: String, init: When.() -> Unit): When {
+      val suite = TestSuite("When ${sanitizeSpecName(description)}")
+      nestedSuite.addNestedSuite(suite)
+      val `when` = When(suite)
+      `when`.init()
+      return `when`
+    }
+  }
 
-  fun then(name: String, test: () -> Unit): Unit {
-    val testCase = TestCase(current, "Then ${sanitizeSpecName(name)}", test, defaultTestCaseConfig)
-    current.addTestCase(testCase)
+  inner class When(val nestedSuite: TestSuite) {
+    fun then(description: String, check: () -> Unit): TestCase {
+      val testCase =
+          TestCase(
+              nestedSuite,
+              "Then ${sanitizeSpecName(description)}", check, defaultTestCaseConfig)
+      nestedSuite.addTestCase(testCase)
+      check()
+      return testCase
+    }
   }
 }
