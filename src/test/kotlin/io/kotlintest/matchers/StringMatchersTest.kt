@@ -8,8 +8,8 @@ class StringMatchersTest : FreeSpec(), Matchers {
     "should endWith" - {
       "should test strings" {
         "hello" should endWith("o")
-        "hello" should startWith("")
-        "" should startWith("")
+        "hello" should endWith("")
+        "" should endWith("")
         shouldThrow<AssertionError> {
           "" should endWith("h")
         }
