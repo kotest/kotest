@@ -43,7 +43,7 @@ dependencies {
     compile 'com.sksamuel.koors:koors:0.90.0'
     compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.6'
     compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.6'
-    compile 'org.mockito:mockito-core:1.10.19'
+    compile 'org.mockito:mockito-core:2.7.11'
     compile 'org.reflections:reflections:0.9.10'
 }
 
