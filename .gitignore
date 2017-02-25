@@ -16,5 +16,9 @@ hs_err_pid*
 
 build
 target
-.idea
 .gradle
+
+# Gradle Wrapper
+gradlew
+gradlew.bat
+gradle/
