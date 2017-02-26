@@ -25,7 +25,7 @@ interface Matcher<T> {
   }
 }
 
-inline fun <reified T> shouldThrow(thunk: () -> Any): T {
+inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
   val e = try {
     thunk()
     null

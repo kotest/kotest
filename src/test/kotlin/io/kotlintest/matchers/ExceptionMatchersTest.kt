@@ -35,6 +35,11 @@ class ExceptionMatchersTest : FreeSpec() {
         }
         e.message shouldBe "bibble"
       }
+      "should not force non-null when the call is nullable" {
+        shouldThrow<Exception> {
+          FakeObjectWithMethodWithNullableSignature.method()
+        }
+      }
     }
     "expecting" - {
       "should test for presence of exception" {
@@ -65,5 +70,11 @@ class ExceptionMatchersTest : FreeSpec() {
         result shouldBe false
       }
     }
+  }
+}
+
+object FakeObjectWithMethodWithNullableSignature {
+  fun method(): Any? {
+    throw Exception()
   }
 }
