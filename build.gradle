@@ -1,10 +1,11 @@
 buildscript {
+    ext.kotlin_version = "1.1.0-rc-91"
     repositories {
         mavenCentral()
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1-M04'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -40,9 +41,9 @@ signing {
 dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.sksamuel.koors:koors:0.90.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.3'
-    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.3'
-    compile 'org.mockito:mockito-core:1.10.19'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.6'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.0.6'
+    compile 'org.mockito:mockito-core:2.7.11'
     compile 'org.reflections:reflections:0.9.10'
 }
 
