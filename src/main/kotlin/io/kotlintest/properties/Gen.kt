@@ -8,69 +8,35 @@ import java.util.*
 /** A shared random number generator. */
 private val RANDOM = Random()
 
-interface Gen<T> {
+interface Gen<out T> {
   fun generate(): T
 
   companion object {
-
-    fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
-      override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
-    }
-
-    fun choose(min: Long, max: Long): Gen<Long> = object : Gen<Long> {
-      override fun generate(): Long {
-        var rand = (RANDOM.nextLong() % (max - min))
-        if (rand < 0) {
-          rand += max - min
-        }
-        return rand + min
-      }
-    }
-
-    fun <T> oneOf(vararg generators: Gen<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = Gen.oneOf(generators.toList()).generate().generate()
-
-    }
-
-    fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = values[RANDOM.nextInt(values.size)]
-    }
-
-    fun string(): Gen<String> = object : Gen<String> {
-      override fun generate(): String = nextPrintableString(RANDOM.nextInt(100))
-    }
-
-    fun int() = object : Gen<Int> {
-      override fun generate(): Int = RANDOM.nextInt()
-    }
-
-    fun long() = object : Gen<Long> {
-      override fun generate(): Long = RANDOM.nextLong()
-    }
-
-    fun bool() = object : Gen<Boolean> {
-      override fun generate(): Boolean = RANDOM.nextBoolean()
-    }
-
-    fun double() = object : Gen<Double> {
-      override fun generate(): Double = RANDOM.nextDouble()
-    }
-
-    fun float() = object : Gen<Float> {
-      override fun generate(): Float = RANDOM.nextFloat()
-    }
-
-    fun <T> create(fn: () -> T): Gen<T> = object : Gen<T> {
+    inline fun <T> create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
       override fun generate(): T = fn()
     }
 
-    fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
-      override fun generate(): Set<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toSet()
+    fun choose(min: Int, max: Int) = create { RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min }
+    fun choose(min: Long, max: Long) = create {
+      var rand = (RANDOM.nextLong() % (max - min))
+      if (rand < 0) {
+        rand += max - min
+      }
+      rand + min
     }
 
-    fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
-      override fun generate(): List<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toList()
-    }
+    fun <T> oneOf(vararg generators: Gen<T>) = create { Gen.oneOf(generators.toList()).generate().generate() }
+    fun <T> oneOf(values: List<T>) = create { values[RANDOM.nextInt(values.size)] }
+    fun <T> oneOf(values: Array<T>) = oneOf(values.toList())
+    fun string() = create { nextPrintableString(RANDOM.nextInt(100)) }
+    fun int() = create { RANDOM.nextInt() }
+    fun long() = create { RANDOM.nextLong() }
+    fun bool() = create { RANDOM.nextBoolean() }
+    fun double() = create { RANDOM.nextDouble() }
+    fun float() = create { RANDOM.nextFloat() }
+    fun <T> list(gen: Gen<T>) = create { (0..RANDOM.nextInt(100)).map { gen.generate() } }
+    fun <T> set(gen: Gen<T>) = create { list(gen).generate().toSet() }
+    fun <T> nullable(gen: Gen<T>) = create { oneOf(create { null }, gen).generate() }
 
     fun forClassName(className: String): Gen<*> {
       return when (className) {
@@ -108,21 +74,24 @@ interface Gen<T> {
         else -> forClassName(T::class.qualifiedName!!) as Gen<T>
       }
     }
+
+    /**
+     * Returns the next pseudorandom, uniformly distributed value
+     * from the ASCII range 33-126.
+     */
+    private fun Random.nextPrintableChar(): Char {
+      val low = 33
+      val high = 127
+      return (nextInt(high - low) + low).toChar()
+    }
+
+    fun nextPrintableString(length: Int): String {
+      return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
+    }
   }
 
-  /**
-   * Returns the next pseudorandom, uniformly distributed value
-   * from the ASCII range 33-126.
-   */
-  private fun Random.nextPrintableChar(): Char {
-    val low = 33
-    val high = 127
-    return (nextInt(high - low) + low).toChar()
-  }
-
-  fun nextPrintableString(length: Int): String {
-    return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
-  }
+  @Deprecated("this function is deprecated, use Gen.nextPrintableString() instead", ReplaceWith("Gen.nextPrintableString(length)"), DeprecationLevel.ERROR)
+  fun nextPrintableString(length: Int): String = Gen.nextPrintableString(length)
 }
 
 // need some supertype that types a type param so it gets baked into the class file

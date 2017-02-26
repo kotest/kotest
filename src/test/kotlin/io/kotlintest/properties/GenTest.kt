@@ -10,13 +10,13 @@ import java.util.*
  */
 class GenTest : WordSpec() {
     init {
-        "Gen.string.nextPrintableString" should {
+        "Gen.nextPrintableString" should {
             "give out a argument long string" {
                 val random = Random();
                 var rand = random.nextInt(10000);
                 if (rand <= 0)
                     rand = 0 - rand;
-                val string = Gen.string().nextPrintableString(rand);
+                val string = Gen.nextPrintableString(rand);
 
                 string.forEach {
                     it.toInt() should be gte 33
