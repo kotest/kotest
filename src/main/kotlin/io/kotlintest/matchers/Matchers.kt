@@ -10,18 +10,36 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
 
-infix fun String.shouldBe(other: String) {
-  if (this != other) {
-    var msg = "String $this should be equal to $other"
-    for (k in 0..Math.min(this.length, other.length) - 1) {
-      if (this[k] != other[k]) {
-        msg = "$msg (diverged at index $k)"
-        break
-      }
-    }
-    throw AssertionError(msg)
+interface Matchers : StringMatchers,
+    CollectionMatchers,
+    ComparableMatchers,
+    DoubleMatchers,
+    IntMatchers,
+    LongMatchers,
+    FileMatchers,
+    MapMatchers,
+    TypeMatchers,
+    Inspectors {
+
+  fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
+    override fun test(value: T): Result = Result(this == value, "$expected should equal $value")
   }
-}
+
+  fun fail(msg: String): Nothing = throw AssertionError(msg)
+
+  infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
+
+  infix fun String.shouldBe(other: String) {
+    if (this != other) {
+      var msg = "String $this should be equal to $other"
+      for (k in 0..Math.min(this.length, other.length) - 1) {
+        if (this[k] != other[k]) {
+          msg = "$msg (diverged at index $k)"
+          break
+        }
+      throw AssertionError(msg)
+    }
+  }
 
 infix fun BooleanArray.shouldBe(other: BooleanArray): Unit {
   if (this.toList() != other.toList())
