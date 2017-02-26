@@ -17,8 +17,3 @@ hs_err_pid*
 build
 target
 .gradle
-
-# Gradle Wrapper
-gradlew
-gradlew.bat
-gradle/
