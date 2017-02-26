@@ -2,9 +2,8 @@ package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
 import java.util.*
-import kotlin.collections.listOf
 
-class MatchersTest : FreeSpec(), Matchers {
+class MatchersTest : FreeSpec() {
 
   init {
     "Matchers.shouldBe" - {
@@ -38,14 +37,14 @@ class MatchersTest : FreeSpec(), Matchers {
 
     "Matcher should have size x" - {
       "should compare sizes of iterables" {
-        listOf(1, 2, 3) should have size 3
+        listOf(1, 2, 3) should haveSize<Int>(3)
       }
     }
 
     "Matchers should be an x" - {
       "should test that an instance is the required type" {
-        "bibble" should be a String::class
-        ArrayList<String>() should be a List::class
+        "bibble" should beInstanceOf(String::class)
+        ArrayList<String>() should beInstanceOf(List::class)
       }
     }
   }

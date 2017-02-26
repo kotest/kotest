@@ -1,10 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.Matcher
-import io.kotlintest.matchers.Matchers
-import io.kotlintest.matchers.Result
-import io.kotlintest.properties.PropertyTesting
-import io.kotlintest.properties.TableTesting
 import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.junit.runner.notification.Failure
@@ -17,28 +12,24 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 @RunWith(KTestJUnitRunner::class)
-abstract class Spec : PropertyTesting(), Matchers, TableTesting {
-
-  protected open val oneInstancePerTest = true
+abstract class Spec {
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite
-  val root = TestSuite(javaClass.simpleName)
+  protected val rootTestSuite = TestSuite(javaClass.simpleName)
 
   /**
-   * Read-only list of all test cases of this spec.
+   * Read-only list of all test cases of this spec for use in interceptors.
    */
-  val testCases: List<TestCase> = root.testCases
+  val testCases: List<TestCase> = rootTestSuite.testCases
+
+  protected open val oneInstancePerTest = true
 
   // returns a jUnit Description for the currently registered tests
-  val description: Description = root.description
+  internal val description: Description = rootTestSuite.description
 
   /**
    * Config applied to each test case if not overridden per test case.
-   *
-   * Initialize this property by calling the config method.
-   * @see config
-   * @see Spec.config
    */
   protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
 
@@ -50,7 +41,7 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
-  fun run(notifier: RunNotifier) {
+  internal fun run(notifier: RunNotifier) {
     Project.beforeAll()
 
     val initialInterceptor = { context: Spec, testCase: () -> Unit ->
@@ -69,15 +60,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
     Project.afterAll()
   }
 
-  // Creates a new TestConfig (to be assigned to [defaultTestCaseConfig]).
-  protected fun config(enabled: Boolean = true,
-                       invocations: Int = 1,
-                       timeout: Duration = Duration.unlimited,
-                       threads: Int = 1,
-                       tags: Set<Tag> = setOf(),
-                       interceptors: List<(TestCaseContext, () -> Unit) -> Unit> = listOf()): TestCaseConfig =
-      TestCaseConfig(enabled, invocations, timeout, threads, tags, interceptors)
-
   /**
    * Registers a field for auto closing after all tests have run.
    */
@@ -86,42 +68,37 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
     return closeable
   }
 
-  // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T : Any> beOfType() = object : Matcher<T> {
-    val exceptionClassName = T::class.qualifiedName
-    override fun test(value: T) = Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
+  /**
+   * Intercepts the call of each test case.
+   *
+   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
+   * executed.
+   */
+  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+    test()
   }
 
-  // this should live in some matchers class, but can't inline in an interface :(
-  inline fun <reified T> shouldThrow(thunk: () -> Any): T {
-    val e = try {
-      thunk()
-      null
-    } catch (e: Throwable) {
-      e
-    }
-
-    val exceptionClassName = T::class.qualifiedName
-
-    if (e == null)
-      throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    else if (e.javaClass.canonicalName != exceptionClassName)
-      throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
-    else
-      return e as T
+  /**
+   * Intercepts the call of whole spec.
+   *
+   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
+   * executed.
+   */
+  protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
+    spec()
   }
 
   private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
-    val testCount = root.testCasesIncludingChildren().size
+    val testCount = rootTestSuite.testCasesIncludingChildren().size
     for (testCaseIndex in (0..testCount - 1)) {
       val instance = javaClass.newInstance()
-      val testCase = instance.root[testCaseIndex]
+      val testCase = instance.rootTestSuite[testCaseIndex]
       runTest(instance, testCase, notifier)
     }
   }
 
   private fun runSharedInstance(notifier: RunNotifier): Unit {
-    val testCases = root.testCasesIncludingChildren()
+    val testCases = rootTestSuite.testCasesIncludingChildren()
     testCases.forEach { runTest(this, it, notifier) }
   }
 
@@ -178,26 +155,6 @@ abstract class Spec : PropertyTesting(), Matchers, TableTesting {
         context: CONTEXT, testCase: () -> Unit -> b(context, { a.invoke(context, { testCase() }) })
       }
     }
-  }
-
-  /**
-   * Intercepts the call of each test case.
-   *
-   * Don't forget to call `test()` in the body of this method. Otherwise the test case will never be
-   * executed.
-   */
-  protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-    test()
-  }
-
-  /**
-   * Intercepts the call of whole spec.
-   *
-   * Don't forget to call `spec()` in the body of this method. Otherwise the spec will never be
-   * executed.
-   */
-  protected open fun interceptSpec(context: Spec, spec: () -> Unit) {
-    spec()
   }
 
   private fun closeResources(notifier: RunNotifier) {

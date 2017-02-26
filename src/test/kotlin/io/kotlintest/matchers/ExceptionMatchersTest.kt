@@ -2,7 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
 
-class ExceptionMatchersTest : FreeSpec(), Matchers {
+class ExceptionMatchersTest : FreeSpec() {
 
   init {
     "shouldThrow" - {

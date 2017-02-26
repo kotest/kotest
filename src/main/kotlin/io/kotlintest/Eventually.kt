@@ -1,21 +1,16 @@
 package io.kotlintest
 
-import java.util.concurrent.TimeUnit
-
-interface Eventually {
-
-  fun eventually(duration: Duration, f: () -> Unit): Unit {
-    val end = System.nanoTime() + duration.nanoseconds
-    var times = 0
-    while (System.nanoTime() < end) {
-      try {
-        f()
-        return
-      } catch (e: Exception) {
-        // ignore and proceed
-      }
-      times++
+fun eventually(duration: Duration, f: () -> Unit): Unit {
+  val end = System.nanoTime() + duration.nanoseconds
+  var times = 0
+  while (System.nanoTime() < end) {
+    try {
+      f()
+      return
+    } catch (e: Exception) {
+      // ignore and proceed
     }
-    throw AssertionError("Test failed after ${duration.amount} ${duration.timeUnit}; attempted $times times")
+    times++
   }
+  throw AssertionError("Test failed after ${duration.amount} ${duration.timeUnit}; attempted $times times")
 }

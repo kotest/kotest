@@ -2,26 +2,23 @@ package io.kotlintest.matchers
 
 import kotlin.reflect.KClass
 
-object be : Keyword<be>
+object be : Keyword
 
-@Deprecated("Use `obj should beInstanceOf<String>` or `obj shouldBe instanceOf<String>`")
-infix fun MatcherBuilder<be, *>.a(expected: KClass<*>): Unit = an(expected)
-
-@Deprecated("Use `obj should beInstanceOf<String>` or `obj shouldBe instanceOf<String>`")
-infix fun MatcherBuilder<be, *>.an(expected: KClass<*>): Unit {
-  if (!expected.java.isAssignableFrom(value?.javaClass))
-    throw AssertionError("$value is not of type $expected")
+fun beInstanceOf(expected: KClass<*>): Matcher<Any> = object : Matcher<Any> {
+  override fun test(value: Any): Result =
+      Result(
+          expected.java.isAssignableFrom(value.javaClass),
+          "$value is not of type $expected, but was ${value.javaClass}")
 }
 
-@Deprecated("Use `obj should beTheSameInstanceAs(other)`")
-infix fun <T> MatcherBuilder<be, T>.theSameInstanceAs(ref: T): Unit {
-  if (value !== ref)
-    throw AssertionError("$value is not the same reference as $ref")
+fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
+  override fun test(value: T) = Result(value === ref, "$value should be the same reference as $ref")
 }
 
-interface TypeMatchers {
+inline fun <reified T : Any> beOfType() = object : Matcher<T> {
 
-  fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T) = Result(value === ref, "$value should be the same reference as $ref")
-  }
+  val exceptionClassName = T::class.qualifiedName
+
+  override fun test(value: T) =
+      Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
 }

@@ -32,10 +32,10 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
 
-        col should contain element 2
+        col should contain(2)
 
         shouldThrow<AssertionError> {
-          col should contain element 4
+          col should contain(4)
         }
       }
     }

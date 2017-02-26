@@ -5,13 +5,14 @@ import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
-import java.nio.file.Files
-import java.nio.file.Paths
 
 interface Gen<T> {
+
   fun generate(): T
 
   companion object {
+
+    private val random = Random()
 
     fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
       override fun generate(): Int = Random.default.nextInt(max - min) + min
@@ -21,8 +22,13 @@ interface Gen<T> {
       override fun generate(): Long = (Random.default.nextLong() + min) % max
     }
 
-    fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun generate(): T = Random.default.shuffle(values).first()
+    inline fun <reified T : Enum<T>> oneOf() = oneOf(T::class.java.enumConstants.toList())
+
+    fun <T> oneOf(values: List<T>): Gen<T> {
+      println(values)
+      return object : Gen<T> {
+        override fun generate(): T = values[random.nextInt(values.size)]
+      }
     }
 
     fun string(): Gen<String> = object : Gen<String> {
@@ -34,6 +40,7 @@ interface Gen<T> {
     }
 
     fun positiveIntegers() = nats()
+
     fun nats() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
@@ -123,10 +130,10 @@ interface Gen<T> {
       }
     }
   }
+}
 
-  fun nextPrintableString(length: Int): String {
-    return (0..length).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
-  }
+fun nextPrintableString(length: Int): String {
+  return (0..length).map { Random.Companion.default.nextPrintableChar() }.joinToString("")
 }
 
 // need some supertype that types a type param so it gets baked into the class file

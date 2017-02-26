@@ -13,8 +13,8 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : Spec() {
   }
 
   fun test(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(suite = root, name = name, test = test, config = defaultTestCaseConfig)
-    root.addTestCase(tc)
+    val tc = TestCase(suite = rootTestSuite, name = name, test = test, config = defaultTestCaseConfig)
+    rootTestSuite.addTestCase(tc)
     return tc
   }
 }

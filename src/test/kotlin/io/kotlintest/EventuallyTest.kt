@@ -1,10 +1,9 @@
 package io.kotlintest
 
 import io.kotlintest.specs.WordSpec
-import io.kotlintest.Duration.Companion.days
-import io.kotlintest.Duration.Companion.seconds
+import io.kotlintest.matchers.shouldThrow
 
-class EventuallyTest : WordSpec(), Eventually {
+class EventuallyTest : WordSpec() {
 
   init {
     "eventually" should {
