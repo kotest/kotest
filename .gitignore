@@ -17,3 +17,6 @@ hs_err_pid*
 build
 target
 .gradle
+
+# Gradle wrapper
+!gradle/wrapper/gradle-wrapper.jar
