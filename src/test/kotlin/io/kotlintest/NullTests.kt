@@ -21,6 +21,10 @@ class NullTests : WordSpec() {
       "match null" {
         getNull() shouldBe null
       }
+      "match null variable when equal operation is override" {
+        val g: A? = null
+        A(0) shouldBe g
+      }
     }
     "not null" should {
       "match value" {
@@ -33,4 +37,8 @@ class NullTests : WordSpec() {
       }
     }
   }
+}
+
+private class A(var i: Int) {
+  override fun equals(other: Any?): Boolean = other == null && i == 0
 }

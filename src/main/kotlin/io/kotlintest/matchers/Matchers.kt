@@ -55,8 +55,6 @@ infix fun <T> T.shouldEqual(any: Any?): Unit {
     else -> {
       if (this == null && any != null)
         throw AssertionError(this.toString() + " did not equal $any")
-      if (this != null && any == null)
-        throw AssertionError(this.toString() + " did not equal $any")
       if (this != any)
         throw AssertionError(this.toString() + " did not equal $any")
     }
