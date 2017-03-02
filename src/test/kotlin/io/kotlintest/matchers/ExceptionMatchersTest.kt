@@ -73,7 +73,7 @@ class ExceptionMatchersTest : FreeSpec() {
   }
 }
 
-object FakeObjectWithMethodWithNullableSignature {
+private object FakeObjectWithMethodWithNullableSignature {
   fun method(): Any? {
     throw Exception()
   }
