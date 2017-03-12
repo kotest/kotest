@@ -1,15 +1,16 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
+import org.junit.ComparisonFailure
 
 class StringMatchersTest : FreeSpec() {
   init {
 
     "string shouldBe other" - {
       "should show divergence in error message" {
-        shouldThrow<AssertionError> {
+        shouldThrow<ComparisonFailure> {
           "la tour eiffel" shouldBe "la tour tower london"
-        }.message shouldBe "String la tour eiffel should be equal to la tour tower london (diverged at index 8)"
+        }.message shouldBe "expected:<la tour [eiffel]> but was:<la tour [tower london]>"
       }
     }
 

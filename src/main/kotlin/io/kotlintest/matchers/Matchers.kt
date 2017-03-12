@@ -1,5 +1,7 @@
 package io.kotlintest.matchers
 
+import org.junit.ComparisonFailure
+
 interface Keyword
 
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
@@ -12,14 +14,7 @@ infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 
 
 infix fun String.shouldBe(other: String) {
   if (this != other) {
-    var msg = "String $this should be equal to $other"
-    for (k in 0..Math.min(this.length, other.length) - 1) {
-      if (this[k] != other[k]) {
-        msg = "$msg (diverged at index $k)"
-        break
-      }
-    }
-    throw AssertionError(msg)
+    throw ComparisonFailure("", this, other)
   }
 }
 
@@ -54,8 +49,6 @@ infix fun <T> T.shouldEqual(any: Any?): Unit {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {
       if (this == null && any != null)
-        throw AssertionError(this.toString() + " did not equal $any")
-      if (this != null && any == null)
         throw AssertionError(this.toString() + " did not equal $any")
       if (this != any)
         throw AssertionError(this.toString() + " did not equal $any")

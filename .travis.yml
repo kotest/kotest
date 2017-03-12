@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 
 sudo: false
 
@@ -13,3 +13,6 @@ cache:
 install: /bin/true
 
 script: gradle test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
