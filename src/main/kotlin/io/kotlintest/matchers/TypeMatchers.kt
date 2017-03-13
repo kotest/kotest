@@ -2,8 +2,6 @@ package io.kotlintest.matchers
 
 import kotlin.reflect.KClass
 
-object be : Keyword
-
 fun beInstanceOf(expected: KClass<*>): Matcher<Any> = object : Matcher<Any> {
   override fun test(value: Any): Result =
       Result(

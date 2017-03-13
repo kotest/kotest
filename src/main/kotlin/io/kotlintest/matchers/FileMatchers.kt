@@ -2,7 +2,6 @@ package io.kotlintest.matchers
 
 import java.io.File
 
-
 fun exist() = object : Matcher<File> {
   override fun test(value: File) = Result(value.exists(), "File $value should exist")
 }

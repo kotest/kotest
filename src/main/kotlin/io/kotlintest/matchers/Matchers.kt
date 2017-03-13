@@ -2,8 +2,6 @@ package io.kotlintest.matchers
 
 import org.junit.ComparisonFailure
 
-interface Keyword
-
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
   override fun test(value: T): Result = Result(this == value, "$expected should equal $value")
 }
