@@ -20,9 +20,9 @@ data class TestSuite(val name: String) {
 
   operator fun get(index: Int) = testCasesIncludingChildren()[index]
 
-  val description: Description = description(this)
+  fun description(): Description = description(this)
 
-  private fun description(suite: TestSuite = this): Description {
+  private fun description(suite: TestSuite): Description {
     val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
     for (nestedSuite in suite.nestedSuites) {
       desc.addChild(description(nestedSuite))

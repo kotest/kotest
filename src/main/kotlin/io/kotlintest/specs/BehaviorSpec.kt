@@ -10,6 +10,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
+  fun Given(description: String, init: Given.() -> Unit): Unit = given(description, init)
   fun given(description: String, init: Given.() -> Unit): Unit {
     val suite = TestSuite("Given ${sanitizeSpecName(description)}")
     rootTestSuite.addNestedSuite(suite)
@@ -18,6 +19,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   }
 
   inner class Given(val nestedSuite: TestSuite) {
+    fun `When`(description: String, init: When.() -> Unit): Unit = `when`(description, init)
     fun `when`(description: String, init: When.() -> Unit): Unit {
       val suite = TestSuite("When ${sanitizeSpecName(description)}")
       nestedSuite.addNestedSuite(suite)
@@ -27,6 +29,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   }
 
   inner class When(val nestedSuite: TestSuite) {
+    fun Then(description: String, check: () -> Unit): TestCase = then(description, check)
     fun then(description: String, check: () -> Unit): TestCase {
       val testCase =
           TestCase(

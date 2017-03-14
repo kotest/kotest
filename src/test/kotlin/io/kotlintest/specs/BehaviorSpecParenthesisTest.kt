@@ -3,11 +3,16 @@ package io.kotlintest.specs
 class BehaviorSpecParenthesisTest : BehaviorSpec() {
   init {
     given("a sheet of string cells 4x4") {
-      println("given")
       `when`("get existing cell by reference (like A1 or B2)") {
-        println("when")
         then("should contain its value") {
-          println("then")
+          // noop
+        }
+        then("should set the datatype for the value") {
+          // noop
+        }
+      }
+      `when`("adding a new cell") {
+        then("the sheet should enlarge") {
           // noop
         }
       }

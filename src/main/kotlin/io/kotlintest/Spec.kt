@@ -26,7 +26,7 @@ abstract class Spec {
   protected open val oneInstancePerTest = true
 
   // returns a jUnit Description for the currently registered tests
-  internal val description: Description = rootTestSuite.description
+  internal fun description(): Description = rootTestSuite.description()
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -138,7 +138,7 @@ abstract class Spec {
         }
       }
       if (!terminated) {
-        val failure = Failure(description, TestTimedOutException(timeout.amount, timeout.timeUnit))
+        val failure = Failure(description(), TestTimedOutException(timeout.amount, timeout.timeUnit))
         notifier.fireTestFailure(failure)
       }
       notifier.fireTestFinished(testCase.description)
@@ -162,7 +162,7 @@ abstract class Spec {
       try {
         it.close()
       } catch(exception: AssertionError) {
-        notifier.fireTestFailure(Failure(description, exception))
+        notifier.fireTestFailure(Failure(description(), exception))
       }
     }
   }
