@@ -1,12 +1,11 @@
 package io.kotlintest
 
-fun eventually(duration: Duration, f: () -> Unit): Unit {
+fun <T>eventually(duration: Duration, f: () -> T): T {
   val end = System.nanoTime() + duration.nanoseconds
   var times = 0
   while (System.nanoTime() < end) {
     try {
-      f()
-      return
+      return f()
     } catch (e: Exception) {
       // ignore and proceed
     }
