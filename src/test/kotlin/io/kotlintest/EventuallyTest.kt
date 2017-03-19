@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.matchers.shouldThrow
 
@@ -25,6 +26,12 @@ class EventuallyTest : WordSpec() {
             throw RuntimeException("foo")
           }
         }
+      }
+      "return the result computed inside" {
+        val result = eventually(2.seconds) {
+          1
+        }
+        result shouldBe 1
       }
     }
   }
