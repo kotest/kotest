@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = "1.1.0"
+    ext.kotlin_version = "1.1.1"
     repositories {
         mavenCentral()
     }
@@ -89,9 +89,6 @@ uploadArchives {
             }
         }
     }
-}
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
 }
 
 jacocoTestReport {
