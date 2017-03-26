@@ -1,10 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.1.0-rc-91'
+    ext.kotlin_version = "1.1.1"
     repositories {
         mavenCentral()
-        maven {
-            url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
-        }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -20,16 +17,15 @@ release {
 }
 
 group = "io.kotlintest"
+version = "2.0.0-SNAPSHOT"
 
 apply plugin: 'kotlin'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: "jacoco"
 
 repositories {
     mavenCentral()
-    maven {
-        url "http://dl.bintray.com/kotlin/kotlin-eap-1.1"
-    }
 }
 
 task javadocJar(type: Jar) {
@@ -59,7 +55,8 @@ dependencies {
     compile 'com.sksamuel.koors:koors:0.90.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile 'org.mockito:mockito-core:1.10.19'
+    compile 'org.mockito:mockito-core:2.7.11'
+    compile 'org.reflections:reflections:0.9.10'
 }
 
 uploadArchives {
@@ -105,6 +102,14 @@ uploadArchives {
         }
     }
 }
-sourceSets {
-    main.java.srcDirs += 'src/main/kotlin'
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
 }
+
+check.dependsOn jacocoTestReport

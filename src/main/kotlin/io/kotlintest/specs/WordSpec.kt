@@ -1,17 +1,23 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
-import java.util.*
+import org.junit.runner.RunWith
 
-abstract class WordSpec : TestBase() {
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
 
-  var current = root
+  init {
+    body()
+  }
+
+  private var current = rootTestSuite
 
   infix fun String.should(init: () -> Unit): Unit {
-    val suite = TestSuite(this, ArrayList<TestSuite>(), ArrayList<TestCase>())
-    current.nestedSuites.add(suite)
+    val suite = TestSuite(sanitizeSpecName(this))
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()
@@ -21,7 +27,7 @@ abstract class WordSpec : TestBase() {
   infix operator fun String.invoke(test: () -> Unit): TestCase {
     val testCase = TestCase(
         suite = current, name = "should " + this, test = test, config = defaultTestCaseConfig.copy())
-    current.cases.add(testCase)
+    current.addTestCase(testCase)
     return testCase
   }
 }

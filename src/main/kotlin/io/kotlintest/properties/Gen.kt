@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
@@ -9,9 +10,11 @@ import java.util.*
 private val RANDOM = Random()
 
 interface Gen<T> {
+
   fun generate(): T
 
   companion object {
+
 
     fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
       override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
@@ -34,6 +37,13 @@ interface Gen<T> {
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
       override fun generate(): T = values[RANDOM.nextInt(values.size)]
+    inline fun <reified T : Enum<T>> oneOf() = oneOf(T::class.java.enumConstants.toList())
+
+    fun <T> oneOf(values: List<T>): Gen<T> {
+      println(values)
+      return object : Gen<T> {
+        override fun generate(): T = values[random.nextInt(values.size)]
+      }
     }
 
     fun string(): Gen<String> = object : Gen<String> {
@@ -42,6 +52,32 @@ interface Gen<T> {
 
     fun int() = object : Gen<Int> {
       override fun generate(): Int = RANDOM.nextInt()
+    }
+
+    fun positiveIntegers() = nats()
+
+    fun nats() = object : Gen<Int> {
+      override fun generate(): Int {
+        while (true) {
+          val next = Random.default.nextInt()
+          if (next >= 0)
+            return next
+        }
+      }
+    }
+
+    fun negativeIntegers() = object : Gen<Int> {
+      override fun generate(): Int {
+        while (true) {
+          val next = Random.default.nextInt()
+          if (next < 0)
+            return next
+        }
+      }
+    }
+
+    fun file() = object : Gen<File> {
+      override fun generate(): File = File(string().generate())
     }
 
     fun long() = object : Gen<Long> {
@@ -109,6 +145,7 @@ interface Gen<T> {
       }
     }
   }
+}
 
   /**
    * Returns the next pseudorandom, uniformly distributed value

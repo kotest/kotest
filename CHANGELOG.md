@@ -3,7 +3,79 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
-Version 1.3.2, released 2016-06-05
+Version 2.0.0, released ???
+----------------------------------
+
+[Closed Issues](https://github.com/kotlintest/kotlintest/milestone/4?closed=1)
+
+### Added
+
+* You can write tests alternatively into a lambda parameter in the class constructor, eg:
+
+```kotlin
+class StringSpecExample : StringSpec({
+  "strings.size should return size of string" {
+    "hello".length shouldBe 5
+    "hello" should haveLength(5)
+  }
+})
+
+* Added `forNone` for table tests, eg
+
+```kotlin
+val table = table(
+    headers("a", "b"),
+    row(0L, 2L),
+    row(2L, 2L),
+    row(4L, 5L),
+    row(4L, 6L)
+)
+
+forNone(table) { a, b ->
+  3 shouldBe between(a, b)
+}
+```
+
+* Interceptors have been added. Interceptors allow code to be executed before and after a test. See the main readme for more info.
+
+* Simplified ability to add custom matchers. Simple implement `Matcher<T>` interface. See readme for more information.
+
+* Added `shouldNot` to invert matchers. Eg, `"hello" shouldNot include("hallo")`
+
+* Deprecated matchers which do not implement Matcher<T>. Eg, `should have substring(x)` has been deprecated in favour of `"hello" should include("l")`. This is because instances of Matcher<T> can be combined with `or` and `and` and can be negated with `shouldNot`.
+
+* Added `between` matcher for int and long, eg
+
+```3 shouldBe between(2, 5)```
+
+* Added `singleElement` matcher for collections, eg
+
+```x shouldBe singleElement(y)```
+
+* Added `sorted` matcher for collections, eg
+
+```listOf(1,2,3) shouldBe sorted<Int>()```
+
+* Now supports comparsion of arrays #116
+
+* Added Gen.oneOf<Enum> to create a generator that returns one of the values for the given Enum class.
+
+### Changed
+
+* Tags are objects derived from `Tag` class now.
+* Tags can now be included and/or exluded. It is no longer the case that all untagged tests are
+always executed.
+* Fixed bugs with parenthesis breaking layout in Intellij #112
+
+### Removed
+
+* FlatSpec was removed because it has an irregular syntax with `config` and is essentially the same
+as StringSpec, but more complicated.
+* Deprecated method overloads with `duration: Long, unit: TimeUnit`
+* `expecting` for testing exceptions (use shouldThrow now)
+
+
+Version 1.3.2, released 2016-07-05
 ----------------------------------
 
 ### Changed
@@ -13,14 +85,14 @@ Version 1.3.2, released 2016-06-05
 * `kotlintest` only pulls in `mockito-core` now instead of `mockito-all`
 
 
-Version 1.3.1, released 2016-06-03
+Version 1.3.1, released 2016-07-03
 ----------------------------------
 
 ### Changed
 
 * Bumped Kotlin version to 1.0.3
 
-Version 1.3.0, released 2016-06-03
+Version 1.3.0, released 2016-07-03
 ----------------------------------
 
 [Closed Issues](https://github.com/kotlintest/kotlintest/issues?utf8=%E2%9C%93&q=is%3Aclosed+milestone%3A2.0)

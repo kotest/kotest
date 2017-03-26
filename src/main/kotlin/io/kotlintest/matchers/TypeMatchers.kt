@@ -2,24 +2,21 @@ package io.kotlintest.matchers
 
 import kotlin.reflect.KClass
 
-interface TypeMatchers {
+fun beInstanceOf(expected: KClass<*>): Matcher<Any> = object : Matcher<Any> {
+  override fun test(value: Any): Result =
+      Result(
+          expected.java.isAssignableFrom(value.javaClass),
+          "$value is not of type $expected, but was ${value.javaClass}")
+}
 
-  infix fun BeWrapper<*>.a(expected: KClass<*>): Unit = an(expected)
+fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
+  override fun test(value: T) = Result(value === ref, "$value should be the same reference as $ref")
+}
 
-  infix fun BeWrapper<*>.an(expected: KClass<*>): Unit {
-    if (!expected.java.isAssignableFrom(value?.javaClass))
-      throw AssertionError("$value is not of type $expected")
-  }
+inline fun <reified T : Any> beOfType() = object : Matcher<T> {
 
-  infix fun <T> BeWrapper<T>.theSameInstanceAs(ref: T): Unit {
-    if (value !== ref)
-      throw AssertionError("$value is not the same reference as $ref")
-  }
+  val exceptionClassName = T::class.qualifiedName
 
-  infix fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T) {
-      if (value !== ref)
-        throw AssertionError("$value is not the same reference as $ref")
-    }
-  }
+  override fun test(value: T) =
+      Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
 }
