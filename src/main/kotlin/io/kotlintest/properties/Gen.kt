@@ -15,7 +15,6 @@ interface Gen<T> {
 
   companion object {
 
-
     fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
       override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
     }
@@ -32,19 +31,13 @@ interface Gen<T> {
 
     fun <T> oneOf(vararg generators: Gen<T>): Gen<T> = object : Gen<T> {
       override fun generate(): T = Gen.oneOf(generators.toList()).generate().generate()
-
     }
 
     fun <T> oneOf(values: List<T>): Gen<T> = object : Gen<T> {
       override fun generate(): T = values[RANDOM.nextInt(values.size)]
-    inline fun <reified T : Enum<T>> oneOf() = oneOf(T::class.java.enumConstants.toList())
-
-    fun <T> oneOf(values: List<T>): Gen<T> {
-      println(values)
-      return object : Gen<T> {
-        override fun generate(): T = values[random.nextInt(values.size)]
-      }
     }
+
+    inline fun <reified T : Enum<T>> oneOf() = oneOf(T::class.java.enumConstants.toList())
 
     fun string(): Gen<String> = object : Gen<String> {
       override fun generate(): String = nextPrintableString(RANDOM.nextInt(100))
@@ -59,7 +52,7 @@ interface Gen<T> {
     fun nats() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
-          val next = Random.default.nextInt()
+          val next = RANDOM.nextInt()
           if (next >= 0)
             return next
         }
@@ -69,7 +62,7 @@ interface Gen<T> {
     fun negativeIntegers() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
-          val next = Random.default.nextInt()
+          val next = RANDOM.nextInt()
           if (next < 0)
             return next
         }
@@ -145,7 +138,6 @@ interface Gen<T> {
       }
     }
   }
-}
 
   /**
    * Returns the next pseudorandom, uniformly distributed value

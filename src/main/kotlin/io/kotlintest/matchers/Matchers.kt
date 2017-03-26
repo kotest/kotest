@@ -41,6 +41,7 @@ infix fun <T> Array<T>.shouldBe(other: Array<T>): Unit {
     throw AssertionError("Array not equal: $this != $other")
 }
 
+infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
 infix fun <T> T.shouldEqual(any: Any?): Unit {
   when (any) {
