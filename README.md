@@ -53,6 +53,9 @@ class PropertyExample: StringSpec() {
         (a + b).length == a.length + b.length
       }
     }
+}
+```
+
 Check all the Tricky Cases With Table Testing
 --------------------------
 
