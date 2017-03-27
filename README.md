@@ -17,7 +17,6 @@ Community
 
 How to use
 ----------
-=======
 For latest updates see [Changelog](CHANGELOG.md).
 
 
@@ -56,7 +55,6 @@ class PropertyExample: StringSpec() {
     }
 Check all the Tricky Cases With Table Testing
 --------------------------
->>>>>>> release/2.0
 
 Handle even an enormous amount of input parameter combinations easily with [table driven tests](doc/reference.md#table):
 
