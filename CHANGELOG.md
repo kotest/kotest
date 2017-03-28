@@ -19,6 +19,7 @@ class StringSpecExample : StringSpec({
     "hello" should haveLength(5)
   }
 })
+```
 
 * Added `forNone` for table tests, eg
 
