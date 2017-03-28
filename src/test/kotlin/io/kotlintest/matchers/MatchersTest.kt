@@ -1,6 +1,7 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
+import org.junit.ComparisonFailure
 import java.util.*
 
 class MatchersTest : FreeSpec() {
@@ -10,6 +11,16 @@ class MatchersTest : FreeSpec() {
 
       "should compare equality" {
         "a" shouldBe "a"
+
+        shouldThrow<ComparisonFailure> {
+          "a" shouldBe "b"
+        }
+
+        123 shouldBe 123
+
+        shouldThrow<AssertionError> {
+          123 shouldBe 456
+        }
       }
 
       "should support matching null with null" {
@@ -25,6 +36,35 @@ class MatchersTest : FreeSpec() {
         shouldThrow<AssertionError> {
           val name: String = "notnull"
           name shouldBe null
+        }
+      }
+    }
+
+    "Matchers.shouldNotBe" - {
+      "should compare equality" {
+        "a" shouldNotBe "b"
+        123 shouldNotBe 456
+
+        shouldThrow<AssertionError> {
+          "a" shouldNotBe "a"
+        }
+
+        shouldThrow<AssertionError> {
+          123 shouldNotBe 123
+        }
+      }
+
+      "should support (not) matching null with non-null" {
+        "a" shouldNotBe null
+      }
+
+      "should support (not) matching non-null with null" {
+        null shouldNotBe "a"
+      }
+
+      "should support (not) matching null with null" {
+        shouldThrow<AssertionError> {
+          null shouldNotBe null
         }
       }
     }

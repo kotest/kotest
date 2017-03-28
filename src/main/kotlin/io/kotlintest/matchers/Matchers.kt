@@ -3,7 +3,7 @@ package io.kotlintest.matchers
 import org.junit.ComparisonFailure
 
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
-  override fun test(value: T): Result = Result(this == value, "$expected should equal $value")
+  override fun test(value: T): Result = Result(expected == value, "$expected should equal $value")
 }
 
 fun fail(msg: String): Nothing = throw AssertionError(msg)
@@ -66,7 +66,7 @@ infix fun <T> T.should(matcher: Matcher<T>): Unit {
 infix fun <T> T.shouldNotBe(any: Any?): Unit {
   when (any) {
     is Matcher<*> -> shouldNot(any as Matcher<T>)
-    else -> shouldNot(equalityMatcher(this))
+    else -> shouldNot(equalityMatcher(any))
   }
 }
 
