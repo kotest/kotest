@@ -3,7 +3,7 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
-Version 2.0.0, released ???
+Version 2.0.0, released 2017-03-26
 ----------------------------------
 
 [Closed Issues](https://github.com/kotlintest/kotlintest/milestone/4?closed=1)
