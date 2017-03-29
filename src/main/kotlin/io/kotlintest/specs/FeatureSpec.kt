@@ -1,18 +1,24 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
-import java.util.*
+import org.junit.runner.RunWith
 
-abstract class FeatureSpec : TestBase() {
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
 
-  var current = root
+  init {
+    body()
+  }
+
+  private var current = rootTestSuite
 
   fun feature(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit) = feature(name, annotations.toList(), init)
-  fun feature(name: String, annotations: List<Annotation>, init: () -> Unit): Unit {
-    val suite = TestSuite("Feature: $name", ArrayList<TestSuite>(), ArrayList<TestCase>(), annotations)
-    current.nestedSuites.add(suite)
+  fun feature(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit {
+    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}", annotations)
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()
@@ -21,8 +27,8 @@ abstract class FeatureSpec : TestBase() {
 
   fun scenario(name: String, vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = scenario(name, annotations.toList(), test)
   fun scenario(name: String, annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
-    val tc = TestCase(current, "Scenario: $name", test, defaultTestCaseConfig, annotations)
-    current.cases.add(tc)
+    val tc = TestCase(current, "Scenario: ${sanitizeSpecName(name)}", test, defaultTestCaseConfig, annotations)
+    current.addTestCase(tc)
     return tc
   }
 

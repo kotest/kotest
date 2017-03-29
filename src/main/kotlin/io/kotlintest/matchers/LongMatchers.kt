@@ -1,24 +1,26 @@
 package io.kotlintest.matchers
 
-interface LongMatchers {
 
-  infix fun BeWrapper<Long>.gt(expected: Long): Unit {
-    if (value <= expected)
-      throw AssertionError("$value is not greater than $expected")
-  }
+fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
+  override fun test(value: Long) = Result(a <= value && value <= b, "$value is between ($a, $b)")
+}
 
-  infix fun BeWrapper<Long>.lt(expected: Long): Unit {
-    if (value >= expected)
-      throw AssertionError("$value is not less than $expected")
-  }
+fun lt(x: Long) = beLessThan(x)
+fun beLessThan(x: Long) = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value < x, "$value should be < $x")
+}
 
-  infix fun BeWrapper<Long>.gte(expected: Long): Unit {
-    if (value < expected)
-      throw AssertionError("$value is not greater than or equal to $expected")
-  }
+fun lte(x: Long) = beLessThanOrEqualTo(x)
+fun beLessThanOrEqualTo(x: Long) = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value <= x, "$value should be <= $x")
+}
 
-  infix fun BeWrapper<Long>.lte(expected: Long): Unit {
-    if (value > expected)
-      throw AssertionError("$value is not less than or equal to $expected")
-  }
+fun gt(x: Long) = beGreaterThan(x)
+fun beGreaterThan(x: Long) = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value > x, "$value should be > $x")
+}
+
+fun gte(x: Long) = beGreaterThanOrEqualTo(x)
+fun beGreaterThanOrEqualTo(x: Long) = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value >= x, "$value should be >= $x")
 }

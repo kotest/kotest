@@ -1,42 +1,51 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
-import java.util.*
+import io.kotlintest.*
+import org.junit.runner.RunWith
 
-abstract class BehaviorSpec : TestBase() {
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
 
-  var current = root
-
-  fun Given(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = given(name, annotations.toList(), init)
-  fun Given(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit = given(name, annotations, init)
-  fun given(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = given(name, annotations.toList(), init)
-  fun given(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit {
-    val suite = TestSuite("Given $name", ArrayList<TestSuite>(), ArrayList<TestCase>(), annotations)
-    current.nestedSuites.add(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  init {
+    body()
   }
 
-  fun When(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = `when`(name, annotations.toList(), init)
-  fun When(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit = `when`(name, annotations, init)
-  fun `when`(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = `when`(name, annotations.toList(), init)
-  fun `when`(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit {
-    val suite = TestSuite("When $name", ArrayList<TestSuite>(), ArrayList<TestCase>(), annotations)
-    current.nestedSuites.add(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  fun Given(name: String, vararg annotations: Annotation = emptyArray(), init: Given.() -> Unit): Unit = given(name, annotations.toList(), init)
+  fun Given(name: String, annotations: List<Annotation> = emptyList(), init: Given.() -> Unit): Unit = given(name, annotations, init)
+  fun given(name: String, vararg annotations: Annotation = emptyArray(), init: Given.() -> Unit): Unit = given(name, annotations.toList(), init)
+  fun given(description: String, annotations: List<Annotation> = emptyList(), init: Given.() -> Unit): Unit {
+    val suite = TestSuite("Given ${sanitizeSpecName(description)}", annotations)
+    rootTestSuite.addNestedSuite(suite)
+    val given = Given(suite)
+    given.init()
   }
 
-  fun Then(name: String, vararg annotations : Annotation = emptyArray(), test: () -> Unit): Unit = then(name, annotations.toList(), test)
-  fun Then(name: String, annotations: List<Annotation> = emptyList(), test: () -> Unit): Unit = then(name, annotations, test)
-  fun then(name: String, vararg annotations:Annotation = emptyArray(), test: () -> Unit): Unit = then(name, annotations.toList(), test)
-  fun then(name: String, annotations: List<Annotation> = emptyList(), test: () -> Unit): Unit{
-    current.cases.add(TestCase(current, "Then $name", test, defaultTestCaseConfig, annotations))
+  inner class Given(val nestedSuite: TestSuite) {
+    fun When(name: String, vararg annotations: Annotation = emptyArray(), init: When.() -> Unit): Unit = `when`(name, annotations.toList(), init)
+    fun When(name: String, annotations: List<Annotation> = emptyList(), init: When.() -> Unit): Unit = `when`(name, annotations, init)
+    fun `when`(name: String, vararg annotations: Annotation = emptyArray(), init: When.() -> Unit): Unit = `when`(name, annotations.toList(), init)
+    fun `when`(description: String, annotations: List<Annotation> = emptyList(), init: When.() -> Unit): Unit {
+      val suite = TestSuite("When ${sanitizeSpecName(description)}", annotations)
+      nestedSuite.addNestedSuite(suite)
+      val `when` = When(suite)
+      `when`.init()
+    }
+  }
+
+  inner class When(val nestedSuite: TestSuite) {
+    fun Then(name: String, vararg annotations : Annotation = emptyArray(), check: () -> Unit) = then(name, annotations.toList(), check)
+    fun Then(name: String, annotations: List<Annotation> = emptyList(), check: () -> Unit) = then(name, annotations, check)
+    fun then(name: String, vararg annotations:Annotation = emptyArray(), check: () -> Unit) = then(name, annotations.toList(), check)
+    fun then(description: String, annotations: List<Annotation>, check: () -> Unit): TestCase {
+      val testCase =
+          TestCase(
+              nestedSuite,
+              "Then ${sanitizeSpecName(description)}",
+              check,
+              defaultTestCaseConfig,
+              annotations)
+      nestedSuite.addTestCase(testCase)
+      return testCase
+    }
   }
 }

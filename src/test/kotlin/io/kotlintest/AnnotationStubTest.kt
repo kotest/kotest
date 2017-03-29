@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.TestBase.Companion.a
+import io.kotlintest.util.a
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.assertEquals

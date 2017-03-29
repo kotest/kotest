@@ -2,7 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
 
-class ExceptionMatchersTest : FreeSpec(), Matchers {
+class ExceptionMatchersTest : FreeSpec() {
 
   init {
     "shouldThrow" - {
@@ -35,6 +35,11 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
         }
         e.message shouldBe "bibble"
       }
+      "should not force non-null when the call is nullable" {
+        shouldThrow<Exception> {
+          FakeObjectWithMethodWithNullableSignature.method()
+        }
+      }
     }
     "expecting" - {
       "should test for presence of exception" {
@@ -65,5 +70,11 @@ class ExceptionMatchersTest : FreeSpec(), Matchers {
         result shouldBe false
       }
     }
+  }
+}
+
+private object FakeObjectWithMethodWithNullableSignature {
+  fun method(): Any? {
+    throw Exception()
   }
 }

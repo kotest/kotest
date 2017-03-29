@@ -1,10 +1,10 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.WordSpec
-import io.kotlintest.Duration.Companion.days
-import io.kotlintest.Duration.Companion.seconds
+import io.kotlintest.matchers.shouldThrow
 
-class EventuallyTest : WordSpec(), Eventually {
+class EventuallyTest : WordSpec() {
 
   init {
     "eventually" should {
@@ -26,6 +26,12 @@ class EventuallyTest : WordSpec(), Eventually {
             throw RuntimeException("foo")
           }
         }
+      }
+      "return the result computed inside" {
+        val result = eventually(2.seconds) {
+          1
+        }
+        result shouldBe 1
       }
     }
   }

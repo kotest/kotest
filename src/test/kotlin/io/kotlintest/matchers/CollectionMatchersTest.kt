@@ -7,14 +7,35 @@ class CollectionMatchersTest : WordSpec() {
 
   init {
 
-    "CollectionMatchers.contain" should {
+    "sorted" should {
+      "test that a collect is sorted" {
+        listOf(1, 2, 3, 4) shouldBe sorted<Int>()
+        shouldThrow<AssertionError> {
+          listOf(2, 1) shouldBe sorted<Int>()
+        }
+      }
+    }
+
+    "singleElement" should {
+      "test that a collection contains a single given element"  {
+        listOf(1) shouldBe singleElement(1)
+        shouldThrow<AssertionError> {
+          listOf(1) shouldBe singleElement(2)
+        }
+        shouldThrow<AssertionError> {
+          listOf(1, 2) shouldBe singleElement(2)
+        }
+      }
+    }
+
+    "should contain element" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
 
-        col should contain element 2
+        col should contain(2)
 
         shouldThrow<AssertionError> {
-          col should contain element 4
+          col should contain(4)
         }
       }
     }
@@ -35,7 +56,7 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
-    "col should contain(x)" should {
+    "contain" should {
       "test that a collection contains element x"  {
         val col = listOf(1, 2, 3)
         shouldThrow<AssertionError> {
@@ -45,12 +66,12 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
-    "CollectionMatchers.empty" should {
+    "empty" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
 
         shouldThrow<AssertionError> {
-          col should beEmpty()
+            col should beEmpty()
         }
 
         ArrayList<String>() should beEmpty()
@@ -61,27 +82,27 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains all the elements but in any order" {
         val col = listOf(1, 2, 3, 4, 5)
 
-        col should containInAnyOrder(1, 2, 3)
-        col should containInAnyOrder(3, 2, 1)
-        col should containInAnyOrder(5, 1)
-        col should containInAnyOrder(1, 5)
-        col should containInAnyOrder(1)
-        col should containInAnyOrder(5)
+        col should containsAll(1, 2, 3)
+        col should containsAll(3, 2, 1)
+        col should containsAll(5, 1)
+        col should containsAll(1, 5)
+        col should containsAll(1)
+        col should containsAll(5)
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(1, 2, 6)
+          col should containsAll(1, 2, 6)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(6)
+          col should containsAll(6)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(0, 1, 2)
+          col should containsAll(0, 1, 2)
         }
 
         shouldThrow<AssertionError> {
-          col should containInAnyOrder(3, 2, 0)
+          col should containsAll(3, 2, 0)
         }
       }
     }

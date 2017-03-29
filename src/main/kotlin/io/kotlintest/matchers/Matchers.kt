@@ -1,66 +1,77 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.Inspectors
+import org.junit.ComparisonFailure
 
-interface Keyword
+fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
+  override fun test(value: T): Result = Result(expected == value, "$expected should equal $value")
+}
 
-object have : Keyword
+fun fail(msg: String): Nothing = throw AssertionError(msg)
 
-object be : Keyword
+infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
 
-object end : Keyword
+infix fun String.shouldBe(other: String) {
+  if (this != other) {
+    throw ComparisonFailure("", this, other)
+  }
+}
 
-object start : Keyword
+infix fun BooleanArray.shouldBe(other: BooleanArray): Unit {
+  if (this.toList() != other.toList())
+    throw AssertionError("Array not equal: $this != $other")
+}
 
-object contain : Keyword
+infix fun IntArray.shouldBe(other: IntArray): Unit {
+  if (this.toList() != other.toList())
+    throw AssertionError("Array not equal: $this != $other")
+}
 
-object include : Keyword
+infix fun DoubleArray.shouldBe(other: DoubleArray): Unit {
+  if (this.toList() != other.toList())
+    throw AssertionError("Array not equal: $this != $other")
+}
 
-interface Matchers : StringMatchers,
-    CollectionMatchers,
-    DoubleMatchers,
-    ExceptionMatchers,
-    IntMatchers,
-    LongMatchers,
-    MapMatchers,
-    TypeMatchers,
-    Inspectors {
+infix fun LongArray.shouldBe(other: LongArray): Unit {
+  if (this.toList() != other.toList())
+    throw AssertionError("Array not equal: $this != $other")
+}
 
-  fun fail(msg: String): Nothing = throw AssertionError(msg)
+infix fun <T> Array<T>.shouldBe(other: Array<T>): Unit {
+  if (this.toList() != other.toList())
+    throw AssertionError("Array not equal: $this != $other")
+}
 
-  infix fun Double.shouldBe(other: Double): Unit = ToleranceMatcher(other, 0.0).test(this)
-  infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
-  infix fun <T> T.shouldEqual(any: Any?): Unit {
-    when (any) {
-      is io.kotlintest.matchers.Matcher<*> -> (any as Matcher<T>).test(this)
-      else -> {
-        if (this == null && any != null)
-          throw AssertionError(this.toString() + " did not equal $any")
-        if (this != null && any == null)
-          throw AssertionError(this.toString() + " did not equal $any")
-        if (this != any)
-          throw AssertionError(this.toString() + " did not equal $any")
-      }
+infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
+infix fun <T> T.shouldBe(any: Any?): Unit = shouldEqual(any)
+infix fun <T> T.shouldEqual(any: Any?): Unit {
+  when (any) {
+    is Matcher<*> -> should(any as Matcher<T>)
+    else -> {
+      if (this == null && any != null)
+        throw AssertionError(this.toString() + " did not equal $any")
+      if (this != any)
+        throw AssertionError(this.toString() + " did not equal $any")
     }
   }
-
-  infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
-  infix fun <T> T.should(matcher: Matcher<T>) = matcher.test(this)
-  infix fun <T> T.should(x: have): HaveWrapper<T> = HaveWrapper(this)
-  infix fun <T> T.should(x: start): StartWrapper<T> = StartWrapper(this)
-  infix fun <T> T.should(x: end): EndWrapper<T> = EndWrapper(this)
-  infix fun <T> T.should(x: be): BeWrapper<T> = BeWrapper(this)
-  infix fun <T> T.should(x: contain): ContainWrapper<T> = ContainWrapper(this)
-  infix fun <T> T.should(x: include): IncludeWrapper<T> = IncludeWrapper(this)
 }
 
-interface Matcher<T> {
-  fun test(value: T)
+infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
+
+infix fun <T> T.should(matcher: Matcher<T>): Unit {
+  val result = matcher.test(this)
+  if (!result.passed)
+    throw AssertionError(result.message)
 }
 
-class HaveWrapper<T>(val value: T)
-class BeWrapper<T>(val value: T)
-class StartWrapper<T>(val value: T)
-class EndWrapper<T>(val value: T)
-class IncludeWrapper<T>(val value: T)
-class ContainWrapper<T>(val value: T)
+infix fun <T> T.shouldNotBe(any: Any?): Unit {
+  when (any) {
+    is Matcher<*> -> shouldNot(any as Matcher<T>)
+    else -> shouldNot(equalityMatcher(any))
+  }
+}
+
+infix fun <T> T.shouldNot(matcher: Matcher<T>): Unit {
+  val result = matcher.test(this)
+  if (result.passed)
+    throw AssertionError("Test passed which should have failed: " + result.message)
+}

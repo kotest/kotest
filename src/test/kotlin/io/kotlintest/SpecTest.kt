@@ -3,7 +3,7 @@ package io.kotlintest
 import io.kotlintest.specs.StringSpec
 import java.io.Closeable
 
-class TestBaseTest : StringSpec() {
+class SpecTest : StringSpec() {
 
     private val resourceA = autoClose(Checker)
     private val resourceB = autoClose(Closeable2)

@@ -1,17 +1,24 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import org.junit.runner.RunWith
 
-abstract class ShouldSpec : TestBase() {
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
 
-  var current = root
+  init {
+    body()
+  }
+
+  private var current = rootTestSuite
 
   operator fun String.invoke(vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = this(annotations.toList(), init)
-  operator fun String.invoke(annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit {
-    val suite = TestSuite.empty(this).copy(annotations = annotations)
-    current.nestedSuites.add(suite)
+  operator fun String.invoke(annotations: List<Annotation>, init: () -> Unit): Unit {
+    val suite = TestSuite(sanitizeSpecName(this), annotations)
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()
@@ -22,7 +29,7 @@ abstract class ShouldSpec : TestBase() {
   fun should(name: String, annotations: List<Annotation>, test: () -> Unit): TestCase {
     val testCase = TestCase(
         suite = current, name = "should $name", test = test, config = defaultTestCaseConfig, annotations = annotations)
-    current.cases.add(testCase)
+    current.addTestCase(testCase)
     return testCase
   }
 }

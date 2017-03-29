@@ -1,85 +1,64 @@
 package io.kotlintest
 
 import org.junit.runner.Description
-import java.util.concurrent.TimeUnit
-
-data class TestSuite(
-    val name: String,
-    val nestedSuites: MutableList<TestSuite>,
-    val cases: MutableList<TestCase>,
-    val annotations: List<Annotation> = emptyList()) {
-
-  companion object {
-    fun empty(name: String) = TestSuite(name, mutableListOf<TestSuite>(), mutableListOf<TestCase>())
-  }
-
-  internal fun tests(suite: TestSuite = this): List<TestCase> =
-      suite.cases + suite.nestedSuites.flatMap { suite -> tests(suite) }
-
-  internal val size = tests().size
-}
-
-data class TestConfig(
-    val ignored: Boolean = false,
-    val invocations: Int = 1,
-    val timeout: Duration = Duration.unlimited,
-    val threads: Int = 1,
-    val tags: List<String> = listOf()) {
-
-  @Deprecated("use the constructor with Duration instead")
-  constructor(
-      ignored: Boolean,
-      invocations: Int,
-      timeout: Long = 0,
-      timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
-      threads: Int,
-      tags: List<String>) : this(ignored, invocations, Duration(timeout, timeoutUnit), threads, tags)
-}
 
 data class TestCase(
     val suite: TestSuite,
     val name: String,
     val test: () -> Unit,
-    var config: TestConfig,
+    var config: TestCaseConfig,
     val annotations: List<Annotation> = emptyList()) {
 
-  val description: Description
+  internal val description: Description
     get() = Description.createTestDescription(
         suite.name.replace('.', ' '),
-        if (config.invocations < 2) name else name + " (${config.invocations} invocations)", *annotations.toTypedArray())
+        (if (config.invocations < 2) name else name + " (${config.invocations} invocations)"),
+        *(annotations + config.annotations).toSet().toTypedArray()
+    )
 
+  /**
+   * @param interceptors Interceptors around the test case. Interceptors are processed from left to
+   * right.
+   */
   fun config(
-      invocations: Int = 1,
-      ignored: Boolean = false,
-      timeout: Duration = Duration.unlimited,
-      threads: Int = 1,
-      tag: String? = null,
-      tags: List<String> = listOf()): Unit {
-    val mergedTags = if (tag != null) tags + tag else config.tags
-    config = config.copy(ignored, invocations, timeout, threads, mergedTags)
-  }
-
-  @Deprecated(
-      message = "use overload instead",
-      replaceWith = ReplaceWith("config(invocations, ignored, timeout, threads, tag, tags)"))
-  fun config(
-      invocations: Int = 1,
-      ignored: Boolean = false,
-      timeout: Long = 0,
-      timeoutUnit: TimeUnit = TimeUnit.MILLISECONDS,
-      threads: Int = 1,
-      tag: String? = null,
-      tags: List<String> = listOf()): Unit {
-    val mergedTags = if (tag != null) tags + tag else config.tags
-    config = config.copy(ignored, invocations, Duration(timeout, timeoutUnit), threads, mergedTags)
+      invocations: Int? = null,
+      enabled: Boolean? = null,
+      timeout: Duration? = null,
+      threads: Int? = null,
+      tags: Set<Tag>? = null,
+      interceptors: List<(TestCaseContext, () -> Unit) -> Unit>? = null,
+      annotations: List<Annotation>? = null) {
+    config =
+        TestCaseConfig(
+            enabled ?: config.enabled,
+            invocations ?: config.invocations,
+            timeout ?: config.timeout,
+            threads ?: config.threads,
+            tags ?: config.tags,
+            interceptors ?: config.interceptors,
+            annotations ?: emptyList())
   }
 
   internal val isActive: Boolean
-    get() = !config.ignored && isTaggedOrNoTagsSet
+    get() = config.enabled && isActiveAccordingToTags
 
-  private val isTaggedOrNoTagsSet: Boolean
+  private val isActiveAccordingToTags: Boolean
     get() {
-      val systemTags = (System.getProperty("testTags") ?: "").split(',')
-      return systemTags.isEmpty() || config.tags.isEmpty() || systemTags.intersect(config.tags).isNotEmpty()
+      val testCaseTags = config.tags.map { it.toString() }
+      val includedTags = readProperty("includeTags")
+      val excludedTags = readProperty("excludeTags")
+      val includedTagsEmpty = includedTags.isEmpty() || includedTags == listOf("")
+      return when {
+        excludedTags.intersect(testCaseTags).isNotEmpty() -> false
+        includedTagsEmpty -> true
+        includedTags.intersect(testCaseTags).isNotEmpty() -> true
+        else -> false
+      }
     }
+
+  private fun readProperty(name: String): List<String> =
+      (System.getProperty(name) ?: "").split(',').map { it.trim() }
+
+  // required to avoid StackOverflowError due to mutable data structures in this class (suite)
+  override fun toString(): String = name
 }

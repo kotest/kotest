@@ -6,12 +6,12 @@ import java.lang.reflect.Array as ReflectArray
 
 inline fun <reified T : Annotation> a(valueArg: Any?): T = createAnnotationStub(
     { it?.name == "value" },
-    { me, method, args -> valueArg }
+    { _, _, _ -> valueArg }
 )
 
 inline fun <reified T : Annotation> a(args: Map<String, Any?>): T = createAnnotationStub(
     { args.containsKey(it?.name) },
-    { me, method, args_ -> args[method?.name] }
+    { _, method, _ -> args[method?.name] }
 )
 
 inline fun <reified T : Annotation> a(vararg args: Pair<String, Any?> = emptyArray()): T = a(mapOf(*args))

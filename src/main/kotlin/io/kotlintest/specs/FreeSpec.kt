@@ -1,32 +1,31 @@
 package io.kotlintest.specs
 
-import io.kotlintest.TestBase
+import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestSuite
+import org.junit.runner.RunWith
 
-abstract class FreeSpec : TestBase() {
+@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
 
   companion object {
-    data class Spec(val name: String, val annotations: List<Annotation>)
+    data class SpecDef(val name: String, val annotations: List<Annotation> = emptyList())
   }
 
-  var current = root
+  init {
+    body()
+  }
+
+  private var current = rootTestSuite
 
   operator fun String.invoke(vararg annotations: Annotation = emptyArray()) = this(annotations.toList())
-  operator fun String.invoke(annotations: List<Annotation> = emptyList()) = Spec(this, annotations)
+  operator fun String.invoke(annotations: List<Annotation> = emptyList()) = SpecDef(this, annotations)
 
-  infix operator fun String.minus(init: () -> Unit): Unit {
-    val suite = TestSuite.empty(this.replace("(", " ").replace(")", " "))
-    current.nestedSuites.add(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
-  }
-
-  infix operator fun Spec.minus(init: () -> Unit): Unit {
-    val suite = TestSuite.empty(name.replace("(", " ").replace(")", " ")).copy(annotations = annotations)
-    current.nestedSuites.add(suite)
+  infix operator fun String.minus(init: () -> Unit): Unit = SpecDef(this) - init
+  infix operator fun SpecDef.minus(init: () -> Unit): Unit {
+    val suite = TestSuite(sanitizeSpecName(name), annotations)
+    current.addNestedSuite(suite)
     val temp = current
     current = suite
     init()
@@ -35,8 +34,14 @@ abstract class FreeSpec : TestBase() {
 
   operator fun String.invoke(vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = this(annotations.toList(), test)
   operator fun String.invoke(annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
-    val tc = TestCase(suite = current, name = this.replace("(", " ").replace(")", " "), test = test, config = defaultTestCaseConfig, annotations = annotations)
-    current.cases.add(tc)
+    val tc = TestCase(
+        suite = current,
+        name = sanitizeSpecName(this),
+        test = test,
+        config = defaultTestCaseConfig,
+        annotations = annotations
+    )
+    current.addTestCase(tc)
     return tc
   }
 }
