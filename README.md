@@ -118,7 +118,7 @@ This page gives you just a short overview over KotlinTest. There are some more u
 * Check whole collections with [Inspectors](doc/reference.md#inspectors).
 * Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello" should haveSubstring("ell")`.
 * Reuse test logic, e. g. for setup or tear down, with [Interceptors](doc/reference.md#interceptors).
-* Let KotlinTest [close ressources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
+* Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Test asynchronous code with [`eventually`](doc/reference.md#eventually).
 
 See [full documentation](doc/reference.md).
