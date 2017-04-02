@@ -13,10 +13,10 @@ fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
   override fun test(value: T) = Result(value === ref, "$value should be the same reference as $ref")
 }
 
-inline fun <reified T : Any> beOfType() = object : Matcher<T> {
+inline fun <reified T : Any> beOfType() = object : Matcher<Any> {
 
-  val exceptionClassName = T::class.qualifiedName
+  val className = T::class.qualifiedName
 
-  override fun test(value: T) =
-      Result(value.javaClass == T::class.java, "$value should be of type $exceptionClassName")
+  override fun test(value: Any) =
+      Result(value.javaClass == T::class.java, "$value should be of type $className")
 }
