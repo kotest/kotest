@@ -57,7 +57,7 @@ inline fun <reified T : Annotation> handleCommonAnnotationMethods(instance: T, c
     compareTo != null && compareTo is Annotation && extractAnnotationValues(instance).toList() == extractAnnotationValues(compareTo).toList()
   }
   "toString" -> "@" + T::class.java.canonicalName + "(" + extractAnnotationValues(instance).map { it.first + "=" + it.second }.joinToString(", ") + ")"
-  "hashCode" -> 0L
+  "hashCode" -> instance.toString().hashCode()
   else -> null
 }
 
