@@ -49,7 +49,7 @@ This page lists all current matchers in Kotlintest.
 | -------- |
 | `collection should beEmpty()`<br/>Asserts that the collections has zero elements. |
 | `collection should contain(element)`<br/>Asserts that the collection contains the given element. |
-| `collection should containInAnyOrder(e1, e2, ..., en)`<br/>Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
+| `collection should containsAll(e1, e2, ..., en)`<br/>Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
 | `collection should haveSize(length)`<br/>Asserts that the collection is exactly the given length. |
 | `collection shouldBe singleElement(element)`<br/>Asserts that the collection only contains a single element and that that element is the given one. |
 | `collection shouldBe sorted()`<br/>Asserts that the collection is in sorted order. |
