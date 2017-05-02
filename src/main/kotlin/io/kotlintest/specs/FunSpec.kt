@@ -12,8 +12,9 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
-  fun test(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(suite = rootTestSuite, name = name, test = test, config = defaultTestCaseConfig)
+  fun test(name: String, vararg annotations: Annotation = emptyArray(), test: () -> Unit) = test(name, annotations.toList(), test)
+  fun test(name: String, annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
+    val tc = TestCase(suite = rootTestSuite, name = name, test = test, config = defaultTestCaseConfig, annotations = annotations)
     rootTestSuite.addTestCase(tc)
     return tc
   }

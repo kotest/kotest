@@ -15,8 +15,9 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
 
   private var current = rootTestSuite
 
-  fun feature(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}")
+  fun feature(name: String, vararg annotations: Annotation = emptyArray(), init: () -> Unit) = feature(name, annotations.toList(), init)
+  fun feature(name: String, annotations: List<Annotation> = emptyList(), init: () -> Unit): Unit {
+    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}", annotations)
     current.addNestedSuite(suite)
     val temp = current
     current = suite
@@ -24,8 +25,9 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
     current = temp
   }
 
-  fun scenario(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(current, "Scenario: ${sanitizeSpecName(name)}", test, defaultTestCaseConfig)
+  fun scenario(name: String, vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = scenario(name, annotations.toList(), test)
+  fun scenario(name: String, annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
+    val tc = TestCase(current, "Scenario: ${sanitizeSpecName(name)}", test, defaultTestCaseConfig, annotations)
     current.addTestCase(tc)
     return tc
   }

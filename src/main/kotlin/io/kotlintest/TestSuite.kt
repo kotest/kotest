@@ -2,7 +2,7 @@ package io.kotlintest
 
 import org.junit.runner.Description
 
-data class TestSuite(val name: String) {
+data class TestSuite(val name: String, val annotations: List<Annotation> = emptyList()) {
 
   internal val testCases: MutableList<TestCase> = mutableListOf()
   private val nestedSuites: MutableList<TestSuite> = mutableListOf()
@@ -23,7 +23,7 @@ data class TestSuite(val name: String) {
   fun description(): Description = description(this)
 
   private fun description(suite: TestSuite): Description {
-    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '))
+    val desc = Description.createSuiteDescription(suite.name.replace('.', ' '), *suite.annotations.toTypedArray())
     for (nestedSuite in suite.nestedSuites) {
       desc.addChild(description(nestedSuite))
     }

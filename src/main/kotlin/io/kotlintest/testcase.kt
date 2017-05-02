@@ -6,12 +6,15 @@ data class TestCase(
     val suite: TestSuite,
     val name: String,
     val test: () -> Unit,
-    var config: TestCaseConfig) {
+    var config: TestCaseConfig,
+    val annotations: List<Annotation> = emptyList()) {
 
   internal val description: Description
     get() = Description.createTestDescription(
         suite.name.replace('.', ' '),
-        if (config.invocations < 2) name else name + " (${config.invocations} invocations)")
+        (if (config.invocations < 2) name else name + " (${config.invocations} invocations)"),
+        *(annotations + config.annotations).toSet().toTypedArray()
+    )
 
   /**
    * @param interceptors Interceptors around the test case. Interceptors are processed from left to
@@ -23,7 +26,8 @@ data class TestCase(
       timeout: Duration? = null,
       threads: Int? = null,
       tags: Set<Tag>? = null,
-      interceptors: List<(TestCaseContext, () -> Unit) -> Unit>? = null) {
+      interceptors: List<(TestCaseContext, () -> Unit) -> Unit>? = null,
+      annotations: List<Annotation>? = null) {
     config =
         TestCaseConfig(
             enabled ?: config.enabled,
@@ -31,7 +35,8 @@ data class TestCase(
             timeout ?: config.timeout,
             threads ?: config.threads,
             tags ?: config.tags,
-            interceptors ?: config.interceptors)
+            interceptors ?: config.interceptors,
+            annotations ?: emptyList())
   }
 
   internal val isActive: Boolean

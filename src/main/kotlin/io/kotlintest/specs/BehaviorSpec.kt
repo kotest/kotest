@@ -10,18 +10,22 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
-  fun Given(description: String, init: Given.() -> Unit): Unit = given(description, init)
-  fun given(description: String, init: Given.() -> Unit): Unit {
-    val suite = TestSuite("Given ${sanitizeSpecName(description)}")
+  fun Given(name: String, vararg annotations: Annotation = emptyArray(), init: Given.() -> Unit): Unit = given(name, annotations.toList(), init)
+  fun Given(name: String, annotations: List<Annotation> = emptyList(), init: Given.() -> Unit): Unit = given(name, annotations, init)
+  fun given(name: String, vararg annotations: Annotation = emptyArray(), init: Given.() -> Unit): Unit = given(name, annotations.toList(), init)
+  fun given(description: String, annotations: List<Annotation> = emptyList(), init: Given.() -> Unit): Unit {
+    val suite = TestSuite("Given ${sanitizeSpecName(description)}", annotations)
     rootTestSuite.addNestedSuite(suite)
     val given = Given(suite)
     given.init()
   }
 
   inner class Given(val nestedSuite: TestSuite) {
-    fun `When`(description: String, init: When.() -> Unit): Unit = `when`(description, init)
-    fun `when`(description: String, init: When.() -> Unit): Unit {
-      val suite = TestSuite("When ${sanitizeSpecName(description)}")
+    fun When(name: String, vararg annotations: Annotation = emptyArray(), init: When.() -> Unit): Unit = `when`(name, annotations.toList(), init)
+    fun When(name: String, annotations: List<Annotation> = emptyList(), init: When.() -> Unit): Unit = `when`(name, annotations, init)
+    fun `when`(name: String, vararg annotations: Annotation = emptyArray(), init: When.() -> Unit): Unit = `when`(name, annotations.toList(), init)
+    fun `when`(description: String, annotations: List<Annotation> = emptyList(), init: When.() -> Unit): Unit {
+      val suite = TestSuite("When ${sanitizeSpecName(description)}", annotations)
       nestedSuite.addNestedSuite(suite)
       val `when` = When(suite)
       `when`.init()
@@ -29,14 +33,17 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : Spec() {
   }
 
   inner class When(val nestedSuite: TestSuite) {
-    fun Then(description: String, check: () -> Unit): TestCase = then(description, check)
-    fun then(description: String, check: () -> Unit): TestCase {
+    fun Then(name: String, vararg annotations : Annotation = emptyArray(), check: () -> Unit) = then(name, annotations.toList(), check)
+    fun Then(name: String, annotations: List<Annotation> = emptyList(), check: () -> Unit) = then(name, annotations, check)
+    fun then(name: String, vararg annotations:Annotation = emptyArray(), check: () -> Unit) = then(name, annotations.toList(), check)
+    fun then(description: String, annotations: List<Annotation>, check: () -> Unit): TestCase {
       val testCase =
           TestCase(
               nestedSuite,
               "Then ${sanitizeSpecName(description)}",
               check,
-              defaultTestCaseConfig)
+              defaultTestCaseConfig,
+              annotations)
       nestedSuite.addTestCase(testCase)
       return testCase
     }

@@ -571,6 +571,7 @@ Each test can be configured with various parameters. After the test block, invok
 * `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
+* `annotations` - a set of annotations which will be used for every test (see description below)
 
 Examples of setting config:
 
@@ -791,6 +792,37 @@ class MyTests : ShouldSpec() {
       }
     }
   }
+}
+```
+
+Using annotations
+-----------------
+
+If you need to provide some annotations to, for example, your test result reporting framework you should search for additional
+arguments on `should`'s, `when`'s, `then`'s and so on:
+
+```kotlin
+@Features(arrayOf("feature 1", "feature 2")) // All annotations from test class definition will be carefully preserved ;)
+class MyTest : BehaviorSpec() { init {
+
+  given("some condition", a<Issue>("KT-190")) {
+    `when`("some event", a<Title>("value" to "myTest")) { // equivalent for a<Title>("myTest")
+      then("some check", a<Severity>(mapOf("value" to BLOCKER))) { // equivalent for a<Severity>("value" to BLOCKER)
+        // your test
+      }
+    }
+  }
+  
+} }
+```
+
+Also if you need same annotation on all tests in your specification you can pass annotations in config:
+
+```kotlin
+class MyTest: BehaviorSpec() {
+  override val defaultTestCaseConfig = TestCaseConfig(annotations = listOf(
+    a<Feature>("All tests in this spec are for same feature!")
+  ))
 }
 ```
 

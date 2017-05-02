@@ -15,8 +15,9 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
 
   private var current = rootTestSuite
 
-  operator fun String.invoke(init: () -> Unit): Unit {
-    val suite = TestSuite(sanitizeSpecName(this))
+  operator fun String.invoke(vararg annotations: Annotation = emptyArray(), init: () -> Unit): Unit = this(annotations.toList(), init)
+  operator fun String.invoke(annotations: List<Annotation>, init: () -> Unit): Unit {
+    val suite = TestSuite(sanitizeSpecName(this), annotations)
     current.addNestedSuite(suite)
     val temp = current
     current = suite
@@ -24,9 +25,10 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
     current = temp
   }
 
-  fun should(name: String, test: () -> Unit): TestCase {
+  fun should(name: String, vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = should(name, annotations.toList(), test)
+  fun should(name: String, annotations: List<Annotation>, test: () -> Unit): TestCase {
     val testCase = TestCase(
-        suite = current, name = "should $name", test = test, config = defaultTestCaseConfig)
+        suite = current, name = "should $name", test = test, config = defaultTestCaseConfig, annotations = annotations)
     current.addTestCase(testCase)
     return testCase
   }

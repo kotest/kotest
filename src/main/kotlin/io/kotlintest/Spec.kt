@@ -10,9 +10,16 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import io.kotlintest.util.a as a_
 
 @RunWith(KTestJUnitRunner::class)
 abstract class Spec {
+
+  companion object {
+    inline fun <reified T : Annotation> a(valueArg: Any?): T = a_(valueArg)
+    inline fun <reified T : Annotation> a(args: Map<String, Any?>): T = a_(args)
+    inline fun <reified T : Annotation> a(vararg args: Pair<String, Any?> = emptyArray()): T = a_(*args)
+  }
 
   // the root test suite which uses the simple name of the class as the name of the suite
   // spec implementations will add their tests to this suite

@@ -12,8 +12,9 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : Spec() {
     body()
   }
 
-  operator fun String.invoke(test: () -> Unit): TestCase {
-    val tc = TestCase(suite = rootTestSuite, name = this, test = test, config = defaultTestCaseConfig)
+  operator fun String.invoke(vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = this(annotations.toList(), test)
+  operator fun String.invoke(annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
+    val tc = TestCase(suite = rootTestSuite, name = this, test = test, config = defaultTestCaseConfig, annotations = annotations)
     rootTestSuite.addTestCase(tc)
     return tc
   }

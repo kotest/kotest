@@ -21,3 +21,4 @@ target
 
 # Gradle wrapper
 !gradle/wrapper/gradle-wrapper.jar
+classes/

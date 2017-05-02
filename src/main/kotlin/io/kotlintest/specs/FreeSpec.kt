@@ -9,14 +9,22 @@ import org.junit.runner.RunWith
 @RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
 
+  companion object {
+    data class SpecDef(val name: String, val annotations: List<Annotation> = emptyList())
+  }
+
   init {
     body()
   }
 
   private var current = rootTestSuite
 
-  infix operator fun String.minus(init: () -> Unit): Unit {
-    val suite = TestSuite(sanitizeSpecName(this))
+  operator fun String.invoke(vararg annotations: Annotation = emptyArray()) = this(annotations.toList())
+  operator fun String.invoke(annotations: List<Annotation> = emptyList()) = SpecDef(this, annotations)
+
+  infix operator fun String.minus(init: () -> Unit): Unit = SpecDef(this) - init
+  infix operator fun SpecDef.minus(init: () -> Unit): Unit {
+    val suite = TestSuite(sanitizeSpecName(name), annotations)
     current.addNestedSuite(suite)
     val temp = current
     current = suite
@@ -24,12 +32,15 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
     current = temp
   }
 
-  infix operator fun String.invoke(test: () -> Unit): TestCase {
+  operator fun String.invoke(vararg annotations: Annotation = emptyArray(), test: () -> Unit): TestCase = this(annotations.toList(), test)
+  operator fun String.invoke(annotations: List<Annotation> = emptyList(), test: () -> Unit): TestCase {
     val tc = TestCase(
         suite = current,
         name = sanitizeSpecName(this),
         test = test,
-        config = defaultTestCaseConfig)
+        config = defaultTestCaseConfig,
+        annotations = annotations
+    )
     current.addTestCase(tc)
     return tc
   }
