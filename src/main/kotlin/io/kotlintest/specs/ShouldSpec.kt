@@ -9,11 +9,11 @@ import org.junit.runner.RunWith
 @RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
 
+  private var current = rootTestSuite
+
   init {
     body()
   }
-
-  private var current = rootTestSuite
 
   operator fun String.invoke(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))

@@ -9,11 +9,11 @@ import org.junit.runner.RunWith
 @RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
 
+  private var current = rootTestSuite
+
   init {
     body()
   }
-
-  private var current = rootTestSuite
 
   fun feature(name: String, init: () -> Unit): Unit {
     val suite = TestSuite("Feature: ${sanitizeSpecName(name)}")

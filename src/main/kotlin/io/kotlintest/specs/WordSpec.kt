@@ -9,11 +9,11 @@ import org.junit.runner.RunWith
 @RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
 
+  private var current = rootTestSuite
+
   init {
     body()
   }
-
-  private var current = rootTestSuite
 
   infix fun String.should(init: () -> Unit): Unit {
     val suite = TestSuite(sanitizeSpecName(this))
