@@ -43,4 +43,18 @@ inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
     return e as T
 }
 
+inline fun shouldThrowAny(thunk: () -> Any?): Throwable {
+  val e = try {
+    thunk()
+    null
+  } catch (e: Throwable) {
+    e
+  }
+
+  if (e == null)
+    throw AssertionError("Expected exception but no exception was thrown")
+  else
+    return e
+}
+
 data class Result(val passed: Boolean, val message: String)
