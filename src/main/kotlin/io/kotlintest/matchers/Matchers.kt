@@ -12,7 +12,7 @@ infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 
 
 infix fun String.shouldBe(other: String) {
   if (this != other) {
-    throw ComparisonFailure("", this, other)
+    throw ComparisonFailure("", other, this)
   }
 }
 
