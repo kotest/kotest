@@ -10,7 +10,7 @@ class StringMatchersTest : FreeSpec() {
       "should show divergence in error message" {
         shouldThrow<ComparisonFailure> {
           "la tour eiffel" shouldBe "la tour tower london"
-        }.message shouldBe "expected:<la tour [eiffel]> but was:<la tour [tower london]>"
+        }.message shouldBe "expected:<la tour [tower london]> but was:<la tour [eiffel]>"
       }
     }
 
