@@ -1,9 +1,15 @@
 package io.kotlintest.properties
 
 import io.kotlintest.forAll
-import io.kotlintest.matchers.*
+import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.gte
+import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.matchers.shouldHave
+import io.kotlintest.matchers.shouldThrow
+import io.kotlintest.matchers.substring
 import io.kotlintest.specs.WordSpec
-import java.util.*
+import java.util.Random
 
 /**
  *  @author Hannes Güdelhöfer
@@ -211,6 +217,47 @@ class GenTest : WordSpec() {
 
       }
 
+    }
+
+    "ConstGen " should {
+      "always generate the same thing" {
+        forAll(ConstGen(5)) {
+          it == 5
+        }
+      }
+    }
+
+    "Gen.orNull " should {
+      "have both values and nulls generated" {
+
+        fun <T> Gen<T>.toList(size: Int): List<T> =
+            ArrayList<T>(size).also { list ->
+              repeat(size) {
+                list += generate()
+              }
+            }
+
+        val list = ConstGen(5).orNull().toList(size = 100)
+
+        (5 in list) shouldBe true
+        (null in list) shouldBe true
+      }
+    }
+
+    "Gen.filter " should {
+      "prevent values from being generated" {
+        forAll(Gen.oneOf(listOf(1, 2, 5)).filter { it != 2 }) {
+          it != 2
+        }
+      }
+    }
+
+    "Gen.map " should {
+      "correctly transform the values" {
+        forAll(ConstGen(5).map { it + 7 }) {
+          it == 12
+        }
+      }
     }
   }
 }

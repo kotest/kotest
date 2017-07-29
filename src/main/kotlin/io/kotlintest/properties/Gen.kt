@@ -4,12 +4,12 @@ import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
-import java.util.*
+import java.util.Random
 
 /** A shared random number generator. */
 private val RANDOM = Random()
 
-interface Gen<T> {
+interface Gen<out T> {
 
   fun generate(): T
 
@@ -153,6 +153,27 @@ interface Gen<T> {
     return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
   }
 }
+
+data class ConstGen<out T>(val value: T) : Gen<T> {
+  override fun generate(): T =
+      value
+}
+
+fun <T> Gen<T>.orNull(): Gen<T?> =
+    Gen.oneOf(this, ConstGen(null))
+
+internal tailrec fun <T> Gen<T>.generateGood(isGood: (T) -> Boolean): T =
+    generate().takeIf(isGood) ?: generateGood(isGood)
+
+fun <T> Gen<T>.filter(f: (T) -> Boolean): Gen<T> =
+    Gen.create {
+      generateGood(f)
+    }
+
+inline fun <A, B> Gen<A>.map(crossinline f: (A) -> B): Gen<B> =
+    Gen.create {
+      f(generate())
+    }
 
 // need some supertype that types a type param so it gets baked into the class file
 abstract class TypeReference<T> : Comparable<TypeReference<T>> {
