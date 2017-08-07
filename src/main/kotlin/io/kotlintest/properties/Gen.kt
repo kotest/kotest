@@ -101,6 +101,14 @@ interface Gen<out T> {
       override fun generate(): List<T> = (0..RANDOM.nextInt(100)).map { gen.generate() }.toList()
     }
 
+    fun <K, V> pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = object : Gen<Pair<K, V>> {
+      override fun generate(): Pair<K, V> = genK.generate() to genV.generate()
+    }
+
+    fun <K, V> map(genK: Gen<K>, genV: Gen<V>): Gen<Map<K, V>> = object : Gen<Map<K, V>>  {
+      override fun generate(): Map<K, V> = Gen.list(pair(genK, genV)).generate().toMap()
+    }
+
     fun forClassName(className: String): Gen<*> {
       return when (className) {
         "java.lang.String" -> Gen.string()
@@ -133,6 +141,23 @@ interface Gen<out T> {
           val first = type.actualTypeArguments.first() as WildcardType
           val upper = first.upperBounds.first() as Class<*>
           set(forClassName(upper.name)) as Gen<T>
+        }
+        Pair::class.qualifiedName -> {
+          val type = object : TypeReference<T>() {}.type as ParameterizedType
+          val first = (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
+          val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
+          pair(forClassName(first.name), forClassName(second.name)) as Gen<T>
+        }
+        Map::class.qualifiedName -> {
+          val type = object : TypeReference<T>() {}.type as ParameterizedType
+          //map key type can have or have not variance
+          val first = if (type.actualTypeArguments[0] is Class<*>) {
+            type.actualTypeArguments[0] as Class<*>
+          } else {
+            (type.actualTypeArguments[0] as WildcardType).upperBounds.first() as Class<*>
+          }
+          val second = (type.actualTypeArguments[1] as WildcardType).upperBounds.first() as Class<*>
+          map(forClassName(first.name), forClassName(second.name)) as Gen<T>
         }
         else -> forClassName(T::class.qualifiedName!!) as Gen<T>
       }
