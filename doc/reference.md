@@ -8,7 +8,7 @@ KotlinTest is published to Maven Central, so to use, simply add the dependency i
 
 Gradle:
 
-    testCompile 'io.kotlintest:kotlintest:xxx'
+    testCompile "io.kotlintest:kotlintest:xxx"
 
 Maven:
 
