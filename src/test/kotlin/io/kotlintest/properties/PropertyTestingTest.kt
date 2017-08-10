@@ -67,5 +67,19 @@ class PropertyTestingTest : StringSpec() {
         a.plus(b).plus(c).plus(d).size == a.size + b.size + c.size + d.size
       }
     }
+
+    "pairs" {
+      forAll { (f, s): Pair<String, String> ->
+        (f + s).contains(f)
+        (f + s).contains(s)
+      }
+    }
+
+    "maps" {
+      forAll { a: Map<Int, String>, b: Map<out Double, Boolean> ->
+        a.keys.plus(a.values.toSet()).plus(b.keys).plus(b.values.toSet()).size ==
+            a.keys.size + a.values.toSet().size + b.keys.size + b.values.toSet().size
+      }
+    }
   }
 }
