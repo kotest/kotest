@@ -476,7 +476,7 @@ An interceptor would look like this:
 val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
   println("before")
   testCase() // Don't forget to call testCase()!
-  println("after)
+  println("after")
 }
 ```
 
