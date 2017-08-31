@@ -453,7 +453,7 @@ class MySpec : StringSpec {
 To run logic before and after a spec, you can override `interceptSpec`. The principle is the same as above:
 
 ```kotlin
-protected fun interceptSpec(context: TestBase, spec: () -> Unit) {
+protected fun interceptSpec(context: Spec, spec: () -> Unit) {
   println("before spec")
   spec() // don't forget to call spec()!
   println("after spec")
@@ -814,7 +814,7 @@ This mechanism is superseded by:
 
 ```kotlin
 protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit)
-protected open fun interceptSpec(context: TestBase, spec: () -> Unit)
+protected open fun interceptSpec(context: Spec, spec: () -> Unit)
 ```
 
 The before/after each pair can be replaced with `interceptTestCase`. An example makes it more clear:
