@@ -668,5 +668,94 @@ class PropertyTestingTest : StringSpec() {
             a.keys.size + a.values.toSet().size + b.keys.size + b.values.toSet().size
       }
     }
+
+    "forNone: one explicit argument with 1000 attempts" {
+      var attempts = 0
+      forNone(Gen.string()) { a ->
+        attempts++
+        (a + "hi").endsWith("Bye")
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: one explicit argument with 300 attempts" {
+      var attempts = 0
+      forNone(300, Gen.string()) { a ->
+        attempts++
+        (a + "hi").endsWith("Bye")
+      }
+      attempts shouldBe 300
+    }
+
+    "forNone: one explicit argument fails after 10 attempts" {
+      var attempts = 0
+      var elementA = ""
+      val exception = shouldThrow<AssertionError> {
+        forNone(400, Gen.string()) { a ->
+          elementA = a
+          attempts++
+          attempts >= 10
+        }
+      }
+      exception.message shouldBe "Property passed for\n$elementA\nafter 10 attempts"
+    }
+
+    "forNone: one explicit argument fails after 50 attempts" {
+      var attempts = 0
+      var elementA = 0
+      val exception = shouldThrow<AssertionError> {
+        forNone(100, Gen.int()) {
+          a -> elementA = a
+          attempts++
+          attempts >= 50
+        }
+      }
+      exception.message shouldBe "Property passed for\n$elementA\nafter 50 attempts"
+    }
+
+    "forNone: one explicit argument with 0 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(0, Gen.int()) {
+          a -> false
+        }
+      }
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: one explicit argument with -100 attempts" {
+       val exception = shouldThrow<IllegalArgumentException> {
+        forNone(-100, Gen.int()) {
+          a -> false
+        }
+      }
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: one implicit argument with 1000 attempts" {
+      var attempts = 0
+      forNone {
+        a : String -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: one implicit argument with 20 attempts" {
+      var attempts = 0
+      forNone(20) {
+        a : Double -> attempts++
+        false
+      }
+      attempts shouldBe 20
+    }
+
+    "forNone: one implicit argument with 100 attempts" {
+      var attempts = 0
+      forNone(100) { a: Double ->
+        attempts++
+        false
+      }
+      attempts shouldBe 100
+    }
   }
 }

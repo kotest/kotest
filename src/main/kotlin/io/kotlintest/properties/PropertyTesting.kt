@@ -13,8 +13,7 @@ fun <A> forAll(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
 }
 
 fun <A> forAll(attempts: Int, gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-  if (attempts <= 0)
-    throw IllegalArgumentException("Attempts should be a positive number")
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
   for (k in 1..attempts) {
     val a = gena.generate()
@@ -65,8 +64,7 @@ fun <A, B, C> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, 
 }
 
 fun <A, B, C> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-  if (attempts <= 0)
-    throw IllegalArgumentException("Attempts should be a positive number")
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
   for (k in 1..attempts) {
     val a = gena.generate()
@@ -92,8 +90,7 @@ fun <A, B, C, D> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, 
 }
 
 fun <A, B, C, D> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-  if (attempts <= 0)
-    throw IllegalArgumentException("Attempts should be a positive number")
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
   for (k in 1..attempts) {
     val a = gena.generate()
@@ -119,8 +116,7 @@ fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D
   forAll(1000, gena, genb, genc, gend, gene, fn)
 }
 fun <A, B, C, D, E> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-  if (attempts <= 0)
-    throw IllegalArgumentException("Attempts should be a positive number")
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
   for (k in 1..attempts) {
     val a = gena.generate()
@@ -148,8 +144,7 @@ fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Ge
 }
 
 fun <A, B, C, D, E, F> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-  if (attempts <= 0)
-    throw IllegalArgumentException("Attempts should be a positive number")
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
   for (k in 1..attempts) {
     val a = gena.generate()
@@ -165,16 +160,31 @@ fun <A, B, C, D, E, F> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: G
   }
 }
 
+private fun checkNumberOfAttemptsIsAPositiveNumber(attempts: Int) {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+}
+
 inline fun <reified A> forNone(noinline fn: (a: A) -> Boolean): Unit {
   forNone(Gen.default<A>(), fn)
 }
 
+inline fun <reified A> forNone(attempts: Int, noinline fn: (a: A) -> Boolean): Unit {
+  forNone(attempts, Gen.default<A>(), fn)
+}
+
 fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forNone(1000, gena, fn)
+}
+
+fun <A> forNone(attempts: Int, gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val passed = fn(a)
     if (passed) {
-      throw AssertionError("Property passed for\n$a")
+      throw AssertionError("Property passed for\n$a\nafter $k attempts")
     }
   }
 }
