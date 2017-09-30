@@ -4,12 +4,23 @@ inline fun <reified A> forAll(noinline fn: (a: A) -> Boolean): Unit {
   forAll(Gen.default<A>(), fn)
 }
 
+inline fun <reified A> forAll(attempts: Int, noinline fn: (a: A) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), fn)
+}
+
 fun <A> forAll(gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, fn)
+}
+
+fun <A> forAll(attempts: Int, gena: Gen<A>, fn: (a: A) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val passed = fn(a)
     if (!passed) {
-      throw AssertionError("Property failed for\n$a")
+      throw AssertionError("Property failed for\n$a\nafter $k attempts")
     }
   }
 }
@@ -18,15 +29,31 @@ inline fun <reified A, reified B> forAll(noinline fn: (a: A, b: B) -> Boolean): 
   forAll(Gen.default<A>(), Gen.default<B>(), fn)
 }
 
+
+inline fun <reified A, reified B> forAll(attempts: Int, noinline fn: (a: A, b: B) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), Gen.default<B>(), fn)
+}
+
 fun <A, B> forAll(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, genb, fn)
+}
+
+fun <A, B> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("The number of attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val passed = fn(a, b)
     if (!passed) {
-      throw AssertionError("Property failed for\n$a\n$b)")
+      throw AssertionError("Property failed for\n$a\n$b\nafter $k attempts")
     }
   }
+}
+
+inline fun <reified A, reified B, reified C> forAll(attempts: Int, noinline fn: (a: A, b: B, c: C) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), fn)
 }
 
 inline fun <reified A, reified B, reified C> forAll(noinline fn: (a: A, b: B, c: C) -> Boolean): Unit {
@@ -34,13 +61,20 @@ inline fun <reified A, reified B, reified C> forAll(noinline fn: (a: A, b: B, c:
 }
 
 fun <A, B, C> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, genb, genc, fn)
+}
+
+fun <A, B, C> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: (a: A, b: B, c: C) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
     val passed = fn(a, b, c)
     if (!passed) {
-      throw AssertionError("Property failed for\n$a\n$b\n$c)")
+      throw AssertionError("Property failed for\n$a\n$b\n$c\nafter $k attempts")
     }
   }
 }
@@ -49,15 +83,26 @@ inline fun <reified A, reified B, reified C, reified D> forAll(noinline fn: (a: 
   forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), fn)
 }
 
+inline fun <reified A, reified B, reified C, reified D> forAll(attempts: Int, noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), fn)
+}
+
 fun <A, B, C, D> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, genb, genc, gend, fn)
+}
+
+fun <A, B, C, D> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
     val d = gend.generate()
     val passed = fn(a, b, c, d)
     if (!passed) {
-      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d)")
+      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d\nafter $k attempts")
     }
   }
 }
@@ -66,8 +111,18 @@ inline fun <reified A, reified B, reified C, reified D, reified E> forAll(noinli
   forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), fn)
 }
 
+inline fun <reified A, reified B, reified C, reified D, reified E> forAll(attempts: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), fn)
+}
+
 fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, genb, genc, gend, gene, fn)
+}
+fun <A, B, C, D, E> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
@@ -75,7 +130,7 @@ fun <A, B, C, D, E> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D
     val e = gene.generate()
     val passed = fn(a, b, c, d, e)
     if (!passed) {
-      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d\n$e")
+      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d\n$e\nafter $k attempts")
     }
   }
 }
@@ -84,8 +139,19 @@ inline fun <reified A, reified B, reified C, reified D, reified E, reified F> fo
   forAll(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), Gen.default<F>(), fn)
 }
 
+inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(attempts: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
+  forAll(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), Gen.default<F>(), fn)
+}
+
 fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forAll(1000, gena, genb, genc, gend, gene, genf, fn)
+}
+
+fun <A, B, C, D, E, F> forAll(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
+  if (attempts <= 0)
+    throw IllegalArgumentException("Attempts should be a positive number")
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
@@ -94,7 +160,7 @@ fun <A, B, C, D, E, F> forAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Ge
     val f = genf.generate()
     val passed = fn(a, b, c, d, e, f)
     if (!passed) {
-      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d\n$e\n$f")
+      throw AssertionError("Property failed for \n$a\n$b\n$c\n$d\n$e\n$f\nafter $k attempts")
     }
   }
 }
