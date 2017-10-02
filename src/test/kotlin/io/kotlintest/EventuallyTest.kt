@@ -3,6 +3,7 @@ package io.kotlintest
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.matchers.shouldThrow
+import java.io.FileNotFoundException
 import java.io.IOException
 
 class EventuallyTest : WordSpec() {
@@ -46,6 +47,13 @@ class EventuallyTest : WordSpec() {
           eventually(2.seconds, IOException::class.java) {
             (null as String?)!!.length
           }
+        }
+      }
+      "pass tests that throws FileNotFoundException for some time"  {
+        val end = System.currentTimeMillis() + 2000
+        eventually(5.days) {
+          if (System.currentTimeMillis() < end)
+            throw FileNotFoundException("foo")
         }
       }
     }
