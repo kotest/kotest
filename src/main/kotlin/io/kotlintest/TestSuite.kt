@@ -16,7 +16,7 @@ data class TestSuite(val name: String) {
   }
 
   fun testCasesIncludingChildren(suite: TestSuite = this): List<TestCase> =
-      suite.testCases + suite.nestedSuites.flatMap { suite -> testCasesIncludingChildren(suite) }
+      suite.testCases + suite.nestedSuites.flatMap { testCasesIncludingChildren(it) }
 
   operator fun get(index: Int) = testCasesIncludingChildren()[index]
 

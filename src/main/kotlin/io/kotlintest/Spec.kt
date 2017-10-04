@@ -88,16 +88,16 @@ abstract class Spec {
     spec()
   }
 
-  private fun runOneInstancePerTest(notifier: RunNotifier): Unit {
+  private fun runOneInstancePerTest(notifier: RunNotifier) {
     val testCount = rootTestSuite.testCasesIncludingChildren().size
-    for (testCaseIndex in (0..testCount - 1)) {
+    for (testCaseIndex in (0 until testCount)) {
       val instance = javaClass.newInstance()
       val testCase = instance.rootTestSuite[testCaseIndex]
       runTest(instance, testCase, notifier)
     }
   }
 
-  private fun runSharedInstance(notifier: RunNotifier): Unit {
+  private fun runSharedInstance(notifier: RunNotifier) {
     val testCases = rootTestSuite.testCasesIncludingChildren()
     testCases.forEach { runTest(this, it, notifier) }
   }
@@ -106,7 +106,7 @@ abstract class Spec {
   private fun runTest(
       spec: Spec,
       testCase: TestCase,
-      notifier: RunNotifier): Unit {
+      notifier: RunNotifier) {
     if (testCase.isActive) {
       val executor =
           if (testCase.config.threads < 2) Executors.newSingleThreadExecutor()

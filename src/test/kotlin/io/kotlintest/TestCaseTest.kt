@@ -32,7 +32,7 @@ class TestCaseTest : StringSpec() {
     }.config(tags = setOf(TagA))
   }
 
-  override fun interceptTestCase(contex: TestCaseContext, test: () -> Unit) {
+  override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
     System.clearProperty("excludeTags")
     System.clearProperty("includeTags")

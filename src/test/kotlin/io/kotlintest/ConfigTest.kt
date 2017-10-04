@@ -8,41 +8,41 @@ class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
-  val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = object : ThreadLocal<StringBuilder>() {
+  private val testCaseInterceptorLog: ThreadLocal<StringBuilder>? = object : ThreadLocal<StringBuilder>() {
     override fun initialValue() = StringBuilder()
   }
 
-  val verificationInterceptor: (Spec, () -> Unit) -> Unit = { context, spec ->
+  private val verificationInterceptor: (Spec, () -> Unit) -> Unit = { _, spec ->
     spec()
     val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
-    DemoConfig.intercepterLog.toString() shouldEqual expectedLog
+    TestProjectConfig.intercepterLog.toString() shouldEqual expectedLog
   }
 
-  val specInterceptorA: (Spec, () -> Unit) -> Unit = { context, spec ->
-    DemoConfig.intercepterLog.append("C1.")
+  private val specInterceptorA: (Spec, () -> Unit) -> Unit = { _, spec ->
+    TestProjectConfig.intercepterLog.append("C1.")
     spec()
-    DemoConfig.intercepterLog.append("C2.")
+    TestProjectConfig.intercepterLog.append("C2.")
   }
 
-  val specInterceptorB: (Spec, () -> Unit) -> Unit = { context, spec ->
-    DemoConfig.intercepterLog.append("D1.")
+  private val specInterceptorB: (Spec, () -> Unit) -> Unit = { _, spec ->
+    TestProjectConfig.intercepterLog.append("D1.")
     spec()
-    DemoConfig.intercepterLog.append("D2.")
+    TestProjectConfig.intercepterLog.append("D2.")
   }
 
-  val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+  private val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
     testCaseInterceptorLog!!.get().append("E1.")
     testCase()
     testCaseInterceptorLog.get().append("E2.")
   }
 
-  val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+  private val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
     testCaseInterceptorLog!!.get().append("F1.")
     testCase()
     testCaseInterceptorLog.get().append("F2.")
   }
 
-  val testCaseInterceptorE = { context: TestCaseContext, testCase: () -> Unit ->
+  private val testCaseInterceptorE = { _: TestCaseContext, testCase: () -> Unit ->
     try {
       testCase()
     } catch (ex: RuntimeException) {
@@ -50,7 +50,7 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  val testCaseInterceptors = listOf(testCaseinterceptorC, testCaseInterceptorD, testCaseInterceptorE)
+  private val testCaseInterceptors = listOf(testCaseinterceptorC, testCaseInterceptorD, testCaseInterceptorE)
 
   override val defaultTestCaseConfig: TestCaseConfig =
       TestCaseConfig(
@@ -62,9 +62,9 @@ class ConfigTest : WordSpec() {
 
   override val oneInstancePerTest = false
 
-  val invocationCounter = AtomicInteger(0)
-  val invocationCounter2 = AtomicInteger(0)
-  val threadCounter = AtomicInteger(0)
+  private val invocationCounter = AtomicInteger(0)
+  private val invocationCounter2 = AtomicInteger(0)
+  private val threadCounter = AtomicInteger(0)
 
   init {
     "TestCase config" should {
@@ -107,9 +107,9 @@ class ConfigTest : WordSpec() {
         testCase.config.tags shouldEqual setOf(TagA)
       }.config(invocations = 1)
 
-      val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
+      val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
         testCase()
-        DemoConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
+        TestProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
       }
 
       "should call interceptors in order of definition" {
@@ -123,10 +123,21 @@ class ConfigTest : WordSpec() {
       "should override interceptors" {
         testCaseInterceptorLog!!.get().toString() should haveLength(0)
       }.config(interceptors = listOf())
+
+      "only run beforeAll once" {
+        TestProjectConfig.beforeAll shouldBe 1
+      }
+
+      "only run afterAll once" {
+        // this test spec has not yet completed, and therefore this count should be 0
+        // we will also assert this in another test suite, where it should still be 0
+        // but at that point at least _one_ test suite will have completed
+        TestProjectConfig.afterAll shouldBe 0
+      }
     }
   }
 
-  override fun interceptSpec(context: Spec, spec: () -> Unit): Unit {
+  override fun interceptSpec(context: Spec, spec: () -> Unit) {
     spec()
 
     invocationCounter.get() shouldBe 5
