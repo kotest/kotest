@@ -1,3 +1,5 @@
+@file:Suppress("USELESS_IS_CHECK")
+
 package io.kotlintest.properties
 
 import io.kotlintest.forAll
@@ -11,9 +13,6 @@ import io.kotlintest.matchers.substring
 import io.kotlintest.specs.WordSpec
 import java.util.Random
 
-/**
- *  @author Hannes Güdelhöfer
- */
 class GenTest : WordSpec() {
   init {
     "Gen.string.nextPrintableString" should {
@@ -32,26 +31,49 @@ class GenTest : WordSpec() {
       }.config(invocations = 100, threads = 8)
     }
     "Gen.choose<int, int>" should {
+
       "only give out numbers in the given range" {
         val random = Random()
 
-        val max = random.nextInt(10000) + 10000
         val min = random.nextInt(10000) - 10000
+        val max = random.nextInt(10000) + 10000
 
         val rand = Gen.choose(min, max).generate()
         rand shouldBe gte(min)
         rand shouldBe lt(max)
       }.config(invocations = 10000, threads = 8)
+
+      "support negative bounds" {
+
+        val random = Random()
+
+        val max = random.nextInt(10000)
+
+        val rand = Gen.choose(Int.MIN_VALUE, max).generate()
+        rand shouldBe gte(Int.MIN_VALUE)
+        rand shouldBe lt(max)
+
+      }.config(invocations = 1000, threads = 8)
     }
     "Gen.choose<long, long>" should {
       "only give out numbers in the given range" {
         val random = Random()
 
-        val max = random.nextInt(10000) + 10000
         val min = random.nextInt(10000) - 10000
+        val max = random.nextInt(10000) + 10000
 
         val rand = Gen.choose(min.toLong(), max.toLong()).generate()
         rand shouldBe gte(min.toLong())
+        rand shouldBe lt(max.toLong())
+
+      }.config(invocations = 10000, threads = 8)
+      "support negative bounds" {
+        val random = Random()
+
+        val max = random.nextInt(10000) + 10000
+
+        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).generate()
+        rand shouldBe gte(Long.MIN_VALUE)
         rand shouldBe lt(max.toLong())
 
       }.config(invocations = 10000, threads = 8)

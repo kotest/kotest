@@ -15,17 +15,17 @@ interface Gen<out T> {
 
   companion object {
 
-    fun choose(min: Int, max: Int): Gen<Int> = object : Gen<Int> {
-      override fun generate(): Int = RANDOM.nextInt((max.toLong() - min.toLong()).toInt()) + min
+    fun choose(min: Int, max: Int): Gen<Int> {
+      assert(min < max, { "min must be < max" })
+      return object : Gen<Int> {
+        override fun generate(): Int = JavaRandoms.internalNextInt(RANDOM, min, max)
+      }
     }
 
-    fun choose(min: Long, max: Long): Gen<Long> = object : Gen<Long> {
-      override fun generate(): Long {
-        var rand = (RANDOM.nextLong() % (max - min))
-        if (rand < 0) {
-          rand += max - min
-        }
-        return rand + min
+    fun choose(min: Long, max: Long): Gen<Long> {
+      assert(min < max, { "min must be < max" })
+      return object : Gen<Long> {
+        override fun generate(): Long = JavaRandoms.internalNextLong(RANDOM, min, max)
       }
     }
 
