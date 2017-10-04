@@ -209,12 +209,12 @@ Property-based Testing <a name="property-based"></a>
 
 To automatically test your code with many combinations of values, you can allow KotlinTest to do the boilerplate
 by using property testing with `generators`. You invoke `forAll` or `forNone` and pass in a function, where the function
-parameters are populated automatically with many different values. The function must specify explcitly the parameter
+parameters are populated automatically with many different values. The function must specify explicitly the parameter
 types as KotlinTest will use those to determine what types of values to pass in.
 
 For example, here is a property test that checks that for any two Strings, the length of `a + b` 
 is the same as the length of `a` plus the length of `b`. In this example KotlinTest would 
-execute the test 100 tests for random String combinations.
+execute the test 100 times for random String combinations.
 
 ```kotlin
 import io.kotlintest.properties.*
