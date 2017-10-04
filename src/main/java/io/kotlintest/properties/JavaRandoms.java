@@ -2,6 +2,11 @@ package io.kotlintest.properties;
 
 import java.util.Random;
 
+// taken from the JDK
+/*
+ * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+ * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
 public class JavaRandoms {
   public static int internalNextInt(Random random, int origin, int bound) {
     if (origin < bound) {

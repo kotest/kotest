@@ -175,7 +175,7 @@ interface Gen<out T> {
   }
 
   fun nextPrintableString(length: Int): String {
-    return (0..length - 1).map { RANDOM.nextPrintableChar() }.joinToString("")
+    return (0 until length).map { RANDOM.nextPrintableChar() }.joinToString("")
   }
 }
 
