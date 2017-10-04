@@ -5,8 +5,8 @@ import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec() {
 
-  val list = listOf(1, 2, 3, 4, 5)
-  val array = arrayOf(1, 2, 3, 4, 5)
+  private val list = listOf(1, 2, 3, 4, 5)
+  private val array = arrayOf(1, 2, 3, 4, 5)
 
   init {
 
