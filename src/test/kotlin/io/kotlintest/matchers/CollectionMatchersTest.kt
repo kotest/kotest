@@ -78,7 +78,28 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
-    "containInAnyOrder" should {
+    "containInOrder" should {
+      "test that a collection contains the same elements in the given order, duplicates permitted" {
+        val col = listOf(1, 1, 2, 2, 3, 3)
+
+        col should containsInOrder(1, 2, 3)
+        col should containsInOrder(1)
+
+        shouldThrow<AssertionError> {
+          col should containsInOrder(1, 2, 6)
+        }
+
+        shouldThrow<AssertionError> {
+          col should containsInOrder(4)
+        }
+
+        shouldThrow<AssertionError> {
+          col should containsInOrder(2, 1, 3)
+        }
+      }
+    }
+
+    "containsAll" should {
       "test that a collection contains all the elements but in any order" {
         val col = listOf(1, 2, 3, 4, 5)
 
