@@ -26,14 +26,33 @@ class InspectorsTest : WordSpec() {
           forNone(list) {
             it shouldBe 4
           }
-        }
+        }.message shouldBe """1 elements passed but expected 0
+
+The following elements passed:
+4
+
+The following elements failed:
+1 => expected: 4 but was: 1
+2 => expected: 4 but was: 2
+3 => expected: 4 but was: 3
+5 => expected: 4 but was: 5"""
       }
       "fail if all elements pass fn test" {
         shouldThrow<AssertionError> {
           forNone(list) {
             it should beGreaterThan(0)
           }
-        }
+        }.message shouldBe """5 elements passed but expected 0
+
+The following elements passed:
+1
+2
+3
+4
+5
+
+The following elements failed:
+--none--"""
       }
     }
 
@@ -53,14 +72,34 @@ class InspectorsTest : WordSpec() {
           forSome(array) {
             it should beLessThan(0)
           }
-        }
+        }.message shouldBe """No elements passed but expected at least one
+
+The following elements passed:
+--none--
+
+The following elements failed:
+1 => 1 should be < 0
+2 => 2 should be < 0
+3 => 3 should be < 0
+4 => 4 should be < 0
+5 => 5 should be < 0"""
       }
       "fail if all elements pass test"  {
         shouldThrow<AssertionError> {
           forSome(list) {
             it should beGreaterThan(0)
           }
-        }
+        }.message shouldBe """All elements passed but expected < 5
+
+The following elements passed:
+1
+2
+3
+4
+5
+
+The following elements failed:
+--none--"""
       }
     }
 
@@ -75,14 +114,33 @@ class InspectorsTest : WordSpec() {
           forOne(list) { t ->
             t should beGreaterThan(2)
           }
-        }
+        }.message shouldBe """3 elements passed but expected 1
+
+The following elements passed:
+3
+4
+5
+
+The following elements failed:
+1 => 1 should be > 2
+2 => 2 should be > 2"""
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
           forOne(array) { t ->
             t shouldBe 22
           }
-        }
+        }.message shouldBe """0 elements passed but expected 1
+
+The following elements passed:
+--none--
+
+The following elements failed:
+1 => expected: 22 but was: 1
+2 => expected: 22 but was: 2
+3 => expected: 22 but was: 3
+4 => expected: 22 but was: 4
+5 => expected: 22 but was: 5"""
       }
     }
 
@@ -102,7 +160,17 @@ class InspectorsTest : WordSpec() {
           forAny(array) { t ->
             t shouldBe 6
           }
-        }
+        }.message shouldBe """0 elements passed but expected at least 1
+
+The following elements passed:
+--none--
+
+The following elements failed:
+1 => expected: 6 but was: 1
+2 => expected: 6 but was: 2
+3 => expected: 6 but was: 3
+4 => expected: 6 but was: 4
+5 => expected: 6 but was: 5"""
       }
     }
 
@@ -117,21 +185,49 @@ class InspectorsTest : WordSpec() {
           forExactly(2, list) { t ->
             t should beGreaterThan(2)
           }
-        }
+        }.message shouldBe """3 elements passed but expected 2
+
+The following elements passed:
+3
+4
+5
+
+The following elements failed:
+1 => 1 should be > 2
+2 => 2 should be > 2"""
       }
       "fail if less elements pass test"  {
         shouldThrow<AssertionError> {
           forExactly(2, array) { t ->
             t should beLessThan(2)
           }
-        }
+        }.message shouldBe """1 elements passed but expected 2
+
+The following elements passed:
+1
+
+The following elements failed:
+2 => 2 should be < 2
+3 => 3 should be < 2
+4 => 4 should be < 2
+5 => 5 should be < 2"""
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
           forExactly(2, list) { t ->
             t shouldBe 33
           }
-        }
+        }.message shouldBe """0 elements passed but expected 2
+
+The following elements passed:
+--none--
+
+The following elements failed:
+1 => expected: 33 but was: 1
+2 => expected: 33 but was: 2
+3 => expected: 33 but was: 3
+4 => expected: 33 but was: 4
+5 => expected: 33 but was: 5"""
       }
     }
   }
