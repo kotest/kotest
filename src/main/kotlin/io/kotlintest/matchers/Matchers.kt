@@ -8,7 +8,7 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
 
 fun fail(msg: String): Nothing = throw AssertionError(msg)
 
-infix fun Double.shouldBe(other: Double): Unit = should(ToleranceMatcher(other, 0.0))
+infix fun Double.shouldBe(other: Double) = should(ToleranceMatcher(other, 0.0))
 
 infix fun String.shouldBe(other: String) {
   if (this != other) {
@@ -16,35 +16,35 @@ infix fun String.shouldBe(other: String) {
   }
 }
 
-infix fun BooleanArray.shouldBe(other: BooleanArray): Unit {
+infix fun BooleanArray.shouldBe(other: BooleanArray) {
   val expected = other.toList()
   val actual = this.toList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun IntArray.shouldBe(other: IntArray): Unit {
+infix fun IntArray.shouldBe(other: IntArray) {
   val expected = other.toList()
   val actual = this.toList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun DoubleArray.shouldBe(other: DoubleArray): Unit {
+infix fun DoubleArray.shouldBe(other: DoubleArray) {
   val expected = other.toList()
   val actual = this.toList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun LongArray.shouldBe(other: LongArray): Unit {
+infix fun LongArray.shouldBe(other: LongArray) {
   val expected = other.toList()
   val actual = this.toList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun <T> Array<T>.shouldBe(other: Array<T>): Unit {
+infix fun <T> Array<T>.shouldBe(other: Array<T>) {
   val expected = other.toList()
   val actual = this.toList()
   if (actual != expected)
@@ -65,22 +65,22 @@ infix fun <T> T.shouldEqual(any: Any?): Unit {
   }
 }
 
-infix fun <T> T.should(matcher: (T) -> Unit): Unit = matcher(this)
+infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
-infix fun <T> T.should(matcher: Matcher<T>): Unit {
+infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed)
     throw AssertionError(result.message)
 }
 
-infix fun <T> T.shouldNotBe(any: Any?): Unit {
+infix fun <T> T.shouldNotBe(any: Any?) {
   when (any) {
     is Matcher<*> -> shouldNot(any as Matcher<T>)
     else -> shouldNot(equalityMatcher(any))
   }
 }
 
-infix fun <T> T.shouldNot(matcher: Matcher<T>): Unit {
+infix fun <T> T.shouldNot(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (result.passed)
     throw AssertionError("Test passed which should have failed: " + result.message)

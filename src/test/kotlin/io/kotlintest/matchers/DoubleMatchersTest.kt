@@ -25,5 +25,11 @@ class DoubleMatchersTest : ShouldSpec() {
         1.0 shouldBe exactly(1.1)
       }
     }
+
+    should("never match NaN == Nan as per the spec") {
+      shouldThrow<AssertionError> {
+        Double.NaN shouldBe Double.NaN
+      }
+    }
   }
 }
