@@ -1,4 +1,4 @@
-package io.kotlintest.properties;
+package io.kotlintest;
 
 import java.util.Random;
 

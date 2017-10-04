@@ -13,6 +13,7 @@ object Project {
   private var testSuiteCount = 0
 
   init {
+    ReflectionsHelper.registerUrlTypes()
     val configClasses = Reflections().getSubTypesOf(ProjectConfig::class.java)
     if (configClasses.size > 1)  {
       val configClassNames = configClasses.map { config -> config.simpleName }

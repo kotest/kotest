@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import io.kotlintest.JavaRandoms
 import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
