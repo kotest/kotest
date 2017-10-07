@@ -240,19 +240,29 @@ fun <A, B, C> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, f
   }
 }
 
+inline fun <reified A, reified B, reified C, reified D> forNone(attempts: Int, noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
+  forNone(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), fn)
+}
+
 inline fun <reified A, reified B, reified C, reified D> forNone(noinline fn: (a: A, b: B, c: C, D) -> Boolean): Unit {
   forNone(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), fn)
 }
 
 fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forNone(1000, gena, genb, genc, gend, fn)
+}
+
+fun <A, B, C, D> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean): Unit {
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
     val d = gend.generate()
     val passed = fn(a, b, c, d)
     if (passed) {
-      throw AssertionError("Property passed for \n$a\n$b\n$c\n$d)")
+      throw AssertionError("Property passed for \n$a\n$b\n$c\n$d\nafter $k attempts")
     }
   }
 }

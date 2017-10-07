@@ -856,7 +856,7 @@ class PropertyTestingTest : StringSpec() {
       var attempts = 0
       forNone(300) {
         a : String, b : String -> attempts++
-        a == b
+        a == b && a != b
       }
       attempts shouldBe 300
     }
@@ -962,5 +962,107 @@ class PropertyTestingTest : StringSpec() {
 
       attempts shouldBe 1200
     }
+
+    "forNone: four explicit generators 1000 attempts" {
+      var attempts = 0
+      forNone(Gen.int(), Gen.string(), Gen.long(), Gen.double()) {
+        a, b, c, d -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: four explicit generators 300 attempts" {
+      var attempts = 0
+      forNone(300, Gen.int(), Gen.string(), Gen.double(), Gen.long()) {
+        a, b, c, d -> attempts++
+        false
+      }
+      attempts shouldBe 300
+    }
+
+    "forNone: four explicit generators failure at attempt 12" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = 0.0
+      var elementC = 0L
+      var elementD = emptyList<String>()
+      val exception = shouldThrow<AssertionError> {
+        forNone(600, Gen.int(), Gen.double(), Gen.long(), Gen.list(Gen.string())) { a, b, c, d ->
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          attempts++
+          attempts >= 12
+        }
+      }
+      exception.message shouldBe "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
+    }
+
+    "forNone: four explicit generators failure at attempt 3245" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = ""
+      var elementC = 0L
+      var elementD = 0.0
+      val exception = shouldThrow<AssertionError> {
+        forNone(4000, Gen.int(), Gen.string(), Gen.long(), Gen.double()) {
+          a, b, c, d -> attempts++
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          attempts >= 3245
+        }
+      }
+      exception.message shouldBe "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
+    }
+
+    "forNone: four explicit generators 0 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(0, Gen.int(), Gen.list(Gen.string()), Gen.double(), Gen.long()) {
+          a, b, c, d -> false
+        }
+      }
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: four explicit generators -100 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(-100, Gen.int(), Gen.list(Gen.string()), Gen.double(), Gen.long()) {
+          a, b, c, d -> false
+        }
+      }
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: four implicit generators 1000 attempts" {
+      var attempts = 0
+      forNone {
+        a : Int, b : String, c : String, d : Long -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: four implicit generators 30 attempts" {
+      var attempts = 0
+      forNone(30) {
+        a : Long, b : Int, c : Double, d : String -> attempts++
+        false
+      }
+      attempts shouldBe 30
+    }
+
+    "forNone: four implicit generators 620 attempts" {
+      var attempts = 0
+      forNone(620) {
+        a : String, b : Int, c : Double, d : Long -> attempts++
+        false
+      }
+      attempts shouldBe 620
+    }
   }
+
 }
