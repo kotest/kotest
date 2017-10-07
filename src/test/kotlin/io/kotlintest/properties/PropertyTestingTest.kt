@@ -1174,5 +1174,118 @@ class PropertyTestingTest : StringSpec() {
       }
       attempts shouldBe 2380
     }
+
+    "forNone: six explicit generators 1000 attempts" {
+      var attempts = 0
+      forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) {
+        a, b, c, d, e, f -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: six explicit generators 300 attempts" {
+      var attempts = 0
+      forNone(300, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) {
+        a, b, c, d, e, f -> attempts++
+        false
+      }
+      attempts shouldBe 300
+    }
+
+    "forNone: six explicit generators failing after 320 attempts" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = 0
+      var elementC = 0
+      var elementD = 1
+      var elementE = 0
+      var elementF = 0
+      val exception = shouldThrow<AssertionError> {
+        forNone(500, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+          attempts++
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          elementE = e
+          elementF = f
+          attempts >= 320
+        }
+      }
+      exception.message shouldBe
+          "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter $attempts attempts"
+    }
+
+    "forNone: six explicit generators failing after 15 attempts" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = 0
+      var elementC = 0
+      var elementD = 1
+      var elementE = 0
+      var elementF = 0
+      val exception = shouldThrow<AssertionError> {
+        forNone(100, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+          attempts++
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          elementE = e
+          elementF = f
+          attempts >= 15
+        }
+      }
+      exception.message shouldBe
+          "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter $attempts attempts"
+    }
+
+    "forNone: six explicit generators 0 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+          false
+        }
+      }
+
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: six explicit generators -320 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(-320, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+          false
+        }
+      }
+
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: six implicit generators 1000 attempts" {
+      var attempts = 0
+      forNone {
+        a : Int, b : Int, c : Int, d : Int, e : Int, f : Int -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: six implicit generators 26 attempts" {
+      var attempts = 0
+      forNone(26) {
+        a : Int, b : Int, c : Int, d : Int, e : Int, f : Int -> attempts++
+        false
+      }
+      attempts shouldBe 26
+    }
+
+    "forNone: six implicit generators 3678 attempts" {
+      var attempts = 0
+      forNone(3678) {
+        a : Int, b : Int, c : Int, d : Int, e : Int, f : Int -> attempts++
+        false
+      }
+      attempts shouldBe 3678
+    }
   }
 }

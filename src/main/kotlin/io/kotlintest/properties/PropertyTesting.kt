@@ -270,6 +270,7 @@ fun <A, B, C, D> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>
 inline fun <reified A, reified B, reified C, reified D, reified E> forNone(attempts: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
   forNone(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), fn)
 }
+
 inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
   forNone(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), fn)
 }
@@ -277,6 +278,7 @@ inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinl
 fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
   forNone(1000, gena, genb, genc, gend, gene, fn)
 }
+
 fun <A, B, C, D, E> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean): Unit {
   checkNumberOfAttemptsIsAPositiveNumber(attempts)
 
@@ -293,12 +295,22 @@ fun <A, B, C, D, E> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen
   }
 }
 
+inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(attempts: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
+  forNone(attempts, Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), Gen.default<F>(), fn)
+}
+
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
   forNone(Gen.default<A>(), Gen.default<B>(), Gen.default<C>(), Gen.default<D>(), Gen.default<E>(), Gen.default<F>(), fn)
 }
 
 fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
-  for (k in 0..1000) {
+  forNone(1000, gena, genb, genc, gend, gene, genf, fn)
+}
+
+fun <A, B, C, D, E, F> forNone(attempts: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean): Unit {
+  checkNumberOfAttemptsIsAPositiveNumber(attempts)
+
+  for (k in 1..attempts) {
     val a = gena.generate()
     val b = genb.generate()
     val c = genc.generate()
@@ -307,7 +319,7 @@ fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: G
     val f = genf.generate()
     val passed = fn(a, b, c, d, e, f)
     if (passed) {
-      throw AssertionError("Property passed for \n$a\n$b\n$c\n$d\n$e\n$f")
+      throw AssertionError("Property passed for \n$a\n$b\n$c\n$d\n$e\n$f\nafter $k attempts")
     }
   }
 }
