@@ -1063,6 +1063,116 @@ class PropertyTestingTest : StringSpec() {
       }
       attempts shouldBe 620
     }
-  }
 
+    "forNone: five explicit generators 1000 attempts" {
+      var attempts = 0
+      forNone(Gen.string(), Gen.int(), Gen.long(), Gen.double(), Gen.string()) {
+        a, b, c, d, e -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: five explicit generators 26 attempts" {
+      var attempts = 0
+      forNone(26, Gen.int(), Gen.string(), Gen.double(), Gen.long(), Gen.int()) {
+        a, b, c, d, e -> attempts++
+        false
+      }
+      attempts shouldBe 26
+    }
+
+    "forNone: five explicit generators fails after 2 attempts" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = 0
+      var elementC = 0
+      var elementD = 0
+      var elementE = 0
+      val exception = shouldThrow<AssertionError> {
+        forNone(10, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) {
+          a, b, c, d, e -> attempts++
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          elementE = e
+          attempts >= 2
+        }
+      }
+
+      exception.message shouldBe
+          "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\nafter $attempts attempts"
+    }
+
+    "forNone: five explicit generators fails after 2300 attempts" {
+      var attempts = 0
+      var elementA = 0
+      var elementB = 0
+      var elementC = 0
+      var elementD = 0
+      var elementE = 0
+      val exception = shouldThrow<AssertionError> {
+        forNone(3000, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
+          attempts++
+          elementA = a
+          elementB = b
+          elementC = c
+          elementD = d
+          elementE = e
+          attempts >= 2300
+        }
+      }
+
+      exception.message shouldBe
+          "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\nafter $attempts attempts"
+    }
+
+    "forNone: five explicit generators 0 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) {
+          a, b, c, d, e -> false
+        }
+      }
+
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: five explicit generators -300 attempts" {
+      val exception = shouldThrow<IllegalArgumentException> {
+        forNone(-300, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) {
+          a, b, c, d, e -> false
+        }
+      }
+
+      exception.message shouldBe "Attempts should be a positive number"
+    }
+
+    "forNone: five implicit generators 1000 attempts" {
+      var attempts = 0
+      forNone {
+        a : Int, b : Int, c : Int, d : Int, e : Int -> attempts++
+        false
+      }
+      attempts shouldBe 1000
+    }
+
+    "forNone: five implicit generators 427 attempts" {
+      var attempts = 0
+      forNone(427) {
+        a : Int, b : Int, c : Int, d : Int, e : Int -> attempts++
+        false
+      }
+      attempts shouldBe 427
+    }
+
+    "forNone: five implicit generators 2380 attempts" {
+      var attempts = 0
+      forNone(2380) {
+        a : Int, b : Int, c : Int, d : Int, e : Int -> attempts++
+        false
+      }
+      attempts shouldBe 2380
+    }
+  }
 }
