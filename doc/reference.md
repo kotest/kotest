@@ -835,7 +835,7 @@ Gets transformed to an interceptor that is around (before and after) the test ca
 override protected fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
   println("before")
   test() // Don't forget to call the test itself!
-  println("after)
+  println("after")
 }
 ```
 
