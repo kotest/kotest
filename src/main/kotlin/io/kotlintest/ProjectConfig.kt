@@ -7,10 +7,6 @@ package io.kotlintest
  */
 abstract class ProjectConfig {
 
-  companion object {
-    val empty = object : ProjectConfig() {}
-  }
-
   /**
    * List of project-wide extensions. The [ProjectExtension.beforeAll] methods of the
    * [ProjectExtension]s are executed in the order of [ProjectExtension]s from left to right. The
@@ -30,4 +26,3 @@ abstract class ProjectConfig {
    */
   open fun afterAll() {}
 }
-

@@ -7,24 +7,24 @@ import kotlin.concurrent.thread
 
 object Project {
 
-  private fun discoverProjectConfig(): ProjectConfig {
+  private fun discoverProjectConfig(): ProjectConfig? {
     return if (System.getProperty("projectConfigScan") == "false") {
-      ProjectConfig.empty
+      null
     } else {
       ReflectionsHelper.registerUrlTypes()
       val configClasses = Reflections().getSubTypesOf(ProjectConfig::class.java)
-      if (configClasses.size == 0) {
-        ProjectConfig.empty
-      } else if (configClasses.size > 1) {
-        val configClassNames = configClasses.map { config -> config.simpleName }
-        throw InvalidConfigException("Multiple ProjectConfigs found: $configClassNames")
-      } else {
-        configClasses.first().kotlin.objectInstance!!
+      when {
+        configClasses.size == 0 -> null
+        configClasses.size > 1 -> {
+          val configClassNames = configClasses.map { config -> config.simpleName }
+          throw InvalidConfigException("Multiple ProjectConfigs found: $configClassNames")
+        }
+        else -> configClasses.firstOrNull()?.kotlin?.objectInstance
       }
     }
   }
 
-  private var projectConfig: ProjectConfig = discoverProjectConfig()
+  private var projectConfig = discoverProjectConfig()
   private val executedBefore = AtomicBoolean(false)
   private val completedSpecs = AtomicInteger(0)
   private var testSuiteCount = 0
@@ -35,8 +35,8 @@ object Project {
 
   internal fun beforeAll() {
     if (executedBefore.compareAndSet(false, true)) {
-      projectConfig.extensions.forEach { extension -> extension.beforeAll() }
-      projectConfig.beforeAll()
+      projectConfig?.extensions?.forEach { extension -> extension.beforeAll() }
+      projectConfig?.beforeAll()
     }
   }
 
@@ -49,8 +49,8 @@ object Project {
     thread {
       Thread.sleep(5000)
       if (completedSpecs.incrementAndGet() == testSuiteCount) {
-        projectConfig.afterAll()
-        projectConfig.extensions.reversed().forEach { extension -> extension.afterAll() }
+        projectConfig?.afterAll()
+        projectConfig?.extensions?.reversed()?.forEach { extension -> extension.afterAll() }
       }
     }
   }
