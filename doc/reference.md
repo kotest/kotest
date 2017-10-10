@@ -233,6 +233,25 @@ class PropertyExample: StringSpec() {
 }
 ```
 
+You can also specify the number of times a test is going to be run. Here is the same test but ran 2300 times.
+
+```kotlin
+import io.kotlintest.properties.*
+import io.kotlintest.specs.StringSpec
+
+class PropertyExample: StringSpec() {
+  init {
+
+    "String size" {
+      forAll(2300) { a: String, b: String ->
+        (a + b).length == a.length + b.length
+      }
+    }
+
+  }
+}
+```
+
 There are generators for all the common types - String, Ints, Sets, etc. If you need to generate custom types
 then you can simply specify the generator manually (and write your own). For example here is the same test again but
 with the generators specified.
