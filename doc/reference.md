@@ -775,7 +775,7 @@ Similarly, if we wanted to asset that NO elements in a collection passed some as
 
 ```kotlin
 val xs = // some collection
-forNone(xs) { x =>
+forNone(xs) { x ->
   x should include("qwerty")
   x should startWith("q")
 }
