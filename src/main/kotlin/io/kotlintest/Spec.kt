@@ -113,7 +113,7 @@ abstract class Spec {
           else Executors.newFixedThreadPool(testCase.config.threads)
       notifier.fireTestStarted(testCase.description)
       val initialInterceptor = { context: TestCaseContext, testCase: () -> Unit ->
-        interceptTestCase(context, { testCase() })
+        spec.interceptTestCase(context, { testCase() })
       }
       val interceptorChain = createInterceptorChain(testCase.config.interceptors, initialInterceptor)
       val testCaseContext = TestCaseContext(spec, testCase)
