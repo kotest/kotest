@@ -1,15 +1,69 @@
 package io.kotlintest.experimental.mockk
 
 import io.kotlintest.specs.StringSpec
-import org.junit.Assert
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
+
+interface Wrapper
+
+data class IntWrapper(val data: Int) : Wrapper
+data class DoubleWrapper(val data: Double) : Wrapper
+
+class MockCls {
+    fun manyArgsOp(a: Boolean = true, b: Boolean = true,
+                   c: Byte = 1, d: Byte = 2,
+                   e: Short = 3, f: Short = 4,
+                   g: Char = 5.toChar(), h: Char = 6.toChar(),
+                   i: Int = 7, j: Int = 8,
+                   k: Long = 9, l: Long = 10,
+                   m: Float = 10.0f, n: Float = 11.0f,
+                   o: Double = 12.0, p: Double = 13.0,
+                   q: String = "14", r: String = "15",
+                   s: IntWrapper = IntWrapper(16), t: IntWrapper = IntWrapper(17)): Double {
+
+        return (if (a) 0 else -1) + (if (b) 0 else -2) + c + d + e + f + g.toByte() + h.toByte() +
+                i + k + l + m + n + o + p + q.toInt() + r.toInt() + s.data + t.data
+    }
+
+    fun otherOp(a: Int = 1, b: Int = 2): Int = a + b
+    fun lambdaOp(a: Int, b: () -> Int) = a + b()
+    fun otherOp(a: Wrapper? = IntWrapper(1), b: Wrapper? = IntWrapper(2)): Int {
+        return if (a is IntWrapper && b is IntWrapper) {
+            a.data + b.data
+        } else {
+            0
+        }
+    }
+    fun nullableOp(a: Int = 1, b: Int = 2): Int? = a + b
+
+    fun arrayOp(arr: BooleanArray) = arr.map { it }.toBooleanArray()
+    fun arrayOp(arr: ByteArray) = arr.map { (it + 1).toByte() }.toByteArray()
+    fun arrayOp(arr: ShortArray) = arr.map { (it + 1).toShort() }.toShortArray()
+    fun arrayOp(arr: CharArray) = arr.map { (it + 1) }.toCharArray()
+    fun arrayOp(arr: IntArray) = arr.map { (it + 1).toInt() }.toIntArray()
+    fun arrayOp(arr: LongArray) = arr.map { (it + 1).toLong() }.toLongArray()
+    fun arrayOp(arr: FloatArray) = arr.map { (it + 1).toFloat() }.toFloatArray()
+    fun arrayOp(arr: DoubleArray) = arr.map { (it + 1).toDouble() }.toDoubleArray()
+
+    fun arrayOp(arr: Array<Boolean>) = arr.map { it }.toTypedArray()
+    fun arrayOp(arr: Array<Byte>) = arr.map { (it + 1).toByte() }.toTypedArray()
+    fun arrayOp(arr: Array<Short>) = arr.map { (it + 1).toShort() }.toTypedArray()
+    fun arrayOp(arr: Array<Char>) = arr.map { (it + 1).toChar() }.toTypedArray()
+    fun arrayOp(arr: Array<Int>) = arr.map { (it + 1).toInt() }.toTypedArray()
+    fun arrayOp(arr: Array<Long>) = arr.map { (it + 1).toLong() }.toTypedArray()
+    fun arrayOp(arr: Array<Float>) = arr.map { (it + 1).toFloat() }.toTypedArray()
+    fun arrayOp(arr: Array<Double>) = arr.map { (it + 1).toDouble() }.toTypedArray()
+
+    fun chainOp(a: Int = 1, b: Int = 2) = MockCls()
+    fun arrayOp(array: Array<Any>): Array<Any> = array.map { (it as Int) + 1 }.toTypedArray()
+    fun arrayOp(array: Array<Array<Any>>): Array<Array<Any>> = array.map { it.map { ((it as Int) + 1) as Any }.toTypedArray() }.toTypedArray()
+}
 
 @RunWith(MockKJUnitRunner::class)
 class MockKTestSuite : StringSpec({
-
     val mock = mockk<MockCls>()
     val spy = spyk(MockCls())
-
     "partly argument matching" {
 
         every { mock.manyArgsOp(a = eq(false)) } returns 1.0
@@ -33,28 +87,28 @@ class MockKTestSuite : StringSpec({
         every { mock.manyArgsOp(s = eq(IntWrapper(33))) } returns 19.0
         every { mock.manyArgsOp(t = eq(IntWrapper(33))) } returns 20.0
 
-        Assert.assertEquals(155.0, spy.manyArgsOp(), 1e-6)
-        Assert.assertEquals(0.0, mock.manyArgsOp(), 1e-6)
-        Assert.assertEquals(1.0, mock.manyArgsOp(a = false), 1e-6)
-        Assert.assertEquals(2.0, mock.manyArgsOp(b = false), 1e-6)
-        Assert.assertEquals(3.0, mock.manyArgsOp(c = 33), 1e-6)
-        Assert.assertEquals(4.0, mock.manyArgsOp(d = 33), 1e-6)
-        Assert.assertEquals(5.0, mock.manyArgsOp(e = 33), 1e-6)
-        Assert.assertEquals(6.0, mock.manyArgsOp(f = 33), 1e-6)
-        Assert.assertEquals(7.0, mock.manyArgsOp(g = 33.toChar()), 1e-6)
-        Assert.assertEquals(8.0, mock.manyArgsOp(h = 33.toChar()), 1e-6)
-        Assert.assertEquals(9.0, mock.manyArgsOp(i = 33), 1e-6)
-        Assert.assertEquals(10.0, mock.manyArgsOp(j = 33), 1e-6)
-        Assert.assertEquals(11.0, mock.manyArgsOp(k = 33), 1e-6)
-        Assert.assertEquals(12.0, mock.manyArgsOp(l = 33), 1e-6)
-        Assert.assertEquals(13.0, mock.manyArgsOp(m = 33.0f), 1e-6)
-        Assert.assertEquals(14.0, mock.manyArgsOp(n = 33.0f), 1e-6)
-        Assert.assertEquals(15.0, mock.manyArgsOp(o = 33.0), 1e-6)
-        Assert.assertEquals(16.0, mock.manyArgsOp(p = 33.0), 1e-6)
-        Assert.assertEquals(17.0, mock.manyArgsOp(q = "33"), 1e-6)
-        Assert.assertEquals(18.0, mock.manyArgsOp(r = "33"), 1e-6)
-        Assert.assertEquals(19.0, mock.manyArgsOp(s = IntWrapper(33)), 1e-6)
-        Assert.assertEquals(20.0, mock.manyArgsOp(t = IntWrapper(33)), 1e-6)
+        assertEquals(155.0, spy.manyArgsOp(), 1e-6)
+        assertEquals(0.0, mock.manyArgsOp(), 1e-6)
+        assertEquals(1.0, mock.manyArgsOp(a = false), 1e-6)
+        assertEquals(2.0, mock.manyArgsOp(b = false), 1e-6)
+        assertEquals(3.0, mock.manyArgsOp(c = 33), 1e-6)
+        assertEquals(4.0, mock.manyArgsOp(d = 33), 1e-6)
+        assertEquals(5.0, mock.manyArgsOp(e = 33), 1e-6)
+        assertEquals(6.0, mock.manyArgsOp(f = 33), 1e-6)
+        assertEquals(7.0, mock.manyArgsOp(g = 33.toChar()), 1e-6)
+        assertEquals(8.0, mock.manyArgsOp(h = 33.toChar()), 1e-6)
+        assertEquals(9.0, mock.manyArgsOp(i = 33), 1e-6)
+        assertEquals(10.0, mock.manyArgsOp(j = 33), 1e-6)
+        assertEquals(11.0, mock.manyArgsOp(k = 33), 1e-6)
+        assertEquals(12.0, mock.manyArgsOp(l = 33), 1e-6)
+        assertEquals(13.0, mock.manyArgsOp(m = 33.0f), 1e-6)
+        assertEquals(14.0, mock.manyArgsOp(n = 33.0f), 1e-6)
+        assertEquals(15.0, mock.manyArgsOp(o = 33.0), 1e-6)
+        assertEquals(16.0, mock.manyArgsOp(p = 33.0), 1e-6)
+        assertEquals(17.0, mock.manyArgsOp(q = "33"), 1e-6)
+        assertEquals(18.0, mock.manyArgsOp(r = "33"), 1e-6)
+        assertEquals(19.0, mock.manyArgsOp(s = IntWrapper(33)), 1e-6)
+        assertEquals(20.0, mock.manyArgsOp(t = IntWrapper(33)), 1e-6)
 
         verify { mock.manyArgsOp(a = eq(false)) }
         verify { mock.manyArgsOp(b = eq(false)) }
@@ -76,16 +130,16 @@ class MockKTestSuite : StringSpec({
         verify { mock.manyArgsOp(r = eq("33")) }
         verify { mock.manyArgsOp(s = eq(IntWrapper(33))) }
         verify { mock.manyArgsOp(t = eq(IntWrapper(33))) }
-    }
+    }.config(enabled = true)
 
     "chained calls" {
         every { mock.chainOp(1, 2).otherOp(3, 4) } returns 1
         every { mock.chainOp(5, 6).otherOp(7, 8) } returns 2
         every { mock.chainOp(9, 10).otherOp(11, 12) } returns 3
 
-        Assert.assertEquals(1, mock.chainOp(1, 2).otherOp(3, 4))
-        Assert.assertEquals(2, mock.chainOp(5, 6).otherOp(7, 8))
-        Assert.assertEquals(3, mock.chainOp(9, 10).otherOp(11, 12))
+        assertEquals(1, mock.chainOp(1, 2).otherOp(3, 4))
+        assertEquals(2, mock.chainOp(5, 6).otherOp(7, 8))
+        assertEquals(3, mock.chainOp(9, 10).otherOp(11, 12))
 
         verify {
             mock.chainOp(1, 2).otherOp(3, 4)
@@ -109,21 +163,21 @@ class MockKTestSuite : StringSpec({
             mock.chainOp(5, 6).otherOp(7, 8)
             mock.chainOp(9, 10).otherOp(11, 12)
         }
-    }
+    }.config(enabled = true)
 
     "clearMocks" {
         every { mock.otherOp(0, 2) } returns 5
 
-        Assert.assertEquals(5, mock.otherOp(0, 2))
+        assertEquals(5, mock.otherOp(0, 2))
         clearMocks(mock, answers = false)
-        Assert.assertEquals(5, mock.otherOp(0, 2))
+        assertEquals(5, mock.otherOp(0, 2))
         clearMocks(mock)
-        Assert.assertEquals(0, mock.otherOp(0, 2))
+        assertEquals(0, mock.otherOp(0, 2))
 
         verifySequence {
             mock.otherOp(0, 2)
         }
-    }
+    }.config(enabled = true)
 
     "atLeast, atMost, exactly" {
         every { mock.otherOp(0, 2) } throws RuntimeException("test")
@@ -132,12 +186,12 @@ class MockKTestSuite : StringSpec({
         try {
             mock.otherOp(0, 2)
         } catch (ex: RuntimeException) {
-            Assert.assertEquals("test", ex.message)
+            assertEquals("test", ex.message)
         }
-        Assert.assertEquals(1, mock.otherOp(1, 3))
-        Assert.assertEquals(2, mock.otherOp(1, 3))
-        Assert.assertEquals(3, mock.otherOp(1, 3))
-        Assert.assertEquals(3, mock.otherOp(1, 3))
+        assertEquals(1, mock.otherOp(1, 3))
+        assertEquals(2, mock.otherOp(1, 3))
+        assertEquals(3, mock.otherOp(1, 3))
+        assertEquals(3, mock.otherOp(1, 3))
 
         verify(atLeast = 4) {
             mock.otherOp(1, 3)
@@ -172,7 +226,7 @@ class MockKTestSuite : StringSpec({
         verify(exactly = 0, inverse = true) {
             mock.otherOp(0, 2)
         }
-    }
+    }.config(enabled = true)
 
     "stubbing actions" {
         every { mock.otherOp(0, 2) } throws RuntimeException("test")
@@ -181,12 +235,12 @@ class MockKTestSuite : StringSpec({
         try {
             mock.otherOp(0, 2)
         } catch (ex: RuntimeException) {
-            Assert.assertEquals("test", ex.message)
+            assertEquals("test", ex.message)
         }
-        Assert.assertEquals(1, mock.otherOp(1, 3))
-        Assert.assertEquals(2, mock.otherOp(1, 3))
-        Assert.assertEquals(3, mock.otherOp(1, 3))
-        Assert.assertEquals(3, mock.otherOp(1, 3))
+        assertEquals(1, mock.otherOp(1, 3))
+        assertEquals(2, mock.otherOp(1, 3))
+        assertEquals(3, mock.otherOp(1, 3))
+        assertEquals(3, mock.otherOp(1, 3))
 
         verify { mock.otherOp(0, 2) }
         verifyOrder {
@@ -202,10 +256,11 @@ class MockKTestSuite : StringSpec({
             mock.otherOp(1, 3)
             mock.otherOp(1, 3)
         }
-    }
+    }.config(enabled = true)
 
     "answers" {
-        val lst = mutableListOf<Byte>()
+        val lst = mutableListOf<Byte?>()
+        val lstNonNull = mutableListOf<Byte>()
         val slot = slot<() -> Int>()
 
         every { spy.manyArgsOp(a = any(), c = 5) } answers { if (firstArg()) 1.0 else 2.0 }
@@ -215,25 +270,27 @@ class MockKTestSuite : StringSpec({
         every { spy.manyArgsOp(c = 9) } answers { nArgs.toDouble() }
         every { spy.manyArgsOp(c = 10) } answers { spiedObj<MockCls>().otherOp(args[8] as Int).toDouble() }
         every { spy.manyArgsOp(c = 11) } answers { method.parameterCount.toDouble() }
-        every { spy.manyArgsOp(d = capture(lst), c = 12) } answers { lst.captured().toDouble() }
+        every { spy.manyArgsOp(d = capture(lstNonNull), c = 12) } answers { lstNonNull.captured().toDouble() }
+        every { spy.manyArgsOp(d = captureNullable(lst), c = 13) } answers { lst.captured()!!.toDouble() }
         every { spy.lambdaOp(1, capture(slot)) } answers { 1 - slot.invoke<Int>()!! }
 
-        Assert.assertEquals(155.0, spy.manyArgsOp(), 1e-6)
-        Assert.assertEquals(1.0, spy.manyArgsOp(c = 5), 1e-6)
-        Assert.assertEquals(2.0, spy.manyArgsOp(false, c = 5), 1e-6)
-        Assert.assertEquals(3.0, spy.manyArgsOp(c = 6), 1e-6)
-        Assert.assertEquals(4.0, spy.manyArgsOp(b = false, c = 6), 1e-6)
-        Assert.assertEquals(5.0, spy.manyArgsOp(c = 7), 1e-6)
-        Assert.assertEquals(6.0, spy.manyArgsOp(c = 8, t = IntWrapper(6)), 1e-6)
-        Assert.assertEquals(20.0, spy.manyArgsOp(c = 9), 1e-6)
-        Assert.assertEquals(9.0, spy.manyArgsOp(c = 10), 1e-6)
-        Assert.assertEquals(20.0, spy.manyArgsOp(c = 11), 1e-6)
-        Assert.assertEquals(10.0, spy.manyArgsOp(d = 10, c = 12), 1e-6)
-        Assert.assertEquals(11.0, spy.manyArgsOp(d = 11, c = 12), 1e-6)
-        Assert.assertEquals(-2, spy.lambdaOp(1, { 3 }))
+        assertEquals(155.0, spy.manyArgsOp(), 1e-6)
+        assertEquals(1.0, spy.manyArgsOp(c = 5), 1e-6)
+        assertEquals(2.0, spy.manyArgsOp(false, c = 5), 1e-6)
+        assertEquals(3.0, spy.manyArgsOp(c = 6), 1e-6)
+        assertEquals(4.0, spy.manyArgsOp(b = false, c = 6), 1e-6)
+        assertEquals(5.0, spy.manyArgsOp(c = 7), 1e-6)
+        assertEquals(6.0, spy.manyArgsOp(c = 8, t = IntWrapper(6)), 1e-6)
+        assertEquals(20.0, spy.manyArgsOp(c = 9), 1e-6)
+        assertEquals(9.0, spy.manyArgsOp(c = 10), 1e-6)
+        assertEquals(20.0, spy.manyArgsOp(c = 11), 1e-6)
+        assertEquals(10.0, spy.manyArgsOp(d = 10, c = 12), 1e-6)
+        assertEquals(11.0, spy.manyArgsOp(d = 11, c = 12), 1e-6)
+        assertEquals(14.0, spy.manyArgsOp(d = 14, c = 13), 1e-6)
+        assertEquals(-2, spy.lambdaOp(1, { 3 }))
 
-
-        Assert.assertEquals(listOf(10.toByte(), 11.toByte()), lst)
+        assertEquals(listOf(10.toByte(), 11.toByte()), lstNonNull)
+        assertEquals(listOf(14.toByte()), lst)
 
         verify { spy.manyArgsOp() }
         verify { spy.manyArgsOp(c = 5) }
@@ -249,16 +306,16 @@ class MockKTestSuite : StringSpec({
         verify { spy.manyArgsOp(d = 11, c = 12) }
         verify { spy.manyArgsOp(d = 11, c = 12) }
         verify { spy.lambdaOp(1, any()) }
-    }
+    }.config(enabled = true)
 
     "verify, verifyOrder, verifySequence" {
         every { spy.manyArgsOp(c = 5) } returns 1.0
         every { spy.manyArgsOp(c = 6) } returns 2.0
         every { spy.manyArgsOp(c = 7) } returns 3.0
 
-        Assert.assertEquals(1.0, spy.manyArgsOp(c = 5), 1e-6)
-        Assert.assertEquals(2.0, spy.manyArgsOp(c = 6), 1e-6)
-        Assert.assertEquals(3.0, spy.manyArgsOp(c = 7), 1e-6)
+        assertEquals(1.0, spy.manyArgsOp(c = 5), 1e-6)
+        assertEquals(2.0, spy.manyArgsOp(c = 6), 1e-6)
+        assertEquals(3.0, spy.manyArgsOp(c = 7), 1e-6)
 
         verify {
             spy.manyArgsOp(c = 6)
@@ -316,7 +373,7 @@ class MockKTestSuite : StringSpec({
             spy.manyArgsOp(c = 5)
             spy.manyArgsOp(c = 7)
         }
-    }
+    }.config(enabled = true)
 
     "matchers" {
         val a = IntWrapper(3)
@@ -347,59 +404,59 @@ class MockKTestSuite : StringSpec({
 
         every { mock.otherOp(a = IntWrapper(9), b = ofType(IntWrapper::class.java)) } returns 15
 
-        Assert.assertEquals(1, mock.otherOp(a, b))
-        Assert.assertEquals(0, mock.otherOp(IntWrapper(3), IntWrapper(4)))
-        Assert.assertEquals(1, mock.otherOp(IntWrapper(3), b))
+        assertEquals(1, mock.otherOp(a, b))
+        assertEquals(0, mock.otherOp(IntWrapper(3), IntWrapper(4)))
+        assertEquals(1, mock.otherOp(IntWrapper(3), b))
 
-        Assert.assertEquals(2, mock.otherOp(1, 1))
-        Assert.assertEquals(3, mock.otherOp(1, 2))
-        Assert.assertEquals(4, mock.otherOp(1, 3))
+        assertEquals(2, mock.otherOp(1, 1))
+        assertEquals(3, mock.otherOp(1, 2))
+        assertEquals(4, mock.otherOp(1, 3))
 
-        Assert.assertEquals(5, mock.otherOp(2, 1))
-        Assert.assertEquals(6, mock.otherOp(2, 2))
-        Assert.assertEquals(7, mock.otherOp(2, 3))
+        assertEquals(5, mock.otherOp(2, 1))
+        assertEquals(6, mock.otherOp(2, 2))
+        assertEquals(7, mock.otherOp(2, 3))
 
-        Assert.assertEquals(8, mock.otherOp(3, 3))
-        Assert.assertEquals(0, mock.otherOp(3, 4))
-        Assert.assertEquals(8, mock.otherOp(3, 5))
-        Assert.assertEquals(0, mock.otherOp(3, 8))
-        Assert.assertEquals(9, mock.otherOp(3, 9))
-        Assert.assertEquals(9, mock.otherOp(3, 11))
-        Assert.assertEquals(9, mock.otherOp(3, 14))
-        Assert.assertEquals(0, mock.otherOp(3, 15))
-        Assert.assertEquals(0, mock.otherOp(3, 19))
-        Assert.assertEquals(10, mock.otherOp(3, 20))
-        Assert.assertEquals(10, mock.otherOp(3, 100))
+        assertEquals(8, mock.otherOp(3, 3))
+        assertEquals(0, mock.otherOp(3, 4))
+        assertEquals(8, mock.otherOp(3, 5))
+        assertEquals(0, mock.otherOp(3, 8))
+        assertEquals(9, mock.otherOp(3, 9))
+        assertEquals(9, mock.otherOp(3, 11))
+        assertEquals(9, mock.otherOp(3, 14))
+        assertEquals(0, mock.otherOp(3, 15))
+        assertEquals(0, mock.otherOp(3, 19))
+        assertEquals(10, mock.otherOp(3, 20))
+        assertEquals(10, mock.otherOp(3, 100))
 
-        Assert.assertEquals(11, mock.otherOp(4, 12))
-        Assert.assertEquals(0, mock.otherOp(4, 13))
-        Assert.assertEquals(11, mock.otherOp(4, 14))
+        assertEquals(11, mock.otherOp(4, 12))
+        assertEquals(0, mock.otherOp(4, 13))
+        assertEquals(11, mock.otherOp(4, 14))
 
-        Assert.assertEquals(0, mock.otherOp(5, 12))
-        Assert.assertEquals(12, mock.otherOp(5, 13))
-        Assert.assertEquals(0, mock.otherOp(5, 14))
-        Assert.assertEquals(0, mock.otherOp(5, 16))
-        Assert.assertEquals(12, mock.otherOp(5, 17))
-        Assert.assertEquals(0, mock.otherOp(5, 18))
-        Assert.assertEquals(0, mock.otherOp(5, 20))
-        Assert.assertEquals(12, mock.otherOp(5, 21))
-        Assert.assertEquals(12, mock.otherOp(5, 100))
+        assertEquals(0, mock.otherOp(5, 12))
+        assertEquals(12, mock.otherOp(5, 13))
+        assertEquals(0, mock.otherOp(5, 14))
+        assertEquals(0, mock.otherOp(5, 16))
+        assertEquals(12, mock.otherOp(5, 17))
+        assertEquals(0, mock.otherOp(5, 18))
+        assertEquals(0, mock.otherOp(5, 20))
+        assertEquals(12, mock.otherOp(5, 21))
+        assertEquals(12, mock.otherOp(5, 100))
 
-        Assert.assertEquals(0, mock.otherOp(6, 19))
-        Assert.assertEquals(0, mock.otherOp(6, 20))
-        Assert.assertEquals(21, mock.otherOp(6, 21))
-        Assert.assertEquals(22, mock.otherOp(6, 22))
-        Assert.assertEquals(23, mock.otherOp(6, 23))
-        Assert.assertEquals(100, mock.otherOp(6, 100))
+        assertEquals(0, mock.otherOp(6, 19))
+        assertEquals(0, mock.otherOp(6, 20))
+        assertEquals(21, mock.otherOp(6, 21))
+        assertEquals(22, mock.otherOp(6, 22))
+        assertEquals(23, mock.otherOp(6, 23))
+        assertEquals(100, mock.otherOp(6, 100))
 
-        Assert.assertEquals(13, mock.otherOp(IntWrapper(7), null))
-        Assert.assertEquals(0, mock.otherOp(IntWrapper(7), IntWrapper(3)))
+        assertEquals(13, mock.otherOp(IntWrapper(7), null))
+        assertEquals(0, mock.otherOp(IntWrapper(7), IntWrapper(3)))
 
-        Assert.assertEquals(0, mock.otherOp(IntWrapper(8), null))
-        Assert.assertEquals(14, mock.otherOp(IntWrapper(8), IntWrapper(3)))
+        assertEquals(0, mock.otherOp(IntWrapper(8), null))
+        assertEquals(14, mock.otherOp(IntWrapper(8), IntWrapper(3)))
 
-        Assert.assertEquals(15, mock.otherOp(IntWrapper(9), IntWrapper(3)))
-        Assert.assertEquals(0, mock.otherOp(IntWrapper(9), DoubleWrapper(3.0)))
+        assertEquals(15, mock.otherOp(IntWrapper(9), IntWrapper(3)))
+        assertEquals(0, mock.otherOp(IntWrapper(9), DoubleWrapper(3.0)))
 
         verify {
             mock.otherOp(a, b)
@@ -416,52 +473,81 @@ class MockKTestSuite : StringSpec({
 
             mock.otherOp(3, or(3, 5))
         }
-    }
+    }.config(enabled = true)
+
+    "nulls" {
+        every { mock.otherOp(null, isNull()) } returns 4
+        every { mock.nullableOp(1, 2) } returns null
+
+        assertEquals(4, mock.otherOp(null, null))
+        assertEquals(null, mock.nullableOp(1, 2))
+
+        verify { mock.otherOp(isNull(), null) }
+        verify { mock.nullableOp(1, 2) }
+    }.config(enabled = true)
 
     "arrays" {
-        every { mock.arrayOp(arrayOf(1, 2, 3)) } returns arrayOf(3, 2, 1).toIntArray()
-        // TODO check all kinds of arrays
+        every { mock.arrayOp(BooleanArray(3, { true })) } returns BooleanArray(3, { false })
+        every { mock.arrayOp(ByteArray(3, { (it + 1).toByte() })) } returns ByteArray(3, { (3 - it).toByte() })
+        every { mock.arrayOp(ShortArray(3, { (it + 1).toShort() })) } returns ShortArray(3, { (3 - it).toShort() })
+        every { mock.arrayOp(CharArray(3, { (it + 1).toChar() })) } returns CharArray(3, { (3 - it).toChar() })
+        every { mock.arrayOp(IntArray(3, { it + 1 })) } returns IntArray(3, { 3 - it })
+        every { mock.arrayOp(LongArray(3, { (it + 1).toLong() })) } returns LongArray(3, { (3 - it).toLong() })
+        every { mock.arrayOp(FloatArray(3, { (it + 1).toFloat() })) } returns FloatArray(3, { (3 - it).toFloat() })
+        every { mock.arrayOp(DoubleArray(3, { (it + 1).toDouble() })) } returns DoubleArray(3, { (3 - it).toDouble() })
 
-        Assert.assertArrayEquals(arrayOf(3, 2, 1).toIntArray(), mock.arrayOp(arrayOf(1, 2, 3)))
+        every { mock.arrayOp(Array<Boolean>(3, { true })) } returns Array<Boolean>(3, { false })
+        every { mock.arrayOp(Array<Byte>(3, { (it + 1).toByte() })) } returns Array<Byte>(3, { (3 - it).toByte() })
+        every { mock.arrayOp(Array<Short>(3, { (it + 1).toShort() })) } returns Array<Short>(3, { (3 - it).toShort() })
+        every { mock.arrayOp(Array<Char>(3, { (it + 1).toChar() })) } returns Array<Char>(3, { (3 - it).toChar() })
+        every { mock.arrayOp(Array<Int>(3, { it + 1 })) } returns Array<Int>(3, { 3 - it })
+        every { mock.arrayOp(Array<Long>(3, { (it + 1).toLong() })) } returns Array<Long>(3, { (3 - it).toLong() })
+        every { mock.arrayOp(Array<Float>(3, { (it + 1).toFloat() })) } returns Array<Float>(3, { (3 - it).toFloat() })
+        every { mock.arrayOp(Array<Double>(3, { (it + 1).toDouble() })) } returns Array<Double>(3, { (3 - it).toDouble() })
 
-        verify {
-            mock.arrayOp(arrayOf(1, 2, 3))
-        }
-    }
+        every { mock.arrayOp(Array<Any>(3, { it + 1 })) } returns Array<Any>(3, { 3 - it })
+        every { mock.arrayOp(Array<Array<Any>>(3, { i -> Array<Any>(3, { j -> i + j}) })) } returns Array<Array<Any>>(3, { i -> Array<Any>(3, { j -> j - i}) })
+
+        assertArrayEquals(BooleanArray(3, { false }), mock.arrayOp(BooleanArray(3, { true })))
+        assertArrayEquals(ByteArray(3, { (3 - it).toByte() }), mock.arrayOp(ByteArray(3, { (it + 1).toByte() })))
+        assertArrayEquals(ShortArray(3, { (3 - it).toShort() }), mock.arrayOp(ShortArray(3, { (it + 1).toShort() })))
+        assertArrayEquals(CharArray(3, { (3 - it).toChar() }), mock.arrayOp(CharArray(3, { (it + 1).toChar() })))
+        assertArrayEquals(IntArray(3, { 3 - it }), mock.arrayOp(IntArray(3, { it + 1 })))
+        assertArrayEquals(LongArray(3, { (3 - it).toLong() }), mock.arrayOp(LongArray(3, { (it + 1).toLong() })))
+        assertArrayEquals(FloatArray(3, { (3 - it).toFloat() }), mock.arrayOp(FloatArray(3, { (it + 1).toFloat() })), 1e-6f)
+        assertArrayEquals(DoubleArray(3, { (3 - it).toDouble() }), mock.arrayOp(DoubleArray(3, { (it + 1).toDouble() })), 1e-6)
+
+        assertArrayEquals(Array<Boolean>(3, { false }), mock.arrayOp(Array<Boolean>(3, { true })))
+        assertArrayEquals(Array<Byte>(3, { (3 - it).toByte() }), mock.arrayOp(Array<Byte>(3, { (it + 1).toByte() })))
+        assertArrayEquals(Array<Short>(3, { (3 - it).toShort() }), mock.arrayOp(Array<Short>(3, { (it + 1).toShort() })))
+        assertArrayEquals(Array<Char>(3, { (3 - it).toChar() }), mock.arrayOp(Array<Char>(3, { (it + 1).toChar() })))
+        assertArrayEquals(Array<Int>(3, { 3 - it }), mock.arrayOp(Array<Int>(3, { it + 1 })))
+        assertArrayEquals(Array<Long>(3, { (3 - it).toLong() }), mock.arrayOp(Array<Long>(3, { (it + 1).toLong() })))
+        assertArrayEquals(Array<Float>(3, { (3 - it).toFloat() }), mock.arrayOp(Array<Float>(3, { (it + 1).toFloat() })))
+        assertArrayEquals(Array<Double>(3, { (3 - it).toDouble() }), mock.arrayOp(Array<Double>(3, { (it + 1).toDouble() })))
+
+        assertArrayEquals(Array<Any>(3, { 3 - it }), mock.arrayOp(Array<Any>(3, { it + 1 })))
+        assertArrayEquals(Array<Array<Any>>(3, { i -> Array<Any>(3, { j -> j - i}) }), mock.arrayOp(Array<Array<Any>>(3, { i -> Array<Any>(3, { j -> i + j}) })))
+
+        verify { mock.arrayOp(BooleanArray(3, { true })) }
+        verify { mock.arrayOp(ByteArray(3, { (it + 1).toByte() })) }
+        verify { mock.arrayOp(ShortArray(3, { (it + 1).toShort() })) }
+        verify { mock.arrayOp(CharArray(3, { (it + 1).toChar() })) }
+        verify { mock.arrayOp(IntArray(3, { it + 1 })) }
+        verify { mock.arrayOp(LongArray(3, { (it + 1).toLong() })) }
+        verify { mock.arrayOp(FloatArray(3, { (it + 1).toFloat() })) }
+        verify { mock.arrayOp(DoubleArray(3, { (it + 1).toDouble() })) }
+
+        verify { mock.arrayOp(Array<Boolean>(3, { true })) }
+        verify { mock.arrayOp(Array<Byte>(3, { (it + 1).toByte() })) }
+        verify { mock.arrayOp(Array<Short>(3, { (it + 1).toShort() })) }
+        verify { mock.arrayOp(Array<Char>(3, { (it + 1).toChar() })) }
+        verify { mock.arrayOp(Array<Int>(3, { it + 1 })) }
+        verify { mock.arrayOp(Array<Long>(3, { (it + 1).toLong() })) }
+        verify { mock.arrayOp(Array<Float>(3, { (it + 1).toFloat() })) }
+        verify { mock.arrayOp(Array<Double>(3, { (it + 1).toDouble() })) }
+
+        verify { mock.arrayOp(Array<Any>(3, { it + 1 })) }
+        verify { mock.arrayOp(Array<Array<Any>>(3, { i -> Array<Any>(3, { j -> i + j}) })) }
+    }.config(enabled = true)
 })
-
-interface Wrapper
-
-data class IntWrapper(val data: Int) : Wrapper
-data class DoubleWrapper(val data: Double) : Wrapper
-
-class MockCls {
-    fun manyArgsOp(a: Boolean = true, b: Boolean = true,
-                   c: Byte = 1, d: Byte = 2,
-                   e: Short = 3, f: Short = 4,
-                   g: Char = 5.toChar(), h: Char = 6.toChar(),
-                   i: Int = 7, j: Int = 8,
-                   k: Long = 9, l: Long = 10,
-                   m: Float = 10.0f, n: Float = 11.0f,
-                   o: Double = 12.0, p: Double = 13.0,
-                   q: String = "14", r: String = "15",
-                   s: IntWrapper = IntWrapper(16), t: IntWrapper = IntWrapper(17)): Double {
-
-        return (if (a) 0 else -1) + (if (b) 0 else -2) + c + d + e + f + g.toByte() + h.toByte() +
-                i + k + l + m + n + o + p + q.toInt() + r.toInt() + s.data + t.data
-    }
-
-    fun otherOp(a: Int = 1, b: Int = 2): Int = a + b
-    fun lambdaOp(a: Int, b: () -> Int) = a + b()
-    fun otherOp(a: Wrapper? = IntWrapper(1), b: Wrapper? = IntWrapper(2)): Int {
-        return if (a is IntWrapper && b is IntWrapper) {
-            a.data + b.data
-        } else {
-            0
-        }
-    }
-
-    fun arrayOp(arr: Array<Int>) = arr.map { it + 1 }.toIntArray()
-
-    fun chainOp(a: Int = 1, b: Int = 2) = MockCls()
-}
