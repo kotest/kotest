@@ -4,15 +4,15 @@ pure kotlin mocking framework
 
 ### Nice features
 
- [x] pure kotlin mocking DSL
- [x] signature based partial arguments matchers (innovation)
- [x] chained calls by default aka mockito deep stubs (but better)
- [x] removing finals
- [x] instrumenting no args constructor
- [x] matcher expressions
- [x] mocking coroutines
- [x] capturing lambdas
- [x] bunch of matchers, verification modes and useful DSL constructs
+ - [x] pure kotlin mocking DSL
+ - [x] signature based partial arguments matchers (innovation)
+ - [x] chained calls by default aka mockito deep stubs (but better)
+ - [x] removing finals
+ - [x] instrumenting no args constructor
+ - [x] matcher expressions
+ - [x] mocking coroutines
+ - [x] capturing lambdas
+ - [x] bunch of matchers, verification modes and useful DSL constructs
 
 ### DSL
 
