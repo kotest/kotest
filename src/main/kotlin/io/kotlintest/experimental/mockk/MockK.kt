@@ -71,9 +71,7 @@ class MockKJUnitRunner(cls: Class<*>) : Runner() {
 /**
  * All mocks are implementing this interface
  */
-interface MockK {
-    val spiedObj: Any
-}
+interface MockK
 
 /**
  * Builds a new mock for specified class
@@ -83,7 +81,7 @@ inline fun <reified T> mockk(): T = MockKGateway.mockk(T::class.java)
 /**
  * Builds a new spy for specified class
  */
-inline fun <reified T> spyk(obj: T): T = MockKGateway.spyk(T::class.java, obj)
+inline fun <reified T> spyk(): T = MockKGateway.spyk(T::class.java)
 
 /**
  * Creates new capturing slot
@@ -279,8 +277,6 @@ class MockKAnswerScope(private val gw: MockKGateway,
     val self
         get() = invocation.self as MockK
 
-    inline fun <reified T> spiedObj() = self.spiedObj as T
-
     val method
         get() = invocation.method
 
@@ -293,7 +289,7 @@ class MockKAnswerScope(private val gw: MockKGateway,
     inline fun <reified T> firstArg() = invocation.args[0] as T
     inline fun <reified T> secondArg() = invocation.args[1] as T
     inline fun <reified T> thirdArg() = invocation.args[2] as T
-    inline fun <reified T> lastArg() = invocation.args[invocation.args.size - 1] as T
+    inline fun <reified T> lastArg() = invocation.args.last() as T
 
     inline fun <T> MutableList<T>.captured() = last()
 
@@ -380,13 +376,14 @@ interface Answer<out T> {
  */
 data class Invocation(val self: MockK,
                       val method: Method,
+                      val superMethod: Method?,
                       val args: List<Any?>,
                       val timestamp: Long = System.nanoTime()) {
     override fun toString(): String {
         return "Invocation(self=$self, method=${MockKGateway.toString(method)}, args=$args)"
     }
 
-    fun withSelf(newSelf: MockK) = Invocation(newSelf, method, args, timestamp)
+    fun withSelf(newSelf: MockK) = Invocation(newSelf, method, superMethod, args, timestamp)
 }
 
 /**
@@ -708,47 +705,57 @@ interface MockKGateway {
     fun verifier(ordering: Ordering): Verifier
 
     companion object {
-        val defaultImpl: MockKGateway = MockKGatewayImpl()
+        internal val defaultImpl: MockKGateway = MockKGatewayImpl()
         var LOCATOR: () -> MockKGateway = { defaultImpl }
 
         private val log = logger<MockKGateway>()
 
         private val NO_ARGS_TYPE = Class.forName("\$NoArgsConstructorParamType")
 
-        fun <T> proxy(cls: Class<T>): Any? {
+        internal fun <T> proxy(cls: Class<T>, spy: Boolean): Any? {
             val factory = ProxyFactory()
 
             log.debug { "Building proxy for $cls" }
 
-            return if (cls.isInterface) {
+            val obj = if (cls.isInterface) {
                 factory.interfaces = arrayOf(cls, MockKInstance::class.java)
                 factory.create(emptyArray(), emptyArray())
             } else {
                 factory.interfaces = arrayOf(MockKInstance::class.java)
                 factory.superclass = cls
-                try {
-                    factory.create(arrayOf(NO_ARGS_TYPE), arrayOf<Any?>(null))
-                } catch (ex: NoSuchMethodException) {
+                if (spy) {
                     factory.create(arrayOf(), arrayOf<Any?>())
+                } else {
+                    try {
+                        factory.create(arrayOf(NO_ARGS_TYPE), arrayOf<Any?>(null))
+                    } catch (ex: NoSuchMethodException) {
+                        factory.create(arrayOf(), arrayOf<Any?>())
+                    }
                 }
             }
+            (obj as ProxyObject).handler =
+                    if (!spy)
+                        MockKInstanceProxyHandler(cls, obj)
+                    else
+                        SpyKInstanceProxyHandler(cls, obj)
+            return obj
         }
 
-        fun <T> mockk(cls: Class<T>): T {
+        @PublishedApi
+        internal fun <T> mockk(cls: Class<T>): T {
             log.info { "Creating mockk for $cls" }
-            val obj = proxy(cls)
-            (obj as ProxyObject).handler = MockKInstanceProxyHandler(cls, obj)
+            val obj = proxy(cls, false)
             return cls.cast(obj)
         }
 
-        fun <T> spyk(cls: Class<T>, spiedObj: T): T {
+        @PublishedApi
+        internal fun <T> spyk(cls: Class<T>): T {
             log.info { "Creating spyk for $cls" }
-            val obj = proxy(cls)
-            (obj as ProxyObject).handler = SpyKInstanceProxyHandler(cls, obj, spiedObj)
+            val obj = proxy(cls, true)
             return cls.cast(obj)
         }
 
-        fun anyValue(type: Class<*>,
+        internal fun anyValue(type: Class<*>,
                      block: () -> Any? = {
                          MockKGateway.LOCATOR().instantiator.instantiate(type)
                      }): Any? {
@@ -792,7 +799,7 @@ interface MockKGateway {
             }
         }
 
-        fun toString(obj: Any?): String {
+        internal fun toString(obj: Any?): String {
             if (obj == null)
                 return "null"
             if (obj is Method)
@@ -800,7 +807,7 @@ interface MockKGateway {
             return obj.toString()
         }
 
-        val N_CALL_ROUNDS: Int = 64
+        internal val N_CALL_ROUNDS: Int = 64
     }
 }
 
@@ -873,9 +880,6 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
     private val childs = synchronizedMap(hashMapOf<InvocationMatcher, MockKInstance>())
     private val recordedCalls = synchronizedList(mutableListOf<Invocation>())
 
-    override val spiedObj: Any
-        get() = throw MockKException("spiedObj is actual only for spies")
-
     override fun ___addAnswer(matcher: InvocationMatcher, answer: Answer<*>) {
         answers.add(InvocationAnswer(matcher, answer))
     }
@@ -885,7 +889,7 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
             answers
                     .reversed()
                     .firstOrNull { it.matcher.match(invocation) }
-                    ?: return defaultAnswer(invocation)
+                    ?: return ___defaultAnswer(invocation)
         }
 
         return with(invocationAndMatcher) {
@@ -908,7 +912,7 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
         }
     }
 
-    protected open fun defaultAnswer(invocation: Invocation): Any? {
+    protected open fun ___defaultAnswer(invocation: Invocation): Any? {
         throw MockKException("no answer found for: $invocation")
     }
 
@@ -961,7 +965,7 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
         }
 
         val argList = args.toList()
-        val invocation = Invocation(self as MockKInstance, thisMethod, argList)
+        val invocation = Invocation(self as MockKInstance, thisMethod, proceed, argList)
         return MockKGateway.LOCATOR().callRecorder.call(invocation)
     }
 
@@ -987,13 +991,12 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
 }
 
 
-private class SpyKInstanceProxyHandler<T>(cls: Class<T>, obj: ProxyObject,
-                                          private val _spiedObj: T) : MockKInstanceProxyHandler(cls, obj) {
-    override val spiedObj
-        get() = _spiedObj as Any
-
-    override fun defaultAnswer(invocation: Invocation): Any? {
-        return invocation.method.invoke(_spiedObj, *invocation.args.toTypedArray())
+private class SpyKInstanceProxyHandler<T>(cls: Class<T>, obj: ProxyObject) : MockKInstanceProxyHandler(cls, obj) {
+    override fun ___defaultAnswer(invocation: Invocation): Any? {
+        if (invocation.superMethod == null) {
+            throw MockKException("no super method for: ${invocation.method}")
+        }
+        return invocation.superMethod.invoke(invocation.self, *invocation.args.toTypedArray())
     }
 
     override fun toString(): String = "spyk<" + ___type().simpleName + ">()"
@@ -1268,7 +1271,7 @@ private class CallRecorderImpl(private val gw: MockKGateway) : CallRecorder {
         signatures.clear()
 
         return MockKGateway.anyValue(retType) {
-            val child = MockKGateway.proxy(retType) as MockK
+            val child = MockKGateway.proxy(retType, false) as MockK
             (child as ProxyObject).handler = MockKInstanceProxyHandler(retType, child)
             childMocks.add(Ref(child))
             child
@@ -1410,7 +1413,7 @@ private class OrderedVerifierImpl(private val gw: MockKGateway) : Verifier {
         }
 
         // match only if all matchers present
-        return VerificationResult(prev[calls.size - 1] == calls.size)
+        return VerificationResult(prev.last() == calls.size)
     }
 }
 

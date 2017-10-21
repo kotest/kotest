@@ -63,7 +63,7 @@ class MockCls {
 @RunWith(MockKJUnitRunner::class)
 class MockKTestSuite : StringSpec({
     val mock = mockk<MockCls>()
-    val spy = spyk(MockCls())
+    val spy = spyk<MockCls>()
     "partly argument matching" {
         every { mock.manyArgsOp(allAny()) } returns 0.0
         every { mock.manyArgsOp(a = eq(false)) } returns 1.0
@@ -269,7 +269,6 @@ class MockKTestSuite : StringSpec({
         every { spy.manyArgsOp(c = 7) } answers { thirdArg<Byte>().toDouble() - 2 }
         every { spy.manyArgsOp(t = any(), c = 8) } answers { lastArg<IntWrapper>().data.toDouble() }
         every { spy.manyArgsOp(c = 9) } answers { nArgs.toDouble() }
-        every { spy.manyArgsOp(c = 10) } answers { spiedObj<MockCls>().otherOp(args[8] as Int).toDouble() }
         every { spy.manyArgsOp(c = 11) } answers { method.parameterCount.toDouble() }
         every { spy.manyArgsOp(d = capture(lstNonNull), c = 12) } answers { lstNonNull.captured().toDouble() }
         every { spy.manyArgsOp(d = captureNullable(lst), c = 13) } answers { lst.captured()!!.toDouble() }
@@ -283,7 +282,6 @@ class MockKTestSuite : StringSpec({
         assertEquals(5.0, spy.manyArgsOp(c = 7), 1e-6)
         assertEquals(6.0, spy.manyArgsOp(c = 8, t = IntWrapper(6)), 1e-6)
         assertEquals(20.0, spy.manyArgsOp(c = 9), 1e-6)
-        assertEquals(9.0, spy.manyArgsOp(c = 10), 1e-6)
         assertEquals(20.0, spy.manyArgsOp(c = 11), 1e-6)
         assertEquals(10.0, spy.manyArgsOp(d = 10, c = 12), 1e-6)
         assertEquals(11.0, spy.manyArgsOp(d = 11, c = 12), 1e-6)
@@ -301,7 +299,6 @@ class MockKTestSuite : StringSpec({
         verify { spy.manyArgsOp(c = 7) }
         verify { spy.manyArgsOp(c = 8, t = IntWrapper(6)) }
         verify { spy.manyArgsOp(c = 9) }
-        verify { spy.manyArgsOp(c = 10) }
         verify { spy.manyArgsOp(c = 11) }
         verify { spy.manyArgsOp(d = 10, c = 12) }
         verify { spy.manyArgsOp(d = 11, c = 12) }
