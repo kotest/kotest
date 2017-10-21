@@ -38,7 +38,7 @@ pure kotlin mocking framework
 - [x] ***MILESTONE1***
 - [x] fixing spies
 - [x] spyk copy
-- [ ] unload companion object
+- [x] relax gateway companion object
 - [ ] extension function testing fun ChannelHandlerContext.scopeAttr()
 - [ ] Java 9 support
 - [ ] JUnit 5

@@ -118,3 +118,8 @@ jacocoTestReport {
         html.destination "${buildDir}/jacocoHtml"
     }
 }
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
