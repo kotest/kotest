@@ -1,6 +1,9 @@
-package io.kotlintest
+package io.kotlintest.provided
 
-object TestProjectConfig : ProjectConfig() {
+import io.kotlintest.AbstractProjectConfig
+import io.kotlintest.ProjectExtension
+
+object ProjectConfig : AbstractProjectConfig() {
 
   var beforeAll = 0
   var afterAll = 0
@@ -17,11 +20,11 @@ object TestProjectConfig : ProjectConfig() {
 object TestExtension : ProjectExtension {
 
   override fun beforeAll() {
-    TestProjectConfig.intercepterLog.append("A1.")
-    TestProjectConfig.beforeAll++
+    ProjectConfig.intercepterLog.append("A1.")
+    ProjectConfig.beforeAll++
   }
 
   override fun afterAll() {
-    TestProjectConfig.afterAll++
+    ProjectConfig.afterAll++
   }
 }

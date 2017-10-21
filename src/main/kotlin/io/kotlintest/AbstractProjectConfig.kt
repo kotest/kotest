@@ -7,7 +7,7 @@ package io.kotlintest
  * and place it in your classpath. Then kotlintest will detect it's presence and use it when
  * executing tests.
  */
-abstract class ProjectConfig {
+abstract class AbstractProjectConfig {
 
   /**
    * List of project-wide extensions. The [ProjectExtension.beforeAll] methods of the
