@@ -14,6 +14,52 @@ pure kotlin mocking framework
  - [x] capturing lambdas
  - [x] bunch of matchers, verification modes and useful DSL constructs
 
+### Backlog
+
+- [x] removing final, no-args-consrtuctor byte code transformation
+- [x] matcher signature
+- [x] arguments: firstArg, secondArg, thirdArg, lastArg
+- [x] capturing: captureNullable(lst) .captured() extension
+- [x] verifyOrder { }, verifySequence { }
+- [x] slot.invoke(arg1, arg2, ... lastArg) for lambdas
+- [x] coroutines support
+- [x] stub(returnsMany, throws)
+- [x] clearMocks(answers, calls, mocks)
+- [x] verify(atLeast, atMost, nCalls)
+- [x] rename methods not to clash other mocking frameworks
+- [x] matchers: refEq, more, less, and, or, not, null(), nonNull(), any(isNull=true, ofType=Any)
+- [x] arrays support
+- [x] deep array equality matching
+- [x] child mock chained calls
+- [x] don't display "creating mock" in logs for "fake mocks"
+- [x] add some comments
+- [x] PR
+- [x] nulls
+- [x] ***MILESTONE1***
+- [x] fixing spies
+- [x] spyk copy
+- [ ] unload companion object
+- [ ] extension function testing fun ChannelHandlerContext.scopeAttr()
+- [ ] Java 9 support
+- [ ] JUnit 5
+- [ ] pet project testing
+- [ ] DSL testing feature
+- [ ] static methods mocking
+- [ ] String matchers: startsWith, contains
+- [ ] split to separate files
+- [ ] mock: extraInterfaces, mock name
+- [ ] TODO: check all kinds of arrays
+- [ ] better human readable exceptions
+- [ ] ***MILESTONE2***
+- [ ] performance optimization: HashableMatcher
+- [ ] performance optimization: ProxyCache
+- [ ] performance optimization: Method mapping
+- [ ] check nanoTime is OK (otherwise counter)
+- [ ] Android
+- [ ] other JVMs
+
+...
+
 ### DSL
 
   Simplest example
