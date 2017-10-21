@@ -1,6 +1,5 @@
 package io.kotlintest.experimental.mockk
 
-import io.kotlintest.experimental.mockk.MockKGateway.Companion
 import javassist.ClassPool
 import javassist.CtClass
 import javassist.CtConstructor
@@ -21,7 +20,6 @@ import sun.reflect.ReflectionFactory
 import java.lang.AssertionError
 import java.lang.Class
 import java.lang.ClassNotFoundException
-import java.lang.NoSuchMethodException
 import java.lang.Object
 import java.lang.System
 import java.lang.System.identityHashCode
@@ -412,25 +410,7 @@ data class EqMatcher<T>(val value: T, val ref: Boolean = false) : Matcher<T> {
             if (ref) {
                 arg === value
             } else {
-                if (arg is Any && arg.javaClass.isArray) {
-                    if (value !is Any || value.javaClass != arg.javaClass) {
-                        false
-                    } else {
-                        when (arg.javaClass) {
-                            BooleanArray::class.java -> Arrays.equals(arg as BooleanArray, value as BooleanArray)
-                            ByteArray::class.java -> Arrays.equals(arg as ByteArray, value as ByteArray)
-                            CharArray::class.java -> Arrays.equals(arg as CharArray, value as CharArray)
-                            ShortArray::class.java -> Arrays.equals(arg as ShortArray, value as ShortArray)
-                            IntArray::class.java -> Arrays.equals(arg as IntArray, value as IntArray)
-                            LongArray::class.java -> Arrays.equals(arg as LongArray, value as LongArray)
-                            FloatArray::class.java -> Arrays.equals(arg as FloatArray, value as FloatArray)
-                            DoubleArray::class.java -> Arrays.equals(arg as DoubleArray, value as DoubleArray)
-                            else -> Arrays.deepEquals(arg as Array<Any>, value as Array<Any>)
-                        }
-                    }
-                } else {
-                    arg == value
-                }
+                Objects.deepEquals(arg, value)
             }
 
     override fun toString(): String =
@@ -734,7 +714,12 @@ interface Instantiator {
     fun <T> instantiate(cls: Class<T>): T
 
     fun anyValue(cls: Class<*>, orInstantiateVia: () -> Any? = { instantiate(cls) }): Any?
+
     fun <T> proxy(cls: Class<T>, spy: Boolean): Any
+
+    fun <T> signatureValue(cls: Class<T>): T
+
+    fun isPassedByValue(cls: Class<*>): Boolean
 }
 
 // ---------------------------- IMPLEMENTATION --------------------------------
@@ -843,7 +828,12 @@ private open class MockKInstanceProxyHandler(private val cls: Class<*>,
             try {
                 return it.invoke(this, *args)
             } catch (ex: InvocationTargetException) {
-                throw ex.cause!!
+                var thr : Throwable = ex
+                while (thr.cause != null &&
+                        thr is InvocationTargetException) {
+                    thr = thr.cause!!
+                }
+                throw thr
             }
         }
 
@@ -918,7 +908,7 @@ private class MockKGatewayImpl : MockKGateway {
 
     override fun <T> spyk(cls: Class<T>, objToCopy: T?): T {
         log.info { "Creating spyk for $cls" }
-        val obj = instantiator.proxy(cls, true)
+        val obj = instantiator.proxy(cls, objToCopy == null)
         if (objToCopy != null) {
             copyFields(obj, objToCopy as Any)
         }
@@ -1014,8 +1004,6 @@ private class CallRecorderImpl(private val gw: MockKGateway) : CallRecorder {
     }
 
     private var mode = Mode.ANSWERING
-
-    private val rnd = Random()
 
     private val signedCalls = mutableListOf<SignedCall>()
     private val callRounds = mutableListOf<CallRound>()
@@ -1159,7 +1147,7 @@ private class CallRecorderImpl(private val gw: MockKGateway) : CallRecorder {
     }
 
     private fun packRef(arg: Any?): Any? {
-        return if (arg == null || passByValue(arg.javaClass))
+        return if (arg == null || gw.instantiator.isPassedByValue(arg.javaClass))
             arg
         else
             Ref(arg)
@@ -1168,41 +1156,9 @@ private class CallRecorderImpl(private val gw: MockKGateway) : CallRecorder {
     override fun <T> matcher(matcher: Matcher<*>, cls: Class<T>): T {
         checkMode(Mode.STUBBING, Mode.VERIFYING)
         matchers.add(matcher)
-        val signatureValue = signatureValue(cls)
-        signatures.add(if (passByValue(cls)) signatureValue as Any else Ref(signatureValue as Any))
+        val signatureValue = gw.instantiator.signatureValue(cls)
+        signatures.add(packRef(signatureValue)!!)
         return signatureValue
-    }
-
-
-    private fun <T> signatureValue(cls: Class<T>): T {
-        return cls.cast(when (cls) {
-            java.lang.Boolean::class.java -> java.lang.Boolean(rnd.nextBoolean())
-            java.lang.Byte::class.java -> java.lang.Byte(rnd.nextInt().toByte())
-            java.lang.Short::class.java -> java.lang.Short(rnd.nextInt().toShort())
-            java.lang.Character::class.java -> java.lang.Character(rnd.nextInt().toChar())
-            java.lang.Integer::class.java -> java.lang.Integer(rnd.nextInt())
-            java.lang.Long::class.java -> java.lang.Long(rnd.nextLong())
-            java.lang.Float::class.java -> java.lang.Float(rnd.nextFloat())
-            java.lang.Double::class.java -> java.lang.Double(rnd.nextDouble())
-            java.lang.String::class.java -> java.lang.String(rnd.nextLong().toString(16))
-            java.lang.Object::class.java -> java.lang.Object()
-            else -> gw.instantiator.instantiate(cls)
-        })
-    }
-
-    private fun passByValue(cls: Class<*>): Boolean {
-        return when (cls) {
-            java.lang.Boolean::class.java -> true
-            java.lang.Byte::class.java -> true
-            java.lang.Short::class.java -> true
-            java.lang.Character::class.java -> true
-            java.lang.Integer::class.java -> true
-            java.lang.Long::class.java -> true
-            java.lang.Float::class.java -> true
-            java.lang.Double::class.java -> true
-            java.lang.String::class.java -> true
-            else -> false
-        }
     }
 
     override fun call(invocation: Invocation): Any? {
@@ -1404,6 +1360,68 @@ private fun Method.isSuspend(): Boolean {
 // ---------------------------- BYTE CODE LEVEL --------------------------------
 
 private class InstantiatorImpl(gw: MockKGatewayImpl) : Instantiator {
+    private val log = logger<InstantiatorImpl>()
+
+    private val cp = ClassPool.getDefault()
+
+    private val rnd = Random()
+    private val noArgsType = Class.forName("\$NoArgsConstructorParamType")
+
+    override fun <T> proxy(cls: Class<T>, useDefaultConstructor: Boolean): Any {
+        log.debug { "Building proxy for $cls" }
+
+        val pf = ProxyFactoryExt(cls, MockKInstance::class.java)
+
+        val proxyCls = cp.makeClass(pf.buildClassFile()).toClass()
+
+        return if (useDefaultConstructor)
+            proxyCls.newInstance()
+        else
+            newEmptyInstance(proxyCls)
+    }
+
+
+    override fun <T> instantiate(cls: Class<T>): T {
+        log.debug { "Building empty instance $cls" }
+        val pf = ProxyFactoryExt(cls)
+        val proxyCls = cp.makeClass(pf.buildClassFile()).toClass()
+        val instance = newEmptyInstance(proxyCls)
+        (instance as ProxyObject).handler = EqualsAndHashCodeHandler()
+        return cls.cast(instance)
+    }
+
+    private class EqualsAndHashCodeHandler : MethodHandler {
+        override fun invoke(self: Any, thisMethod: Method, proceed: Method?, args: Array<out Any>): Any? {
+            return if (thisMethod.name == "hashCode" && thisMethod.parameterCount == 0) {
+                identityHashCode(self)
+            } else if (thisMethod.name == "equals" &&
+                    thisMethod.parameterCount == 1 &&
+                    thisMethod.parameterTypes[0] == java.lang.Object::class.java) {
+                self === args[0]
+            } else if (thisMethod.name == "toString" && thisMethod.parameterCount == 0) {
+                self.javaClass.superclass.name + "@" + identityHashCode(self)
+            } else {
+                null
+            }
+        }
+    }
+
+    val reflectionFactoryFinder =
+            try {
+                Class.forName("sun.reflect.ReflectionFactory")
+                ReflecationFactoryFinder()
+            } catch (cnf: ClassNotFoundException) {
+                null
+            }
+
+    private fun newEmptyInstance(proxyCls: Class<*>): Any {
+//                    factory.create(arrayOf(noArgsType), arrayOf<Any?>(null))
+
+        // TODO : use objenesis
+        reflectionFactoryFinder?.let { return it.newEmptyInstance(proxyCls) }
+        throw MockKException("no instantiation support on platform")
+    }
+
     override fun anyValue(type: Class<*>, orInstantiateVia: () -> Any?): Any? {
         return when (type) {
             Void.TYPE -> Unit
@@ -1445,98 +1463,71 @@ private class InstantiatorImpl(gw: MockKGatewayImpl) : Instantiator {
         }
     }
 
-    val noArgsType = Class.forName("\$NoArgsConstructorParamType")
-
-    override fun <T> proxy(cls: Class<T>, spy: Boolean): Any {
-        val factory = ProxyFactory()
-
-        log.debug { "Building proxy for $cls" }
-
-        val obj = if (cls.isInterface) {
-            factory.interfaces = arrayOf(cls, MockKInstance::class.java)
-            factory.create(emptyArray(), emptyArray())
-        } else {
-            factory.interfaces = arrayOf(MockKInstance::class.java)
-            factory.superclass = cls
-            if (spy) {
-                factory.create(arrayOf(), arrayOf<Any?>())
-            } else {
-                try {
-                    factory.create(arrayOf(noArgsType), arrayOf<Any?>(null))
-                } catch (ex: NoSuchMethodException) {
-                    factory.create(arrayOf(), arrayOf<Any?>())
-                }
-            }
-        }
-        return obj
+    override fun <T> signatureValue(cls: Class<T>): T {
+        return cls.cast(when (cls) {
+            java.lang.Boolean::class.java -> java.lang.Boolean(rnd.nextBoolean())
+            java.lang.Byte::class.java -> java.lang.Byte(rnd.nextInt().toByte())
+            java.lang.Short::class.java -> java.lang.Short(rnd.nextInt().toShort())
+            java.lang.Character::class.java -> java.lang.Character(rnd.nextInt().toChar())
+            java.lang.Integer::class.java -> java.lang.Integer(rnd.nextInt())
+            java.lang.Long::class.java -> java.lang.Long(rnd.nextLong())
+            java.lang.Float::class.java -> java.lang.Float(rnd.nextFloat())
+            java.lang.Double::class.java -> java.lang.Double(rnd.nextDouble())
+            java.lang.String::class.java -> java.lang.String(rnd.nextLong().toString(16))
+            java.lang.Object::class.java -> java.lang.Object()
+            else -> instantiate(cls)
+        })
     }
 
+    override fun isPassedByValue(cls: Class<*>): Boolean {
+        return when (cls) {
+            java.lang.Boolean::class.java -> true
+            java.lang.Byte::class.java -> true
+            java.lang.Short::class.java -> true
+            java.lang.Character::class.java -> true
+            java.lang.Integer::class.java -> true
+            java.lang.Long::class.java -> true
+            java.lang.Float::class.java -> true
+            java.lang.Double::class.java -> true
+            java.lang.String::class.java -> true
+            else -> false
+        }
+    }
 
-    private val log = logger<InstantiatorImpl>()
-
-    val cp = ClassPool.getDefault()
-
-    override fun <T> instantiate(cls: Class<T>): T {
-        val factory = ProxyFactory()
-
-        val makeMethod = factory.javaClass.getDeclaredMethod("make")
-        makeMethod.isAccessible = true
-
-        val computeSignatureMethod = factory.javaClass.getDeclaredMethod("computeSignature",
-                MethodFilter::class.java)
-        computeSignatureMethod.isAccessible = true
-
-        val allocateClassNameMethod = factory.javaClass.getDeclaredMethod("allocateClassName")
-        allocateClassNameMethod.isAccessible = true
-
-        val proxyClsFile = if (cls.isInterface) {
-            factory.interfaces = arrayOf(cls, MockKInstance::class.java)
-            computeSignatureMethod.invoke(factory, MethodFilter { true })
-            allocateClassNameMethod.invoke(factory)
-            makeMethod.invoke(factory)
-        } else {
-            factory.interfaces = arrayOf(MockKInstance::class.java)
-            factory.superclass = cls
-            computeSignatureMethod.invoke(factory, MethodFilter { true })
-            allocateClassNameMethod.invoke(factory)
-            makeMethod.invoke(factory)
-        } as ClassFile
-
-        val proxyCls = cp.makeClass(proxyClsFile).toClass()
-
-        val instance = newEmptyInstance(proxyCls)
-
-        (instance as ProxyObject).handler = MethodHandler { self: Any, thisMethod: Method, proceed: Method, args: Array<Any?> ->
-
-            if (thisMethod.name == "hashCode" && thisMethod.parameterCount == 0) {
-                identityHashCode(self)
-            } else if (thisMethod.name == "equals" &&
-                    thisMethod.parameterCount == 1 &&
-                    thisMethod.parameterTypes[0] == java.lang.Object::class.java) {
-                self === args[0]
+    class ProxyFactoryExt(cls: Class<*>, vararg intfs: Class<*>) : ProxyFactory() {
+        init {
+            if (cls.isInterface) {
+                val intfs = intfs.toMutableList()
+                intfs.add(cls)
+                interfaces = intfs.toTypedArray()
             } else {
-                null
+                superclass = cls
+                interfaces = intfs
             }
         }
 
-        log.debug { "Built instance $cls" }
+        fun buildClassFile(): ClassFile {
+            computeSignatureMethod.invoke(this, MethodFilter { true })
+            allocateClassNameMethod.invoke(this)
+            return makeMethod.invoke(this) as ClassFile
+        }
 
-        return cls.cast(instance)
-    }
+        companion object {
+            val makeMethod = ProxyFactory::class.java.getDeclaredMethod("make")
 
-    val reflectionFactoryFinder =
-            try {
-                Class.forName("sun.reflect.ReflectionFactory")
-                ReflecationFactoryFinder()
-            } catch (cnf: ClassNotFoundException) {
-                null
+            val computeSignatureMethod = ProxyFactory::class.java.getDeclaredMethod("computeSignature",
+                    MethodFilter::class.java)
+
+            val allocateClassNameMethod = ProxyFactory::class.java.getDeclaredMethod("allocateClassName")
+
+            init {
+                makeMethod.isAccessible = true
+                computeSignatureMethod.isAccessible = true
+                allocateClassNameMethod.isAccessible = true
             }
-
-
-    private fun newEmptyInstance(proxyCls: Class<*>): Any {
-        reflectionFactoryFinder?.let { return it.newEmptyInstance(proxyCls) }
-        throw MockKException("no instantiation support on platform")
+        }
     }
+
 }
 
 private class ReflecationFactoryFinder {
