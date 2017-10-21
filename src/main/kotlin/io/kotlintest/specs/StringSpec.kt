@@ -1,20 +1,17 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import org.junit.runner.RunWith
+import io.kotlintest.TestCaseDescriptor
 
-@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class StringSpec(body: StringSpec.() -> Unit = {}) : Spec() {
 
   init {
     body()
   }
 
-  operator fun String.invoke(test: () -> Unit): TestCase {
-    val tc = TestCase(suite = rootTestSuite, name = this, test = test, config = defaultTestCaseConfig)
-    rootTestSuite.addTestCase(tc)
-    return tc
+  operator fun String.invoke(test: () -> Unit): TestCaseDescriptor {
+    val descriptor = TestCaseDescriptor(specDescriptor.uniqueId.append("test", this), this, source, this@StringSpec, test, defaultTestCaseConfig)
+    specDescriptor.addChild(descriptor)
+    return descriptor
   }
 }

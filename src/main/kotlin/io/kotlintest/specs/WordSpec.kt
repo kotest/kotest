@@ -1,33 +1,28 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.ContainerTestDescriptor
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
-import org.junit.runner.RunWith
+import io.kotlintest.TestCaseDescriptor
+import org.junit.platform.engine.TestDescriptor
 
-@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec() {
-
-  private var current = rootTestSuite
 
   init {
     body()
   }
 
-  infix fun String.should(init: () -> Unit): Unit {
-    val suite = TestSuite(sanitizeSpecName(this))
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  infix fun String.should(init: ShouldScope.() -> Unit) {
+    val descriptor = ContainerTestDescriptor(specDescriptor.uniqueId.append("container", this), this)
+    specDescriptor.addChild(descriptor)
+    ShouldScope(descriptor).init()
   }
 
-  infix operator fun String.invoke(test: () -> Unit): TestCase {
-    val testCase = TestCase(
-        suite = current, name = "should " + this, test = test, config = defaultTestCaseConfig.copy())
-    current.addTestCase(testCase)
-    return testCase
+  inner class ShouldScope(private val parentDescriptor: TestDescriptor) {
+    infix operator fun String.invoke(test: () -> Unit): TestCaseDescriptor {
+      val descriptor = TestCaseDescriptor(parentDescriptor.uniqueId.append("test", this), "should " + this, source, this@WordSpec, test, defaultTestCaseConfig)
+      parentDescriptor.addChild(descriptor)
+      return descriptor
+    }
   }
 }
+

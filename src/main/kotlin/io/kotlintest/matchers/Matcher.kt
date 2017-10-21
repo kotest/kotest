@@ -7,20 +7,20 @@ interface Matcher<T> {
   infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
     override fun test(value: T): Result {
       val r = this@Matcher.test(value)
-      if (!r.passed)
-        return r
+      return if (!r.passed)
+        r
       else
-        return other.test(value)
+        other.test(value)
     }
   }
 
   infix fun or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
     override fun test(value: T): Result {
       val r = this@Matcher.test(value)
-      if (r.passed)
-        return r
+      return if (r.passed)
+        r
       else
-        return other.test(value)
+        other.test(value)
     }
   }
 }

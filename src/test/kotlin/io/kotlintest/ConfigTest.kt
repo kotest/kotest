@@ -137,8 +137,8 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  override fun interceptSpec(context: Spec, spec: () -> Unit) {
-    spec()
+  override fun interceptSpec(chain: () -> Unit) {
+    chain()
 
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3

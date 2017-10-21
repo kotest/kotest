@@ -9,7 +9,7 @@ class TestCaseTest : StringSpec() {
   object TagB : Tag()
 
   init {
-    val testTaggedA: TestCase = "should be tagged with tagA" { }
+    val testTaggedA = "should be tagged with tagA" { }
     testTaggedA.config(tags = setOf(TagA))
 
     val untaggedTest = "should be untagged" { }
