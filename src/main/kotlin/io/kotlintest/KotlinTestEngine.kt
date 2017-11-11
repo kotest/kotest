@@ -90,7 +90,8 @@ class TestCaseDescriptor(private val id: UniqueId,
     throw UnsupportedOperationException()
   }
 
-  override fun findByUniqueId(uniqueId: UniqueId): Optional<out TestDescriptor> = if (id == uniqueId) Optional.of(this) else Optional.empty()
+  override fun findByUniqueId(uniqueId: UniqueId): Optional<out TestDescriptor> =
+          if (id == uniqueId) Optional.of(this) else Optional.empty()
 
   override fun getTags(): MutableSet<TestTag> = mutableSetOf()
 
@@ -138,6 +139,7 @@ class EngineTestDescriptor : TestDescriptor {
   private val children = mutableListOf<TestDescriptor>()
 
   override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
+
   override fun getUniqueId(): UniqueId = UniqueId.forEngine("io.kotlintest")
 
   override fun getSource(): Optional<TestSource> = Optional.empty()

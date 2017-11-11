@@ -10,7 +10,11 @@ abstract class Spec {
   protected val source = ClassSource.from(this.javaClass)
 
   // the root descriptor for this spec
-  internal val specDescriptor = SpecDescriptor(UniqueId.root("spec", javaClass.simpleName), javaClass.simpleName, this)
+  internal val specDescriptor =
+          SpecDescriptor(
+                  UniqueId.root("spec", javaClass.simpleName),
+                  javaClass.simpleName,
+                  this)
 
   // override this value if you want a new instance of the spec class for each test case
   internal open val oneInstancePerTest = false
