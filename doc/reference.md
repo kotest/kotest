@@ -620,7 +620,8 @@ class MyTests : WordSpec() {
       }.config(timeout = 2.seconds)
     }
   }
-}```
+}
+```
 
 ```kotlin
 import io.kotlintest.specs.FunSpec
