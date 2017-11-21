@@ -29,7 +29,7 @@ class TestCaseTest : StringSpec() {
       testTaggedA.isActive shouldBe true
       untaggedTest.isActive shouldBe false
       testTaggedB.isActive shouldBe false
-    }.config(tags = setOf(TagA))
+    }
   }
 
   override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
