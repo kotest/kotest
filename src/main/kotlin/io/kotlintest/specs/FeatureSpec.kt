@@ -1,33 +1,27 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.ContainerTestDescriptor
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
-import org.junit.runner.RunWith
+import io.kotlintest.TestCaseDescriptor
+import org.junit.platform.engine.TestDescriptor
 
-@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec() {
-
-  private var current = rootTestSuite
 
   init {
     body()
   }
 
-  fun feature(name: String, init: () -> Unit): Unit {
-    val suite = TestSuite("Feature: ${sanitizeSpecName(name)}")
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  fun feature(name: String, init: FeatureScope.() -> Unit) {
+    val descriptor = ContainerTestDescriptor(specDescriptor.uniqueId.append("container", name), "Feature: " + this)
+    specDescriptor.addChild(descriptor)
+    FeatureScope(descriptor).init()
   }
 
-  fun scenario(name: String, test: () -> Unit): TestCase {
-    val tc = TestCase(current, "Scenario: ${sanitizeSpecName(name)}", test, defaultTestCaseConfig)
-    current.addTestCase(tc)
-    return tc
+  inner class FeatureScope(private val parentDescriptor: TestDescriptor) {
+    fun scenario(name: String, test: () -> Unit): TestCaseDescriptor {
+      val descriptor = TestCaseDescriptor(parentDescriptor.uniqueId.append("test", name), "Scenario: " + this, source, this@FeatureSpec, test, defaultTestCaseConfig)
+      parentDescriptor.addChild(descriptor)
+      return descriptor
+    }
   }
-
 }

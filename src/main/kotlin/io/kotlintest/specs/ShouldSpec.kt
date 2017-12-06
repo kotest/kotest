@@ -1,33 +1,40 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.ContainerTestDescriptor
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
-import org.junit.runner.RunWith
+import io.kotlintest.TestCaseDescriptor
+import org.junit.platform.engine.TestDescriptor
 
-@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec() {
-
-  private var current = rootTestSuite
 
   init {
     body()
   }
 
-  operator fun String.invoke(init: () -> Unit): Unit {
-    val suite = TestSuite(sanitizeSpecName(this))
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
+    val descriptor = ContainerTestDescriptor(specDescriptor.uniqueId.append("container", this), this)
+    specDescriptor.addChild(descriptor)
+    ShouldSpecScope(descriptor).init()
   }
 
-  fun should(name: String, test: () -> Unit): TestCase {
-    val testCase = TestCase(
-        suite = current, name = "should $name", test = test, config = defaultTestCaseConfig)
-    current.addTestCase(testCase)
-    return testCase
+  inner class ShouldSpecScope(private val parentDescriptor: TestDescriptor) {
+
+    operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
+      val descriptor = ContainerTestDescriptor(specDescriptor.uniqueId.append("container", this), this)
+      specDescriptor.addChild(descriptor)
+      ShouldSpecScope(descriptor).init()
+    }
+
+    fun should(name: String, test: () -> Unit): TestCaseDescriptor {
+      val descriptor = TestCaseDescriptor(parentDescriptor.uniqueId.append("test", name), "should " + name, source, this@ShouldSpec, test, defaultTestCaseConfig)
+      parentDescriptor.addChild(descriptor)
+      return descriptor
+    }
+  }
+
+  fun should(name: String, test: () -> Unit): TestCaseDescriptor {
+    val descriptor = TestCaseDescriptor(specDescriptor.uniqueId.append("test", name), "should " + name, source, this@ShouldSpec, test, defaultTestCaseConfig)
+    specDescriptor.addChild(descriptor)
+    return descriptor
   }
 }

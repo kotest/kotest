@@ -1,6 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.*
+import io.kotlintest.provided.ProjectConfig
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -15,19 +16,19 @@ class ConfigTest : WordSpec() {
   private val verificationInterceptor: (Spec, () -> Unit) -> Unit = { _, spec ->
     spec()
     val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
-    TestProjectConfig.intercepterLog.toString() shouldEqual expectedLog
+    ProjectConfig.intercepterLog.toString() shouldEqual expectedLog
   }
 
   private val specInterceptorA: (Spec, () -> Unit) -> Unit = { _, spec ->
-    TestProjectConfig.intercepterLog.append("C1.")
+    ProjectConfig.intercepterLog.append("C1.")
     spec()
-    TestProjectConfig.intercepterLog.append("C2.")
+    ProjectConfig.intercepterLog.append("C2.")
   }
 
   private val specInterceptorB: (Spec, () -> Unit) -> Unit = { _, spec ->
-    TestProjectConfig.intercepterLog.append("D1.")
+    ProjectConfig.intercepterLog.append("D1.")
     spec()
-    TestProjectConfig.intercepterLog.append("D2.")
+    ProjectConfig.intercepterLog.append("D2.")
   }
 
   private val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
@@ -109,7 +110,7 @@ class ConfigTest : WordSpec() {
 
       val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
         testCase()
-        TestProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
+        ProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
       }
 
       "should call interceptors in order of definition" {
@@ -125,20 +126,20 @@ class ConfigTest : WordSpec() {
       }.config(interceptors = listOf())
 
       "only run beforeAll once" {
-        TestProjectConfig.beforeAll shouldBe 1
+        ProjectConfig.beforeAll shouldBe 1
       }
 
       "only run afterAll once" {
         // this test spec has not yet completed, and therefore this count should be 0
         // we will also assert this in another test suite, where it should still be 0
         // but at that point at least _one_ test suite will have completed
-        TestProjectConfig.afterAll shouldBe 0
+        ProjectConfig.afterAll shouldBe 0
       }
     }
   }
 
-  override fun interceptSpec(context: Spec, spec: () -> Unit) {
-    spec()
+  override fun interceptSpec(chain: () -> Unit) {
+    chain()
 
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3

@@ -1,36 +1,27 @@
 package io.kotlintest.specs
 
-import io.kotlintest.KTestJUnitRunner
+import io.kotlintest.ContainerTestDescriptor
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestSuite
-import org.junit.runner.RunWith
+import io.kotlintest.TestCaseDescriptor
+import org.junit.platform.engine.TestDescriptor
 
-@RunWith(KTestJUnitRunner::class) // required to let IntelliJ discover tests
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : Spec() {
-
-  private var current = rootTestSuite
 
   init {
     body()
   }
 
-  infix operator fun String.minus(init: () -> Unit): Unit {
-    val suite = TestSuite(sanitizeSpecName(this))
-    current.addNestedSuite(suite)
-    val temp = current
-    current = suite
-    init()
-    current = temp
+  infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
+    val descriptor = ContainerTestDescriptor(specDescriptor.uniqueId.append("container", this), this)
+    specDescriptor.addChild(descriptor)
+    FreeSpecScope(descriptor).init()
   }
 
-  infix operator fun String.invoke(test: () -> Unit): TestCase {
-    val tc = TestCase(
-        suite = current,
-        name = sanitizeSpecName(this),
-        test = test,
-        config = defaultTestCaseConfig)
-    current.addTestCase(tc)
-    return tc
+  inner class FreeSpecScope(private val parentDescriptor: TestDescriptor) {
+    infix operator fun String.invoke(test: () -> Unit): TestCaseDescriptor {
+      val descriptor = TestCaseDescriptor(parentDescriptor.uniqueId.append("test", this), this, source, this@FreeSpec, test, defaultTestCaseConfig)
+      parentDescriptor.addChild(descriptor)
+      return descriptor
+    }
   }
 }
