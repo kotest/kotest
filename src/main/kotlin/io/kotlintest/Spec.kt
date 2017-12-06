@@ -56,11 +56,11 @@ abstract class Spec {
    * This means this interceptor will be called once, before any of the tests in the spec
    * are executed.
    *
-   * To continue execution of this spec class, you must invoke the chain function. If you don't
-   * want to continue with the execution of the spec, then do not invoke the chain function.
+   * To continue execution of this spec class, you must invoke the spec function. If you don't
+   * want to continue with the execution of the spec, then do not invoke the spec function.
    */
-  internal open fun interceptSpec(chain: () -> Unit) {
-    chain()
+  internal open fun interceptSpec(spec: () -> Unit) {
+    spec()
   }
 
   internal fun closeResources() {

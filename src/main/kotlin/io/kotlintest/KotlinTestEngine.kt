@@ -13,7 +13,6 @@ class KotlinTestContext(val executionRequest: ExecutionRequest) : EngineExecutio
 class KotlinTestEngine : TestEngine {
 
   override fun execute(request: ExecutionRequest) {
-    println("Executing test request $request")
     Project.beforeAll()
     request.rootTestDescriptor.children.forEach {
       when (it) {
@@ -33,7 +32,6 @@ class KotlinTestEngine : TestEngine {
   override fun getId(): String = "io.kotlintest"
 
   override fun discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor {
-    println("Executing discoveryRequest $discoveryRequest for id $uniqueId")
 
     val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
 
@@ -131,46 +129,6 @@ class TestCaseDescriptor(private val id: UniqueId,
 
   private fun readProperty(name: String): List<String> =
       (System.getProperty(name) ?: "").split(',').map { it.trim() }
-}
-
-// the root descriptor
-class EngineTestDescriptor : TestDescriptor {
-
-  private val children = mutableListOf<TestDescriptor>()
-
-  override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-
-  override fun getUniqueId(): UniqueId = UniqueId.forEngine("io.kotlintest")
-
-  override fun getSource(): Optional<TestSource> = Optional.empty()
-
-  override fun removeFromHierarchy() {
-    throw JUnitException("Cannot remove from hierarchy for root")
-  }
-
-  override fun setParent(parent: TestDescriptor) {
-    throw UnsupportedOperationException()
-  }
-
-  override fun getParent(): Optional<TestDescriptor> = Optional.empty()
-
-  override fun getChildren(): MutableSet<out TestDescriptor> = children.toMutableSet()
-
-  override fun getDisplayName(): String = "io.kotlintest"
-
-  override fun removeChild(descriptor: TestDescriptor?) {
-    throw UnsupportedOperationException()
-  }
-
-  override fun addChild(descriptor: TestDescriptor) {
-    descriptor.setParent(this)
-    this.children.add(descriptor)
-  }
-
-  override fun findByUniqueId(uniqueId: UniqueId?): Optional<out TestDescriptor> =
-      Optional.ofNullable(children.find { it.uniqueId == uniqueId })
-
-  override fun getTags(): MutableSet<TestTag> = mutableSetOf()
 }
 
 // a container test descriptor that is used as the top level for each spec

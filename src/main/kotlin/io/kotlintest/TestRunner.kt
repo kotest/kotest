@@ -15,7 +15,7 @@ fun <CONTEXT> createInterceptorChain(
   }
 }
 
-class TestRunner(val listener: EngineExecutionListener) {
+class TestRunner(private val listener: EngineExecutionListener) {
 
   // TODO beautify
   fun runTest(spec: Spec, testCase: TestCaseDescriptor) {

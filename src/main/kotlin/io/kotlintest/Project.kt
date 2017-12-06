@@ -2,11 +2,11 @@ package io.kotlintest
 
 object Project {
 
-  private val ProjectConfigFQN = "io.kotlintest.provided.ProjectConfig"
+  private val projectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
-      val clas = Class.forName(ProjectConfigFQN)
+      val clas = Class.forName(projectConfigFullyQualifiedName)
       val field = clas.declaredFields.find { it.name == "INSTANCE" }
       when (field) {
       // if the static field for an object cannot be found, then instantiate
