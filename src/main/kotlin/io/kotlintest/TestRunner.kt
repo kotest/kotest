@@ -5,17 +5,17 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.Executors
 
-class TestRunner(val listener: EngineExecutionListener) {
-
-  private fun <CONTEXT> createInterceptorChain(
-      interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
-      initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
-    return interceptors.reversed().fold(initialInterceptor) { a, b ->
-      { context: CONTEXT, testCase: () -> Unit ->
-        b(context, { a.invoke(context, { testCase() }) })
-      }
+fun <CONTEXT> createInterceptorChain(
+    interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
+    initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
+  return interceptors.reversed().fold(initialInterceptor) { a, b ->
+    { context: CONTEXT, fn: () -> Unit ->
+      b(context, { a.invoke(context, { fn() }) })
     }
   }
+}
+
+class TestRunner(val listener: EngineExecutionListener) {
 
   // TODO beautify
   fun runTest(spec: Spec, testCase: TestCaseDescriptor) {

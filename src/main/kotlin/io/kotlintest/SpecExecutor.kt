@@ -21,16 +21,6 @@ abstract class AbstractSpecExecutor : SpecExecutor {
 
   private fun interceptorChain(spec: Spec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
-  private fun <CONTEXT> createInterceptorChain(
-      interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
-      initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
-    return interceptors.reversed().fold(initialInterceptor) { a, b ->
-      { context: CONTEXT, testCase: () -> Unit ->
-        b(context, { a.invoke(context, { testCase() }) })
-      }
-    }
-  }
-
   private fun run(descriptor: TestDescriptor, listener: EngineExecutionListener) {
     try {
       listener.executionStarted(descriptor)
