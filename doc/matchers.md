@@ -44,6 +44,10 @@ This page lists all current matchers in Kotlintest.
 | -------- |
 | `double shouldBe exactly(value)`<br/>Asserts that the double is exactly equal to the given value. Exactly equal means the same representation. |
 | `double shouldBe (value plusOrMinus(tolerance))`<br/>Asserts that the double is equal to the given value within a tolerance range. This is the recommended way of testing for double equality. |
+| `double shouldBe lt(n)`<br/>Asserts that the double is less than the given value n |
+| `double shouldBe lte(n)`<br/>Asserts that the double is less or equal to than the given value n |
+| `double shouldBe gt(n)`<br/>Asserts that the double is greater than the given value n |
+| `double shouldBe gte(n)`<br/>Asserts that the double is greater than or equal to the given value n |
 
 | Collections |
 | -------- |
