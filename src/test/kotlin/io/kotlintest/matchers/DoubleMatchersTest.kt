@@ -1,5 +1,6 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.properties.*
 import io.kotlintest.specs.ShouldSpec
 
 class DoubleMatchersTest : ShouldSpec() {
@@ -29,6 +30,35 @@ class DoubleMatchersTest : ShouldSpec() {
     should("never match NaN == Nan as per the spec") {
       shouldThrow<AssertionError> {
         Double.NaN shouldBe Double.NaN
+      }
+    }
+
+    should("match between") {
+        val table = table(
+            headers("a", "b", "tolerance"),
+            row(0.0, 2.0, 0.1),
+            row(1.0, 2.0, 0.1),
+            row(0.0, 1.0, 0.1),
+            row(1.0, 1.0, 0.1)
+
+        )
+        forAll(table) {
+            a, b, tol ->
+            1.0 shouldBe between(a, b, tol)
+        }
+    }
+
+    should ("never match outside of range") {
+         val table = table(
+          headers("a", "b"),
+          row(0.0, 2.0),
+          row(2.0, 2.0),
+          row(4.0, 5.0),
+          row(4.0, 6.0)
+      )
+
+      forNone(table) { a, b ->
+        3.0 shouldBe between(a, b, 0.0)
       }
     }
   }

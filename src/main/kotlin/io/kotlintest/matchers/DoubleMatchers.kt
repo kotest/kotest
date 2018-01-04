@@ -6,6 +6,21 @@ fun exactly(d: Double): Matcher<Double> = object : Matcher<Double> {
   override fun test(value: Double) = Result(value == d, "$value is not equal to expected value $d")
 }
 
+fun between(a: Double, b: Double, tolerance: Double ): Matcher<Double> = object : Matcher<Double> {
+    override fun test(value: Double): Result {
+        val differenceToMinimum = value - a
+        val differenceToMaximum = b - value
+
+        if (differenceToMinimum < 0 && differenceToMinimum > tolerance) {
+            return Result(false, "$value should be bigger than $a")
+        }
+        if (differenceToMaximum < 0 && differenceToMaximum > tolerance) {
+            return Result(false, "$value should be smaller than $b")
+        }
+        return Result(true, "")
+    }
+}
+
 class ToleranceMatcher(val expected: Double, val tolerance: Double) : Matcher<Double> {
 
   override fun test(value: Double): Result {
