@@ -709,8 +709,12 @@ class MyTest : StringSpec() {
 ```
 
 Then by invoking the test runner with a system property of `includeTags` and/or `excludeTags`, you
-can control which tests are run. If you provide more than one tag for `includeTags` or
-`excludeTags`, a test case with at least one of the given tags is included/excluded.
+can control which tests are run:
+
+* If no `includeTags` and/or `excludeTags` are specified, all tests (both tagged and untagged ones) are run.
+* If only `includeTags` are specified, only tests with that tag are run (untagged test are *not* run).
+* If only `excludeTags` are specified, only tests without that tag are run (untagged tests *are* run).
+* If you provide more than one tag for `includeTags` or `excludeTags`, a test case with at least one of the given tags is included/excluded.
 
 Provide the simple names of tag object (without package) when you run the tests. Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
 

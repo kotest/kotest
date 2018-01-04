@@ -29,7 +29,13 @@ class TestCaseTest : StringSpec() {
       testTaggedA.isActive shouldBe true
       untaggedTest.isActive shouldBe false
       testTaggedB.isActive shouldBe false
-    }.config(tags = setOf(TagA))
+    }
+
+    "tagged tests should be active by default" {
+      testTaggedA.isActive shouldBe true
+      untaggedTest.isActive shouldBe true
+      testTaggedB.isActive shouldBe true
+    }
   }
 
   override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
