@@ -56,6 +56,19 @@ class EventuallyTest : WordSpec() {
             throw FileNotFoundException("foo")
         }
       }
+      "fail tests that fail a predicate" {
+        shouldThrow<AssertionError> {
+          eventually(2.seconds, { it == 2 }) {
+            1
+          }
+        }
+      }
+      "pass tests that pass a predicate" {
+        val result = eventually(2.seconds, { it == 1 }) {
+            1
+        }
+        result shouldBe 1
+      }
     }
   }
 }

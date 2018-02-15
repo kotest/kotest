@@ -21,3 +21,17 @@ fun <T, E : Throwable>eventually(duration: Duration, exceptionClass: Class<E>, f
   }
   throw AssertionError("Test failed after ${duration.amount} ${duration.timeUnit}; attempted $times times")
 }
+
+fun <T>eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T {
+  val end = System.nanoTime() + duration.nanoseconds
+  var times = 0
+  while (System.nanoTime() < end) {
+    val result = f()
+    if (predicate(result)) {
+      return result
+    } else {
+      times++
+    }
+  }
+  throw AssertionError("Test failed after ${duration.amount} ${duration.timeUnit}; attempted $times times")
+}
