@@ -1,5 +1,7 @@
 package io.kotlintest.matchers
 
+import kotlin.reflect.full.isSubclassOf
+
 interface Matcher<T> {
 
   fun test(value: T): Result
@@ -33,11 +35,9 @@ inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
     e
   }
 
-  val exceptionClassName = T::class.qualifiedName
-
   if (e == null)
     throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-  else if (e.javaClass.canonicalName != exceptionClassName)
+  else if (!e::class.isSubclassOf(T::class))
     throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
   else
     return e as T

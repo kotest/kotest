@@ -20,13 +20,9 @@ class ExceptionMatchersTest : FreeSpec() {
         } catch (e: AssertionError) {
         }
       }
-      "should test for throwables" {
-        try {
-          shouldThrow<Throwable> {
-            throw Throwable("bibble")
-          }
-          throw RuntimeException("If we get here its a bug")
-        } catch (e: AssertionError) {
+      "expecting thrown exception supertype is allowed" {
+        shouldThrow<RuntimeException> {
+          throw UnsupportedOperationException("bibble")
         }
       }
       "return matched exception" {
