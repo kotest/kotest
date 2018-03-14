@@ -6,7 +6,6 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.util.Random
-import kotlin.math.abs
 
 /** A shared random number generator. */
 private val RANDOM = Random()
@@ -54,7 +53,7 @@ interface Gen<out T> {
     fun nats() = object : Gen<Int> {
       override fun generate(): Int {
         while (true) {
-          val next = abs(RANDOM.nextInt())
+          val next = Math.abs(RANDOM.nextInt())
           // in case next is Int.MIN_VALUE
           if (next >= 0)
             return next
@@ -64,7 +63,7 @@ interface Gen<out T> {
 
     fun negativeIntegers() = object : Gen<Int> {
       override fun generate(): Int {
-        return -abs(RANDOM.nextInt())
+        return -Math.abs(RANDOM.nextInt())
       }
     }
 
