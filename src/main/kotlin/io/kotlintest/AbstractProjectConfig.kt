@@ -3,9 +3,10 @@ package io.kotlintest
 /**
  * Project-wide configuration.
  *
- * Create an object that is derived from this class, call it io.kotlintest.provided.ProjectConfig,
- * and place it in your classpath. Then kotlintest will detect it's presence and use it when
- * executing tests.
+ * Create an object that is derived from this class, name the object `ProjectConfig`
+ * and place it in your classpath in a package called `io.kotlintest.provided`.
+ *
+ * Kotlintest will detect it's presence and use it when executing tests.
  */
 abstract class AbstractProjectConfig {
 

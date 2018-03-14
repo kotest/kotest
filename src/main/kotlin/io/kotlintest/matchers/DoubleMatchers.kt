@@ -29,7 +29,7 @@ class ToleranceMatcher(val expected: Double, val tolerance: Double) : Matcher<Do
       Result(false, "By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776")
     } else {
       if (tolerance == 0.0)
-        println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe b plusOrMinus c")
+        println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe (b plusOrMinus c)")
       val diff = Math.abs(value - expected)
       Result(diff <= tolerance, "$value should be equal to $expected")
     }
