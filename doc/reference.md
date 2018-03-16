@@ -479,7 +479,7 @@ protected fun interceptSpec(context: Spec, spec: () -> Unit) {
 }
 ```
 
-### Resusable Interceptors
+### Reusable Interceptors
 
 Interceptors are just functions and can be reused between specs or even between projects. Just pass interceptors to the `config` on test case or spec level.
 
