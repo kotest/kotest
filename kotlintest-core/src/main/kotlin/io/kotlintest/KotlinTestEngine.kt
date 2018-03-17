@@ -2,13 +2,16 @@ package io.kotlintest
 
 import org.junit.platform.commons.JUnitException
 import org.junit.platform.commons.util.ReflectionUtils
-import org.junit.platform.engine.*
+import org.junit.platform.engine.EngineDiscoveryRequest
+import org.junit.platform.engine.ExecutionRequest
+import org.junit.platform.engine.TestDescriptor
+import org.junit.platform.engine.TestEngine
+import org.junit.platform.engine.TestSource
+import org.junit.platform.engine.TestTag
+import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.PackageSelector
-import org.junit.platform.engine.support.hierarchical.EngineExecutionContext
 import java.lang.reflect.Modifier
 import java.util.*
-
-class KotlinTestContext(val executionRequest: ExecutionRequest) : EngineExecutionContext
 
 class KotlinTestEngine : TestEngine {
 

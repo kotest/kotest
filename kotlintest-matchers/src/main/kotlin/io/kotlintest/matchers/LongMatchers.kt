@@ -1,8 +1,7 @@
 package io.kotlintest.matchers
 
-
 fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
-  override fun test(value: Long) = Result(a <= value && value <= b, "$value is between ($a, $b)")
+  override fun test(value: Long) = Result(value in a..b, "$value is between ($a, $b)")
 }
 
 fun lt(x: Long) = beLessThan(x)

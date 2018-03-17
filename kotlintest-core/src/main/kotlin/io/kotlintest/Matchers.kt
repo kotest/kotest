@@ -1,4 +1,4 @@
-package io.kotlintest.matchers
+package io.kotlintest
 
 import org.junit.ComparisonFailure
 

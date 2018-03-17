@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':kotlintest-core')
+    compile 'org.springframework:spring-test:4.3.14.RELEASE'
+}
