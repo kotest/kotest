@@ -10,7 +10,7 @@ import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldHave
 import io.kotlintest.matchers.shouldThrow
 import io.kotlintest.matchers.substring
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.core.WordSpec
 import java.util.Random
 
 class GenTest : WordSpec() {

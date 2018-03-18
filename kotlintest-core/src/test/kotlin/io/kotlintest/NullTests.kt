@@ -2,7 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldThrow
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.core.WordSpec
 
 class NullTests : WordSpec() {
 

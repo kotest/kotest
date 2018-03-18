@@ -3,7 +3,7 @@ package io.kotlintest
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.mock.`when`
 import io.kotlintest.mock.mock
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.core.WordSpec
 
 class MockFinalClassTest: WordSpec() {
 

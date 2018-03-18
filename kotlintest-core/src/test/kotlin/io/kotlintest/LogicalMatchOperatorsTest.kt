@@ -3,7 +3,7 @@ package io.kotlintest
 import io.kotlintest.matchers.between
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.core.StringSpec
 
 class LogicalMatchOperatorsTest : StringSpec({
 

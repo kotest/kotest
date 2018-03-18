@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.core.StringSpec
 import java.io.Closeable
 
 class SpecTest : StringSpec() {

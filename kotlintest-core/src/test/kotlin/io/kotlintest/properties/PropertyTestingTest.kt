@@ -2,7 +2,7 @@ package io.kotlintest.properties
 
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.core.StringSpec
 
 class PropertyTestingTest : StringSpec() {
   init {

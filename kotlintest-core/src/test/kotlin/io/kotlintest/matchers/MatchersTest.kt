@@ -1,6 +1,6 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.specs.FreeSpec
+import io.kotlintest.core.FreeSpec
 import org.junit.ComparisonFailure
 import java.util.*
 

@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.core.ShouldSpec
 
 class SharedInstanceForTestsTest : ShouldSpec() {
 

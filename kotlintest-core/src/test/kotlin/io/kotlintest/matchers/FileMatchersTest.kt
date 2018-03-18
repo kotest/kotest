@@ -1,6 +1,6 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.specs.FunSpec
+import io.kotlintest.core.FunSpec
 import java.io.File
 import java.nio.file.Files
 

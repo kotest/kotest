@@ -1,7 +1,7 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.properties.*
-import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.core.ShouldSpec
 
 class DoubleMatchersTest : ShouldSpec() {
   init {

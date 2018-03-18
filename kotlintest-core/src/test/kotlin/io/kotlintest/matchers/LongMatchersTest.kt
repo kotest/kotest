@@ -1,7 +1,7 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.properties.*
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.core.StringSpec
 
 class LongMatchersTest : StringSpec() {
   init {

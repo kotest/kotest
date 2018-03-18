@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.core.WordSpec
 import io.kotlintest.matchers.shouldThrow
 import java.io.FileNotFoundException
 import java.io.IOException

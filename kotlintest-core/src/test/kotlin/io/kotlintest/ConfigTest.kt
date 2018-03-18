@@ -1,8 +1,7 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.*
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.core.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {

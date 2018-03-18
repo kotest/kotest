@@ -1,7 +1,7 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.forAll
-import io.kotlintest.specs.FreeSpec
+import io.kotlintest.core.FreeSpec
 
 class ComparableMatchersTest : FreeSpec() {
 

@@ -3,6 +3,12 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
+
+Version 3.0.0
+-------------
+
+* Split project into multiple modules....
+
 Version 2.0.0, released 2017-03-26
 ----------------------------------
 
