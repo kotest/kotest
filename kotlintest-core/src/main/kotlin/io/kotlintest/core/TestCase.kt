@@ -47,8 +47,8 @@ class TestCase(// the display name is the name of the test that will
 
   fun isActiveAccordingToTags(): Boolean {
     val testCaseTags = config.tags.map { it.toString() }
-    val includedTags = readTagsProperty("kotlintest.includeTags")
-    val excludedTags = readTagsProperty("kotlintest.excludeTags")
+    val includedTags = readTagsProperty("kotlintest.tags.include")
+    val excludedTags = readTagsProperty("kotlintest.tags.exclude")
     val includedTagsEmpty = includedTags.isEmpty() || includedTags == listOf("")
     return when {
       excludedTags.intersect(testCaseTags).isNotEmpty() -> false
