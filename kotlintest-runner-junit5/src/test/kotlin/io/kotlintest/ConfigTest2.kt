@@ -12,8 +12,9 @@ class ConfigTest2 : WordSpec() {
       }
       "only run afterAll once" {
         // this test spec has not yet completed, and therefore this count should be 0
-        // however, since we have two equal tests in two test specs, we can check
-        // that afterAll is definitely not firing after a single suite is completed
+        // we will also assert this in another test suite, where it should still be 0
+        // but at that point at least _one_ test suite will have completed
+        // so that will confirm it is not being fired after every spec
         ProjectConfig.afterAll shouldBe 0
       }
     }
