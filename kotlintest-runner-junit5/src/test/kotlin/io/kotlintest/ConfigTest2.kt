@@ -1,8 +1,7 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.shouldBe
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.core.WordSpec
+import io.kotlintest.specs.WordSpec
 
 class ConfigTest2 : WordSpec() {
   init {

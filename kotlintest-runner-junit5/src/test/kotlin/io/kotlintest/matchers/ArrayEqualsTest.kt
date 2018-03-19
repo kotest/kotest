@@ -1,6 +1,7 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.StringSpec
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.StringSpec
 
 class ArrayEqualsTest : StringSpec() {
   init {

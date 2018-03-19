@@ -1,8 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.matchers.shouldThrow
-import io.kotlintest.core.WordSpec
+import io.kotlintest.specs.WordSpec
 
 class NullTests : WordSpec() {
 

@@ -1,6 +1,8 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.WordSpec
+import io.kotlintest.should
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 
 class MapMatchersTest : WordSpec() {
 

@@ -1,7 +1,9 @@
 package io.kotlintest
 
+import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.core.WordSpec
+import io.kotlintest.specs.WordSpec
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {
@@ -15,7 +17,7 @@ class ConfigTest : WordSpec() {
   private val verificationInterceptor: (Spec, () -> Unit) -> Unit = { _, spec ->
     spec()
     val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
-    ProjectConfig.intercepterLog.toString() shouldEqual expectedLog
+    ProjectConfig.intercepterLog.toString() shouldBe expectedLog
   }
 
   private val specInterceptorA: (Spec, () -> Unit) -> Unit = { _, spec ->
@@ -84,7 +86,7 @@ class ConfigTest : WordSpec() {
         // this test should timeout
         Thread.sleep(1000)
         threadCounter.incrementAndGet()
-      }.config(timeout = 10000.milliseconds, threads = 100, invocations = 100)
+      }.config(timeout = Duration.ofMillis(10000), threads = 100, invocations = 100)
 
       "use default config" {
         invocationCounter2.incrementAndGet()
@@ -96,7 +98,7 @@ class ConfigTest : WordSpec() {
 
         testCase.config.invocations shouldBe 2
         testCase.config.threads shouldBe 4
-        testCase.config.tags shouldEqual setOf(TagA)
+        testCase.config.tags shouldBe setOf(TagA)
       }
 
       "use default config, if no test case config is given" {
@@ -104,7 +106,7 @@ class ConfigTest : WordSpec() {
 
         testCase.config.invocations shouldBe 3
         testCase.config.threads shouldBe 1
-        testCase.config.tags shouldEqual setOf(TagA)
+        testCase.config.tags shouldBe setOf(TagA)
       }.config(invocations = 1)
 
       val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
@@ -121,7 +123,7 @@ class ConfigTest : WordSpec() {
       }.config(invocations = 1)
 
       "should override interceptors" {
-        testCaseInterceptorLog!!.get().toString() should haveLength(0)
+        testCaseInterceptorLog!!.get().toString() shouldHave haveLength(0)
       }.config(interceptors = listOf())
 
       "only run beforeAll once" {
@@ -137,8 +139,8 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  override fun interceptSpec(chain: () -> Unit) {
-    chain()
+  override fun interceptSpec(spec: () -> Unit) {
+    spec()
 
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3

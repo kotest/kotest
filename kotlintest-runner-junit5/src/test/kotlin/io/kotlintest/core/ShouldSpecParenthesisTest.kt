@@ -1,6 +1,6 @@
 package io.kotlintest.core
 
-import io.kotlintest.core.specs.ShouldSpec
+import io.kotlintest.specs.ShouldSpec
 
 class ShouldSpecParenthesisTest : ShouldSpec() {
   init {

@@ -1,7 +1,7 @@
 package io.kotlintest.core
 
-import io.kotlintest.core.specs.BehaviorSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.BehaviorSpec
 
 class BehaviourSpecLambdaTest : BehaviorSpec({
     given("string.length") {

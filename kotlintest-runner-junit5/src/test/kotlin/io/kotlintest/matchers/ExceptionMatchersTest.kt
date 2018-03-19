@@ -1,6 +1,8 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.FreeSpec
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 
 class ExceptionMatchersTest : FreeSpec() {
 

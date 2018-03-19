@@ -1,7 +1,7 @@
 package io.kotlintest.core
 
-import io.kotlintest.core.specs.FreeSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FreeSpec
 
 class FreeSpecLambdaTest : FreeSpec({
     "String.length" - {

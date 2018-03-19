@@ -1,17 +1,28 @@
 @file:Suppress("USELESS_IS_CHECK")
 
-package io.kotlintest.assertions.properties
+package io.kotlintest.properties
 
 import io.kotlintest.forAll
 import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.matchers.shouldHave
-import io.kotlintest.matchers.shouldThrow
 import io.kotlintest.matchers.substring
-import io.kotlintest.core.WordSpec
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldHave
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 import java.util.Random
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableMap
+import kotlin.collections.Set
+import kotlin.collections.all
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.last
+import kotlin.collections.listOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plusAssign
 
 class GenTest : WordSpec() {
   init {

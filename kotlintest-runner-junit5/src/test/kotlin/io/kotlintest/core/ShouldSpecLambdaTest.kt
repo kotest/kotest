@@ -1,7 +1,7 @@
 package io.kotlintest.core
 
-import io.kotlintest.core.specs.ShouldSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.ShouldSpec
 
 class ShouldSpecLambdaTest : ShouldSpec({
     should("return the length of the string") {

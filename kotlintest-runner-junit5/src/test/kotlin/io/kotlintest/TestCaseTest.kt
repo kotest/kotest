@@ -1,7 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.core.StringSpec
+import io.kotlintest.specs.StringSpec
 
 class TestCaseTest : StringSpec() {
 
@@ -19,22 +18,22 @@ class TestCaseTest : StringSpec() {
 
     "only tests without excluded tags should be active" {
       System.setProperty("excludeTags", "TagB")
-      testTaggedA.isActive shouldBe true
-      untaggedTest.isActive shouldBe true
-      testTaggedB.isActive shouldBe false
+      testTaggedA.isActive() shouldBe true
+      untaggedTest.isActive() shouldBe true
+      testTaggedB.isActive() shouldBe false
     }
 
     "only tests with included tags should be active" {
       System.setProperty("includeTags", "TagA")
-      testTaggedA.isActive shouldBe true
-      untaggedTest.isActive shouldBe false
-      testTaggedB.isActive shouldBe false
+      testTaggedA.isActive() shouldBe true
+      untaggedTest.isActive() shouldBe false
+      testTaggedB.isActive() shouldBe false
     }
 
     "tagged tests should be active by default" {
-      testTaggedA.isActive shouldBe true
-      untaggedTest.isActive shouldBe true
-      testTaggedB.isActive shouldBe true
+      testTaggedA.isActive() shouldBe true
+      untaggedTest.isActive() shouldBe true
+      testTaggedB.isActive() shouldBe true
     }
   }
 

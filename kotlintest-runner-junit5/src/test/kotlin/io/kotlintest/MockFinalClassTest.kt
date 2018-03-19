@@ -1,9 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.mock.`when`
-import io.kotlintest.mock.mock
-import io.kotlintest.core.WordSpec
+import io.kotlintest.specs.WordSpec
 
 class MockFinalClassTest: WordSpec() {
 

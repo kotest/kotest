@@ -1,6 +1,9 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.FunSpec
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FunSpec
 import java.io.File
 import java.nio.file.Files
 

@@ -1,8 +1,8 @@
 package io.kotlintest.core
 
 import io.kotlintest.ListStack
-import io.kotlintest.core.specs.WordSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 
 class WordSpecTest : WordSpec() {
 

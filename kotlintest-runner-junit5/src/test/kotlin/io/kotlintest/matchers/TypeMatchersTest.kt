@@ -1,8 +1,9 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.WordSpec
-import java.util.LinkedList
-import java.util.ArrayList
+import io.kotlintest.should
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
+import java.util.*
 
 class TypeMatchersTest : WordSpec() {
 

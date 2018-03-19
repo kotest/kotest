@@ -1,6 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.core.WordSpec
+import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.beLessThan
+import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec() {
 

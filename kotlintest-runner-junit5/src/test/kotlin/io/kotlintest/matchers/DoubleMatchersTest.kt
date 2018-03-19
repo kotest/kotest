@@ -1,7 +1,14 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.assertions.properties.*
-import io.kotlintest.core.ShouldSpec
+import io.kotlintest.properties.forAll
+import io.kotlintest.properties.forNone
+import io.kotlintest.properties.headers
+import io.kotlintest.properties.row
+import io.kotlintest.properties.table
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.ShouldSpec
 
 class DoubleMatchersTest : ShouldSpec() {
   init {

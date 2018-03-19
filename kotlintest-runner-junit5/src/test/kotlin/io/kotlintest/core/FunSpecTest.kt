@@ -1,8 +1,8 @@
 package io.kotlintest.core
 
 import io.kotlintest.ListStack
-import io.kotlintest.core.specs.FunSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FunSpec
 
 class FunSpecTest : FunSpec() {
 

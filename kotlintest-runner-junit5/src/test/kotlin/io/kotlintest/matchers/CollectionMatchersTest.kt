@@ -1,6 +1,9 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.WordSpec
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 import java.util.*
 
 class CollectionMatchersTest : WordSpec() {

@@ -1,7 +1,7 @@
 package io.kotlintest.core
 
-import io.kotlintest.core.specs.FunSpec
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FunSpec
 
 class FunSpecLambdaTest : FunSpec({
     test("String.length should return the length of the string") {

@@ -1,6 +1,9 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
-import io.kotlintest.core.FreeSpec
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 import org.junit.ComparisonFailure
 
 class StringMatchersTest : FreeSpec() {

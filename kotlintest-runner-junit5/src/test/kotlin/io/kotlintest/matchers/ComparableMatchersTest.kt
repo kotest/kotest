@@ -1,8 +1,10 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.matchers
 
 import io.kotlintest.forAll
-import io.kotlintest.core.FreeSpec
-import javax.management.Query.lt
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 
 class ComparableMatchersTest : FreeSpec() {
 
