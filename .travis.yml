@@ -12,7 +12,4 @@ cache:
 
 install: /bin/true
 
-script: gradle test
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+script: ./gradlew --gradle-version 4.6 clean test
