@@ -1,7 +1,8 @@
-package io.kotlintest.core
+package io.kotlintest
 
 import java.io.Closeable
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The parent class of all specs in KotlinTest.
@@ -21,13 +22,28 @@ import java.util.*
 abstract class AbstractSpec : Spec {
 
   // override this value if you want a new instance of the spec class for each test case
-  internal open val oneInstancePerTest = true
+  open val oneInstancePerTest = true
+
+  // the root container for specs
+  // specs should add intermediate containers to this
+  internal val rootContainer = TestContainer(javaClass.simpleName)
+
+  private val ids = AtomicInteger(0)
+  protected fun nextId(): String = ids.incrementAndGet().toString()
+
+  override fun root(): TestContainer = rootContainer
+
+  fun name(): String {
+    val displayName = AbstractSpec::class.annotations.find { it is DisplayName }
+    return when (displayName) {
+      is DisplayName -> displayName.name
+      else -> javaClass.simpleName
+    }
+  }
+
+  override fun isInstancePerTest(): Boolean = oneInstancePerTest
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
-
-  // the root descriptor for specs
-  // specs should add intermediate descriptors to this
-  protected val specDescriptor = TestCaseDescriptor("")
 
   /**
    * Registers a field for auto closing after all tests have run.
@@ -41,7 +57,7 @@ abstract class AbstractSpec : Spec {
    * Interceptors that intercepts the execution of the whole spec.
    * Interceptors are executed from left to right.
    */
-  internal open val specInterceptors: List<(AbstractSpec, () -> Unit) -> Unit> = listOf()
+  open val specInterceptors: List<(Spec, () -> Unit) -> Unit> = listOf()
 
   /**
    * Config applied to each test case if not overridden per test case.
@@ -52,3 +68,6 @@ abstract class AbstractSpec : Spec {
     closeablesInReverseOrder.forEach { it.close() }
   }
 }
+
+@Target(AnnotationTarget.CLASS)
+annotation class DisplayName(val name: String)
