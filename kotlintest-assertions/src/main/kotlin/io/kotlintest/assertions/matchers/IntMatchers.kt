@@ -1,5 +1,8 @@
 package io.kotlintest.assertions.matchers
 
+import io.kotlintest.assertions.Matcher
+import io.kotlintest.assertions.Result
+
 
 fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
   override fun test(value: Int) = Result(value in a..b, "$value is between ($a, $b)", "$value is not between ($a, $b)")

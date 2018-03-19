@@ -1,5 +1,8 @@
 package io.kotlintest.assertions.matchers
 
+import io.kotlintest.assertions.Matcher
+import io.kotlintest.assertions.Result
+
 fun <T : Comparable<T>> lt(x: T) = beLessThan(x)
 fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
   override fun test(value: Comparable<T>) = Result(value < x, "$value should be < $x", "$value should not be < $x")

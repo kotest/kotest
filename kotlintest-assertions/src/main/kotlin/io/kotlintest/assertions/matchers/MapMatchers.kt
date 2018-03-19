@@ -1,5 +1,8 @@
 package io.kotlintest.assertions.matchers
 
+import io.kotlintest.assertions.Matcher
+import io.kotlintest.assertions.Result
+
 fun <K> haveKey(key: K): Matcher<Map<K, *>> = object : Matcher<Map<K, *>> {
   override fun test(value: Map<K, *>) = Result(value.containsKey(key), "Map should contain key $key", "Map should not contain key $key")
 }

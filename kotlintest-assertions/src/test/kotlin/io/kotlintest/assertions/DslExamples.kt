@@ -18,7 +18,7 @@ class DslExamples {
     100.0 shouldNotBe 50 + 25.0
 
     // should is another variant on shouldBe which accepts
-    // instances of [io.kotlintest.assertions.matchers.Matcher]
+    // instances of [io.kotlintest.assertions.Matcher]
     // rather than plain values
     56 should beLessThan(4)
 

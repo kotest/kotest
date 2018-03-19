@@ -1,4 +1,4 @@
-package io.kotlintest.assertions.matchers
+package io.kotlintest.assertions
 
 /**
  * A [Matcher] is the main abstraction in the assertions library.
@@ -7,6 +7,9 @@ package io.kotlintest.assertions.matchers
  * accepts a value of type T and returns an instance of [Result].
  * This [Result] return value contains the state of the assertion
  * after it has been evaluted.
+ *
+ * A matcher will typically be invoked when used with the `should`
+ * functions in the assertions DSL. For example, `2 should beLessThan(4)`
  *
  */
 interface Matcher<T> {
@@ -52,5 +55,5 @@ interface Matcher<T> {
  */
 data class Result(val passed: Boolean, val failureMessage: String, val negatedFailureMessage: String) {
   @Deprecated("Add a specific negatedFailureMessage")
-  constructor(passed: Boolean, failureMessage: String) : this(passed, failureMessage, "not $failureMessage")
+  constructor(passed: Boolean, failureMessage: String) : this(passed, failureMessage, "Test passed which should have failed: $failureMessage")
 }

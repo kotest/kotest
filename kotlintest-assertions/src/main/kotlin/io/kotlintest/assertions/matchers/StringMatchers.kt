@@ -1,5 +1,8 @@
 package io.kotlintest.assertions.matchers
 
+import io.kotlintest.assertions.Matcher
+import io.kotlintest.assertions.Result
+
 fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String): Result {
     val ok = value.startsWith(prefix)

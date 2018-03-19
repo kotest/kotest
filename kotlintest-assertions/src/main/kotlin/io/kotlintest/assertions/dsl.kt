@@ -1,11 +1,9 @@
 package io.kotlintest.assertions
 
-import io.kotlintest.assertions.matchers.Matcher
-import io.kotlintest.assertions.matchers.Result
 import io.kotlintest.assertions.matchers.ToleranceMatcher
 
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
-  override fun test(value: T): Result = Result(expected == value, equalsErrorMessage(expected, value))
+  override fun test(value: T): Result = Result(expected == value, equalsErrorMessage(expected, value), "$value should not equal $expected")
 }
 
 fun fail(msg: String): Nothing = throw AssertionError(msg)
@@ -37,13 +35,14 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed)
-    throw AssertionError(result.expectedOutcome)
+    throw AssertionError(result.failureMessage)
 }
 
+infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
 infix fun <T> T.shouldNot(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (result.passed)
-    throw AssertionError("Test passed which should have failed: " + result.expectedOutcome)
+    throw AssertionError(result.negatedFailureMessage)
 }
 
 infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
@@ -99,5 +98,5 @@ private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expec
 
 // -- deprecated dsl
 
-@Deprecated("use shouldBe")
+@Deprecated("shouldEqual is deprecated in favour of shouldBe", ReplaceWith("shouldBe(any)"))
 infix fun <T> T.shouldEqual(any: Any?) = shouldBe(any)

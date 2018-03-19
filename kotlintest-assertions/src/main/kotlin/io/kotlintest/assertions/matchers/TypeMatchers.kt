@@ -1,5 +1,7 @@
 package io.kotlintest.assertions.matchers
 
+import io.kotlintest.assertions.Matcher
+import io.kotlintest.assertions.Result
 import kotlin.reflect.KClass
 
 // alias for beInstanceOf
