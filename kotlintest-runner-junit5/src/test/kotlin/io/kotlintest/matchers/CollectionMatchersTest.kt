@@ -106,27 +106,27 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains all the elements but in any order" {
         val col = listOf(1, 2, 3, 4, 5)
 
-        col should containsAll(1, 2, 3)
-        col should containsAll(3, 2, 1)
-        col should containsAll(5, 1)
-        col should containsAll(1, 5)
-        col should containsAll(1)
-        col should containsAll(5)
+        col should containAll(1, 2, 3)
+        col should containAll(3, 2, 1)
+        col should containAll(5, 1)
+        col should containAll(1, 5)
+        col should containAll(1)
+        col should containAll(5)
 
         shouldThrow<AssertionError> {
-          col should containsAll(1, 2, 6)
+          col should containAll(1, 2, 6)
         }
 
         shouldThrow<AssertionError> {
-          col should containsAll(6)
+          col should containAll(6)
         }
 
         shouldThrow<AssertionError> {
-          col should containsAll(0, 1, 2)
+          col should containAll(0, 1, 2)
         }
 
         shouldThrow<AssertionError> {
-          col should containsAll(3, 2, 0)
+          col should containAll(3, 2, 0)
         }
       }
     }
