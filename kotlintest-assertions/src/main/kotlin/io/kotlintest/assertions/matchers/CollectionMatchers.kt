@@ -1,21 +1,43 @@
 package io.kotlintest.assertions.matchers
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = Result(value.size == size, "Collection should have size $size but has size ${value.size}")
+  override fun test(value: Collection<T>) =
+      Result(
+          value.size == size,
+          "Collection should have size $size but has size ${value.size}",
+          "Collection should not have size $size"
+      )
 }
 
 fun <T> containsMatcher(t: T) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = Result(value.contains(t), "Collection should contain element $t")
+  override fun test(value: Collection<T>) = Result(
+      value.contains(t),
+      "Collection should contain element $t",
+      "Collection should not contain element $t"
+  )
 }
 
 fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>): Result = Result(value.isEmpty(), "Collection should be empty")
+  override fun test(value: Collection<T>): Result = Result(
+      value.isEmpty(),
+      "Collection should be empty",
+      "Collection should not be empty"
+  )
 }
 
-fun <T> containsAll(vararg ts: T) = containsAll(ts.asList())
-fun <T> containsAll(ts: List<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) =
-      Result(ts.all { value.contains(it) }, "Collection should contain values $ts")
+@Deprecated("use containAll", ReplaceWith("containsAll(ts.asList())"))
+fun <T> containsAll(vararg ts: T) = containAll(ts.asList())
+
+@Deprecated("use containAll", ReplaceWith("containAll(ts)"))
+fun <T> containsAll(ts: List<T>): Matcher<Collection<T>> = containAll(ts)
+
+fun <T> containAll(vararg ts: T) = containAll(ts.asList())
+fun <T> containAll(ts: List<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      ts.all { value.contains(it) },
+      "Collection should contain all of $ts",
+      "Collection should not contain all of $ts"
+  )
 }
 
 // should contain the expected list in order, but allows duplicates,
@@ -41,8 +63,9 @@ fun <T : Comparable<T>> containsInOrder(expected: List<T>) = object : Matcher<Li
       }
     }
 
-    val errorMessage = "[$value] did not contain the same elements in order as [$expected]"
-    return Result(passed, errorMessage)
+    val failureMessage = "[$value] did not contain the same elements in order as [$expected]"
+    val negatedFailureMessage = "[$value] should not contain the same elements in order as [$expected]"
+    return Result(passed, failureMessage, negatedFailureMessage)
   }
 }
 
@@ -51,9 +74,21 @@ fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 fun <T> contain(t: T): Matcher<Collection<T>> = containsMatcher(t)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = Result(value.size == 1 && value.first() == t, "Collection should be a single element of $t but is $value")
+  override fun test(value: Collection<T>) = Result(
+      value.size == 1 && value.first() == t,
+      "Collection should be a single element of $t but has ${value.size} elements",
+      "Collection should not be a single element of $t"
+  )
 }
 
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>) = Result(value.sorted() == value, "Collection $value should be sorted")
+  override fun test(value: List<T>): Result {
+    val passed = value.sorted() == value
+    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",") + "..."
+    return Result(
+        passed,
+        "Collection $snippet should be sorted",
+        "Colelction $snippet should not be sorted"
+    )
+  }
 }
