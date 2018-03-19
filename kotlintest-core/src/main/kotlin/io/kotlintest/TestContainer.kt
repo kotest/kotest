@@ -8,7 +8,7 @@ package io.kotlintest
  * A container has a display name which is used
  * for reporting and display purposes.
  */
-data class TestContainer(val name: String, val spec: Spec) {
+data class TestContainer(val displayName: String, val spec: Spec) {
 
   internal val children = mutableListOf<TestContainer>()
   internal val testcases = mutableListOf<TestCase>()
@@ -17,10 +17,14 @@ data class TestContainer(val name: String, val spec: Spec) {
   fun testCases(): List<TestCase> = testcases.toList()
 
   fun addTest(tc: TestCase) {
+    if (testcases.any { it.displayName == tc.displayName })
+      throw RuntimeException("Cannot add two test cases with the same name: '$displayName ${tc.displayName}'")
     testcases.add(tc)
   }
 
   fun addContainer(container: TestContainer) {
+    if (testcases.any { it.displayName == container.displayName })
+      throw RuntimeException("Cannot add two test containers with the same name: '$displayName ${container.displayName}'")
     children.add(container)
   }
 

@@ -9,6 +9,10 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.discovery.ClasspathRootSelector
+import org.junit.platform.engine.discovery.DirectorySelector
+import org.junit.platform.engine.discovery.UriSelector
+import org.reflections.util.ClasspathHelper
 
 class KotlinTestEngine : TestEngine {
 
@@ -23,23 +27,25 @@ class KotlinTestEngine : TestEngine {
   private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
   override fun execute(request: ExecutionRequest) {
+    println("Beginning EXECUTION")
     Project.beforeAll()
     request.rootTestDescriptor.children.forEach {
       when (it) {
-        is TestContainerDescriptor -> execute(it, request)
+        is TestContainerDescriptor -> executeContainer(it, request)
         else -> throw IllegalStateException("All children of the root test descriptor must be instances of ContainerTestDescriptor; was $it")
       }
     }
     Project.afterAll()
   }
 
-  private fun execute(descriptor: TestContainerDescriptor, request: ExecutionRequest) {
+  private fun executeContainer(descriptor: TestContainerDescriptor, request: ExecutionRequest) {
+    println("Beginning ${descriptor.id}")
     try {
       request.engineExecutionListener.executionStarted(descriptor)
       descriptor.children.forEach {
         when (it) {
-          is TestContainerDescriptor -> execute(it, request)
-          is TestCaseDescriptor -> execute(it, request)
+          is TestContainerDescriptor -> executeContainer(it, request)
+          is TestCaseDescriptor -> executeTestCase(it, request)
           else -> throw IllegalStateException("$it is not supported")
         }
       }
@@ -47,15 +53,22 @@ class KotlinTestEngine : TestEngine {
     } catch (throwable: Throwable) {
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
+    println("Ending ${descriptor.id}")
   }
 
-  private fun execute(descriptor: TestCaseDescriptor, request: ExecutionRequest) {
+  private fun executeTestCase(descriptor: TestCaseDescriptor, request: ExecutionRequest) {
+    println("Excuting test itself ${descriptor.id}")
     try {
+      println("request.engineExecutionListener.executionStarted(descriptor)")
       request.engineExecutionListener.executionStarted(descriptor)
+      println("qqq")
       val runner = TestCaseRunner(request.engineExecutionListener)
+      println("Created runner $runner")
       runner.runTest(actualDescriptor(descriptor, request))
+      println("runner completed $runner")
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
     } catch (throwable: Throwable) {
+      println("Whoops $throwable")
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
   }
@@ -76,6 +89,7 @@ class KotlinTestEngine : TestEngine {
         // todo we need to re-run the spec interceptors here
 
         // and then we can get the test case out of that new container
+        println("Finding container ${descriptor.uniqueId}")
         container.findByUniqueId(descriptor.uniqueId)
             .orElseThrow {
               IllegalStateException("Test case with id ${descriptor.id} cannot be found in spec container clone $container")
@@ -86,7 +100,13 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
-  override fun discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor =
-      SpecDiscovery(discoveryRequest, uniqueId)
+  override fun discover(request: EngineDiscoveryRequest,
+                        uniqueId: UniqueId): TestDescriptor {
+    val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
+        request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
+        request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
+        ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+    return TestDiscovery(TestDiscovery.DiscoveryRequest(uris), uniqueId)
+  }
 }
 

@@ -17,6 +17,13 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   inner class FreeSpecScope(private val parentDescriptor: TestContainer) {
+
+    infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
+      val descriptor = TestContainer(this, this@FreeSpec)
+      parentDescriptor.addContainer(descriptor)
+      FreeSpecScope(descriptor).init()
+    }
+
     infix operator fun String.invoke(test: () -> Unit): TestCase {
       val testcase = TestCase(this, this@FreeSpec, test, defaultTestCaseConfig)
       parentDescriptor.addTest(testcase)

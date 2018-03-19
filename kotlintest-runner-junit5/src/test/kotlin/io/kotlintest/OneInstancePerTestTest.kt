@@ -12,11 +12,11 @@ class OneInstancePerTestTest : ShouldSpec() {
       count shouldBe 0
       count = 100
     }
-    should("be 0") {
+    should("be 0 part 2") {
       count shouldBe 0
       count = 100
     }
-    should("be 0") {
+    should("be 0 part 3") {
       count shouldBe 0
       count = 100
     }

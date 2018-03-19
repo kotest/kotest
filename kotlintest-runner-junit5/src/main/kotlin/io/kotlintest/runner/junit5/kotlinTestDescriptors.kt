@@ -28,13 +28,13 @@ open class TestContainerDescriptor(val id: UniqueId,
                                    val container: TestContainer) : BranchDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = container.name
+  override fun getDisplayName(): String = container.displayName
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
 
   companion object {
 
     fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor {
-      val desc = TestContainerDescriptor(parentId.append("container", container.name), container)
+      val desc = TestContainerDescriptor(parentId.append("container", container.displayName), container)
       container.childContainers().forEach {
         desc.addChild(fromTestContainer(desc.uniqueId, it))
       }

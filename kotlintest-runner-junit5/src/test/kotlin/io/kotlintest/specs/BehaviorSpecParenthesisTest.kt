@@ -1,6 +1,4 @@
-package io.kotlintest.core
-
-import io.kotlintest.specs.BehaviorSpec
+package io.kotlintest.specs
 
 class BehaviorSpecParenthesisTest : BehaviorSpec() {
   init {

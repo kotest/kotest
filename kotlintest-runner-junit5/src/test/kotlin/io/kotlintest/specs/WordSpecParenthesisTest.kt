@@ -1,6 +1,4 @@
-package io.kotlintest.core
-
-import io.kotlintest.specs.WordSpec
+package io.kotlintest.specs
 
 class WordSpecParenthesisTest : WordSpec() {
   init {

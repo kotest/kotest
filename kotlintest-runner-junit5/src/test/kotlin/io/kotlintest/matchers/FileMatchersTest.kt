@@ -21,7 +21,7 @@ class FileMatchersTest : FunSpec() {
       file.delete()
     }
 
-    test("exist() file matcher") {
+    test("haveExtension") {
       val file = Files.createTempFile("test", ".test").toFile()
       file should haveExtension(".test")
 

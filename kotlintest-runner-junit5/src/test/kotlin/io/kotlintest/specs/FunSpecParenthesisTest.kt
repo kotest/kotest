@@ -1,4 +1,4 @@
-package io.kotlintest.core
+package io.kotlintest.specs
 
 import io.kotlintest.specs.FunSpec
 
