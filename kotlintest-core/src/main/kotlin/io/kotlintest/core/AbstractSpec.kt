@@ -18,7 +18,7 @@ import java.util.*
  * This means KotlinTest can run your tests using a JVM platform runner, or a
  * JS platform runner.
  */
-abstract class AbstractSpec {
+abstract class AbstractSpec : Spec {
 
   // override this value if you want a new instance of the spec class for each test case
   internal open val oneInstancePerTest = true
@@ -35,36 +35,6 @@ abstract class AbstractSpec {
   protected fun <T : Closeable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
-  }
-
-  /**
-   * Intercepts the call of each testcase.
-   *
-   * Override this function if you wish to control the way each test
-   * case is executed.
-   *
-   * Don't forget to call `test()` in the body of this method.
-   * Otherwise the test case will never be executed.
-   */
-  internal open fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-    test()
-  }
-
-  /**
-   * Intercepts the call of the spec class.
-   *
-   * Override this function if you wish to control the way each spec
-   * is executed.
-   *
-   * This means this interceptor will be called once, before any of the
-   * testcases in the spec are executed.
-   *
-   * To continue execution of this spec class, you must invoke the spec
-   * function. If you don't want to continue with the execution of the spec,
-   * then do not invoke the spec function.
-   */
-  internal open fun interceptSpec(spec: () -> Unit) {
-    spec()
   }
 
   /**
