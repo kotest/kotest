@@ -1,8 +1,13 @@
 package io.kotlintest.assertions
 
-import io.kotlintest.assertions.matchers.beGreaterThan
-import io.kotlintest.assertions.matchers.beLessThan
-import io.kotlintest.assertions.matchers.singleElement
+import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.singleElement
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldHave
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 
 class DslExamples {
   init {
@@ -18,7 +23,7 @@ class DslExamples {
     100.0 shouldNotBe 50 + 25.0
 
     // should is another variant on shouldBe which accepts
-    // instances of [io.kotlintest.assertions.Matcher]
+    // instances of [io.kotlintest.Matcher]
     // rather than plain values
     56 should beLessThan(4)
 

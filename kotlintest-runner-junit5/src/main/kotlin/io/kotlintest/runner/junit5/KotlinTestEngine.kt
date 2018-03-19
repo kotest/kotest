@@ -1,38 +1,87 @@
 package io.kotlintest.runner.junit5
 
-import org.junit.platform.commons.JUnitException
+import io.kotlintest.AbstractSpec
+import io.kotlintest.Project
+import io.kotlintest.Spec
 import org.junit.platform.commons.util.ReflectionUtils
 import org.junit.platform.engine.EngineDiscoveryRequest
+import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestEngine
-import org.junit.platform.engine.TestSource
-import org.junit.platform.engine.TestTag
+import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.PackageSelector
 import java.lang.reflect.Modifier
-import java.util.*
 
 class KotlinTestEngine : TestEngine {
+
+  // the initial interceptor just invokes the intercept method
+  // in the spec itself, which in turn invokes the chain.
+  private val initialInterceptor = { spec: Spec, chain: () -> Unit ->
+    spec.interceptSpec({ chain() })
+  }
+
+  override fun getId(): String = "io.kotlintest"
+
+  private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
   override fun execute(request: ExecutionRequest) {
     Project.beforeAll()
     request.rootTestDescriptor.children.forEach {
       when (it) {
-        is SpecDescriptor -> {
-          val executor = when {
-            it.spec.oneInstancePerTest -> OneInstanceSpecExecutor
-            else -> SharedSpecExecutor
-          }
-          executor.execute(it, request.engineExecutionListener)
-        }
-        else -> throw IllegalStateException("All children of root test descriptor must be specs but $it")
+        is TestContainerDescriptor -> execute(it, request.engineExecutionListener)
+        else -> throw IllegalStateException("All children of the root test descriptor must be instances of ContainerTestDescriptor; was $it")
       }
     }
     Project.afterAll()
   }
 
-  override fun getId(): String = "io.kotlintest"
+  private fun execute(descriptor: TestContainerDescriptor, listener: EngineExecutionListener) {
+    try {
+      listener.executionStarted(descriptor)
+      descriptor.children.forEach {
+        when (it) {
+          is TestContainerDescriptor -> execute(it, listener)
+          is TestCaseDescriptor -> execute(it, listener)
+          else -> throw IllegalStateException("$it is not supported")
+        }
+      }
+      listener.executionFinished(descriptor, TestExecutionResult.successful())
+    } catch (throwable: Throwable) {
+      listener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
+    }
+  }
+
+  private fun execute(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
+    try {
+      listener.executionStarted(descriptor)
+      val runner = TestCaseRunner(listener)
+      runner.runTest(actualDescriptor(descriptor))
+      listener.executionFinished(descriptor, TestExecutionResult.successful())
+    } catch (throwable: Throwable) {
+      listener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
+    }
+  }
+
+  private fun actualDescriptor(descriptor: TestCaseDescriptor): TestCaseDescriptor {
+    return when (descriptor.testCase.spec.isInstancePerTest()) {
+    // if we are using one instance per test then we need a descriptor
+    // with a clean instance of the spec
+      true -> {
+        // we use the prototype spec to create another instance of the spec for this test
+        val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
+
+        // we can then create a new test descriptor for this spec
+        val container = TestContainerDescriptor.fromSpec(freshSpec)
+
+        // and then we can get the test case out of that new container
+        container.findByUniqueId(descriptor.uniqueId).orElseThrow { IllegalStateException("Test case cannot be found in spec clone") } as TestCaseDescriptor
+      }
+    // if we are /not/ using one instance per test then we can just return the original descriptor
+      false -> descriptor
+    }
+  }
 
   override fun discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor {
 
@@ -44,59 +93,12 @@ class KotlinTestEngine : TestEngine {
       }
     }
 
-    val root = ContainerTestDescriptor(uniqueId, "Test Results")
+    val root = RootTestDescriptor(uniqueId, "KotlinTest")
     specs.forEach {
       val spec: Spec = it.newInstance()
-      root.addChild(spec.specDescriptor)
+      root.addChild(TestContainerDescriptor.fromSpec(spec))
     }
     return root
   }
 }
 
-// a container test descriptor that is used as the top level for each spec
-class SpecDescriptor(id: UniqueId,
-                     displayName: String,
-                     val spec: Spec // the spec that this test descriptor was created in
-) : ContainerTestDescriptor(id, displayName)
-
-// a container test descriptor that can hold tests
-open class ContainerTestDescriptor(private val id: UniqueId,
-                                   private val displayName: String) : TestDescriptor {
-
-  private val children = mutableListOf<TestDescriptor>()
-  private var parent: Optional<TestDescriptor> = Optional.empty()
-
-  override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-  override fun getUniqueId(): UniqueId = id
-
-  override fun getSource(): Optional<TestSource> = Optional.empty()
-
-  override fun removeFromHierarchy() {
-    if (isRoot) throw JUnitException("Cannot remove from hierarchy for root")
-  }
-
-  override fun setParent(parent: TestDescriptor) {
-    this.parent = Optional.ofNullable(parent)
-  }
-
-  override fun getParent(): Optional<TestDescriptor> = parent
-
-  override fun getChildren(): MutableSet<out TestDescriptor> = children.toMutableSet()
-
-  override fun getDisplayName(): String = displayName
-
-  override fun removeChild(descriptor: TestDescriptor?) {
-    throw UnsupportedOperationException()
-  }
-
-  override fun addChild(descriptor: TestDescriptor) {
-    descriptor.setParent(this)
-    this.children.add(descriptor)
-  }
-
-  override fun findByUniqueId(uniqueId: UniqueId): Optional<out TestDescriptor> =
-      if (uniqueId == id) Optional.of(this)
-      else children.map { it.findByUniqueId(uniqueId) }.first { it.isPresent }
-
-  override fun getTags(): MutableSet<TestTag> = mutableSetOf()
-}

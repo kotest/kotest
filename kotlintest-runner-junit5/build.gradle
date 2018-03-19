@@ -1,5 +1,6 @@
 dependencies {
     compile project(':kotlintest-core')
+    compile project(':kotlintest-assertions')
     compile 'org.junit.platform:junit-platform-engine:1.1.0'
     compile 'org.junit.platform:junit-platform-runner:1.1.0'
 }

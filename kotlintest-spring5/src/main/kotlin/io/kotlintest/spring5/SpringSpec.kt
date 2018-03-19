@@ -1,24 +1,21 @@
 package io.kotlintest.spring5
 
-import io.kotlintest.core.Spec
-import io.kotlintest.core.TestCaseContext
-import org.springframework.test.context.TestContextManager
+import io.kotlintest.Spec
+import io.kotlintest.TestCaseContext
 
-class SpringAutowired : Spec {
-
-  val manager = TestContextManager(javaClass)
+interface SpringAutowired : Spec {
 
   override fun interceptSpec(spec: () -> Unit) {
-    manager.beforeTestClass()
+    TestContextManagerHolder.manager.beforeTestClass()
     super.interceptSpec(spec)
-    manager.afterTestClass()
+    TestContextManagerHolder.manager.afterTestClass()
   }
 
   override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-    manager.beforeTestExecution(this, null)
-    manager.beforeTestMethod(this, null)
+    TestContextManagerHolder.manager.beforeTestExecution(this, null)
+    TestContextManagerHolder.manager.beforeTestMethod(this, null)
     super.interceptTestCase(context, test)
-    manager.afterTestMethod(this, null, null)
-    manager.afterTestExecution(this, null, null)
+    TestContextManagerHolder.manager.afterTestMethod(this, null, null)
+    TestContextManagerHolder.manager.afterTestExecution(this, null, null)
   }
 }
