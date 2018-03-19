@@ -1,1 +1,1 @@
-include 'kotlintest-core', 'kotlintest-assertions', 'kotlintest-spring', 'kotlintest-junit5'
+include 'kotlintest-core', 'kotlintest-assertions', 'kotlintest-spring', 'kotlintest-runner-junit5'

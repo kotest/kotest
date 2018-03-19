@@ -4,10 +4,15 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 
-Version 3.0.0
+Version 3.0.0... in progress
 -------------
 
 * Split project into multiple modules....
+* beInstanceOf<T> now supported
+* shouldThrow<T> changed to support subtypes. shouldThrowExactly<T> added
+* better negation errors
+* containAll added as replacement for deprecated containsAll
+* addd flat spec and describe spec
 
 Version 2.0.0, released 2017-03-26
 ----------------------------------
