@@ -12,4 +12,4 @@ cache:
 
 install: /bin/true
 
-script: ./gradlew --gradle-version 4.6 clean test
+script: ./gradlew wrapper --gradle-version 4.6 clean test
