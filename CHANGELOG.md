@@ -16,6 +16,7 @@ Version 3.0.0... in progress
 * spring 5 support
 * breaking change: system props exclude/includeTags are now prefixed by kotlintest, eg kotlintest.tags.include and kotlintest.tags.exclude.
 * add containAll, haveKeys, haveValue for maps
+* added expect spec
 
 Version 2.0.0, released 2017-03-26
 ----------------------------------

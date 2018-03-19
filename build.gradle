@@ -32,10 +32,6 @@ allprojects {
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.1.0'
-        testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.1.0'
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-        testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.1.0'
     }
 
     release {
