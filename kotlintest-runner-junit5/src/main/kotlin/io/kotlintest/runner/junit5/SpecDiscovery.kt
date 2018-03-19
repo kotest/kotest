@@ -16,7 +16,7 @@ object SpecDiscovery {
     println("Searching ${it.packageName}")
     ReflectionUtils.findAllClassesInPackage(it.packageName, isSpec, { true }).map {
       it as Class<Spec>
-    }.sortedBy { it.simpleName }
+    }
   }
 
   operator fun invoke(request: EngineDiscoveryRequest, uniqueId: UniqueId): RootTestDescriptor {

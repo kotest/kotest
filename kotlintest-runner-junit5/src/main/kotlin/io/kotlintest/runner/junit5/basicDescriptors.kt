@@ -77,5 +77,6 @@ abstract class BranchDescriptor : TestDescriptor {
   override fun addChild(descriptor: TestDescriptor) {
     descriptor.setParent(this)
     this.children.add(descriptor)
+    this.children.sortBy { it.displayName.trim().toLowerCase() }
   }
 }

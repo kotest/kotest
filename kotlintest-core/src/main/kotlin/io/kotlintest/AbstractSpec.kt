@@ -11,13 +11,13 @@ abstract class AbstractSpec : Spec {
   // the root container for specs
   // specs should add intermediate containers to this
   internal val rootContainer: TestContainer by lazy {
-    TestContainer(javaClass.simpleName, this@AbstractSpec)
+    TestContainer(name(), this@AbstractSpec)
   }
 
   override fun root(): TestContainer = rootContainer
 
   fun name(): String {
-    val displayName = AbstractSpec::class.annotations.find { it is DisplayName }
+    val displayName = this::class.annotations.find { it is DisplayName }
     return when (displayName) {
       is DisplayName -> displayName.name
       else -> javaClass.simpleName
@@ -53,4 +53,5 @@ abstract class AbstractSpec : Spec {
 }
 
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class DisplayName(val name: String)
