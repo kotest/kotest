@@ -5,6 +5,7 @@ import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
+import java.math.BigInteger
 import java.util.Random
 
 /** A shared random number generator. */
@@ -89,6 +90,15 @@ interface Gen<out T> {
 
     fun <T> create(fn: () -> T): Gen<T> = object : Gen<T> {
       override fun generate(): T = fn()
+    }
+
+    fun bigInteger(maxNumBits:Int=32): Gen<BigInteger> = object : Gen<BigInteger> {
+      private val numBitsGen:Gen<Int> = Gen.choose(0, maxNumBits)
+
+      override fun generate(): BigInteger {
+        val numBits:Int = numBitsGen.generate()
+        return BigInteger(numBits, RANDOM)
+      }
     }
 
     fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
