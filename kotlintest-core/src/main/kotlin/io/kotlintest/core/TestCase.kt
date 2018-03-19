@@ -6,9 +6,10 @@ import java.time.Duration
  * Describes an actual testcase.
  * That is, a unit of code that will be tested.
  *
- * A testcase is always associated with a context, called
- * a Descriptor. A [TestCaseDescriptor] is used to group together
- * related testcases. This allows hierarchy reporting.
+ * A testcase is always associated with a container,
+ * called a [TestCaseDescriptor]. Such a descriptor is used
+ * to group together related testcases. This allow hierarchical
+ * reporting and output.
  */
 class TestCase(// the display name is the name of the test that will
     // be outputted in displays. It is most common that
@@ -46,8 +47,8 @@ class TestCase(// the display name is the name of the test that will
 
   fun isActiveAccordingToTags(): Boolean {
     val testCaseTags = config.tags.map { it.toString() }
-    val includedTags = readProperty("includeTags")
-    val excludedTags = readProperty("excludeTags")
+    val includedTags = readTagsProperty("kotlintest.includeTags")
+    val excludedTags = readTagsProperty("kotlintest.excludeTags")
     val includedTagsEmpty = includedTags.isEmpty() || includedTags == listOf("")
     return when {
       excludedTags.intersect(testCaseTags).isNotEmpty() -> false
@@ -57,7 +58,7 @@ class TestCase(// the display name is the name of the test that will
     }
   }
 
-  private fun readProperty(name: String): List<String> =
+  private fun readTagsProperty(name: String): List<String> =
       (System.getProperty(name) ?: "").split(',').map { it.trim() }
 }
 
