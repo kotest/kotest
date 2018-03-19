@@ -1,5 +1,7 @@
 package io.kotlintest.core
 
+import io.kotlintest.core.specs.ShouldSpec
+
 class ShouldSpecParenthesisTest : ShouldSpec() {
   init {
     "nested (parenths)" {

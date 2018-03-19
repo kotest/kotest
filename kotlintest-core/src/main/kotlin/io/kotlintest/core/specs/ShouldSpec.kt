@@ -7,9 +7,10 @@ import io.kotlintest.core.TestCaseDescriptor
 /**
  * Example:
  *
- * "some string" {
- *   "more string" {
+ * "some test" {
+ *   "with context" {
  *      should("do something") {
+ *        // test here
  *      }
  *    }
  *  }
@@ -17,8 +18,7 @@ import io.kotlintest.core.TestCaseDescriptor
  *  or
  *
  *  should("do something") {
- *
- *
+ *    // test here
  *  }
  */
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {

@@ -1,5 +1,6 @@
 package io.kotlintest.core
 
+import io.kotlintest.core.specs.StringSpec
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldBe

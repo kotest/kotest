@@ -1,5 +1,6 @@
 package io.kotlintest.core
 
+import io.kotlintest.core.specs.FeatureSpec
 import io.kotlintest.matchers.shouldBe
 
 class FeatureSpecLambdaTest : FeatureSpec({

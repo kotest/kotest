@@ -4,6 +4,16 @@ import io.kotlintest.core.AbstractSpec
 import io.kotlintest.core.TestCase
 import io.kotlintest.core.TestCaseDescriptor
 
+/**
+ * Example:
+ *
+ * "some test" should {
+ *    "do something" {
+ *      // test here
+ *    }
+ * }
+ *
+ */
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
 
   init {
