@@ -6,7 +6,7 @@ import java.time.Duration
 fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class.java, f)
 
 fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, f: () -> T): T {
-  val end = System.nanoTime() + duration.nano
+  val end = System.nanoTime() + duration.toMillis() * 1000
   var times = 0
   while (System.nanoTime() < end) {
     try {
@@ -20,11 +20,11 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
     }
     times++
   }
-  throw AssertionError("Test failed after $duration; attempted $times times")
+  throw AssertionError("Test failed after ${duration.seconds} seconds; attempted $times times")
 }
 
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T {
-  val end = System.nanoTime() + duration.nano
+  val end = System.nanoTime() + duration.toMillis() * 1000
   var times = 0
   while (System.nanoTime() < end) {
     val result = f()
@@ -34,5 +34,5 @@ fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T
       times++
     }
   }
-  throw AssertionError("Test failed after $duration; attempted $times times")
+  throw AssertionError("Test failed after ${duration.seconds} seconds; attempted $times times")
 }

@@ -21,14 +21,14 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   infix fun String.should(init: ShouldScope.() -> Unit) {
-    val descriptor = TestContainer(this)
+    val descriptor = TestContainer(this, this@WordSpec)
     rootContainer.addContainer(descriptor)
     ShouldScope(descriptor).init()
   }
 
   inner class ShouldScope(private val parentDescriptor: TestContainer) {
     infix operator fun String.invoke(test: () -> Unit): TestCase {
-      val tc = TestCase("should " + this, nextId(), this@WordSpec, parentDescriptor, test, defaultTestCaseConfig)
+      val tc = TestCase("should " + this, this@WordSpec, test, defaultTestCaseConfig)
       parentDescriptor.addTest(tc)
       return tc
     }

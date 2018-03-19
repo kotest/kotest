@@ -73,7 +73,7 @@ class StringMatchersTest : FreeSpec() {
         val t = try {
           "bibble" should startWith("vv")
           true
-        } catch(e: AssertionError) {
+        } catch (e: AssertionError) {
           false
         }
         t shouldBe false
@@ -98,7 +98,7 @@ class StringMatchersTest : FreeSpec() {
         val t = try {
           "bibble" should endWith("qwe")
           true
-        } catch(e: AssertionError) {
+        } catch (e: AssertionError) {
           false
         }
         t shouldBe false
@@ -114,7 +114,7 @@ class StringMatchersTest : FreeSpec() {
         val t = try {
           "bibble" should include("qweqwe")
           true
-        } catch(e: AssertionError) {
+        } catch (e: AssertionError) {
           false
         }
         t shouldBe false

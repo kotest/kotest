@@ -1,7 +1,7 @@
 package io.kotlintest.runner.junit5
 
-import io.kotlintest.Spec
 import io.kotlintest.TestCase
+import io.kotlintest.TestContainer
 import org.junit.platform.commons.JUnitException
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
@@ -10,14 +10,13 @@ import org.junit.platform.engine.support.descriptor.ClassSource
 import java.util.*
 
 /**
- * A top level container [TestDescriptor] used to hold
- * all discovered specs.
+ * A top level container [TestDescriptor] used to hold the root
+ * container of each discovered [io.kotlintest.Spec].
  */
-class RootTestDescriptor(val id: UniqueId,
-                         val name: String) : BranchDescriptor() {
+class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
   override fun removeFromHierarchy() = throw JUnitException("Cannot remove from hierarchy for root")
   override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = name
+  override fun getDisplayName(): String = "Test Results"
   override fun getSource(): Optional<TestSource> = Optional.empty()
 }
 
@@ -26,15 +25,24 @@ class RootTestDescriptor(val id: UniqueId,
  * nested contexts, or [TestCase]'s themselves.
  */
 open class TestContainerDescriptor(val id: UniqueId,
-                                   val name: String,
-                                   val spec: Spec) : BranchDescriptor() {
+                                   val container: TestContainer) : BranchDescriptor() {
+
   override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = name
-  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(spec.javaClass))
+  override fun getDisplayName(): String = container.name
+  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
 
   companion object {
-    fun fromSpec(spec: Spec): TestContainerDescriptor =
-        TestContainerDescriptor(UniqueId.parse("wibble_" + System.currentTimeMillis()), spec.javaClass.simpleName, spec)
+
+    fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor {
+      val desc = TestContainerDescriptor(parentId.append("container", container.name), container)
+      container.childContainers().forEach {
+        desc.addChild(fromTestContainer(desc.uniqueId, it))
+      }
+      container.testCases().forEach {
+        desc.addChild(TestCaseDescriptor.fromTestCase(desc.uniqueId, it))
+      }
+      return desc
+    }
   }
 }
 
@@ -42,10 +50,14 @@ open class TestContainerDescriptor(val id: UniqueId,
  * A Test level descriptor that contains a single [TestCase].
  */
 class TestCaseDescriptor(val id: UniqueId,
-                         val testCase: TestCase,
-                         val name: String) : LeafDescriptor() {
+                         val testCase: TestCase) : LeafDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = testCase.displayName
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(testCase.spec.javaClass))
+
+  companion object {
+    fun fromTestCase(parentId: UniqueId, tc: TestCase): TestCaseDescriptor =
+        TestCaseDescriptor(parentId.append("test", tc.displayName), tc)
+  }
 }

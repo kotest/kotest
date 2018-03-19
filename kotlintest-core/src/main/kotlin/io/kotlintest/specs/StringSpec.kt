@@ -2,7 +2,6 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
 
 /**
  * Example:
@@ -17,10 +16,10 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  private fun addTest(desc: TestContainer, name: String, test: () -> Unit): TestCase {
-    return TestCase(name, nextId(), this@StringSpec, desc, test, defaultTestCaseConfig)
-  }
-
   // adds a test directly from the root context
-  operator fun String.invoke(test: () -> Unit): TestCase = addTest(rootContainer, this, test)
+  operator fun String.invoke(test: () -> Unit): TestCase {
+    val tc = TestCase(this, this@StringSpec, test, defaultTestCaseConfig)
+    rootContainer.addTest(tc)
+    return tc
+  }
 }

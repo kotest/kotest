@@ -13,7 +13,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
 
   fun Given(desc: String, init: GivenScope.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenScope.() -> Unit) {
-    val descriptor = TestContainer("Given $desc")
+    val descriptor = TestContainer("Given $desc", this@BehaviorSpec)
     rootContainer.addContainer(descriptor)
     GivenScope(descriptor).init()
   }
@@ -21,8 +21,8 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
   inner class GivenScope(private val parent: TestContainer) {
     fun When(desc: String, init: WhenScope.() -> Unit) = `when`(desc, init)
     fun `when`(desc: String, init: WhenScope.() -> Unit) {
-      val descriptor = TestContainer("When $desc")
-      rootContainer.addContainer(descriptor)
+      val descriptor = TestContainer("When $desc", this@BehaviorSpec)
+      parent.addContainer(descriptor)
       WhenScope(descriptor).init()
     }
   }
@@ -30,7 +30,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
   inner class WhenScope(private val parent: TestContainer) {
     fun Then(desc: String, test: () -> Unit): TestCase = then(desc, test)
     fun then(desc: String, test: () -> Unit): TestCase {
-      val tc = TestCase("Then $desc", nextId(), this@BehaviorSpec, parent, test, defaultTestCaseConfig)
+      val tc = TestCase("Then $desc", this@BehaviorSpec, test, defaultTestCaseConfig)
       parent.addTest(tc)
       return tc
     }

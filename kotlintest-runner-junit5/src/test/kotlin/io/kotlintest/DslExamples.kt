@@ -1,4 +1,4 @@
-package io.kotlintest.assertions
+package io.kotlintest
 
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan

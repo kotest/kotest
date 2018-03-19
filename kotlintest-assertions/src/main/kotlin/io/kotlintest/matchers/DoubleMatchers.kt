@@ -15,12 +15,14 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
     val differenceToMaximum = b - value
 
     if (differenceToMinimum < 0 && differenceToMinimum > tolerance) {
-      return Result(false, "$value should be bigger than $a")
+      return Result(false, "$value should be bigger than $a", "$value should not be bigger than $a")
     }
+
     if (differenceToMaximum < 0 && differenceToMaximum > tolerance) {
-      return Result(false, "$value should be smaller than $b")
+      return Result(false, "$value should be smaller than $b", "$value should not be smaller than $b")
     }
-    return Result(true, "")
+
+    return Result(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller and $b and bigger than $a")
   }
 }
 

@@ -26,7 +26,12 @@ abstract class LeafDescriptor : TestDescriptor {
   override fun removeChild(descriptor: TestDescriptor?) = throw UnsupportedOperationException()
   override fun addChild(descriptor: TestDescriptor?) = throw UnsupportedOperationException()
   override fun getTags(): MutableSet<TestTag> = mutableSetOf()
-  override fun findByUniqueId(uniqueId: UniqueId?): Optional<out TestDescriptor> = Optional.empty()
+
+  override fun findByUniqueId(uniqueId: UniqueId?): Optional<out TestDescriptor> =
+      when (uniqueId) {
+        getUniqueId() -> Optional.of(this)
+        else -> Optional.empty()
+      }
 }
 
 abstract class BranchDescriptor : TestDescriptor {
@@ -51,9 +56,20 @@ abstract class BranchDescriptor : TestDescriptor {
   override fun getTags(): MutableSet<TestTag> = mutableSetOf()
 
   override fun findByUniqueId(uniqueId: UniqueId): Optional<out TestDescriptor> =
-      if (uniqueId == getUniqueId()) Optional.of(this)
-      else children.map { it.findByUniqueId(uniqueId) }.first { it.isPresent }
+      when {
+        uniqueId == getUniqueId() -> Optional.of(this)
+        children.isEmpty() -> Optional.empty()
+        else -> {
+          children.forEach {
+            val found = it.findByUniqueId(uniqueId)
+            if (found.isPresent)
+              return Optional.of(found.get())
+          }
+          Optional.empty()
+        }
+      }
 
+  override fun removeFromHierarchy() {}
   override fun removeChild(descriptor: TestDescriptor?) {
     throw UnsupportedOperationException()
   }
@@ -61,9 +77,5 @@ abstract class BranchDescriptor : TestDescriptor {
   override fun addChild(descriptor: TestDescriptor) {
     descriptor.setParent(this)
     this.children.add(descriptor)
-  }
-
-  override fun removeFromHierarchy() {
-    throw UnsupportedOperationException()
   }
 }

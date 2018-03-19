@@ -6,15 +6,26 @@ package io.kotlintest
  * It contains a single root [TestContainer] which in turn
  * contains [TestCase] instances or further containers.
  *
- * A test case is the actual unit of test. A test case will
+ * A test case is the actual test unit. A test case will
  * never reside in a spec directly, but always in the root
  * container or a child container of the root.
  *
+ * Typically, users do not interact with instances of
+ * [TestContainer] or [TestCase] directly, instead each
+ * concrete implementation of Spec offers a different way to
+ * create these using an easy to read DSL.
+ *
+ * For example, the FunSpec allows us to create tests using
+ * the "test(name)" function, such as:
+ *
+ * fun test("this is a test") {
+ *   // test code here
+ * }
+ *
  * The spec ultimately forms a tree, with the spec's root
  * container at the root, and nested containers forming
- * branches and test cases as the leaves.
- *
- * The actual hierarchy will depend on the spec being used.
+ * branches and test cases as the leaves. The actual hierarchy
+ * will depend on the spec being used.
  */
 interface Spec {
 

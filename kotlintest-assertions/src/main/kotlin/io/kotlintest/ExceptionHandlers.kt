@@ -11,20 +11,17 @@ package io.kotlintest
  * If you wish to test for a specific class only, excluding subclasses
  * then use `shouldThrowExactly<T>`
  */
-inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
-  val e = try {
+inline fun <reified T : Throwable> shouldThrow(thunk: () -> Any?): T {
+  val exceptionClass = T::class.java
+  try {
     thunk()
-    null
+    throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
   } catch (e: Throwable) {
-    e
-  }
-
-  val exceptionClassName = T::class.qualifiedName
-
-  when {
-    e == null -> throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    e.javaClass.canonicalName != exceptionClassName -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
-    else -> return e as T
+    return when {
+      exceptionClass.isAssignableFrom(e.javaClass) -> e as T
+      e is AssertionError -> throw e
+      else -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
+    }
   }
 }
 
@@ -39,20 +36,17 @@ inline fun <reified T> shouldThrow(thunk: () -> Any?): T {
  * If you wish to include subclasses of exceptions, then
  * use `shouldThrow<T>`
  */
-inline fun <reified T> shouldThrowExactly(thunk: () -> Any?): T {
-  val e = try {
+inline fun <reified T : Throwable> shouldThrowExactly(thunk: () -> Any?): T {
+  val exceptionClass = T::class.java
+  try {
     thunk()
-    null
+    throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
   } catch (e: Throwable) {
-    e
-  }
-
-  val exceptionClassName = T::class.qualifiedName
-
-  when {
-    e == null -> throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
-    e.javaClass.canonicalName != exceptionClassName -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
-    else -> return e as T
+    return when {
+      e.javaClass == exceptionClass -> e as T
+      e is AssertionError -> throw e
+      else -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
+    }
   }
 }
 

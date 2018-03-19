@@ -3,16 +3,12 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import org.junit.platform.commons.util.ReflectionUtils
 import org.junit.platform.engine.EngineDiscoveryRequest
-import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
-import org.junit.platform.engine.discovery.PackageSelector
-import java.lang.reflect.Modifier
 
 class KotlinTestEngine : TestEngine {
 
@@ -22,7 +18,7 @@ class KotlinTestEngine : TestEngine {
     spec.interceptSpec({ chain() })
   }
 
-  override fun getId(): String = "io.kotlintest"
+  override fun getId(): String = javaClass.canonicalName
 
   private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
@@ -30,75 +26,67 @@ class KotlinTestEngine : TestEngine {
     Project.beforeAll()
     request.rootTestDescriptor.children.forEach {
       when (it) {
-        is TestContainerDescriptor -> execute(it, request.engineExecutionListener)
+        is TestContainerDescriptor -> execute(it, request)
         else -> throw IllegalStateException("All children of the root test descriptor must be instances of ContainerTestDescriptor; was $it")
       }
     }
     Project.afterAll()
   }
 
-  private fun execute(descriptor: TestContainerDescriptor, listener: EngineExecutionListener) {
+  private fun execute(descriptor: TestContainerDescriptor, request: ExecutionRequest) {
     try {
-      listener.executionStarted(descriptor)
+      request.engineExecutionListener.executionStarted(descriptor)
       descriptor.children.forEach {
         when (it) {
-          is TestContainerDescriptor -> execute(it, listener)
-          is TestCaseDescriptor -> execute(it, listener)
+          is TestContainerDescriptor -> execute(it, request)
+          is TestCaseDescriptor -> execute(it, request)
           else -> throw IllegalStateException("$it is not supported")
         }
       }
-      listener.executionFinished(descriptor, TestExecutionResult.successful())
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
     } catch (throwable: Throwable) {
-      listener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
   }
 
-  private fun execute(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
+  private fun execute(descriptor: TestCaseDescriptor, request: ExecutionRequest) {
     try {
-      listener.executionStarted(descriptor)
-      val runner = TestCaseRunner(listener)
-      runner.runTest(actualDescriptor(descriptor))
-      listener.executionFinished(descriptor, TestExecutionResult.successful())
+      request.engineExecutionListener.executionStarted(descriptor)
+      val runner = TestCaseRunner(request.engineExecutionListener)
+      runner.runTest(actualDescriptor(descriptor, request))
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
     } catch (throwable: Throwable) {
-      listener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
   }
 
-  private fun actualDescriptor(descriptor: TestCaseDescriptor): TestCaseDescriptor {
+  private fun actualDescriptor(descriptor: TestCaseDescriptor, request: ExecutionRequest): TestCaseDescriptor {
     return when (descriptor.testCase.spec.isInstancePerTest()) {
     // if we are using one instance per test then we need a descriptor
     // with a clean instance of the spec
       true -> {
+
         // we use the prototype spec to create another instance of the spec for this test
         val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
 
-        // we can then create a new test descriptor for this spec
-        val container = TestContainerDescriptor.fromSpec(freshSpec)
+        // we then create a new spec-level container descriptor for this spec
+        // the id should be the same as for the existing spec
+        val container = TestContainerDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.root())
+
+        // todo we need to re-run the spec interceptors here
 
         // and then we can get the test case out of that new container
-        container.findByUniqueId(descriptor.uniqueId).orElseThrow { IllegalStateException("Test case cannot be found in spec clone") } as TestCaseDescriptor
+        container.findByUniqueId(descriptor.uniqueId)
+            .orElseThrow {
+              IllegalStateException("Test case with id ${descriptor.id} cannot be found in spec container clone $container")
+            } as TestCaseDescriptor
       }
     // if we are /not/ using one instance per test then we can just return the original descriptor
       false -> descriptor
     }
   }
 
-  override fun discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor {
-
-    val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
-
-    val specs: List<Class<Spec>> = discoveryRequest.getSelectorsByType(PackageSelector::class.java).flatMap {
-      ReflectionUtils.findAllClassesInPackage(it.packageName, isSpec, { true }).map {
-        it as Class<Spec>
-      }
-    }
-
-    val root = RootTestDescriptor(uniqueId, "KotlinTest")
-    specs.forEach {
-      val spec: Spec = it.newInstance()
-      root.addChild(TestContainerDescriptor.fromSpec(spec))
-    }
-    return root
-  }
+  override fun discover(discoveryRequest: EngineDiscoveryRequest, uniqueId: UniqueId): TestDescriptor =
+      SpecDiscovery(discoveryRequest, uniqueId)
 }
 

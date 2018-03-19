@@ -10,7 +10,7 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   fun test(name: String, test: () -> Unit): TestCase {
-    val testcase = TestCase(name, nextId(), this@FunSpec, rootContainer, test, defaultTestCaseConfig)
+    val testcase = TestCase(name, this@FunSpec, test, defaultTestCaseConfig)
     rootContainer.addTest(testcase)
     return testcase
   }

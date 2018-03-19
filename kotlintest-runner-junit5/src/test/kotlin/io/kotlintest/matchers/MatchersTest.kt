@@ -2,7 +2,6 @@ package io.kotlintest.matchers
 
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldEqual
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
@@ -76,13 +75,13 @@ class MatchersTest : FreeSpec() {
 
     "Matchers.shouldEqual" - {
       "should compare equality" {
-        "a" shouldEqual "a"
+        "a" shouldBe "a"
       }
     }
 
     "Matcher should have size x" - {
       "should compare sizes of iterables" {
-        listOf(1, 2, 3) should haveSize<Int>(3)
+        listOf(1, 2, 3) should haveSize(3)
       }
     }
 

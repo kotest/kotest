@@ -2,33 +2,43 @@ package io.kotlintest.matchers
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.shouldThrowAny
+import io.kotlintest.shouldThrowExactly
 import io.kotlintest.specs.FreeSpec
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class ExceptionMatchersTest : FreeSpec() {
 
   init {
     "shouldThrow" - {
-      "should test for correct exception" {
-        shouldThrow<IllegalAccessException> {
-          throw IllegalAccessException("bibble")
+      "error if no exception throw" {
+        try {
+          shouldThrow<IllegalAccessException> {
+            listOf(1, 2, 3)
+          }
+          throw RuntimeException("If we get here its a bug")
+        } catch (ex: AssertionError) {
         }
       }
       "should test for correct exception" {
         try {
           shouldThrow<IllegalStateException> {
-            throw IllegalAccessException("bibble")
+            throw IOException("bibble")
           }
           throw RuntimeException("If we get here its a bug")
         } catch (e: AssertionError) {
         }
       }
-      "should test for throwables" {
+      "should support throwables" {
+        shouldThrow<Throwable> {
+          throw Throwable("bibble")
+        }
         try {
           shouldThrow<Throwable> {
-            throw Throwable("bibble")
           }
           throw RuntimeException("If we get here its a bug")
-        } catch (e: AssertionError) {
+        } catch (e: Throwable) {
         }
       }
       "return matched exception" {
@@ -43,33 +53,33 @@ class ExceptionMatchersTest : FreeSpec() {
         }
       }
     }
-    "expecting" - {
-      "should test for presence of exception" {
-        shouldThrow<IllegalAccessException> {
-          throw IllegalAccessException("bibble")
+    "shouldThrowExactly" - {
+      "should test for precise exception class" {
+        shouldThrowExactly<IOException> {
+          throw IOException("bibble")
+        }
+        try {
+          shouldThrowExactly<IOException> {
+          }
+          throw RuntimeException("If we get here its a bug")
+        } catch (e: AssertionError) {
         }
       }
-      "error if no exception throw" {
-        val result = try {
-          shouldThrow<IllegalAccessException> {
-            listOf(1, 2, 3)
+      "error on subclass" {
+        try {
+          shouldThrowExactly<IOException> {
+            throw FileNotFoundException("bibble")
           }
-          true
-        } catch (ex: AssertionError) {
-          false
+          throw RuntimeException("If we get here its a bug")
+        } catch (e: AssertionError) {
         }
-        result shouldBe false
       }
-      "error if wrong exception throw" {
-        val result = try {
-          shouldThrow<IllegalAccessException> {
-            throw UnsupportedOperationException("bibble")
-          }
-          true
-        } catch (ex: AssertionError) {
-          false
+    }
+    "shouldThrowAny" - {
+      "should test for any exception" {
+        shouldThrowAny {
+          throw IOException("bibble")
         }
-        result shouldBe false
       }
     }
   }

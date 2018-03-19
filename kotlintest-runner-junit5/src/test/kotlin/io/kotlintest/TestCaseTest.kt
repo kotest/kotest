@@ -17,14 +17,14 @@ class TestCaseTest : StringSpec() {
     testTaggedB.config(tags = setOf(TagB))
 
     "only tests without excluded tags should be active" {
-      System.setProperty("excludeTags", "TagB")
+      System.setProperty("kotlintest.tags.exclude", "TagB")
       testTaggedA.isActive() shouldBe true
       untaggedTest.isActive() shouldBe true
       testTaggedB.isActive() shouldBe false
     }
 
     "only tests with included tags should be active" {
-      System.setProperty("includeTags", "TagA")
+      System.setProperty("kotlintest.tags.include", "TagA")
       testTaggedA.isActive() shouldBe true
       untaggedTest.isActive() shouldBe false
       testTaggedB.isActive() shouldBe false
@@ -39,7 +39,7 @@ class TestCaseTest : StringSpec() {
 
   override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
     test()
-    System.clearProperty("excludeTags")
-    System.clearProperty("includeTags")
+    System.clearProperty("kotlintest.tags.exclude")
+    System.clearProperty("kotlintest.tags.include")
   }
 }

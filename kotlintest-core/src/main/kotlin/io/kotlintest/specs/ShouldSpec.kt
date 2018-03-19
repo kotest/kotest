@@ -28,7 +28,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
-    val descriptor = TestContainer(this)
+    val descriptor = TestContainer(this, this@ShouldSpec)
     rootContainer.addContainer(descriptor)
     ShouldSpecScope(descriptor).init()
   }
@@ -36,7 +36,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
   inner class ShouldSpecScope(private val parentDescriptor: TestContainer) {
 
     operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
-      val descriptor = TestContainer(this)
+      val descriptor = TestContainer(this, this@ShouldSpec)
       parentDescriptor.addContainer(descriptor)
       ShouldSpecScope(descriptor).init()
     }
@@ -45,7 +45,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   private fun addTest(name: String, test: () -> Unit, parentDescriptor: TestContainer): TestCase {
-    val tc = TestCase("should $name", nextId(), this@ShouldSpec, parentDescriptor, test, defaultTestCaseConfig)
+    val tc = TestCase("should $name", this@ShouldSpec, test, defaultTestCaseConfig)
     parentDescriptor.addTest(tc)
     return tc
   }
