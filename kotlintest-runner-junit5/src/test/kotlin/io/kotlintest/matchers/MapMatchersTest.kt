@@ -4,7 +4,7 @@ import java.util.LinkedList
 
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 
@@ -147,7 +147,7 @@ class MapMatchersTest : WordSpec() {
       }
       "test shouldNot assertion" {
         val e = shouldThrow<AssertionError> {
-          mapOf("a" to 1, "b" to 2) shouldNotBe containAll(mapOf("a" to 1))
+          mapOf("a" to 1, "b" to 2) shouldNot containAll(mapOf("a" to 1))
         }
         e.message shouldBe """
           |
@@ -183,10 +183,10 @@ class MapMatchersTest : WordSpec() {
       }
       "test shouldNot assertion" {
         val e = shouldThrow<AssertionError> {
-          val arrayList = arrayListOf(1)
+          val arrayList: List<Int> = arrayListOf(1)
           val linkedList = LinkedList<Int>()
           linkedList.push(1)
-          mapOf("a" to arrayList) shouldNotBe containExactly(mapOf("a" to linkedList))
+          mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>(mapOf("a" to linkedList))
         }
         e.message shouldBe """
           |
