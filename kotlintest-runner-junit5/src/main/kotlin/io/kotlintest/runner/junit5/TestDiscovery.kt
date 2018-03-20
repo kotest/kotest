@@ -18,7 +18,6 @@ object TestDiscovery {
   val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
 
   private fun reflections(request: DiscoveryRequest): Reflections {
-    println("Will scan ${request.uris.joinToString(":")}")
     return Reflections(ConfigurationBuilder()
         .addUrls(request.uris.map { it.toURL() })
         .setScanners(SubTypesScanner()))
@@ -36,7 +35,6 @@ object TestDiscovery {
     val root = RootTestDescriptor(uniqueId.append("root", "kotlintest"))
     val specs = scan(request)
 
-    println("Found ${specs.size} specs")
     specs.forEach {
       val spec: Spec = it.createInstance()
       root.addChild(TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root()))

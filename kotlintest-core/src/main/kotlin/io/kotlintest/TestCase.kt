@@ -7,7 +7,7 @@ import java.time.Duration
  * That is, a unit of code that will be tested.
  *
  * A testcase is always associated with a container,
- * called a [TestContainer]. Such a descriptor is used
+ * called a [TestScope]. Such a descriptor is used
  * to group together related testcases. This allow hierarchical
  * reporting and output.
  */

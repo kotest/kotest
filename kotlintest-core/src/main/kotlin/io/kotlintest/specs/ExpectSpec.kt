@@ -2,7 +2,7 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
+import io.kotlintest.TestScope
 
 abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -11,15 +11,15 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-    val descriptor = TestContainer("Context: $name", this@ExpectSpec)
+    val descriptor = TestScope("Context: $name", this@ExpectSpec)
     rootContainer.addContainer(descriptor)
     ExpectSpecScope(descriptor).init()
   }
 
-  inner class ExpectSpecScope(private val parentDescriptor: TestContainer) {
+  inner class ExpectSpecScope(private val parentDescriptor: TestScope) {
 
     fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-      val descriptor = TestContainer("Context: $name", this@ExpectSpec)
+      val descriptor = TestScope("Context: $name", this@ExpectSpec)
       parentDescriptor.addContainer(descriptor)
       ExpectSpecScope(descriptor).init()
     }

@@ -2,7 +2,7 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
+import io.kotlintest.TestScope
 
 abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -11,15 +11,15 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
   }
 
   fun describe(name: String, init: DescribeScope.() -> Unit) {
-    val descriptor = TestContainer("Describe: $name", this@DescribeSpec)
+    val descriptor = TestScope("Describe: $name", this@DescribeSpec)
     rootContainer.addContainer(descriptor)
     DescribeScope(descriptor).init()
   }
 
-  inner class DescribeScope(private val parent: TestContainer) {
+  inner class DescribeScope(private val parent: TestScope) {
 
     fun describe(name: String, init: DescribeScope.() -> Unit) {
-      val descriptor = TestContainer("Describe: $name", this@DescribeSpec)
+      val descriptor = TestScope("Describe: $name", this@DescribeSpec)
       parent.addContainer(descriptor)
       DescribeScope(descriptor).init()
     }

@@ -19,14 +19,9 @@ fun <CONTEXT> createInterceptorChain(
 
 class TestCaseRunner(private val listener: EngineExecutionListener) {
 
-  init {
-    println("created $this")
-  }
-
   // TODO beautify
   fun runTest(descriptor: TestCaseDescriptor) {
     if (descriptor.testCase.isActive()) {
-      println("Test is active")
       val executor =
           if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(descriptor.testCase.config.threads)
@@ -38,7 +33,6 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
       val testCaseContext = TestCaseContext(descriptor.testCase.spec, descriptor.testCase)
 
       val errors = mutableListOf<Throwable>()
-
       for (j in 1..descriptor.testCase.config.invocations) {
         executor.execute {
           try {

@@ -2,7 +2,7 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
+import io.kotlintest.TestScope
 
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -11,15 +11,15 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
-    val descriptor = TestContainer(this, this@FreeSpec)
+    val descriptor = TestScope(this, this@FreeSpec)
     rootContainer.addContainer(descriptor)
     FreeSpecScope(descriptor).init()
   }
 
-  inner class FreeSpecScope(private val parentDescriptor: TestContainer) {
+  inner class FreeSpecScope(private val parentDescriptor: TestScope) {
 
     infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
-      val descriptor = TestContainer(this, this@FreeSpec)
+      val descriptor = TestScope(this, this@FreeSpec)
       parentDescriptor.addContainer(descriptor)
       FreeSpecScope(descriptor).init()
     }

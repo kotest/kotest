@@ -27,7 +27,7 @@ class KotlinTestEngine : TestEngine {
   private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
   override fun execute(request: ExecutionRequest) {
-    println("Beginning EXECUTION")
+    request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     Project.beforeAll()
     request.rootTestDescriptor.children.forEach {
       when (it) {
@@ -36,10 +36,10 @@ class KotlinTestEngine : TestEngine {
       }
     }
     Project.afterAll()
+    request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
   }
 
   private fun executeContainer(descriptor: TestContainerDescriptor, request: ExecutionRequest) {
-    println("Beginning ${descriptor.id}")
     try {
       request.engineExecutionListener.executionStarted(descriptor)
       descriptor.children.forEach {
@@ -53,22 +53,16 @@ class KotlinTestEngine : TestEngine {
     } catch (throwable: Throwable) {
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
-    println("Ending ${descriptor.id}")
   }
 
   private fun executeTestCase(descriptor: TestCaseDescriptor, request: ExecutionRequest) {
-    println("Excuting test itself ${descriptor.id}")
     try {
-      println("request.engineExecutionListener.executionStarted(descriptor)")
       request.engineExecutionListener.executionStarted(descriptor)
-      println("qqq")
       val runner = TestCaseRunner(request.engineExecutionListener)
-      println("Created runner $runner")
       runner.runTest(actualDescriptor(descriptor, request))
-      println("runner completed $runner")
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
     } catch (throwable: Throwable) {
-      println("Whoops $throwable")
+      throwable.printStackTrace()
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
     }
   }
@@ -89,7 +83,6 @@ class KotlinTestEngine : TestEngine {
         // todo we need to re-run the spec interceptors here
 
         // and then we can get the test case out of that new container
-        println("Finding container ${descriptor.uniqueId}")
         container.findByUniqueId(descriptor.uniqueId)
             .orElseThrow {
               IllegalStateException("Test case with id ${descriptor.id} cannot be found in spec container clone $container")

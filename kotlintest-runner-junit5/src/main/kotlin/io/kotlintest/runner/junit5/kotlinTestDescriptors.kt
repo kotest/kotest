@@ -1,7 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
+import io.kotlintest.TestScope
 import org.junit.platform.commons.JUnitException
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
@@ -25,7 +25,7 @@ class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
  * nested contexts, or [TestCase]'s themselves.
  */
 open class TestContainerDescriptor(val id: UniqueId,
-                                   val container: TestContainer) : BranchDescriptor() {
+                                   val container: TestScope) : BranchDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = container.displayName
@@ -33,7 +33,7 @@ open class TestContainerDescriptor(val id: UniqueId,
 
   companion object {
 
-    fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor {
+    fun fromTestContainer(parentId: UniqueId, container: TestScope): TestContainerDescriptor {
       val desc = TestContainerDescriptor(parentId.append("container", container.displayName), container)
       container.childContainers().forEach {
         desc.addChild(fromTestContainer(desc.uniqueId, it))
