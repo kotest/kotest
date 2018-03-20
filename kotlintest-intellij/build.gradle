@@ -1,0 +1,17 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.2.18"
+}
+
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'kotlin-platform-jvm'
+
+dependencies {
+}
+
+intellij {
+    pluginName = 'KotlinTest'
+    updateSinceUntilBuild = false
+    downloadSources = true
+    version = '2016.3'
+    plugins = ['org.jetbrains.kotlin:1.2.0-release-IJ2016.3-1']
+}
