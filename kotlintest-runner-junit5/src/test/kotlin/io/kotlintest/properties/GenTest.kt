@@ -3,7 +3,6 @@
 package io.kotlintest.properties
 
 import io.kotlintest.forAll
-import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.substring
@@ -14,14 +13,9 @@ import io.kotlintest.specs.WordSpec
 import java.util.Random
 import kotlin.collections.ArrayList
 import kotlin.collections.List
-import kotlin.collections.MutableMap
 import kotlin.collections.Set
-import kotlin.collections.all
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
 import kotlin.collections.last
 import kotlin.collections.listOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.plusAssign
 
 class GenTest : WordSpec() {
@@ -103,7 +97,7 @@ class GenTest : WordSpec() {
         )
 
         forAll(table1) { clazz ->
-          Gen.forClassName(clazz).generate()!!.javaClass.name shouldBe clazz
+          Gen.forClassName(clazz).generate().javaClass.name shouldBe clazz
         }
 
         val table2 = table(
@@ -117,10 +111,10 @@ class GenTest : WordSpec() {
 
         forAll(table2) { clazz ->
           val tmp = clazz.split(".").last()
-          Gen.forClassName(clazz).generate()!!.javaClass.name shouldBe "java.lang." + tmp
+          Gen.forClassName(clazz).generate().javaClass.name shouldBe "java.lang.$tmp"
         }
 
-        Gen.forClassName("kotlin.Int").generate()!!.javaClass.name shouldBe "java.lang.Integer"
+        Gen.forClassName("kotlin.Int").generate().javaClass.name shouldBe "java.lang.Integer"
       }
       "throw an exception, with a wrong class" {
         shouldThrow<IllegalArgumentException> {
@@ -188,7 +182,7 @@ class GenTest : WordSpec() {
 
         forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).generate()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).generate().javaClass.name shouldHave substring(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {
@@ -197,34 +191,7 @@ class GenTest : WordSpec() {
         }
       }
     }
-    "Gen.oneOf list<T> " should {
-      "choose a random member and not the same one every time" {
-        val list = listOf("a", "b", "c", "d", "e")
-        val gen = Gen.oneOf(list)
 
-        val map: MutableMap<String, Int> = mutableMapOf()
-
-        list.forEach { map.put(it, 0) }
-
-        (0..1000000).forEach {
-          val key = gen.generate()
-          map.put(key, map[key]?.plus(1)!!)
-        }
-
-        map.forEach { it.value shouldBe gt(0) }
-
-      }
-      "select one of a given list" {
-
-        forAll(Gen.list(Gen.int())) {
-          list ->
-          list.isNotEmpty() ||
-              (0..1000).all {
-                list.contains(Gen.oneOf(list).generate())
-              }
-        }
-      }
-    }
     "Gen.oneOf list<Gen<T>> " should {
       "choose one of the given Generators and generate a value from it" {
         val gen = Gen.oneOf(Gen.create { 5 },
@@ -279,7 +246,7 @@ class GenTest : WordSpec() {
 
     "Gen.filter " should {
       "prevent values from being generated" {
-        forAll(Gen.oneOf(listOf(1, 2, 5)).filter { it != 2 }) {
+        forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
           it != 2
         }
       }

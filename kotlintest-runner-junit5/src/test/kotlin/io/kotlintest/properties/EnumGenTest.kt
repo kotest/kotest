@@ -6,7 +6,7 @@ import io.kotlintest.specs.StringSpec
 class EnumGenTest : StringSpec() {
   init {
     "enum gen should work generically" {
-      val gen = Gen.oneOf<Weather>()
+      val gen = Gen.enum<Weather>()
       (1..1000).map { gen.generate() }.toSet() shouldBe
           setOf(Weather.Hot, Weather.Cold, Weather.Dry)
     }

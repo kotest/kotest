@@ -18,7 +18,7 @@ class PropertyTestingTest : StringSpec() {
 
     "endsWith a hundred times" {
       var actualAttempts = 0
-      forAll(100, Gen.string(), Gen.string()) { a, b ->
+      forAll(Gen.string(), Gen.string()) { a, b ->
         actualAttempts++
         (a + b).endsWith(b)
       }
@@ -40,7 +40,7 @@ class PropertyTestingTest : StringSpec() {
       val exception =
           shouldThrow<AssertionError> {
             var attempts = 0
-            forAll(20, Gen.string(), Gen.string()) { a, b ->
+            forAll(Gen.string(), Gen.string()) { a, b ->
               element1 = a
               element2 = b
               attempts++
@@ -56,7 +56,7 @@ class PropertyTestingTest : StringSpec() {
       val exception =
           shouldThrow<AssertionError> {
             var attempts = 0
-            forAll(200, Gen.string(), Gen.string()) { a, b ->
+            forAll(Gen.string(), Gen.string()) { a, b ->
               element1 = a
               element2 = b
               attempts++
@@ -64,24 +64,6 @@ class PropertyTestingTest : StringSpec() {
             }
           }
       exception.message shouldBe "Property failed for\n$element1\n$element2\nafter 50 attempts"
-    }
-
-    "running for 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.string(), Gen.string()) { a, b ->
-          (a + b).startsWith(a)
-        }
-      }
-      exception.message shouldBe "The number of attempts should be a positive number"
-    }
-
-    "running for -1 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-1, Gen.string(), Gen.string()) { a, b ->
-          (a + b).startsWith(a)
-        }
-      }
-      exception.message shouldBe "The number of attempts should be a positive number"
     }
 
     "explicitGenerators" {
@@ -111,7 +93,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll single generator explicit 20 attempts" {
       var attempts = 0
-      forAll(20, Gen.int()) { a ->
+      forAll(Gen.int()) { a ->
         attempts++
         a * 2 == 2 * a
       }
@@ -120,7 +102,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll single gnerator explicit 500 atempts" {
       var attempts = 0
-      forAll(500, Gen.positiveIntegers()) { a ->
+      forAll(Gen.positiveIntegers()) { a ->
         attempts++
         a + 2 > a
       }
@@ -131,7 +113,7 @@ class PropertyTestingTest : StringSpec() {
       var attempts = 0
       var element = 0.0
       val exception = shouldThrow<AssertionError> {
-        forAll(4, Gen.double()) { a ->
+        forAll(Gen.double()) { a ->
           attempts++
           element = a
           attempts < 2
@@ -144,7 +126,7 @@ class PropertyTestingTest : StringSpec() {
       var attempts = 0
       var element = ""
       val exception = shouldThrow<AssertionError> {
-        forAll(350, Gen.string()) { s ->
+        forAll(Gen.string()) { s ->
           element = s
           attempts++
           attempts < 300
@@ -156,16 +138,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forALl one explicit generator with 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.long()) { a ->
-          a > a - 1
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forAll one explicit generator with -2 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-2, Gen.long()) { a ->
+        forAll(Gen.long()) { a ->
           a > a - 1
         }
       }
@@ -174,7 +147,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll one generator implicit 10 attempts" {
       var attempts = 0
-      forAll(10) { a: Int ->
+      forAll { a: Int ->
         attempts++
         2 * a % 2 == 0
       }
@@ -183,7 +156,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: one generator implicit 200 attempts" {
       var attempts = 0
-      forAll(200) { a: Int ->
+      forAll{ a: Int ->
         attempts++
         2 * a % 2 == 0
       }
@@ -192,7 +165,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: two generators implicit 30 attempts" {
       var attempts = 0
-      forAll(30) { a: String, b: String ->
+      forAll { a: String, b: String ->
         attempts++
         (a + b).startsWith(a)
       }
@@ -201,7 +174,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: Two implicit generators 500 attempts" {
       var attempts = 0
-      forAll(500) { a: Int, b: Int ->
+      forAll { a: Int, b: Int ->
         attempts++
         a * b == b * a
       }
@@ -231,29 +204,11 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: Three explicit generators 30 attempts" {
       var attempts = 0
-      forAll(30, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+      forAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
         attempts++
         (a * b) * c == a * (b * c)
       }
       attempts shouldBe 30
-    }
-
-    "forAll: Three explicit generators 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
-          true
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forAll: Three explicit generators -3 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-3, Gen.string(), Gen.int(), Gen.double()) { _, _, _ ->
-          true
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
     }
 
     "forAll: Three explicit generators failure at the third attempt" {
@@ -262,7 +217,7 @@ class PropertyTestingTest : StringSpec() {
       var elementB = 0
       var elementC = 0
       val exception = shouldThrow<AssertionError> {
-        forAll(50, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+        forAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
           elementA = a
           elementB = b
           elementC = c
@@ -280,7 +235,7 @@ class PropertyTestingTest : StringSpec() {
       var elementB = 0
       var elementC = 0
       val exception = shouldThrow<AssertionError> {
-        forAll(50, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+        forAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
           elementA = a
           elementB = b
           elementC = c
@@ -303,7 +258,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: Three implicit generators 26 attempts" {
       var attempts = 0
-      forAll(26) { a: Int, b: Int, c: Int ->
+      forAll { a: Int, b: Int, c: Int ->
         attempts++
         a + b * c == (b * c) + a
       }
@@ -321,7 +276,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: Four explicit generators success after 50 attempts" {
       var attempts = 0
-      forAll(50, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+      forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
         attempts++
         a + b + c + d == d + c + b + a
       }
@@ -354,7 +309,7 @@ class PropertyTestingTest : StringSpec() {
       var elementC = 0
       var elementD = 0
       val exception = shouldThrow<AssertionError> {
-        forAll(100, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
           elementA = a
           elementB = b
           elementC = c
@@ -366,19 +321,9 @@ class PropertyTestingTest : StringSpec() {
       exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
     }
 
-    "forAll: Four explicit generators with -100 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-100, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
-          true
-        }
-      }
-
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
     "forAll: four explicit generators with 0 attempts" {
       shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
           true
         }
       }
@@ -395,7 +340,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: four implicit generators with 20 attempts" {
       var attempts = 0
-      forAll(20) { _: Int, _: Int, _: Int, _: Int ->
+      forAll { _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
       }
@@ -404,7 +349,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: four implicit generators with 250 attempts" {
       var attempts = 0
-      forAll(250) { _: Int, _: Int, _: Int, _: Int ->
+      forAll { _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
       }
@@ -422,7 +367,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: five explicit generators with 200 attempts" {
       var attempts = 0
-      forAll(200, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+      forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
         attempts++
         true
       }
@@ -438,7 +383,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
 
       val exception = shouldThrow<AssertionError> {
-        forAll(500, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
           elementA = a
           elementB = b
           elementC = c
@@ -461,7 +406,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
 
       val exception = shouldThrow<AssertionError> {
-        forAll(500, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
           elementA = a
           elementB = b
           elementC = c
@@ -477,16 +422,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: five explicit generators with 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
-          true
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forAll: five explicit generators with -20 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-20, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
           true
         }
       }
@@ -504,7 +440,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll five implicit generators with 20 attempts" {
       var attempts = 0
-      forAll(20) { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forAll { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
       }
@@ -513,7 +449,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll five implicit generators with 500 attempts" {
       var attempts = 0
-      forAll(500) { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forAll { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
       }
@@ -531,7 +467,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll six explicit arguments with 50 attempts" {
       var attempts = 0
-      forAll(50, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+      forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         true
       }
@@ -547,7 +483,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forAll(500, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           elementA = a
           elementB = b
           elementC = c
@@ -571,7 +507,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forAll(700, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           elementA = a
           elementB = b
           elementC = c
@@ -588,7 +524,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll six explicit arguments with 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forAll(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
           true
         }
       }
@@ -597,7 +533,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll six explicit arguments with -300 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forAll(-300, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
           true
         }
       }
@@ -615,7 +551,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: six implicit arguments 500 attempts" {
       var attempts = 0
-      forAll(500) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
+      forAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
         attempts++
         true
       }
@@ -624,7 +560,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: six implicit arguments 20 attempts" {
       var attempts = 0
-      forAll(20) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
+      forAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
         attempts++
         true
       }
@@ -680,7 +616,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: one explicit argument with 300 attempts" {
       var attempts = 0
-      forNone(300, Gen.string()) { a ->
+      forNone(Gen.string()) { a ->
         attempts++
         (a + "hi").endsWith("Bye")
       }
@@ -691,7 +627,7 @@ class PropertyTestingTest : StringSpec() {
       var attempts = 0
       var elementA = ""
       val exception = shouldThrow<AssertionError> {
-        forNone(400, Gen.string()) { a ->
+        forNone(Gen.string()) { a ->
           elementA = a
           attempts++
           attempts >= 10
@@ -704,7 +640,7 @@ class PropertyTestingTest : StringSpec() {
       var attempts = 0
       var elementA = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(100, Gen.int()) { a ->
+        forNone(Gen.int()) { a ->
           elementA = a
           attempts++
           attempts >= 50
@@ -715,7 +651,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: one explicit argument with 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int()) { _ ->
+        forNone(Gen.int()) { _ ->
           false
         }
       }
@@ -724,7 +660,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: one explicit argument with -100 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-100, Gen.int()) { _ ->
+        forNone(Gen.int()) { _ ->
           false
         }
       }
@@ -742,7 +678,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: one implicit argument with 20 attempts" {
       var attempts = 0
-      forNone(20) { _: Double ->
+      forNone { _: Double ->
         attempts++
         false
       }
@@ -751,7 +687,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: one implicit argument with 100 attempts" {
       var attempts = 0
-      forNone(100) { _: Double ->
+      forNone { _: Double ->
         attempts++
         false
       }
@@ -769,7 +705,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two explicit arguments with 360 attempts" {
       var attempts = 0
-      forNone(360, Gen.int(), Gen.int()) { a, b ->
+      forNone( Gen.int(), Gen.int()) { a, b ->
         attempts++
         a * b != b * a
       }
@@ -778,7 +714,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two explicit arguments 1492 attempts" {
       var attempts = 0
-      forNone(1492, Gen.int(), Gen.int()) { a, b ->
+      forNone( Gen.int(), Gen.int()) { a, b ->
         attempts++
         a * b == a + b
       }
@@ -790,7 +726,7 @@ class PropertyTestingTest : StringSpec() {
       var string = ""
       var double = 0.0
       val exception = shouldThrow<AssertionError> {
-        forNone(36, Gen.string(), Gen.double()) { a, b ->
+        forNone(Gen.string(), Gen.double()) { a, b ->
           string = a
           double = b
           attempts++
@@ -805,7 +741,7 @@ class PropertyTestingTest : StringSpec() {
       var positive = 0
       var negative = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(3650, Gen.positiveIntegers(), Gen.negativeIntegers()) { p, n ->
+        forNone(Gen.positiveIntegers(), Gen.negativeIntegers()) { p, n ->
           attempts++
           positive = p
           negative = n
@@ -813,24 +749,6 @@ class PropertyTestingTest : StringSpec() {
         }
       }
       exception.message shouldBe "Property passed for\n$positive\n$negative\nafter $attempts attempts"
-    }
-
-    "forNone: two explicit generators with 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int(), Gen.double()) { a, b ->
-          a.toDouble() == b && a.toDouble() != b
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forNone: two explicit generators with -367 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-367, Gen.negativeIntegers(), Gen.positiveIntegers()) { a, b ->
-          a == b
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
     }
 
     "forNone: two implicit generators 1000 attempts" {
@@ -844,7 +762,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two implicit generators 1066 attempts" {
       var attempts = 0
-      forNone(1066) { a: Int, b: Int ->
+      forNone { a: Int, b: Int ->
         attempts++
         a == b && b != a
       }
@@ -853,7 +771,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two implicit generators 300 attempts" {
       var attempts = 0
-      forNone(300) { a: String, b: String ->
+      forNone { a: String, b: String ->
         attempts++
         a == b && a != b
       }
@@ -871,7 +789,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: three explicit generators 860 attempts" {
       var attempts = 0
-      forNone(860, Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
+      forNone(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
         false
       }
@@ -885,7 +803,7 @@ class PropertyTestingTest : StringSpec() {
       var elementB = 0
       var elementC = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(300, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+        forNone(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
           attempts++
           elementA = a
           elementB = b
@@ -902,7 +820,7 @@ class PropertyTestingTest : StringSpec() {
       var elementB = 0
       var elementC = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(700, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+        forNone(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
           attempts++
           elementA = a
           elementB = b
@@ -916,17 +834,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: three explicit generators 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
-          false
-        }
-      }
-
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forNone: three explicit generators -100 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-100, Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
+        forNone(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
           false
         }
       }
@@ -945,7 +853,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: three implicit generators 700 attempts" {
       var attempts = 0
-      forNone(700) { _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int ->
         attempts++
         false
       }
@@ -954,7 +862,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: three implicit generators 1200 attempts" {
       var attempts = 0
-      forNone(1200) { _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int ->
         attempts++
         false
       }
@@ -973,7 +881,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: four explicit generators 300 attempts" {
       var attempts = 0
-      forNone(300, Gen.int(), Gen.string(), Gen.double(), Gen.long()) { _, _, _, _ ->
+      forNone(Gen.int(), Gen.string(), Gen.double(), Gen.long()) { _, _, _, _ ->
         attempts++
         false
       }
@@ -987,7 +895,7 @@ class PropertyTestingTest : StringSpec() {
       var elementC = 0L
       var elementD = emptyList<String>()
       val exception = shouldThrow<AssertionError> {
-        forNone(600, Gen.int(), Gen.double(), Gen.long(), Gen.list(Gen.string())) { a, b, c, d ->
+        forNone(Gen.int(), Gen.double(), Gen.long(), Gen.list(Gen.string())) { a, b, c, d ->
           elementA = a
           elementB = b
           elementC = c
@@ -1006,7 +914,7 @@ class PropertyTestingTest : StringSpec() {
       var elementC = 0L
       var elementD = 0.0
       val exception = shouldThrow<AssertionError> {
-        forNone(4000, Gen.int(), Gen.string(), Gen.long(), Gen.double()) { a, b, c, d ->
+        forNone(Gen.int(), Gen.string(), Gen.long(), Gen.double()) { a, b, c, d ->
           attempts++
           elementA = a
           elementB = b
@@ -1016,24 +924,6 @@ class PropertyTestingTest : StringSpec() {
         }
       }
       exception.message shouldBe "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
-    }
-
-    "forNone: four explicit generators 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int(), Gen.list(Gen.string()), Gen.double(), Gen.long()) { _, _, _, _ ->
-          false
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forNone: four explicit generators -100 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-100, Gen.int(), Gen.list(Gen.string()), Gen.double(), Gen.long()) { _, _, _, _ ->
-          false
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
     }
 
     "forNone: four implicit generators 1000 attempts" {
@@ -1047,7 +937,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: four implicit generators 30 attempts" {
       var attempts = 0
-      forNone(30) { _: Long, _: Int, _: Double, _: String ->
+      forNone{ _: Long, _: Int, _: Double, _: String ->
         attempts++
         false
       }
@@ -1056,7 +946,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: four implicit generators 620 attempts" {
       var attempts = 0
-      forNone(620) { _: String, _: Int, _: Double, _: Long ->
+      forNone{ _: String, _: Int, _: Double, _: Long ->
         attempts++
         false
       }
@@ -1074,7 +964,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: five explicit generators 26 attempts" {
       var attempts = 0
-      forNone(26, Gen.int(), Gen.string(), Gen.double(), Gen.long(), Gen.int()) { _, _, _, _, _ ->
+      forNone(Gen.int(), Gen.string(), Gen.double(), Gen.long(), Gen.int()) { _, _, _, _, _ ->
         attempts++
         false
       }
@@ -1089,7 +979,7 @@ class PropertyTestingTest : StringSpec() {
       var elementD = 0
       var elementE = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(10, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
           attempts++
           elementA = a
           elementB = b
@@ -1112,7 +1002,7 @@ class PropertyTestingTest : StringSpec() {
       var elementD = 0
       var elementE = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(3000, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
           attempts++
           elementA = a
           elementB = b
@@ -1129,7 +1019,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: five explicit generators 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
           false
         }
       }
@@ -1139,7 +1029,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: five explicit generators -300 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-300, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
           false
         }
       }
@@ -1158,7 +1048,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: five implicit generators 427 attempts" {
       var attempts = 0
-      forNone(427) { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
@@ -1167,7 +1057,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: five implicit generators 2380 attempts" {
       var attempts = 0
-      forNone(2380) { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
@@ -1185,7 +1075,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: six explicit generators 300 attempts" {
       var attempts = 0
-      forNone(300, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+      forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         false
       }
@@ -1201,7 +1091,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(500, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           attempts++
           elementA = a
           elementB = b
@@ -1225,7 +1115,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forNone(100, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           attempts++
           elementA = a
           elementB = b
@@ -1240,26 +1130,6 @@ class PropertyTestingTest : StringSpec() {
           "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter $attempts attempts"
     }
 
-    "forNone: six explicit generators 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
-          false
-        }
-      }
-
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
-    "forNone: six explicit generators -320 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-320, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
-          false
-        }
-      }
-
-      exception.message shouldBe "Attempts should be a positive number"
-    }
-
     "forNone: six implicit generators 1000 attempts" {
       var attempts = 0
       forNone { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
@@ -1271,7 +1141,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: six implicit generators 26 attempts" {
       var attempts = 0
-      forNone(26) { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
@@ -1280,7 +1150,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: six implicit generators 3678 attempts" {
       var attempts = 0
-      forNone(3678) { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forNone { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
