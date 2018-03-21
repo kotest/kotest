@@ -22,7 +22,7 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
 
   infix fun String.should(init: ShouldScope.() -> Unit) {
     val descriptor = TestScope(this, this@WordSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     ShouldScope(descriptor).init()
   }
 

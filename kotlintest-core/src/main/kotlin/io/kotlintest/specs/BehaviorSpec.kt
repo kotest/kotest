@@ -13,33 +13,33 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
 
   fun Given(desc: String, init: GivenScope.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenScope.() -> Unit) {
-    val descriptor = TestScope("Given $desc", this@BehaviorSpec)
-    rootContainer.addContainer(descriptor)
-    GivenScope(descriptor).init()
+    val scope = TestScope("Given $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })
+    rootContainer.addScope(scope)
+    GivenScope(scope).init()
   }
 
   inner class GivenScope(private val parent: TestScope) {
 
     fun and(desc: String, init: GivenScope.() -> Unit) {
-      val descriptor = TestScope("And $desc", this@BehaviorSpec)
-      parent.addContainer(descriptor)
-      GivenScope(descriptor).init()
+      val scope = TestScope("And $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })
+      parent.addScope(scope)
+      GivenScope(scope).init()
     }
 
     fun When(desc: String, init: WhenScope.() -> Unit) = `when`(desc, init)
     fun `when`(desc: String, init: WhenScope.() -> Unit) {
-      val descriptor = TestScope("When $desc", this@BehaviorSpec)
-      parent.addContainer(descriptor)
-      WhenScope(descriptor).init()
+      val scope = TestScope("When $desc", this@BehaviorSpec, { WhenScope(TestScope.empty()).init() })
+      parent.addScope(scope)
+      WhenScope(scope).init()
     }
   }
 
   inner class WhenScope(private val parent: TestScope) {
 
     fun and(desc: String, init: WhenScope.() -> Unit) {
-      val descriptor = TestScope("And $desc", this@BehaviorSpec)
-      parent.addContainer(descriptor)
-      WhenScope(descriptor).init()
+      val scope = TestScope("And $desc", this@BehaviorSpec, { WhenScope(TestScope.empty()).init() })
+      parent.addScope(scope)
+      WhenScope(scope).init()
     }
 
     fun Then(desc: String, test: () -> Unit): TestCase = then(desc, test)

@@ -43,7 +43,7 @@ class GenTest : WordSpec() {
         val min = random.nextInt(10000) - 10000
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(min, max).generate()
+        val rand = Gen.choose(min, max).generate(10)
         rand shouldBe gte(min)
         rand shouldBe lt(max)
       }.config(invocations = 10000, threads = 8)
@@ -54,7 +54,7 @@ class GenTest : WordSpec() {
 
         val max = random.nextInt(10000)
 
-        val rand = Gen.choose(Int.MIN_VALUE, max).generate()
+        val rand = Gen.choose(Int.MIN_VALUE, max).generate(10)
         rand shouldBe gte(Int.MIN_VALUE)
         rand shouldBe lt(max)
 
@@ -67,7 +67,7 @@ class GenTest : WordSpec() {
         val min = random.nextInt(10000) - 10000
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(min.toLong(), max.toLong()).generate()
+        val rand = Gen.choose(min.toLong(), max.toLong()).generate(10)
         rand shouldBe gte(min.toLong())
         rand shouldBe lt(max.toLong())
 
@@ -77,7 +77,7 @@ class GenTest : WordSpec() {
 
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).generate()
+        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).generate(10)
         rand shouldBe gte(Long.MIN_VALUE)
         rand shouldBe lt(max.toLong())
 
@@ -97,7 +97,7 @@ class GenTest : WordSpec() {
         )
 
         forAll(table1) { clazz ->
-          Gen.forClassName(clazz).generate().javaClass.name shouldBe clazz
+          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldBe clazz
         }
 
         val table2 = table(
@@ -111,10 +111,10 @@ class GenTest : WordSpec() {
 
         forAll(table2) { clazz ->
           val tmp = clazz.split(".").last()
-          Gen.forClassName(clazz).generate().javaClass.name shouldBe "java.lang.$tmp"
+          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldBe "java.lang.$tmp"
         }
 
-        Gen.forClassName("kotlin.Int").generate().javaClass.name shouldBe "java.lang.Integer"
+        Gen.forClassName("kotlin.Int").generate(10).firstOrNull()!!.javaClass.name shouldBe "java.lang.Integer"
       }
       "throw an exception, with a wrong class" {
         shouldThrow<IllegalArgumentException> {
@@ -123,13 +123,13 @@ class GenTest : WordSpec() {
       }
     }
     "Gen.create" should {
-      "create a Generaor with the given function" {
-        Gen.create { 5 }.generate() shouldBe 5
+      "create a Generator with the given function" {
+        Gen.create { 5 }.generate(10) shouldBe 5
 
         var i = 0
         val gen = Gen.create { i++ }
         for (n in 0..1000) {
-          gen.generate() shouldBe n
+          gen.generate(10) shouldBe n
         }
       }
     }
@@ -182,7 +182,7 @@ class GenTest : WordSpec() {
 
         forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).generate().javaClass.name shouldHave substring(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).generate(10).javaClass.name shouldHave substring(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {
@@ -190,33 +190,6 @@ class GenTest : WordSpec() {
           Gen.forClassName("This.is.not.a.valid.class")
         }
       }
-    }
-
-    "Gen.oneOf list<Gen<T>> " should {
-      "choose one of the given Generators and generate a value from it" {
-        val gen = Gen.oneOf(Gen.create { 5 },
-            Gen.create { 2 },
-            Gen.create { 1 })
-        forAll(gen) {
-          i ->
-          listOf(1, 2, 5).contains(i)
-        }
-      }
-
-      "always chose one of the given generators" {
-        var counter = 0
-        val counterGen = Gen.create { ++counter }
-        val gen = Gen.oneOf(counterGen, counterGen, counterGen, counterGen, counterGen)
-
-        var i = 0
-        forAll(gen) {
-          test ->
-          i++
-          i == test
-        }
-
-      }
-
     }
 
     "ConstGen " should {
@@ -233,7 +206,7 @@ class GenTest : WordSpec() {
         fun <T> Gen<T>.toList(size: Int): List<T> =
             ArrayList<T>(size).also { list ->
               repeat(size) {
-                list += generate()
+                list += generate(10)
               }
             }
 

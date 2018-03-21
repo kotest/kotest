@@ -12,7 +12,7 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : AbstractSpec() {
 
   infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
     val descriptor = TestScope(this, this@FreeSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     FreeSpecScope(descriptor).init()
   }
 
@@ -20,7 +20,7 @@ abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : AbstractSpec() {
 
     infix operator fun String.minus(init: FreeSpecScope.() -> Unit) {
       val descriptor = TestScope(this, this@FreeSpec)
-      parentDescriptor.addContainer(descriptor)
+      parentDescriptor.addScope(descriptor)
       FreeSpecScope(descriptor).init()
     }
 

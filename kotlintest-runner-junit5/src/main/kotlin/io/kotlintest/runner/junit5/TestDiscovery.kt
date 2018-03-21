@@ -37,7 +37,7 @@ object TestDiscovery {
 
     specs.forEach {
       val spec: Spec = it.createInstance()
-      root.addChild(TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root()))
+      root.addChild(TestScopeDescriptor.fromTestContainer(root.uniqueId, spec.root()))
     }
 
     return root

@@ -12,7 +12,7 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : AbstractSpec() {
 
   fun feature(name: String, init: FeatureScope.() -> Unit) {
     val descriptor = TestScope("Feature: $name", this@FeatureSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     FeatureScope(descriptor).init()
   }
 

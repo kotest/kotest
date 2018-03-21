@@ -25,6 +25,17 @@ inline fun <reified T : Throwable> shouldThrow(thunk: () -> Any?): T {
   }
 }
 
+fun shouldFail(thunk: () -> Any?) {
+  val passed = try {
+    thunk()
+    true
+  } catch (e: AssertionError) {
+    false
+  }
+  if (passed)
+    throw AssertionError("This block should fail")
+}
+
 /**
  * Use this function to wrap a block of code where you wish
  * to assert that the code block throws a specific exception <T>.

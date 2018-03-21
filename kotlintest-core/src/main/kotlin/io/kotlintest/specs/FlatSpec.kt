@@ -20,7 +20,7 @@ abstract class FlatSpec(body: FlatSpec.() -> Unit = {}) : AbstractSpec() {
 
   infix fun String.should(name: String): FlatScope {
     val descriptor = TestScope(this, this@FlatSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     return FlatScope(descriptor, name)
   }
 

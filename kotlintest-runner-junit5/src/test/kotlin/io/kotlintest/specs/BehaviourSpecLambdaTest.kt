@@ -1,7 +1,6 @@
 package io.kotlintest.specs
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
 
 class BehaviourSpecLambdaTest : BehaviorSpec({
     given("string.length") {

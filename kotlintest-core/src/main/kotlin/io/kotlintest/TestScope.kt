@@ -5,10 +5,16 @@ package io.kotlintest
  *
  * All testcases must reside in a [TestScope].
  *
- * A container has a display name which is used
+ * A scope has a display name which is used
  * for reporting and display purposes.
+ *
+ * A scope also has a function, which is the body
+ * of the scope itself, which is captured so it can
+ * be executed at a later stage, thereby ensuring
+ * that any state set my the lambda is preserved
+ * for child test cases.
  */
-data class TestScope(val displayName: String, val spec: Spec) {
+data class TestScope(val displayName: String, val spec: Spec, val body: () -> Any? = {}) {
 
   internal val children = mutableListOf<TestScope>()
   internal val testcases = mutableListOf<TestCase>()
@@ -22,14 +28,19 @@ data class TestScope(val displayName: String, val spec: Spec) {
     testcases.add(tc)
   }
 
-  fun addContainer(container: TestScope) {
-    if (testcases.any { it.displayName == container.displayName })
-      throw RuntimeException("Cannot add two test containers with the same name: '$displayName ${container.displayName}'")
-    children.add(container)
+  fun addScope(scope: TestScope) {
+    if (testcases.any { it.displayName == scope.displayName })
+      throw RuntimeException("Cannot add two test scopes with the same name: '$displayName ${scope.displayName}'")
+    children.add(scope)
   }
 
   // returns all test cases in this container and all child containers
   fun flatten(): List<TestCase> {
     return testcases.toList().plus(children.flatMap { it.flatten() })
+  }
+
+  companion object {
+    class EmptySpec : AbstractSpec()
+    fun empty() = TestScope("", EmptySpec(), { })
   }
 }

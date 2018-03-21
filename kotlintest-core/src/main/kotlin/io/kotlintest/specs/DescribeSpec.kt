@@ -12,7 +12,7 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
 
   fun describe(name: String, init: DescribeScope.() -> Unit) {
     val descriptor = TestScope("Describe: $name", this@DescribeSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     DescribeScope(descriptor).init()
   }
 
@@ -20,7 +20,7 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
 
     fun describe(name: String, init: DescribeScope.() -> Unit) {
       val descriptor = TestScope("Describe: $name", this@DescribeSpec)
-      parent.addContainer(descriptor)
+      parent.addScope(descriptor)
       DescribeScope(descriptor).init()
     }
 

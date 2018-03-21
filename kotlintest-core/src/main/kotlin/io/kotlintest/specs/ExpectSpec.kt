@@ -12,7 +12,7 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
 
   fun context(name: String, init: ExpectSpecScope.() -> Unit) {
     val descriptor = TestScope("Context: $name", this@ExpectSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     ExpectSpecScope(descriptor).init()
   }
 
@@ -20,7 +20,7 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
 
     fun context(name: String, init: ExpectSpecScope.() -> Unit) {
       val descriptor = TestScope("Context: $name", this@ExpectSpec)
-      parentDescriptor.addContainer(descriptor)
+      parentDescriptor.addScope(descriptor)
       ExpectSpecScope(descriptor).init()
     }
 

@@ -22,19 +22,19 @@ class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
 
 /**
  * A container level [TestDescriptor] that is used to contain
- * nested contexts, or [TestCase]'s themselves.
+ * [TestScope]s.
  */
-open class TestContainerDescriptor(val id: UniqueId,
-                                   val container: TestScope) : BranchDescriptor() {
+open class TestScopeDescriptor(val id: UniqueId,
+                               val scope: TestScope) : BranchDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = container.displayName
-  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
+  override fun getDisplayName(): String = scope.displayName
+  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(scope.spec.javaClass))
 
   companion object {
 
-    fun fromTestContainer(parentId: UniqueId, container: TestScope): TestContainerDescriptor {
-      val desc = TestContainerDescriptor(parentId.append("container", container.displayName), container)
+    fun fromTestContainer(parentId: UniqueId, container: TestScope): TestScopeDescriptor {
+      val desc = TestScopeDescriptor(parentId.append("container", container.displayName), container)
       container.childContainers().forEach {
         desc.addChild(fromTestContainer(desc.uniqueId, it))
       }

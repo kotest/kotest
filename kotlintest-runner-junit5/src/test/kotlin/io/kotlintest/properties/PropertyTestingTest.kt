@@ -1,6 +1,7 @@
 package io.kotlintest.properties
 
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldFail
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
@@ -145,13 +146,13 @@ class PropertyTestingTest : StringSpec() {
       exception.message shouldBe "Attempts should be a positive number"
     }
 
-    "forAll one generator implicit 10 attempts" {
+    "forAll one generator default attempts" {
       var attempts = 0
       forAll { a: Int ->
         attempts++
         2 * a % 2 == 0
       }
-      attempts shouldBe 10
+      attempts shouldBe 100
     }
 
     "forAll: one generator implicit 200 attempts" {
@@ -172,13 +173,13 @@ class PropertyTestingTest : StringSpec() {
       attempts shouldBe 30
     }
 
-    "forAll: Two implicit generators 500 attempts" {
+    "forAll: Two implicit generators default attempts" {
       var attempts = 0
       forAll { a: Int, b: Int ->
         attempts++
         a * b == b * a
       }
-      attempts shouldBe 500
+      attempts shouldBe 900
     }
 
     "pad" {
@@ -187,9 +188,11 @@ class PropertyTestingTest : StringSpec() {
       }
     }
 
-    "double" {
-      forAll { a: Double, b: Double ->
-        a < b || a >= b
+    "double should fail comparing NaN" {
+      shouldFail {
+        forAll { a: Double, b: Double ->
+          a < b || a >= b
+        }
       }
     }
 
@@ -321,14 +324,6 @@ class PropertyTestingTest : StringSpec() {
       exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
     }
 
-    "forAll: four explicit generators with 0 attempts" {
-      shouldThrow<IllegalArgumentException> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
-          true
-        }
-      }
-    }
-
     "forAll: four implicit generators with 1000 attempts" {
       var attempts = 0
       forAll { _: Int, _: Int, _: Int, _: Int ->
@@ -418,15 +413,6 @@ class PropertyTestingTest : StringSpec() {
       }
 
       exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\nafter $attempts attempts"
-    }
-
-    "forAll: five explicit generators with 0 attempts" {
-      val exception = shouldThrow<IllegalArgumentException> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
-          true
-        }
-      }
-      exception.message shouldBe "Attempts should be a positive number"
     }
 
     "forAll five implicit generators with 1000 attempts" {

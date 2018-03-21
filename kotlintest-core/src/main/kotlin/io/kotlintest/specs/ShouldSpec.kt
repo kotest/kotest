@@ -29,7 +29,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
 
   operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
     val descriptor = TestScope(this, this@ShouldSpec)
-    rootContainer.addContainer(descriptor)
+    rootContainer.addScope(descriptor)
     ShouldSpecScope(descriptor).init()
   }
 
@@ -37,7 +37,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
 
     operator fun String.invoke(init: ShouldSpecScope.() -> Unit) {
       val descriptor = TestScope(this, this@ShouldSpec)
-      parentDescriptor.addContainer(descriptor)
+      parentDescriptor.addScope(descriptor)
       ShouldSpecScope(descriptor).init()
     }
 

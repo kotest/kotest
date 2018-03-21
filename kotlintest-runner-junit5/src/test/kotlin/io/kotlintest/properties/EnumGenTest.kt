@@ -7,7 +7,7 @@ class EnumGenTest : StringSpec() {
   init {
     "enum gen should work generically" {
       val gen = Gen.enum<Weather>()
-      (1..1000).map { gen.generate() }.toSet() shouldBe
+      gen.generate(100).toSet() shouldBe
           setOf(Weather.Hot, Weather.Cold, Weather.Dry)
     }
   }
