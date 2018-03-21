@@ -11,22 +11,22 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
   }
 
   fun describe(name: String, init: DescribeScope.() -> Unit) {
-    val descriptor = TestScope("Describe: $name", this@DescribeSpec)
-    rootContainer.addScope(descriptor)
+    val descriptor = TestScope("Describe: $name", this@DescribeSpec, { DescribeScope(TestScope.empty()).init() })
+    rootScope.addScope(descriptor)
     DescribeScope(descriptor).init()
   }
 
-  inner class DescribeScope(private val parent: TestScope) {
+  inner class DescribeScope(private val parentScope: TestScope) {
 
     fun describe(name: String, init: DescribeScope.() -> Unit) {
-      val descriptor = TestScope("Describe: $name", this@DescribeSpec)
-      parent.addScope(descriptor)
-      DescribeScope(descriptor).init()
+      val scope = TestScope("Describe: $name", this@DescribeSpec, { DescribeScope(TestScope.empty()).init() })
+      parentScope.addScope(scope)
+      DescribeScope(scope).init()
     }
 
     fun it(name: String, test: () -> Unit): TestCase {
       val tc = TestCase(name, this@DescribeSpec, test, defaultTestCaseConfig)
-      parent.addTest(tc)
+      parentScope.addTest(tc)
       return tc
     }
   }

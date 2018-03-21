@@ -19,7 +19,7 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : AbstractSpec() {
   // adds a test directly from the root context
   operator fun String.invoke(test: () -> Unit): TestCase {
     val tc = TestCase(this, this@StringSpec, test, defaultTestCaseConfig)
-    rootContainer.addTest(tc)
+    rootScope.addTest(tc)
     return tc
   }
 }

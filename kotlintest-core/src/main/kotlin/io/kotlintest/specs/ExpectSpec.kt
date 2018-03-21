@@ -11,22 +11,22 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-    val descriptor = TestScope("Context: $name", this@ExpectSpec)
-    rootContainer.addScope(descriptor)
-    ExpectSpecScope(descriptor).init()
+    val scope = TestScope("Context: $name", this@ExpectSpec, { ExpectSpecScope(TestScope.empty()).init() })
+    rootScope.addScope(scope)
+    ExpectSpecScope(scope).init()
   }
 
-  inner class ExpectSpecScope(private val parentDescriptor: TestScope) {
+  inner class ExpectSpecScope(private val parentScope: TestScope) {
 
     fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-      val descriptor = TestScope("Context: $name", this@ExpectSpec)
-      parentDescriptor.addScope(descriptor)
+      val descriptor = TestScope("Context: $name", this@ExpectSpec, { ExpectSpecScope(TestScope.empty()).init() })
+      parentScope.addScope(descriptor)
       ExpectSpecScope(descriptor).init()
     }
 
     fun expect(name: String, test: () -> Unit): TestCase {
       val tc = TestCase("Expect: $name", this@ExpectSpec, test, defaultTestCaseConfig)
-      parentDescriptor.addTest(tc)
+      parentScope.addTest(tc)
       return tc
     }
   }

@@ -11,15 +11,15 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   fun feature(name: String, init: FeatureScope.() -> Unit) {
-    val descriptor = TestScope("Feature: $name", this@FeatureSpec)
-    rootContainer.addScope(descriptor)
-    FeatureScope(descriptor).init()
+    val scope = TestScope("Feature: $name", this@FeatureSpec, { FeatureScope(TestScope.empty()).init() })
+    rootScope.addScope(scope)
+    FeatureScope(scope).init()
   }
 
-  inner class FeatureScope(private val parentDescriptor: TestScope) {
+  inner class FeatureScope(private val parentScope: TestScope) {
     fun scenario(name: String, test: () -> Unit): TestCase {
       val tc = TestCase("Scenario: $name", this@FeatureSpec, test, defaultTestCaseConfig)
-      parentDescriptor.addTest(tc)
+      parentScope.addTest(tc)
       return tc
     }
   }

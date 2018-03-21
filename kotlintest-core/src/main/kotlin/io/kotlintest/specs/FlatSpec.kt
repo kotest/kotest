@@ -19,15 +19,15 @@ abstract class FlatSpec(body: FlatSpec.() -> Unit = {}) : AbstractSpec() {
   }
 
   infix fun String.should(name: String): FlatScope {
-    val descriptor = TestScope(this, this@FlatSpec)
-    rootContainer.addScope(descriptor)
-    return FlatScope(descriptor, name)
+    val scope = TestScope(this, this@FlatSpec, { })
+    rootScope.addScope(scope)
+    return FlatScope(scope, name)
   }
 
-  inner class FlatScope(private val parentDescriptor: TestScope, val name: String) {
+  inner class FlatScope(private val parentScope: TestScope, val name: String) {
     infix fun `in`(test: () -> Unit): TestCase {
       val tc = TestCase("should $name", this@FlatSpec, test, defaultTestCaseConfig)
-      parentDescriptor.addTest(tc)
+      parentScope.addTest(tc)
       return tc
     }
   }

@@ -14,7 +14,7 @@ package io.kotlintest
  * that any state set my the lambda is preserved
  * for child test cases.
  */
-data class TestScope(val displayName: String, val spec: Spec, val body: () -> Any? = {}) {
+data class TestScope(val displayName: String, val spec: Spec, val body: () -> Any?) {
 
   internal val children = mutableListOf<TestScope>()
   internal val testcases = mutableListOf<TestCase>()

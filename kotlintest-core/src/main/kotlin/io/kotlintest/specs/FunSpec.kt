@@ -11,7 +11,7 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : AbstractSpec() {
 
   fun test(name: String, test: () -> Unit): TestCase {
     val testcase = TestCase(name, this@FunSpec, test, defaultTestCaseConfig)
-    rootContainer.addTest(testcase)
+    rootScope.addTest(testcase)
     return testcase
   }
 }

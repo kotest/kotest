@@ -14,7 +14,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
   fun Given(desc: String, init: GivenScope.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenScope.() -> Unit) {
     val scope = TestScope("Given $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })
-    rootContainer.addScope(scope)
+    rootScope.addScope(scope)
     GivenScope(scope).init()
   }
 
