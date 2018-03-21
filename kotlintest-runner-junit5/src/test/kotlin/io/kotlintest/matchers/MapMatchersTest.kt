@@ -1,6 +1,10 @@
 package io.kotlintest.matchers
 
+import java.util.LinkedList
+
 import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 
@@ -38,16 +42,6 @@ class MapMatchersTest : WordSpec() {
       }
     }
 
-    "containAll" should {
-      "test that a map contains all given pairs" {
-        val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
-        map should containAll(mapOf(1 to "a", 3 to "c"))
-        shouldThrow<AssertionError> {
-          map should containAll(mapOf(3 to "c"))
-        }
-      }
-    }
-
     "haveKeys" should {
       "test that a map contains all given keys" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
@@ -73,6 +67,136 @@ class MapMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           map should haveValues("d")
         }
+      }
+    }
+
+    "containAll" should {
+      "test that a map contains all given pairs" {
+        val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
+        map should containAll(mapOf(1 to "a", 3 to "c"))
+        shouldThrow<AssertionError> {
+          map should containAll(mapOf(3 to "c"))
+        }
+      }
+      "test empty map" {
+        emptyMap<Any, Any>() should containAll(emptyMap<Any, Any>())
+      }
+      "test assertion that map does not contain entries from the given map" {
+        val e = shouldThrow<AssertionError> {
+          emptyMap<Any, Any>() should containAll(mapOf<Any, Any>("\$a" to 1))
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf()
+          |should contain all of:
+          |  mapOf("\${'$'}a" to 1)
+          |but differs by:
+          |  missing keys:
+          |    "\${'$'}a"
+          |
+        """.trimMargin()
+      }
+      "test when map contains extra entries" {
+        mapOf("a" to 1, "b" to 2) should (
+            containAll(mapOf("a" to 1)) and containAll(mapOf("b" to 2)))
+      }
+      "test assertion when map contains different value type" {
+        val e = shouldThrow<AssertionError> {
+          mapOf("a" to 1) should containAll(mapOf<String, Any>("a" to 1L))
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf("a" to 1)
+          |should contain all of:
+          |  mapOf("a" to 1L)
+          |but differs by:
+          |  different values:
+          |    "a":
+          |      expected:
+          |        1L
+          |      but was:
+          |        1
+          |
+        """.trimMargin()
+      }
+      "test that a map with nested map contains all entries from the given map" {
+        val map = mapOf("a" to mapOf("b" to 2))
+        map should containAll(mapOf("a" to mapOf("b" to 2)))
+        val e = shouldThrow<AssertionError> {
+          map should containAll(mapOf("a" to mapOf("b" to 3)))
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf("a" to mapOf("b" to 2))
+          |should contain all of:
+          |  mapOf("a" to mapOf("b" to 3))
+          |but differs by:
+          |  different values:
+          |    "a":
+          |      different values:
+          |        "b":
+          |          expected:
+          |            3
+          |          but was:
+          |            2
+          |
+        """.trimMargin()
+      }
+      "test shouldNot assertion" {
+        val e = shouldThrow<AssertionError> {
+          mapOf("a" to 1, "b" to 2) shouldNot containAll(mapOf("a" to 1))
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf("a" to 1, "b" to 2)
+          |should not contain all of:
+          |  mapOf("a" to 1)
+          |but contains
+          |
+        """.trimMargin()
+      }
+    }
+
+    "containExactly" should {
+      "test empty map" {
+        emptyMap<Any, Any>() should containExactly(emptyMap<Any, Any>())
+      }
+      "test assertion that a map contains extra keys" {
+        val e = shouldThrow<AssertionError> {
+          mapOf("a" to 1) should containExactly(emptyMap<String, Any>())
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf("a" to 1)
+          |should be equal to:
+          |  mapOf()
+          |but differs by:
+          |  extra keys:
+          |    "a"
+          |
+        """.trimMargin()
+      }
+      "test shouldNot assertion" {
+        val e = shouldThrow<AssertionError> {
+          val arrayList: List<Int> = arrayListOf(1)
+          val linkedList = LinkedList<Int>()
+          linkedList.push(1)
+          mapOf("a" to arrayList) shouldNot containExactly<String, List<Int>>(mapOf("a" to linkedList))
+        }
+        e.message shouldBe """
+          |
+          |Expected:
+          |  mapOf("a" to listOf(1))
+          |should not be equal to:
+          |  mapOf("a" to listOf(1))
+          |but equals
+          |
+        """.trimMargin()
       }
     }
   }
