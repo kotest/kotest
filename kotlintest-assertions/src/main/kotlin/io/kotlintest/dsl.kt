@@ -11,7 +11,7 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 // -- equality functions
 
-infix fun <T> T.shouldBe(any: Any?) {
+infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {

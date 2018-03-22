@@ -11,7 +11,7 @@ package io.kotlintest
  * the hierarchical location of tests. It also has a
  * reference back to the parent spec.
  *
- * Most importantly, it has a body function. This
+ * Most importantly, it has a discovery function. This
  * function, when invoked, returns any nested containers
  * and any tests directly registered in this container.
  *
@@ -20,10 +20,16 @@ package io.kotlintest
  * stage, rather than when the class is constructed.
  *
  * This allows side effects inside a container to be
- * deferred until the test engine is ready
- * to execute tests inside that particular container.
+ * deferred until the test engine is ready to execute
+ * tests inside that particular container.
  */
-class TestContainer(val displayName: String, val spec: Spec, val body: () -> Pair<List<TestContainer>, List<TestCase>>)
+interface TestX {
+  fun name(): String
+}
+
+class TestContainer(val displayName: String, val spec: Spec, val discovery: () -> List<TestX>) : TestX {
+  override fun name(): String = displayName
+}
 
 /**
  * A container used by the spec DSL to allow registering
@@ -34,13 +40,12 @@ class TestContainer(val displayName: String, val spec: Spec, val body: () -> Pai
  */
 open class TestScope {
 
-  internal val containers = mutableListOf<TestContainer>()
-  internal val testcases = mutableListOf<TestCase>()
+  internal val children = mutableListOf<TestX>()
 
   fun addTest(tc: TestCase) {
-    if (testcases.any { it.displayName == tc.displayName })
+    if (children.any { it.name() == tc.displayName })
       throw RuntimeException("Cannot add two tests with the same name inside the same scope: '${tc.displayName}'")
-    testcases.add(tc)
+    children.add(tc)
   }
 
   fun addTest(name: String, spec: Spec, test: () -> Unit, config: TestCaseConfig): TestCase {
@@ -50,19 +55,17 @@ open class TestScope {
   }
 
   fun addContainer(container: TestContainer) {
-    if (containers.any { it.displayName == container.displayName })
+    if (children.any { it.name() == container.displayName })
       throw RuntimeException("Cannot add two tests with the same name inside the same scope: '${container.displayName}'")
-    containers.add(container)
+    children.add(container)
   }
 
   fun <T : TestScope> addContainer(name: String, spec: Spec, scopeFn: () -> T, init: T.() -> Unit) {
     val container = TestContainer(name, spec, {
       val scope = scopeFn()
       scope.init()
-      scope.toResult()
+      scope.children.toList()
     })
     addContainer(container)
   }
-
-  fun toResult() = containers.toList() to testcases.toList()
 }

@@ -1,14 +1,18 @@
 package io.kotlintest.properties
 
-inline fun <reified A> forNone(noinline fn: (a: A) -> Boolean) {
-  forNone(Gen.default(), fn)
+inline fun <reified A> forNone(noinline fn: (a: A) -> Boolean) = forNone(1000, fn)
+inline fun <reified A> forNone(iterations: Int, noinline fn: (a: A) -> Boolean) {
+  forNone(iterations, Gen.default(), fn)
 }
 
-fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean) {
-  for (a in gena.generate(100)) {
+fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean) = forNone(1000, gena, fn)
+fun <A> forNone(iterations: Int, gena: Gen<A>, fn: (a: A) -> Boolean) {
+  var attempts = 0
+  for (a in gena.generate(iterations)) {
+    attempts++
     val passed = fn(a)
     if (passed) {
-      throw AssertionError("Property passed for\n$a")
+      throw AssertionError("Property passed for\n$a\nafter $attempts attempts")
     }
   }
 }
@@ -64,19 +68,27 @@ fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
   }
 }
 
-inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) {
-  forNone(Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
+inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) =
+    forNone(5, fn)
+
+inline fun <reified A, reified B, reified C, reified D, reified E> forNone(iterations: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) {
+  forNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
-fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) {
-  for (a in gena.generate(5)) {
-    for (b in genb.generate(5)) {
-      for (c in genc.generate(5)) {
-        for (d in gend.generate(5)) {
-          for (e in gene.generate(5)) {
+fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) =
+    forNone(5, gena, genb, genc, gend, gene, fn)
+
+fun <A, B, C, D, E> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: (a: A, b: B, c: C, d: D, e: E) -> Boolean) {
+  var attempts = 0
+  for (a in gena.generate(iterations)) {
+    for (b in genb.generate(iterations)) {
+      for (c in genc.generate(iterations)) {
+        for (d in gend.generate(iterations)) {
+          for (e in gene.generate(iterations)) {
+            attempts++
             val passed = fn(a, b, c, d, e)
             if (passed) {
-              throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e")
+              throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter $attempts attempts")
             }
           }
         }
@@ -86,17 +98,24 @@ fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<
 }
 
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
-  forNone(Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
+  forNone(5, fn)
 }
 
-fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
+inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(iterations: Int, noinline fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
+  forNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
+}
+
+fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) =
+    forNone(5, gena, genb, genc, gend, gene, genf, fn)
+
+fun <A, B, C, D, E, F> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
   var counter = 0
-  for (a in gena.generate(5)) {
-    for (b in genb.generate(5)) {
-      for (c in genc.generate(5)) {
-        for (d in gend.generate(5)) {
-          for (e in gene.generate(5)) {
-            for (f in genf.generate(5)) {
+  for (a in gena.generate(iterations)) {
+    for (b in genb.generate(iterations)) {
+      for (c in genc.generate(iterations)) {
+        for (d in gend.generate(iterations)) {
+          for (e in gene.generate(iterations)) {
+            for (f in genf.generate(iterations)) {
               counter++
               val passed = fn(a, b, c, d, e, f)
               if (passed) {

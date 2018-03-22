@@ -9,7 +9,7 @@ abstract class AbstractSpec : Spec {
 
   internal val rootScope = TestScope()
 
-  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.toResult() })
+  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.children.toList() })
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 

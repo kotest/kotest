@@ -44,8 +44,10 @@ class GenTest : WordSpec() {
         val max = random.nextInt(10000) + 10000
 
         val rand = Gen.choose(min, max).generate(10)
-        rand shouldBe gte(min)
-        rand shouldBe lt(max)
+        rand.forEach {
+          it shouldBe gte(min)
+          it shouldBe lt(max)
+        }
       }.config(invocations = 10000, threads = 8)
 
       "support negative bounds" {
@@ -55,8 +57,10 @@ class GenTest : WordSpec() {
         val max = random.nextInt(10000)
 
         val rand = Gen.choose(Int.MIN_VALUE, max).generate(10)
-        rand shouldBe gte(Int.MIN_VALUE)
-        rand shouldBe lt(max)
+        rand.forEach {
+          it shouldBe gte(Int.MIN_VALUE)
+          it shouldBe lt(max)
+        }
 
       }.config(invocations = 1000, threads = 8)
     }
@@ -68,8 +72,10 @@ class GenTest : WordSpec() {
         val max = random.nextInt(10000) + 10000
 
         val rand = Gen.choose(min.toLong(), max.toLong()).generate(10)
-        rand shouldBe gte(min.toLong())
-        rand shouldBe lt(max.toLong())
+        rand.forEach {
+          it shouldBe gte(min.toLong())
+          it shouldBe lt(max.toLong())
+        }
 
       }.config(invocations = 10000, threads = 8)
       "support negative bounds" {
@@ -78,8 +84,10 @@ class GenTest : WordSpec() {
         val max = random.nextInt(10000) + 10000
 
         val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).generate(10)
-        rand shouldBe gte(Long.MIN_VALUE)
-        rand shouldBe lt(max.toLong())
+        rand.forEach {
+          it shouldBe gte(Long.MIN_VALUE)
+          it shouldBe lt(max.toLong())
+        }
 
       }.config(invocations = 10000, threads = 8)
     }
@@ -124,13 +132,10 @@ class GenTest : WordSpec() {
     }
     "Gen.create" should {
       "create a Generator with the given function" {
-        Gen.create { 5 }.generate(10) shouldBe 5
-
+        Gen.create { 5 }.generate(10).toList() shouldBe List(10, { 5 })
         var i = 0
         val gen = Gen.create { i++ }
-        for (n in 0..1000) {
-          gen.generate(10) shouldBe List(10, { 5 })
-        }
+        gen.generate(150) shouldBe List(150, { it })
       }
     }
     "Gen.default" should {
@@ -176,7 +181,7 @@ class GenTest : WordSpec() {
 
         forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).generate(10).javaClass.name shouldHave substring(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {

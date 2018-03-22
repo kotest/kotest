@@ -36,10 +36,14 @@ data class TestContainerDescriptor(val id: UniqueId,
    * to this descriptor.
    */
   fun discover(listener: EngineExecutionListener) {
-    val (containers, testCases) = container.body()
-    val descriptors =
-        containers.map { fromTestContainer(uniqueId, it) } +
-            testCases.map { TestCaseDescriptor.fromTestCase(uniqueId, it) }
+    val testxs = container.discovery()
+    val descriptors = testxs.map {
+      when (it) {
+        is TestContainer -> fromTestContainer(uniqueId, it)
+        is TestCase -> TestCaseDescriptor.fromTestCase(uniqueId, it)
+        else -> throw RuntimeException()
+      }
+    }
     descriptors.forEach {
       addChild(it)
       listener.dynamicTestRegistered(it)
@@ -47,7 +51,6 @@ data class TestContainerDescriptor(val id: UniqueId,
   }
 
   companion object {
-
     fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor =
         TestContainerDescriptor(parentId.append("container", container.displayName), container)
   }

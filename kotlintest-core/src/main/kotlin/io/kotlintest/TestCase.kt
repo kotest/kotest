@@ -23,7 +23,9 @@ data class TestCase(
     val test: () -> Unit,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
-    var config: TestCaseConfig) {
+    var config: TestCaseConfig) : TestX {
+
+  override fun name(): String = displayName
 
   fun config(
       invocations: Int? = null,

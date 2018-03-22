@@ -47,6 +47,10 @@ abstract class BranchDescriptor : TestDescriptor {
     this.parent = Optional.ofNullable(parent)
   }
 
+  fun sortChildren() {
+    this.children.sortBy { it.displayName.trim().toLowerCase() }
+  }
+
   override fun getParent(): Optional<TestDescriptor> = parent
 
   override fun getChildren(): MutableSet<out TestDescriptor> = children.toMutableSet()
@@ -78,6 +82,5 @@ abstract class BranchDescriptor : TestDescriptor {
   override fun addChild(descriptor: TestDescriptor) {
     descriptor.setParent(this)
     this.children.add(descriptor)
-    this.children.sortBy { it.displayName.trim().toLowerCase() }
   }
 }

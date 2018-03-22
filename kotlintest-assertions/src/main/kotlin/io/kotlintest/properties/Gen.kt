@@ -107,7 +107,7 @@ interface Gen<out T> {
     fun string(): Gen<String> = object : Gen<String> {
       val literals = listOf("", """\nabc\n123\n""", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
       override fun generate(max: Int): Iterable<String> {
-        return List(max, { nextPrintableString(RANDOM.nextInt(100)) }) + literals
+        return (literals + List(max, { nextPrintableString(RANDOM.nextInt(100)) })).take(max)
       }
     }
 
@@ -119,7 +119,7 @@ interface Gen<out T> {
     fun int() = object : Gen<Int> {
       val literals = listOf(-2, -1, 0, 1, 2, Int.MIN_VALUE, Int.MAX_VALUE)
       override fun generate(max: Int): Iterable<Int> {
-        return List(max, { Math.abs(RANDOM.nextInt()) }) + literals
+        return (literals + List(max, { Math.abs(RANDOM.nextInt()) }).take(max))
       }
     }
 
@@ -129,8 +129,9 @@ interface Gen<out T> {
      * the following edge cases: [0, 1, 2, Int.MAX_VALUE]
      */
     fun positiveIntegers() = object : Gen<Int> {
+      val literals = listOf(0, 1, 2, Int.MAX_VALUE)
       override fun generate(max: Int): Iterable<Int> {
-        return List(max, { Math.abs(RANDOM.nextInt()) }) + listOf(0, 1, 2, Int.MAX_VALUE)
+        return (literals + List(max, { Math.abs(RANDOM.nextInt()) })).take(max)
       }
     }
 
@@ -140,8 +141,9 @@ interface Gen<out T> {
      * the following edge cases: [1, 2, Int.MAX_VALUE]
      */
     fun nats() = object : Gen<Int> {
+      val literals = listOf(1, 2, Int.MAX_VALUE)
       override fun generate(max: Int): Iterable<Int> {
-        return List(max, { Math.abs(RANDOM.nextInt()) }) + listOf(1, 2, Int.MAX_VALUE)
+        return (literals + List(max, { Math.abs(RANDOM.nextInt()) })).take(max)
       }
     }
 
@@ -151,8 +153,9 @@ interface Gen<out T> {
      * the following edge cases: [0, -1, -2, Int.MIN_VALUE]
      */
     fun negativeIntegers() = object : Gen<Int> {
+      val literals = listOf(0, -1, -2, Int.MIN_VALUE)
       override fun generate(max: Int): Iterable<Int> {
-        return List(max, { -Math.abs(RANDOM.nextInt()) }) + listOf(0, -1, -2, Int.MIN_VALUE)
+        return (literals + List(max, { -Math.abs(RANDOM.nextInt()) })).take(max)
       }
     }
 
@@ -173,8 +176,9 @@ interface Gen<out T> {
      * the following edge cases: [-2, -1, 0, 1, 2, Long.MIN_VALUE, Long.MAX_VALUE]
      */
     fun long() = object : Gen<Long> {
+      val literals = listOf(-2, -1, 0, 1, 2, Long.MIN_VALUE, Long.MAX_VALUE)
       override fun generate(max: Int): Iterable<Long> {
-        return List(max, { Math.abs(RANDOM.nextLong()) }) + listOf(-2, -1, 0, 1, 2, Long.MIN_VALUE, Long.MAX_VALUE)
+        return (literals + List(max, { Math.abs(RANDOM.nextLong()) })).take(max)
       }
     }
 
@@ -190,8 +194,9 @@ interface Gen<out T> {
      * chosen Double.
      */
     fun double() = object : Gen<Double> {
+      val literals = listOf(-2.0, -1.0, 0.0, 1.0, 2.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun generate(max: Int): Iterable<Double> {
-        return List(max, { RANDOM.nextDouble() }) + listOf(-2.0, -1.0, 0.0, 1.0, 2.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+        return (literals + List(max, { RANDOM.nextDouble() })).take(max)
       }
     }
 
@@ -200,8 +205,9 @@ interface Gen<out T> {
      * chosen Float.
      */
     fun float() = object : Gen<Float> {
+      val literals = listOf(-2.0F, -1.0F, 0.0F, 1.0F, 2.0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun generate(max: Int): Iterable<Float> {
-        return List(max, { RANDOM.nextFloat() }) + listOf(-2.0F, -1.0F, 0.0F, 1.0F, 2.0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+        return (literals + List(max, { RANDOM.nextFloat() })).take(max)
       }
     }
 
