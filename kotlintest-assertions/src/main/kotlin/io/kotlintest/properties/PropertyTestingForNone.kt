@@ -90,15 +90,17 @@ inline fun <reified A, reified B, reified C, reified D, reified E, reified F> fo
 }
 
 fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: (a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
+  var counter = 0
   for (a in gena.generate(5)) {
     for (b in genb.generate(5)) {
       for (c in genc.generate(5)) {
         for (d in gend.generate(5)) {
           for (e in gene.generate(5)) {
             for (f in genf.generate(5)) {
+              counter++
               val passed = fn(a, b, c, d, e, f)
               if (passed) {
-                throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f")
+                throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f after $counter attempts")
               }
             }
           }

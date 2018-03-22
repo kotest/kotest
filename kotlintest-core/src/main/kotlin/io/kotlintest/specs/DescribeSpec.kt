@@ -10,30 +10,17 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
-  }
+  final override fun isInstancePerTest(): Boolean = false
 
-  fun describe(name: String, init: DescribeScope.() -> Unit) {
-    val descriptor = TestScope("Describe: $name", this@DescribeSpec, { DescribeScope(TestScope.empty()).init() })
-    rootScope.addScope(descriptor)
-    DescribeScope(descriptor).init()
-  }
+  fun describe(name: String, init: DescribeScope.() -> Unit) =
+      rootScope.addContainer("Describe: $name", this@DescribeSpec, ::DescribeScope, init)
 
-  inner class DescribeScope(private val parentScope: TestScope) {
+  inner class DescribeScope : TestScope() {
 
-    fun describe(name: String, init: DescribeScope.() -> Unit) {
-      val scope = TestScope("Describe: $name", this@DescribeSpec, { DescribeScope(TestScope.empty()).init() })
-      parentScope.addScope(scope)
-      DescribeScope(scope).init()
-    }
+    fun describe(name: String, init: DescribeScope.() -> Unit) =
+        addContainer("Describe: $name", this@DescribeSpec, ::DescribeScope, init)
 
-    fun it(name: String, test: () -> Unit): TestCase {
-      val tc = TestCase(name, this@DescribeSpec, test, defaultTestCaseConfig)
-      parentScope.addTest(tc)
-      return tc
-    }
+    fun it(name: String, test: () -> Unit): TestCase =
+        addTest(name, this@DescribeSpec, test, defaultTestCaseConfig)
   }
 }

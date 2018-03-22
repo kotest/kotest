@@ -22,7 +22,7 @@ abstract class LeafDescriptor : TestDescriptor {
   // leaf descriptors do not have children
   override fun getChildren(): MutableSet<out TestDescriptor> = mutableSetOf()
 
-  override fun removeFromHierarchy() {}
+  override fun removeFromHierarchy() = throw UnsupportedOperationException()
   override fun removeChild(descriptor: TestDescriptor?) = throw UnsupportedOperationException()
   override fun addChild(descriptor: TestDescriptor?) = throw UnsupportedOperationException()
   override fun getTags(): MutableSet<TestTag> = mutableSetOf()
@@ -55,6 +55,9 @@ abstract class BranchDescriptor : TestDescriptor {
 
   override fun getTags(): MutableSet<TestTag> = mutableSetOf()
 
+  // we don't want to prune, as we take care of only adding tests that have children
+  override fun prune() {}
+
   override fun findByUniqueId(uniqueId: UniqueId): Optional<out TestDescriptor> =
       when {
         uniqueId == getUniqueId() -> Optional.of(this)
@@ -69,10 +72,8 @@ abstract class BranchDescriptor : TestDescriptor {
         }
       }
 
-  override fun removeFromHierarchy() {}
-  override fun removeChild(descriptor: TestDescriptor?) {
-    throw UnsupportedOperationException()
-  }
+  override fun removeFromHierarchy() = throw UnsupportedOperationException()
+  override fun removeChild(descriptor: TestDescriptor?) = throw UnsupportedOperationException()
 
   override fun addChild(descriptor: TestDescriptor) {
     descriptor.setParent(this)

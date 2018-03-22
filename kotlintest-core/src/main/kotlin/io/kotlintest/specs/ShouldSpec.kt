@@ -27,34 +27,20 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
+  final override fun isInstancePerTest(): Boolean = false
+
+  operator fun String.invoke(init: ShouldScope.() -> Unit) =
+      rootScope.addContainer(this, this@ShouldSpec, ::ShouldScope, init)
+
+  inner class ShouldScope : TestScope() {
+
+    operator fun String.invoke(init: ShouldScope.() -> Unit) =
+        addContainer(this, this@ShouldSpec, ::ShouldScope, init)
+
+    fun should(name: String, test: () -> Unit): TestCase =
+        addTest(name, this@ShouldSpec, test, defaultTestCaseConfig)
   }
 
-  operator fun String.invoke(init: ShouldScope.() -> Unit) {
-    val scope = TestScope(this, this@ShouldSpec, { ShouldScope(TestScope.empty()).init() })
-    rootScope.addScope(scope)
-    ShouldScope(scope).init()
-  }
-
-  inner class ShouldScope(private val parentScope: TestScope) {
-
-    operator fun String.invoke(init: ShouldScope.() -> Unit) {
-      val scope = TestScope(this, this@ShouldSpec, { ShouldScope(TestScope.empty()).init() })
-      parentScope.addScope(scope)
-      ShouldScope(scope).init()
-    }
-
-    fun should(name: String, test: () -> Unit): TestCase = addTest(name, test, parentScope)
-  }
-
-  private fun addTest(name: String, test: () -> Unit, parentDescriptor: TestScope): TestCase {
-    val tc = TestCase("should $name", this@ShouldSpec, test, defaultTestCaseConfig)
-    parentDescriptor.addTest(tc)
-    return tc
-  }
-
-  fun should(name: String, test: () -> Unit): TestCase = addTest(name, test, rootScope)
+  fun should(name: String, test: () -> Unit): TestCase =
+      rootScope.addTest(name, this@ShouldSpec, test, defaultTestCaseConfig)
 }

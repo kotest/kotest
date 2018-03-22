@@ -1,8 +1,9 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
 import org.junit.platform.commons.JUnitException
+import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -10,47 +11,50 @@ import org.junit.platform.engine.support.descriptor.ClassSource
 import java.util.*
 
 /**
- * A top level container [TestDescriptor] which is used to
- * hold the root scope of each [io.kotlintest.Spec].
+ * The top level [TestDescriptor] which is used to
+ * hold the root containers of each [io.kotlintest.Spec].
  */
-class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
+data class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
   override fun removeFromHierarchy() = throw JUnitException("Cannot remove from hierarchy for root")
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = "Test Results"
   override fun getSource(): Optional<TestSource> = Optional.empty()
+  override fun mayRegisterTests() = true
 }
 
-/**
- * A container [TestDescriptor] that is used for [TestScope]s.
- */
-open class TestScopeDescriptor(val id: UniqueId,
-                               val scope: TestScope) : BranchDescriptor() {
+data class TestContainerDescriptor(val id: UniqueId,
+                                   val container: TestContainer) : BranchDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = scope.displayName
-  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(scope.spec.javaClass))
+  override fun getDisplayName(): String = container.displayName
+  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
   override fun mayRegisterTests() = true
+
+  /**
+   * Executes the discovery function of the test container, and
+   * adds any returned [TestCase] and [TestContainer] instances
+   * to this descriptor.
+   */
+  fun discover(listener: EngineExecutionListener) {
+    val (containers, testCases) = container.body()
+    val descriptors =
+        containers.map { fromTestContainer(uniqueId, it) } +
+            testCases.map { TestCaseDescriptor.fromTestCase(uniqueId, it) }
+    descriptors.forEach {
+      addChild(it)
+      listener.dynamicTestRegistered(it)
+    }
+  }
 
   companion object {
 
-    fun fromTestContainer(parentId: UniqueId, container: TestScope): TestScopeDescriptor {
-      val desc = TestScopeDescriptor(parentId.append("container", container.displayName), container)
-      container.childContainers().forEach {
-        desc.addChild(fromTestContainer(desc.uniqueId, it))
-      }
-      container.testCases().forEach {
-        desc.addChild(TestCaseDescriptor.fromTestCase(desc.uniqueId, it))
-      }
-      return desc
-    }
+    fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor =
+        TestContainerDescriptor(parentId.append("container", container.displayName), container)
   }
 }
 
-/**
- * A descriptor that is used for a [TestCase].
- */
-class TestCaseDescriptor(val id: UniqueId,
-                         val testCase: TestCase) : LeafDescriptor() {
+data class TestCaseDescriptor(val id: UniqueId,
+                              val testCase: TestCase) : LeafDescriptor() {
 
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = testCase.displayName

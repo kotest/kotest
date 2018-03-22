@@ -1,11 +1,11 @@
 package io.kotlintest
 
-import io.kotlintest.specs.FlatSpec
+import io.kotlintest.specs.FunSpec
 
 @DisplayName("ZZZZZZZ")
-class DisplayNameTest : FlatSpec() {
+class DisplayNameTest : FunSpec() {
   init {
-    "@DisplayName" should "be used for spec name" `in` {
+    test("@DisplayName should be used for spec name") {
     }
   }
 }

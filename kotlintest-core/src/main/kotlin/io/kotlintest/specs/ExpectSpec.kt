@@ -10,30 +10,18 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
-  }
+  final override fun isInstancePerTest(): Boolean = false
 
   fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-    val scope = TestScope("Context: $name", this@ExpectSpec, { ExpectSpecScope(TestScope.empty()).init() })
-    rootScope.addScope(scope)
-    ExpectSpecScope(scope).init()
+    rootScope.addContainer("Context: $name", this@ExpectSpec, ::ExpectSpecScope, init)
   }
 
-  inner class ExpectSpecScope(private val parentScope: TestScope) {
+  inner class ExpectSpecScope : TestScope() {
 
-    fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-      val descriptor = TestScope("Context: $name", this@ExpectSpec, { ExpectSpecScope(TestScope.empty()).init() })
-      parentScope.addScope(descriptor)
-      ExpectSpecScope(descriptor).init()
-    }
+    fun context(name: String, init: ExpectSpecScope.() -> Unit) =
+        addContainer("Context: $name", this@ExpectSpec, ::ExpectSpecScope, init)
 
-    fun expect(name: String, test: () -> Unit): TestCase {
-      val tc = TestCase("Expect: $name", this@ExpectSpec, test, defaultTestCaseConfig)
-      parentScope.addTest(tc)
-      return tc
-    }
+    fun expect(name: String, test: () -> Unit): TestCase =
+        addTest("Expect: $name", this@ExpectSpec, test, defaultTestCaseConfig)
   }
 }

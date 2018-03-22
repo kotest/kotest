@@ -27,43 +27,37 @@ class KotlinTestEngine : TestEngine {
   private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
   override fun execute(request: ExecutionRequest) {
-    request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
-    Project.beforeAll()
-    request.rootTestDescriptor.children.forEach {
-      when (it) {
-        is TestScopeDescriptor -> executeTestScope(it, request)
-        else -> throw IllegalStateException("All children of the root test descriptor must be instances of TestScopeDescriptor; was $it")
+    try {
+      request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
+      Project.beforeAll()
+      request.rootTestDescriptor.children.forEach { execute(it, request) }
+    } finally {
+      try {
+        Project.afterAll()
+      } finally {
+        request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
       }
     }
-    Project.afterAll()
-    request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
   }
 
-  private fun executeTestScope(descriptor: TestScopeDescriptor, request: ExecutionRequest) {
+  private fun execute(descriptor: TestDescriptor, request: ExecutionRequest) {
     try {
       request.engineExecutionListener.executionStarted(descriptor)
-      descriptor.children.forEach {
-        when (it) {
-          is TestScopeDescriptor -> executeTestScope(it, request)
-          is TestCaseDescriptor -> executeTestCase(it, request)
-          else -> throw IllegalStateException("$it is not supported")
+      when (descriptor) {
+        is TestContainerDescriptor -> {
+          descriptor.discover(request.engineExecutionListener)
+          descriptor.children.forEach { execute(it, request) }
         }
+        is TestCaseDescriptor -> {
+          val runner = TestCaseRunner(request.engineExecutionListener)
+          runner.runTest(actualDescriptor(descriptor, request))
+        }
+        else -> throw IllegalStateException("$descriptor is not supported")
       }
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
-    } catch (throwable: Throwable) {
-      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
-    }
-  }
-
-  private fun executeTestCase(descriptor: TestCaseDescriptor, request: ExecutionRequest) {
-    try {
-      request.engineExecutionListener.executionStarted(descriptor)
-      val runner = TestCaseRunner(request.engineExecutionListener)
-      runner.runTest(actualDescriptor(descriptor, request))
-      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
-    } catch (throwable: Throwable) {
-      throwable.printStackTrace()
-      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(throwable))
+    } catch (t: Throwable) {
+      t.printStackTrace()
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(t))
     }
   }
 
@@ -78,7 +72,7 @@ class KotlinTestEngine : TestEngine {
 
         // we then create a new spec-level descriptor for this spec
         // the id should be the same as for the existing spec
-        val freshDescriptor = TestScopeDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.scope())
+        val freshDescriptor = TestContainerDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.root())
 
         // todo we need to re-run the spec interceptors here
 

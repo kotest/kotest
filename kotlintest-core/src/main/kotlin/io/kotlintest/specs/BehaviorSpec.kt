@@ -11,47 +11,35 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
-  }
+  final override fun isInstancePerTest(): Boolean = false
 
   fun Given(desc: String, init: GivenScope.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenScope.() -> Unit) {
-    val scope = TestScope("Given $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })
-    rootScope.addScope(scope)
-    GivenScope(scope).init()
+    rootScope.addContainer("Given $desc", this@BehaviorSpec, ::GivenScope, init)
   }
 
-  inner class GivenScope(private val parent: TestScope) {
+  inner class GivenScope : TestScope() {
 
     fun and(desc: String, init: GivenScope.() -> Unit) {
-      val scope = TestScope("And $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })
-      parent.addScope(scope)
-      GivenScope(scope).init()
+      addContainer("And $desc", this@BehaviorSpec, ::GivenScope, init)
     }
 
     fun When(desc: String, init: WhenScope.() -> Unit) = `when`(desc, init)
     fun `when`(desc: String, init: WhenScope.() -> Unit) {
-      val scope = TestScope("When $desc", this@BehaviorSpec, { WhenScope(TestScope.empty()).init() })
-      parent.addScope(scope)
-      WhenScope(scope).init()
+      addContainer("When $desc", this@BehaviorSpec, ::WhenScope, init)
     }
   }
 
-  inner class WhenScope(private val parent: TestScope) {
+  inner class WhenScope : TestScope() {
 
     fun and(desc: String, init: WhenScope.() -> Unit) {
-      val scope = TestScope("And $desc", this@BehaviorSpec, { WhenScope(TestScope.empty()).init() })
-      parent.addScope(scope)
-      WhenScope(scope).init()
+      addContainer("And $desc", this@BehaviorSpec, ::WhenScope, init)
     }
 
     fun Then(desc: String, test: () -> Unit): TestCase = then(desc, test)
     fun then(desc: String, test: () -> Unit): TestCase {
       val tc = TestCase("Then $desc", this@BehaviorSpec, test, defaultTestCaseConfig)
-      parent.addTest(tc)
+      addTest(tc)
       return tc
     }
   }

@@ -32,12 +32,14 @@ object TestDiscovery {
           .filter { !it.isAbstract }
 
   operator fun invoke(request: DiscoveryRequest, uniqueId: UniqueId): TestDescriptor {
+
     val root = RootTestDescriptor(uniqueId.append("root", "kotlintest"))
     val specs = scan(request)
 
     specs.forEach {
       val spec: Spec = it.createInstance()
-      root.addChild(TestScopeDescriptor.fromTestContainer(root.uniqueId, spec.scope()))
+      val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root())
+      root.addChild(descriptor)
     }
 
     return root

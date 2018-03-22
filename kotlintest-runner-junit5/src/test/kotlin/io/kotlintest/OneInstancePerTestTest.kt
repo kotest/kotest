@@ -1,26 +1,26 @@
 package io.kotlintest
 
-import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.specs.FunSpec
 
-class OneInstancePerTestTest : ShouldSpec() {
+class OneInstancePerTestTest : FunSpec() {
 
-  override val oneInstancePerTest = true
+  override fun isInstancePerTest(): Boolean = true
 
   init {
     var count = 0
-    should("be 0") {
+    test("be 0") {
       count shouldBe 0
       count = 100
     }
-    should("be 0 part 2") {
+    test("be 0 part 2") {
       count shouldBe 0
       count = 100
     }
-    should("be 0 part 3") {
+    test("be 0 part 3") {
       count shouldBe 0
       count = 100
     }
-    should("still be 0") {
+    test("still be 0") {
       count shouldBe 0
     }
   }

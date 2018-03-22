@@ -62,8 +62,6 @@ class ConfigTest : WordSpec() {
 
   override val specInterceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
 
-  override val oneInstancePerTest = false
-
   private val invocationCounter = AtomicInteger(0)
   private val invocationCounter2 = AtomicInteger(0)
   private val threadCounter = AtomicInteger(0)

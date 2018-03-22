@@ -5,18 +5,11 @@ import java.util.*
 
 abstract class AbstractSpec : Spec {
 
-  @Deprecated("Override the function isInstancePerTest() instead of this val")
-  open val oneInstancePerTest = true
+  override fun isInstancePerTest(): Boolean = false
 
-  // the root scopes for specs
-  // specs should add intermediate scopes to this
-  internal val rootScope: TestScope by lazy {
-    TestScope(name(), this@AbstractSpec, {})
-  }
+  internal val rootScope = TestScope()
 
-  override fun scope(): TestScope = rootScope
-
-  override fun isInstancePerTest(): Boolean = oneInstancePerTest
+  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.toResult() })
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
@@ -26,6 +19,10 @@ abstract class AbstractSpec : Spec {
   protected fun <T : Closeable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
+  }
+
+  internal fun closeResources() {
+    closeablesInReverseOrder.forEach { it.close() }
   }
 
   /**
@@ -38,10 +35,6 @@ abstract class AbstractSpec : Spec {
    * Config applied to each test case if not overridden per test case.
    */
   protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
-
-  internal fun closeResources() {
-    closeablesInReverseOrder.forEach { it.close() }
-  }
 }
 
 @Target(AnnotationTarget.CLASS)

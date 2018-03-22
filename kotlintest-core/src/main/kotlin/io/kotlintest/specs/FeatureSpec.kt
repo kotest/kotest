@@ -10,23 +10,17 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
-  }
+  final override fun isInstancePerTest(): Boolean = false
 
-  fun feature(name: String, init: FeatureScope.() -> Unit) {
-    val scope = TestScope("Feature: $name", this@FeatureSpec, { FeatureScope(TestScope.empty()).init() })
-    rootScope.addScope(scope)
-    FeatureScope(scope).init()
-  }
+  fun feature(name: String, init: FeatureScope.() -> Unit) =
+      rootScope.addContainer("Feature: $name", this@FeatureSpec, ::FeatureScope, init)
 
-  inner class FeatureScope(private val parentScope: TestScope) {
-    fun scenario(name: String, test: () -> Unit): TestCase {
-      val tc = TestCase("Scenario: $name", this@FeatureSpec, test, defaultTestCaseConfig)
-      parentScope.addTest(tc)
-      return tc
-    }
+  inner class FeatureScope : TestScope() {
+
+    fun and(name: String, init: FeatureScope.() -> Unit) =
+        addContainer("And: $name", this@FeatureSpec, ::FeatureScope, init)
+
+    fun scenario(name: String, test: () -> Unit): TestCase =
+        addTest("Scenario: $name", this@FeatureSpec, test, defaultTestCaseConfig)
   }
 }

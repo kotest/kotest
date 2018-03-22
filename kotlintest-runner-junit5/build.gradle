@@ -6,4 +6,5 @@ dependencies {
     compile 'org.reflections:reflections:0.9.11'
     compile 'org.junit.platform:junit-platform-engine:1.1.0'
     compile 'org.junit.platform:junit-platform-runner:1.1.0'
+    compile 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 }

@@ -20,23 +20,13 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean {
-    if (oneInstancePerTest)
-      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
-    return false
-  }
+  final override fun isInstancePerTest(): Boolean = false
 
-  infix fun String.should(init: ShouldScope.() -> Unit) {
-    val scope = TestScope(this, this@WordSpec, { ShouldScope(TestScope.empty()).init() })
-    rootScope.addScope(scope)
-    ShouldScope(scope).init()
-  }
+  infix fun String.should(init: WordSpecScope.() -> Unit) =
+      rootScope.addContainer(this, this@WordSpec, ::WordSpecScope, init)
 
-  inner class ShouldScope(private val parentScope: TestScope) {
-    infix operator fun String.invoke(test: () -> Unit): TestCase {
-      val tc = TestCase("should " + this, this@WordSpec, test, defaultTestCaseConfig)
-      parentScope.addTest(tc)
-      return tc
-    }
+  inner class WordSpecScope : TestScope() {
+    infix operator fun String.invoke(test: () -> Unit): TestCase =
+        addTest("should " + this, this@WordSpec, test, defaultTestCaseConfig)
   }
 }

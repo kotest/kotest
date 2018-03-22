@@ -3,7 +3,7 @@ package io.kotlintest
 /**
  * A [Spec] is the top level component in KotlinTest.
  *
- * It contains a single root [TestScope] which in turn
+ * It contains a single root [TestContainer] which in turn
  * contains [TestCase] instances or further scopes.
  *
  * A test case is the actual test unit. A test case will
@@ -11,7 +11,7 @@ package io.kotlintest
  * part of a test scope.
  *
  * Typically, users do not interact with instances of
- * [TestScope] or [TestCase] directly, instead each
+ * [TestContainer] or [TestCase] directly, instead each
  * concrete implementation of Spec offers a different way to
  * create these using an easy to read DSL.
  *
@@ -69,9 +69,9 @@ interface Spec {
   }
 
   /**
-   * Returns the top level root [TestScope] for this Spec.
+   * Returns the top level root [TestContainer] for this Spec.
    */
-  fun scope(): TestScope
+  fun root(): TestContainer
 
   /**
    * A Readable name for this spec. By default will use the

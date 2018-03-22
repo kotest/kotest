@@ -157,7 +157,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll: one generator implicit 200 attempts" {
       var attempts = 0
-      forAll{ a: Int ->
+      forAll { a: Int ->
         attempts++
         2 * a % 2 == 0
       }
@@ -259,22 +259,22 @@ class PropertyTestingTest : StringSpec() {
       attempts shouldBe 1000
     }
 
-    "forAll: Three implicit generators 26 attempts" {
+    "forAll: Three implicit generators with default attempts" {
       var attempts = 0
       forAll { a: Int, b: Int, c: Int ->
         attempts++
         a + b * c == (b * c) + a
       }
-      attempts shouldBe 26
+      attempts shouldBe 1000
     }
 
-    "forAll: Four explicit generators success after 1000 attempts" {
+    "forAll: Four explicit generators success with default attempts" {
       var attempts = 0
       forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
         attempts++
         a + b + c + d == d + c + b + a
       }
-      attempts shouldBe 1000
+      attempts shouldBe 5 * 5 * 5 * 5
     }
 
     "forAll: Four explicit generators success after 50 attempts" {
@@ -302,7 +302,7 @@ class PropertyTestingTest : StringSpec() {
           attempts < 4
         }
       }
-      exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
+      exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD"
     }
 
     "forAll: Four explicit generators failed after 50 attempts" {
@@ -321,7 +321,7 @@ class PropertyTestingTest : StringSpec() {
           attempts < 50
         }
       }
-      exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD\nafter $attempts attempts"
+      exception.message shouldBe "Property failed for \n$elementA\n$elementB\n$elementC\n$elementD"
     }
 
     "forAll: four implicit generators with 1000 attempts" {
@@ -453,7 +453,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forAll six explicit arguments with 50 attempts" {
       var attempts = 0
-      forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+      forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         true
       }
@@ -469,7 +469,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           elementA = a
           elementB = b
           elementC = c
@@ -493,7 +493,7 @@ class PropertyTestingTest : StringSpec() {
       var elementE = 0
       var elementF = 0
       val exception = shouldThrow<AssertionError> {
-        forAll( Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
           elementA = a
           elementB = b
           elementC = c
@@ -691,7 +691,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two explicit arguments with 360 attempts" {
       var attempts = 0
-      forNone( Gen.int(), Gen.int()) { a, b ->
+      forNone(Gen.int(), Gen.int()) { a, b ->
         attempts++
         a * b != b * a
       }
@@ -700,7 +700,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: two explicit arguments 1492 attempts" {
       var attempts = 0
-      forNone( Gen.int(), Gen.int()) { a, b ->
+      forNone(Gen.int(), Gen.int()) { a, b ->
         attempts++
         a * b == a + b
       }
@@ -923,7 +923,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: four implicit generators 30 attempts" {
       var attempts = 0
-      forNone{ _: Long, _: Int, _: Double, _: String ->
+      forNone { _: Long, _: Int, _: Double, _: String ->
         attempts++
         false
       }
@@ -932,7 +932,7 @@ class PropertyTestingTest : StringSpec() {
 
     "forNone: four implicit generators 620 attempts" {
       var attempts = 0
-      forNone{ _: String, _: Int, _: Double, _: Long ->
+      forNone { _: String, _: Int, _: Double, _: Long ->
         attempts++
         false
       }
@@ -1023,13 +1023,13 @@ class PropertyTestingTest : StringSpec() {
       exception.message shouldBe "Attempts should be a positive number"
     }
 
-    "forNone: five implicit generators 1000 attempts" {
+    "forNone: five implicit generators default attempts" {
       var attempts = 0
       forNone { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe Math.pow(5.0, 5.0).toInt()
     }
 
     "forNone: five implicit generators 427 attempts" {
@@ -1041,22 +1041,13 @@ class PropertyTestingTest : StringSpec() {
       attempts shouldBe 427
     }
 
-    "forNone: five implicit generators 2380 attempts" {
-      var attempts = 0
-      forNone { _: Int, _: Int, _: Int, _: Int, _: Int ->
-        attempts++
-        false
-      }
-      attempts shouldBe 2380
-    }
-
-    "forNone: six explicit generators 1000 attempts" {
+    "forNone: six explicit generators default attempts" {
       var attempts = 0
       forNone(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe Math.pow(5.0, 6.0).toInt()
     }
 
     "forNone: six explicit generators 300 attempts" {
@@ -1116,13 +1107,13 @@ class PropertyTestingTest : StringSpec() {
           "Property passed for \n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter $attempts attempts"
     }
 
-    "forNone: six implicit generators 1000 attempts" {
+    "forNone: six implicit generators default attempts" {
       var attempts = 0
       forNone { _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe Math.pow(5.0, 6.0).toInt()
     }
 
     "forNone: six implicit generators 26 attempts" {

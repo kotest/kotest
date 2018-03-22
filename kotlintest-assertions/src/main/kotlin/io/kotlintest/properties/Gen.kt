@@ -48,9 +48,6 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  */
 interface Gen<out T> {
 
-  /**
-   *
-   */
   fun generate(max: Int): Iterable<T>
 
   companion object {

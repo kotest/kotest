@@ -129,7 +129,7 @@ class GenTest : WordSpec() {
         var i = 0
         val gen = Gen.create { i++ }
         for (n in 0..1000) {
-          gen.generate(10) shouldBe n
+          gen.generate(10) shouldBe List(10, { 5 })
         }
       }
     }
@@ -137,25 +137,19 @@ class GenTest : WordSpec() {
       "generate the defaults for list" {
 
         val gen = Gen.default<List<Int>>()
-        forAll(gen) {
-          inst ->
-          forAll(inst) {
-            i ->
+        forAll(gen) { inst ->
+          forAll(inst) { i ->
             (i is Int) shouldBe true
           }
           true
         }
-
       }
-
 
       "generate the defaults for set" {
 
         val gen = Gen.default<Set<String>>()
-        forAll(gen) {
-          inst ->
-          forAll(inst) {
-            i ->
+        forAll(gen) { inst ->
+          forAll(inst) { i ->
             (i is String) shouldBe true
           }
           true
