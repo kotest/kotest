@@ -11,6 +11,12 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   fun Given(desc: String, init: GivenScope.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenScope.() -> Unit) {
     val scope = TestScope("Given $desc", this@BehaviorSpec, { GivenScope(TestScope.empty()).init() })

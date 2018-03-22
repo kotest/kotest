@@ -27,6 +27,12 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   operator fun String.invoke(init: ShouldScope.() -> Unit) {
     val scope = TestScope(this, this@ShouldSpec, { ShouldScope(TestScope.empty()).init() })
     rootScope.addScope(scope)

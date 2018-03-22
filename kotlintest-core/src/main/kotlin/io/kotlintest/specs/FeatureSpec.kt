@@ -10,6 +10,12 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   fun feature(name: String, init: FeatureScope.() -> Unit) {
     val scope = TestScope("Feature: $name", this@FeatureSpec, { FeatureScope(TestScope.empty()).init() })
     rootScope.addScope(scope)

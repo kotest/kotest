@@ -8,11 +8,9 @@ package io.kotlintest
  * A scope has a display name which is used
  * for reporting and display purposes.
  *
- * A scope also has a function, which is the body
- * of the scope itself, which is captured so it can
- * be executed at a later stage, thereby ensuring
- * that any state set my the lambda is preserved
- * for child test cases.
+ * A scope has a body function, which is
+ * executed at test time to discover child
+ * tests and nested scopes.
  */
 data class TestScope(val displayName: String, val spec: Spec, val body: () -> Any?) {
 
@@ -41,6 +39,7 @@ data class TestScope(val displayName: String, val spec: Spec, val body: () -> An
 
   companion object {
     class EmptySpec : AbstractSpec()
+
     fun empty() = TestScope("", EmptySpec(), { })
   }
 }

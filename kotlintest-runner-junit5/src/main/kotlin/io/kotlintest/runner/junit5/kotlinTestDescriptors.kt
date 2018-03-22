@@ -10,8 +10,8 @@ import org.junit.platform.engine.support.descriptor.ClassSource
 import java.util.*
 
 /**
- * A top level container [TestDescriptor] used to hold the root
- * container of each discovered [io.kotlintest.Spec].
+ * A top level container [TestDescriptor] which is used to
+ * hold the root scope of each [io.kotlintest.Spec].
  */
 class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
   override fun removeFromHierarchy() = throw JUnitException("Cannot remove from hierarchy for root")
@@ -21,8 +21,7 @@ class RootTestDescriptor(val id: UniqueId) : BranchDescriptor() {
 }
 
 /**
- * A container level [TestDescriptor] that is used to contain
- * [TestScope]s.
+ * A container [TestDescriptor] that is used for [TestScope]s.
  */
 open class TestScopeDescriptor(val id: UniqueId,
                                val scope: TestScope) : BranchDescriptor() {
@@ -30,6 +29,7 @@ open class TestScopeDescriptor(val id: UniqueId,
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = scope.displayName
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(scope.spec.javaClass))
+  override fun mayRegisterTests() = true
 
   companion object {
 
@@ -47,7 +47,7 @@ open class TestScopeDescriptor(val id: UniqueId,
 }
 
 /**
- * A Test level descriptor that contains a single [TestCase].
+ * A descriptor that is used for a [TestCase].
  */
 class TestCaseDescriptor(val id: UniqueId,
                          val testCase: TestCase) : LeafDescriptor() {

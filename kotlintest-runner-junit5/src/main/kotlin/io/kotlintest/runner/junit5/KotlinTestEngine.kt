@@ -32,7 +32,7 @@ class KotlinTestEngine : TestEngine {
     request.rootTestDescriptor.children.forEach {
       when (it) {
         is TestScopeDescriptor -> executeTestScope(it, request)
-        else -> throw IllegalStateException("All children of the root test descriptor must be instances of ContainerTestDescriptor; was $it")
+        else -> throw IllegalStateException("All children of the root test descriptor must be instances of TestScopeDescriptor; was $it")
       }
     }
     Project.afterAll()
@@ -41,9 +41,6 @@ class KotlinTestEngine : TestEngine {
 
   private fun executeTestScope(descriptor: TestScopeDescriptor, request: ExecutionRequest) {
     try {
-      // we need to re-execute the lamba associated with the scope, so
-      // side effects are preserved.
-      descriptor.scope.body()
       request.engineExecutionListener.executionStarted(descriptor)
       descriptor.children.forEach {
         when (it) {
@@ -81,7 +78,7 @@ class KotlinTestEngine : TestEngine {
 
         // we then create a new spec-level descriptor for this spec
         // the id should be the same as for the existing spec
-        val freshDescriptor = TestScopeDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.root())
+        val freshDescriptor = TestScopeDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.scope())
 
         // todo we need to re-run the spec interceptors here
 

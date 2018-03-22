@@ -10,6 +10,12 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : AbstractSpec()
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   fun describe(name: String, init: DescribeScope.() -> Unit) {
     val descriptor = TestScope("Describe: $name", this@DescribeSpec, { DescribeScope(TestScope.empty()).init() })
     rootScope.addScope(descriptor)

@@ -20,6 +20,12 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   infix fun String.should(init: ShouldScope.() -> Unit) {
     val scope = TestScope(this, this@WordSpec, { ShouldScope(TestScope.empty()).init() })
     rootScope.addScope(scope)
@@ -34,4 +40,3 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : AbstractSpec() {
     }
   }
 }
-

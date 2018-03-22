@@ -10,6 +10,12 @@ abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
+  final override fun isInstancePerTest(): Boolean {
+    if (oneInstancePerTest)
+      throw RuntimeException("This spec no longer supports using oneInstancePerTest. Only specs which do not use nested test scopes can use this feature")
+    return false
+  }
+
   fun context(name: String, init: ExpectSpecScope.() -> Unit) {
     val scope = TestScope("Context: $name", this@ExpectSpec, { ExpectSpecScope(TestScope.empty()).init() })
     rootScope.addScope(scope)

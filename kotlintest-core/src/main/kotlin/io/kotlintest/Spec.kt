@@ -4,11 +4,11 @@ package io.kotlintest
  * A [Spec] is the top level component in KotlinTest.
  *
  * It contains a single root [TestScope] which in turn
- * contains [TestCase] instances or further containers.
+ * contains [TestCase] instances or further scopes.
  *
  * A test case is the actual test unit. A test case will
- * never reside in a spec directly, but always in the root
- * container or a child container of the root.
+ * never reside in a spec directly, but always as
+ * part of a test scope.
  *
  * Typically, users do not interact with instances of
  * [TestScope] or [TestCase] directly, instead each
@@ -31,7 +31,7 @@ interface Spec {
 
   /**
    * Returns true if this spec should use a new instance for
-   * each test case. This is the default behavior in junit.
+   * each test case. This is the default behavior in jUnit.
    *
    * If however you want a single instance to be shared for
    * all tests in the same class, like ScalaTest, then
@@ -40,17 +40,16 @@ interface Spec {
   fun isInstancePerTest(): Boolean
 
   /**
-   * Intercepts the call of the spec class.
+   * Intercepts the invocation of the spec class.
    *
-   * Override this function if you wish to control the way each spec
-   * is executed.
+   * Override this function if you wish to control how each
+   * spec is executed.
    *
-   * This means this interceptor will be called once, before any of the
+   * The interceptor will be called once per spec, before any of the
    * testcases in the spec are executed.
    *
-   * To continue execution of this spec class, you must invoke the spec
-   * function. If you don't want to continue with the execution of the spec,
-   * then do not invoke the spec function.
+   * Don't forget to call `test()` in the body of this method.
+   * Otherwise the test case will never be executed.
    */
   fun interceptSpec(spec: () -> Unit) {
     spec()
@@ -70,7 +69,21 @@ interface Spec {
   }
 
   /**
-   * Returns the top level root container for tests of this spec.
+   * Returns the top level root [TestScope] for this Spec.
    */
-  fun root(): TestScope
+  fun scope(): TestScope
+
+  /**
+   * A Readable name for this spec. By default will use the
+   * simple class name, unless @DisplayName is used to annotate
+   * the spec. Alternatively, a user can override this function
+   * to return a customized name.
+   */
+  fun name(): String {
+    val displayName = this::class.annotations.find { it is DisplayName }
+    return when (displayName) {
+      is DisplayName -> displayName.name
+      else -> javaClass.simpleName
+    }
+  }
 }
