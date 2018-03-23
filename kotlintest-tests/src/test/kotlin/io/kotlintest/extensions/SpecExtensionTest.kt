@@ -1,6 +1,6 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.ProjectExtensions
+import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.shouldBe
@@ -41,11 +41,11 @@ class SpecExtensionTest : WordSpec() {
 
   init {
 
-    ProjectExtensions.registerExtension(SpecExtensionNumbers.add1)
-    ProjectExtensions.registerExtension(SpecExtensionNumbers.add2)
+    Project.registerExtension(SpecExtensionNumbers.add1)
+    Project.registerExtension(SpecExtensionNumbers.add2)
 
     // use a project after all extension to test the around advice of a spec
-    ProjectExtensions.registerExtension(object : ProjectExtension {
+    Project.registerExtension(object : ProjectExtension {
       override fun afterAll() {
         SpecExtensionNumbers.b.get() shouldBe 6
       }

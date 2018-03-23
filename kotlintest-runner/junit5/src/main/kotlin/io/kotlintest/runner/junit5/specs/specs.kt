@@ -1,5 +1,6 @@
 package io.kotlintest.runner.junit5.specs
 
+import io.kotlintest.specs.AbstractAnnotationSpec
 import io.kotlintest.specs.AbstractBehaviorSpec
 import io.kotlintest.specs.AbstractDescribeSpec
 import io.kotlintest.specs.AbstractExpectSpec
@@ -17,6 +18,7 @@ interface IntelliTestMarker {
   }
 }
 
+abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractAnnotationSpec(body), IntelliTestMarker
 abstract class BehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractBehaviorSpec(body), IntelliTestMarker
 abstract class DescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractDescribeSpec(body), IntelliTestMarker
 abstract class ExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractExpectSpec(body), IntelliTestMarker

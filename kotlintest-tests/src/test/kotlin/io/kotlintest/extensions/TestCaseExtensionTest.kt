@@ -1,6 +1,6 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.ProjectExtensions
+import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.extensions.Numbers.add1
 import io.kotlintest.runner.junit5.specs.WordSpec
@@ -33,8 +33,8 @@ object Numbers {
   }
 
   init {
-    ProjectExtensions.registerExtension(add1)
-    ProjectExtensions.registerExtension(add2)
+    Project.registerExtension(add1)
+    Project.registerExtension(add2)
   }
 }
 

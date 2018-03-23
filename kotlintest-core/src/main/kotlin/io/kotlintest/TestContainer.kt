@@ -46,6 +46,15 @@ class TestContainer(val displayName: String,
  */
 open class TestScope {
 
+  companion object {
+    fun lineNumber(): Int {
+      val stack = Throwable().stackTrace
+      return stack.dropWhile {
+        it.className.startsWith("io.kotlintest")
+      }[0].lineNumber
+    }
+  }
+
   internal val children = mutableListOf<TestX>()
 
   fun addTest(tc: TestCase) {
@@ -55,20 +64,7 @@ open class TestScope {
   }
 
   fun addTest(name: String, spec: Spec, test: () -> Unit, config: TestCaseConfig): TestCase {
-    val stack = Throwable().stackTrace
-    val lineNumber = stack.dropWhile {
-      it.className.startsWith("io.kotlintest.TestScope")
-          || it.className.startsWith("io.kotlintest.specs.FeatureSpec")
-          || it.className.startsWith("io.kotlintest.specs.StringSpec")
-          || it.className.startsWith("io.kotlintest.specs.FunSpec")
-          || it.className.startsWith("io.kotlintest.specs.WordSpec")
-          || it.className.startsWith("io.kotlintest.specs.DescribeSpec")
-          || it.className.startsWith("io.kotlintest.specs.ShouldSpec")
-          || it.className.startsWith("io.kotlintest.specs.ExpectSpec")
-          || it.className.startsWith("io.kotlintest.specs.BehaviorSpec")
-          || it.className.startsWith("io.kotlintest.specs.FreeSpec")
-    }[0].lineNumber
-    val tc = TestCase(name, spec, test, lineNumber, config)
+    val tc = TestCase(name, spec, test, lineNumber(), config)
     addTest(tc)
     return tc
   }
