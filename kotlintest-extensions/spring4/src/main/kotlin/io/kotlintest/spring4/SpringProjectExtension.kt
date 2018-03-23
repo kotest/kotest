@@ -1,4 +1,4 @@
-package io.kotlintest.spring5
+package io.kotlintest.spring4
 
 import io.kotlintest.Spec
 import io.kotlintest.extensions.SpecExtension

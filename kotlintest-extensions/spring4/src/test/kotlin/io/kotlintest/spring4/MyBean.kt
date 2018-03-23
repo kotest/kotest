@@ -1,4 +1,4 @@
-package io.kotlintest.spring5
+package io.kotlintest.spring4
 
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.runner.junit5.specs.WordSpec
