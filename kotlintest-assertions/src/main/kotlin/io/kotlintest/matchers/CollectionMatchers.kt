@@ -38,8 +38,8 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: List<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(
       ts.all { value.contains(it) },
-      "Collection should contain all of $ts",
-      "Collection should not contain all of $ts"
+      "Collection should contain all of ${ts.take(10).joinToString(",")}",
+      "Collection should not contain all of ${ts.take(10).joinToString(",")}"
   )
 }
 
