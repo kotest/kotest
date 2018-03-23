@@ -3,6 +3,7 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
@@ -50,7 +51,7 @@ class KotlinTestEngine : TestEngine {
         }
         is TestCaseDescriptor -> {
           val runner = TestCaseRunner(request.engineExecutionListener)
-          runner.runTest(actualDescriptor(descriptor, request))
+          runner.runTest(actualDescriptor(descriptor))
         }
         else -> throw IllegalStateException("$descriptor is not supported")
       }
@@ -61,7 +62,7 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
-  private fun actualDescriptor(descriptor: TestCaseDescriptor, request: ExecutionRequest): TestCaseDescriptor {
+  private fun actualDescriptor(descriptor: TestCaseDescriptor): TestCaseDescriptor {
     return when (descriptor.testCase.spec.isInstancePerTest()) {
     // if we are using one instance per test then we need a descriptor
     // with a clean instance of the spec
@@ -70,17 +71,17 @@ class KotlinTestEngine : TestEngine {
         // we use the prototype spec to create another instance of the spec for this test
         val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
 
-        // we then create a new spec-level descriptor for this spec
-        // the id should be the same as for the existing spec
-        val freshDescriptor = TestContainerDescriptor.fromTestContainer(request.rootTestDescriptor.uniqueId, freshSpec.root())
+        // we get the root scope again for this spec, and find our test case
+        val freshTestCase = freshSpec.root().discovery().find {
+          when (it) {
+            is TestCase -> it.name() == descriptor.testCase.name()
+            else -> false
+          }
+        } as TestCase
 
         // todo we need to re-run the spec interceptors here
 
-        // and then we can get the test case out of that new container
-        freshDescriptor.findByUniqueId(descriptor.uniqueId)
-            .orElseThrow {
-              IllegalStateException("Test case with id ${descriptor.id} cannot be found in spec container clone $freshDescriptor")
-            } as TestCaseDescriptor
+        TestCaseDescriptor(descriptor.id, freshTestCase)
       }
     // if we are /not/ using one instance per test then we can just return the original descriptor
       false -> descriptor
