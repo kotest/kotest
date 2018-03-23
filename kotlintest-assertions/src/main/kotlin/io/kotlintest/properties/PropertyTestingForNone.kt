@@ -8,11 +8,21 @@ inline fun <reified A> forNone(iterations: Int, noinline fn: (a: A) -> Boolean) 
 fun <A> forNone(gena: Gen<A>, fn: (a: A) -> Boolean) = forNone(1000, gena, fn)
 fun <A> forNone(iterations: Int, gena: Gen<A>, fn: (a: A) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
-  gena.values().take(iterations).withIndex().forEach { (attempt, a) ->
+  var attempts = 0
+  fun test(a: A) {
+    attempts++
     val passed = fn(a)
     if (passed) {
-      throw AssertionError("Property passed for\n$a\nafter $attempt attempts")
+      throw AssertionError("Property passed for\n$a\nafter $attempts attempts")
     }
+  }
+  for (a in gena.always()) {
+    test(a)
+  }
+  val avalues = gena.random().iterator()
+  while (attempts < iterations) {
+    val a = avalues.next()
+    test(a)
   }
 }
 
@@ -90,7 +100,11 @@ fun <A, B, C> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>,
 }
 
 inline fun <reified A, reified B, reified C, reified D> forNone(noinline fn: (a: A, b: B, c: C, D) -> Boolean) {
-  forNone(Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
+  forNone(1000, fn)
+}
+
+inline fun <reified A, reified B, reified C, reified D> forNone(iterations: Int, noinline fn: (a: A, b: B, c: C, D) -> Boolean) {
+  forNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
 fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Boolean) =
@@ -189,7 +203,7 @@ fun <A, B, C, D, E, F> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
     attempts++
     val passed = fn(a, b, c, d, e, f)
     if (passed) {
-      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter $attempts attempts")
+      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter $attempts attempts")
     }
   }
 

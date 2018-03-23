@@ -135,14 +135,14 @@ class GenTest : WordSpec() {
         Gen.create { 5 }.random().take(10).toList() shouldBe List(10, { 5 })
         var i = 0
         val gen = Gen.create { i++ }
-        gen.random().take(150) shouldBe List(150, { it })
+        gen.random().take(150).toList() shouldBe List(150, { it })
       }
     }
     "Gen.default" should {
       "generate the defaults for list" {
 
         val gen = Gen.default<List<Int>>()
-        forAll(gen) { inst ->
+        forAll(10, gen) { inst ->
           forAll(inst) { i ->
             (i is Int) shouldBe true
           }
@@ -201,6 +201,7 @@ class GenTest : WordSpec() {
 
     "Gen.orNull " should {
       "have both values and nulls generated" {
+        Gen.constant(5).orNull().always().toSet() shouldBe setOf(5, null)
 
         fun <T> Gen<T>.toList(size: Int): List<T> =
             ArrayList<T>(size).also { list ->
@@ -209,10 +210,7 @@ class GenTest : WordSpec() {
               }
             }
 
-        val list = Gen.constant(5).orNull().toList(size = 100)
-
-        (5 in list) shouldBe true
-        (null in list) shouldBe true
+        Gen.constant(5).orNull().random().take(1000).toList().toSet() shouldBe setOf(5, null)
       }
     }
 

@@ -60,8 +60,6 @@ interface Gen<out T> {
    */
   fun random(): Sequence<T>
 
-  fun values(): Iterable<T> = always() + random().asIterable()
-
   companion object {
 
     fun bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
@@ -101,9 +99,10 @@ interface Gen<out T> {
       override fun random(): Sequence<T> = generateSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
     }
 
-    inline fun <reified T : Enum<T>> enum(): Gen<T> {
+    inline fun <reified T : Enum<T>> enum(): Gen<T> = object : Gen<T> {
       val values = T::class.java.enumConstants.toList()
-      return from(values)
+      override fun always(): Iterable<T> = values
+      override fun random(): Sequence<T> = from(values).random()
     }
 
     /**
@@ -120,10 +119,10 @@ interface Gen<out T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen [Int]. The values always returned include
-     * the following edge cases: [-2, -1, 0, 1, 2, Int.MIN_VALUE, Int.MAX_VALUE]
+     * the following edge cases: [-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE]
      */
     fun int() = object : Gen<Int> {
-      val literals = listOf(-2, -1, 0, 1, 2, Int.MIN_VALUE, Int.MAX_VALUE)
+      val literals = listOf(-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE)
       override fun always(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
     }
@@ -131,10 +130,10 @@ interface Gen<out T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen positive value. The values returned always include
-     * the following edge cases: [0, 1, 2, Int.MAX_VALUE]
+     * the following edge cases: [0, 1, Int.MAX_VALUE]
      */
     fun positiveIntegers(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(0, 1, 2, Int.MAX_VALUE)
+      val literals = listOf(0, 1, Int.MAX_VALUE)
       override fun always(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
     }
@@ -142,10 +141,10 @@ interface Gen<out T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen natural number. The values returned always include
-     * the following edge cases: [1, 2, Int.MAX_VALUE]
+     * the following edge cases: [1, Int.MAX_VALUE]
      */
     fun nats(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(1, 2, Int.MAX_VALUE)
+      val literals = listOf(1, Int.MAX_VALUE)
       override fun always(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
     }
@@ -153,10 +152,10 @@ interface Gen<out T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen negative value. The values returned always include
-     * the following edge cases: [0, -1, -2, Int.MIN_VALUE]
+     * the following edge cases: [0, -1, Int.MIN_VALUE]
      */
     fun negativeIntegers(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(0, -1, -2, Int.MIN_VALUE)
+      val literals = listOf(0, -1, Int.MIN_VALUE)
       override fun always(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { -Math.abs(RANDOM.nextInt()) }
     }
@@ -174,10 +173,10 @@ interface Gen<out T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen long. The values returned always include
-     * the following edge cases: [-2, -1, 0, 1, 2, Long.MIN_VALUE, Long.MAX_VALUE]
+     * the following edge cases: [-1, 0, 1, Long.MIN_VALUE, Long.MAX_VALUE]
      */
     fun long(): Gen<Long> = object : Gen<Long> {
-      val literals = listOf(-2, -1, 0, 1, 2, Long.MIN_VALUE, Long.MAX_VALUE)
+      val literals = listOf(-1, 0, 1, Long.MIN_VALUE, Long.MAX_VALUE)
       override fun always(): Iterable<Long> = literals
       override fun random(): Sequence<Long> = generateSequence { Math.abs(RANDOM.nextLong()) }
     }
@@ -195,7 +194,7 @@ interface Gen<out T> {
      * chosen Double.
      */
     fun double(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(-2.0, -1.0, 0.0, 1.0, 2.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+      val literals = listOf(-1.0, 0.0, 1.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun always(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
     }
@@ -205,7 +204,7 @@ interface Gen<out T> {
      * chosen Float.
      */
     fun float(): Gen<Float> = object : Gen<Float> {
-      val literals = listOf(-2.0F, -1.0F, 0.0F, 1.0F, 2.0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+      val literals = listOf(-1.0F, 0.0F, 1.0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun always(): Iterable<Float> = literals
       override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
     }
@@ -233,7 +232,7 @@ interface Gen<out T> {
 
     /**
      * Returns a stream of values, where each value is
-     * a list of values generated by the given generator.
+     * a list of values generated by the underlying generator.
      */
     fun <T : Any> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
       override fun always(): Iterable<List<T>> = listOf(gen.always().toList())
@@ -360,10 +359,10 @@ data class ConstGen<out T : Any>(val value: T) : Gen<T> {
  * generator plus null.
  */
 fun <T : Any> Gen<T>.orNull(): Gen<T?> {
-  val t = this
+  val outer = this
   return object : Gen<T?> {
-    override fun always(): Iterable<T?> = t.always() + listOf(null)
-    override fun random(): Sequence<T?> = generateSequence { if (RANDOM.nextBoolean()) null else t.random().firstOrNull() }
+    override fun always(): Iterable<T?> = outer.always() + listOf(null)
+    override fun random(): Sequence<T?> = outer.random().map { if (RANDOM.nextBoolean()) null else it }
   }
 }
 
