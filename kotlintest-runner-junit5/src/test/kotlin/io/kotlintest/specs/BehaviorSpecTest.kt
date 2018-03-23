@@ -2,7 +2,6 @@ package io.kotlintest.specs
 
 import io.kotlintest.ListStack
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
 
 class BehaviorSpecTest : BehaviorSpec() {
   init {

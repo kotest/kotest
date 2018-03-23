@@ -9,9 +9,6 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : AbstractSpec() {
     body()
   }
 
-  fun test(name: String, test: () -> Unit): TestCase {
-    val testcase = TestCase(name, this@FunSpec, test, defaultTestCaseConfig)
-    rootScope.addTest(testcase)
-    return testcase
-  }
+  fun test(name: String, test: () -> Unit): TestCase =
+      rootScope.addTest(name, this@FunSpec, test, defaultTestCaseConfig)
 }

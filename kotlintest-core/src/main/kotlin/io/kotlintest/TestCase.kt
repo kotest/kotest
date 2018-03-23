@@ -6,10 +6,11 @@ import java.time.Duration
  * Describes an actual testcase.
  * That is, a unit of code that will be tested.
  *
- * A testcase is always associated with a container,
+ * A test case is always associated with a container,
  * called a [TestContainer]. Such a descriptor is used
- * to group together related testcases. This allow hierarchical
- * reporting and output.
+ * to group together related test cases. This allows
+ * hierarchical reporting and output using the rich
+ * DSL of the [Spec] classes.
  */
 data class TestCase(
     // the display name is the name of the test that will
@@ -21,6 +22,7 @@ data class TestCase(
     val spec: Spec,
     // a closure of the test itself
     val test: () -> Unit,
+    val line: Int,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
     var config: TestCaseConfig) : TestX {

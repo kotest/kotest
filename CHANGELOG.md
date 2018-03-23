@@ -20,6 +20,7 @@ Version 3.0.0... in progress
 * Added assert variants for property testing
 * property generators are now iterator based 
 * loads of bug fixes
+* jump to actual test when in intellij test panel
 
 Version 2.0.0, released 2017-03-26
 ----------------------------------

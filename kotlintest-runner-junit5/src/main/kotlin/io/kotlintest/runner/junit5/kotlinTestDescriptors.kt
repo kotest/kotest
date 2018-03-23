@@ -8,6 +8,7 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.ClassSource
+import org.junit.platform.engine.support.descriptor.FilePosition
 import java.util.*
 
 /**
@@ -61,7 +62,10 @@ data class TestCaseDescriptor(val id: UniqueId,
 
   override fun getUniqueId(): UniqueId = id
   override fun getDisplayName(): String = testCase.displayName
-  override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(testCase.spec.javaClass))
+  override fun getSource(): Optional<TestSource> {
+    val source = ClassSource.from(testCase.spec.javaClass, FilePosition.from(Math.max(1, testCase.line)))
+    return Optional.of(source)
+  }
 
   companion object {
     fun fromTestCase(parentId: UniqueId, tc: TestCase): TestCaseDescriptor =

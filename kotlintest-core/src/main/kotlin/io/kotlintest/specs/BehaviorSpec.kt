@@ -37,10 +37,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec()
     }
 
     fun Then(desc: String, test: () -> Unit): TestCase = then(desc, test)
-    fun then(desc: String, test: () -> Unit): TestCase {
-      val tc = TestCase("Then $desc", this@BehaviorSpec, test, defaultTestCaseConfig)
-      addTest(tc)
-      return tc
-    }
+    fun then(desc: String, test: () -> Unit): TestCase =
+        addTest("Then $desc", this@BehaviorSpec, test, defaultTestCaseConfig)
   }
 }

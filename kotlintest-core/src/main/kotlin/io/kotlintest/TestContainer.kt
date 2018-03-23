@@ -1,15 +1,21 @@
 package io.kotlintest
 
+interface TestX {
+  fun name(): String
+}
+
 /**
  * Used to group together [TestCase] instances
- * as well as supporting lazily discovered
- * nested containers.
+ * for heirarchical display and execution order.
  *
  * All testcases must reside in a [TestContainer].
  *
  * A container has a name, which is used when outputting
- * the hierarchical location of tests. It also has a
- * reference back to the parent spec.
+ * the hierarchical location of tests.
+ *
+ * It also has a reference back to the parent spec
+ * so that we can generate a link to the source file
+ * for any given test.
  *
  * Most importantly, it has a discovery function. This
  * function, when invoked, returns any nested containers
@@ -23,10 +29,6 @@ package io.kotlintest
  * deferred until the test engine is ready to execute
  * tests inside that particular container.
  */
-interface TestX {
-  fun name(): String
-}
-
 class TestContainer(val displayName: String, val spec: Spec, val discovery: () -> List<TestX>) : TestX {
   override fun name(): String = displayName
 }
@@ -49,7 +51,20 @@ open class TestScope {
   }
 
   fun addTest(name: String, spec: Spec, test: () -> Unit, config: TestCaseConfig): TestCase {
-    val tc = TestCase(name, spec, test, config)
+    val stack = Throwable().stackTrace
+    val lineNumber = stack.dropWhile {
+      it.className.startsWith("io.kotlintest.TestScope")
+          || it.className.startsWith("io.kotlintest.specs.FeatureSpec")
+          || it.className.startsWith("io.kotlintest.specs.StringSpec")
+          || it.className.startsWith("io.kotlintest.specs.FunSpec")
+          || it.className.startsWith("io.kotlintest.specs.WordSpec")
+          || it.className.startsWith("io.kotlintest.specs.DescribeSpec")
+          || it.className.startsWith("io.kotlintest.specs.ShouldSpec")
+          || it.className.startsWith("io.kotlintest.specs.ExpectSpec")
+          || it.className.startsWith("io.kotlintest.specs.BehaviorSpec")
+          || it.className.startsWith("io.kotlintest.specs.FreeSpec")
+    }[0].lineNumber
+    val tc = TestCase(name, spec, test, lineNumber, config)
     addTest(tc)
     return tc
   }
