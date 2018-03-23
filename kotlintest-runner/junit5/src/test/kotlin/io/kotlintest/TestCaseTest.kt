@@ -37,7 +37,7 @@ class TestCaseTest : AbstractStringSpec() {
     }
   }
 
-  override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+  override fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
     test()
     System.clearProperty("kotlintest.tags.exclude")
     System.clearProperty("kotlintest.tags.include")

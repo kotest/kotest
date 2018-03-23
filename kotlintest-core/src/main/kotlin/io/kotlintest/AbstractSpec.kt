@@ -9,7 +9,7 @@ abstract class AbstractSpec : Spec {
 
   internal val rootScope = TestScope()
 
-  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.children.toList() })
+  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.children.toList() }, true)
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 
@@ -24,12 +24,6 @@ abstract class AbstractSpec : Spec {
   internal fun closeResources() {
     closeablesInReverseOrder.forEach { it.close() }
   }
-
-  /**
-   * Interceptors that intercepts the execution of the whole spec.
-   * Interceptors are executed from left to right.
-   */
-  open val specInterceptors: List<(Spec, () -> Unit) -> Unit> = listOf()
 
   /**
    * Config applied to each test case if not overridden per test case.

@@ -1,12 +1,14 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.runner.junit5.specs.WordSpec
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
-class ConfigTest : AbstractWordSpec() {
+class ConfigTest : WordSpec() {
 
   object TagA : Tag()
 
@@ -14,41 +16,53 @@ class ConfigTest : AbstractWordSpec() {
     override fun initialValue() = StringBuilder()
   }
 
-  private val verificationInterceptor: (Spec, () -> Unit) -> Unit = { _, spec ->
-    spec()
-    val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
-    ProjectConfig.intercepterLog.toString() shouldBe expectedLog
+  private val verificationInterceptor = object : SpecExtension {
+    override fun intercept(spec: Spec, process: () -> Unit) {
+      process()
+      val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
+      ProjectConfig.intercepterLog.toString() shouldBe expectedLog
+    }
   }
 
-  private val specInterceptorA: (Spec, () -> Unit) -> Unit = { _, spec ->
-    ProjectConfig.intercepterLog.append("C1.")
-    spec()
-    ProjectConfig.intercepterLog.append("C2.")
+  private val specInterceptorA = object : SpecExtension {
+    override fun intercept(spec: Spec, process: () -> Unit) {
+      ProjectConfig.intercepterLog.append("C1.")
+      process()
+      ProjectConfig.intercepterLog.append("C2.")
+    }
   }
 
-  private val specInterceptorB: (Spec, () -> Unit) -> Unit = { _, spec ->
-    ProjectConfig.intercepterLog.append("D1.")
-    spec()
-    ProjectConfig.intercepterLog.append("D2.")
+  private val specInterceptorB = object : SpecExtension {
+    override fun intercept(spec: Spec, process: () -> Unit) {
+      ProjectConfig.intercepterLog.append("D1.")
+      process()
+      ProjectConfig.intercepterLog.append("D2.")
+    }
   }
 
-  private val testCaseinterceptorC: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
-    testCaseInterceptorLog!!.get().append("E1.")
-    testCase()
-    testCaseInterceptorLog.get().append("E2.")
+  private val testCaseinterceptorC = object : TestCaseExtension {
+    override fun intercept(testCase: TestCase, test: () -> Unit) {
+      testCaseInterceptorLog!!.get().append("E1.")
+      test()
+      testCaseInterceptorLog.get().append("E2.")
+    }
   }
 
-  private val testCaseInterceptorD: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
-    testCaseInterceptorLog!!.get().append("F1.")
-    testCase()
-    testCaseInterceptorLog.get().append("F2.")
+  private val testCaseInterceptorD = object : TestCaseExtension {
+    override fun intercept(testCase: TestCase, test: () -> Unit) {
+      testCaseInterceptorLog!!.get().append("F1.")
+      test()
+      testCaseInterceptorLog.get().append("F2.")
+    }
   }
 
-  private val testCaseInterceptorE = { _: TestCaseContext, testCase: () -> Unit ->
-    try {
-      testCase()
-    } catch (ex: RuntimeException) {
-      // ignore
+  private val testCaseInterceptorE = object : TestCaseExtension {
+    override fun intercept(testCase: TestCase, test: () -> Unit) {
+      try {
+        test()
+      } catch (ex: RuntimeException) {
+        // ignore
+      }
     }
   }
 
@@ -58,9 +72,9 @@ class ConfigTest : AbstractWordSpec() {
       TestCaseConfig(
           invocations = 3,
           tags = setOf(TagA),
-          interceptors = testCaseInterceptors)
+          extensions = testCaseInterceptors)
 
-  override val specInterceptors = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
+  override fun specExtensions() = listOf(verificationInterceptor, specInterceptorA, specInterceptorB)
 
   private val invocationCounter = AtomicInteger(0)
   private val invocationCounter2 = AtomicInteger(0)
@@ -107,14 +121,16 @@ class ConfigTest : AbstractWordSpec() {
         testCase.config.tags shouldBe setOf(TagA)
       }.config(invocations = 1)
 
-      val orderVerificationInterceptor: (TestCaseContext, () -> Unit) -> Unit = { _, testCase ->
-        testCase()
-        ProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
+      val orderVerificationInterceptor = object : TestCaseExtension {
+        override fun intercept(testCase: TestCase, test: () -> Unit) {
+          test()
+          ProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
+        }
       }
 
       "should call interceptors in order of definition" {
         testCaseInterceptorLog!!.get().append("test call.")
-      }.config(invocations = 1, interceptors = listOf(orderVerificationInterceptor) + testCaseInterceptors)
+      }.config(invocations = 1, extensions = listOf(orderVerificationInterceptor) + testCaseInterceptors)
 
       "should handle exception with interceptor" {
         throw RuntimeException()
@@ -122,7 +138,7 @@ class ConfigTest : AbstractWordSpec() {
 
       "should override interceptors" {
         testCaseInterceptorLog!!.get().toString() shouldHave haveLength(0)
-      }.config(interceptors = listOf())
+      }.config(extensions = listOf())
 
       "only run beforeAll once" {
         ProjectConfig.beforeAll shouldBe 1
@@ -138,8 +154,8 @@ class ConfigTest : AbstractWordSpec() {
     }
   }
 
-  override fun interceptSpec(spec: () -> Unit) {
-    spec()
+  override fun interceptSpec(process: () -> Unit) {
+    process()
 
     invocationCounter.get() shouldBe 5
     invocationCounter2.get() shouldBe 3

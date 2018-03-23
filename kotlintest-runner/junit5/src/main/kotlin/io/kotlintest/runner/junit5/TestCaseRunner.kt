@@ -1,18 +1,34 @@
 package io.kotlintest.runner.junit5
 
-import io.kotlintest.TestCaseContext
+import io.kotlintest.ProjectExtensions
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TestCaseExtension
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-fun <CONTEXT> createInterceptorChain(
-    interceptors: Iterable<(CONTEXT, () -> Unit) -> Unit>,
-    initialInterceptor: (CONTEXT, () -> Unit) -> Unit): (CONTEXT, () -> Unit) -> Unit {
-  return interceptors.reversed().fold(initialInterceptor) { a, b ->
-    { context: CONTEXT, fn: () -> Unit ->
-      b(context, { a.invoke(context, { fn() }) })
+fun createSpecInterceptorChain(
+    spec: Spec,
+    extensions: Iterable<SpecExtension>,
+    initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
+  return extensions.reversed().fold(initial) { a, extension ->
+    { fn: () -> Unit ->
+      extension.intercept(spec, { a.invoke(fn) })
+    }
+  }
+}
+
+fun createTestCaseInterceptorChain(
+    testCase: TestCase,
+    extensions: Iterable<TestCaseExtension>,
+    initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
+  return extensions.reversed().fold(initial) { a, extension ->
+    { fn: () -> Unit ->
+      extension.intercept(testCase, { a.invoke(fn) })
     }
   }
 }
@@ -26,17 +42,16 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
           if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(descriptor.testCase.config.threads)
       listener.executionStarted(descriptor)
-      val initialInterceptor = { context: TestCaseContext, test: () -> Unit ->
-        descriptor.testCase.spec.interceptTestCase(context, { test() })
-      }
-      val testInterceptorChain = createInterceptorChain(descriptor.testCase.config.interceptors, initialInterceptor)
-      val testCaseContext = TestCaseContext(descriptor.testCase.spec, descriptor.testCase)
+
+      val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
+      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + ProjectExtensions.testCaseExtensions()
+      val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
 
       val errors = mutableListOf<Throwable>()
       for (j in 1..descriptor.testCase.config.invocations) {
         executor.execute {
           try {
-            testInterceptorChain(testCaseContext, { descriptor.testCase.test() })
+            chain(descriptor.testCase.test)
           } catch (t: Throwable) {
             errors.add(t)
           }

@@ -1,7 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.Project
+import io.kotlintest.ProjectExtensions
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -30,19 +30,19 @@ class KotlinTestEngine : TestEngine {
 
   override fun getId(): String = EngineId
 
-  private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
+  // private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
 
   override fun execute(request: ExecutionRequest) {
     try {
       request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
-      Project.beforeAll()
+      ProjectExtensions.beforeAll()
       request.rootTestDescriptor.children.forEach { execute(it, request) }
     } catch (t: Throwable) {
       t.printStackTrace()
       throw t
     } finally {
       try {
-        Project.afterAll()
+        ProjectExtensions.afterAll()
       } finally {
         try {
           request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
@@ -59,8 +59,16 @@ class KotlinTestEngine : TestEngine {
       request.engineExecutionListener.executionStarted(descriptor)
       when (descriptor) {
         is TestContainerDescriptor -> {
-          descriptor.discover(request.engineExecutionListener)
-          descriptor.children.forEach { execute(it, request) }
+          if (descriptor.container.isSpecRoot) {
+            descriptor.discover(request.engineExecutionListener)
+            val initialInterceptor = { next: () -> Unit -> descriptor.container.spec.interceptSpec(next) }
+            val extensions = descriptor.container.spec.specExtensions() + ProjectExtensions.specExtensions()
+            val chain = createSpecInterceptorChain(descriptor.container.spec, extensions, initialInterceptor)
+            chain { descriptor.children.forEach { execute(it, request) } }
+          } else {
+            descriptor.discover(request.engineExecutionListener)
+            descriptor.children.forEach { execute(it, request) }
+          }
         }
         is TestCaseDescriptor -> {
           val runner = TestCaseRunner(request.engineExecutionListener)

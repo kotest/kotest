@@ -1,12 +1,12 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractWordSpec
 import java.util.*
 
-class CollectionMatchersTest : AbstractWordSpec() {
+class CollectionMatchersTest : WordSpec() {
 
   init {
 

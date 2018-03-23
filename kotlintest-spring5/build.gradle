@@ -2,4 +2,5 @@ dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-runner:junit5')
     compile 'org.springframework:spring-test:5.0.4.RELEASE'
+    compile 'org.springframework:spring-context:5.0.4.RELEASE'
 }

@@ -1,7 +1,7 @@
 package io.kotlintest.provided
 
 import io.kotlintest.AbstractProjectConfig
-import io.kotlintest.ProjectExtension
+import io.kotlintest.extensions.ProjectExtension
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -10,7 +10,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
   val intercepterLog = StringBuilder()
 
-  override val extensions = listOf(TestExtension)
+  override fun extensions() = listOf(TestExtension)
 
   override fun beforeAll() {
     intercepterLog.append("B1.")

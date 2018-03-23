@@ -1,5 +1,6 @@
 package io.kotlintest
 
+// what to call this?
 interface TestX {
   fun name(): String
 }
@@ -29,7 +30,10 @@ interface TestX {
  * deferred until the test engine is ready to execute
  * tests inside that particular container.
  */
-class TestContainer(val displayName: String, val spec: Spec, val discovery: () -> List<TestX>) : TestX {
+class TestContainer(val displayName: String,
+                    val spec: Spec,
+                    val discovery: () -> List<TestX>,
+                    val isSpecRoot: Boolean = false) : TestX {
   override fun name(): String = displayName
 }
 

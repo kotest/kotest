@@ -1,5 +1,8 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TestCaseExtension
+
 /**
  * A [Spec] is the top level component in KotlinTest.
  *
@@ -36,42 +39,68 @@ interface Spec {
    * If however you want a single instance to be shared for
    * all tests in the same class, like ScalaTest, then
    * this method should return false.
+   *
+   * Note: Not all spec types support allowing one instance
+   * per test. This is due to implementation trickery required
+   * with nested closures and junit test discovery.
    */
   fun isInstancePerTest(): Boolean
 
   /**
-   * Intercepts the invocation of the spec class.
+   * Intercepts the invocation of this spec instance.
    *
-   * Override this function if you wish to control how each
-   * spec is executed.
+   * Override this function if you wish to add before and after
+   * logic to the spec, or if you want to control when the spec
+   * is executed.
    *
-   * The interceptor will be called once per spec, before any of the
-   * testcases in the spec are executed.
+   * If you wish to re-use intercept logic across multiple specs,
+   * then look at [SpecExtension.intercept].
    *
-   * Don't forget to call `test()` in the body of this method.
-   * Otherwise the test case will never be executed.
+   * This intercept function will be called once, before any of the
+   * test cases in the spec are executed. Don't forget to call
+   * `process()` in the body of this method. Otherwise the
+   * execution of the spec will not continue.
    */
-  fun interceptSpec(spec: () -> Unit) {
-    spec()
+  fun interceptSpec(process: () -> Unit) {
+    process()
   }
 
   /**
-   * Intercepts the call of each test case.
+   * Intercepts the invocation of each test case.
+
+   * Override this function if you wish to add before and after
+   * logic to test case execution, or if you want to control when
+   * certain tests are executed.
    *
-   * Override this function if you wish to control the way each test
-   * case is executed.
+   * If you wish to re-use intercept logic across multiple test cases,
+   * then look at [TestCaseExtension.intercept].
    *
-   * Don't forget to call `test()` in the body of this method.
-   * Otherwise the test case will never be executed.
+   * This intercept function will be called before each test case.
+   * Don't forget to call `process()` in the body of this method.
+   * Otherwise the execution of the test case will not continue.
    */
-  fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
+  fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
     test()
   }
 
   /**
-   * Returns the top level root [TestContainer] for this Spec.
+   * Override this function to register instances of
+   * [SpecExtension] which will intercept this spec.
+   *
+   * If you wish to register an extension for all specs
+   * then use [AbstractProjectConfig.specExtensions].
    */
-  fun root(): TestContainer
+  fun specExtensions(): List<SpecExtension> = listOf()
+
+  /**
+   * Override this function to register instances of
+   * [TestCaseExtension] which will intercept all
+   * test cases in this spec.
+   *
+   * If you wish to register an extension for all test cases
+   * then use [AbstractProjectConfig.testCaseExtensions].
+   */
+  fun testCaseExtensions(): List<TestCaseExtension> = listOf()
 
   /**
    * A Readable name for this spec. By default will use the
@@ -86,4 +115,9 @@ interface Spec {
       else -> javaClass.simpleName
     }
   }
+
+  /**
+   * Returns the top level root [TestContainer] for this Spec.
+   */
+  fun root(): TestContainer
 }

@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
 /**
@@ -22,6 +23,7 @@ data class TestCase(
     val spec: Spec,
     // a closure of the test itself
     val test: () -> Unit,
+    // the first line number of the test
     val line: Int,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
@@ -35,7 +37,7 @@ data class TestCase(
       timeout: Duration? = null,
       threads: Int? = null,
       tags: Set<Tag>? = null,
-      interceptors: List<(TestCaseContext, () -> Unit) -> Unit>? = null) {
+      extensions: List<TestCaseExtension>? = null) {
     config =
         TestCaseConfig(
             enabled ?: config.enabled,
@@ -43,7 +45,7 @@ data class TestCase(
             timeout ?: config.timeout,
             threads ?: config.threads,
             tags ?: config.tags,
-            interceptors ?: config.interceptors)
+            extensions ?: config.extensions)
   }
 
   fun isActive() = config.enabled && isActiveAccordingToTags()

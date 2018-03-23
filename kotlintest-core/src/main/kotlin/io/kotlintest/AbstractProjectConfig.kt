@@ -1,8 +1,12 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.ProjectExtension
+import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TestCaseExtension
+
 /**
- * Project-wide configuration. Instances of [ProjectExtension] returned by an
- * instance of this class will be applied to all testcases.
+ * Project-wide configuration. Extensions returned by an
+ * instance of this class will be applied to all specs and test cases.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotlintest.provided`.
@@ -16,11 +20,16 @@ package io.kotlintest
 abstract class AbstractProjectConfig {
 
   /**
-   * List of project-wide extensions. The [ProjectExtension.beforeAll] methods of the
-   * [ProjectExtension]s are executed in the order of [ProjectExtension]s from left to right. The
-   * [ProjectExtension.afterAll] methods are executed in reversed order (from right to left).
+   * List of project-wide extensions. The [ProjectExtension.beforeAll] methods of
+   * the [ProjectExtension]s are executed in the order of [ProjectExtension]s from
+   * first to last. The [ProjectExtension.afterAll] methods are executed in reversed
+   * order (from last to first).
    */
-  open val extensions: List<ProjectExtension> = listOf()
+  open fun extensions(): List<ProjectExtension> = listOf()
+
+  open fun specExtensions(): List<SpecExtension> = listOf()
+
+  open fun testCaseExtensions(): List<TestCaseExtension> = listOf()
 
   /**
    * Executed before the first test of the project, but after the
@@ -33,11 +42,4 @@ abstract class AbstractProjectConfig {
    * [ProjectExtension.afterAll] methods.
    */
   open fun afterAll() {}
-
-  /**
-   * Executed before each and every [Spec].
-   * You must invoke next() to continue with the evaluation of the spec.
-   * If you do not invoke next() then the spec is skipped.
-   */
-  fun interceptSpec(spec: Spec, next: () -> Unit) {}
 }
