@@ -39,7 +39,7 @@ object Project {
   internal val projectExtensions = mutableListOf<ProjectExtension>()
   internal val specExtensions = mutableListOf<SpecExtension>()
   internal val testCaseExtensions = mutableListOf<TestCaseExtension>()
-  internal var parallelism: Int = 0
+  internal var parallelism: Int = 1
 
   fun projectExtensions() = projectExtensions.toList()
   fun specExtensions() = specExtensions.toList()

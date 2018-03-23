@@ -56,10 +56,7 @@ class KotlinTestEngine : TestEngine {
     try {
       println("starting execution")
       println("listener = " + request.engineExecutionListener.javaClass)
-      thread {
-        request.engineExecutionListener.executionStarted(descriptor)
-      }
-      Thread.sleep(2000)
+      request.engineExecutionListener.executionStarted(descriptor)
       println("returned")
       when (descriptor) {
         is TestContainerDescriptor -> {
