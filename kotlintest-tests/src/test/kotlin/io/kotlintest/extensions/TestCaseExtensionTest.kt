@@ -2,49 +2,60 @@ package io.kotlintest.extensions
 
 import io.kotlintest.ProjectExtensions
 import io.kotlintest.TestCase
+import io.kotlintest.extensions.Numbers.add1
 import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.shouldBe
+import java.util.concurrent.atomic.AtomicInteger
+
+object Numbers {
+
+  val a = AtomicInteger(1)
+  val b = AtomicInteger(1)
+
+  val add1 = object : TestCaseExtension {
+    override fun intercept(testCase: TestCase, test: () -> Unit) {
+      if (testCase.displayName.contains("ZZQQ")) {
+        Numbers.a.addAndGet(2)
+        test()
+        Numbers.b.addAndGet(2)
+      }
+    }
+  }
+
+  val add2 = object : TestCaseExtension {
+    override fun intercept(testCase: TestCase, test: () -> Unit) {
+      if (testCase.displayName.contains("ZZQQ")) {
+        Numbers.a.addAndGet(3)
+        test()
+        Numbers.b.addAndGet(3)
+      }
+    }
+  }
+
+  init {
+    ProjectExtensions.registerExtension(add1)
+    ProjectExtensions.registerExtension(add2)
+  }
+}
 
 class TestCaseExtensionTest : WordSpec() {
 
   init {
 
-    var a = 1
-    var b = 1
-
-    val add = object : TestCaseExtension {
-      override fun intercept(testCase: TestCase, test: () -> Unit) {
-        a += 2
-        test()
-        b += 2
-      }
-    }
-
-    val mult = object : TestCaseExtension {
-      override fun intercept(testCase: TestCase, test: () -> Unit) {
-        a *= 2
-        test()
-        b *= 2
-      }
-    }
-
-    ProjectExtensions.registerExtension(add)
-    ProjectExtensions.registerExtension(mult)
-
     "TestCaseExtensions" should {
-      "be activated by registration with ProjectExtensions" {
+      "be activated by registration with ProjectExtensions ZZQQ" {
         // the sum and mult before calling test() should have fired
-        a shouldBe 6
-        b shouldBe 1
+        Numbers.a.get() shouldBe 6
+        Numbers.b.get() shouldBe 1
       }
-      "use around advice" {
+      "use around advice ZZQQ" {
         // in this second test, both the after from the previous test, and the before of this test should have fired
-        a shouldBe 16
-        b shouldBe 4
+        Numbers.a.get() shouldBe 11
+        Numbers.b.get() shouldBe 6
       }
-      "use extensions registered on config" {
-        a shouldBe 40
-      }.config(extensions = listOf(add))
+      "use extensions registered on config ZZQQ" {
+        Numbers.a.get() shouldBe 18
+      }.config(extensions = listOf(add1))
     }
   }
 }
