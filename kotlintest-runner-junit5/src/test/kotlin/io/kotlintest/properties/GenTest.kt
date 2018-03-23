@@ -43,7 +43,7 @@ class GenTest : WordSpec() {
         val min = random.nextInt(10000) - 10000
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(min, max).generate(10)
+        val rand = Gen.choose(min, max).random().take(10)
         rand.forEach {
           it shouldBe gte(min)
           it shouldBe lt(max)
@@ -56,7 +56,7 @@ class GenTest : WordSpec() {
 
         val max = random.nextInt(10000)
 
-        val rand = Gen.choose(Int.MIN_VALUE, max).generate(10)
+        val rand = Gen.choose(Int.MIN_VALUE, max).random().take(10)
         rand.forEach {
           it shouldBe gte(Int.MIN_VALUE)
           it shouldBe lt(max)
@@ -71,7 +71,7 @@ class GenTest : WordSpec() {
         val min = random.nextInt(10000) - 10000
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(min.toLong(), max.toLong()).generate(10)
+        val rand = Gen.choose(min.toLong(), max.toLong()).random().take(10)
         rand.forEach {
           it shouldBe gte(min.toLong())
           it shouldBe lt(max.toLong())
@@ -83,7 +83,7 @@ class GenTest : WordSpec() {
 
         val max = random.nextInt(10000) + 10000
 
-        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).generate(10)
+        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).random().take(10)
         rand.forEach {
           it shouldBe gte(Long.MIN_VALUE)
           it shouldBe lt(max.toLong())
@@ -105,7 +105,7 @@ class GenTest : WordSpec() {
         )
 
         forAll(table1) { clazz ->
-          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldBe clazz
+          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe clazz
         }
 
         val table2 = table(
@@ -119,10 +119,10 @@ class GenTest : WordSpec() {
 
         forAll(table2) { clazz ->
           val tmp = clazz.split(".").last()
-          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldBe "java.lang.$tmp"
+          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe "java.lang.$tmp"
         }
 
-        Gen.forClassName("kotlin.Int").generate(10).firstOrNull()!!.javaClass.name shouldBe "java.lang.Integer"
+        Gen.forClassName("kotlin.Int").random().firstOrNull()!!.javaClass.name shouldBe "java.lang.Integer"
       }
       "throw an exception, with a wrong class" {
         shouldThrow<IllegalArgumentException> {
@@ -132,10 +132,10 @@ class GenTest : WordSpec() {
     }
     "Gen.create" should {
       "create a Generator with the given function" {
-        Gen.create { 5 }.generate(10).toList() shouldBe List(10, { 5 })
+        Gen.create { 5 }.random().take(10).toList() shouldBe List(10, { 5 })
         var i = 0
         val gen = Gen.create { i++ }
-        gen.generate(150) shouldBe List(150, { it })
+        gen.random().take(150) shouldBe List(150, { it })
       }
     }
     "Gen.default" should {
@@ -181,7 +181,7 @@ class GenTest : WordSpec() {
 
         forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).generate(10).firstOrNull()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {
@@ -193,7 +193,7 @@ class GenTest : WordSpec() {
 
     "ConstGen " should {
       "always generate the same thing" {
-        forAll(ConstGen(5)) {
+        forAll(Gen.constant(5)) {
           it == 5
         }
       }
@@ -205,11 +205,11 @@ class GenTest : WordSpec() {
         fun <T> Gen<T>.toList(size: Int): List<T> =
             ArrayList<T>(size).also { list ->
               repeat(size) {
-                list += generate(10)
+                list += random().take(10)
               }
             }
 
-        val list = ConstGen(5).orNull().toList(size = 100)
+        val list = Gen.constant(5).orNull().toList(size = 100)
 
         (5 in list) shouldBe true
         (null in list) shouldBe true
@@ -226,7 +226,7 @@ class GenTest : WordSpec() {
 
     "Gen.map " should {
       "correctly transform the values" {
-        forAll(ConstGen(5).map { it + 7 }) {
+        forAll(Gen.constant(5).map { it + 7 }) {
           it == 12
         }
       }
