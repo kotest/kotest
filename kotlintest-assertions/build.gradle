@@ -2,4 +2,5 @@ dependencies {
     compile 'org.mockito:mockito-core:2.7.11'
     // we have junit 4 here so we can use the ComparisonFailure
     compile 'junit:junit:4.12'
+    compile 'com.univocity:univocity-parsers:2.6.1'
 }

@@ -1,4 +1,4 @@
-package io.kotlintest.properties
+package io.kotlintest.tables
 
 fun headers(a: String) = Headers1(a)
 fun headers(a: String, b: String) = Headers2(a, b)
@@ -81,7 +81,7 @@ fun error(headers: List<String>, values: List<*>): AssertionError {
   return AssertionError("Test passed for $params but expected failure")
 }
 
-fun <A> forAll(table: Table1<A>, fn: (A) -> Unit): Unit {
+fun <A> forAll(table: Table1<A>, fn: (A) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a)
@@ -91,7 +91,7 @@ fun <A> forAll(table: Table1<A>, fn: (A) -> Unit): Unit {
   }
 }
 
-fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit): Unit {
+fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b)
@@ -101,7 +101,7 @@ fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit): Unit {
   }
 }
 
-fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit): Unit {
+fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c)
@@ -111,7 +111,7 @@ fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit): Unit {
   }
 }
 
-fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit): Unit {
+fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d)
@@ -121,7 +121,7 @@ fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit): Un
   }
 }
 
-fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit): Unit {
+fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e)
@@ -132,7 +132,7 @@ fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> 
 }
 
 
-fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit): Unit {
+fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f)
@@ -142,7 +142,7 @@ fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, 
   }
 }
 
-fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit): Unit {
+fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
@@ -152,7 +152,7 @@ fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, 
   }
 }
 
-fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
@@ -162,7 +162,7 @@ fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
@@ -172,7 +172,7 @@ fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
@@ -182,7 +182,7 @@ fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)

@@ -1,10 +1,10 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.properties.forAll
-import io.kotlintest.properties.forNone
-import io.kotlintest.properties.headers
-import io.kotlintest.properties.row
-import io.kotlintest.properties.table
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.forNone
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

@@ -1,9 +1,9 @@
-package io.kotlintest.properties
+package io.kotlintest.tables
 
+import io.kotlintest.runner.junit5.specs.StringSpec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractStringSpec
 
-class TableTestingTest : AbstractStringSpec() {
+class TableTestingTest : StringSpec() {
   init {
 
     "names should not be empty strings" {
@@ -67,7 +67,7 @@ class TableTestingTest : AbstractStringSpec() {
           row(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 21)
       )
       forAll(table5) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, result ->
-        a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u  shouldBe result
+        a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u shouldBe result
       }
     }
   }

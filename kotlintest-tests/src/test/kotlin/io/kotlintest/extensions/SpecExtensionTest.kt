@@ -13,33 +13,36 @@ object SpecExtensionNumbers {
 
   val add1 = object : SpecExtension {
     override fun intercept(spec: Spec, process: () -> Unit) {
-      if (spec.name().contains("SpecExtensionTest")) {
+      if (spec.name() == "SpecExtensionTest") {
         SpecExtensionNumbers.a.addAndGet(2)
         process()
         SpecExtensionNumbers.b.addAndGet(2)
+      } else {
+        process()
       }
     }
   }
 
   val add2 = object : SpecExtension {
     override fun intercept(spec: Spec, process: () -> Unit) {
-      if (spec.name().contains("SpecExtensionTest")) {
+      if (spec.name() == "SpecExtensionTest") {
         SpecExtensionNumbers.a.addAndGet(3)
+        println(SpecExtensionNumbers.a.get())
         process()
         SpecExtensionNumbers.b.addAndGet(3)
+      } else {
+        process()
       }
     }
-  }
-
-  init {
-    ProjectExtensions.registerExtension(add1)
-    ProjectExtensions.registerExtension(add2)
   }
 }
 
 class SpecExtensionTest : WordSpec() {
 
   init {
+
+    ProjectExtensions.registerExtension(SpecExtensionNumbers.add1)
+    ProjectExtensions.registerExtension(SpecExtensionNumbers.add2)
 
     // use a project after all extension to test the around advice of a spec
     ProjectExtensions.registerExtension(object : ProjectExtension {

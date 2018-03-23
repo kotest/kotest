@@ -10,6 +10,9 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 import java.util.Random
 import kotlin.collections.ArrayList
 import kotlin.collections.List
@@ -104,7 +107,7 @@ class GenTest : AbstractWordSpec() {
             row("java.lang.Double")
         )
 
-        forAll(table1) { clazz ->
+        io.kotlintest.tables.forAll(table1) { clazz ->
           Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe clazz
         }
 
@@ -117,7 +120,7 @@ class GenTest : AbstractWordSpec() {
             row("kotlin.Double")
         )
 
-        forAll(table2) { clazz ->
+        io.kotlintest.tables.forAll(table2) { clazz ->
           val tmp = clazz.split(".").last()
           Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe "java.lang.$tmp"
         }
@@ -179,7 +182,7 @@ class GenTest : AbstractWordSpec() {
             row("java.lang.Double"),
             row("kotlin.Double"))
 
-        forAll(table) { clazz ->
+        io.kotlintest.tables.forAll(table) { clazz ->
           val tmp = clazz.split(".")
           Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
         }

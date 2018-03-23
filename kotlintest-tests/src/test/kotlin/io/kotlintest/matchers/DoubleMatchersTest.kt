@@ -1,10 +1,10 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.properties.forAll
-import io.kotlintest.properties.forNone
-import io.kotlintest.properties.headers
-import io.kotlintest.properties.row
-import io.kotlintest.properties.table
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.forNone
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AbstractShouldSpec
@@ -48,20 +48,19 @@ class DoubleMatchersTest : AbstractShouldSpec() {
             row(1.0, 1.0, 0.1)
 
         )
-        forAll(table) {
-            a, b, tol ->
-            1.0 shouldBe between(a, b, tol)
-        }
+      forAll(table) { a, b, tol ->
+        1.0 shouldBe between(a, b, tol)
+      }
     }
 
     should ("never match outside of range") {
          val table = table(
-          headers("a", "b"),
-          row(0.0, 2.0),
-          row(2.0, 2.0),
-          row(4.0, 5.0),
-          row(4.0, 6.0)
-      )
+             headers("a", "b"),
+             row(0.0, 2.0),
+             row(2.0, 2.0),
+             row(4.0, 5.0),
+             row(4.0, 6.0)
+         )
 
       forNone(table) { a, b ->
         3.0 shouldBe between(a, b, 0.0)
