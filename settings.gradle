@@ -3,4 +3,5 @@ include 'kotlintest-core',
         'kotlintest-runner:junit5',
         'kotlintest-extensions:spring4',
         'kotlintest-extensions:spring5',
-        'kotlintest-intellij'
+        'kotlintest-intellij',
+        'kotlintest-tests'
