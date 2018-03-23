@@ -32,6 +32,16 @@ abstract class AbstractProjectConfig {
   open fun testCaseExtensions(): List<TestCaseExtension> = listOf()
 
   /**
+   * Override this function and return a number greater than 1 if you wish to
+   * enable parallel execution of tests. The number returned is the number of
+   * concurrently executing specs.
+   *
+   * An alternative way to enable this is the system property kotlintest.parallelism
+   * which will always (if defined) take priority over the value here.
+   */
+  open fun parallelism(): Int = 1
+
+  /**
    * Executed before the first test of the project, but after the
    * [ProjectExtension.beforeAll] methods.
    */

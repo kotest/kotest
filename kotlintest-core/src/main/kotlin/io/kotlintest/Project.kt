@@ -5,7 +5,7 @@ import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 
 /**
- * Internal class used to hold project wide extensions.
+ * Internal class used to hold project wide configuration.
  *
  * This class will attempt to locate a user implementation of
  * [AbstractProjectConfig] located at the package io.kotlintest.provided.ProjectConfig.
@@ -17,7 +17,7 @@ import io.kotlintest.extensions.TestCaseExtension
  * In addition, extensions can be programatically added to this class
  * by invoking the `registerExtension` functions.
  */
-object ProjectExtensions {
+object Project {
 
   private const val projectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
 
@@ -39,14 +39,17 @@ object ProjectExtensions {
   internal val projectExtensions = mutableListOf<ProjectExtension>()
   internal val specExtensions = mutableListOf<SpecExtension>()
   internal val testCaseExtensions = mutableListOf<TestCaseExtension>()
+  internal var parallelism: Int = 0
 
   fun projectExtensions() = projectExtensions.toList()
   fun specExtensions() = specExtensions.toList()
   fun testCaseExtensions() = testCaseExtensions.toList()
+  fun parallelism() = parallelism
 
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
     projectExtensions.addAll(this.extensions())
     specExtensions.addAll(this.specExtensions())
+    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
   }
 
   fun beforeAll() {

@@ -1,37 +1,12 @@
 package io.kotlintest.runner.junit5
 
-import io.kotlintest.ProjectExtensions
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.TestCaseExtension
+import createTestCaseInterceptorChain
+import io.kotlintest.Project
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-
-fun createSpecInterceptorChain(
-    spec: Spec,
-    extensions: Iterable<SpecExtension>,
-    initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
-  return extensions.reversed().fold(initial) { a, extension ->
-    { fn: () -> Unit ->
-      extension.intercept(spec, { a.invoke(fn) })
-    }
-  }
-}
-
-fun createTestCaseInterceptorChain(
-    testCase: TestCase,
-    extensions: Iterable<TestCaseExtension>,
-    initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
-  return extensions.reversed().fold(initial) { a, extension ->
-    { fn: () -> Unit ->
-      extension.intercept(testCase, { a.invoke(fn) })
-    }
-  }
-}
 
 class TestCaseRunner(private val listener: EngineExecutionListener) {
 
@@ -44,7 +19,7 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
       listener.executionStarted(descriptor)
 
       val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
-      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + ProjectExtensions.testCaseExtensions()
+      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + Project.testCaseExtensions()
       val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
 
       val errors = mutableListOf<Throwable>()

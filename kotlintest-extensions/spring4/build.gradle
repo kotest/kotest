@@ -3,4 +3,6 @@ dependencies {
     testCompile project(':kotlintest-runner:junit5')
     compile 'org.springframework:spring-test:4.3.14.RELEASE'
     compile 'org.springframework:spring-context:4.3.14.RELEASE'
+    testCompile 'org.junit.platform:junit-platform-launcher:1.1.0'
+
 }

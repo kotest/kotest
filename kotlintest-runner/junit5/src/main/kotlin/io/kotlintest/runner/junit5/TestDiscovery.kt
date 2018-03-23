@@ -10,7 +10,6 @@ import java.lang.reflect.Modifier
 import java.net.URI
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
-import kotlin.reflect.jvm.jvmName
 
 object TestDiscovery {
 

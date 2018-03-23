@@ -7,4 +7,5 @@ dependencies {
     compile 'org.junit.platform:junit-platform-engine:1.1.0'
     compile 'org.junit.platform:junit-platform-suite-api:1.1.0'
     compile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testCompile 'org.junit.platform:junit-platform-launcher:1.1.0'
 }

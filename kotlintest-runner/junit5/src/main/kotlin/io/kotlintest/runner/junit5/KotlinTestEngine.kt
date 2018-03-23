@@ -1,8 +1,8 @@
 package io.kotlintest.runner.junit5
 
+import createSpecInterceptorChain
 import io.kotlintest.AbstractSpec
-import io.kotlintest.ProjectExtensions
-import io.kotlintest.Spec
+import io.kotlintest.Project
 import io.kotlintest.TestCase
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
@@ -15,6 +15,9 @@ import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.reflections.util.ClasspathHelper
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class KotlinTestEngine : TestEngine {
 
@@ -22,57 +25,100 @@ class KotlinTestEngine : TestEngine {
     const val EngineId = "io.kotlintest"
   }
 
-  // the initial interceptor just invokes the intercept method
-  // in the spec itself, which in turn invokes the chain.
-  private val initialInterceptor = { spec: Spec, chain: () -> Unit ->
-    spec.interceptSpec({ chain() })
-  }
-
   override fun getId(): String = EngineId
 
-  // private fun interceptorChain(spec: AbstractSpec) = createInterceptorChain(spec.specInterceptors, initialInterceptor)
+  private val executor = Executors.newFixedThreadPool(Project.parallelism())
 
   override fun execute(request: ExecutionRequest) {
+    request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     try {
-      request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
-      ProjectExtensions.beforeAll()
-      request.rootTestDescriptor.children.forEach { execute(it, request) }
+      Project.beforeAll()
+      // each child is executed in the executor, which will have a single thread only
+      // if parallelism is not enabled
+      request.rootTestDescriptor.children.forEach {
+        executor.submit {
+          execute(it, request)
+        }
+      }
+      executor.shutdown()
+      executor.awaitTermination(1, TimeUnit.DAYS)
     } catch (t: Throwable) {
       t.printStackTrace()
       throw t
     } finally {
-      try {
-        ProjectExtensions.afterAll()
-      } finally {
-        try {
-          request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
-        } catch (t: Throwable) {
-          t.printStackTrace()
-          throw t
-        }
-      }
+      Project.afterAll()
     }
+    request.engineExecutionListener.executionFinished(request.rootTestDescriptor, TestExecutionResult.successful())
   }
 
   private fun execute(descriptor: TestDescriptor, request: ExecutionRequest) {
+    println("descriptor " + descriptor.uniqueId)
     try {
-      request.engineExecutionListener.executionStarted(descriptor)
+      println("starting execution")
+      println("listener = " + request.engineExecutionListener.javaClass)
+      thread {
+        request.engineExecutionListener.executionStarted(descriptor)
+      }
+      Thread.sleep(2000)
+      println("returned")
       when (descriptor) {
         is TestContainerDescriptor -> {
-          if (descriptor.container.isSpecRoot) {
-            descriptor.discover(request.engineExecutionListener)
+          descriptor.discover(request.engineExecutionListener)
+          // if this container is for the spec root and we're using a shared instance, then we can
+          // invoke the spec interceptors here; otherwise the spec inteceptors will need to run each
+          // time we create a fresh instance of the spec class
+          if (descriptor.container.isSpecRoot && !descriptor.container.spec.isInstancePerTest()) {
             val initialInterceptor = { next: () -> Unit -> descriptor.container.spec.interceptSpec(next) }
-            val extensions = descriptor.container.spec.specExtensions() + ProjectExtensions.specExtensions()
+            val extensions = descriptor.container.spec.specExtensions() + Project.specExtensions()
             val chain = createSpecInterceptorChain(descriptor.container.spec, extensions, initialInterceptor)
-            chain { descriptor.children.forEach { execute(it, request) } }
+            chain {
+              println("Spec interceptor has reached bottom " + descriptor.container.spec.name())
+              descriptor.children.forEach {
+                println("Proceeding with child " + it)
+                execute(it, request)
+              }
+            }
           } else {
-            descriptor.discover(request.engineExecutionListener)
             descriptor.children.forEach { execute(it, request) }
           }
         }
         is TestCaseDescriptor -> {
-          val runner = TestCaseRunner(request.engineExecutionListener)
-          runner.runTest(actualDescriptor(descriptor))
+          println("we have a test! " + descriptor.uniqueId)
+          when (descriptor.testCase.spec.isInstancePerTest()) {
+            true -> {
+              println("ooo one instancec")
+
+              // we use the prototype spec to create another instance of the spec for this test
+              val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
+
+              // we get the root scope again for this spec, and find our test case
+              val freshTestCase = freshSpec.root().discovery().find {
+                when (it) {
+                  is TestCase -> it.name() == descriptor.testCase.name()
+                  else -> false
+                }
+              } as TestCase
+
+              // we need to re-run the spec inteceptors for this fresh instance now
+              val initialInterceptor = { next: () -> Unit -> freshSpec.interceptSpec(next) }
+              val extensions = freshSpec.specExtensions() + Project.specExtensions()
+              val chain = createSpecInterceptorChain(freshSpec, extensions, initialInterceptor)
+              chain {
+                println("Spec interceptor has reached bottom " + freshSpec.name())
+                println("now going to run test")
+                val freshDescriptor = TestCaseDescriptor(descriptor.id, freshTestCase)
+                val runner = TestCaseRunner(request.engineExecutionListener)
+                runner.runTest(freshDescriptor)
+                println("Test has returned q")
+              }
+            }
+            false -> {
+              println("executing directly " + descriptor.uniqueId)
+              val runner = TestCaseRunner(request.engineExecutionListener)
+              runner.runTest(descriptor)
+              println("test complete " + descriptor.uniqueId)
+            }
+          }
         }
         else -> throw IllegalStateException("$descriptor is not supported")
       }
@@ -80,32 +126,6 @@ class KotlinTestEngine : TestEngine {
     } catch (t: Throwable) {
       t.printStackTrace()
       request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(t))
-    }
-  }
-
-  private fun actualDescriptor(descriptor: TestCaseDescriptor): TestCaseDescriptor {
-    return when (descriptor.testCase.spec.isInstancePerTest()) {
-    // if we are using one instance per test then we need a descriptor
-    // with a clean instance of the spec
-      true -> {
-
-        // we use the prototype spec to create another instance of the spec for this test
-        val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
-
-        // we get the root scope again for this spec, and find our test case
-        val freshTestCase = freshSpec.root().discovery().find {
-          when (it) {
-            is TestCase -> it.name() == descriptor.testCase.name()
-            else -> false
-          }
-        } as TestCase
-
-        // todo we need to re-run the spec interceptors here
-
-        TestCaseDescriptor(descriptor.id, freshTestCase)
-      }
-    // if we are /not/ using one instance per test then we can just return the original descriptor
-      false -> descriptor
     }
   }
 
