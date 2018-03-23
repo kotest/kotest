@@ -23,14 +23,21 @@ abstract class AbstractProjectConfig {
   open val extensions: List<ProjectExtension> = listOf()
 
   /**
-   * Executed before the first test of the project, but after the [ProjectExtension.beforeAll]
-   * methods of extensions.
+   * Executed before the first test of the project, but after the
+   * [ProjectExtension.beforeAll] methods.
    */
   open fun beforeAll() {}
 
   /**
-   * Executed after the last test of the project, but before the [ProjectExtension.afterAll]
-   * methods.
+   * Executed after the last test of the project, but before the
+   * [ProjectExtension.afterAll] methods.
    */
   open fun afterAll() {}
+
+  /**
+   * Executed before each and every [Spec].
+   * You must invoke next() to continue with the evaluation of the spec.
+   * If you do not invoke next() then the spec is skipped.
+   */
+  fun interceptSpec(spec: Spec, next: () -> Unit) {}
 }
