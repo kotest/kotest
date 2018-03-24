@@ -1,7 +1,6 @@
 include 'kotlintest-core',
         'kotlintest-assertions',
         'kotlintest-runner:junit5',
-        'kotlintest-extensions:spring4',
-        'kotlintest-extensions:spring5',
+        'kotlintest-extensions:spring',
         'kotlintest-intellij',
         'kotlintest-tests'

@@ -52,12 +52,8 @@ class KotlinTestEngine : TestEngine {
   }
 
   private fun execute(descriptor: TestDescriptor, request: ExecutionRequest) {
-    println("descriptor " + descriptor.uniqueId)
     try {
-      println("starting execution")
-      println("listener = " + request.engineExecutionListener.javaClass)
       request.engineExecutionListener.executionStarted(descriptor)
-      println("returned")
       when (descriptor) {
         is TestContainerDescriptor -> {
           descriptor.discover(request.engineExecutionListener)
@@ -69,22 +65,15 @@ class KotlinTestEngine : TestEngine {
             val extensions = descriptor.container.spec.specExtensions() + Project.specExtensions()
             val chain = createSpecInterceptorChain(descriptor.container.spec, extensions, initialInterceptor)
             chain {
-              println("Spec interceptor has reached bottom " + descriptor.container.spec.name())
-              descriptor.children.forEach {
-                println("Proceeding with child " + it)
-                execute(it, request)
-              }
+              descriptor.children.forEach { execute(it, request) }
             }
           } else {
             descriptor.children.forEach { execute(it, request) }
           }
         }
         is TestCaseDescriptor -> {
-          println("we have a test! " + descriptor.uniqueId)
           when (descriptor.testCase.spec.isInstancePerTest()) {
             true -> {
-              println("ooo one instancec")
-
               // we use the prototype spec to create another instance of the spec for this test
               val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
 
@@ -101,19 +90,14 @@ class KotlinTestEngine : TestEngine {
               val extensions = freshSpec.specExtensions() + Project.specExtensions()
               val chain = createSpecInterceptorChain(freshSpec, extensions, initialInterceptor)
               chain {
-                println("Spec interceptor has reached bottom " + freshSpec.name())
-                println("now going to run test")
                 val freshDescriptor = TestCaseDescriptor(descriptor.id, freshTestCase)
                 val runner = TestCaseRunner(request.engineExecutionListener)
                 runner.runTest(freshDescriptor)
-                println("Test has returned q")
               }
             }
             false -> {
-              println("executing directly " + descriptor.uniqueId)
               val runner = TestCaseRunner(request.engineExecutionListener)
               runner.runTest(descriptor)
-              println("test complete " + descriptor.uniqueId)
             }
           }
         }

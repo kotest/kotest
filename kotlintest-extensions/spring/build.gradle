@@ -1,8 +1,9 @@
+apply plugin: 'org.junit.platform.gradle.plugin'
+
 dependencies {
     compile project(':kotlintest-core')
-    testCompile project(':kotlintest-runner:junit5')
+    compile project(':kotlintest-assertions')
     compile 'org.springframework:spring-test:4.3.14.RELEASE'
     compile 'org.springframework:spring-context:4.3.14.RELEASE'
-    testCompile 'org.junit.platform:junit-platform-launcher:1.1.0'
-
+    testCompile project(':kotlintest-runner:junit5')
 }

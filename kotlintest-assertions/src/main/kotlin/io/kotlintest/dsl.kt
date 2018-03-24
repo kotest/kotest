@@ -3,6 +3,7 @@ package io.kotlintest
 import io.kotlintest.matchers.ToleranceMatcher
 import org.junit.ComparisonFailure
 
+fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
   override fun test(value: T): Result = Result(expected == value, equalsErrorMessage(expected, value), "$value should not equal $expected")
 }

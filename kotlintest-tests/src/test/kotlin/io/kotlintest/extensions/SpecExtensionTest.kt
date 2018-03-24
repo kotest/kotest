@@ -27,7 +27,6 @@ object SpecExtensionNumbers {
     override fun intercept(spec: Spec, process: () -> Unit) {
       if (spec.name() == "SpecExtensionTest") {
         SpecExtensionNumbers.a.addAndGet(3)
-        println(SpecExtensionNumbers.a.get())
         process()
         SpecExtensionNumbers.b.addAndGet(3)
       } else {
