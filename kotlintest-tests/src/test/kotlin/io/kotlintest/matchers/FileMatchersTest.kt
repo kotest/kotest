@@ -1,13 +1,13 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.FunSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFunSpec
 import java.io.File
 import java.nio.file.Files
 
-class FileMatchersTest : AbstractFunSpec() {
+class FileMatchersTest : FunSpec() {
   init {
 
     test("exist() file matcher") {

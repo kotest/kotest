@@ -1,12 +1,12 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.forAll
+import io.kotlintest.runner.junit5.specs.FreeSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFreeSpec
 
-class ComparableMatchersTest : AbstractFreeSpec() {
+class ComparableMatchersTest : FreeSpec() {
 
   class ComparableExample(val underlying: Int) : Comparable<ComparableExample> {
     override fun compareTo(other: ComparableExample): Int {

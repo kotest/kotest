@@ -1,9 +1,9 @@
 package io.kotlintest
 
-import io.kotlintest.specs.AbstractStringSpec
+import io.kotlintest.runner.junit5.specs.StringSpec
 import java.io.Closeable
 
-class SpecTest : AbstractStringSpec() {
+class SpecTest : StringSpec() {
 
     private val resourceA = autoClose(Checker)
     private val resourceB = autoClose(Closeable2)

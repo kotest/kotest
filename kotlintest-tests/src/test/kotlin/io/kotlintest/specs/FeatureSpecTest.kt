@@ -1,9 +1,10 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
+import io.kotlintest.runner.junit5.specs.FeatureSpec
 import io.kotlintest.shouldBe
 
-class FeatureSpecTest : AbstractFeatureSpec() {
+class FeatureSpecTest : FeatureSpec() {
 
   init {
 

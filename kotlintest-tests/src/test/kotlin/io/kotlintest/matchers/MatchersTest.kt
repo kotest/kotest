@@ -1,14 +1,14 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.FreeSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFreeSpec
 import org.junit.ComparisonFailure
 import java.util.*
 
-class MatchersTest : AbstractFreeSpec() {
+class MatchersTest : FreeSpec() {
 
   init {
     "Matchers.shouldBe" - {

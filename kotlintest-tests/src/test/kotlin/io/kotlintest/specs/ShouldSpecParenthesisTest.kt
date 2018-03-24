@@ -1,6 +1,8 @@
 package io.kotlintest.specs
 
-class ShouldSpecParenthesisTest : AbstractShouldSpec() {
+import io.kotlintest.runner.junit5.specs.ShouldSpec
+
+class ShouldSpecParenthesisTest : ShouldSpec() {
   init {
     should("parenthesis work (here)") {
     }

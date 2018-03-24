@@ -1,8 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.specs.AbstractStringSpec
+import io.kotlintest.runner.junit5.specs.StringSpec
 
-class TestCaseTest : AbstractStringSpec() {
+class TestCaseTest : StringSpec() {
 
   object TagA : Tag()
   object TagB : Tag()

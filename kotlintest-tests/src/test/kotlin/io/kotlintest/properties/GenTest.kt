@@ -6,6 +6,7 @@ import io.kotlintest.forAll
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.substring
+import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
 import io.kotlintest.shouldThrow
@@ -21,7 +22,7 @@ import kotlin.collections.last
 import kotlin.collections.listOf
 import kotlin.collections.plusAssign
 
-class GenTest : AbstractWordSpec() {
+class GenTest : WordSpec() {
   init {
     "Gen.string.nextPrintableString" should {
       "give out a argument long string" {

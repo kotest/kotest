@@ -1,12 +1,12 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.FreeSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFreeSpec
 import org.junit.ComparisonFailure
 
-class StringMatchersTest : AbstractFreeSpec() {
+class StringMatchersTest : FreeSpec() {
   init {
 
     "string shouldBe other" - {

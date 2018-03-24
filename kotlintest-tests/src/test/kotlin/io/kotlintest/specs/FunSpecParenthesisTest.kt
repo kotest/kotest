@@ -1,6 +1,8 @@
 package io.kotlintest.specs
 
-class FunSpecParenthesisTest : AbstractFunSpec() {
+import io.kotlintest.runner.junit5.specs.FunSpec
+
+class FunSpecParenthesisTest : FunSpec() {
   init {
     test("parenthesis () should (work)") {
     }

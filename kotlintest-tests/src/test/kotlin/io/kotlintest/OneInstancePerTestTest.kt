@@ -1,8 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.specs.AbstractFunSpec
+import io.kotlintest.runner.junit5.specs.FunSpec
 
-class OneInstancePerTestTest : AbstractFunSpec() {
+class OneInstancePerTestTest : FunSpec() {
 
   override fun isInstancePerTest(): Boolean = true
 

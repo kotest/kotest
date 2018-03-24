@@ -1,9 +1,9 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.StringSpec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractStringSpec
 
-class ArrayEqualsTest : AbstractStringSpec() {
+class ArrayEqualsTest : StringSpec() {
   init {
     "shouldBe should support int arrays" {
       val array = intArrayOf(1, 2, 3)

@@ -1,6 +1,8 @@
 package io.kotlintest.specs
 
-class WordSpecParenthesisTest : AbstractWordSpec() {
+import io.kotlintest.runner.junit5.specs.WordSpec
+
+class WordSpecParenthesisTest : WordSpec() {
   init {
     "parenthesis (here) " should {
       "work (here)" {

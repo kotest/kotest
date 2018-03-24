@@ -8,7 +8,6 @@ import io.kotlintest.matchers.startWith
 import io.kotlintest.runner.junit5.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
 import io.kotlintest.shouldThrow
 
 class PropertyAssertAllTest : StringSpec() {

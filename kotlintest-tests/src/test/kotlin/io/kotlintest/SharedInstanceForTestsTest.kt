@@ -1,8 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.specs.AbstractShouldSpec
+import io.kotlintest.runner.junit5.specs.ShouldSpec
 
-class SharedInstanceForTestsTest : AbstractShouldSpec() {
+class SharedInstanceForTestsTest : ShouldSpec() {
 
   init {
     var count = 0

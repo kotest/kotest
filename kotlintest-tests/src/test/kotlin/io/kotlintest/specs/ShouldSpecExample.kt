@@ -1,7 +1,9 @@
 package io.kotlintest.specs
 
+import io.kotlintest.runner.junit5.specs.ShouldSpec
 
-class ShouldSpecExample : AbstractShouldSpec() {
+
+class ShouldSpecExample : ShouldSpec() {
   init {
     "some context" {
       "more context" {

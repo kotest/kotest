@@ -1,7 +1,9 @@
 package io.kotlintest.specs
 
+import io.kotlintest.runner.junit5.specs.FreeSpec
 
-class FreeSpecExample : AbstractFreeSpec() {
+
+class FreeSpecExample : FreeSpec() {
   init {
     "some context" - {
       "more context" - {

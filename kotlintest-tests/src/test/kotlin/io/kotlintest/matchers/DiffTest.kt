@@ -1,9 +1,9 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractWordSpec
 
-class DiffTest : AbstractWordSpec() {
+class DiffTest : WordSpec() {
   init {
     "diff" should {
       "test diff representation of basic types" {

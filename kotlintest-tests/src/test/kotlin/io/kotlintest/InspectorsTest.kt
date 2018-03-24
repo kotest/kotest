@@ -2,9 +2,9 @@ package io.kotlintest
 
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.runner.junit5.specs.WordSpec
 
-class InspectorsTest : AbstractWordSpec() {
+class InspectorsTest : WordSpec() {
 
   private val list = listOf(1, 2, 3, 4, 5)
   private val array = arrayOf(1, 2, 3, 4, 5)

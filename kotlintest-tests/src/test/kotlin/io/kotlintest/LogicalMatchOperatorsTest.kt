@@ -1,9 +1,9 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.between
-import io.kotlintest.specs.AbstractStringSpec
+import io.kotlintest.runner.junit5.specs.StringSpec
 
-class LogicalMatchOperatorsTest : AbstractStringSpec({
+class LogicalMatchOperatorsTest : StringSpec({
 
   "and should pass if both tests pass" {
     1 shouldBe (between(0, 2) and between(1, 3))

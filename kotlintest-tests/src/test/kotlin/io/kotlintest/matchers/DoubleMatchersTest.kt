@@ -1,15 +1,15 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.ShouldSpec
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.tables.forAll
 import io.kotlintest.tables.forNone
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractShouldSpec
 
-class DoubleMatchersTest : AbstractShouldSpec() {
+class DoubleMatchersTest : ShouldSpec() {
   init {
 
     should("fail outside of tolerance") {

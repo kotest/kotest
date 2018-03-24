@@ -1,9 +1,9 @@
 package io.kotlintest.properties
 
+import io.kotlintest.runner.junit5.specs.StringSpec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractStringSpec
 
-class EnumGenTest : AbstractStringSpec() {
+class EnumGenTest : StringSpec() {
   init {
     "enum gen should work generically" {
       val gen = Gen.enum<Weather>()

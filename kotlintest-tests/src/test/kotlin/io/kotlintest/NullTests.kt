@@ -1,8 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.runner.junit5.specs.WordSpec
 
-class NullTests : AbstractWordSpec() {
+class NullTests : WordSpec() {
 
   // don't want compiler to compile this away
   fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()

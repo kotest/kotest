@@ -1,14 +1,14 @@
 package io.kotlintest.matchers
 
+import io.kotlintest.runner.junit5.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.shouldThrowExactly
-import io.kotlintest.specs.AbstractFreeSpec
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class ExceptionMatchersTest : AbstractFreeSpec() {
+class ExceptionMatchersTest : FreeSpec() {
 
   init {
     "shouldThrow" - {

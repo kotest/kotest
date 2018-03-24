@@ -1,14 +1,13 @@
 package io.kotlintest.matchers
 
-import java.util.LinkedList
-
+import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractWordSpec
+import java.util.*
 
-class MapMatchersTest : AbstractWordSpec() {
+class MapMatchersTest : WordSpec() {
 
   init {
 

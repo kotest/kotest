@@ -3,11 +3,6 @@ package io.kotlintest
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.singleElement
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
 
 class DslExamples {
   init {
