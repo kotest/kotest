@@ -91,7 +91,7 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
     return Result(
         passed,
         "Collection $snippet should be sorted",
-        "Colelction $snippet should not be sorted"
+        "Collection $snippet should not be sorted"
     )
   }
 }

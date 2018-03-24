@@ -4,25 +4,192 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 
-Version 3.0.0... in progress
+Version 3.0.0-RC1
 -------------
 
-* Split project into multiple modules....
-* beInstanceOf<T> now supported
-* shouldThrow<T> changed to support subtypes. shouldThrowExactly<T> added
-* better negation errors
+* **Module split out**
+
+KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring.
+
+The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta). 
+When upgrading you will typically want to add `kotlintest-runner-junit5` to your build rather than the old kotlintest module which is now
+defunct. When upgrading, you will find that you will need to update imports to the spec classes like `StringSpec` and some matchers
+which have changed package.
+
+* **Breaking: Extensions**
+
+_Extensions_ have been added to replace the previous, and sometimes confusing, interceptors. There are three types of extension - 
+_ProjectExtension_, _SpecExtension_, and _TestCaseExtension_.
+
+* the `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
+ exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to 
+ have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
 * containAll added as replacement for deprecated containsAll
 * addd flat spec and describe spec
 * spring support
-* breaking change: system props exclude/includeTags are now prefixed by kotlintest, eg kotlintest.tags.include and kotlintest.tags.exclude.
+
+* **Spring Module**
+
+Spring support has been added via the `kotlintest-extensions-spring` module which you will need to add to your build. This module
+provides a _SpringSpecExtension_ which you can register with your project to autowire your tests. You can register this for just some classes
+by overriding the `specExtensions` function inside your spec, for example:
+
+```kotlin  
+class MySpec : ParentSpec() {
+    override fun specExtensions(): List<SpecExtension> = listOf(SpringSpecExtension)
+}
+```
+
+Or you can register this for all classes by adding it to the kotlintest ProjectConfig. See the section on _ProjectConfig_ for how
+to do this.
+
+* **Breaking: Tag System Property Rename**
+
+The system proeprty used to include/exclude tags has been renamed to `kotlintest.tags.include` and `kotlintest.tags.exclude`. Make
+sure you update your build jobs to set the right properties as the old ones no longer have any effect. If the old tags are detected
+then a warning message will be emitted on startup.
+
+
 * add containAll, haveKeys, haveValue for maps
-* added expect spec
-* Added assert variants for property testing
-* property generators are now iterator based 
-* loads of bug fixes
-* jump to actual test when in intellij test panel
-* csv source for table testing
-* added annotation spec
+
+* **New Specs**
+
+Multiple new specs have been added. These are: `AnnotationSpec`, `DescribeSpec` and `ExpectSpec`. Expect spec allows you to use the `context`
+and `expect` keywords in your tests, like so:
+
+```kotlin
+class ExpectSpecExample : ExpectSpec() {
+  init {
+    context("some context") {
+      expect("some test") {
+        // test here
+      }
+      context("nested context even") {
+        expect("some test") {
+          // test here
+        }
+      }
+    }
+  }
+}
+```
+
+The `AnnotationSpec` offers functionality to mimic jUnit, in that tests are simply functions annotated with `@io.kotlintest.specs.Test`. For example:
+
+```kotlin
+class AnnotationSpecExample : AnnotationSpec() {
+
+  @Test
+  fun test1() {
+
+  }
+
+  @Test
+  fun test2() {
+
+  }
+}
+```
+
+And finally, the `DescribeSpec` is similar to SpekFramework, using `describe` and `it`. This makes it very useful for those people who are looking
+to upgrade to KotlinTest.
+
+```kotlin
+class DescribeSpecExample : DescribeSpec() {
+  init {
+    describe("some context") {
+      it("test name") {
+        // test here
+      }
+      describe("nested contexts") {
+        it("test name") {
+          // test here
+        }
+      }
+    }
+  }
+}
+```
+
+* **Property Testing with Matchers**
+
+The ability to use matchers in property testing has been added. Previously property testing worked only with functions that returned a Boolean, like:
+
+```kotlin
+"startsWith" {
+  forAll(Gen.string(), Gen.string(), { a, b ->
+    (a + b).startsWith(a)
+  })
+} 
+```
+
+But now you can use `assertAll` and `assertNone` and then use regular matchers inside the block. For example:
+
+```kotlin
+"startsWith" {
+  forAll(Gen.string(), Gen.string(), { a, b ->
+    a + b should startWith(a)
+  })
+} 
+```
+
+This gives you the ability to use multiple matchers inside the same block, and not have to worry about combining all possible errors
+into a single boolean result.
+
+* **Generator Edge Cases**
+
+Staying with property testing - the _Generator_ interface has been changed to now provide two types of data.
+ 
+The first are values that should always be included - those edge cases values which are common sources of bugs.
+For example, a generator for Ints should always include values like zero, minus 1, positive 1, Integer.MAX_VALUE and Integer.MIN_VALUE. 
+Another example would be for a generator for enums. That should include _all_ the values of the enum to ensure
+each value is tested.
+
+The second set of values are random values, which are used to give us a greater breadth of values tested.
+The Int generator should return random ints from across the entire integer range.
+
+Previously generators used by property testing would only include random values, which meant you were very unlikely to see the
+edge cases that usually cause issues - like the aforementioned Integer MAX / MIN. Now you are guaranteed to get the edge
+cases first and the random values afterwards.
+ 
+* **beInstanceOf<T>** 
+
+This matcher has been added to easily test that a class is an instance of T. This is in addition to the more verbose `beInstanceOf(SomeType::class)`.
+ 
+* **CsvDataSource** 
+
+This class has been added for loading data for table testing. A simple example:
+
+```kotlin
+class CsvDataSourceTest : WordSpec() {
+  init {
+  
+    "CsvDataSource" should {
+      "read data from csv file" {
+      
+        val source = CsvDataSource(javaClass.getResourceAsStream("/user_data.csv"), CsvFormat())
+        
+        val table = source.createTable<Long, String, String>(
+            { it: Record -> Row3(it.getLong("id"), it.getString("name"), it.getString("location")) },
+            { it: Array<String> -> Headers3(it[0], it[1], it[2]) }
+        )
+        
+        forAll(table) { a, b, c ->
+          a shouldBe gt(0)
+          b shouldNotBe null
+          c shouldNotBe null
+        }
+      }
+    }
+  }
+}
+```
+
+* **Matcher Negation Errors**
+
+All matchers now have the ability to report a better error when used with `shouldNot` and `shouldNotBe`. Previously a generic error
+was generated - which was usually the normal error but with a prefix like "NOT:" but now each built in matcher will provide a full message, for example: `Collection should not contain element 'foo'`
+
 
 Version 2.0.0, released 2017-03-26
 ----------------------------------

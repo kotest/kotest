@@ -19,6 +19,15 @@ import io.kotlintest.extensions.TestCaseExtension
  */
 object Project {
 
+  init {
+    System.getProperty("includeTags")?.apply {
+      println("[WARN] The system property 'includeTags' has been detected. This no longer has any effect in KotlinTest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotlintest.tags.include")
+    }
+    System.getProperty("excludeTags")?.apply {
+      println("[WARN] The system property 'excludeTags' has been detected. This no longer has any effect in KotlinTest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotlintest.tags.exclude")
+    }
+  }
+
   private const val projectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
