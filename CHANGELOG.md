@@ -4,7 +4,7 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 
-Version 3.0.0-RC1
+Version 3.0.0 - Current Release RC1 - March 24 2018
 -------------
 
 * **Module split out**
@@ -16,17 +16,100 @@ When upgrading you will typically want to add `kotlintest-runner-junit5` to your
 defunct. When upgrading, you will find that you will need to update imports to the spec classes like `StringSpec` and some matchers
 which have changed package.
 
+* **Breaking: ProjectConfig**
+
+Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
+call this what you wanted, and place it where you wanted, and `KotlinTest` would attempt to find it and use it. This was the cause of
+many bug reports about project start up times and reflection errors. So in version 3.0.x onwards, kotlitnest will 
+no longer attempt to scan the classpath.
+
+Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of 
+``AbstractProjectConfig/ This means kotlintest can do a simple `Class.forName` to find it, and so there is no startup penalty nor reflection issues.
+
+Project config now allows you to register all three types of extension, as well as setting parallelism.
+
 * **Breaking: Extensions**
 
 _Extensions_ have been added to replace the previous, and sometimes confusing, interceptors. There are three types of extension - 
-_ProjectExtension_, _SpecExtension_, and _TestCaseExtension_.
+_ProjectExtension_, _SpecExtension_, and _TestCaseExtension_. Each of these allow you to run code before and after the various
+extension point, as well as programmatically hide/ignore some specs/tests. The functionality has remained the same, but by introducing
+these interfaces, it is hoped that the usage is simplier than dealing directly with functions.
 
-* the `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
- exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to 
- have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
-* containAll added as replacement for deprecated containsAll
-* addd flat spec and describe spec
-* spring support
+To use an extension, just create a subclass of the interface that applies. For example to add some code that is run for every spec
+you can do:
+
+```kotlin
+val mySpecExtension = object : SpecExtension {
+    override fun intercept(spec: Spec, process: () -> Unit) {
+      println("Before spec!")
+      process()
+      println("After spec!")
+    }
+}
+```
+
+The advantage of _around advice_ like this is that you can create local variables and use them before and after the spec. If instead
+kotlintest used the standard "before" and "after" methods, then you would need to create _vars_ outside the methods and reference those. Something like:
+
+```kotlin
+class SpecExtensionExample : WordSpec() {
+
+    var httpServer: HttpServer? = null
+    
+    override fun before() {
+        httpServer = createServer()
+        httpServer.start()
+    }
+    
+    override fun after() {
+        httpServer.stop()
+    }
+    
+    init {
+        // tests here
+    }
+}
+```
+
+But with KotlintTest you can do:
+
+```kotlin
+object HttpServerExtension : SpecExtension() {
+    override fun intercept(spec: Spec, process: () -> Unit) {
+        val httpServer = createServer()
+        httpServer.start()
+        process()
+        httpServer.stop()
+    }
+}
+```
+
+And then you can register this with the test class:
+
+```kotlin
+class SpecExtensionTest : WordSpec() {
+  override fun specExtensions(): List<SpecExtension> = listOf(HttpServerExtension)
+}
+```
+
+ 
+This choice means kotlintest is more elegant but it can look a bit more confusing at first. `TestCaseExtensions` work in the
+same way but for individual test cases rather than specs.
+
+If you want to register an extension for all tests then you can use the methods in `ProjectConfig`. 
+
+* **Parallelism**
+
+If you want to run more than one spec class in parallel, you can by overriding `parallelism` inside your projects
+`ProjectConfig` or by supplying the system property `kotlintest.parallelism`.
+
+Note the system property always takes precedence over the config.
+
+* **Breaking: Exception Matcher Changes**
+
+The `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
+exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to 
+have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
 
 * **Spring Module**
 
@@ -49,8 +132,26 @@ The system proeprty used to include/exclude tags has been renamed to `kotlintest
 sure you update your build jobs to set the right properties as the old ones no longer have any effect. If the old tags are detected
 then a warning message will be emitted on startup.
 
+* **New Matchers**
 
-* add containAll, haveKeys, haveValue for maps
+`beInstanceOf<T>` has been added to easily test that a class is an instance of T. This is in addition to the more verbose `beInstanceOf(SomeType::class)`.
+
+The following matchers have been added for maps: `containAll`, `haveKeys`, `haveValues`. These will output helpful error messages showing you
+which keys/values or entries were missing.
+
+* **Breaking: One instance per test changes**
+
+One instance per test is no longer supported for specs which offer _nested scopes_. For example, `WordSpec`. This is because of the tricky
+nature of having nested closures work across fresh instances of the spec. When using one instance per test, a fresh spec class is required
+for each test, but that means selectively executing some closures and not others in order to ensure the correct state. This has proved
+the largest source of bugs in previous versions.
+
+KotlinTest 3.0.x takes a simplified approach. If you want the flexibilty to lay out your tests with nested scopes, then all tests will
+execute in the same instance (like Spek and ScalaTest). If you want each test to have it's own instance (like jUnit) then you can either
+split up your tests into multiple files, or use a "flat" spec like `FunSpec` or `StringSpec`.
+
+This keeps the implementation an order of magnitude simplier (and therefore less likely to lead to bugs) while offering a pragmatic approach
+to keeping both sets of fans happy.
 
 * **New Specs**
 
@@ -151,10 +252,6 @@ The Int generator should return random ints from across the entire integer range
 Previously generators used by property testing would only include random values, which meant you were very unlikely to see the
 edge cases that usually cause issues - like the aforementioned Integer MAX / MIN. Now you are guaranteed to get the edge
 cases first and the random values afterwards.
- 
-* **beInstanceOf<T>** 
-
-This matcher has been added to easily test that a class is an instance of T. This is in addition to the more verbose `beInstanceOf(SomeType::class)`.
  
 * **CsvDataSource** 
 
