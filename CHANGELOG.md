@@ -16,6 +16,10 @@ When upgrading you will typically want to add `kotlintest-runner-junit5` to your
 defunct. When upgrading, you will find that you will need to update imports to the spec classes like `StringSpec` and some matchers
 which have changed package.
 
+```
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC1'
+```
+
 * **Breaking: ProjectConfig**
 
 Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
