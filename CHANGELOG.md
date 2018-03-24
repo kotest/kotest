@@ -12,15 +12,19 @@ Version 3.0.0 - Current Release RC1 - March 24 2018
 KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring.
 
 The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta). 
-When upgrading you will typically want to add `kotlintest-runner-junit5` to your build rather than the old kotlintest module which is now
+When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build rather than the old kotlintest module which is now
 defunct. When upgrading, you will find that you will need to update imports to the spec classes like `StringSpec` and some matchers
 which have changed package.
 
 ```
+testCompile 'io.kotlintest:kotlintest-core:3.0.0-RC1'
+testCompile 'io.kotlintest:kotlintest-assertions:3.0.0-RC1'
 testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC1'
 ```
 
-Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your build or tests will hang. This allows gradle to execute
+Gradle Users:
+
+Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your project and `classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"` to the `dependencies` section of your `buildscript` or tests will hang. This allows gradle to execute
 jIUnit 5 based tests (which KotlinTest builds upon). Note: Gradle says that this is not required as of 4.6 but even 
 with 4.6 it seems to be required.
 
