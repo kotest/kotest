@@ -32,7 +32,7 @@ many bug reports about project start up times and reflection errors. So in versi
 no longer attempt to scan the classpath.
 
 Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of 
-``AbstractProjectConfig/ This means kotlintest can do a simple `Class.forName` to find it, and so there is no startup penalty nor reflection issues.
+`AbstractProjectConfig` This means kotlintest can do a simple `Class.forName` to find it, and so there is no startup penalty nor reflection issues.
 
 Project config now allows you to register all three types of extension, as well as setting parallelism.
 
