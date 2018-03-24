@@ -20,6 +20,10 @@ which have changed package.
 testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC1'
 ```
 
+Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your build or tests will hang. This allows gradle to execute
+jIUnit 5 based tests (which KotlinTest builds upon). Note: Gradle says that this is not required as of 4.6 but even 
+with 4.6 it seems to be required.
+
 * **Breaking: ProjectConfig**
 
 Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
