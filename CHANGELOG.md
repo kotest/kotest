@@ -22,6 +22,7 @@ Version 3.0.0... in progress
 * loads of bug fixes
 * jump to actual test when in intellij test panel
 * csv source for table testing
+* added annotation spec
 
 Version 2.0.0, released 2017-03-26
 ----------------------------------
