@@ -15,15 +15,15 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   final override fun isInstancePerTest(): Boolean = false
 
   fun feature(name: String, init: FeatureScope.() -> Unit) =
-      rootScopes.add(TestContainer("Feature $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
+      rootScopes.add(TestContainer("Feature $name", name() + "/" + "Feature $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
 
   inner class FeatureScope(val context: TestContext) {
 
     fun and(name: String, init: FeatureScope.() -> Unit) =
-        context.addScope(TestContainer("And $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
+        context.addScope(TestContainer("And $name", context.currentScope().path() + "/" + "And $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
 
     fun scenario(name: String, test: TestContext.() -> Unit): TestCase {
-      val tc = TestCase("Scenario $name", this@AbstractFeatureSpec, test, lineNumber(), defaultTestCaseConfig)
+      val tc = TestCase("Scenario $name", context.currentScope().path() + "/" + "Scenario $name", this@AbstractFeatureSpec, test, lineNumber(), defaultTestCaseConfig)
       context.addScope(tc)
       return tc
     }

@@ -57,7 +57,7 @@ class KotlinTestEngine : TestEngine {
       when (descriptor) {
         is TestContainerDescriptor -> {
 
-          val context = JUnit5TestContext(descriptor, request.engineExecutionListener)
+          val context = JUnit5TestContext(descriptor, request.engineExecutionListener, descriptor.container)
           descriptor.container.closure(context)
 
           // if this container is for the spec root and we're using a shared instance, then we can
@@ -83,7 +83,7 @@ class KotlinTestEngine : TestEngine {
               // we can now execute each closure as we go down the tree, any created scopes
               // should not be added to junit as it already knows about them, but inside we
               // can store them so we can grab out the fresh closure
-              val context = AccumulatingTestContext()
+              val context = AccumulatingTestContext(descriptor.testCase)
               freshSpec.root().closure(context)
 
               // we can now fish out the new scope that pertains to this test, it must be a test case

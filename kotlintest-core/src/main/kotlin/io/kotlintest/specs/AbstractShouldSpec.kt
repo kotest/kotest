@@ -32,21 +32,21 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   final override fun isInstancePerTest(): Boolean = false
 
   fun should(name: String, test: TestContext.() -> Unit): TestCase {
-    val tc = TestCase(name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
+    val tc = TestCase(name, name() + "/" + name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
     rootScopes.add(tc)
     return tc
   }
 
   operator fun String.invoke(init: ShouldContext.() -> Unit) =
-      rootScopes.add(TestContainer(this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
+      rootScopes.add(TestContainer(this, name() + "/" + this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
 
   inner class ShouldContext(val context: TestContext) {
 
     operator fun String.invoke(init: ShouldContext.() -> Unit) =
-        context.addScope(TestContainer(this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
+        context.addScope(TestContainer(this, context.currentScope().path() + "/" + this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
 
     fun should(name: String, test: TestContext.() -> Unit): TestCase {
-      val tc = TestCase(name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
+      val tc = TestCase(name, context.currentScope().path() + "/" + name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
       rootScopes.add(tc)
       return tc
     }

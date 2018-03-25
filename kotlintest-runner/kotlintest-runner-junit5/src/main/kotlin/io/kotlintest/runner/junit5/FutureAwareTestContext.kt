@@ -49,7 +49,9 @@ abstract class FutureAwareTestContext : TestContext {
   }
 }
 
-class AccumulatingTestContext : FutureAwareTestContext() {
+class AccumulatingTestContext(val scope: TestScope) : FutureAwareTestContext() {
+
+  override fun currentScope(): TestScope = scope
 
   val scopes = mutableListOf<TestScope>()
 

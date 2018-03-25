@@ -8,7 +8,21 @@ package io.kotlintest
  * by the implementing [Spec] style.
  */
 interface TestScope {
+
   fun name(): String
+
+  /**
+   * Returns a '/' delimited string which is the full path to the test case.
+   * That is, the string contains the names of all parent scopes flattened.
+   * This is useful when you want to use a [TestCaseExtension] for tests
+   * which have different tree locations but the same final name.
+   */
+  fun path(): String
+
+  /**
+   * Returns a reference to the [Spec] instance that this scope is associated with.
+   */
+  fun spec(): Spec
 }
 
 /**
@@ -38,10 +52,13 @@ interface TestScope {
  * tests inside that particular container.
  */
 class TestContainer(val displayName: String,
+                    val path: String,
                     val spec: Spec,
                     val closure: (TestContext) -> Unit,
                     val isSpecRoot: Boolean = false) : TestScope {
   override fun name(): String = displayName
+  override fun path(): String = path
+  override fun spec(): Spec = spec
 }
 
 fun lineNumber(): Int {

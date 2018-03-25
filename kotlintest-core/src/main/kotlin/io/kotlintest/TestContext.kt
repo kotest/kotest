@@ -24,9 +24,9 @@ interface TestContext {
    * operation pending.
    */
   fun <T> whenReady(f: CompletableFuture<T>, test: (T) -> Unit)
-}
 
-open class DelegatingTestContext(val context: TestContext) : TestContext {
-  override fun addScope(scope: TestScope): TestScope = context.addScope(scope)
-  override fun <T> whenReady(f: CompletableFuture<T>, test: (T) -> Unit) = context.whenReady(f, test)
+  /**
+   * The [TestScope] associated with the current execution
+   */
+  fun currentScope(): TestScope
 }

@@ -19,6 +19,8 @@ data class TestCase(
     // this is the name of the test itself but could be
     // derived in other ways.
     val displayName: String,
+    // a slash seperated path to the test case, eg "my test should/do something"
+    val path: String,
     // the spec that contains this testcase
     val spec: Spec,
     // a closure of the test itself
@@ -30,6 +32,8 @@ data class TestCase(
     var config: TestCaseConfig) : TestScope {
 
   override fun name(): String = displayName
+  override fun path(): String = path
+  override fun spec(): Spec = spec
 
   fun config(
       invocations: Int? = null,

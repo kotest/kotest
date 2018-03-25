@@ -15,15 +15,15 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   final override fun isInstancePerTest(): Boolean = false
 
   fun describe(name: String, init: DescribeScope.() -> Unit) =
-      rootScopes.add(TestContainer("Describe $name", this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+      rootScopes.add(TestContainer("Describe $name", name() + "/" + name, this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
   inner class DescribeScope(val context: TestContext) {
 
     fun describe(name: String, init: DescribeScope.() -> Unit) =
-        context.addScope(TestContainer("Describe $name", this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+        context.addScope(TestContainer("Describe $name", name() + "/" + name, this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
     fun it(name: String, test: TestContext.() -> Unit): TestCase {
-      val tc = TestCase("Scenario $name", this@AbstractDescribeSpec, test, lineNumber(), defaultTestCaseConfig)
+      val tc = TestCase("Scenario $name", context.currentScope().path() + "/" + name, this@AbstractDescribeSpec, test, lineNumber(), defaultTestCaseConfig)
       context.addScope(tc)
       return tc
     }

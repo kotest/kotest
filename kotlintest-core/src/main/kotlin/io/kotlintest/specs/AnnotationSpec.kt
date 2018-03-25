@@ -15,8 +15,8 @@ open class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) 
 
   override fun root(): TestContainer {
     val tests = javaClass.methods.filter { it.isAnnotationPresent(Test::class.java) }.map {
-      TestCase(it.name, this@AbstractAnnotationSpec, { it.invoke(this@AbstractAnnotationSpec) }, lineNumber(), defaultTestCaseConfig)
+      TestCase(it.name, name() + "/" + it.name, this@AbstractAnnotationSpec, { it.invoke(this@AbstractAnnotationSpec) }, lineNumber(), defaultTestCaseConfig)
     }
-    return TestContainer(name(), this, { context -> tests.forEach { context.addScope(it) } }, true)
+    return TestContainer(name(), name(), this, { context -> tests.forEach { context.addScope(it) } }, true)
   }
 }

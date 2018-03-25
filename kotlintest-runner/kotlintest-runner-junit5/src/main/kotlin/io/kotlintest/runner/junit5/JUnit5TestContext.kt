@@ -12,7 +12,11 @@ import org.junit.platform.engine.EngineExecutionListener
  *
  * This context should not be shared between multiple [TestScope] instances.
  */
-class JUnit5TestContext(val descriptor: TestContainerDescriptor, val listener: EngineExecutionListener) : FutureAwareTestContext() {
+class JUnit5TestContext(val descriptor: TestContainerDescriptor,
+                        val listener: EngineExecutionListener,
+                        val scope: TestScope) : FutureAwareTestContext() {
+
+  override fun currentScope(): TestScope = scope
 
   override fun addScope(scope: TestScope): TestScope {
     val newDescriptor = when (scope) {

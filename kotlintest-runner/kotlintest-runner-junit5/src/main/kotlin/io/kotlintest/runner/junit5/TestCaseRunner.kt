@@ -14,7 +14,7 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
   fun runTest(descriptor: TestCaseDescriptor) {
     if (descriptor.testCase.isActive()) {
 
-      val context = AccumulatingTestContext()
+      val context = AccumulatingTestContext(descriptor.testCase)
 
       val executor =
           if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
