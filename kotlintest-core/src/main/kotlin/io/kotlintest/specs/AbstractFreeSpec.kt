@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -12,15 +14,18 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
 
   final override fun isInstancePerTest(): Boolean = false
 
-  infix operator fun String.minus(init: FreeSpecScope.() -> Unit) =
-      rootScope.addContainer(this, this@AbstractFreeSpec, ::FreeSpecScope, init)
+  infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
+      rootScopes.add(TestContainer(this, this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
 
-  inner class FreeSpecScope : TestScope() {
+  inner class FreeSpecContext(val context: TestContext) {
 
-    infix operator fun String.minus(init: FreeSpecScope.() -> Unit) =
-        addContainer(this, this@AbstractFreeSpec, ::FreeSpecScope, init)
+    infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
+        context.addScope(TestContainer(this, this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
 
-    infix operator fun String.invoke(test: () -> Unit): TestCase =
-        addTest(this, this@AbstractFreeSpec, test, defaultTestCaseConfig)
+    infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase(this, this@AbstractFreeSpec, test, lineNumber(), defaultTestCaseConfig)
+      context.addScope(tc)
+      return tc
+    }
   }
 }

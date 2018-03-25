@@ -3,7 +3,6 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.TestCase
 import io.kotlintest.TestContainer
 import org.junit.platform.commons.JUnitException
-import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -30,26 +29,6 @@ data class TestContainerDescriptor(val id: UniqueId,
   override fun getDisplayName(): String = container.displayName
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
   override fun mayRegisterTests() = true
-
-  /**
-   * Executes the discovery function of the test container, and
-   * adds any returned [TestCase] and [TestContainer] instances
-   * to this descriptor.
-   */
-  fun discover(listener: EngineExecutionListener) {
-    val testxs = container.discovery()
-    val descriptors = testxs.map {
-      when (it) {
-        is TestContainer -> fromTestContainer(uniqueId, it)
-        is TestCase -> TestCaseDescriptor.fromTestCase(uniqueId, it)
-        else -> throw RuntimeException()
-      }
-    }
-    descriptors.forEach {
-      addChild(it)
-      listener.dynamicTestRegistered(it)
-    }
-  }
 
   companion object {
     fun fromTestContainer(parentId: UniqueId, container: TestContainer): TestContainerDescriptor =

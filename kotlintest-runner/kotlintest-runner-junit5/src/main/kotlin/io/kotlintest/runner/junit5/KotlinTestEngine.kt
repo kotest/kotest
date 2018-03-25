@@ -17,7 +17,6 @@ import org.junit.platform.engine.discovery.UriSelector
 import org.reflections.util.ClasspathHelper
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class KotlinTestEngine : TestEngine {
 
@@ -33,8 +32,8 @@ class KotlinTestEngine : TestEngine {
     request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     try {
       Project.beforeAll()
-      // each child is executed in the executor, which will have a single thread only
-      // if parallelism is not enabled
+      // each child of the root is a spec, which we execute in a thread pool so we
+      // can parallelise spec execution.
       request.rootTestDescriptor.children.forEach {
         executor.submit {
           execute(it, request)
@@ -54,9 +53,13 @@ class KotlinTestEngine : TestEngine {
   private fun execute(descriptor: TestDescriptor, request: ExecutionRequest) {
     try {
       request.engineExecutionListener.executionStarted(descriptor)
+
       when (descriptor) {
         is TestContainerDescriptor -> {
-          descriptor.discover(request.engineExecutionListener)
+
+          val context = JUnit5TestContext(descriptor, request.engineExecutionListener)
+          descriptor.container.closure(context)
+
           // if this container is for the spec root and we're using a shared instance, then we can
           // invoke the spec interceptors here; otherwise the spec inteceptors will need to run each
           // time we create a fresh instance of the spec class
@@ -77,13 +80,14 @@ class KotlinTestEngine : TestEngine {
               // we use the prototype spec to create another instance of the spec for this test
               val freshSpec = descriptor.testCase.spec.javaClass.newInstance() as AbstractSpec
 
-              // we get the root scope again for this spec, and find our test case
-              val freshTestCase = freshSpec.root().discovery().find {
-                when (it) {
-                  is TestCase -> it.name() == descriptor.testCase.name()
-                  else -> false
-                }
-              } as TestCase
+              // we can now execute each closure as we go down the tree, any created scopes
+              // should not be added to junit as it already knows about them, but inside we
+              // can store them so we can grab out the fresh closure
+              val context = AccumulatingTestContext()
+              freshSpec.root().closure(context)
+
+              // we can now fish out the new scope that pertains to this test, it must be a test case
+              val freshTestCase = context.scopes.find { it.name() == descriptor.testCase.name() } as TestCase
 
               // we need to re-run the spec inteceptors for this fresh instance now
               val initialInterceptor = { next: () -> Unit -> freshSpec.interceptSpec(next) }

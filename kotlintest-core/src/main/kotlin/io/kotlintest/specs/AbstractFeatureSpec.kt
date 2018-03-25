@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -13,14 +15,17 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   final override fun isInstancePerTest(): Boolean = false
 
   fun feature(name: String, init: FeatureScope.() -> Unit) =
-      rootScope.addContainer("Feature: $name", this@AbstractFeatureSpec, ::FeatureScope, init)
+      rootScopes.add(TestContainer("Feature $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
 
-  inner class FeatureScope : TestScope() {
+  inner class FeatureScope(val context: TestContext) {
 
     fun and(name: String, init: FeatureScope.() -> Unit) =
-        addContainer("And: $name", this@AbstractFeatureSpec, ::FeatureScope, init)
+        context.addScope(TestContainer("And $name", this@AbstractFeatureSpec, { FeatureScope(it).init() }))
 
-    fun scenario(name: String, test: () -> Unit): TestCase =
-        addTest("Scenario: $name", this@AbstractFeatureSpec, test, defaultTestCaseConfig)
+    fun scenario(name: String, test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase("Scenario $name", this@AbstractFeatureSpec, test, lineNumber(), defaultTestCaseConfig)
+      context.addScope(tc)
+      return tc
+    }
   }
 }

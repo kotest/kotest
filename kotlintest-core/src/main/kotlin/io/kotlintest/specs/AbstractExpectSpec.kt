@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -12,16 +14,19 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
 
   final override fun isInstancePerTest(): Boolean = false
 
-  fun context(name: String, init: ExpectSpecScope.() -> Unit) {
-    rootScope.addContainer("Context: $name", this@AbstractExpectSpec, ::ExpectSpecScope, init)
+  fun context(name: String, init: ExpectContext.() -> Unit) {
+    rootScopes.add(TestContainer("Context $name", this@AbstractExpectSpec, { ExpectContext(it).init() }))
   }
 
-  inner class ExpectSpecScope : TestScope() {
+  inner class ExpectContext(val context: TestContext) {
 
-    fun context(name: String, init: ExpectSpecScope.() -> Unit) =
-        addContainer("Context: $name", this@AbstractExpectSpec, ::ExpectSpecScope, init)
+    fun context(name: String, init: ExpectContext.() -> Unit) =
+        context.addScope(TestContainer("Context $name", this@AbstractExpectSpec, { ExpectContext(it).init() }))
 
-    fun expect(name: String, test: () -> Unit): TestCase =
-        addTest("Expect: $name", this@AbstractExpectSpec, test, defaultTestCaseConfig)
+    fun expect(name: String, test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase("Expect $name", this@AbstractExpectSpec, test, lineNumber(), defaultTestCaseConfig)
+      context.addScope(tc)
+      return tc
+    }
   }
 }

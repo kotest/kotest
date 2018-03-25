@@ -117,7 +117,7 @@ interface Spec {
   }
 
   /**
-   * Returns the top level root [TestContainer] for this Spec.
+   * Returns the top level [TestContainer] for this Spec.
    */
   fun root(): TestContainer
 }

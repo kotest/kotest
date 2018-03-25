@@ -117,6 +117,24 @@ If you want to run more than one spec class in parallel, you can by overriding `
 
 Note the system property always takes precedence over the config.
 
+* **Futures Support**
+
+Test cases now support waiting on futures in a neat way. If you have a value in a `CompletableFuture` that you want
+to test against once it completes, then you can do this like this:
+
+```kotlin
+
+val stringFuture: CompletableFuture<String> = ...
+
+"My future test" should {
+  "support CompletableFuture<T>" {
+    whenReady(stringFuture) {
+      it shouldBe "wibble"
+    }
+  }
+}
+```
+
 * **Breaking: Exception Matcher Changes**
 
 The `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match

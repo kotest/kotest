@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 /**
  * Example:
@@ -29,18 +31,26 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
   final override fun isInstancePerTest(): Boolean = false
 
-  operator fun String.invoke(init: ShouldScope.() -> Unit) =
-      rootScope.addContainer(this, this@AbstractShouldSpec, ::ShouldScope, init)
-
-  inner class ShouldScope : TestScope() {
-
-    operator fun String.invoke(init: ShouldScope.() -> Unit) =
-        addContainer(this, this@AbstractShouldSpec, ::ShouldScope, init)
-
-    fun should(name: String, test: () -> Unit): TestCase =
-        addTest(name, this@AbstractShouldSpec, test, defaultTestCaseConfig)
+  fun should(name: String, test: TestContext.() -> Unit): TestCase {
+    val tc = TestCase(name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
+    rootScopes.add(tc)
+    return tc
   }
 
-  fun should(name: String, test: () -> Unit): TestCase =
-      rootScope.addTest(name, this@AbstractShouldSpec, test, defaultTestCaseConfig)
+  operator fun String.invoke(init: ShouldContext.() -> Unit) =
+      rootScopes.add(TestContainer(this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
+
+  inner class ShouldContext(val context: TestContext) {
+
+    operator fun String.invoke(init: ShouldContext.() -> Unit) =
+        context.addScope(TestContainer(this, this@AbstractShouldSpec, { ShouldContext(it).init() }))
+
+    fun should(name: String, test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase(name, this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
+      rootScopes.add(tc)
+      return tc
+    }
+  }
+
+
 }

@@ -41,9 +41,9 @@ object TestDiscovery {
       val spec: Spec = it.createInstance()
       val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root())
       root.addChild(descriptor)
-      root.sortChildren()
     }
 
+    root.sortChildren()
     return root
   }
 }

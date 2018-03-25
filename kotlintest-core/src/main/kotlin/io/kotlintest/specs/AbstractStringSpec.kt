@@ -2,6 +2,8 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 /**
  * Example:
@@ -17,6 +19,9 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
   }
 
   // adds a test directly from the root context
-  operator fun String.invoke(test: () -> Unit): TestCase =
-      rootScope.addTest(this, this@AbstractStringSpec, test, defaultTestCaseConfig)
+  operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
+    val tc = TestCase(this, this@AbstractStringSpec, test, lineNumber(), defaultTestCaseConfig)
+    rootScopes.add(tc)
+    return tc
+  }
 }

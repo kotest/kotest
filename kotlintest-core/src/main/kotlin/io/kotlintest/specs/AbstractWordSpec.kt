@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 /**
  * Example:
@@ -22,11 +24,14 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
   final override fun isInstancePerTest(): Boolean = false
 
-  infix fun String.should(init: WordSpecScope.() -> Unit) =
-      rootScope.addContainer(this, this@AbstractWordSpec, ::WordSpecScope, init)
+  infix fun String.should(init: WordContext.() -> Unit) =
+      rootScopes.add(TestContainer(this, this@AbstractWordSpec, { WordContext(it).init() }))
 
-  inner class WordSpecScope : TestScope() {
-    infix operator fun String.invoke(test: () -> Unit): TestCase =
-        addTest("should " + this, this@AbstractWordSpec, test, defaultTestCaseConfig)
+  inner class WordContext(val context: TestContext) {
+    infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase("should " + this, this@AbstractWordSpec, test, lineNumber(), defaultTestCaseConfig)
+      context.addScope(tc)
+      return tc
+    }
   }
 }

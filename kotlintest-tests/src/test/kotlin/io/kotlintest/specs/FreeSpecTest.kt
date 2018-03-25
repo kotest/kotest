@@ -1,32 +1,32 @@
 package io.kotlintest.specs
 
-import io.kotlintest.ListStack
 import io.kotlintest.shouldBe
 
 class FreeSpecTest : AbstractFreeSpec() {
+
+  var count = 0
+
+  override fun interceptSpec(process: () -> Unit) {
+    super.interceptSpec(process)
+    count shouldBe 3
+  }
+
   init {
-    "given a ListStack" - {
-      "pop" - {
-        "should remove the last element from stack" {
-          val stack = ListStack<String>()
-          stack.push("hello")
-          stack.push("world")
-          stack.size() shouldBe 2
-          stack.pop() shouldBe "world"
-          stack.size() shouldBe 1
+
+
+    "context a" - {
+      "b1" - {
+        "c" {
+          count += 1
         }
       }
-      "peek" - {
-        "should leave the stack unmodified" {
-          val stack = ListStack<String>()
-          stack.push("hello")
-          stack.push("world")
-          stack.size() shouldBe 2
-          stack.peek() shouldBe "world"
-          stack.size() shouldBe 2
+      "b2" - {
+        "d" {
+          count += 2
         }
       }
     }
+
 
     "params" - {
       "support config" {

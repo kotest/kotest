@@ -7,9 +7,13 @@ abstract class AbstractSpec : Spec {
 
   override fun isInstancePerTest(): Boolean = false
 
-  internal val rootScope = TestScope()
+  internal val rootScopes = mutableListOf<TestScope>()
 
-  override fun root(): TestContainer = TestContainer(name(), this, { rootScope.children.toList() }, true)
+  override fun root(): TestContainer = TestContainer(name(), this, { context ->
+    rootScopes.forEach {
+      context.addScope(it)
+    }
+  }, true)
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 

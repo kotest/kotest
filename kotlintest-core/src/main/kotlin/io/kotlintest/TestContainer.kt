@@ -1,7 +1,13 @@
 package io.kotlintest
 
-// what to call this?
-interface TestX {
+/**
+ * A [TestScope] is a block of code that acts as a node in the test plan tree.
+ * A scope can either be a leaf level [TestCase] - which you can think of as a
+ * unit test - and branch level [TestContainer]s. Containers can nest
+ * further containers - the actual structure of the tree is determined
+ * by the implementing [Spec] style.
+ */
+interface TestScope {
   fun name(): String
 }
 
@@ -18,9 +24,10 @@ interface TestX {
  * so that we can generate a link to the source file
  * for any given test.
  *
- * Most importantly, it has a discovery function. This
- * function, when invoked, returns any nested containers
- * and any tests directly registered in this container.
+ * Fianlly it captures a closure of the body of the container.
+ * This is a function which is invoked with a [TestContext],
+ * which can, at runtime, register further [TestScope]s with the
+ * test plan.
  *
  * This function is designed so that the closures which
  * are used by the spec DSLs can be executed a later
@@ -32,55 +39,14 @@ interface TestX {
  */
 class TestContainer(val displayName: String,
                     val spec: Spec,
-                    val discovery: () -> List<TestX>,
-                    val isSpecRoot: Boolean = false) : TestX {
+                    val closure: (TestContext) -> Unit,
+                    val isSpecRoot: Boolean = false) : TestScope {
   override fun name(): String = displayName
 }
 
-/**
- * A container used by the spec DSL to allow registering
- * of [TestCase] and [TestContainer] instances.
- *
- * This class should be extended and used as the receiver
- * type for context creation functions in the DSL.
- */
-open class TestScope {
-
-  companion object {
-    fun lineNumber(): Int {
-      val stack = Throwable().stackTrace
-      return stack.dropWhile {
-        it.className.startsWith("io.kotlintest")
-      }[0].lineNumber
-    }
-  }
-
-  internal val children = mutableListOf<TestX>()
-
-  fun addTest(tc: TestCase) {
-    if (children.any { it.name() == tc.displayName })
-      throw RuntimeException("Cannot add two tests with the same name inside the same scope: '${tc.displayName}'")
-    children.add(tc)
-  }
-
-  fun addTest(name: String, spec: Spec, test: () -> Unit, config: TestCaseConfig): TestCase {
-    val tc = TestCase(name, spec, test, lineNumber(), config)
-    addTest(tc)
-    return tc
-  }
-
-  fun addContainer(container: TestContainer) {
-    if (children.any { it.name() == container.displayName })
-      throw RuntimeException("Cannot add two tests with the same name inside the same scope: '${container.displayName}'")
-    children.add(container)
-  }
-
-  fun <T : TestScope> addContainer(name: String, spec: Spec, scopeFn: () -> T, init: T.() -> Unit) {
-    val container = TestContainer(name, spec, {
-      val scope = scopeFn()
-      scope.init()
-      scope.children.toList()
-    })
-    addContainer(container)
-  }
+fun lineNumber(): Int {
+  val stack = Throwable().stackTrace
+  return stack.dropWhile {
+    it.className.startsWith("io.kotlintest")
+  }[0].lineNumber
 }

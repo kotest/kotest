@@ -2,7 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
-import io.kotlintest.TestScope
+import io.kotlintest.TestContainer
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -13,14 +15,17 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   final override fun isInstancePerTest(): Boolean = false
 
   fun describe(name: String, init: DescribeScope.() -> Unit) =
-      rootScope.addContainer("Describe: $name", this@AbstractDescribeSpec, ::DescribeScope, init)
+      rootScopes.add(TestContainer("Describe $name", this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
-  inner class DescribeScope : TestScope() {
+  inner class DescribeScope(val context: TestContext) {
 
     fun describe(name: String, init: DescribeScope.() -> Unit) =
-        addContainer("Describe: $name", this@AbstractDescribeSpec, ::DescribeScope, init)
+        context.addScope(TestContainer("Describe $name", this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
-    fun it(name: String, test: () -> Unit): TestCase =
-        addTest(name, this@AbstractDescribeSpec, test, defaultTestCaseConfig)
+    fun it(name: String, test: TestContext.() -> Unit): TestCase {
+      val tc = TestCase("Scenario $name", this@AbstractDescribeSpec, test, lineNumber(), defaultTestCaseConfig)
+      context.addScope(tc)
+      return tc
+    }
   }
 }

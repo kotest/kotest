@@ -22,12 +22,12 @@ data class TestCase(
     // the spec that contains this testcase
     val spec: Spec,
     // a closure of the test itself
-    val test: () -> Unit,
+    val test: TestContext.() -> Unit,
     // the first line number of the test
     val line: Int,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
-    var config: TestCaseConfig) : TestX {
+    var config: TestCaseConfig) : TestScope {
 
   override fun name(): String = displayName
 

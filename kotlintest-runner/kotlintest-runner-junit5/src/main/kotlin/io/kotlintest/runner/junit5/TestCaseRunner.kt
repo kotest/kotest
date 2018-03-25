@@ -13,6 +13,9 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
   // TODO beautify
   fun runTest(descriptor: TestCaseDescriptor) {
     if (descriptor.testCase.isActive()) {
+
+      val context = AccumulatingTestContext()
+
       val executor =
           if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(descriptor.testCase.config.threads)
@@ -26,7 +29,10 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
       for (j in 1..descriptor.testCase.config.invocations) {
         executor.execute {
           try {
-            chain(descriptor.testCase.test)
+            chain { descriptor.testCase.test(context) }
+            val result = context.future().get()
+            if (result != null)
+              errors.add(result)
           } catch (t: Throwable) {
             errors.add(t)
           }

@@ -2,6 +2,8 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.TestCase
+import io.kotlintest.TestContext
+import io.kotlintest.lineNumber
 
 abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -9,6 +11,9 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
     body()
   }
 
-  fun test(name: String, test: () -> Unit): TestCase =
-      rootScope.addTest(name, this@AbstractFunSpec, test, defaultTestCaseConfig)
+  fun test(name: String, test: TestContext.() -> Unit): TestCase {
+    val tc = TestCase(name, this@AbstractFunSpec, test, lineNumber(), defaultTestCaseConfig)
+    rootScopes.add(tc)
+    return tc
+  }
 }

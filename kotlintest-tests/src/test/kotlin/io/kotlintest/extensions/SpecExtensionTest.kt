@@ -36,12 +36,19 @@ object SpecExtensionNumbers {
   }
 }
 
+object SpecSetup {
+  init {
+    Project.registerExtension(SpecExtensionNumbers.add1)
+    Project.registerExtension(SpecExtensionNumbers.add2)
+  }
+}
+
 class SpecExtensionTest : WordSpec() {
+
 
   init {
 
-    Project.registerExtension(SpecExtensionNumbers.add1)
-    Project.registerExtension(SpecExtensionNumbers.add2)
+    SpecSetup.toString()
 
     // use a project after all extension to test the around advice of a spec
     Project.registerExtension(object : ProjectExtension {
