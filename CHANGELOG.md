@@ -32,7 +32,7 @@ with 4.6 it seems to be required.
 
 Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
 call this what you wanted, and place it where you wanted, and `KotlinTest` would attempt to find it and use it. This was the cause of
-many bug reports about project start up times and reflection errors. So in version 3.0.x onwards, kotlitnest will 
+many bug reports about project start up times and reflection errors. So in version 3.0.x onwards, KotlinTest will 
 no longer attempt to scan the classpath.
 
 Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of 
