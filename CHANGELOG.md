@@ -4,7 +4,7 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 
-Version 3.0.0 - Current Release RC1 - March 24 2018
+Version 3.0.0-RC2 - March 26 2018
 -------------
 
 * **Module split out**
