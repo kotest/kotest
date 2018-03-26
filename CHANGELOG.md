@@ -158,7 +158,7 @@ to do this.
 
 * **Breaking: Tag System Property Rename**
 
-The system proeprty used to include/exclude tags has been renamed to `kotlintest.tags.include` and `kotlintest.tags.exclude`. Make
+The system property used to include/exclude tags has been renamed to `kotlintest.tags.include` and `kotlintest.tags.exclude`. Make
 sure you update your build jobs to set the right properties as the old ones no longer have any effect. If the old tags are detected
 then a warning message will be emitted on startup.
 
@@ -258,7 +258,7 @@ But now you can use `assertAll` and `assertNone` and then use regular matchers i
 
 ```kotlin
 "startsWith" {
-  forAll(Gen.string(), Gen.string(), { a, b ->
+  assertAll(Gen.string(), Gen.string(), { a, b ->
     a + b should startWith(a)
   })
 } 
