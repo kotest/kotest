@@ -1,7 +1,6 @@
 package io.kotlintest.specs
 
 import io.kotlintest.ListStack
-import io.kotlintest.runner.junit5.specs.BehaviorSpec
 import io.kotlintest.shouldBe
 
 class BehaviorSpecTest : BehaviorSpec() {

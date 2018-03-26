@@ -1,7 +1,5 @@
 package io.kotlintest.specs
 
-import io.kotlintest.runner.junit5.specs.DescribeSpec
-
 class DescribeSpecExample : DescribeSpec() {
   init {
     describe("some context") {

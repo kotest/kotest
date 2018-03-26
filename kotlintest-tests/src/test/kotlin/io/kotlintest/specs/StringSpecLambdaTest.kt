@@ -1,6 +1,5 @@
 package io.kotlintest.specs
 
-import io.kotlintest.runner.junit5.specs.StringSpec
 import io.kotlintest.shouldBe
 
 class StringSpecLambdaTest : StringSpec({

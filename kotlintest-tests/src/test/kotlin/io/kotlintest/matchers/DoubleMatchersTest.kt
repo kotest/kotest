@@ -1,6 +1,6 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.runner.junit5.specs.ShouldSpec
+import io.kotlintest.specs.ShouldSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.forAll

@@ -3,7 +3,7 @@ package io.kotlintest.extensions
 import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.extensions.Numbers.add1
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 

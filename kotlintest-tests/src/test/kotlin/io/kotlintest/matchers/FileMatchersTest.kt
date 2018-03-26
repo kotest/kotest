@@ -1,6 +1,6 @@
 package io.kotlintest.matchers
 
-import io.kotlintest.runner.junit5.specs.FunSpec
+import io.kotlintest.specs.FunSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

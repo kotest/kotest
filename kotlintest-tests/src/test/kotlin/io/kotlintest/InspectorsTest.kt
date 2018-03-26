@@ -2,7 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec() {
 

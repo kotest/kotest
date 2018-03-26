@@ -1,6 +1,6 @@
 package io.kotlintest.properties
 
-import io.kotlintest.runner.junit5.specs.StringSpec
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 
 class EnumGenTest : StringSpec() {

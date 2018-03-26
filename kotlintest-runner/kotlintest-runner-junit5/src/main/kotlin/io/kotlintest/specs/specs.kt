@@ -1,15 +1,5 @@
-package io.kotlintest.runner.junit5.specs
+package io.kotlintest.specs
 
-import io.kotlintest.specs.AbstractAnnotationSpec
-import io.kotlintest.specs.AbstractBehaviorSpec
-import io.kotlintest.specs.AbstractDescribeSpec
-import io.kotlintest.specs.AbstractExpectSpec
-import io.kotlintest.specs.AbstractFeatureSpec
-import io.kotlintest.specs.AbstractFreeSpec
-import io.kotlintest.specs.AbstractFunSpec
-import io.kotlintest.specs.AbstractShouldSpec
-import io.kotlintest.specs.AbstractStringSpec
-import io.kotlintest.specs.AbstractWordSpec
 import org.junit.jupiter.api.Test
 
 interface IntelliTestMarker {

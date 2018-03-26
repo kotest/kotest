@@ -1,6 +1,5 @@
 package io.kotlintest.specs
 
-import io.kotlintest.runner.junit5.specs.AnnotationSpec
 import io.kotlintest.shouldBe
 
 class AnnotationSpecTest : AnnotationSpec() {

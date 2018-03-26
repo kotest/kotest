@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.runner.junit5.specs.ShouldSpec
+import io.kotlintest.specs.ShouldSpec
 
 class SharedInstanceForTestsTest : ShouldSpec() {
 

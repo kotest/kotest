@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 
 class ConfigTest2 : WordSpec() {
   init {

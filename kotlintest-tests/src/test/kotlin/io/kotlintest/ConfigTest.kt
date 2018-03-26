@@ -4,7 +4,7 @@ import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 

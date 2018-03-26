@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.runner.junit5.specs.FunSpec
+import io.kotlintest.specs.FunSpec
 
 @DisplayName("ZZZZZZZ")
 class DisplayNameTest : FunSpec() {

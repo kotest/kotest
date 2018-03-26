@@ -3,7 +3,7 @@ package io.kotlintest.tables
 import com.univocity.parsers.common.record.Record
 import com.univocity.parsers.csv.CsvFormat
 import io.kotlintest.matchers.gt
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 

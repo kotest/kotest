@@ -1,7 +1,7 @@
 package io.kotlintest.spring
 
 import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.runner.junit5.specs.WordSpec
+import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

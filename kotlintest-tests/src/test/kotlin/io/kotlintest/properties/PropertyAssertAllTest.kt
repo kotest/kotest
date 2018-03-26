@@ -5,7 +5,7 @@ import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.startWith
-import io.kotlintest.runner.junit5.specs.StringSpec
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

@@ -1,7 +1,7 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.forAll
-import io.kotlintest.runner.junit5.specs.FreeSpec
+import io.kotlintest.specs.FreeSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

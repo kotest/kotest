@@ -1,7 +1,5 @@
 package io.kotlintest.specs
 
-import io.kotlintest.runner.junit5.specs.BehaviorSpec
-
 class BehaviorSpecParenthesisTest : BehaviorSpec() {
   init {
     given("a sheet of string cells 4x4") {

@@ -2,7 +2,7 @@ package io.kotlintest.properties
 
 import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
-import io.kotlintest.runner.junit5.specs.StringSpec
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
 import io.kotlintest.shouldThrow
