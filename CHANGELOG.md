@@ -17,9 +17,9 @@ defunct. When upgrading, you will find that you will need to update imports to t
 which have changed package.
 
 ```
-testCompile 'io.kotlintest:kotlintest-core:3.0.0-RC1'
-testCompile 'io.kotlintest:kotlintest-assertions:3.0.0-RC1'
-testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC1'
+testCompile 'io.kotlintest:kotlintest-core:3.0.0-RC2'
+testCompile 'io.kotlintest:kotlintest-assertions:3.0.0-RC2'
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC2'
 ```
 
 Gradle Users:
