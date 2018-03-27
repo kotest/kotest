@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.ProjectExtension
-import io.kotlintest.extensions.SpecInterceptor
+import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
@@ -12,7 +12,7 @@ import io.kotlintest.extensions.TestListener
  * [AbstractProjectConfig] located at the package io.kotlintest.provided.ProjectConfig.
  *
  * If such an object exists, it will be instantiated and then
- * any extensions, such as [ProjectExtension], [SpecInterceptor] or
+ * any extensions, such as [ProjectExtension], [SpecExtension] or
  * [TestCaseExtension]s will be registered with this class.
  *
  * In addition, extensions can be programatically added to this class
@@ -47,7 +47,7 @@ object Project {
   }
 
   internal val projectExtensions = mutableListOf<ProjectExtension>()
-  internal val specInterceptors = mutableListOf<SpecInterceptor>()
+  internal val specInterceptors = mutableListOf<SpecExtension>()
   internal val testCaseInterceptors = mutableListOf<TestCaseExtension>()
   internal val listeners = mutableListOf<TestListener>()
   internal var parallelism: Int = 1
@@ -87,7 +87,7 @@ object Project {
     this.testCaseInterceptors.add(testCaseExtension)
   }
 
-  fun registerExtension(specExtensions: SpecInterceptor) {
+  fun registerExtension(specExtensions: SpecExtension) {
     this.specInterceptors.add(specExtensions)
   }
 
@@ -99,7 +99,7 @@ object Project {
     this.testCaseInterceptors.addAll(testCaseExtensions)
   }
 
-  fun registerExtensions(vararg specExtensions: SpecInterceptor) {
+  fun registerExtensions(vararg specExtensions: SpecExtension) {
     this.specInterceptors.addAll(specExtensions)
   }
 }

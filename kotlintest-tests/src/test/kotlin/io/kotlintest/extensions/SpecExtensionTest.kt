@@ -11,7 +11,7 @@ object SpecExtensionNumbers {
   val a = AtomicInteger(1)
   val b = AtomicInteger(1)
 
-  val add1 = object : SpecInterceptor {
+  val add1 = object : SpecExtension {
     override fun intercept(spec: Spec, process: () -> Unit) {
       if (spec.name() == "SpecExtensionTest") {
         SpecExtensionNumbers.a.addAndGet(2)
@@ -23,7 +23,7 @@ object SpecExtensionNumbers {
     }
   }
 
-  val add2 = object : SpecInterceptor {
+  val add2 = object : SpecExtension {
     override fun intercept(spec: Spec, process: () -> Unit) {
       if (spec.name() == "SpecExtensionTest") {
         SpecExtensionNumbers.a.addAndGet(3)

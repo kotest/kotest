@@ -1,16 +1,17 @@
 package io.kotlintest.spring
 
+import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.extensions.SpecInterceptor
+import io.kotlintest.extensions.TestListener
 import org.springframework.test.context.TestContextManager
 
-object SpringSpecExtension : SpecInterceptor {
-  override fun intercept(spec: Spec, process: () -> Unit) {
+object SpringListener : TestListener {
+
+  override fun specStarted(description: Description, spec: Spec) {
     try {
       val manager = TestContextManager(spec.javaClass)
       val ac = manager.testContext.applicationContext
       ac.autowireCapableBeanFactory.autowireBean(spec)
-      process()
     } catch (t: Throwable) {
       t.printStackTrace()
     }

@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.SpecInterceptor
+import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
@@ -55,7 +55,7 @@ interface Spec {
    * is executed.
    *
    * If you wish to re-use intercept logic across multiple specs,
-   * then look at [SpecInterceptor.intercept].
+   * then look at [SpecExtension.intercept].
    *
    * This intercept function will be called once, before any of the
    * test cases in the spec are executed. Don't forget to call
@@ -82,12 +82,12 @@ interface Spec {
 
   /**
    * Override this function to register instances of
-   * [SpecInterceptor] which will intercept this spec.
+   * [SpecExtension] which will intercept this spec.
    *
    * If you wish to register an extension for all specs
    * then use [AbstractProjectConfig.specExtensions].
    */
-  fun specExtensions(): List<SpecInterceptor> = listOf()
+  fun specExtensions(): List<SpecExtension> = listOf()
 
   /**
    * Override this function to register instances of

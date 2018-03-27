@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.ProjectExtension
-import io.kotlintest.extensions.SpecInterceptor
+import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
@@ -28,7 +28,7 @@ abstract class AbstractProjectConfig {
    */
   open fun extensions(): List<ProjectExtension> = emptyList()
 
-  open fun specExtensions(): List<SpecInterceptor> = emptyList()
+  open fun specExtensions(): List<SpecExtension> = emptyList()
 
   open fun testCaseExtensions(): List<TestCaseExtension> = emptyList()
 

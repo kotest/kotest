@@ -2,9 +2,9 @@ package io.kotlintest.runner.junit5
 
 import createTestCaseInterceptorChain
 import io.kotlintest.Project
+import io.kotlintest.TestResult
+import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.extensions.TestResult
-import io.kotlintest.extensions.TestStatus
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException

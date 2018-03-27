@@ -3,6 +3,7 @@ package io.kotlintest.extensions
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 
 interface TestListener {
 

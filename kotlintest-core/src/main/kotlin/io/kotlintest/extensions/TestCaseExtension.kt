@@ -11,9 +11,3 @@ import io.kotlintest.TestCase
 interface TestCaseExtension {
   fun intercept(testCase: TestCase, test: () -> Unit)
 }
-
-enum class TestStatus {
-  Ignored, Passed, Failed
-}
-
-data class TestResult(val status: TestStatus, val error: Throwable?, val metaData: List<Any> = emptyList())

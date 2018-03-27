@@ -1,9 +1,9 @@
 package io.kotlintest.extensions.allure
 
 import io.kotlintest.Description
+import io.kotlintest.TestResult
+import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.extensions.TestResult
-import io.kotlintest.extensions.TestStatus
 import io.qameta.allure.Allure
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status

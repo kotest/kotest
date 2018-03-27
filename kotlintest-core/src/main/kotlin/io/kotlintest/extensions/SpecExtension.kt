@@ -6,7 +6,7 @@ import io.kotlintest.Spec
  * Reusable spec extension to be registered with
  * [io.kotlintest.AbstractProjectConfig.specExtensions].
  */
-interface SpecInterceptor {
+interface SpecExtension {
 
   /**
    * You must invoke process() to continue with the evaluation of the spec.
