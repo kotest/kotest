@@ -3,8 +3,8 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
@@ -23,38 +23,43 @@ object TestDiscovery {
 
   val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
 
-  private fun reflections(request: DiscoveryRequest): Reflections {
+  private fun reflections(uris: List<URI>): Reflections {
     return Reflections(ConfigurationBuilder()
-        .addUrls(request.uris.map { it.toURL() })
+        .addUrls(uris.map { it.toURL() })
         .setScanners(SubTypesScanner()))
   }
 
-  // returns all the locatable specs for the given request
-  private fun scan(request: DiscoveryRequest): List<KClass<out Spec>> =
-      reflections(request)
+  // returns all the locatable specs for the given uris
+  private fun scan(uris: List<URI>): List<KClass<out Spec>> =
+      reflections(uris)
           .getSubTypesOf(Spec::class.java)
           .map(Class<out Spec>::kotlin)
           // must filter out abstract to avoid the spec parent classes themselves
           .filter { !it.isAbstract }
-          .filter { request.classNames.isEmpty() || request.classNames.contains(it.qualifiedName) }
 
-  operator fun invoke(request: DiscoveryRequest, uniqueId: UniqueId): TestDescriptor {
+  private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
+      classes.map { Class.forName(it).kotlin }.filterIsInstance<KClass<out Spec>>()
 
-    val root = RootTestDescriptor(uniqueId.append("root", "kotlintest"))
-    val specs = scan(request)
+  operator fun invoke(request: DiscoveryRequest, uniqueId: UniqueId): EngineDescriptor {
+
+    val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")
+
+    val specs = when {
+      request.classNames.isNotEmpty() -> loadClasses(request.classNames)
+      else -> scan(request.uris)
+    }
 
     val descriptions = mutableListOf<Description>()
 
-    specs.forEach {
-      val spec: Spec = it.createInstance()
-      descriptions.add(spec.root().description())
-      val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root())
+    val instances = specs.map { it.createInstance() }.sortedBy { it.name() }
+    instances.forEach {
+      descriptions.add(it.root().description())
+      val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, it.root())
       root.addChild(descriptor)
     }
 
     Project.listeners().forEach { it.afterDiscovery(descriptions.toList()) }
 
-    root.sortChildren()
     return root
   }
 }

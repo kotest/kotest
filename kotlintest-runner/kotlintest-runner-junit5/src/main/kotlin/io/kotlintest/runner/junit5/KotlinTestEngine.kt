@@ -14,6 +14,7 @@ import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.UriSelector
+import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.util.ClasspathHelper
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -128,7 +129,8 @@ class KotlinTestEngine : TestEngine {
   }
 
   override fun discover(request: EngineDiscoveryRequest,
-                        uniqueId: UniqueId): TestDescriptor {
+                        uniqueId: UniqueId): EngineDescriptor {
+
     // inside intellij when running a single test, we might be passed a class selector
     // which will be the classname of a spec implementation
     val classes = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
@@ -137,9 +139,6 @@ class KotlinTestEngine : TestEngine {
         request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
         request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
         ClasspathHelper.forClassLoader().toList().map { it.toURI() }
-
-    println("Test discovery uris = " + uris.joinToString(":"))
-    println("classes = " + classes.joinToString(":"))
 
     return TestDiscovery(TestDiscovery.DiscoveryRequest(uris, classes), uniqueId)
   }
