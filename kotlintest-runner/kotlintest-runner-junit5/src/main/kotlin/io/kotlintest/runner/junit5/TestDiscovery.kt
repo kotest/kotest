@@ -1,5 +1,7 @@
 package io.kotlintest.runner.junit5
 
+import io.kotlintest.Description
+import io.kotlintest.Project
 import io.kotlintest.Spec
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.UniqueId
@@ -37,11 +39,16 @@ object TestDiscovery {
     val root = RootTestDescriptor(uniqueId.append("root", "kotlintest"))
     val specs = scan(request)
 
+    val descriptions = mutableListOf<Description>()
+
     specs.forEach {
       val spec: Spec = it.createInstance()
+      descriptions.add(spec.root().description())
       val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, spec.root())
       root.addChild(descriptor)
     }
+
+    Project.listeners().forEach { it.afterDiscovery(descriptions.toList()) }
 
     root.sortChildren()
     return root

@@ -4,6 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.TestScope
 
 interface TestListener {
 
@@ -23,8 +24,26 @@ interface TestListener {
    */
   fun testFinished(description: Description, result: TestResult): Unit = Unit
 
+  /**
+   * Is invoked each time a [Spec] is started.
+   *
+   * Note: If the spec is running with one instance per test, then this
+   * function will be invoked multiple times.
+   *
+   * @param description the [Description] for the root [TestScope] of the spec.
+   * @param spec the actual [Spec] instance.
+   */
   fun specStarted(description: Description, spec: Spec): Unit = Unit
 
+  /**
+   * Is invoked each time a [Spec] completes.
+   *
+   * Note: If the spec is running with one instance per test, then this
+   * function will be invoked multiple times.
+   *
+   * @param description the [Description] for the root [TestScope] of the spec.
+   * @param spec the actual [Spec] instance.
+   */
   fun specFinished(description: Description, spec: Spec): Unit = Unit
 
   /**
