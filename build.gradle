@@ -20,6 +20,7 @@ allprojects {
     apply plugin: 'maven'
     apply plugin: "jacoco"
     apply plugin: 'signing'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
@@ -28,6 +29,14 @@ allprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
     }
 
     dependencies {
