@@ -20,5 +20,7 @@ target
 .idea
 .gradle
 
+allure-results/
+
 # Gradle wrapper
 !gradle/wrapper/gradle-wrapper.jar
