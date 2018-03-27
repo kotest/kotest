@@ -57,7 +57,6 @@ class KotlinTestEngine : TestEngine {
       when (descriptor) {
         is TestContainerDescriptor -> {
 
-
           val context = JUnit5TestContext(descriptor, request.engineExecutionListener, descriptor.container)
           descriptor.container.closure(context)
 
@@ -65,16 +64,17 @@ class KotlinTestEngine : TestEngine {
           // invoke the spec interceptors here; otherwise the spec inteceptors will need to run each
           // time we create a fresh instance of the spec class
           if (descriptor.container.isSpecRoot && !descriptor.container.spec.isInstancePerTest()) {
+
+            val listeners = descriptor.container.spec.listeners() + Project.listeners()
+            listeners.forEach { it.specStarted(descriptor.container.description(), descriptor.container.spec()) }
+
             val initialInterceptor = { next: () -> Unit -> descriptor.container.spec.interceptSpec(next) }
             val extensions = descriptor.container.spec.specExtensions() + Project.specInterceptors()
             val chain = createSpecInterceptorChain(descriptor.container.spec, extensions, initialInterceptor)
             chain {
               descriptor.children.forEach { execute(it, request) }
             }
-
-            val listeners = descriptor.container.spec.listeners() + Project.listeners()
-            listeners.forEach { it.specStarted(descriptor.container.description(), descriptor.container.spec()) }
-
+            listeners.forEach { it.specFinished(descriptor.container.description(), descriptor.container.spec()) }
           } else {
             descriptor.children.forEach { execute(it, request) }
           }
