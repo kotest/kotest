@@ -14,7 +14,7 @@ object Numbers {
 
   val add1 = object : TestCaseExtension {
     override fun intercept(testCase: TestCase, test: () -> Unit) {
-      if (testCase.displayName.contains("ZZQQ")) {
+      if (testCase.name().contains("ZZQQ")) {
         Numbers.a.addAndGet(2)
         test()
         Numbers.b.addAndGet(2)
@@ -24,7 +24,7 @@ object Numbers {
 
   val add2 = object : TestCaseExtension {
     override fun intercept(testCase: TestCase, test: () -> Unit) {
-      if (testCase.displayName.contains("ZZQQ")) {
+      if (testCase.name().contains("ZZQQ")) {
         Numbers.a.addAndGet(3)
         test()
         Numbers.b.addAndGet(3)
