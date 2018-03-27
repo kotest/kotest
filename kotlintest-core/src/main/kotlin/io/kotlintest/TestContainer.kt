@@ -9,15 +9,31 @@ package io.kotlintest
  */
 interface TestScope {
 
+  /**
+   * Returns the 'name' of this scope. Which is the name of the test,
+   * or the name of the scope that contains tests. So in the following example,
+   *
+   * <pre>
+   * {@code
+   * class StringSpecExample : AbstractStringSpec() {
+   * init {
+   *  "this is a test" {
+   *       // test goes here
+   *      }
+   *    }
+   *  }
+   *  </pre>
+   *
+   *  The name of that test is "this is a test".
+   */
   fun name(): String
 
   /**
    * Returns a '/' delimited string which is the full path to the test case.
    * That is, the string contains the names of all parent scopes flattened.
-   * This is useful when you want to use a [TestCaseExtension] for tests
-   * which have different tree locations but the same final name.
+   *
    */
-  fun path(): String
+  fun description(): Description
 
   /**
    * Returns a reference to the [Spec] instance that this scope is associated with.
@@ -51,13 +67,12 @@ interface TestScope {
  * deferred until the test engine is ready to execute
  * tests inside that particular container.
  */
-class TestContainer(val displayName: String,
-                    val path: String,
+class TestContainer(val description: Description,
                     val spec: Spec,
                     val closure: (TestContext) -> Unit,
                     val isSpecRoot: Boolean = false) : TestScope {
-  override fun name(): String = displayName
-  override fun path(): String = path
+  override fun name(): String = description.name
+  override fun description(): Description = description
   override fun spec(): Spec = spec
 }
 

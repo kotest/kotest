@@ -14,13 +14,8 @@ import java.time.Duration
  * DSL of the [Spec] classes.
  */
 data class TestCase(
-    // the display name is the name of the test that will
-    // be outputted in displays. It is most common that
-    // this is the name of the test itself but could be
-    // derived in other ways.
-    val displayName: String,
-    // a slash seperated path to the test case, eg "my test should/do something"
-    val path: String,
+    // the description contains the names of all parents, plus this one
+    val description: Description,
     // the spec that contains this testcase
     val spec: Spec,
     // a closure of the test itself
@@ -31,8 +26,8 @@ data class TestCase(
     // invocations, number of threads, etc
     var config: TestCaseConfig) : TestScope {
 
-  override fun name(): String = displayName
-  override fun path(): String = path
+  override fun name(): String = description.name
+  override fun description(): Description = description
   override fun spec(): Spec = spec
 
   fun config(

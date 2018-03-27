@@ -9,7 +9,9 @@ abstract class AbstractSpec : Spec {
 
   internal val rootScopes = mutableListOf<TestScope>()
 
-  override fun root(): TestContainer = TestContainer(name(), name(), this, { context ->
+  internal fun rootDescription() = Description(emptyList(), name())
+
+  override fun root(): TestContainer = TestContainer(rootDescription(), this, { context ->
     rootScopes.forEach {
       context.addScope(it)
     }
