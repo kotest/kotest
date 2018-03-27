@@ -7,7 +7,7 @@ fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String): Result {
     val ok = value.startsWith(prefix)
     var msg = "String $value should start with $prefix"
-    var notmsg = "String $value should not start with $prefix"
+    val notmsg = "String $value should not start with $prefix"
     if (!ok) {
       for (k in 0 until Math.min(value.length, prefix.length)) {
         if (value[k] != prefix[k]) {

@@ -5,30 +5,39 @@ import io.kotlintest.extensions.TestListener
 import io.kotlintest.extensions.TestResult
 import io.kotlintest.extensions.TestStatus
 import io.qameta.allure.Allure
+import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
 
 object AllureExtension : TestListener {
 
   private val allure = Allure.getLifecycle() ?: throw IllegalStateException("Allure lifecycle not found")
 
+  private fun safeId(description: Description): String = description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
+
   override fun testStarted(description: Description) {
     allure.scheduleTestCase(io.qameta.allure.model.TestResult()
-        .withTestCaseId(description.id())
-        .withUuid(description.id()))
-    println("a" + description)
-    allure.startTestCase(description.id())
+        .withTestCaseId(safeId(description))
+        .withUuid(safeId(description)))
+    allure.startTestCase(safeId(description))
   }
 
   override fun testFinished(description: Description, result: TestResult) {
-    println("b" + description)
-    allure.updateTestCase(description.id(), {
+    allure.updateTestCase(safeId(description), {
       when (result.status) {
         TestStatus.Failed -> it.withStatus(Status.FAILED)
         TestStatus.Ignored -> it.withStatus(Status.SKIPPED)
         TestStatus.Passed -> it.withStatus(Status.PASSED)
       }
+      it.withFullName(description.fullName())
+      result.metaData.filterIsInstance<Severity>().map { it.level.name }.forEach { value ->
+        it.withLabels(Label().withName("Severity").withValue(value))
+      }
     })
-    allure.stopTestCase(description.id())
-    allure.writeTestCase(description.id())
+    allure.stopTestCase(safeId(description))
+    try {
+      allure.writeTestCase(safeId(description))
+    } catch (t: Throwable) {
+
+    }
   }
 }

@@ -14,6 +14,16 @@ import java.util.concurrent.CompletableFuture
 interface TestContext {
 
   /**
+   * Adds a value to this [TestContext] meta data.
+   */
+  fun withMetaData(meta: Any)
+
+  /**
+   * Returns all the metadata associated with this [TestContext]
+   */
+  fun metaData(): List<Any>
+
+  /**
    * Notifies the framework that a nested [TestScope] has been discovered
    * during the execution of a scope.
    */

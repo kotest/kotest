@@ -6,12 +6,12 @@ package io.kotlintest.extensions
 interface ProjectExtension {
 
   /**
-   * Executed before the first test of the project and before [AbstractProjectConfig.beforeAll].
+   * Executed before the first test of the project and before [io.kotlintest.AbstractProjectConfig.beforeAll].
    */
   fun beforeAll() {}
 
   /**
-   * Executed after the last test of the project and after [AbstractProjectConfig.afterAll]
+   * Executed after the last test of the project and after [io.kotlintest.AbstractProjectConfig.afterAll]
    */
   fun afterAll() {}
 }

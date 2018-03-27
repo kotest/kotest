@@ -16,4 +16,4 @@ enum class TestStatus {
   Ignored, Passed, Failed
 }
 
-data class TestResult(val status: TestStatus, val error: Throwable?)
+data class TestResult(val status: TestStatus, val error: Throwable?, val metaData: List<Any> = emptyList())

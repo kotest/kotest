@@ -30,6 +30,14 @@ abstract class FutureAwareTestContext : TestContext {
    */
   fun future() = future
 
+  private val _metadata = mutableListOf<Any>()
+
+  override fun withMetaData(meta: Any) {
+    _metadata.add(meta)
+  }
+
+  override fun metaData(): List<Any> = _metadata.toList()
+
   override fun <T> whenReady(f: CompletableFuture<T>, test: (T) -> Unit) {
     val next = CompletableFuture<Throwable>()
     future = future.thenCompose { next }
