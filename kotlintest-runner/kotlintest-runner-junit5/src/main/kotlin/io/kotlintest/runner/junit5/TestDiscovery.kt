@@ -15,6 +15,10 @@ import kotlin.reflect.full.createInstance
 
 object TestDiscovery {
 
+  init {
+    ReflectionsHelper.registerUrlTypes()
+  }
+
   data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
 
   val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }

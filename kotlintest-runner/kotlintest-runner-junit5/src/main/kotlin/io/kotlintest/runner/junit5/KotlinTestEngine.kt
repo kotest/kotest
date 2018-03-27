@@ -137,6 +137,10 @@ class KotlinTestEngine : TestEngine {
         request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
         request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
         ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+
+    println("Test discovery uris = " + uris.joinToString(":"))
+    println("classes = " + classes.joinToString(":"))
+
     return TestDiscovery(TestDiscovery.DiscoveryRequest(uris, classes), uniqueId)
   }
 }
