@@ -22,6 +22,9 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
     fun describe(name: String, init: DescribeScope.() -> Unit) =
         context.addScope(TestContainer(context.currentScope().description().append("Describe $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
+    fun context(name: String, init: DescribeScope.() -> Unit) =
+        context.addScope(TestContainer(context.currentScope().description().append("Context $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+
     fun it(name: String, test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append("Scenario $name"), this@AbstractDescribeSpec, test, lineNumber(), defaultTestCaseConfig)
       context.addScope(tc)
