@@ -66,6 +66,7 @@ object Project {
   }
 
   fun beforeAll() {
+    listeners.forEach { it.projectStarted() }
     projectExtensions.forEach { extension -> extension.beforeAll() }
     projectConfig?.beforeAll()
   }
@@ -73,6 +74,7 @@ object Project {
   fun afterAll() {
     projectConfig?.afterAll()
     projectExtensions.reversed().forEach { extension -> extension.afterAll() }
+    listeners.forEach { it.projectFinished() }
   }
 
   fun registerListener(listener: TestListener) {
