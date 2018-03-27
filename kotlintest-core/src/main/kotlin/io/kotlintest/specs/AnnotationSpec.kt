@@ -7,7 +7,7 @@ import io.kotlintest.lineNumber
 
 annotation class Test
 
-open class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractSpec() {
 
   init {
     body()

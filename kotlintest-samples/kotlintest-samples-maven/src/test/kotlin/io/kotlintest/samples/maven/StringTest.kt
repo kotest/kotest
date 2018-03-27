@@ -2,8 +2,8 @@ package io.kotlintest.samples.maven
 
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.include
-import io.kotlintest.runner.junit5.specs.WordSpec
 import io.kotlintest.should
+import io.kotlintest.specs.WordSpec
 
 class StringTest : WordSpec() {
   init {
@@ -12,7 +12,7 @@ class StringTest : WordSpec() {
         "wibble" should haveLength(6)
       }
       "include substring" {
-        "wibble" should include("awib")
+        "wibble" should include("wib")
       }
     }
   }

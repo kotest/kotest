@@ -47,7 +47,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
     fun should(name: String, test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append("should $name"), this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
-      rootScopes.add(tc)
+      context.addScope(tc)
       return tc
     }
   }
