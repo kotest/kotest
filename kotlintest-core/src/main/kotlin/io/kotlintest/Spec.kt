@@ -1,7 +1,8 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptor
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.TestListener
 
 /**
  * A [Spec] is the top level component in KotlinTest.
@@ -54,16 +55,14 @@ interface Spec {
    * is executed.
    *
    * If you wish to re-use intercept logic across multiple specs,
-   * then look at [SpecExtension.intercept].
+   * then look at [SpecInterceptor.intercept].
    *
    * This intercept function will be called once, before any of the
    * test cases in the spec are executed. Don't forget to call
    * `process()` in the body of this method. Otherwise the
    * execution of the spec will not continue.
    */
-  fun interceptSpec(process: () -> Unit) {
-    process()
-  }
+  fun interceptSpec(process: () -> Unit) = process()
 
   /**
    * Intercepts the invocation of each test case.
@@ -79,18 +78,16 @@ interface Spec {
    * Don't forget to call `process()` in the body of this method.
    * Otherwise the execution of the test case will not continue.
    */
-  fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
-    test()
-  }
+  fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
 
   /**
    * Override this function to register instances of
-   * [SpecExtension] which will intercept this spec.
+   * [SpecInterceptor] which will intercept this spec.
    *
    * If you wish to register an extension for all specs
    * then use [AbstractProjectConfig.specExtensions].
    */
-  fun specExtensions(): List<SpecExtension> = listOf()
+  fun specExtensions(): List<SpecInterceptor> = listOf()
 
   /**
    * Override this function to register instances of
@@ -101,6 +98,16 @@ interface Spec {
    * then use [AbstractProjectConfig.testCaseExtensions].
    */
   fun testCaseExtensions(): List<TestCaseExtension> = listOf()
+
+  /**
+   * Override this function to register instances of
+   * [TestListener] which will be notified of events during
+   * execution of this spec.
+   *
+   * If you wish to register a listener that will be notified
+   * for all specs, then use [AbstractProjectConfig.listeners].
+   */
+  fun listeners(): List<TestListener> = emptyList()
 
   /**
    * A Readable name for this spec. By default will use the

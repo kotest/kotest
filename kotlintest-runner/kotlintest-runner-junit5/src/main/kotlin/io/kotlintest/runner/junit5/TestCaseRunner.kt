@@ -2,13 +2,16 @@ package io.kotlintest.runner.junit5
 
 import createTestCaseInterceptorChain
 import io.kotlintest.Project
+import io.kotlintest.extensions.TestListener
+import io.kotlintest.extensions.TestResult
+import io.kotlintest.extensions.TestStatus
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class TestCaseRunner(private val listener: EngineExecutionListener) {
+class TestCaseRunner(private val engineListener: EngineExecutionListener, val testListeners: List<TestListener>) {
 
   // TODO beautify
   fun runTest(descriptor: TestCaseDescriptor) {
@@ -19,10 +22,11 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
       val executor =
           if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
           else Executors.newFixedThreadPool(descriptor.testCase.config.threads)
-      listener.executionStarted(descriptor)
+      engineListener.executionStarted(descriptor)
+      testListeners.forEach { it.testStarted(descriptor.testCase.description) }
 
       val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
-      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + Project.testCaseExtensions()
+      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + Project.testCaseInterceptors()
       val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
 
       val errors = mutableListOf<Throwable>()
@@ -45,15 +49,19 @@ class TestCaseRunner(private val listener: EngineExecutionListener) {
 
       if (!terminated) {
         val error = TestTimedOutException(timeout.seconds, TimeUnit.SECONDS)
-        listener.executionFinished(descriptor, TestExecutionResult.failed(error))
+        engineListener.executionFinished(descriptor, TestExecutionResult.failed(error))
+        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Failed, error)) }
       } else if (errors.isEmpty()) {
-        listener.executionFinished(descriptor, TestExecutionResult.successful())
+        engineListener.executionFinished(descriptor, TestExecutionResult.successful())
+        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Passed, null)) }
       } else {
-        listener.executionFinished(descriptor, TestExecutionResult.failed(errors.first()))
+        engineListener.executionFinished(descriptor, TestExecutionResult.failed(errors.first()))
+        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Failed, errors.first())) }
       }
 
     } else {
-      listener.executionSkipped(descriptor, "Ignored")
+      engineListener.executionSkipped(descriptor, "Ignored")
+      testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Ignored, null)) }
     }
   }
 }

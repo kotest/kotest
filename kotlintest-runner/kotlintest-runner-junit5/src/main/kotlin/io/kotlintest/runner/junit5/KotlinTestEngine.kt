@@ -65,7 +65,7 @@ class KotlinTestEngine : TestEngine {
           // time we create a fresh instance of the spec class
           if (descriptor.container.isSpecRoot && !descriptor.container.spec.isInstancePerTest()) {
             val initialInterceptor = { next: () -> Unit -> descriptor.container.spec.interceptSpec(next) }
-            val extensions = descriptor.container.spec.specExtensions() + Project.specExtensions()
+            val extensions = descriptor.container.spec.specExtensions() + Project.specInterceptors()
             val chain = createSpecInterceptorChain(descriptor.container.spec, extensions, initialInterceptor)
             chain {
               descriptor.children.forEach { execute(it, request) }
@@ -75,6 +75,9 @@ class KotlinTestEngine : TestEngine {
           }
         }
         is TestCaseDescriptor -> {
+
+          val listeners = descriptor.testCase.spec.listeners() + Project.listeners()
+
           when (descriptor.testCase.spec.isInstancePerTest()) {
             true -> {
               // we use the prototype spec to create another instance of the spec for this test
@@ -91,16 +94,16 @@ class KotlinTestEngine : TestEngine {
 
               // we need to re-run the spec inteceptors for this fresh instance now
               val initialInterceptor = { next: () -> Unit -> freshSpec.interceptSpec(next) }
-              val extensions = freshSpec.specExtensions() + Project.specExtensions()
+              val extensions = freshSpec.specExtensions() + Project.specInterceptors()
               val chain = createSpecInterceptorChain(freshSpec, extensions, initialInterceptor)
               chain {
                 val freshDescriptor = TestCaseDescriptor(descriptor.id, freshTestCase)
-                val runner = TestCaseRunner(request.engineExecutionListener)
+                val runner = TestCaseRunner(request.engineExecutionListener, listeners)
                 runner.runTest(freshDescriptor)
               }
             }
             false -> {
-              val runner = TestCaseRunner(request.engineExecutionListener)
+              val runner = TestCaseRunner(request.engineExecutionListener, listeners)
               runner.runTest(descriptor)
             }
           }

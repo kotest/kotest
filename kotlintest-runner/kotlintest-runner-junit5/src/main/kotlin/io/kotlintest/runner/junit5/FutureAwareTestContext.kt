@@ -1,5 +1,6 @@
 package io.kotlintest.runner.junit5
 
+import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestScope
 import java.util.concurrent.CompletableFuture
@@ -47,6 +48,11 @@ abstract class FutureAwareTestContext : TestContext {
       }
     }
   }
+}
+
+class TestCaseContext(val testCase: TestCase) : FutureAwareTestContext() {
+  override fun currentScope(): TestScope = testCase
+  override fun addScope(scope: TestScope): TestScope = throw UnsupportedOperationException()
 }
 
 class AccumulatingTestContext(val scope: TestScope) : FutureAwareTestContext() {

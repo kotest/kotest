@@ -1,6 +1,6 @@
 package io.kotlintest.spring
 
-import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptor
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +19,7 @@ open class Classes {
 @ContextConfiguration(classes = [(Classes::class)])
 class SpringTest : WordSpec() {
 
-  override fun specExtensions(): List<SpecExtension> = listOf(SpringSpecExtension)
+  override fun specExtensions(): List<SpecInterceptor> = listOf(SpringSpecExtension)
 
   @Autowired
   var bean: MyBean? = null

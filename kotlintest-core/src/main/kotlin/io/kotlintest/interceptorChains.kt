@@ -1,11 +1,11 @@
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptor
 import io.kotlintest.extensions.TestCaseExtension
 
 fun createSpecInterceptorChain(
     spec: Spec,
-    extensions: Iterable<SpecExtension>,
+    extensions: Iterable<SpecInterceptor>,
     initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
   return extensions.reversed().fold(initial) { a, extension ->
     { fn: () -> Unit ->

@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptor
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
@@ -16,7 +16,7 @@ class ConfigTest : WordSpec() {
     override fun initialValue() = StringBuilder()
   }
 
-  private val verificationInterceptor = object : SpecExtension {
+  private val verificationInterceptor = object : SpecInterceptor {
     override fun intercept(spec: Spec, process: () -> Unit) {
       process()
       val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
@@ -24,7 +24,7 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  private val specInterceptorA = object : SpecExtension {
+  private val specInterceptorA = object : SpecInterceptor {
     override fun intercept(spec: Spec, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("C1.")
       process()
@@ -32,7 +32,7 @@ class ConfigTest : WordSpec() {
     }
   }
 
-  private val specInterceptorB = object : SpecExtension {
+  private val specInterceptorB = object : SpecInterceptor {
     override fun intercept(spec: Spec, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("D1.")
       process()

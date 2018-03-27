@@ -2,5 +2,8 @@ include 'kotlintest-core',
         'kotlintest-assertions',
         'kotlintest-runner:kotlintest-runner-junit5',
         'kotlintest-extensions:kotlintest-extensions-spring',
+        'kotlintest-extensions:kotlintest-extensions-allure',
+        'kotlintest-samples:kotlintest-samples-basic',
+        'kotlintest-samples:kotlintest-samples-spring',
         'kotlintest-intellij',
         'kotlintest-tests'

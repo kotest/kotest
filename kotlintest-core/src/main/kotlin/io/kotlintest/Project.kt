@@ -1,8 +1,9 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.ProjectExtension
-import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptor
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.TestListener
 
 /**
  * Internal class used to hold project wide configuration.
@@ -11,7 +12,7 @@ import io.kotlintest.extensions.TestCaseExtension
  * [AbstractProjectConfig] located at the package io.kotlintest.provided.ProjectConfig.
  *
  * If such an object exists, it will be instantiated and then
- * any extensions, such as [ProjectExtension], [SpecExtension] or
+ * any extensions, such as [ProjectExtension], [SpecInterceptor] or
  * [TestCaseExtension]s will be registered with this class.
  *
  * In addition, extensions can be programatically added to this class
@@ -46,18 +47,21 @@ object Project {
   }
 
   internal val projectExtensions = mutableListOf<ProjectExtension>()
-  internal val specExtensions = mutableListOf<SpecExtension>()
-  internal val testCaseExtensions = mutableListOf<TestCaseExtension>()
+  internal val specInterceptors = mutableListOf<SpecInterceptor>()
+  internal val testCaseInterceptors = mutableListOf<TestCaseExtension>()
+  internal val listeners = mutableListOf<TestListener>()
   internal var parallelism: Int = 1
 
-  fun projectExtensions() = projectExtensions.toList()
-  fun specExtensions() = specExtensions.toList()
-  fun testCaseExtensions() = testCaseExtensions.toList()
+  fun projectInterceptors() = projectExtensions.toList()
+  fun specInterceptors() = specInterceptors.toList()
+  fun testCaseInterceptors() = testCaseInterceptors.toList()
+  fun listeners() = listeners.toList()
   fun parallelism() = parallelism
 
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
     projectExtensions.addAll(this.extensions())
-    specExtensions.addAll(this.specExtensions())
+    specInterceptors.addAll(this.specExtensions())
+    listeners.addAll(this.listeners())
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
   }
 
@@ -71,16 +75,20 @@ object Project {
     projectExtensions.reversed().forEach { extension -> extension.afterAll() }
   }
 
+  fun registerListener(listener: TestListener) {
+    this.listeners.add(listener)
+  }
+
   fun registerExtension(projectExtension: ProjectExtension) {
     this.projectExtensions.add(projectExtension)
   }
 
   fun registerExtension(testCaseExtension: TestCaseExtension) {
-    this.testCaseExtensions.add(testCaseExtension)
+    this.testCaseInterceptors.add(testCaseExtension)
   }
 
-  fun registerExtension(specExtensions: SpecExtension) {
-    this.specExtensions.add(specExtensions)
+  fun registerExtension(specExtensions: SpecInterceptor) {
+    this.specInterceptors.add(specExtensions)
   }
 
   fun registerExtensions(vararg projectExtensions: ProjectExtension) {
@@ -88,10 +96,10 @@ object Project {
   }
 
   fun registerExtensions(vararg testCaseExtensions: TestCaseExtension) {
-    this.testCaseExtensions.addAll(testCaseExtensions)
+    this.testCaseInterceptors.addAll(testCaseExtensions)
   }
 
-  fun registerExtensions(vararg specExtensions: SpecExtension) {
-    this.specExtensions.addAll(specExtensions)
+  fun registerExtensions(vararg specExtensions: SpecInterceptor) {
+    this.specInterceptors.addAll(specExtensions)
   }
 }

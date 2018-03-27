@@ -1,0 +1,6 @@
+dependencies {
+    compile 'io.qameta.allure:allure-java-commons:2.6.0'
+    compile project(':kotlintest-core')
+    compile project(':kotlintest-assertions')
+    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+}
