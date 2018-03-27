@@ -142,9 +142,6 @@ class KotlinTestEngine : TestEngine {
           request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
           ClasspathHelper.forClassLoader().toList().map { it.toURI() }
 
-      println("Test discovery uris = " + uris.joinToString(":"))
-      println("classes = " + classes.joinToString(":"))
-
       result = TestDiscovery(TestDiscovery.DiscoveryRequest(uris, classes), uniqueId)
     }
     return result!!
