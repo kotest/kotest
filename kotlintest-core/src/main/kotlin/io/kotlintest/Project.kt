@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.DiscoveryExtension
+import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
@@ -46,62 +48,49 @@ object Project {
     }
   }
 
-  internal val projectExtensions = mutableListOf<ProjectExtension>()
-  internal val specInterceptors = mutableListOf<SpecExtension>()
-  internal val testCaseInterceptors = mutableListOf<TestCaseExtension>()
-  internal val listeners = mutableListOf<TestListener>()
-  internal var parallelism: Int = 1
+  private val _extensions = mutableListOf<Extension>()
+  private val _listeners = mutableListOf<TestListener>()
+  private var parallelism: Int = 1
 
-  fun projectInterceptors() = projectExtensions.toList()
-  fun specInterceptors() = specInterceptors.toList()
-  fun testCaseInterceptors() = testCaseInterceptors.toList()
-  fun listeners() = listeners.toList()
+  fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
+  fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
+  fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
+  fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
+  fun listeners(): List<TestListener> = _listeners
+
   fun parallelism() = parallelism
 
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
-    projectExtensions.addAll(this.extensions())
-    specInterceptors.addAll(this.specExtensions())
-    listeners.addAll(this.listeners())
+    _extensions.addAll(this.extensions())
+    _listeners.addAll(this.listeners())
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
   }
 
   fun beforeAll() {
-    listeners.forEach { it.projectStarted() }
-    projectExtensions.forEach { extension -> extension.beforeAll() }
+    projectExtensions().forEach { extension -> extension.beforeAll() }
     projectConfig?.beforeAll()
+    listeners().forEach { it.projectStarted() }
   }
 
   fun afterAll() {
+    listeners().forEach { it.projectFinished() }
     projectConfig?.afterAll()
-    projectExtensions.reversed().forEach { extension -> extension.afterAll() }
-    listeners.forEach { it.projectFinished() }
+    projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
 
   fun registerListener(listener: TestListener) {
-    this.listeners.add(listener)
+    _listeners.add(listener)
   }
 
-  fun registerExtension(projectExtension: ProjectExtension) {
-    this.projectExtensions.add(projectExtension)
+  fun registerListeners(vararg listeners: TestListener) {
+    _listeners.addAll(listeners)
   }
 
-  fun registerExtension(testCaseExtension: TestCaseExtension) {
-    this.testCaseInterceptors.add(testCaseExtension)
+  fun registerExtension(extension: Extension) {
+    _extensions.add(extension)
   }
 
-  fun registerExtension(specExtensions: SpecExtension) {
-    this.specInterceptors.add(specExtensions)
-  }
-
-  fun registerExtensions(vararg projectExtensions: ProjectExtension) {
-    this.projectExtensions.addAll(projectExtensions)
-  }
-
-  fun registerExtensions(vararg testCaseExtensions: TestCaseExtension) {
-    this.testCaseInterceptors.addAll(testCaseExtensions)
-  }
-
-  fun registerExtensions(vararg specExtensions: SpecExtension) {
-    this.specInterceptors.addAll(specExtensions)
+  fun registerExtensions(vararg extensions: Extension) {
+    _extensions.addAll(extensions)
   }
 }

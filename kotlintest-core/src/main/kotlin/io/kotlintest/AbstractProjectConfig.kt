@@ -1,8 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
-import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -21,19 +20,12 @@ import io.kotlintest.extensions.TestListener
 abstract class AbstractProjectConfig {
 
   /**
-   * List of project-wide extensions. The [ProjectExtension.beforeAll] methods of
-   * the [ProjectExtension]s are executed in the order of [ProjectExtension]s from
-   * first to last. The [ProjectExtension.afterAll] methods are executed in reversed
-   * order (from last to first).
+   * List of project wide [Extension]s.
    */
-  open fun extensions(): List<ProjectExtension> = emptyList()
-
-  open fun specExtensions(): List<SpecExtension> = emptyList()
-
-  open fun testCaseExtensions(): List<TestCaseExtension> = emptyList()
+  open fun extensions(): List<Extension> = emptyList()
 
   /**
-   * Any project wide [TestListener] listeners.
+   * List of project wide [TestListener]s.
    */
   open fun listeners(): List<TestListener> = emptyList()
 

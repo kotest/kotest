@@ -24,3 +24,5 @@ allure-results/
 
 # Gradle wrapper
 !gradle/wrapper/gradle-wrapper.jar
+
+allure.log

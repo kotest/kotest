@@ -7,6 +7,7 @@ import io.kotlintest.TestContainer
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.FilePosition
 import java.util.*
@@ -15,10 +16,9 @@ import java.util.*
  * A [TestDescriptor] used as the top level container in a [Spec].
  */
 data class SpecTestDescriptor(val id: UniqueId,
-                              val scope: SpecScope) : BranchDescriptor() {
+                              val scope: SpecScope) : AbstractTestDescriptor(id, scope.name()) {
 
-  override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = scope.name()
+  override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(scope.spec.javaClass))
 
   companion object {
@@ -31,10 +31,9 @@ data class SpecTestDescriptor(val id: UniqueId,
  * A nested container at the top level in a [Spec] or inside another [TestContainer].
  */
 data class TestContainerDescriptor(val id: UniqueId,
-                                   val container: TestContainer) : BranchDescriptor() {
+                                   val container: TestContainer) : AbstractTestDescriptor(id, container.name()) {
 
-  override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = container.name()
+  override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
   override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(container.spec.javaClass))
   override fun mayRegisterTests() = true
 
@@ -45,10 +44,10 @@ data class TestContainerDescriptor(val id: UniqueId,
 }
 
 data class TestCaseDescriptor(val id: UniqueId,
-                              val testCase: TestCase) : LeafDescriptor() {
+                              val testCase: TestCase) : AbstractTestDescriptor(id, testCase.name()) {
 
-  override fun getUniqueId(): UniqueId = id
-  override fun getDisplayName(): String = testCase.name()
+  override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
+
   override fun getSource(): Optional<TestSource> {
     val source = ClassSource.from(testCase.spec.javaClass, FilePosition.from(Math.max(1, testCase.line)))
     return Optional.of(source)

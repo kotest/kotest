@@ -1,6 +1,5 @@
 package io.kotlintest.runner.junit5
 
-import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -44,32 +43,30 @@ object TestDiscovery {
 
   operator fun invoke(request: DiscoveryRequest, uniqueId: UniqueId): EngineDescriptor {
 
-    val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")
-
     val specs = when {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames)
       else -> scan(request.uris)
     }
 
-    val descriptions = mutableListOf<Description>()
-
     val instances = specs.map { it.createInstance() }.sortedBy { it.name() }
+    val descriptions = instances.map { it.root().description() }
+
+    val afterExtensions = Project.discoveryExtensions().fold(descriptions, { d, e -> e.afterDiscovery(d) })
+    Project.listeners().forEach { it.afterDiscovery(afterExtensions) }
+
+    val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")
     instances.forEach {
-      descriptions.add(it.root().description())
-      val descriptor = SpecTestDescriptor.fromSpecScope(root.uniqueId, it.root())
+      val specDescriptor = SpecTestDescriptor.fromSpecScope(root.uniqueId, it.root())
       it.root().scopes.forEach {
-        val newDescriptor = when (it) {
-          is TestContainer -> TestContainerDescriptor.fromTestContainer(descriptor.uniqueId, it)
-          is TestCase -> TestCaseDescriptor.fromTestCase(descriptor.uniqueId, it)
+        val scopeDescriptor = when (it) {
+          is TestContainer -> TestContainerDescriptor.fromTestContainer(specDescriptor.uniqueId, it)
+          is TestCase -> TestCaseDescriptor.fromTestCase(specDescriptor.uniqueId, it)
           else -> throw IllegalArgumentException()
         }
-        descriptor.addChild(newDescriptor)
+        specDescriptor.addChild(scopeDescriptor)
       }
-      root.addChild(descriptor)
+      root.addChild(specDescriptor)
     }
-
-    Project.listeners().forEach { it.afterDiscovery(descriptions.toList()) }
-
     return root
   }
 }
