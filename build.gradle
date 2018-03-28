@@ -68,6 +68,12 @@ allprojects {
             logger.lifecycle("Running test: " + descriptor)
         }
 
+        test {
+            afterTest { desc, result ->
+                logger.quiet "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+            }
+        }
+
         // Always run tests, even when nothing changed.
         dependsOn 'cleanTest'
 
