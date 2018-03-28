@@ -31,8 +31,10 @@ object TestDiscovery {
     val excludeJDKPackages = FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun")
 
     return Reflections(ConfigurationBuilder()
-        .filterInputsBy(excludeJDKPackages.add(classOnly))
         .addUrls(uris.map { it.toURL() })
+        .setExpandSuperTypes(false)
+        .useParallelExecutor(2)
+        .filterInputsBy(excludeJDKPackages.add(classOnly))
         .setScanners(SubTypesScanner()))
   }
 
