@@ -45,12 +45,14 @@ object TestCaseRunner {
 
       if (!terminated) {
         TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), context.metaData())
-      } else if (errors.isEmpty()) {
-        TestResult(TestStatus.Success, null, context.metaData())
       } else {
-        TestResult(TestStatus.Failure, errors.firstOrNull(), context.metaData())
+        val first = errors.firstOrNull()
+        when (first) {
+          null -> TestResult(TestStatus.Success, null, context.metaData())
+          is AssertionError -> TestResult(TestStatus.Failure, first, context.metaData())
+          else -> TestResult(TestStatus.Error, first, context.metaData())
+        }
       }
-
     } else {
       TestResult(TestStatus.Ignored, null)
     }
