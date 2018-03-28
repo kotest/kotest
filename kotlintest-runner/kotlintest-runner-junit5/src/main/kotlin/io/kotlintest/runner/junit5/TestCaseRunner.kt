@@ -44,11 +44,11 @@ object TestCaseRunner {
       val terminated = executor.awaitTermination(timeout.seconds, TimeUnit.SECONDS)
 
       if (!terminated) {
-        TestResult(TestStatus.Failed, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), context.metaData())
+        TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), context.metaData())
       } else if (errors.isEmpty()) {
-        TestResult(TestStatus.Passed, null, context.metaData())
+        TestResult(TestStatus.Success, null, context.metaData())
       } else {
-        TestResult(TestStatus.Failed, errors.firstOrNull(), context.metaData())
+        TestResult(TestStatus.Failure, errors.firstOrNull(), context.metaData())
       }
 
     } else {

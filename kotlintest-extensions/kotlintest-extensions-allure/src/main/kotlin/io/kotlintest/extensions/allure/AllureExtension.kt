@@ -39,9 +39,11 @@ object AllureExtension : TestListener {
     try {
       allure.updateTestCase(safeId(description), {
         when (result.status) {
-          TestStatus.Failed -> it.withStatus(Status.FAILED)
+        // what we call an error, allure calls a failure
+          TestStatus.Error -> it.withStatus(Status.BROKEN)
+          TestStatus.Failure -> it.withStatus(Status.FAILED)
           TestStatus.Ignored -> it.withStatus(Status.SKIPPED)
-          TestStatus.Passed -> it.withStatus(Status.PASSED)
+          TestStatus.Success -> it.withStatus(Status.PASSED)
         }
         it.withFullName(description.fullName())
         result.metaData.filterIsInstance<Severity>().map { it.level.name }.forEach { value ->
