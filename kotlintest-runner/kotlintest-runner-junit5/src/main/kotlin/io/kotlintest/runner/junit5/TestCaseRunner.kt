@@ -23,7 +23,7 @@ object TestCaseRunner {
 
     return if (testCase.isActive()) {
 
-      val context = AccumulatingTestContext(testCase)
+      val context = TestCaseContext(testCase)
 
       val errors = mutableListOf<Throwable>()
       for (j in 1..testCase.config.invocations) {
@@ -44,11 +44,11 @@ object TestCaseRunner {
       val terminated = executor.awaitTermination(timeout.seconds, TimeUnit.SECONDS)
 
       if (!terminated) {
-        TestResult(TestStatus.Failed, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS))
+        TestResult(TestStatus.Failed, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), context.metaData())
       } else if (errors.isEmpty()) {
-        TestResult(TestStatus.Passed, null)
+        TestResult(TestStatus.Passed, null, context.metaData())
       } else {
-        TestResult(TestStatus.Failed, errors.firstOrNull())
+        TestResult(TestStatus.Failed, errors.firstOrNull(), context.metaData())
       }
 
     } else {
