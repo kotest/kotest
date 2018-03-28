@@ -2,6 +2,7 @@ package io.kotlintest.runner.junit5
 
 import org.reflections.vfs.Vfs
 import java.net.URL
+import java.nio.file.Paths
 
 /**
  *
@@ -21,8 +22,29 @@ object ReflectionsHelper {
    * Reflections use of Vfs doesn't recognize these URLs and logs warns when it sees them. By registering those file endings, we supress the warns.
    */
   fun registerUrlTypes() {
-    val urlTypes = listOf(EmptyIfFileEndingsUrlType(listOf(".mar", ".jnilib"))) + Vfs.DefaultUrlTypes.values().toList()
+    val urlTypes = listOf(EmptyIfFileEndingsUrlType(listOf(".mar", ".jnilib")), IgnoreEmptyDirectoryUrlType) + Vfs.DefaultUrlTypes.values().toList()
     Vfs.setDefaultURLTypes(urlTypes)
+  }
+
+  fun emptyVfsDir(url: URL): Vfs.Dir {
+    return object : Vfs.Dir {
+      override fun getPath(): String = url.toExternalForm()
+      override fun getFiles(): Iterable<Vfs.File> = emptyList()
+      override fun close() {}
+    }
+  }
+
+  object IgnoreEmptyDirectoryUrlType : Vfs.UrlType {
+
+    override fun createDir(url: URL): Vfs.Dir = emptyVfsDir(url)
+
+    override fun matches(url: URL): Boolean {
+      if (url.protocol != "file") {
+        return false
+      }
+      val contents = Paths.get(url.file).toFile().list()
+      return contents.isEmpty()
+    }
   }
 
   class EmptyIfFileEndingsUrlType(val fileEndings: List<String>) : Vfs.UrlType {
@@ -41,13 +63,5 @@ object ReflectionsHelper {
     }
 
     override fun createDir(url: URL): Vfs.Dir = emptyVfsDir(url)
-
-    fun emptyVfsDir(url: URL): Vfs.Dir {
-      return object : Vfs.Dir {
-        override fun getPath(): String = url.toExternalForm()
-        override fun getFiles(): Iterable<Vfs.File> = emptyList()
-        override fun close() {}
-      }
-    }
   }
 }
