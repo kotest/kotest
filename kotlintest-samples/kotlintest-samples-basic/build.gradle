@@ -5,3 +5,5 @@ dependencies {
     compile project(':kotlintest-assertions')
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
 }
+
+uploadArchives.enabled = false

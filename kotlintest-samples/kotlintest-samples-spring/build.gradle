@@ -7,3 +7,5 @@ dependencies {
     compile 'org.springframework:spring-context:4.3.14.RELEASE'
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
 }
+
+uploadArchives.enabled = false
