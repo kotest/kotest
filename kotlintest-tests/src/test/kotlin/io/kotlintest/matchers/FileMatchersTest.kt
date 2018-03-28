@@ -1,7 +1,6 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.specs.FunSpec
-import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import java.io.File

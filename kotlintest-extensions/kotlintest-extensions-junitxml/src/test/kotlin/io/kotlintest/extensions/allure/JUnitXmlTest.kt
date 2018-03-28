@@ -2,7 +2,6 @@ package io.kotlintest.extensions.allure
 
 import io.kotlintest.extensions.junitxml.JUnitXmlListener
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.should
 import io.kotlintest.specs.WordSpec
 
 class JUnitXmlTest : WordSpec() {

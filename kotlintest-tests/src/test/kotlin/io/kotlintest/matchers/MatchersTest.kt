@@ -1,7 +1,6 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow

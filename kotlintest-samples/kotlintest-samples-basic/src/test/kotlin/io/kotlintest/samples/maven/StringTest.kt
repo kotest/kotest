@@ -1,7 +1,6 @@
 package io.kotlintest.samples.maven
 
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.should
 import io.kotlintest.specs.WordSpec
 
 class StringTest : WordSpec() {

@@ -1,7 +1,6 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.forAll
