@@ -9,6 +9,7 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
+import org.reflections.util.FilterBuilder
 import java.lang.reflect.Modifier
 import java.net.URI
 import kotlin.reflect.KClass
@@ -26,6 +27,7 @@ object TestDiscovery {
 
   private fun reflections(uris: List<URI>): Reflections {
     return Reflections(ConfigurationBuilder()
+        .filterInputsBy(FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun"))
         .filterInputsBy { it?.endsWith(".class") ?: false }
         .addUrls(uris.map { it.toURL() })
         .setScanners(SubTypesScanner()))
