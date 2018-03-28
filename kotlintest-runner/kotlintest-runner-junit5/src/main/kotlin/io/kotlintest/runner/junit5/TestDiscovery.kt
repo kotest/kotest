@@ -26,6 +26,7 @@ object TestDiscovery {
 
   private fun reflections(uris: List<URI>): Reflections {
     return Reflections(ConfigurationBuilder()
+        .filterInputsBy { it?.endsWith(".class") ?: false }
         .addUrls(uris.map { it.toURL() })
         .setScanners(SubTypesScanner()))
   }

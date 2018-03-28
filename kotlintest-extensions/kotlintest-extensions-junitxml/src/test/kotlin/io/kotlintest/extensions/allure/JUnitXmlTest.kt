@@ -7,7 +7,7 @@ import io.kotlintest.specs.WordSpec
 
 class JUnitXmlTest : WordSpec() {
 
-  override fun listeners() = listOf(JUnitXmlListener())
+  override fun listeners() = listOf(JUnitXmlListener)
 
   init {
 
