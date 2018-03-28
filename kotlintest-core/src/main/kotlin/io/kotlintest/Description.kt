@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.Extension
 
 /**
  * The description gives the full path to a [TestScope].
@@ -8,8 +8,8 @@ import io.kotlintest.extensions.TestCaseExtension
  * It contains the name of every parent, with the root at index 0.
  * And it includes the name of the test scope it represents.
  *
- * This is useful when you want to use a [TestCaseExtension] for tests
- * which have different tree locations but the same final name.
+ * This is useful when you want to write generic [Extension]s and you
+ * need to be able to filter on certain tests only.
  */
 data class Description(val parents: List<String>, val name: String) {
 

@@ -57,8 +57,7 @@ interface TestListener {
   fun projectFinished(): Unit = Unit
 
   /**
-   * Is invoked after all specs have been discovered by scanning the classpath
-   * with the list of spec descriptions.
+   * Is invoked after all the [Spec] classes have been discovered.
    *
    * @param descriptions the [Description] instance for each Spec class discovered.
    */

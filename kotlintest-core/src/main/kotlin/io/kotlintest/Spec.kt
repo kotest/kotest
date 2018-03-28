@@ -83,7 +83,7 @@ interface Spec {
    * [SpecExtension] which will intercept this spec.
    *
    * If you wish to register an extension for all specs
-   * then use [AbstractProjectConfig.specExtensions].
+   * then use [AbstractProjectConfig.extensions].
    */
   fun specExtensions(): List<SpecExtension> = listOf()
 
@@ -93,7 +93,7 @@ interface Spec {
    * test cases in this spec.
    *
    * If you wish to register an extension for all test cases
-   * then use [AbstractProjectConfig.testCaseExtensions].
+   * then use [AbstractProjectConfig.extensions].
    */
   fun testCaseExtensions(): List<TestCaseExtension> = listOf()
 

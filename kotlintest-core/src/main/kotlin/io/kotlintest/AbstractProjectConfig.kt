@@ -11,9 +11,9 @@ import io.kotlintest.extensions.TestListener
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotlintest.provided`.
  *
- * Kotlintest will detect it's presence and use it when executing tests.
+ * Kotlintest will detect its presence and use it when executing tests.
  *
- * Note: This is a breaking change from versions 2.0 and prior, when KotlinTest would
+ * Note: This is a breaking change from versions 2.0 and before, in which KotlinTest would
  * scan the classpath for instances of this class. It no longer does that, in favour
  * of the predefined package name + classname.
  */
