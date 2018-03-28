@@ -16,6 +16,8 @@ data class Description(val parents: List<String>, val name: String) {
   fun append(name: String) =
       Description(this.parents + listOf(this.name), name)
 
+  fun hasParent(description: Description): Boolean = parents.containsAll(description.parents + listOf(description.name))
+
   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 
   /**
