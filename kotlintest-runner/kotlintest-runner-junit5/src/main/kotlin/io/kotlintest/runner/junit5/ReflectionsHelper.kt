@@ -42,8 +42,8 @@ object ReflectionsHelper {
       if (url.protocol != "file") {
         return false
       }
-      val contents = Paths.get(url.file).toFile().list()
-      return contents.isEmpty()
+      val file = Paths.get(url.path).toFile()
+      return !file.exists() || file.list() == null || file.list().isEmpty()
     }
   }
 

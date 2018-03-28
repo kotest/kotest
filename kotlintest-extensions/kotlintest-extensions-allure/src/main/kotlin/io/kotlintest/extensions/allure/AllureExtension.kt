@@ -1,6 +1,7 @@
 package io.kotlintest.extensions.allure
 
 import io.kotlintest.Description
+import io.kotlintest.Spec
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestListener
@@ -8,10 +9,15 @@ import io.qameta.allure.Allure
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
 import org.slf4j.LoggerFactory
+import java.nio.file.Paths
 
 object AllureExtension : TestListener {
 
   private val logger = LoggerFactory.getLogger(javaClass)
+
+  override fun specStarted(description: Description, spec: Spec) {
+    Paths.get("allure-results").toFile().deleteRecursively()
+  }
 
   private val allure = try {
     Allure.getLifecycle() ?: throw IllegalStateException()

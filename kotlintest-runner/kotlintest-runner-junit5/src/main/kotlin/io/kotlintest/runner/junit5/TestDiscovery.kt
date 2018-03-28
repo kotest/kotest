@@ -32,7 +32,7 @@ object TestDiscovery {
 
     return Reflections(ConfigurationBuilder()
         .addUrls(uris.map { it.toURL() })
-        .setExpandSuperTypes(false)
+        .setExpandSuperTypes(true)
         .useParallelExecutor(2)
         .filterInputsBy(excludeJDKPackages.add(classOnly))
         .setScanners(SubTypesScanner()))
