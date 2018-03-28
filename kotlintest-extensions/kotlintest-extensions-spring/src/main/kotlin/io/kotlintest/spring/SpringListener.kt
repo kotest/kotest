@@ -7,7 +7,7 @@ import org.springframework.test.context.TestContextManager
 
 object SpringListener : TestListener {
 
-  override fun specStarted(description: Description, spec: Spec) {
+  override fun beforeSpec(description: Description, spec: Spec) {
     try {
       val manager = TestContextManager(spec.javaClass)
       val ac = manager.testContext.applicationContext

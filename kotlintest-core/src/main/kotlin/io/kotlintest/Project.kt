@@ -69,11 +69,11 @@ object Project {
   fun beforeAll() {
     projectExtensions().forEach { extension -> extension.beforeAll() }
     projectConfig?.beforeAll()
-    listeners().forEach { it.projectStarted() }
+    listeners().forEach { it.beforeProject() }
   }
 
   fun afterAll() {
-    listeners().forEach { it.projectFinished() }
+    listeners().forEach { it.afterProject() }
     projectConfig?.afterAll()
     projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }

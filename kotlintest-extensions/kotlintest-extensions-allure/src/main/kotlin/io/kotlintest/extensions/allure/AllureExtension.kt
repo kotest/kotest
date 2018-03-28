@@ -15,7 +15,7 @@ object AllureExtension : TestListener {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  override fun specStarted(description: Description, spec: Spec) {
+  override fun beforeSpec(description: Description, spec: Spec) {
     Paths.get("allure-results").toFile().deleteRecursively()
   }
 
@@ -29,7 +29,7 @@ object AllureExtension : TestListener {
 
   fun safeId(description: Description): String = description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
 
-  override fun testStarted(description: Description) {
+  override fun beforeTest(description: Description) {
     try {
       allure.scheduleTestCase(io.qameta.allure.model.TestResult()
           .withTestCaseId(safeId(description))
@@ -41,7 +41,7 @@ object AllureExtension : TestListener {
     }
   }
 
-  override fun testFinished(description: Description, result: TestResult) {
+  override fun afterTest(description: Description, result: TestResult) {
     try {
       allure.updateTestCase(safeId(description), {
         when (result.status) {

@@ -9,7 +9,7 @@ class TestListenerTest : WordSpec(), TestListener {
 
   var a: String? = null
 
-  override fun specStarted(description: Description, spec: Spec) {
+  override fun beforeSpec(description: Description, spec: Spec) {
     a = "wibble"
   }
 

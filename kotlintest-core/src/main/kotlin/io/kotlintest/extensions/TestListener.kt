@@ -13,7 +13,7 @@ interface TestListener {
    *
    * @param description the [Description] for the [TestCase] instance.
    */
-  fun testStarted(description: Description): Unit = Unit
+  fun beforeTest(description: Description): Unit = Unit
 
   /**
    * Is invoked when a [TestCase] has finished. This includes when a test case
@@ -22,7 +22,7 @@ interface TestListener {
    * @param description the [Description] for the [TestCase] instance.
    * @param result the [TestResult] which contains the outcome of the test.
    */
-  fun testFinished(description: Description, result: TestResult): Unit = Unit
+  fun afterTest(description: Description, result: TestResult): Unit = Unit
 
   /**
    * Is invoked each time a [Spec] is started.
@@ -33,7 +33,7 @@ interface TestListener {
    * @param description the [Description] for the root [TestScope] of the spec.
    * @param spec the actual [Spec] instance.
    */
-  fun specStarted(description: Description, spec: Spec): Unit = Unit
+  fun beforeSpec(description: Description, spec: Spec): Unit = Unit
 
   /**
    * Is invoked each time a [Spec] completes.
@@ -44,17 +44,17 @@ interface TestListener {
    * @param description the [Description] for the root [TestScope] of the spec.
    * @param spec the actual [Spec] instance.
    */
-  fun specFinished(description: Description, spec: Spec): Unit = Unit
+  fun afterSpec(description: Description, spec: Spec): Unit = Unit
 
   /**
    * Is invoked as soon as the Test Engine is started.
    */
-  fun projectStarted(): Unit = Unit
+  fun beforeProject(): Unit = Unit
 
   /**
    * Is invoked as soon as the Test Engine has finished.
    */
-  fun projectFinished(): Unit = Unit
+  fun afterProject(): Unit = Unit
 
   /**
    * Is invoked after all the [Spec] classes have been discovered.

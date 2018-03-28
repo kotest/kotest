@@ -77,10 +77,10 @@ class KotlinTestEngine : TestEngine {
   }
 
   private fun runSpecInterception(scope: SpecScope, afterInterception: () -> Unit) {
-    val listeners = scope.spec.listeners() + Project.listeners()
+    val listeners = listOf(scope.spec) + scope.spec.listeners() + Project.listeners()
     listeners.forEach {
       try {
-        it.specStarted(scope.description(), scope.spec())
+        it.beforeSpec(scope.description(), scope.spec())
       } catch (t: Throwable) {
         t.printStackTrace()
       }
@@ -93,7 +93,7 @@ class KotlinTestEngine : TestEngine {
 
     listeners.reversed().forEach {
       try {
-        it.specFinished(scope.description(), scope.spec())
+        it.afterSpec(scope.description(), scope.spec())
       } catch (t: Throwable) {
         t.printStackTrace()
       }
@@ -136,10 +136,10 @@ class KotlinTestEngine : TestEngine {
 
   private fun runTest(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
 
-    val listeners = descriptor.testCase.spec.listeners() + Project.listeners()
+    val listeners = listOf(descriptor.testCase.spec) + descriptor.testCase.spec.listeners() + Project.listeners()
     listeners.forEach {
       try {
-        it.testStarted(descriptor.testCase.description())
+        it.beforeTest(descriptor.testCase.description())
       } catch (t: Throwable) {
         t.printStackTrace()
       }
@@ -152,7 +152,7 @@ class KotlinTestEngine : TestEngine {
       val result = TestCaseRunner.runTest(descriptor.testCase)
       listeners.reversed().forEach {
         try {
-          it.testFinished(descriptor.testCase.description(), result)
+          it.afterTest(descriptor.testCase.description(), result)
         } catch (t: Throwable) {
           t.printStackTrace()
         }

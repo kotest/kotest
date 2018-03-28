@@ -30,8 +30,12 @@ import io.kotlintest.extensions.TestListener
  * container at the root, and nested containers forming
  * branches and test cases as the leaves. The actual hierarchy
  * will depend on the spec being used.
+ *
+ * A [Spec] is also a [TestListener] to allow for
+ * convenience overloads here if you just want to listen
+ * in a single place.
  */
-interface Spec {
+interface Spec : TestListener {
 
   /**
    * Returns true if this spec should use a new instance for

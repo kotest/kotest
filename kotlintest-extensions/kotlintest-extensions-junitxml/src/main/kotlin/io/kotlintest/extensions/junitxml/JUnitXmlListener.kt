@@ -16,7 +16,7 @@ object JUnitXmlListener : TestListener {
 
   private val outputDirectory = System.getProperty("kotlintest.junit.report.directory") ?: "build/junit-report"
 
-  override fun specFinished(description: Description, spec: Spec) {
+  override fun afterSpec(description: Description, spec: Spec) {
     val testResults = results.filterKeys { it.hasParent(description) }
     val errors = testResults.filter { it.value.status == TestStatus.Error }
     val failures = testResults.filter { it.value.status == TestStatus.Failure }
@@ -41,7 +41,7 @@ object JUnitXmlListener : TestListener {
     writer.close()
   }
 
-  override fun testFinished(description: Description, result: TestResult) {
+  override fun afterTest(description: Description, result: TestResult) {
     results[description] = result
   }
 }
