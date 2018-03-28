@@ -26,9 +26,12 @@ object TestDiscovery {
   val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
 
   private fun reflections(uris: List<URI>): Reflections {
+
+    val classOnly = { name: String? -> name?.endsWith(".class") ?: false }
+    val excludeJDKPackages = FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun")
+
     return Reflections(ConfigurationBuilder()
-        .filterInputsBy(FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun"))
-        .filterInputsBy { it?.endsWith(".class") ?: false }
+        .filterInputsBy(excludeJDKPackages.add(classOnly))
         .addUrls(uris.map { it.toURL() })
         .setScanners(SubTypesScanner()))
   }
