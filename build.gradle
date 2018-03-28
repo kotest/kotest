@@ -142,3 +142,7 @@ allprojects {
         }
     }
 }
+
+project(":") {
+    uploadArchives.enabled = false
+}
