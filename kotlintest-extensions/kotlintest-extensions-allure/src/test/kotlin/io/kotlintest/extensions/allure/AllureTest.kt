@@ -1,7 +1,6 @@
 package io.kotlintest.extensions.allure
 
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.should
 import io.kotlintest.specs.WordSpec
 import io.qameta.allure.SeverityLevel
 
