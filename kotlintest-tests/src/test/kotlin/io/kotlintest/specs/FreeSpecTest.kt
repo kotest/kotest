@@ -1,13 +1,14 @@
 package io.kotlintest.specs
 
+import io.kotlintest.Spec
 import io.kotlintest.shouldBe
 
 class FreeSpecTest : AbstractFreeSpec() {
 
   var count = 0
 
-  override fun interceptSpec(process: () -> Unit) {
-    super.interceptSpec(process)
+  override fun interceptSpec(spec: Spec, process: () -> Unit) {
+    super.interceptSpec(spec, process)
     count shouldBe 3
   }
 

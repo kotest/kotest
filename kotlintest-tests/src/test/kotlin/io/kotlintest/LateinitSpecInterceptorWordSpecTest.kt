@@ -6,9 +6,9 @@ class LateinitSpecInterceptorWordSpecTest : WordSpec() {
 
   private lateinit var string: String
 
-  override fun interceptSpec(process: () -> Unit) {
+  override fun interceptSpec(spec: Spec, process: () -> Unit) {
     string = "Hello"
-    super.interceptSpec(process)
+    super.interceptSpec(spec, process)
   }
 
   init {

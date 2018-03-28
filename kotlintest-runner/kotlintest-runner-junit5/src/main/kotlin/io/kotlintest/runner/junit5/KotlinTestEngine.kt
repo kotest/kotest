@@ -86,7 +86,7 @@ class KotlinTestEngine : TestEngine {
       }
     }
 
-    val initialInterceptor = { next: () -> Unit -> scope.spec.interceptSpec(next) }
+    val initialInterceptor = { next: () -> Unit -> scope.spec.interceptSpec(scope.spec, next) }
     val extensions: List<SpecExtension> = scope.spec.specExtensions() + Project.specExtensions()
     val chain = createSpecInterceptorChain(scope.spec, extensions, initialInterceptor)
     chain { afterInterception() }

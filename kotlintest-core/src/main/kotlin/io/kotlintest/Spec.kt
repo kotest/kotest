@@ -61,7 +61,7 @@ interface Spec {
    * `process()` in the body of this method otherwise the
    * execution of the spec will not continue.
    */
-  fun interceptSpec(process: () -> Unit) = process()
+  fun interceptSpec(spec: Spec, process: () -> Unit) = process()
 
   /**
    * Intercepts the invocation of each test case.
