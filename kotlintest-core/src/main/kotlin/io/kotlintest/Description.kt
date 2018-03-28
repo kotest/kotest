@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.TestCaseExtension
+
 /**
  * The description gives the full path to a [TestScope].
  *
@@ -14,7 +16,7 @@ data class Description(val parents: List<String>, val name: String) {
   fun append(name: String) =
       Description(this.parents + listOf(this.name), name)
 
-  fun fullName():String = (parents + listOf(name)).joinToString(" ")
+  fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 
   /**
    * Returns a String version of this description, which is

@@ -3,6 +3,8 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestContainer
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.Reflections
@@ -54,7 +56,15 @@ object TestDiscovery {
     val instances = specs.map { it.createInstance() }.sortedBy { it.name() }
     instances.forEach {
       descriptions.add(it.root().description())
-      val descriptor = TestContainerDescriptor.fromTestContainer(root.uniqueId, it.root())
+      val descriptor = SpecTestDescriptor.fromSpecScope(root.uniqueId, it.root())
+      it.root().scopes.forEach {
+        val newDescriptor = when (it) {
+          is TestContainer -> TestContainerDescriptor.fromTestContainer(descriptor.uniqueId, it)
+          is TestCase -> TestCaseDescriptor.fromTestCase(descriptor.uniqueId, it)
+          else -> throw IllegalArgumentException()
+        }
+        descriptor.addChild(newDescriptor)
+      }
       root.addChild(descriptor)
     }
 

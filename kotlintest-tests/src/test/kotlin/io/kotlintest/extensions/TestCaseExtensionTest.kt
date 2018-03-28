@@ -15,9 +15,9 @@ object Numbers {
   val add1 = object : TestCaseExtension {
     override fun intercept(testCase: TestCase, test: () -> Unit) {
       if (testCase.name().contains("ZZQQ")) {
-        Numbers.a.addAndGet(2)
+        Numbers.a.addAndGet(1)
         test()
-        Numbers.b.addAndGet(2)
+        Numbers.b.addAndGet(1)
       }
     }
   }
@@ -25,9 +25,9 @@ object Numbers {
   val add2 = object : TestCaseExtension {
     override fun intercept(testCase: TestCase, test: () -> Unit) {
       if (testCase.name().contains("ZZQQ")) {
-        Numbers.a.addAndGet(3)
+        Numbers.a.addAndGet(2)
         test()
-        Numbers.b.addAndGet(3)
+        Numbers.b.addAndGet(2)
       }
     }
   }
@@ -45,16 +45,16 @@ class TestCaseExtensionTest : WordSpec() {
     "TestCaseExtensions" should {
       "be activated by registration with ProjectExtensions ZZQQ" {
         // the sum and mult before calling test() should have fired
-        Numbers.a.get() shouldBe 6
+        Numbers.a.get() shouldBe 4
         Numbers.b.get() shouldBe 1
       }
       "use around advice ZZQQ" {
         // in this second test, both the after from the previous test, and the before of this test should have fired
-        Numbers.a.get() shouldBe 11
-        Numbers.b.get() shouldBe 6
+        Numbers.a.get() shouldBe 7
+        Numbers.b.get() shouldBe 4
       }
       "use extensions registered on config ZZQQ" {
-        Numbers.a.get() shouldBe 18
+        Numbers.a.get() shouldBe 11
       }.config(extensions = listOf(add1))
     }
   }

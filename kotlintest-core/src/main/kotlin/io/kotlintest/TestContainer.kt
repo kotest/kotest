@@ -41,6 +41,14 @@ interface TestScope {
   fun spec(): Spec
 }
 
+class SpecScope(val description: Description,
+                val spec: Spec,
+                val scopes: List<TestScope>) : TestScope {
+  override fun name(): String = description.name
+  override fun description(): Description = description
+  override fun spec(): Spec = spec
+}
+
 /**
  * Used to group together [TestCase] instances
  * for heirarchical display and execution order.
@@ -69,8 +77,7 @@ interface TestScope {
  */
 class TestContainer(val description: Description,
                     val spec: Spec,
-                    val closure: (TestContext) -> Unit,
-                    val isSpecRoot: Boolean = false) : TestScope {
+                    val closure: (TestContext) -> Unit) : TestScope {
   override fun name(): String = description.name
   override fun description(): Description = description
   override fun spec(): Spec = spec

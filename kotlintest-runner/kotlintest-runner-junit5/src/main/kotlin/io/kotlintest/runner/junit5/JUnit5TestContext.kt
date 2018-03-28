@@ -5,6 +5,7 @@ import io.kotlintest.TestContainer
 import io.kotlintest.TestContext
 import io.kotlintest.TestScope
 import org.junit.platform.engine.EngineExecutionListener
+import org.junit.platform.engine.TestDescriptor
 
 /**
  * An implementation of [TestContext] that talks back to a JUnit5
@@ -12,7 +13,7 @@ import org.junit.platform.engine.EngineExecutionListener
  *
  * This context should not be shared between multiple [TestScope] instances.
  */
-class JUnit5TestContext(val descriptor: TestContainerDescriptor,
+class JUnit5TestContext(val descriptor: TestDescriptor,
                         val listener: EngineExecutionListener,
                         val scope: TestScope) : FutureAwareTestContext() {
 
@@ -22,7 +23,7 @@ class JUnit5TestContext(val descriptor: TestContainerDescriptor,
     val newDescriptor = when (scope) {
       is TestContainer -> TestContainerDescriptor.fromTestContainer(descriptor.uniqueId, scope)
       is TestCase -> TestCaseDescriptor.fromTestCase(descriptor.uniqueId, scope)
-      else -> throw UnsupportedOperationException()
+      else -> throw IllegalArgumentException()
     }
     descriptor.addChild(newDescriptor)
     synchronized(listener) {

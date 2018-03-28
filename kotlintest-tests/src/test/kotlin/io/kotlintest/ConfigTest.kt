@@ -132,10 +132,6 @@ class ConfigTest : WordSpec() {
         testCaseInterceptorLog!!.get().append("test call.")
       }.config(invocations = 1, extensions = listOf(orderVerificationInterceptor) + testCaseInterceptors)
 
-      "should handle exception with interceptor" {
-        throw RuntimeException()
-      }.config(invocations = 1)
-
       "should override interceptors" {
         testCaseInterceptorLog!!.get().toString() shouldHave haveLength(0)
       }.config(extensions = listOf())

@@ -51,15 +51,14 @@ interface Spec {
    * Intercepts the invocation of this spec instance.
    *
    * Override this function if you wish to add before and after
-   * logic to the spec, or if you want to control when the spec
-   * is executed.
+   * logic to the spec.
    *
    * If you wish to re-use intercept logic across multiple specs,
    * then look at [SpecExtension.intercept].
    *
    * This intercept function will be called once, before any of the
    * test cases in the spec are executed. Don't forget to call
-   * `process()` in the body of this method. Otherwise the
+   * `process()` in the body of this method otherwise the
    * execution of the spec will not continue.
    */
   fun interceptSpec(process: () -> Unit) = process()
@@ -68,8 +67,7 @@ interface Spec {
    * Intercepts the invocation of each test case.
 
    * Override this function if you wish to add before and after
-   * logic to test case execution, or if you want to control when
-   * certain tests are executed.
+   * logic to test case execution.
    *
    * If you wish to re-use intercept logic across multiple test cases,
    * then look at [TestCaseExtension.intercept].
@@ -102,7 +100,7 @@ interface Spec {
   /**
    * Override this function to register instances of
    * [TestListener] which will be notified of events during
-   * execution of this spec.
+   * execution of this spec only.
    *
    * If you wish to register a listener that will be notified
    * for all specs, then use [AbstractProjectConfig.listeners].
@@ -124,7 +122,7 @@ interface Spec {
   }
 
   /**
-   * Returns the top level [TestContainer] for this Spec.
+   * Returns the top level [TestScope] for this Spec.
    */
-  fun root(): TestContainer
+  fun root(): SpecScope
 }

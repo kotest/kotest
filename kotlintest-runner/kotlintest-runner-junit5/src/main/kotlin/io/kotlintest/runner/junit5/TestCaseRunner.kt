@@ -1,39 +1,35 @@
 package io.kotlintest.runner.junit5
 
-import createTestCaseInterceptorChain
-import io.kotlintest.Project
+import io.kotlintest.TestCase
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
-import io.kotlintest.extensions.TestListener
-import org.junit.platform.engine.EngineExecutionListener
-import org.junit.platform.engine.TestExecutionResult
 import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class TestCaseRunner(private val engineListener: EngineExecutionListener, val testListeners: List<TestListener>) {
+/**
+ * Runs a [TestCase] returning a [TestResult] describing
+ * the outcome of the test.
+ *
+ * Will run the test multiple times on one or more thread,
+ * as controlled by the [TestCaseConfig]
+ */
+object TestCaseRunner {
 
-  // TODO beautify
-  fun runTest(descriptor: TestCaseDescriptor) {
-    if (descriptor.testCase.isActive()) {
+  fun runTest(testCase: TestCase): TestResult {
 
-      val context = AccumulatingTestContext(descriptor.testCase)
+    val executor = Executors.newFixedThreadPool(testCase.config.threads)
 
-      val executor =
-          if (descriptor.testCase.config.threads < 2) Executors.newSingleThreadExecutor()
-          else Executors.newFixedThreadPool(descriptor.testCase.config.threads)
-      engineListener.executionStarted(descriptor)
-      testListeners.forEach { it.testStarted(descriptor.testCase.description) }
+    return if (testCase.isActive()) {
 
-      val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
-      val extensions = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + Project.testCaseInterceptors()
-      val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
+      val context = AccumulatingTestContext(testCase)
 
       val errors = mutableListOf<Throwable>()
-      for (j in 1..descriptor.testCase.config.invocations) {
+      for (j in 1..testCase.config.invocations) {
         executor.execute {
           try {
-            chain { descriptor.testCase.test(context) }
+            testCase.test(context)
             val result = context.future().get()
             if (result != null)
               errors.add(result)
@@ -44,24 +40,19 @@ class TestCaseRunner(private val engineListener: EngineExecutionListener, val te
       }
 
       executor.shutdown()
-      val timeout = descriptor.testCase.config.timeout
+      val timeout = testCase.config.timeout
       val terminated = executor.awaitTermination(timeout.seconds, TimeUnit.SECONDS)
 
       if (!terminated) {
-        val error = TestTimedOutException(timeout.seconds, TimeUnit.SECONDS)
-        engineListener.executionFinished(descriptor, TestExecutionResult.failed(error))
-        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Failed, error)) }
+        TestResult(TestStatus.Failed, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS))
       } else if (errors.isEmpty()) {
-        engineListener.executionFinished(descriptor, TestExecutionResult.successful())
-        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Passed, null)) }
+        TestResult(TestStatus.Passed, null)
       } else {
-        engineListener.executionFinished(descriptor, TestExecutionResult.failed(errors.first()))
-        testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Failed, errors.first())) }
+        TestResult(TestStatus.Failed, errors.firstOrNull())
       }
 
     } else {
-      engineListener.executionSkipped(descriptor, "Ignored")
-      testListeners.forEach { it.testFinished(descriptor.testCase.description, TestResult(TestStatus.Ignored, null)) }
+      TestResult(TestStatus.Ignored, null)
     }
   }
 }
