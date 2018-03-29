@@ -50,8 +50,8 @@ Use [property based testing](doc/reference.md#property-based) to test your code 
 class PropertyExample: StringSpec() {
   init {
     "String size" {
-      forAll { a: String, b: String ->
-        (a + b).length == a.length + b.length
+      assertAll { a: String, b: String ->
+        (a + b) should haveLength(a.length + b.length)
       }
     }
 }
@@ -96,7 +96,8 @@ exception.message should startWith("Something went wrong")
 Fine Tune Test Execution
 ------------------------
 
-You can specify the number of threads, invocations, and a timeout for each test or for all tests. And you can group tests by tags or disable them conditionally. All you need is [`config`](doc/reference.md#config):
+You can specify the number of threads, invocations, and a timeout for each test or for all tests. And you can group tests by tags or disable them conditionally. 
+All you need is [`config`](doc/reference.md#config):
 
 ```kotlin
 class MySpec : StringSpec() {
@@ -118,9 +119,9 @@ This page gives you just a short overview over KotlinTest. There are some more u
 
 * Check whole collections with [Inspectors](doc/reference.md#inspectors).
 * Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello" should haveSubstring("ell")`.
-* Reuse test logic, e. g. for setup or tear down, with [Interceptors](doc/reference.md#interceptors).
+* Reuse test logic, e. g. for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
-* Test asynchronous code with [`eventually`](doc/reference.md#eventually).
+* Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
 
 See [full documentation](doc/reference.md).
 
@@ -129,7 +130,7 @@ Use
 
 Gradle:
 ```
-testCompile 'io.kotlintest:kotlintest:xxx'
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
 ```
 
 Maven:
@@ -137,8 +138,8 @@ Maven:
 ```xml
 <dependency>
     <groupId>io.kotlintest</groupId>
-    <artifactId>kotlintest</artifactId>
-    <version>xxx</version>
+    <artifactId>kotlintest-runner-junit5</artifactId>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
