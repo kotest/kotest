@@ -70,3 +70,8 @@ fun containIgnoringCase(substring: String) = object : Matcher<String> {
         "String $value should not contain the substring $substring (case insensitive)")
   }
 }
+
+fun contain(substr: String) = include(substr)
+fun include(substr: String): Matcher<String> = object : Matcher<String> {
+  override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr", "String $value should not include substring $substr")
+}

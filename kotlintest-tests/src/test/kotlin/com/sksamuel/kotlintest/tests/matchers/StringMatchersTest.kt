@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.tests.matchers
 
 import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.matchers.include
+import io.kotlintest.matchers.string.include
 import io.kotlintest.matchers.match
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldNot

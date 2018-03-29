@@ -2,6 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.string.include
 
 fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String): Result {
@@ -22,11 +23,6 @@ fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
 
 fun haveSubstring(substr: String) = include(substr)
 fun substring(substr: String) = include(substr)
-fun contain(substr: String) = include(substr)
-fun include(substr: String): Matcher<String> = object : Matcher<String> {
-  override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr", "String $value should not include substring $substr")
-}
-
 
 
 fun endWith(suffix: String): Matcher<String> = object : Matcher<String> {
