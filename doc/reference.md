@@ -4,18 +4,19 @@ KotlinTest
 How to use
 ----------
 
-KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file. You can get the latest version from the little badge at the top of the readme.
+KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file. 
+You can get the latest version from the little badge at the top of the readme.
 
 Gradle:
 
-    testCompile "io.kotlintest:kotlintest:xxx"
+    testCompile "io.kotlintest:kotlintest-runner-junit5:xxx"
 
 Maven:
 
 ```xml
 <dependency>
     <groupId>io.kotlintest</groupId>
-    <artifactId>kotlintest</artifactId>
+    <artifactId>kotlintest-runner-junit5</artifactId>
     <version>xxx</version>
     <scope>test</scope>
 </dependency>
@@ -135,7 +136,7 @@ class MyTests : WordSpec() {
 
 ### Feature Spec
 
-`FeatureSpec` allows you to use `feature` and `scenario`, as such:
+`FeatureSpec` allows you to use `feature`, `and` and `scenario`, as such:
 
 ```kotlin
 import io.kotlintest.specs.FeatureSpec
@@ -143,20 +144,24 @@ import io.kotlintest.specs.FeatureSpec
 class MyTests : FeatureSpec() {
   init {
     feature("the thingy bob") {
-      scenario("should explode when I touch it") {
-        // test here
-      }
-      scenario("and should do this when I wibble it") {
-        // test heree
+      and("when enabled") {
+        scenario("should explode when I touch it") {
+          // test here
+        }
+        scenario("and should do this when I wibble it") {
+          // test heree
+        }
       }
     }
   }
 }
 ```
 
+`and` blocks are completely optional.
+s
 ### Behavior Spec
 
-`BehaviorSpec` allows you to use `given`, `when`, `then`, as such:
+`BehaviorSpec` allows you to use `given`, `when`, `then`, and `and` as such:
 
 ```kotlin
 import io.kotlintest.specs.BehaviorSpec
@@ -164,14 +169,16 @@ import io.kotlintest.specs.BehaviorSpec
 class MyTests : BehaviorSpec() {
   init {
     given("a broomstick") {
-      `when`("I sit on it") {
-        then("I should be able to fly") {
-          // test code
+      and("I am a witch") {
+        `when`("I sit on it") {
+          then("I should be able to fly") {
+            // test code
+          }
         }
-      }
-      `when`("I throw it away") {
-        then("it should come back") {
-          // test code
+        `when`("I throw it away") {
+          then("it should come back") {
+            // test code
+          }
         }
       }
     }
@@ -181,6 +188,8 @@ class MyTests : BehaviorSpec() {
 
 Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
+
+`and` blocks are completely optional.
 
 ### Free Spec
 
@@ -201,6 +210,32 @@ class MyTests : FreeSpec() {
   }
 }
 ```
+
+### Expect Spec
+
+`ExpectSpec` allows you to use `context`, `and`, and `expect` as such:
+
+```kotlin
+import io.kotlintest.matchers.shouldBe
+import io.kotlintest.specs.FreeSpec
+
+class MyTests : FreeSpec() {
+  init {
+    context("the thingy bob") {
+      and("a button") {
+        expect("explode when I touch it") {
+          // test here
+        }
+        expect("wobble when I wibble it") {
+          // test heree
+        }
+      }
+    }
+  }
+}
+```
+
+`and` blocks are completely optional.
 
 Property-based Testing <a name="property-based"></a>
 ----------------------
@@ -322,32 +357,36 @@ class StringSpecExample : StringSpec() {
 Matchers <a name="matchers"></a>
 --------
 
-KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. The simplest assertion is that a value should be equal to something, eg: `x shouldBe y` or `x shouldEqual y`. This will also work for null values, eg `x shouldBe null` or `y shouldEqual null`. See the [full list of matchers](matchers.md).
+KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. 
+The simplest assertion is that a value should be equal to something, eg: `x shouldBe y`. 
+This will also work for null values, eg `x shouldBe null`. 
 
-Just import the matchers package to use them:
+To negate a matcher, use _shouldNot_ eg `x shouldNotBe lt(4)`
 
-```kotlin
-import io.kotlintest.matchers.*
-```
+See the [full list of matchers](matchers.md).
 
 Custom Matchers
 --------------
 
 It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match again.
-For example to add a matcher that checks that a string contains a substring, we can do the following:
+For example to add a matcher that checks that a string contains the substring "foo", we can do the following:
 
 ```kotlin
-fun hasSubstring(substr: String) = object : Matcher<String> {
-  override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr")
+fun containFoo() = object : Matcher<String> {
+  override fun test(value: String) = Result(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
 }
 ```
 
-The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result. The Result contains a boolean to indicate if the test passed or failed, and a message. The message should always be in the positive, ie, indicate what "should" happen.
+The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result. 
+The Result contains a boolean to indicate if the test passed or failed, and two messages. 
+The first message should always be in the positive, ie, indicate what "should" happen, and the second message
+is used when the matcher is used with _not_.
+
 This matcher could then be used as follows:
 
 ```kotlin
-"hello" should haveSubstring("ell")
-"hello" shouldNot haveSubstring("olleh")
+"hello foo" should containFoo()
+"hello bar" shouldNot containFoo()
 ```
 
 Exceptions <a name="exceptions"></a>
@@ -369,6 +408,9 @@ val exception = shouldThrow<IllegalAccessException> {
 }
 exception.message should start with "Something went wrong"
 ```
+
+If you want to test that _exactly_ a type of exception is thrown, then use `shouldThrowExactly<E>`.
+If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 
 Interceptors <a name="interceptors"></a>
 ------------
@@ -566,21 +608,24 @@ object TestExtension : ProjectExtension {
 }
 ```
 
-One Instance Per Test (since 1.1.0)
------------------------------------
+One Instance Per Test
+---------------------
 
-By default a single instance of the test class is created for all the test it contains. However, if you wish to have a fresh instance per test (sometimes its easier to have setup code in the init block instead of resetting after each test) then simply override the `oneInstancePerTest` value and set it to true, eg:
+Certain specs (those which do not offer a nested context, eg FunSpec) allow you to instruct the test runner to create
+a new instance of the Spec for every test case.
+ 
+To do this simply override the `isInstancePerTest()` function returning true,eg:
 
 ```kotlin
-class MyTests : ShouldSpec() {
-  override val oneInstancePerTest = true
+class MyTests : FunSpec() {
+  override fun isInstancePerTest() = true
   init {
     // tests here
   }
 }
 ```
 
-Test Case Config (since 1.2.0) <a name="config"></a>
+Test Case Config <a name="config"></a>
 ------------------------------
 
 Each test can be configured with various parameters. After the test block, invoke the config method passing in the parameters you wish to set. The available parameters are:
@@ -708,28 +753,29 @@ class MyTest : StringSpec() {
 }
 ```
 
-Then by invoking the test runner with a system property of `includeTags` and/or `excludeTags`, you
+Then by invoking the test runner with a system property of `kotlintest.tags.include` and/or `kotlintest.tags.exclude`, you
 can control which tests are run:
 
-* If no `includeTags` and/or `excludeTags` are specified, all tests (both tagged and untagged ones) are run.
-* If only `includeTags` are specified, only tests with that tag are run (untagged test are *not* run).
-* If only `excludeTags` are specified, only tests without that tag are run (untagged tests *are* run).
-* If you provide more than one tag for `includeTags` or `excludeTags`, a test case with at least one of the given tags is included/excluded.
+* If no `kotlintest.tags.include` and/or `kotlintest.tags.exclude` are specified, all tests (both tagged and untagged ones) are run.
+* If only `kotlintest.tags.include` are specified, only tests with that tag are run (untagged test are *not* run).
+* If only `kotlintest.tags.exclude` are specified, only tests without that tag are run (untagged tests *are* run).
+* If you provide more than one tag for `kotlintest.tags.include` or `kotlintest.tags.exclude`, a test case with at least one of the given tags is included/excluded.
 
-Provide the simple names of tag object (without package) when you run the tests. Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
+Provide the simple names of tag object (without package) when you run the tests. 
+Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
 
 Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
 Gradle like this:
 
 ```
-gradle test -DincludeTags=Linux -DexcludeTags=Database
+gradle test -Dkotlintest.tags.include=Linux -Dkotlintest.tags.exclude=Database
 ```
 
-If you use `includeTags` and `excludeTags` in combination, only the tests tagged with a tag from
-`includeTags` but not tagged with a tag from `excludeTags` are run. If you use only `excludeTags`
+If you use `kotlintest.tags.include` and `kotlintest.tags.exclude` in combination, only the tests tagged with a tag from
+`kotlintest.tags.include` but not tagged with a tag from `kotlintest.tags.exclude` are run. If you use only `kotlintest.tags.exclude`
 all tests but the tests tagged with the given tags are are run.
 
-Closing resource automatically (since 1.3.0) <a name="autoclose"></a>
+Closing resource automatically <a name="autoclose"></a>
 --------------------------------------------
 
 You can let KotlinTest close resources automatically after all tests have been run:
@@ -799,10 +845,35 @@ The full list of inspectors are:
 * `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
 * `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
 
+When Ready <a name="whenReady"></a>
+----------
+
+When testing future based code, it's useful to have a test run as soon as a future has completed, rather than blocking and waiting.
+KotlinTest allows you to do this, by using the `whenReady(future, fn)` construct.
+
+```kotlin
+import io.kotlintest.specs.ShouldSpec
+
+class MyTests : ShouldSpec() {
+  init {
+    should("test a future") {
+      val f: CompletableFuture<String> = someFuture()
+      whenReady(f) { 
+        it shouldBe "wibble"
+      }
+    }
+  }
+}
+```
+
 Eventually <a name="eventually"></a>
 ----------
 
-When testing future based code, it's handy to be able to say "I expect these assertions to pass in a certain time". Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. KotlinTest provides the `Eventually` mixin, which gives you the `eventually` method which will repeatedly test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
+When testing non-deterministic code, it's handy to be able to say "I expect these assertions to pass in a certain time". 
+Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. 
+Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. 
+KotlinTest provides the `Eventually` mixin, which gives you the `eventually` function which will repeatedly test the code until it either passes, 
+or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin
 import io.kotlintest.specs.ShouldSpec
@@ -811,74 +882,9 @@ class MyTests : ShouldSpec() {
   init {
     should("do something") {
       eventually(5.seconds) {
-        // code here that should complete in 5 seconds but takes an indetermistic amount of time.
+        // code here that should complete in 5 seconds but takes an non-determistic amount of time.
       }
     }
   }
 }
-```
-
-Migrating from KotlinTest 1.x
------------------------------
-
-### Migrating beforeAll, beforeEach, afterEach, afterAll
-
-Each `Spec` class like `StringSpec` inherited the following callback methods from `TestBase`:
-
-```kotlin
-protected open fun beforeEach(): Unit
-protected open fun afterEach(): Unit
-protected open fun beforeAll(): Unit
-protected open fun afterAll(): Unit
-```
-
-By overriding them, you could add behavior that should be executed before or after a single test or all tests of the spec.
-
-This mechanism is superseded by: 
-
-```kotlin
-protected open fun interceptTestCase(context: TestCaseContext, test: () -> Unit)
-protected open fun interceptSpec(context: Spec, spec: () -> Unit)
-```
-
-The before/after each pair can be replaced with `interceptTestCase`. An example makes it more clear:
-
-```kotlin
-override protected fun beforeEach(): Unit {
-  println("before")
-}
-
-protected open fun afterEach(): Unit {
-  println("after)
-} 
-```
-
-Gets transformed to an interceptor that is around (before and after) the test case call:
-
-```kotlin
-override protected fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-  println("before")
-  test() // Don't forget to call the test itself!
-  println("after")
-}
-```
-
-The principle applies also to beforeAll and afterAll what has to be transformed to `interceptSpec`.
-
-### Migrating `ignored` config parameter
-
-`config` has been changed to `enabled` and the logic was inverted accordingly. If you have a disabled test like this:
-
-```kotlin
-"should do something" {
-  ...
-}.config(ignored = true)
-```
-
-You need to change it to:
-
-```kotlin
-"should do something" {
-  ...
-}.config(enabled = false)
 ```

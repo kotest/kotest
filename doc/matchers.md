@@ -73,8 +73,8 @@ This page lists all current matchers in Kotlintest.
 | `collection should haveSize(length)`<br/>Asserts that the collection is exactly the given length. |
 | `collection shouldBe singleElement(element)`<br/>Asserts that the collection only contains a single element and that that element is the given one. |
 | `collection shouldBe sorted()`<br/>Asserts that the collection is in sorted order. |
-| `collection shouldBe containNoNulls()`<br/>Asserts that the collection contains no null elements, or is empty. |
-| `collection shouldBe containOnlyNulls()`<br/>Asserts that the collection contains only null elements, or is empty. |
+| `collection should containNoNulls()`<br/>Asserts that the collection contains no null elements, or is empty. |
+| `collection should containOnlyNulls()`<br/>Asserts that the collection contains only null elements, or is empty. |
 
 | URIs |
 | -------- |
