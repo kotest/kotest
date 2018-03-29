@@ -343,6 +343,12 @@ The Int generator should return random ints from across the entire integer range
 Previously generators used by property testing would only include random values, which meant you were very unlikely to see the
 edge cases that usually cause issues - like the aforementioned Integer MAX / MIN. Now you are guaranteed to get the edge
 cases first and the random values afterwards.
+
+* **Breaking: MockitoSugar removed**
+
+This interface added a couple of helpers for Mockito, and was used primarily before Kotlin specific mocking libraries appeared.
+Now there is little value in this mini-wrapper so it was removed. Simply add whatever mocking library you like to your build
+and use it as normal.
  
 * **CsvDataSource** 
 
