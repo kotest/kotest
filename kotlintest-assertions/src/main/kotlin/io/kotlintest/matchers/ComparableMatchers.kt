@@ -22,3 +22,11 @@ fun <T : Comparable<T>> gte(x: T) = beGreaterThanOrEqualTo(x)
 fun <T : Comparable<T>> beGreaterThanOrEqualTo(x: T) = object : Matcher<Comparable<T>> {
   override fun test(value: Comparable<T>) = Result(value >= x, "$value should be >= $x", "$value should not be >= $x")
 }
+
+fun <T> compareTo(other: T, comparator: Comparator<T>) = object : Matcher<T> {
+  override fun test(value: T): Result {
+    val passed = comparator.compare(value, other) == 0
+    return Result(passed, "Value $value should compare equal to $other", "Value $value should not compare equal to $other")
+  }
+
+}

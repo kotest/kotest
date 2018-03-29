@@ -1,6 +1,8 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.forAll
+import io.kotlintest.properties.assertAll
+import io.kotlintest.properties.assertNone
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -11,8 +13,8 @@ class ComparableMatchersTest : FreeSpec() {
     override fun compareTo(other: ComparableExample): Int {
       return when {
         underlying == other.underlying -> 0
-        underlying > other.underlying  -> 1
-        else                           -> -1
+        underlying > other.underlying -> 1
+        else -> -1
       }
     }
   }
@@ -111,6 +113,17 @@ class ComparableMatchersTest : FreeSpec() {
 
       }
 
+      "compareTo" - {
+
+        "should pass for equal values" {
+          assertAll { a: Int, b: Int ->
+            if (a == b)
+              a should compareTo(b, Comparator { o1, o2 -> o1 - o2 })
+            else
+              a shouldNot compareTo(b, Comparator { o1, o2 -> o1 - o2 })
+          }
+        }
+      }
     }
 
   }
