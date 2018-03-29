@@ -1,9 +1,16 @@
 apply plugin: 'org.junit.platform.gradle.plugin'
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+buildscript {
+    ext.kotlin_version = '1.2.31'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"
+    }
 }
 
-uploadArchives.enabled = false
+dependencies {
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
+}
