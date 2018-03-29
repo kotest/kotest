@@ -10,15 +10,17 @@ fun <A> assertNone(iterations: Int, gena: Gen<A>, fn: (a: A) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   var attempts = 0
   fun test(a: A) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a)
-      throw AssertionError("Property passed for\n$a\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\nafter $attempts attempts")
   }
   for (a in gena.always()) {
     test(a)
@@ -43,15 +45,17 @@ fun <A, B> assertNone(gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Unit) = as
 fun <A, B> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: (a: A, b: B) -> Unit) {
   var attempts = 0
   fun test(a: A, b: B) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a, b)
-      throw AssertionError("Property passed for\n$a\n$b\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\n$b\nafter $attempts attempts")
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -82,15 +86,17 @@ fun <A, B, C> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   var attempts = 0
   fun test(a: A, b: B, c: C) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a, b, c)
-      throw AssertionError("Property passed for\n$a\n$b\n$c\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\n$b\n$c\nafter $attempts attempts")
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -124,15 +130,17 @@ fun <A, B, C, D> assertNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<
 fun <A, B, C, D> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: (a: A, b: B, c: C, d: D) -> Unit) {
   var attempts = 0
   fun test(a: A, b: B, c: C, d: D) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a, b, c, d)
-      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\nafter $attempts attempts")
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -166,15 +174,17 @@ fun <A, B, C, D, E> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   var attempts = 0
   fun test(a: A, b: B, c: C, d: D, e: E) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a, b, c, d, e)
-      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter $attempts attempts")
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -217,15 +227,17 @@ fun <A, B, C, D, E, F> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, g
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   var attempts = 0
   fun test(a: A, b: B, c: C, d: D, e: E, f: F) {
-    try {
-      attempts++
+    attempts++
+    val passed = try {
       fn(a, b, c, d, e, f)
-      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter $attempts attempts")
+      true
     } catch (e: AssertionError) {
-      // swallow this one
+      false
     } catch (e: Exception) {
       throw e
     }
+    if (passed)
+      throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter $attempts attempts")
   }
 
   for (a in gena.always()) {
