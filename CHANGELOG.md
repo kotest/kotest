@@ -4,28 +4,31 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 
-Version 3.0.0-RC2 - March 26 2018
+Version 3.0.0 - March 29 2018
 -------------
 
 * **Module split out**
 
-KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring.
+KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring,
+allure and junit-xml.
 
 The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta). 
-When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build rather than the old kotlintest module which is now
-defunct. When upgrading, you will find that you will need to update imports to the spec classes like `StringSpec` and some matchers
-which have changed package.
+When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build 
+rather than the old `kotlintest` module which is now defunct. When upgrading, you might find that you need to update imports
+to some matchers.
 
 ```
-testCompile 'io.kotlintest:kotlintest-core:3.0.0-RC2'
-testCompile 'io.kotlintest:kotlintest-assertions:3.0.0-RC2'
-testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0-RC2'
+testCompile 'io.kotlintest:kotlintest-core:3.0.0'
+testCompile 'io.kotlintest:kotlintest-assertions:3.0.0'
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
 ```
 
 Gradle Users:
 
-Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your project and `classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"` to the `dependencies` section of your `buildscript` or tests will hang. This allows gradle to execute
-jUnit5 based tests (which KotlinTest builds upon). Note: Gradle says that this is not required as of 4.6 but even 
+Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your project and 
+`classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"` to the `dependencies` section of your `buildscript` 
+or tests will not run (or worse, will hang). This allows gradle to execute
+_jUnit-platform-5_ based tests (which KotlinTest builds upon). Note: Gradle says that this is **not** required as of 4.6 but even 
 with 4.6 it seems to be required.
 
 * **Breaking: ProjectConfig**
@@ -36,19 +39,22 @@ many bug reports about project start up times and reflection errors. So in versi
 no longer attempt to scan the classpath.
 
 Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of 
-`AbstractProjectConfig` This means kotlintest can do a simple `Class.forName` to find it, and so there is no startup penalty nor reflection issues.
+`AbstractProjectConfig` This means kotlintest can do a simple `Class.forName` to find it, and so there is no
+ startup penalty nor reflection issues.
 
-Project config now allows you to register all three types of extension, as well as setting parallelism.
+Project config now allows you to register multiple types of extensions and listeners, as well as setting parallelism.
 
-* **Breaking: Extensions**
+* **Breaking: Interceptors have become Extensions and Listeners**
 
-_Extensions_ have been added to replace the previous, and sometimes confusing, interceptors. There are three types of extension - 
-_ProjectExtension_, _SpecExtension_, and _TestCaseExtension_. Each of these allow you to run code before and after the various
-extension point, as well as programmatically hide/ignore some specs/tests. The functionality has remained the same, but by introducing
-these interfaces, it is hoped that the usage is simplier than dealing directly with functions.
+_Extensions_ have been added to replace the previous, and sometimes confusing, interceptors. There are four types of extension - 
+_ProjectExtension_, _SpecExtension_, _TestCaseExtension_, and _DiscoveryExtension_. 
+Each of these allow you to run code before and after the various
+extension point. It is hoped that these interfaces are simpler than dealing directly with functions.
 
-To use an extension, just create a subclass of the interface that applies. For example to add some code that is run for every spec
-you can do:
+Note: In a future release, these extensions will be expanded to give full control over the test lifecycle.
+
+To use an extension, just create a subclass of the interface that applies.
+For example to add some code that is run for every spec you can do:
 
 ```kotlin
 val mySpecExtension = object : SpecExtension {
@@ -100,7 +106,7 @@ And then you can register this with the test class:
 
 ```kotlin
 class SpecExtensionTest : WordSpec() {
-  override fun specExtensions(): List<SpecExtension> = listOf(HttpServerExtension)
+  override fun extensions(): List<Extension> = listOf(HttpServerExtension)
 }
 ```
 
