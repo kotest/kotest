@@ -11,5 +11,6 @@ import io.kotlintest.Spec
  * not be executed.
  */
 interface SpecExtension : Extension {
+  @Deprecated("This interceptor function deprecated, please consider using TestListener")
   fun intercept(spec: Spec, process: () -> Unit)
 }

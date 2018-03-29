@@ -10,5 +10,6 @@ import io.kotlintest.TestCase
  * the spec class.
  */
 interface TestCaseExtension : Extension {
+  @Deprecated("This interceptor function is deprecated, please consider using a TestListener")
   fun intercept(testCase: TestCase, test: () -> Unit)
 }

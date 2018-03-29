@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
@@ -65,6 +66,7 @@ interface Spec : TestListener {
    * `process()` in the body of this method otherwise the
    * execution of the spec will not continue.
    */
+  @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
   fun interceptSpec(spec: Spec, process: () -> Unit) = process()
 
   /**
@@ -80,6 +82,7 @@ interface Spec : TestListener {
    * Don't forget to call `process()` in the body of this method.
    * Otherwise the execution of the test case will not continue.
    */
+  @Deprecated("This interceptor function is deprecated, please consider using beforeTest or afterTest", ReplaceWith("beforeTest or afterTest"))
   fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
 
   /**
@@ -89,6 +92,7 @@ interface Spec : TestListener {
    * If you wish to register an extension for all specs
    * then use [AbstractProjectConfig.extensions].
    */
+  @Deprecated("This function has been replaced with extensions()", ReplaceWith("extensions()"))
   fun specExtensions(): List<SpecExtension> = listOf()
 
   /**
@@ -99,7 +103,18 @@ interface Spec : TestListener {
    * If you wish to register an extension for all test cases
    * then use [AbstractProjectConfig.extensions].
    */
+  @Deprecated("This function has been replaced with extensions()", ReplaceWith("extensions()"))
   fun testCaseExtensions(): List<TestCaseExtension> = listOf()
+
+  /**
+   * Override this function to register instances of
+   * [Extension] which will be invoked for this spec, and tests
+   * in this spec.
+   *
+   * If you wish to register an extension across the project
+   * then use [AbstractProjectConfig.extensions].
+   */
+  fun extensions(): List<Extension> = listOf()
 
   /**
    * Override this function to register instances of

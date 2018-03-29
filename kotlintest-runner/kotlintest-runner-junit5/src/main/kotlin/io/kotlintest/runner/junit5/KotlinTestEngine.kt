@@ -87,7 +87,9 @@ class KotlinTestEngine : TestEngine {
     }
 
     val initialInterceptor = { next: () -> Unit -> scope.spec.interceptSpec(scope.spec, next) }
-    val extensions: List<SpecExtension> = scope.spec.specExtensions() + Project.specExtensions()
+    val extensions: List<SpecExtension> = scope.spec.specExtensions() +
+        scope.spec.extensions().filterIsInstance<SpecExtension>() +
+        Project.specExtensions()
     val chain = createSpecInterceptorChain(scope.spec, extensions, initialInterceptor)
     chain { afterInterception() }
 
@@ -146,7 +148,10 @@ class KotlinTestEngine : TestEngine {
     }
 
     val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
-    val extensions: List<TestCaseExtension> = descriptor.testCase.config.extensions + descriptor.testCase.spec.testCaseExtensions() + Project.testCaseExtensions()
+    val extensions: List<TestCaseExtension> = descriptor.testCase.config.extensions +
+        descriptor.testCase.spec.testCaseExtensions() +
+        descriptor.testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
+        Project.testCaseExtensions()
     val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
     chain {
       val result = TestCaseRunner.runTest(descriptor.testCase)
