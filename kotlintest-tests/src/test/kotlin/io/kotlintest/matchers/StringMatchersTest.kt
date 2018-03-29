@@ -29,6 +29,15 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
+    "should containOnlyDigits()" - {
+      "should test that a string only contains 0-9" {
+        "hello" shouldNot containOnlyDigits()
+        "123123" should containOnlyDigits()
+        "" should containOnlyDigits()
+        "aa123" shouldNot containOnlyDigits()
+      }
+    }
+
     "should endWith" - {
       "should test strings" {
         "hello" should endWith("o")
