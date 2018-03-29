@@ -32,7 +32,7 @@ fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
     MapContainsMatcher(expected, ignoreExtraKeys = true)
 
-fun <K, V>containExactly(expected: Map<K, V>): Matcher<Map<K, V>> =
+fun <K, V> containExactly(expected: Map<K, V>): Matcher<Map<K, V>> =
     MapContainsMatcher(expected)
 
 class MapContainsMatcher<K, V>(
