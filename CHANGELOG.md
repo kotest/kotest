@@ -31,6 +31,38 @@ or tests will not run (or worse, will hang). This allows gradle to execute
 _jUnit-platform-5_ based tests (which KotlinTest builds upon). Note: Gradle says that this is **not** required as of 4.6 but even 
 with 4.6 it seems to be required.
 
+Maven users:
+
+You need to include the following in your plugins:
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.19.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+            
+And you must include 
+
+```xml
+        <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest-runner-junit5</artifactId>
+            <version>${kotlintest.version}</version>
+            <scope>test</scope>
+        </dependency>
+```
+
+as a regular dependency.                     
+
 * **Breaking: ProjectConfig**
 
 Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
@@ -44,17 +76,15 @@ Instead you must call this class `ProjectConfig` and place it in a package `io.k
 
 Project config now allows you to register multiple types of extensions and listeners, as well as setting parallelism.
 
-* **Breaking: Interceptors have become Extensions and Listeners**
+* **Breaking: Interceptors have been deprecated and replaced with Listeners**
 
-_Extensions_ have been added to replace the previous, and sometimes confusing, interceptors. There are four types of extension - 
-_ProjectExtension_, _SpecExtension_, _TestCaseExtension_, and _DiscoveryExtension_. 
-Each of these allow you to run code before and after the various
-extension point. It is hoped that these interfaces are simpler than dealing directly with functions.
+The previous `inteceptors` were sometimes confusing. You had to invoke the continuation function or the spec/test
+would not execute. Not invoking the function didn't mean the spec/test was skipped, but that it would hang.
 
-Note: In a future release, these extensions will be expanded to give full control over the test lifecycle.
+So interceptors are deprecated, and in some places removed. Those are not removed are now located in classes called
+`SpecExtension` and `TestCaseExtension` and those interfaces should be used rather than functions directly.
 
-To use an extension, just create a subclass of the interface that applies.
-For example to add some code that is run for every spec you can do:
+Here is an example of a migrated interceptor.
 
 ```kotlin
 val mySpecExtension = object : SpecExtension {
@@ -66,55 +96,60 @@ val mySpecExtension = object : SpecExtension {
 }
 ```
 
-The advantage of _around advice_ like this is that you can create local variables and use them before and after the spec. If instead
-kotlintest used the standard "before" and "after" methods, then you would need to create _vars_ outside the methods and reference those. Something like:
+As a replacement, in 3.0.0 we've added the `TestListener` interface which is the more traditional before/after style callbacks.
+In addition, these methods include the result of the test (success, fail, error, skipped) which gives you more
+context in writing plugins. The `TestListener` interface offers everything the old interceptors could do, and more.
+
+Here is an example of a simple listener.
 
 ```kotlin
-class SpecExtensionExample : WordSpec() {
+object TimeTracker : TestListener {
 
-    var httpServer: HttpServer? = null
-    
-    override fun before() {
-        httpServer = createServer()
-        httpServer.start()
-    }
-    
-    override fun after() {
-        httpServer.stop()
-    }
-    
-    init {
-        // tests here
-    }
+  var started = 0L
+
+  override fun beforeTest(description: Description) {
+    TimeTrackerTest.started = System.currentTimeMillis()
+  }
+
+  override fun afterTest(description: Description, result: TestResult) {
+    val duration = System.currentTimeMillis() - TimeTrackerTest.started
+    println("Test ${description.fullName()} took ${duration}ms")
+  }
 }
 ```
 
-But with KotlintTest you can do:
+If you want to use these methods in a Spec itself, then you can just override the functions
+ directly because a Spec is already a TestListener.
 
 ```kotlin
-object HttpServerExtension : SpecExtension() {
-    override fun intercept(spec: Spec, process: () -> Unit) {
-        val httpServer = createServer()
-        httpServer.start()
-        process()
-        httpServer.stop()
+object TimeTracker : WordSpec() {
+
+  var started = 0L
+
+  override fun beforeTest(description: Description) {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterTest(description: Description, result: TestResult) {
+    val duration = System.currentTimeMillis() - started
+    println("Test ${description.fullName()} took ${duration}ms")
+  }
+
+  init {
+    "some test" should {
+      "be timed" {
+        // test here
+      }
     }
+  }
 }
 ```
 
-And then you can register this with the test class:
+Listeners can be added project wide by overriding `listeners()` in the `ProjectConfig`.
 
-```kotlin
-class SpecExtensionTest : WordSpec() {
-  override fun extensions(): List<Extension> = listOf(HttpServerExtension)
-}
-```
-
- 
-This choice means kotlintest is more elegant but it can look a bit more confusing at first. `TestCaseExtensions` work in the
-same way but for individual test cases rather than specs.
-
-If you want to register an extension for all tests then you can use the methods in `ProjectConfig`. 
+Note: In the next release, new `Extension` functions will be added which will be similar to the old interceptors, but with
+ complete control over the lifecycle. For instance, a future intercept method will enforce that the user skip, run or abort a test
+ in the around advice. They will be more complex, and so suited to more advanced use cases. The new `TestListener` interface will remain of course, and is the preferred option.
 
 * **Parallelism**
 
@@ -129,7 +164,6 @@ Test cases now support waiting on futures in a neat way. If you have a value in 
 to test against once it completes, then you can do this like this:
 
 ```kotlin
-
 val stringFuture: CompletableFuture<String> = ...
 
 "My future test" should {
@@ -147,19 +181,31 @@ The `shouldThrow<T>` method has been changed to also test for subclasses. For ex
 exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to 
 have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
 
-* **Spring Module**
+* **JUnit XML Module**
 
-Spring support has been added via the `kotlintest-extensions-spring` module which you will need to add to your build. This module
-provides a _SpringSpecExtension_ which you can register with your project to autowire your tests. You can register this for just some classes
-by overriding the `specExtensions` function inside your spec, for example:
+Support for writing out reports in junit-format XML has added via the `kotlintest-extensions-junitxml` module which you will need to add to your build. This module
+provides a `JUnitXmlListener` which you can register with your project to autowire your tests. You can register this by overriding
+`listeners()` in `ProjectConfig`.
 
 ```kotlin  
-class MySpec : ParentSpec() {
-    override fun specExtensions(): List<SpecExtension> = listOf(SpringSpecExtension)
+class ProjectConfig : AbstractProjectConfig() {
+    override fun listeners() = listOf(JUnitXmlListener)
 }
 ```
 
-Or you can register this for all classes by adding it to the kotlintest ProjectConfig. See the section on _ProjectConfig_ for how
+* **Spring Module**
+
+Spring support has been added via the `kotlintest-extensions-spring` module which you will need to add to your build. This module
+provides a `SpringListener` which you can register with your project to autowire your tests. You can register this for just some classes
+by overriding the `listeners()` function inside your spec, for example:
+
+```kotlin  
+class MySpec : ParentSpec() {
+    override fun listeners() = listOf(SpringListener)
+}
+```
+
+Or you can register this for all classes by adding it to the `ProjectConfig`. See the section on _ProjectConfig_ for how
 to do this.
 
 * **Breaking: Tag System Property Rename**
@@ -174,6 +220,13 @@ then a warning message will be emitted on startup.
 
 The following matchers have been added for maps: `containAll`, `haveKeys`, `haveValues`. These will output helpful error messages showing you
 which keys/values or entries were missing.
+
+New matchers added for Strings: `haveSameLengthAs(other)`, `beEmpty()`, `beBlank()`, `containOnlyDigits()`, `containADigit()`, `containIgnoringCase(substring)`,
+`beLowerCase()`, `beUpperCase()`.
+
+New matchers for URIs: `haveHost(hostname)`, `havePort(port)`, `haveScheme(scheme)`.
+
+New matchers for collections: `containNoNulls()`, `containOnlyNulls()`
 
 * **Breaking: One instance per test changes**
 
@@ -228,8 +281,8 @@ class AnnotationSpecExample : AnnotationSpec() {
 }
 ```
 
-And finally, the `DescribeSpec` is similar to SpekFramework, using `describe` and `it`. This makes it very useful for those people who are looking
-to upgrade to KotlinTest.
+And finally, the `DescribeSpec` is similar to SpekFramework, using `describe`, `and`, and `it`. This makes it very useful for those people who are looking
+to migrate to KotlinTest from SpekFramework.
 
 ```kotlin
 class DescribeSpecExample : DescribeSpec() {
@@ -239,8 +292,10 @@ class DescribeSpecExample : DescribeSpec() {
         // test here
       }
       describe("nested contexts") {
-        it("test name") {
-          // test here
+        and("another context") {
+          it("test name") {
+            // test here
+          }
         }
       }
     }
