@@ -1,4 +1,4 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe

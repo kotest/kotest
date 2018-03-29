@@ -1,5 +1,8 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.beInstanceOf
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.should
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe

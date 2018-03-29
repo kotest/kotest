@@ -1,5 +1,8 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.between
+import io.kotlintest.matchers.exactly
+import io.kotlintest.matchers.plusOrMinus
 import io.kotlintest.specs.ShouldSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

@@ -1,5 +1,7 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.Diff
+import io.kotlintest.matchers.startWith
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 

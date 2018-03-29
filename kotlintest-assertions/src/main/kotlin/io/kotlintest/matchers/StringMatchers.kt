@@ -22,23 +22,22 @@ fun startWith(prefix: String): Matcher<String> = object : Matcher<String> {
 
 fun haveSubstring(substr: String) = include(substr)
 fun substring(substr: String) = include(substr)
+fun contain(substr: String) = include(substr)
 fun include(substr: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String) = Result(value.contains(substr), "String $value should include substring $substr", "String $value should not include substring $substr")
 }
 
-fun containOnlyDigits() = object : Matcher<String> {
-  override fun test(value: String): Result {
-    val passed = value.chars().allMatch { Character.isDigit(it) }
-    return Result(passed, "String $value should contain only digits", "String $value should not contain only digits")
-  }
-}
+
 
 fun endWith(suffix: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String) = Result(value.endsWith(suffix), "String $value should end with $suffix", "String $value should not end with $suffix")
 }
 
 fun match(regex: String): Matcher<String> = object : Matcher<String> {
-  override fun test(value: String) = Result(value.matches(regex.toRegex()), "String $value should match regex $regex", "String $value should not match regex $regex")
+  override fun test(value: String) = Result(
+      value.matches(regex.toRegex()),
+      "String $value should match regex $regex",
+      "String $value should not match regex $regex")
 }
 
 fun strlen(length: Int): Matcher<String> = haveLength(length)

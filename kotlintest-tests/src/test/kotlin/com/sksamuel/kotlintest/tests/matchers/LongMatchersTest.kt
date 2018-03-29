@@ -1,5 +1,11 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.beGreaterThanOrEqualTo
+import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.beLessThanOrEqualTo
+import io.kotlintest.matchers.between
+import io.kotlintest.matchers.should
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

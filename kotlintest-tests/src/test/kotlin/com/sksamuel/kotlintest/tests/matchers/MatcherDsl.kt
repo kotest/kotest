@@ -1,5 +1,11 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.endWith
+import io.kotlintest.matchers.exactly
+import io.kotlintest.matchers.haveExtension
+import io.kotlintest.matchers.plusOrMinus
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.startWith
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import java.io.File

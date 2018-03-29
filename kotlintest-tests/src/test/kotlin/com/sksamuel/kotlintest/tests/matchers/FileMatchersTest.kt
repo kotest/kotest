@@ -1,5 +1,10 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.aDirectory
+import io.kotlintest.matchers.aFile
+import io.kotlintest.matchers.exist
+import io.kotlintest.matchers.haveExtension
+import io.kotlintest.matchers.should
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

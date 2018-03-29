@@ -1,5 +1,9 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.beInstanceOf
+import io.kotlintest.matchers.beOfType
+import io.kotlintest.matchers.beTheSameInstanceAs
+import io.kotlintest.matchers.should
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldThrow
 import java.util.*

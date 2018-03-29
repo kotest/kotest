@@ -1,5 +1,19 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.endWith
+import io.kotlintest.matchers.haveLength
+import io.kotlintest.matchers.include
+import io.kotlintest.matchers.match
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldNot
+import io.kotlintest.matchers.startWith
+import io.kotlintest.matchers.string.beBlank
+import io.kotlintest.matchers.string.beEmpty
+import io.kotlintest.matchers.string.beLowerCase
+import io.kotlintest.matchers.string.beUpperCase
+import io.kotlintest.matchers.string.containADigit
+import io.kotlintest.matchers.string.containOnlyDigits
+import io.kotlintest.matchers.string.haveSameLengthAs
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -16,7 +30,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "should contain" - {
+    "string should contain" - {
       "should test that a string contains substring" {
         "hello" should include("h")
         "hello" should include("o")
@@ -26,6 +40,72 @@ class StringMatchersTest : FreeSpec() {
         shouldThrow<AssertionError> {
           "hello" should include("allo")
         }
+      }
+    }
+
+    "string should beEmpty()" - {
+      "should test that a string has length 0" {
+        "" should beEmpty()
+        "hello" shouldNot beEmpty()
+      }
+    }
+
+    "string should containADigit()" - {
+      "should test that a string has at least one number" {
+        "" shouldNot containADigit()
+        "1" should containADigit()
+        "a1" should containADigit()
+        "a1b" should containADigit()
+        "hello" shouldNot containADigit()
+      }
+    }
+
+
+    "string should beUpperCase()" - {
+      "should test that a string is upper case" {
+        "" should beUpperCase()
+        "HELLO" should beUpperCase()
+        "heLLO" shouldNot beUpperCase()
+        "hello" shouldNot beUpperCase()
+      }
+    }
+
+
+    "string should beLowerCase()" - {
+      "should test that a string is lower case" {
+        "" should beLowerCase()
+        "hello" should beLowerCase()
+        "HELLO" shouldNot beLowerCase()
+        "HELlo" shouldNot beLowerCase()
+      }
+    }
+
+
+    "string should beBlank()" - {
+      "should test that a string has only whitespace" {
+        "" should beBlank()
+        "     \t     " should beBlank()
+        "hello" shouldNot beBlank()
+      }
+    }
+
+    "string should haveSameLengthAs(other)" - {
+      "should test that a string has the same length as another string" {
+        "hello" should haveSameLengthAs("world")
+        "hello" shouldNot haveSameLengthAs("o")
+        "" should haveSameLengthAs("")
+        "" shouldNot haveSameLengthAs("o")
+        "5" shouldNot haveSameLengthAs("")
+      }
+    }
+
+    "string should containIgnoringCase(other)" - {
+      "should test that a string has the same length as another string" {
+        "hello" should haveSameLengthAs("world")
+        "hello" shouldNot haveSameLengthAs("o")
+        "" should haveSameLengthAs("")
+        "" shouldNot haveSameLengthAs("o")
+        "5" shouldNot haveSameLengthAs("")
       }
     }
 

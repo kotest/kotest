@@ -1,5 +1,13 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.contain
+import io.kotlintest.matchers.containAll
+import io.kotlintest.matchers.containExactly
+import io.kotlintest.matchers.haveKey
+import io.kotlintest.matchers.haveKeys
+import io.kotlintest.matchers.haveValue
+import io.kotlintest.matchers.haveValues
+import io.kotlintest.matchers.should
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot

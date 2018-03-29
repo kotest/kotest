@@ -1,8 +1,18 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
 import io.kotlintest.forAll
+import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.beGreaterThanOrEqualTo
+import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.beLessThanOrEqualTo
+import io.kotlintest.matchers.compareTo
+import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.gte
+import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.lte
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldNot
 import io.kotlintest.properties.assertAll
-import io.kotlintest.properties.assertNone
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

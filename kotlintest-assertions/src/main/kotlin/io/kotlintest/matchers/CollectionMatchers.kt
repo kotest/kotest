@@ -20,8 +20,8 @@ fun <T> containsMatcher(t: T) = object : Matcher<Collection<T>> {
   )
 }
 
-fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>): Result = Result(
+fun <T, U : Collection<T>> beEmpty(): Matcher<U> = object : Matcher<U> {
+  override fun test(value: U): Result = Result(
       value.isEmpty(),
       "Collection should be empty",
       "Collection should not be empty"

@@ -1,5 +1,16 @@
-package io.kotlintest.matchers
+package com.sksamuel.kotlintest.tests.matchers
 
+import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.collections.containNoNulls
+import io.kotlintest.matchers.collections.containOnlyNulls
+import io.kotlintest.matchers.contain
+import io.kotlintest.matchers.containAll
+import io.kotlintest.matchers.containsInOrder
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.should
+import io.kotlintest.matchers.shouldNot
+import io.kotlintest.matchers.singleElement
+import io.kotlintest.matchers.sorted
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -73,10 +84,29 @@ class CollectionMatchersTest : WordSpec() {
         val col = listOf(1, 2, 3)
 
         shouldThrow<AssertionError> {
-            col should beEmpty()
+          col should beEmpty()
         }
 
         ArrayList<String>() should beEmpty()
+      }
+    }
+
+    "containNoNulls" should {
+      "test that a collection contains zero nulls"  {
+        emptyList<String>() should containNoNulls()
+        listOf(1, 2, 3) should containNoNulls()
+        listOf(null, null, null) shouldNot containNoNulls()
+        listOf(1, null, null) shouldNot containNoNulls()
+
+      }
+    }
+
+    "containOnlyNulls" should {
+      "test that a collection contains only nulls"  {
+        emptyList<String>() should containOnlyNulls()
+        listOf(null, null, null) should containOnlyNulls()
+        listOf(1, null, null) shouldNot containOnlyNulls()
+        listOf(1, 2, 3) shouldNot containOnlyNulls()
       }
     }
 
