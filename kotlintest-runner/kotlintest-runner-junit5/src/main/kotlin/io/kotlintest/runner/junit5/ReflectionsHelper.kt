@@ -42,7 +42,7 @@ object ReflectionsHelper {
       if (url.protocol != "file") {
         return false
       }
-      val file = Paths.get(url.path).toFile()
+      val file = Paths.get(url.toURI()).toFile()
       return !file.exists() || file.list() == null || file.list().isEmpty()
     }
   }
