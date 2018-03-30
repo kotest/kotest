@@ -3,10 +3,6 @@ language: java
 jdk:
   - oraclejdk8
 
-os:
-  - linux
-  - osx
-
 sudo: false
 
 cache:
