@@ -69,7 +69,10 @@ interface Spec : TestListener {
   @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
   fun interceptSpec(spec: Spec, process: () -> Unit) = process()
 
-  /**
+  @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
+  fun interceptTestCase(context: TestCaseContext, test: () -> Unit) = test()
+
+    /**
    * Intercepts the invocation of each test case.
 
    * Override this function if you wish to add before and after
