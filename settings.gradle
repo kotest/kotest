@@ -4,7 +4,6 @@ include 'kotlintest-core',
         'kotlintest-extensions:kotlintest-extensions-spring',
         'kotlintest-extensions:kotlintest-extensions-junitxml',
         'kotlintest-extensions:kotlintest-extensions-allure',
-        'kotlintest-samples:kotlintest-samples-issue271',
         'kotlintest-samples:kotlintest-samples-spring',
         'kotlintest-intellij',
         'kotlintest-tests'
