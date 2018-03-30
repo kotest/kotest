@@ -86,7 +86,7 @@ interface Spec : TestListener {
    * Otherwise the execution of the test case will not continue.
    */
   @Deprecated("This interceptor function is deprecated, please consider using beforeTest or afterTest", ReplaceWith("beforeTest or afterTest"))
-  fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
+    fun interceptTestCase(testCase: TestCase, test: () -> Unit) = interceptTestCase(TestCaseContext(testCase.spec, testCase), test)
 
   /**
    * Override this function to register instances of
