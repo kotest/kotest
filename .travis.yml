@@ -1,7 +1,11 @@
 language: java
 
 jdk:
-  - oraclejdk8
+  - openjdk8
+
+os:
+  - linux
+  - osx
 
 sudo: false
 
