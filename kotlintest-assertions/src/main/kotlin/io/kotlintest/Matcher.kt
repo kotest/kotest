@@ -16,6 +16,10 @@ interface Matcher<T> {
 
   fun test(value: T): Result
 
+  infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
+    override fun test(value: U): Result = this@Matcher.test(fn(value))
+  }
+
   infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
     override fun test(value: T): Result {
       val r = this@Matcher.test(value)
