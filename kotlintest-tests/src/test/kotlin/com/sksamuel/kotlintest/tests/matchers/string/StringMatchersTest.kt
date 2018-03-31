@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.string
 
 import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.haveLength
