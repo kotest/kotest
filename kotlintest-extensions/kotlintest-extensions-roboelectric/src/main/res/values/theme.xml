@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.MyTheme" parent="@android:style/Theme.Light">
+
+        <!-- Disable action bar -->
+        <item name="android:windowActionBar">false</item>
+
+        <!-- Set AppCompat’s color theming attrs -->
+        <item name="android:colorPrimary">#445566</item>
+        <item name="android:colorPrimaryDark">#223344</item>
+    </style>
+</resources>
