@@ -49,20 +49,20 @@ fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matc
 
 fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }

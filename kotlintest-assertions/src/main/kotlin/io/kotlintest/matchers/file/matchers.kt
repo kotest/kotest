@@ -3,6 +3,7 @@ package io.kotlintest.matchers.file
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import java.io.File
+import java.nio.file.Path
 
 fun exist() = object : Matcher<File> {
   override fun test(value: File) = Result(value.exists(), "File $value should exist", "File $value should not exist")
@@ -27,3 +28,10 @@ fun absolute(): Matcher<File> = object : Matcher<File> {
 fun relative(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(!value.isAbsolute, "File $value should be relative", "File $value should not be relative")
 }
+
+fun startWithPath(path: Path) = startWithPath(path.toFile())
+fun startWithPath(file: File) = startWithPath(file.toString())
+fun startWithPath(prefix: String) = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.toString().startsWith(prefix), "File $value should start with $prefix", "File $value should not start with $prefix")
+}
+

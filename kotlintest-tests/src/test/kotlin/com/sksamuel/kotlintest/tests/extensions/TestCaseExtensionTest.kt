@@ -2,7 +2,6 @@ package com.sksamuel.kotlintest.tests.extensions
 
 import io.kotlintest.Project
 import io.kotlintest.TestCase
-import io.kotlintest.extensions.Numbers.add1
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
@@ -56,7 +55,7 @@ class TestCaseExtensionTest : WordSpec() {
       }
       "use extensions registered on config ZZQQ" {
         Numbers.a.get() shouldBe 11
-      }.config(extensions = listOf(add1))
+      }.config(extensions = listOf(Numbers.add1))
     }
   }
 }

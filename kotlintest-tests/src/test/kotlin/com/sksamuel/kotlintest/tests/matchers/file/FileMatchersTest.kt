@@ -6,12 +6,14 @@ import io.kotlintest.matchers.file.absolute
 import io.kotlintest.matchers.file.exist
 import io.kotlintest.matchers.file.haveExtension
 import io.kotlintest.matchers.file.relative
+import io.kotlintest.matchers.file.startWithPath
 import io.kotlintest.matchers.should
-import io.kotlintest.specs.FunSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FunSpec
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Paths
 
 class FileMatchersTest : FunSpec() {
   init {
@@ -21,7 +23,14 @@ class FileMatchersTest : FunSpec() {
     }
 
     test("isAbsolute() should match only absolute files") {
-      File("sammy/boy") shouldBe absolute()
+      File("/sammy/boy") shouldBe absolute()
+    }
+
+    test("startWithPath() should only match files that start with the given path") {
+      File("sammy/boy") should startWithPath("sammy")
+      File("sammy/boy") should startWithPath(Paths.get("sammy"))
+      File("/sammy/boy") should startWithPath("/sammy")
+      File("/sammy/boy") should startWithPath(Paths.get("/sammy"))
     }
 
     test("exist() file matcher") {

@@ -55,23 +55,23 @@ class DateMatchersTest : StringSpec() {
     }
 
     "LocalDate should have same day ignoring other fields" {
-      LocalDate.of(2014, 1, 2) should haveSameDay(LocalDate.of(2016, 1, 6))
-      LocalDate.of(2014, 1, 2) shouldNot haveSameDay(LocalDate.of(2018, 4, 6))
+      LocalDate.of(2014, 1, 2) should haveSameDay(LocalDate.of(2014, 1, 6))
+      LocalDate.of(2014, 1, 2) shouldNot haveSameDay(LocalDate.of(2014, 4, 6))
     }
 
     "LocalDateTime should have same day ignoring other fields" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2) should haveSameDay(LocalDateTime.of(2014, 1, 6, 3, 2, 1))
-      LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNot haveSameDay(LocalDateTime.of(2018, 2, 6, 3, 2, 1))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNot haveSameDay(LocalDateTime.of(2014, 2, 6, 3, 2, 1))
     }
 
     "ZonedDateTime should have same day ignoring other fields" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) should haveSameDay(LocalDateTime.of(2014, 1, 6, 3, 2, 1).atZone(ZoneId.of("Z")))
-      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNot haveSameDay(LocalDateTime.of(2018, 2, 6, 3, 2, 1).atZone(ZoneId.of("Z")))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNot haveSameDay(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atZone(ZoneId.of("Z")))
     }
 
     "OffsetDateTime should have same day ignoring other fields" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) should haveSameDay(LocalDateTime.of(2014, 1, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
-      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNot haveSameDay(LocalDateTime.of(2018, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNot haveSameDay(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
   }
 }

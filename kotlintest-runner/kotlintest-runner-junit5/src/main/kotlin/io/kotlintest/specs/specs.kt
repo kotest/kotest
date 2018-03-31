@@ -2,10 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.Matcher
 import io.kotlintest.should as shouldMatch
-import org.junit.jupiter.api.Test
 
 interface IntelliTestMarker {
-  @Test
+  @org.junit.jupiter.api.Test
   fun foo() {
   }
 }
