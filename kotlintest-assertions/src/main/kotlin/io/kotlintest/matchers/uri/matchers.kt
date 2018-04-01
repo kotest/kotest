@@ -27,3 +27,11 @@ fun haveHost(host: String) = object : Matcher<URI> {
       "Uri $value should not have host $host"
   )
 }
+
+fun haveParameter(key: String) = object : Matcher<URI> {
+  override fun test(value: URI) = Result(
+      value.query.split("&").any { it.split("=").first() == key },
+      "Uri $value should have query parameter $key",
+      "Uri $value should not have query parameter $key"
+  )
+}

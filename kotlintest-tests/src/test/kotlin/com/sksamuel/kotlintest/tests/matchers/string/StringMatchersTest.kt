@@ -11,8 +11,10 @@ import io.kotlintest.matchers.string.beBlank
 import io.kotlintest.matchers.string.beEmpty
 import io.kotlintest.matchers.string.beLowerCase
 import io.kotlintest.matchers.string.beUpperCase
+import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.containADigit
 import io.kotlintest.matchers.string.containOnlyDigits
+import io.kotlintest.matchers.string.containOnlyOnce
 import io.kotlintest.matchers.string.haveSameLengthAs
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
@@ -28,6 +30,16 @@ class StringMatchersTest : FreeSpec() {
           "la tour eiffel" shouldBe "la tour tower london"
         }.message shouldBe "expected:<la tour [tower london]> but was:<la tour [eiffel]>"
       }
+    }
+
+    "contain only once" {
+      "la tour" should containOnlyOnce("tour")
+      "la tour tour" shouldNot containOnlyOnce("tour")
+    }
+
+    "contain(regex)" {
+      "la tour" should contain("^.*?tour$".toRegex())
+      "la tour" shouldNot contain(".*?abc.*?".toRegex())
     }
 
     "string should contain" - {

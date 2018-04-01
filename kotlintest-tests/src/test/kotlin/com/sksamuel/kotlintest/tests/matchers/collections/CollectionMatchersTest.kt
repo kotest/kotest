@@ -1,9 +1,10 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.collections
 
 import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.containNoNulls
 import io.kotlintest.matchers.collections.containOnlyNulls
-import io.kotlintest.matchers.contain
+import io.kotlintest.matchers.collections.haveDuplicates
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
@@ -26,6 +27,13 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           listOf(2, 1) shouldBe sorted<Int>()
         }
+      }
+    }
+
+    "haveDuplicates" should {
+      "test that a collection is unique" {
+        listOf(1, 2, 3, 3) should haveDuplicates()
+        listOf(1, 2, 3, 4) shouldNot haveDuplicates()
       }
     }
 

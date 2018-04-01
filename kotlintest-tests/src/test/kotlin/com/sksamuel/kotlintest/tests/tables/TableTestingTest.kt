@@ -1,7 +1,11 @@
-package io.kotlintest.tables
+package com.sksamuel.kotlintest.tests.tables
 
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 
 class TableTestingTest : StringSpec() {
   init {

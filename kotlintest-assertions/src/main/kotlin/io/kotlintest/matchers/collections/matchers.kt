@@ -20,3 +20,19 @@ fun <T> containNoNulls() = object : Matcher<Collection<T>> {
           "Collection should have at least one null"
       )
 }
+
+fun <T> contain(t: T) = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      value.contains(t),
+      "Collection should contain element $t",
+      "Collection should not contain element $t"
+  )
+}
+
+fun <T> haveDuplicates() = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      value.toSet().size < value.size,
+      "Collection should contain duplicates",
+      "Collection should not contain duplicates"
+  )
+}

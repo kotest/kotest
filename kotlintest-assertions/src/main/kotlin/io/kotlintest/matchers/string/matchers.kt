@@ -53,6 +53,15 @@ fun haveSameLengthAs(other: String) = object : Matcher<String> {
   }
 }
 
+fun haveLineCount(count: Int) = object : Matcher<String> {
+  override fun test(value: String): Result {
+    val lines = value.split(System.lineSeparator()).size
+    return Result(lines == count,
+        "String $value should have $count lines but had $lines",
+        "String $value should not have $count lines")
+  }
+}
+
 fun containOnlyWhitespace() = beBlank()
 fun beBlank() = object : Matcher<String> {
   override fun test(value: String): Result {
@@ -68,6 +77,13 @@ fun containIgnoringCase(substring: String) = object : Matcher<String> {
     return Result(passed,
         "String $value should contain the substring $substring (case insensitive)",
         "String $value should not contain the substring $substring (case insensitive)")
+  }
+}
+
+fun contain(regex: Regex) = object : Matcher<String> {
+  override fun test(value: String): Result {
+    val passed = value.contains(regex)
+    return Result(passed, "String $value should contain regex $regex", "String $value should not contain regex $regex")
   }
 }
 

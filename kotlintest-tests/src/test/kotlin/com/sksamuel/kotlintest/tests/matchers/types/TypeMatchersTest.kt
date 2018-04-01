@@ -1,20 +1,31 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.types
 
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
 import io.kotlintest.matchers.should
+import io.kotlintest.matchers.types.haveAnnotation
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.Test
 import java.util.*
 
 class TypeMatchersTest : WordSpec() {
 
+  @Test
+  class Wibble
+
   init {
+
+    "haveAnnotation(annotation)" should {
+      "test for the presence of an annotation" {
+        Wibble::class.java should haveAnnotation(Test::class.java)
+      }
+    }
 
     "beInstanceOf" should {
       "test that value is assignable to class" {
-        val arrayList : List<Int> = arrayListOf(1,2,3)
+        val arrayList: List<Int> = arrayListOf(1, 2, 3)
 
         arrayList should beInstanceOf(ArrayList::class)
 
@@ -28,7 +39,7 @@ class TypeMatchersTest : WordSpec() {
 
     "beOfType" should {
       "test that value have exactly the same type" {
-        val arrayList : List<Int> = arrayListOf(1,2,3)
+        val arrayList: List<Int> = arrayListOf(1, 2, 3)
 
         arrayList should beOfType<ArrayList<Int>>()
 

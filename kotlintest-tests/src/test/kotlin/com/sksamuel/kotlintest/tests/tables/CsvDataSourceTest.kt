@@ -1,4 +1,4 @@
-package io.kotlintest.tables
+package com.sksamuel.kotlintest.tests.tables
 
 import com.univocity.parsers.common.record.Record
 import com.univocity.parsers.csv.CsvFormat
@@ -6,6 +6,10 @@ import io.kotlintest.matchers.gt
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
+import io.kotlintest.tables.CsvDataSource
+import io.kotlintest.tables.Headers3
+import io.kotlintest.tables.Row3
+import io.kotlintest.tables.forAll
 
 class CsvDataSourceTest : WordSpec() {
   init {

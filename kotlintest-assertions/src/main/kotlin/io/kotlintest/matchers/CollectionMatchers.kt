@@ -12,14 +12,6 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
       )
 }
 
-fun <T> containsMatcher(t: T) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = Result(
-      value.contains(t),
-      "Collection should contain element $t",
-      "Collection should not contain element $t"
-  )
-}
-
 fun <T, U : Collection<T>> beEmpty(): Matcher<U> = object : Matcher<U> {
   override fun test(value: U): Result = Result(
       value.isEmpty(),
@@ -74,7 +66,8 @@ fun <T : Comparable<T>> containsInOrder(expected: List<T>) = object : Matcher<Li
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 
-fun <T> contain(t: T): Matcher<Collection<T>> = containsMatcher(t)
+@Deprecated("use io.kotlintest.matchers.collection.contain(t)", ReplaceWith("containsMatcher(t)"))
+fun <T> contain(t: T): Matcher<Collection<T>> = io.kotlintest.matchers.collections.contain(t)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(
