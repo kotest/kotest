@@ -5,6 +5,7 @@ import io.kotlintest.Result
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.Period
 import java.time.ZonedDateTime
 
 fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
@@ -107,4 +108,40 @@ fun after(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedD
 fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
+}
+
+fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
+  override fun test(value: LocalDate): Result {
+    val start = date.minus(period)
+    val end = date.plus(period)
+    val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
+    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+  }
+}
+
+fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
+  override fun test(value: LocalDateTime): Result {
+    val start = date.minus(period)
+    val end = date.plus(period)
+    val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
+    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+  }
+}
+
+fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
+  override fun test(value: ZonedDateTime): Result {
+    val start = date.minus(period)
+    val end = date.plus(period)
+    val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
+    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+  }
+}
+
+fun within(period: Period, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
+  override fun test(value: OffsetDateTime): Result {
+    val start = date.minus(period)
+    val end = date.plus(period)
+    val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
+    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+  }
 }
