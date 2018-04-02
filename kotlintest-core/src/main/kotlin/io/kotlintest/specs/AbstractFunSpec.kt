@@ -13,7 +13,7 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
 
   fun test(name: String, test: TestContext.() -> Unit): TestCase {
     val tc = TestCase(rootDescription().append(name), this@AbstractFunSpec, test, lineNumber(), defaultTestCaseConfig)
-    rootScopes.add(tc)
+    addRootScope(tc)
     return tc
   }
 }

@@ -33,12 +33,12 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
   fun should(name: String, test: TestContext.() -> Unit): TestCase {
     val tc = TestCase(rootDescription().append("should $name"), this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
-    rootScopes.add(tc)
+    addRootScope(tc)
     return tc
   }
 
   operator fun String.invoke(init: ShouldContext.() -> Unit) =
-      rootScopes.add(TestContainer(rootDescription().append(this), this@AbstractShouldSpec, { ShouldContext(it).init() }))
+      addRootScope(TestContainer(rootDescription().append(this), this@AbstractShouldSpec, { ShouldContext(it).init() }))
 
   inner class ShouldContext(val context: TestContext) {
 

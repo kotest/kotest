@@ -15,7 +15,7 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   final override fun isInstancePerTest(): Boolean = false
 
   fun feature(name: String, init: FeatureScope.() -> Unit) =
-      rootScopes.add(TestContainer(rootDescription().append("Feature $name"), this@AbstractFeatureSpec, { FeatureScope(it).init() }))
+      addRootScope(TestContainer(rootDescription().append("Feature $name"), this@AbstractFeatureSpec, { FeatureScope(it).init() }))
 
   inner class FeatureScope(val context: TestContext) {
 

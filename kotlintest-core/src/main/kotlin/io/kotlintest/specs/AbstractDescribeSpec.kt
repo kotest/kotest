@@ -15,7 +15,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   final override fun isInstancePerTest(): Boolean = false
 
   fun describe(name: String, init: DescribeScope.() -> Unit) =
-      rootScopes.add(TestContainer(rootDescription().append("Describe $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+      addRootScope(TestContainer(rootDescription().append("Describe $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
 
   inner class DescribeScope(val context: TestContext) {
 

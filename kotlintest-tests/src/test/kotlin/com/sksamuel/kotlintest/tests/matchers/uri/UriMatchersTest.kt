@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.tests.matchers.uri
 
 import io.kotlintest.matchers.should
 import io.kotlintest.matchers.shouldNot
+import io.kotlintest.matchers.uri.haveFragment
 import io.kotlintest.matchers.uri.haveHost
 import io.kotlintest.matchers.uri.haveParameter
 import io.kotlintest.matchers.uri.havePort
@@ -41,6 +42,13 @@ class UriMatchersTest : WordSpec() {
         URI.create("https://hostname:90?a=b&c=d") should haveParameter("a")
         URI.create("https://hostname:90?a=b&c=d") should haveParameter("c")
         URI.create("https://hostname:90?a=b&c=d") shouldNot haveParameter("b")
+      }
+    }
+
+    "haveFragment" should {
+      "test that a URI has the specified host" {
+        URI.create("https://hostname:90#qwerty") should haveFragment("qwerty")
+        URI.create("https://hostname:90#") should haveFragment("")
       }
     }
   }

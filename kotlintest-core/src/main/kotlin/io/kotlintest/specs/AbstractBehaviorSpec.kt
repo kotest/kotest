@@ -5,7 +5,6 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestContainer
 import io.kotlintest.TestContext
 import io.kotlintest.lineNumber
-import sun.text.normalizer.UTF16.append
 
 @Suppress("FunctionName")
 abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpec() {
@@ -19,7 +18,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
   fun Given(desc: String, init: GivenContext.() -> Unit) = given(desc, init)
   fun given(desc: String, init: GivenContext.() -> Unit) {
     val name = "Given $desc"
-    rootScopes.add(TestContainer(rootDescription().append(name), this@AbstractBehaviorSpec, { GivenContext(it).init() }))
+    addRootScope(TestContainer(rootDescription().append(name), this@AbstractBehaviorSpec, { GivenContext(it).init() }))
   }
 
   inner class GivenContext(val context: TestContext) {

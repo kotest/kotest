@@ -15,11 +15,11 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   final override fun isInstancePerTest(): Boolean = false
 
   infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
-      rootScopes.add(TestContainer(rootDescription().append(this), this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
+      addRootScope(TestContainer(rootDescription().append(this), this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
 
   infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
     val tc = TestCase(rootDescription().append(this), this@AbstractFreeSpec, test, lineNumber(), defaultTestCaseConfig)
-    rootScopes.add(tc)
+    addRootScope(tc)
     return tc
   }
 

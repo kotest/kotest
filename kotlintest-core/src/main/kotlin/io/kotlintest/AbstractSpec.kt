@@ -7,7 +7,13 @@ abstract class AbstractSpec : Spec {
 
   override fun isInstancePerTest(): Boolean = false
 
-  internal val rootScopes = mutableListOf<TestScope>()
+  private val rootScopes = mutableListOf<TestScope>()
+
+  protected fun addRootScope(scope: TestScope) {
+    if (rootScopes.any { it.name() == scope.name() })
+      throw IllegalArgumentException("Cannot add scope with duplicate name ${scope.name()}")
+    rootScopes.add(scope)
+  }
 
   internal fun rootDescription() = Description(emptyList(), name())
 

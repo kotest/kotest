@@ -35,3 +35,11 @@ fun haveParameter(key: String) = object : Matcher<URI> {
       "Uri $value should not have query parameter $key"
   )
 }
+
+fun haveFragment(fragment: String) = object : Matcher<URI> {
+  override fun test(value: URI) = Result(
+      value.fragment == fragment,
+      "Uri $value should have fragment $fragment",
+      "Uri $value should not fragment $fragment"
+  )
+}

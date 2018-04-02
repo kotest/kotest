@@ -25,7 +25,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   final override fun isInstancePerTest(): Boolean = false
 
   infix fun String.should(init: WordContext.() -> Unit) {
-    rootScopes.add(TestContainer(rootDescription().append(this), this@AbstractWordSpec, { WordContext(it).init() }))
+    addRootScope(TestContainer(rootDescription().append(this), this@AbstractWordSpec, { WordContext(it).init() }))
   }
 
   inner class WordContext(val context: TestContext) {
