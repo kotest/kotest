@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.numerics
 
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beGreaterThanOrEqualTo
@@ -15,38 +15,42 @@ import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
 
-class IntMatchersTest : StringSpec() {
+class LongMatchersTest : StringSpec() {
   init {
 
+    "Ge should be valid" {
+      1L should beGreaterThan(0L)
+    }
+
     "beGreaterThan" {
-      1 should beGreaterThan(0)
+      1L should beGreaterThan(0L)
 
       shouldThrow<AssertionError> {
-        2 should beGreaterThan(3)
+        2L should beGreaterThan(3L)
       }
     }
 
     "beLessThan" {
-      1 should beLessThan(2)
+      1L should beLessThan(2L)
 
       shouldThrow<AssertionError> {
-        2 should beLessThan(1)
+        2L should beLessThan(1L)
       }
     }
 
     "beLessThanOrEqualTo" {
-      1 should beLessThanOrEqualTo(2)
+      1L should beLessThanOrEqualTo(2L)
 
       shouldThrow<AssertionError> {
-        2 should beLessThanOrEqualTo(1)
+        2L should beLessThanOrEqualTo(1L)
       }
     }
 
     "greaterThan" {
-      1 should beGreaterThanOrEqualTo(0)
+      1L should beGreaterThanOrEqualTo(0L)
 
       shouldThrow<AssertionError> {
-        2 should beGreaterThanOrEqualTo(3)
+        2L should beGreaterThanOrEqualTo(3L)
       }
     }
 
@@ -54,10 +58,10 @@ class IntMatchersTest : StringSpec() {
 
       val table = table(
           headers("a", "b"),
-          row(0, 2),
-          row(1, 2),
-          row(0, 1),
-          row(1, 1)
+          row(0L, 2L),
+          row(1L, 2L),
+          row(0L, 1L),
+          row(1L, 1L)
       )
 
       forAll(table) { a, b ->
@@ -69,10 +73,10 @@ class IntMatchersTest : StringSpec() {
 
       val table = table(
           headers("a", "b"),
-          row(0, 2),
-          row(2, 2),
-          row(4, 5),
-          row(4, 6)
+          row(0L, 2L),
+          row(2L, 2L),
+          row(4L, 5L),
+          row(4L, 6L)
       )
 
       forNone(table) { a, b ->

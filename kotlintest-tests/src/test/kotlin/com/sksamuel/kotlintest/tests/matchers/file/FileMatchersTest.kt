@@ -7,7 +7,7 @@ import io.kotlintest.matchers.file.exist
 import io.kotlintest.matchers.file.haveExtension
 import io.kotlintest.matchers.file.relative
 import io.kotlintest.matchers.file.startWithPath
-import io.kotlintest.matchers.should
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
@@ -18,11 +18,11 @@ import java.nio.file.Paths
 class FileMatchersTest : FunSpec() {
   init {
 
-    test("isRelative() should match only relative files") {
+    test("relative() should match only relative files") {
       File("sammy/boy") shouldBe relative()
     }
 
-    test("isAbsolute() should match only absolute files") {
+    test("absolute() should match only absolute files") {
       File("/sammy/boy") shouldBe absolute()
     }
 

@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.numerics
 
 import io.kotlintest.matchers.between
 import io.kotlintest.matchers.exactly

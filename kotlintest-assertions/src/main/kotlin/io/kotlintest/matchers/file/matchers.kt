@@ -29,6 +29,22 @@ fun relative(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(!value.isAbsolute, "File $value should be relative", "File $value should not be relative")
 }
 
+fun readable(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.canRead(), "File $value should be readable", "File $value should not be readable")
+}
+
+fun writeable(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.canWrite(), "File $value should be writeable", "File $value should not be writeable")
+}
+
+fun executable(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.canExecute(), "File $value should be executable", "File $value should not be executable")
+}
+
+fun hidden(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.isHidden, "File $value should be hidden", "File $value should not be hidden")
+}
+
 fun startWithPath(path: Path) = startWithPath(path.toFile())
 fun startWithPath(file: File) = startWithPath(file.toString())
 fun startWithPath(prefix: String) = object : Matcher<File> {
