@@ -6,12 +6,12 @@ import io.kotlintest.extensions.TestListener
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all specs and test cases.
+ * instance of this class will be applied to all [Spec] and [TestCase]s.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotlintest.provided`.
  *
- * Kotlintest will detect its presence and use it when executing tests.
+ * KotlinTest will detect its presence and use it when executing tests.
  *
  * Note: This is a breaking change from versions 2.0 and before, in which KotlinTest would
  * scan the classpath for instances of this class. It no longer does that, in favour
