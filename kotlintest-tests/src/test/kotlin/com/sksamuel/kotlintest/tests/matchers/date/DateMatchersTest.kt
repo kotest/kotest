@@ -1,10 +1,14 @@
 package com.sksamuel.kotlintest.tests.matchers.date
 
+import io.kotlintest.matchers.date.after
+import io.kotlintest.matchers.date.before
 import io.kotlintest.matchers.date.haveSameDay
 import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
-import io.kotlintest.matchers.should
+import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -72,6 +76,46 @@ class DateMatchersTest : StringSpec() {
     "OffsetDateTime should have same day ignoring other fields" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) should haveSameDay(LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNot haveSameDay(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
+    }
+
+    "LocalDate should be before" {
+      LocalDate.of(2014, 1, 2) shouldBe before(LocalDate.of(2014, 1, 3))
+      LocalDate.of(2014, 1, 2) shouldNotBe before(LocalDate.of(2014, 1, 1))
+    }
+
+    "LocalDateTime should be before" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2) shouldBe before(LocalDateTime.of(2014, 2, 2, 3, 2, 1))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNotBe before(LocalDateTime.of(2014, 1, 1, 3, 2, 1))
+    }
+
+    "ZonedDateTime should be before" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe before(LocalDateTime.of(2014, 1, 3, 3, 2, 1).atZone(ZoneId.of("Z")))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe before(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atZone(ZoneId.of("Z")))
+    }
+
+    "OffsetDateTime should be before" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) shouldBe before(LocalDateTime.of(2016, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNotBe before(LocalDateTime.of(2012, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
+    }
+
+    "LocalDate should be after" {
+      LocalDate.of(2014, 1, 2) shouldBe after(LocalDate.of(2013, 1, 3))
+      LocalDate.of(2014, 1, 2) shouldNotBe after(LocalDate.of(2014, 1, 3))
+    }
+
+    "LocalDateTime should be after" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2) shouldBe after(LocalDateTime.of(2014, 1, 1, 3, 2, 1))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNotBe after(LocalDateTime.of(2014, 1, 3, 3, 2, 1))
+    }
+
+    "ZonedDateTime should be after" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe after(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atZone(ZoneId.of("Z")))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe after(LocalDateTime.of(2014, 1, 3, 3, 2, 1).atZone(ZoneId.of("Z")))
+    }
+
+    "OffsetDateTime should be after" {
+      LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) shouldBe after(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
+      LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNotBe after(LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
   }
 }
