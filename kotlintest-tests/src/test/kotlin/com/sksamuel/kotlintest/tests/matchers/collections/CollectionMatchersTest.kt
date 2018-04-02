@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest.tests.matchers.collections
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.containNoNulls
+import io.kotlintest.matchers.collections.containNull
 import io.kotlintest.matchers.collections.containOnlyNulls
 import io.kotlintest.matchers.collections.haveDuplicates
 import io.kotlintest.matchers.containAll
@@ -21,8 +22,16 @@ class CollectionMatchersTest : WordSpec() {
 
   init {
 
+    "containNull()" should {
+      "test that a collection contains at least one null" {
+        listOf(1, 2, null) should containNull()
+        listOf(null) should containNull()
+        listOf(1,2) shouldNot containNull()
+      }
+    }
+
     "sorted" should {
-      "test that a collect is sorted" {
+      "test that a collection is sorted" {
         listOf(1, 2, 3, 4) shouldBe sorted<Int>()
         shouldThrow<AssertionError> {
           listOf(2, 1) shouldBe sorted<Int>()

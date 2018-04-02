@@ -12,6 +12,15 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
       )
 }
 
+fun <T> containNull() = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) =
+      Result(
+          value.any { it == null },
+          "Collection should contain at least one null",
+          "Collection should not contain any nulls"
+      )
+}
+
 fun <T> containNoNulls() = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
       Result(
