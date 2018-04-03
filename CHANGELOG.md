@@ -14,7 +14,7 @@ you to test for the exception in your code.
 For example:
 
 ```kotlin
-class NoSytemOutOrErrTest : StringSpec() {
+class NoSystemOutOrErrTest : StringSpec() {
 
   override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
 
