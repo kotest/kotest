@@ -4,6 +4,7 @@ Changelog
 This project follows [semantic versioning](http://semver.org/).
 
 Version 3.1.x - In Progress
+----------
 
 * **System out / error extensions**
 
