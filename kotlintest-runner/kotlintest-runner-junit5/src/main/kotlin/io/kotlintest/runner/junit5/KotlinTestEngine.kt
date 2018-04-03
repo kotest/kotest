@@ -171,7 +171,7 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
-  var result: EngineDescriptor? = null
+  private var result: EngineDescriptor? = null
 
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): EngineDescriptor {

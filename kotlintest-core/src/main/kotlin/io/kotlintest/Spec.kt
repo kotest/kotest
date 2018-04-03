@@ -72,7 +72,7 @@ interface Spec : TestListener {
   @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
   fun interceptTestCase(context: TestCaseContext, test: () -> Unit) = test()
 
-    /**
+  /**
    * Intercepts the invocation of each test case.
 
    * Override this function if you wish to add before and after
@@ -86,7 +86,7 @@ interface Spec : TestListener {
    * Otherwise the execution of the test case will not continue.
    */
   @Deprecated("This interceptor function is deprecated, please consider using beforeTest or afterTest", ReplaceWith("beforeTest or afterTest"))
-    fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
+  fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
 
   /**
    * Override this function to register instances of
@@ -111,8 +111,8 @@ interface Spec : TestListener {
 
   /**
    * Override this function to register instances of
-   * [Extension] which will be invoked for this spec, and tests
-   * in this spec.
+   * [Extension] which will be invoked during
+   * execution of this spec.
    *
    * If you wish to register an extension across the project
    * then use [AbstractProjectConfig.extensions].
@@ -122,7 +122,7 @@ interface Spec : TestListener {
   /**
    * Override this function to register instances of
    * [TestListener] which will be notified of events during
-   * execution of this spec only.
+   * execution of this spec.
    *
    * If you wish to register a listener that will be notified
    * for all specs, then use [AbstractProjectConfig.listeners].

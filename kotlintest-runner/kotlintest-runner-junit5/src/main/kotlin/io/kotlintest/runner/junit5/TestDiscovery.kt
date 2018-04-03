@@ -10,7 +10,6 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 import org.reflections.util.FilterBuilder
-import java.lang.reflect.Modifier
 import java.net.URI
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -22,8 +21,6 @@ object TestDiscovery {
   }
 
   data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
-
-  val isSpec: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) && !Modifier.isAbstract(it.modifiers) }
 
   private fun reflections(uris: List<URI>): Reflections {
 
@@ -59,8 +56,8 @@ object TestDiscovery {
     val instances = specs.map { it.createInstance() }.sortedBy { it.name() }
     val descriptions = instances.map { it.root().description() }
 
-    val afterExtensions = Project.discoveryExtensions().fold(descriptions, { d, e -> e.afterDiscovery(d) })
-    Project.listeners().forEach { it.afterDiscovery(afterExtensions) }
+    val discoveryExtensions = Project.discoveryExtensions().fold(descriptions, { d, e -> e.afterDiscovery(d) })
+    Project.listeners().forEach { it.afterDiscovery(discoveryExtensions) }
 
     val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")
     instances.forEach {

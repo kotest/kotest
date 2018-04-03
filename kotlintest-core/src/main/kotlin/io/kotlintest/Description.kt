@@ -10,6 +10,9 @@ import io.kotlintest.extensions.Extension
  *
  * This is useful when you want to write generic [Extension]s and you
  * need to be able to filter on certain tests only.
+ *
+ * @param parents each parent scope
+ * @param name the name of this scope
  */
 data class Description(val parents: List<String>, val name: String) {
 

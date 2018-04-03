@@ -6,11 +6,13 @@ import io.kotlintest.Spec
 /**
  * Allows interception of the discovery phase of KotlinTest.
  *
- * That is, after [Spec] classes have been discovered, but before
- * execution begins.
- *
- * This gives the possibility of filtering the specs seen by
+ * That is, after [Spec] classes have been discovered on the classpath
+ * but before execution begins. This gives implementations of this
+ * extension the possibility of filtering the specs seen by
  * the Test Runner.
+ *
+ * Note: If multiple [DiscoveryExtension]s are registered, the order
+ * in which they execute is not specified.
  */
 interface DiscoveryExtension {
 

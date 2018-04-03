@@ -53,7 +53,7 @@ object Project {
   private var parallelism: Int = 1
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
-  fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
+  private fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
   fun listeners(): List<TestListener> = _listeners
@@ -78,19 +78,13 @@ object Project {
     projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
 
+  fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
   fun registerListener(listener: TestListener) {
     _listeners.add(listener)
   }
 
-  fun registerListeners(vararg listeners: TestListener) {
-    _listeners.addAll(listeners)
-  }
-
+  fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
   fun registerExtension(extension: Extension) {
     _extensions.add(extension)
-  }
-
-  fun registerExtensions(vararg extensions: Extension) {
-    _extensions.addAll(extensions)
   }
 }
