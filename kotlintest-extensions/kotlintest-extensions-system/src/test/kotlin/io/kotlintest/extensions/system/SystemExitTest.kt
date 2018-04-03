@@ -10,7 +10,7 @@ class SystemExitTest : StringSpec() {
 
   init {
 
-    "SystemExit should throw an exception when the listener is added" {
+    "System.exit should throw an exception when the listener is added" {
       shouldThrow<SystemExitException> {
         System.exit(123)
       }.exitCode shouldBe 123

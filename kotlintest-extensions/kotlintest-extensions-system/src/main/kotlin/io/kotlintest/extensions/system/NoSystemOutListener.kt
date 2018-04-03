@@ -1,5 +1,7 @@
 package io.kotlintest.extensions.system
 
+import io.kotlintest.Description
+import io.kotlintest.Spec
 import io.kotlintest.extensions.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -8,7 +10,7 @@ class SystemOutWriteException : RuntimeException()
 class SystemErrWriteException : RuntimeException()
 
 object NoSystemOutListener : TestListener {
-  override fun beforeProject() {
+  private fun setup() {
     val out = ByteArrayOutputStream()
     System.setOut(object : PrintStream(out) {
       override fun print(b: Boolean) = throw SystemOutWriteException()
@@ -22,10 +24,13 @@ object NoSystemOutListener : TestListener {
       override fun print(f: Float) = throw SystemOutWriteException()
     })
   }
+
+  override fun beforeProject() = setup()
+  override fun beforeSpec(description: Description, spec: Spec) = setup()
 }
 
 object NoSystemErrListener : TestListener {
-  override fun beforeProject() {
+  private fun setup() {
     val out = ByteArrayOutputStream()
     System.setErr(object : PrintStream(out) {
       override fun print(b: Boolean) = throw SystemErrWriteException()
@@ -39,4 +44,7 @@ object NoSystemErrListener : TestListener {
       override fun print(f: Float) = throw SystemErrWriteException()
     })
   }
+
+  override fun beforeProject() = setup()
+  override fun beforeSpec(description: Description, spec: Spec) = setup()
 }

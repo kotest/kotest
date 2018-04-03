@@ -3,8 +3,41 @@ Changelog
 
 This project follows [semantic versioning](http://semver.org/).
 
+Version 3.1.x - In Progress
 
-Version 3.0.0 - March 29 2018
+* **System out / error extensions**
+
+Allows you to test that a function doesn't use System.out or System.err. By adding the `NoSystemOutListener` or `NoSystemErrListener`
+to your config or spec classes, anytime someone tries to write to either of these streams, an exception will be raised. This allows
+you to test for the exception in your code.
+
+For example:
+
+```kotlin
+class NoSytemOutOrErrTest : StringSpec() {
+
+  override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
+
+  init {
+
+    "System.out should throw an exception when the listener is added" {
+      shouldThrow<SystemOutWriteException> {
+        System.out.println("boom")
+      }
+    }
+
+    "System.err should throw an exception when the listener is added" {
+      shouldThrow<SystemErrWriteException> {
+        System.err.println("boom")
+      }
+    }
+  }
+}
+```
+
+
+
+Version 3.0.x - March 29 2018
 -------------
 
 * **Module split out**
