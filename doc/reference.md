@@ -888,3 +888,35 @@ class MyTests : ShouldSpec() {
   }
 }
 ```
+
+Spring
+---------
+
+KotlinTest offers a Spring extension to allow you to test code that uses uses Spring to inject dependencies.
+To enable this, add the `kotlintest-extensions-spring` module to your test compile path. Then add the `SpringListener`
+to any spec that needs to test spring beans, or you can add it project wide by using `ProjectConfig`.
+
+In order to let Spring know which configuration class to use, you must annotation your Spec classes with `@ContextConfiguration`.
+This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
+point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
+
+At the moment, only field based injection is supported - you can't put the dependencies in the constructor. For example:
+
+```kotlin
+@ContextConfiguration(classes = [(TestConfiguration::class)])
+class SpringExampleSpec : WordSpec() {
+
+  override fun listeners() = listOf(SpringListener)
+
+  @Autowired
+  var bean: MyBean? = null
+
+  init {
+    "Spring Extension" should {
+      "have wired up the bean" {
+        bean shouldNotBe null
+      }
+    }
+  }
+}
+```

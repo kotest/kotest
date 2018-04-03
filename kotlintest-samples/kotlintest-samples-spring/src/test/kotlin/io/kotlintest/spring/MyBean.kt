@@ -10,12 +10,12 @@ import org.springframework.test.context.ContextConfiguration
 class MyBean
 
 @Configuration
-open class Classes {
+open class TestConfiguration {
   @Bean
   open fun myBean() = MyBean()
 }
 
-@ContextConfiguration(classes = [(Classes::class)])
+@ContextConfiguration(classes = [(TestConfiguration::class)])
 class SpringTest : WordSpec() {
 
   override fun listeners() = listOf(SpringListener)

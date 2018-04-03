@@ -8,17 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = [(Components::class)])
-class UserServiceTest : WordSpec() {
+class SpringListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SpringListener)
 
   @Autowired
-  var service: UserService? = null
+  private var service: UserService? = null
 
   init {
     "SpringListener" should {
       "have autowired the service" {
-        service!!.repository.findUser().name shouldBe "system_user"
+        service!!.repository.findUser().name shouldBe "system_user2"
       }
     }
   }
