@@ -12,6 +12,7 @@ import org.reflections.util.ConfigurationBuilder
 import org.reflections.util.FilterBuilder
 import java.net.URI
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 
 object TestDiscovery {
 
@@ -52,16 +53,16 @@ object TestDiscovery {
       else -> scan(request.uris)
     }
 
-    fun <T : Spec> createSpecInstance(clazz: Class<T>): Spec {
+    fun <T : Spec> createSpecInstance(clazz: KClass<T>): Spec {
       val nullSpec: Spec? = null
-      val instance = Project.specExtensions().fold(nullSpec, { spec, ext -> spec ?: ext.instantiate(clazz) })
-      return instance ?: clazz.newInstance()
+      val instance = Project.discoveryExtensions().fold(nullSpec, { spec, ext -> spec ?: ext.instantiate(clazz) })
+      return instance ?: clazz.createInstance()
     }
 
-    val instances = specs.map { createSpecInstance(it.java) }.sortedBy { it.name() }
+    val instances = specs.map { createSpecInstance(it) }.sortedBy { it.name() }
     val descriptions = instances.map { it.root().description() }
 
-    val discoveryExtensions = Project.discoveryExtensions().fold(descriptions, { descs, ext -> ext.afterDiscovery(descs) })
+    val discoveryExtensions = Project.discoveryExtensions().fold(descriptions, { descs, ext -> ext.afterScan(descs) })
     Project.listeners().forEach { it.afterDiscovery(discoveryExtensions) }
 
     val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")

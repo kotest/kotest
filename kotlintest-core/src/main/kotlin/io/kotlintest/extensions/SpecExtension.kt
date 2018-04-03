@@ -14,21 +14,8 @@ interface SpecExtension : Extension {
    * You must invoke process() otherwise the spec will
    * not be executed.
    */
-  @Deprecated("This interceptor function deprecated, use TestListener for the most common use cases or intercept(Description, Spec, Continuation) in this interface for more complicated requirements")
-  fun intercept(spec: Spec, process: () -> Unit)
-
-  /**
-   * An extension function invoked to create an instance of a [Spec].
-   *
-   * An implementation can choose to create a new instance, or it can
-   * choose to return null if it wishes to pass control to the next
-   * extension (or if no more extensions, then back to the Test Runner).
-   *
-   * By overriding this function, extensions are able to customize
-   * the way classes are created, to support things like constructors
-   * with parameters, or classes that require special initization logic.
-   */
-  fun <T : Spec> instantiate(clazz: Class<T>): Spec? = null
+  @Deprecated("This interceptor function deprecated, use TestListener for the most common use cases or intercept(Description, Spec, Continuation) in this interface for more complicated requirements", ReplaceWith("intercept()"))
+  fun intercept(spec: Spec, process: () -> Unit) = process()
 
 //  /**
 //   * Intercepts execution of a [Spec].
