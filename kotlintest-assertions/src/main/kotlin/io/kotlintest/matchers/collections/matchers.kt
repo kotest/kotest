@@ -12,12 +12,25 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
       )
 }
 
+/**
+ * `collection should containNull()` tests that the collection
+ * contains at least one null
+ */
 fun <T> containNull() = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
       Result(
           value.any { it == null },
           "Collection should contain at least one null",
           "Collection should not contain any nulls"
+      )
+}
+
+fun <T> haveElementAt(index: Int, element: T) = object : Matcher<List<T>> {
+  override fun test(value: List<T>) =
+      Result(
+          value[index] == element,
+          "Collection should contain $element at index $index",
+          "Collection should not contain $element at index $index"
       )
 }
 
