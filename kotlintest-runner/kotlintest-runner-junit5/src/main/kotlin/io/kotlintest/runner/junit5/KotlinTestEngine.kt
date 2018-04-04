@@ -171,23 +171,18 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
-  var result: EngineDescriptor? = null
-
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): EngineDescriptor {
-    if (result == null) {
-      // inside intellij when running a single test, we might be passed a class selector
-      // which will be the classname of a spec implementation
-      val classes = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+    // inside intellij when running a single test, we might be passed a class selector
+    // which will be the classname of a spec implementation
+    val classes = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
 
-      val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
-          request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-          request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
-          ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+    val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
+        request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
+        request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
+        ClasspathHelper.forClassLoader().toList().map { it.toURI() }
 
-      result = TestDiscovery(TestDiscovery.DiscoveryRequest(uris, classes), uniqueId)
-    }
-    return result!!
+    return TestDiscovery(TestDiscovery.DiscoveryRequest(uris, classes), uniqueId)
   }
 }
 
