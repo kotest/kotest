@@ -45,6 +45,9 @@ allprojects {
 
     release {
         failOnPublishNeeded = false
+        git {
+            requireBranch = ''
+        }
     }
 
     task javadocJar(type: Jar) {
