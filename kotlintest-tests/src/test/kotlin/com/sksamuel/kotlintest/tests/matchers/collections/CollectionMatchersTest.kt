@@ -9,8 +9,8 @@ import io.kotlintest.matchers.collections.haveDuplicates
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldNot
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
 import io.kotlintest.specs.WordSpec
