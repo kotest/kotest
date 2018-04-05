@@ -1,5 +1,6 @@
 include 'kotlintest-core',
         'kotlintest-assertions',
+        'kotlintest-assertions-arrow',
         'kotlintest-runner:kotlintest-runner-junit5',
         'kotlintest-extensions:kotlintest-extensions-spring',
         'kotlintest-extensions:kotlintest-extensions-junitxml',
