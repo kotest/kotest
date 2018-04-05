@@ -314,8 +314,12 @@ a `Gen` that supports a custom class called `Person`:
 ```kotlin
 data class Person(val name: String, val age: Int)
 class PersonGenerator : Gen<Person> {
-  override fun generate(): Person = Person(Gen.string().generate(), Gen.int().generate())
+    override fun always() = emptyList<Person>()
+    override fun random() = generateSequence {
+        Person(Gen.string().random().first(), Gen.int().random().first())
+    }
 }
+
 ```
 
 ### Table-driven Testing <a name="table"></a>
