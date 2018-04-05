@@ -124,7 +124,7 @@ interface Gen<out T> {
     fun int() = object : Gen<Int> {
       val literals = listOf(-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE)
       override fun always(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
+      override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
     }
 
     /**
