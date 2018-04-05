@@ -55,6 +55,16 @@ now supports constructor injection using this extension. Other use cases might b
 * String - haveLineCount, contain(regex)
 * Types - haveAnnotation
 
+* **Arrow matcher module**
+
+A new module has been added which includes matchers for [Arrow](http://arrow-kt.io) - popular and awesome functional programming library for Kotlin.
+
+Option: Test that an option has the given value. For example `someOption shouldBe None` or `someOption shouldBe Some(t)`
+
+Either: Test that an either has either right or left value. For example `myeither shouldBe right("foo")` or `myeither shouldBe left("foo")`
+
+NonEmptyList: A collection (no pun intended) of matchers for Arrow's `NonEmptyList`. These mostly mirror the equivalent `Collection` matchers but for NELs. Such as `nel should contain("foo")`, `nel should haveSize(4)`, `nel should containNull()` and so on.
+
 
 * **System.exit extension**
 
