@@ -1,5 +1,6 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class OneInstancePerTestTest : FunSpec() {

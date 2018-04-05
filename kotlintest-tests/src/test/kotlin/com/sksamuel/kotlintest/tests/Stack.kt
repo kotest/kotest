@@ -1,4 +1,4 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
 interface Stack<T> {
     fun push(t: T): Unit

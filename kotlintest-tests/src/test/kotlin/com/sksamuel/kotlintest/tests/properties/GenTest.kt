@@ -1,11 +1,15 @@
 @file:Suppress("USELESS_IS_CHECK")
 
-package io.kotlintest.properties
+package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.forAll
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.substring
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.filter
+import io.kotlintest.properties.map
+import io.kotlintest.properties.orNull
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
@@ -145,7 +149,7 @@ class GenTest : WordSpec() {
       "generate the defaults for list" {
 
         val gen = Gen.default<List<Int>>()
-        forAll(10, gen) { inst ->
+        io.kotlintest.properties.forAll(10, gen) { inst ->
           forAll(inst) { i ->
             (i is Int) shouldBe true
           }
@@ -156,7 +160,7 @@ class GenTest : WordSpec() {
       "generate the defaults for set" {
 
         val gen = Gen.default<Set<String>>()
-        forAll(gen) { inst ->
+        io.kotlintest.properties.forAll(gen) { inst ->
           forAll(inst) { i ->
             (i is String) shouldBe true
           }
@@ -196,7 +200,7 @@ class GenTest : WordSpec() {
 
     "ConstGen " should {
       "always generate the same thing" {
-        forAll(Gen.constant(5)) {
+        io.kotlintest.properties.forAll(Gen.constant(5)) {
           it == 5
         }
       }
@@ -219,7 +223,7 @@ class GenTest : WordSpec() {
 
     "Gen.filter " should {
       "prevent values from being generated" {
-        forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
+        io.kotlintest.properties.forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
           it != 2
         }
       }
@@ -227,7 +231,7 @@ class GenTest : WordSpec() {
 
     "Gen.map " should {
       "correctly transform the values" {
-        forAll(Gen.constant(5).map { it + 7 }) {
+        io.kotlintest.properties.forAll(Gen.constant(5).map { it + 7 }) {
           it == 12
         }
       }

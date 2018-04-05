@@ -1,4 +1,4 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
 import kotlin.collections.*
 

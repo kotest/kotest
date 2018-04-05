@@ -1,9 +1,16 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.Spec
+import io.kotlintest.Tag
+import io.kotlintest.TestCase
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.fail
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldHave
 import io.kotlintest.specs.WordSpec
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger

@@ -1,5 +1,6 @@
-package io.kotlintest.properties
+package com.sksamuel.kotlintest.tests.properties
 
+import io.kotlintest.properties.Gen
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 
@@ -16,5 +17,3 @@ class EnumGenTest : StringSpec() {
 enum class Weather {
   Hot, Cold, Dry
 }
-
-

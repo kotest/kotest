@@ -1,5 +1,8 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.Tag
+import io.kotlintest.TestCase
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 class TestCaseTest : StringSpec() {

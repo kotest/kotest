@@ -1,5 +1,6 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.DisplayName
 import io.kotlintest.specs.FunSpec
 
 @DisplayName("ZZZZZZZ")

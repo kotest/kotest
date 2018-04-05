@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import io.kotlintest.ListStack
+import com.sksamuel.kotlintest.tests.ListStack
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 

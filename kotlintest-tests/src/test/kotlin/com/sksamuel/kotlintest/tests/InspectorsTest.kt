@@ -1,7 +1,15 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.forAny
+import io.kotlintest.forExactly
+import io.kotlintest.forNone
+import io.kotlintest.forOne
+import io.kotlintest.forSome
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 
 class InspectorsTest : WordSpec() {

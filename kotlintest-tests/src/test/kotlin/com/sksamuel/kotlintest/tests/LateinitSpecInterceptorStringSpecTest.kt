@@ -1,5 +1,7 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.Spec
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 class LateinitSpecInterceptorStringSpecTest : StringSpec() {

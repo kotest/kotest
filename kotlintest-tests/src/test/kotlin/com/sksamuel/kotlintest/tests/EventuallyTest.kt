@@ -1,5 +1,8 @@
-package io.kotlintest
+package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.eventually
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AbstractWordSpec
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -64,7 +67,7 @@ class EventuallyTest : AbstractWordSpec() {
       }
       "pass tests that pass a predicate" {
         val result = eventually(Duration.ofSeconds(2), { it == 1 }) {
-            1
+          1
         }
         result shouldBe 1
       }
