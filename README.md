@@ -139,7 +139,7 @@ Maven:
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.3</version>
     <scope>test</scope>
 </dependency>
 ```
