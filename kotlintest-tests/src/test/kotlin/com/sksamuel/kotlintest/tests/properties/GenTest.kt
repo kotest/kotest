@@ -205,7 +205,7 @@ class GenTest : WordSpec() {
 
     "Gen.orNull " should {
       "have both values and nulls generated" {
-        Gen.constant(5).orNull().always().toSet() shouldBe setOf(5, null)
+        Gen.constant(5).orNull().constants().toSet() shouldBe setOf(5, null)
 
         fun <T> Gen<T>.toList(size: Int): List<T> =
             ArrayList<T>(size).also { list ->

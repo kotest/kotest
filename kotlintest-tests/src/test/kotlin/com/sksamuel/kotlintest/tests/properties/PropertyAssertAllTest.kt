@@ -43,34 +43,14 @@ class PropertyAssertAllTest : StringSpec({
     actualAttempts shouldBe 1000
   }
 
-  "failure after 4 attempts" {
-    var element1 = ""
-    var element2 = ""
+  "failure for null strings" {
     val exception = shouldThrow<AssertionError> {
-      var attempts = 0
       assertAll(Gen.string(), Gen.string()) { a, b ->
-        element1 = a
-        element2 = b
-        attempts++
-        attempts shouldBe lt(4)
+        a shouldBe ""
+        b shouldBe ""
       }
     }
-    exception.message shouldBe "Property failed for\n$element1\n$element2\nafter 4 attempts"
-  }
-
-  "failure after 50 attempts" {
-    var element1 = ""
-    var element2 = ""
-    val exception = shouldThrow<AssertionError> {
-      var attempts = 0
-      assertAll(Gen.string(), Gen.string()) { a, b ->
-        element1 = a
-        element2 = b
-        attempts++
-        attempts shouldBe lt(50)
-      }
-    }
-    exception.message shouldBe "Property failed for\n$element1\n$element2\nafter 50 attempts"
+    exception.message shouldBe "Property failed for\n0: <empty string>\n1: \\n <whitespace only>\nafter 1 attempts"
   }
 
   "explicitGenerators" {
@@ -125,21 +105,19 @@ class PropertyAssertAllTest : StringSpec({
         attempts shouldBe lt(2)
       }
     }
-    exception.message shouldBe "Property failed for\n$element\nafter 2 attempts"
+    exception.message shouldBe "Property failed for\n0: $element\nafter 2 attempts"
   }
 
   "assertAll one explicit generator: test fails after 300 attempts" {
     var attempts = 0
-    var element = ""
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.string()) { s ->
-        element = s
+      assertAll(Gen.string()) {
         attempts++
         attempts shouldBe lt(300)
       }
     }
 
-    exception.message shouldBe "Property failed for\n$element\nafter 300 attempts"
+    exception.message shouldBe "Property failed for\n0: <empty string>\nafter 300 attempts"
   }
 
   "assertAll one explicit generator with 0 attempts" {
@@ -209,43 +187,31 @@ class PropertyAssertAllTest : StringSpec({
       attempts++
       (a * b) * c shouldBe a * (b * c)
     }
-    attempts shouldBe 125
+    attempts shouldBe 30
   }
 
   "assertAll: Three explicit generators failure at the third attempt" {
     var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
-        elementA = a
-        elementB = b
-        elementC = c
+      assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
         attempts shouldBe lt(3)
       }
     }
 
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\nafter 3 attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\nafter 3 attempts"
   }
 
   "assertAll : Three explicit generators failure at the 26th attempt" {
     var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
-        elementA = a
-        elementB = b
-        elementC = c
+      assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
         attempts shouldBe lt(26)
       }
     }
 
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\nafter 26 attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\nafter 26 attempts"
   }
 
   "assertAll : Three implicit generators 1000 attempts" {
@@ -281,45 +247,29 @@ class PropertyAssertAllTest : StringSpec({
       attempts++
       a + b + c + d shouldBe d + c + b + a
     }
-    attempts shouldBe 625
+    attempts shouldBe 50
   }
 
   "assertAll: Four explicit generators failed after 4 attempts" {
     var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
-    var elementD = 0
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
         attempts++
-        elementA = a
-        elementB = b
-        elementC = c
-        elementD = d
         attempts shouldBe lt(4)
       }
     }
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\nafter 4 attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\n3: 0\nafter 4 attempts"
   }
 
   "assertAll: Four explicit generators failed after 50 attempts" {
     var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
-    var elementD = 0
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
-        elementA = a
-        elementB = b
-        elementC = c
-        elementD = d
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
         attempts++
         attempts shouldBe lt(50)
       }
     }
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\nafter 50 attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\n3: 0\nafter 50 attempts"
   }
 
   "assertAll: four implicit generators with default attempts" {
@@ -335,7 +285,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(20) { _: Int, _: Int, _: Int, _: Int ->
       attempts++
     }
-    attempts shouldBe 625
+    attempts shouldBe 20
   }
 
   "assertAll: four implicit generators with 250 attempts" {
@@ -343,7 +293,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(250) { _: Int, _: Int, _: Int, _: Int ->
       attempts++
     }
-    attempts shouldBe 625
+    attempts shouldBe 250
   }
 
   "assertAll: five explicit generators with 999 attempts" {
@@ -351,7 +301,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(999, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
       attempts++
     }
-    attempts shouldBe 3125
+    attempts shouldBe 999
   }
 
   "assertAll: five explicit generators with default attempts" {
@@ -359,53 +309,27 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
       attempts++
     }
-    attempts shouldBe 3125
+    attempts shouldBe 1000
   }
 
   "assertAll: five explicit generators failed after 10 attempts" {
-    var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
-    var elementD = 0
-    var elementE = 0
-
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
-        elementA = a
-        elementB = b
-        elementC = c
-        elementD = d
-        elementE = e
-        attempts++
-        attempts shouldBe lt(10)
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+        attempts() shouldBe lt(10)
       }
     }
 
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\nafter $attempts attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\n3: 0\n4: 0\nafter 10 attempts"
   }
 
   "assertAll: five explicit generators failed after 50 attempts" {
-    var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
-    var elementD = 0
-    var elementE = 0
-
     val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
-        elementA = a
-        elementB = b
-        elementC = c
-        elementD = d
-        elementE = e
-        attempts++
-        attempts shouldBe lt(50)
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
+        attempts() shouldBe lt(50)
       }
     }
 
-    exception.message shouldBe "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\nafter $attempts attempts"
+    exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\n3: 0\n4: 0\nafter 50 attempts"
   }
 
   "assertAll five implicit generators with 7000 attempts" {
@@ -421,7 +345,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Int, _: Int, _: Int, _: Int ->
       attempts++
     }
-    attempts shouldBe 3125
+    attempts shouldBe 1000
   }
 
   "assertAll five implicit generators with 9999 attempts" {
@@ -437,15 +361,15 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
       attempts++
     }
-    attempts shouldBe 15625
+    attempts shouldBe 1000
   }
 
-  "assertAll six explicit arguments with 50 attempts" {
+  "assertAll six explicit arguments with 78 attempts" {
     var attempts = 0
-    assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+    assertAll(78, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
       attempts++
     }
-    attempts shouldBe 15625
+    attempts shouldBe 78
   }
 
   "assertAll six explicit arguments failing at 40 attempts" {
@@ -469,7 +393,7 @@ class PropertyAssertAllTest : StringSpec({
       }
     }
     exception.message shouldBe
-        "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter 40 attempts"
+        "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\n4: $elementE\n5: $elementF\nafter 40 attempts"
   }
 
   "assertAll six explicit arguments failing at 500 attempts" {
@@ -493,7 +417,7 @@ class PropertyAssertAllTest : StringSpec({
       }
     }
     exception.message shouldBe
-        "Property failed for\n$elementA\n$elementB\n$elementC\n$elementD\n$elementE\n$elementF\nafter 500 attempts"
+        "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\n4: $elementE\n5: $elementF\nafter 500 attempts"
   }
 
   "assertAll six explicit arguments with 0 attempts" {
@@ -517,15 +441,15 @@ class PropertyAssertAllTest : StringSpec({
     assertAll(30000) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 32000
+    attempts shouldBe 30000
   }
 
   "assertAll: six implicit arguments 24567 attempts" {
     var attempts = 0
-    assertAll(32400) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
+    assertAll(24567) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 32400
+    attempts shouldBe 24567
   }
 
   "assertAll: six implicit arguments default attempts" {
@@ -533,7 +457,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 32000
+    attempts shouldBe 1000
   }
 
   "sets" {

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.extensions.SpecExtension

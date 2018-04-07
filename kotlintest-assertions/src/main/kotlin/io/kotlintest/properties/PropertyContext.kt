@@ -11,13 +11,13 @@ class PropertyContext {
   private var attempts = 0
   private val counts = ConcurrentHashMap<String, Int>()
 
+  internal fun inc() {
+    attempts++
+  }
+
   fun attempts(): Int = attempts
 
   fun classificationCounts(): Map<String, Int> = counts.toMap()
-
-  fun inc() {
-    attempts++
-  }
 
   fun classify(condition: Boolean, trueLabel: String) {
     if (condition) {

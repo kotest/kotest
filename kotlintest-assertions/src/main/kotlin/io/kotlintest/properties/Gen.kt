@@ -15,7 +15,7 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
 
   private val numBitsGen: Gen<Int> = Gen.choose(0, maxNumBits)
 
-  override fun always(): Iterable<BigInteger> = emptyList()
+  override fun constants(): Iterable<BigInteger> = emptyList()
   override fun random(): Sequence<BigInteger> =
       numBitsGen.random().map { it.toBigInteger() }
 }
@@ -52,7 +52,7 @@ interface Gen<T> {
    * Returns the values that should always be used
    * if this generator is to give complete coverage.
    */
-  fun always(): Iterable<T>
+  fun constants(): Iterable<T>
 
   /**
    * Generate a random sequence of type T, that is compatible
@@ -78,8 +78,12 @@ interface Gen<T> {
   fun filter(f: (T) -> Boolean): Gen<T> {
     val outer = this
     return object : Gen<T> {
-      override fun always(): Iterable<T> = outer.always().filter(f)
+      override fun constants(): Iterable<T> = outer.constants().filter(f)
       override fun random(): Sequence<T> = outer.random().filter(f)
+      override fun shrink(t: T): T {
+        val t2 = outer.shrink(t)
+        return if (f(t2)) t2 else t
+      }
     }
   }
 
@@ -91,7 +95,7 @@ interface Gen<T> {
   fun <U> flatMap(f: (T) -> Gen<U>): Gen<U> {
     val outer = this
     return object : Gen<U> {
-      override fun always(): Iterable<U> = outer.always().flatMap { f(it).always() }
+      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
       override fun random(): Sequence<U> = outer.random().flatMap { f(it).random() }
     }
   }
@@ -102,7 +106,7 @@ interface Gen<T> {
   fun <U> map(f: (T) -> U): Gen<U> {
     val outer = this
     return object : Gen<U> {
-      override fun always(): Iterable<U> = outer.always().map(f)
+      override fun constants(): Iterable<U> = outer.constants().map(f)
       override fun random(): Sequence<U> = outer.random().map(f)
     }
   }
@@ -113,33 +117,34 @@ interface Gen<T> {
   fun orNull(): Gen<T?> {
     val outer = this
     return object : Gen<T?> {
-      override fun always(): Iterable<T?> = outer.always() + listOf(null)
+      override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
       override fun random(): Sequence<T?> = outer.random().map { if (RANDOM.nextBoolean()) null else it }
+      override fun shrink(t: T?): T? = if (t == null) null else outer.shrink(t)
     }
   }
 
   companion object {
 
     fun <A, T> bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> = gena.random().map { createFn(it) }
     }
 
     fun <A, B, T> bind(gena: Gen<A>, genb: Gen<B>, createFn: (A, B) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random().zip(genb.random()).map { createFn(it.first, it.second) }
     }
 
     fun <A, B, C, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, createFn: (A, B, C) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random().zip(genb.random()).zip(genc.random()).map { createFn(it.first.first, it.first.second, it.second) }
     }
 
     fun <A, B, C, D, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
                              createFn: (A, B, C, D) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random()
               .zip(genb.random())
@@ -150,7 +155,7 @@ interface Gen<T> {
 
     fun <A, B, C, D, E, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>,
                                 createFn: (A, B, C, D, E) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random()
               .zip(genb.random())
@@ -162,7 +167,7 @@ interface Gen<T> {
 
     fun <A, B, C, D, E, F, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>,
                                    createFn: (A, B, C, D, E, F) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random()
               .zip(genb.random())
@@ -183,7 +188,7 @@ interface Gen<T> {
 
     fun <A, B, C, D, E, F, G, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, geng: Gen<G>,
                                       createFn: (A, B, C, D, E, F, G) -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> =
           gena.random()
               .zip(genb.random())
@@ -213,7 +218,7 @@ interface Gen<T> {
     fun choose(min: Int, max: Int): Gen<Int> {
       assert(min < max, { "min must be < max" })
       return object : Gen<Int> {
-        override fun always(): Iterable<Int> = emptyList()
+        override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
             generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
       }
@@ -226,7 +231,7 @@ interface Gen<T> {
     fun choose(min: Long, max: Long): Gen<Long> {
       assert(min < max, { "min must be < max" })
       return object : Gen<Long> {
-        override fun always(): Iterable<Long> = emptyList()
+        override fun constants(): Iterable<Long> = emptyList()
         override fun random(): Sequence<Long> = generateSequence { JavaRandoms.internalNextLong(RANDOM, min, max) }
       }
     }
@@ -238,7 +243,7 @@ interface Gen<T> {
      * item in the list.
      */
     fun <T : Any> from(values: List<T>): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> = generateSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
     }
 
@@ -246,7 +251,7 @@ interface Gen<T> {
 
     inline fun <reified T : Enum<T>> enum(): Gen<T> = object : Gen<T> {
       val values = T::class.java.enumConstants.toList()
-      override fun always(): Iterable<T> = values
+      override fun constants(): Iterable<T> = values
       override fun random(): Sequence<T> = from(values).random()
     }
 
@@ -261,8 +266,8 @@ interface Gen<T> {
      * a UTF8 string.
      */
     fun string(): Gen<String> = object : Gen<String> {
-      val literals = listOf("", """\n"""", """\nabc\n123\n""", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
-      override fun always(): Iterable<String> = literals
+      val literals = listOf("\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
+      override fun constants(): Iterable<String> = literals
       override fun random(): Sequence<String> = generateSequence { nextPrintableString(RANDOM.nextInt(100)) }
       override fun shrink(t: String): String = when {
         t.isEmpty() || t.length == 1 -> ""
@@ -279,43 +284,38 @@ interface Gen<T> {
      * the following edge cases: [-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE]
      */
     fun int() = object : Gen<Int> {
-      val literals = listOf(-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE)
-      override fun always(): Iterable<Int> = literals
+      val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE)
+      override fun constants(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
+      override fun shrink(t: Int): Int = when (t) {
+        0 -> 0
+        1, -1 -> 0
+        in 2..10 -> t - 1
+        in -10..-2 -> t + 1
+        else -> t / 2
+      }
     }
 
     /**
      * Returns a stream of values where each value is a randomly
      * chosen positive value. The values returned always include
-     * the following edge cases: [0, 1, Int.MAX_VALUE]
+     * the following edge cases: [Int.MAX_VALUE]
      */
-    fun positiveIntegers(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(0, 1, Int.MAX_VALUE)
-      override fun always(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
-    }
+    fun positiveIntegers(): Gen<Int> = int().filter { it > 0 }
 
     /**
      * Returns a stream of values where each value is a randomly
      * chosen natural number. The values returned always include
-     * the following edge cases: [1, Int.MAX_VALUE]
+     * the following edge cases: [Int.MAX_VALUE]
      */
-    fun nats(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(1, Int.MAX_VALUE)
-      override fun always(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { Math.abs(RANDOM.nextInt()) }
-    }
+    fun nats(): Gen<Int> = int().filter { it >= 0 }
 
     /**
      * Returns a stream of values where each value is a randomly
      * chosen negative value. The values returned always include
-     * the following edge cases: [0, -1, Int.MIN_VALUE]
+     * the following edge cases: [Int.MIN_VALUE]
      */
-    fun negativeIntegers(): Gen<Int> = object : Gen<Int> {
-      val literals = listOf(0, -1, Int.MIN_VALUE)
-      override fun always(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { -Math.abs(RANDOM.nextInt()) }
-    }
+    fun negativeIntegers(): Gen<Int> = int().filter { it < 0 }
 
     /**
      * Returns a stream of values where each value is a randomly
@@ -323,18 +323,18 @@ interface Gen<T> {
      * exist on disk.
      */
     fun file(): Gen<File> = object : Gen<File> {
-      override fun always(): Iterable<File> = emptyList()
+      override fun constants(): Iterable<File> = emptyList()
       override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(RANDOM.nextInt(100))) }
     }
 
     /**
      * Returns a stream of values where each value is a randomly
      * chosen long. The values returned always include
-     * the following edge cases: [-1, 0, 1, Long.MIN_VALUE, Long.MAX_VALUE]
+     * the following edge cases: [Long.MIN_VALUE, Long.MAX_VALUE]
      */
     fun long(): Gen<Long> = object : Gen<Long> {
-      val literals = listOf(-1, 0, 1, Long.MIN_VALUE, Long.MAX_VALUE)
-      override fun always(): Iterable<Long> = literals
+      val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
+      override fun constants(): Iterable<Long> = literals
       override fun random(): Sequence<Long> = generateSequence { Math.abs(RANDOM.nextLong()) }
     }
 
@@ -342,7 +342,7 @@ interface Gen<T> {
      * Returns both boolean values
      */
     fun bool(): Gen<Boolean> = object : Gen<Boolean> {
-      override fun always(): Iterable<Boolean> = listOf(true, false)
+      override fun constants(): Iterable<Boolean> = listOf(true, false)
       override fun random(): Sequence<Boolean> = generateSequence { RANDOM.nextBoolean() }
     }
 
@@ -351,8 +351,8 @@ interface Gen<T> {
      * chosen Double.
      */
     fun double(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(-1.0, 0.0, 1.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
-      override fun always(): Iterable<Double> = literals
+      val literals = listOf(Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+      override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
     }
 
@@ -364,8 +364,8 @@ interface Gen<T> {
      * chosen Float.
      */
     fun float(): Gen<Float> = object : Gen<Float> {
-      val literals = listOf(-1.0F, 0.0F, 1.0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
-      override fun always(): Iterable<Float> = literals
+      val literals = listOf(Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+      override fun constants(): Iterable<Float> = literals
       override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
     }
 
@@ -374,7 +374,7 @@ interface Gen<T> {
      * value is generated from the given function
      */
     inline fun <T : Any> create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = emptyList()
+      override fun constants(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> = generateSequence { fn() }
     }
 
@@ -383,7 +383,7 @@ interface Gen<T> {
      * a set of values generated by the given generator.
      */
     fun <T : Any> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
-      override fun always(): Iterable<Set<T>> = listOf(gen.always().toSet())
+      override fun constants(): Iterable<Set<T>> = listOf(gen.constants().toSet())
       override fun random(): Sequence<Set<T>> = generateSequence {
         val size = RANDOM.nextInt(100)
         gen.random().take(size).toSet()
@@ -395,7 +395,7 @@ interface Gen<T> {
      * a list of values generated by the underlying generator.
      */
     fun <T : Any> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
-      override fun always(): Iterable<List<T>> = listOf(gen.always().toList())
+      override fun constants(): Iterable<List<T>> = listOf(gen.constants().toList())
       override fun random(): Sequence<List<T>> = generateSequence {
         val size = RANDOM.nextInt(100)
         gen.random().take(size).toList()
@@ -407,8 +407,8 @@ interface Gen<T> {
      * a pair generated by the underlying generators.
      */
     fun <K, V> pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = object : Gen<Pair<K, V>> {
-      override fun always(): Iterable<Pair<K, V>> {
-        val keys = genK.always().toList()
+      override fun constants(): Iterable<Pair<K, V>> {
+        val keys = genK.constants().toList()
         return keys.zip(genV.random().take(keys.size).toList())
       }
 
@@ -423,7 +423,7 @@ interface Gen<T> {
      * from the underlying generators.
      */
     fun <K, V> map(genK: Gen<K>, genV: Gen<V>): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
-      override fun always(): Iterable<Map<K, V>> = emptyList()
+      override fun constants(): Iterable<Map<K, V>> = emptyList()
       override fun random(): Sequence<Map<K, V>> = generateSequence {
         val size = RANDOM.nextInt(100)
         genK.random().take(size).zip(genV.random().take(size)).toMap()
@@ -431,7 +431,7 @@ interface Gen<T> {
     }
 
     fun <T : Any> constant(value: T): Gen<T> = object : Gen<T> {
-      override fun always(): Iterable<T> = listOf(value)
+      override fun constants(): Iterable<T> = listOf(value)
       override fun random(): Sequence<T> = generateSequence { value }
     }
 
@@ -510,7 +510,7 @@ interface Gen<T> {
  */
 @Deprecated("use Gen.constant")
 data class ConstGen<T : Any>(val value: T) : Gen<T> {
-  override fun always(): Iterable<T> = listOf(value)
+  override fun constants(): Iterable<T> = listOf(value)
   override fun random(): Sequence<T> = generateSequence { value }
 }
 
@@ -535,7 +535,7 @@ abstract class TypeReference<T> : Comparable<TypeReference<T>> {
 inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
   val outer = this
   return object : Gen<U> {
-    override fun always(): Iterable<U> = outer.always().filterIsInstance<U>()
+    override fun constants(): Iterable<U> = outer.constants().filterIsInstance<U>()
     override fun random(): Sequence<U> = outer.random().filterIsInstance<U>()
   }
 }

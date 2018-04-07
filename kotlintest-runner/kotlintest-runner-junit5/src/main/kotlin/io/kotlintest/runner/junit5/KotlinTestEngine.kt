@@ -76,6 +76,7 @@ class KotlinTestEngine : TestEngine {
     })
   }
 
+  @Suppress("DEPRECATION")
   private fun runSpecInterception(scope: SpecScope, afterInterception: () -> Unit) {
     val listeners = listOf(scope.spec) + scope.spec.listeners() + Project.listeners()
     listeners.forEach {
@@ -136,6 +137,7 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
+  @Suppress("DEPRECATION")
   private fun runTest(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
 
     val listeners = listOf(descriptor.testCase.spec) + descriptor.testCase.spec.listeners() + Project.listeners()

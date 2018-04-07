@@ -16,7 +16,7 @@ fun <A> forNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boo
       throw AssertionError("Property passed for\n$a\nafter ${context.attempts()} attempts")
     }
   }
-  for (a in gena.always()) {
+  for (a in gena.constants()) {
     test(a)
   }
   val avalues = gena.random().iterator()
@@ -46,8 +46,8 @@ fun <A, B> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyCont
       throw AssertionError("Property passed for\n$a\n$b\nafter ${context.attempts()} attempts")
     }
   }
-  for (a in gena.always()) {
-    for (b in genb.always()) {
+  for (a in gena.constants()) {
+    for (b in genb.constants()) {
       test(a, b)
     }
   }
@@ -75,9 +75,9 @@ fun <A, B, C> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyCont
 fun <A, B, C> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
-  for (a in gena.always()) {
-    for (b in genb.always()) {
-      for (c in genc.always()) {
+  for (a in gena.constants()) {
+    for (b in genb.constants()) {
+      for (c in genc.constants()) {
         context.inc()
         val passed = context.fn(a, b, c)
         if (passed) {
@@ -122,10 +122,10 @@ fun <A, B, C, D> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
       throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\nafter ${context.attempts()} attempts")
     }
   }
-  for (a in gena.always()) {
-    for (b in genb.always()) {
-      for (c in genc.always()) {
-        for (d in gend.always()) {
+  for (a in gena.constants()) {
+    for (b in genb.constants()) {
+      for (c in genc.constants()) {
+        for (d in gend.constants()) {
           test(a, b, c, d)
         }
       }
@@ -161,11 +161,11 @@ fun <A, B, C, D, E> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: G
       throw AssertionError("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter ${context.attempts()} attempts")
     }
   }
-  for (a in gena.always()) {
-    for (b in genb.always()) {
-      for (c in genc.always()) {
-        for (d in gend.always()) {
-          for (e in gene.always()) {
+  for (a in gena.constants()) {
+    for (b in genb.constants()) {
+      for (c in genc.constants()) {
+        for (d in gend.constants()) {
+          for (e in gene.constants()) {
             test(a, b, c, d, e)
           }
         }
@@ -212,12 +212,12 @@ fun <A, B, C, D, E, F> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
     }
   }
 
-  for (a in gena.always()) {
-    for (b in genb.always()) {
-      for (c in genc.always()) {
-        for (d in gend.always()) {
-          for (e in gene.always()) {
-            for (f in genf.always()) {
+  for (a in gena.constants()) {
+    for (b in genb.constants()) {
+      for (c in genc.constants()) {
+        for (d in gend.constants()) {
+          for (e in gene.constants()) {
+            for (f in genf.constants()) {
               test(a, b, c, d, e, f)
             }
           }
