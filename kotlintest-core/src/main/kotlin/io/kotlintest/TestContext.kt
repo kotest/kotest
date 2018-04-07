@@ -39,4 +39,9 @@ interface TestContext {
    * The [TestScope] associated with the current execution
    */
   fun currentScope(): TestScope
+
+  /**
+   * The description of the current scope.
+   */
+  fun description(): Description
 }

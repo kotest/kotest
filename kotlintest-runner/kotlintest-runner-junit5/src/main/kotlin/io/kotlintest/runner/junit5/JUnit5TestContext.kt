@@ -1,5 +1,6 @@
 package io.kotlintest.runner.junit5
 
+import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.TestContainer
 import io.kotlintest.TestContext
@@ -16,6 +17,8 @@ import org.junit.platform.engine.TestDescriptor
 class JUnit5TestContext(private val descriptor: TestDescriptor,
                         private val listener: EngineExecutionListener,
                         private val scope: TestScope) : FutureAwareTestContext() {
+
+  override fun description(): Description = scope.description()
 
   override fun currentScope(): TestScope = scope
 

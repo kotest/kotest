@@ -1,5 +1,6 @@
 package io.kotlintest.runner.junit5
 
+import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestScope
@@ -59,15 +60,17 @@ abstract class FutureAwareTestContext : TestContext {
 }
 
 class TestCaseContext(val testCase: TestCase) : FutureAwareTestContext() {
+  override fun description(): Description = testCase.description
   override fun currentScope(): TestScope = testCase
   override fun addScope(scope: TestScope): TestScope = throw UnsupportedOperationException()
 }
 
 class AccumulatingTestContext(val scope: TestScope) : FutureAwareTestContext() {
 
-  override fun currentScope(): TestScope = scope
-
   val scopes = mutableListOf<TestScope>()
+
+  override fun currentScope(): TestScope = scope
+  override fun description(): Description = scope.description()
 
   override fun addScope(scope: TestScope): TestScope {
     scopes.add(scope)
