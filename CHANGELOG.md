@@ -6,37 +6,6 @@ This project follows [semantic versioning](http://semver.org/).
 Version 3.1.x - In Progress
 ----------
 
-* **System out / error extensions**
-
-An extension that allows you to test for a function that writes to System.out or System.err.
-By adding the `NoSystemOutListener` or `NoSystemErrListener` to your config or spec classes, anytime a function tries to write
- to either of these streams, a `SystemOutWriteException` or `SystemErrWriteException` will be raised with the string that
- the function tried to write. This allows you to test for the exception in your code.
-
-For example:
-
-```kotlin
-class NoSystemOutOrErrTest : StringSpec() {
-
-  override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
-
-  init {
-
-    "System.out should throw an exception when the listener is added" {
-      shouldThrow<SystemOutWriteException> {
-        System.out.println("boom")
-      }.str shouldBe "boom"
-    }
-
-    "System.err should throw an exception when the listener is added" {
-      shouldThrow<SystemErrWriteException> {
-        System.err.println("boom")
-      }.str shouldBe "boom"
-    }
-  }
-}
-```
-
 * **Dozens of new Matchers**
 
 * Numbers - Even / Odd / beInRange
@@ -146,9 +115,12 @@ forAll(Gen.int()) { a ->
 ```
 
 This will output something like:
+
+```
 51.60% even number
 48.40% odd number
 0.10% zero
+```
 
 * **Property Testing: Shrinking**
 
@@ -159,29 +131,81 @@ allows you to extend the way new instances of `Spec` are created. By default, a 
 function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
 now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class.
 
+* **System out / error extensions**
+
+An extension that allows you to test for a function that writes to System.out or System.err. To use this extension add
+ the module `kotlintest-extensions-system` to your build.
+
+By adding the `NoSystemOutListener` or `NoSystemErrListener` to your config or spec classes, anytime a function tries to write
+ to either of these streams, a `SystemOutWriteException` or `SystemErrWriteException` will be raised with the string that
+ the function tried to write. This allows you to test for the exception in your code.
+
+For example:
 
 ```kotlin
-data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
+class NoSystemOutOrErrTest : StringSpec() {
 
-val gen = Gen.bind(
-    Gen.string(),
-    Gen.positiveIntegers(),
-    Gen.double().filter { it > 0 },
-    Gen.negativeIntegers(),
-    ::FooD
-)
+  override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
 
-assertAll(gen) {
-  it.a shouldNotBe null
-  it.b should beGreaterThan(0)
-  it.c should gtd(0.0)
-  it.d should beLessThan(0)
+  init {
+
+    "System.out should throw an exception when the listener is added" {
+      shouldThrow<SystemOutWriteException> {
+        System.out.println("boom")
+      }.str shouldBe "boom"
+    }
+
+    "System.err should throw an exception when the listener is added" {
+      shouldThrow<SystemErrWriteException> {
+        System.err.println("boom")
+      }.str shouldBe "boom"
+    }
+  }
 }
 ```
 
 * **System.exit extension**
 
+Another extension that is part of the `kotlintest-extensions-system` module. This extension will allow you to test
+ if `System.exit(Int)` is invoked in a function. It achieves this by intercepting any calls to System.exit and instead
+ of terminating the JVM, it will throw a `SystemExitException` with the exit code.
+
+For example:
+
+```kotlin
+class SystemExitTest : StringSpec() {
+
+  override fun listeners() = listOf(SpecSystemExitListener)
+
+  init {
+
+    "System.exit should throw an exception when the listener is added" {
+      shouldThrow<SystemExitException> {
+        System.exit(123)
+      }.exitCode shouldBe 123
+    }
+  }
+}
+```
+
 * **Spring Module Updates**
+
+The spring extension module `kotlintest-extensions-spring` has been updated to allow for constructor injection.
+This new extension is called `SpringAutowireConstructorExtension` and must be added to your `ProjectConfig.
+Then you can use injected dependencies directly in the primary constructor of your test class.
+
+For example:
+
+```kotlin
+@ContextConfiguration(classes = [(Components::class)])
+class SpringAutowiredConstructorTest(service: UserService) : WordSpec({
+  "SpringListener" should {
+    "have autowired the service" {
+      service.repository.findUser().name shouldBe "system_user"
+    }
+  }
+})
+```
 
 Version 3.0.x - March 29 2018
 -------------

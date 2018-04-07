@@ -1,7 +1,5 @@
 package io.kotlintest.spring
 
-import io.kotlintest.samples.spring.Components
-import io.kotlintest.samples.spring.UserService
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.springframework.test.context.ContextConfiguration

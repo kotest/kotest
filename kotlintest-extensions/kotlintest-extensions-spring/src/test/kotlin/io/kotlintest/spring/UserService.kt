@@ -1,4 +1,4 @@
-package io.kotlintest.samples.spring
+package io.kotlintest.spring
 
 import org.springframework.stereotype.Component
 
