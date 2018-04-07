@@ -120,6 +120,90 @@ interface Gen<T> {
 
   companion object {
 
+    fun <A, T> bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> = gena.random().map { createFn(it) }
+    }
+
+    fun <A, B, T> bind(gena: Gen<A>, genb: Gen<B>, createFn: (A, B) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random().zip(genb.random()).map { createFn(it.first, it.second) }
+    }
+
+    fun <A, B, C, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, createFn: (A, B, C) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random().zip(genb.random()).zip(genc.random()).map { createFn(it.first.first, it.first.second, it.second) }
+    }
+
+    fun <A, B, C, D, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
+                             createFn: (A, B, C, D) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random()
+              .zip(genb.random())
+              .zip(genc.random())
+              .zip(gend.random())
+              .map { createFn(it.first.first.first, it.first.first.second, it.first.second, it.second) }
+    }
+
+    fun <A, B, C, D, E, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>,
+                                createFn: (A, B, C, D, E) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random()
+              .zip(genb.random())
+              .zip(genc.random())
+              .zip(gend.random())
+              .zip(gene.random())
+              .map { createFn(it.first.first.first.first, it.first.first.first.second, it.first.first.second, it.first.second, it.second) }
+    }
+
+    fun <A, B, C, D, E, F, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>,
+                                   createFn: (A, B, C, D, E, F) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random()
+              .zip(genb.random())
+              .zip(genc.random())
+              .zip(gend.random())
+              .zip(gene.random())
+              .zip(genf.random())
+              .map {
+                createFn(
+                    it.first.first.first.first.first,
+                    it.first.first.first.first.second,
+                    it.first.first.first.second,
+                    it.first.first.second,
+                    it.first.second,
+                    it.second)
+              }
+    }
+
+    fun <A, B, C, D, E, F, G, T> bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, geng: Gen<G>,
+                                      createFn: (A, B, C, D, E, F, G) -> T): Gen<T> = object : Gen<T> {
+      override fun always(): Iterable<T> = emptyList()
+      override fun random(): Sequence<T> =
+          gena.random()
+              .zip(genb.random())
+              .zip(genc.random())
+              .zip(gend.random())
+              .zip(gene.random())
+              .zip(genf.random())
+              .zip(geng.random())
+              .map {
+                createFn(
+                    it.first.first.first.first.first.first,
+                    it.first.first.first.first.first.second,
+                    it.first.first.first.first.second,
+                    it.first.first.first.second,
+                    it.first.first.second,
+                    it.first.second,
+                    it.second)
+              }
+    }
+
     fun bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
 
     /**
