@@ -36,24 +36,17 @@ class NoSystemOutOrErrTest : StringSpec() {
 }
 ```
 
-* **Spec Instantiation Extensions**
-
-Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T>): Spec?` has been added which
-allows you to extend the way new instances of `Spec` are created. By default, a no-args constructor is assumed. However, if this
-function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
-now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class.
-
 * **Rafts of new Matchers**
 
 * Numbers - Even / Odd / beInRange
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
 * URI matchers - haveScheme / havePort / haveHost / haveParameter / haveFragment
-* File matchers - startsWithPath(prefix), hidden, readable, writable, executable, absolute, relative
+* File matchers - startWithPath(prefix), hidden, readable, writable, executable, absolute, relative
 * General - haveSameHashCode
-* Collections - containNull, haveDuplicates
+* Collections - containNull, haveDuplicates, haveElementAt
 * Futures - beCompleted, beCancelled
-* String - haveLineCount, contain(regex)
-* Types - haveAnnotation
+* String - haveLineCount, contain(regex), haveSameLengthAs(otherstring)
+* Types - haveAnnotation(class)
 
 * **Arrow matcher module**
 
@@ -66,6 +59,18 @@ Either: Test that an either has either right or left value. For example `myeithe
 NonEmptyList: A collection (no pun intended) of matchers for Arrow's `NonEmptyList`. These mostly mirror the equivalent `Collection` matchers but for NELs. Such as `nel should contain("foo")`, `nel should haveSize(4)`, `nel should containNull()` and so on.
 
 * **Generator Bind**
+
+* **Property Testing: Classify**
+
+* **Property Testing: Shrinking**
+
+* **Spec Instantiation Extensions**
+
+Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T>): Spec?` has been added which
+allows you to extend the way new instances of `Spec` are created. By default, a no-args constructor is assumed. However, if this
+function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
+now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class.
+
 
 ```kotlin
 data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
