@@ -33,7 +33,7 @@ fun shouldFail(thunk: () -> Any?) {
     false
   }
   if (passed)
-    throw AssertionError("This block should fail")
+    throw AssertionError("This block should fail by throwing by exception but not exception was thrown")
 }
 
 /**

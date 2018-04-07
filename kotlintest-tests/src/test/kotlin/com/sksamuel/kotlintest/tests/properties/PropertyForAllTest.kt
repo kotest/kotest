@@ -1,7 +1,9 @@
-package io.kotlintest.properties
+package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
@@ -527,22 +529,13 @@ class PropertyForAllTest : StringSpec() {
       exception.message shouldBe "Iterations should be a positive number"
     }
 
-    "forAll: six implicit arguments 30000 attempts" {
+    "forAll: six implicit arguments 32045 attempts" {
       var attempts = 0
-      forAll(30000) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
+      forAll(32045) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
         attempts++
         true
       }
-      attempts shouldBe 30000
-    }
-
-    "forAll: six implicit arguments 24567 attempts" {
-      var attempts = 0
-      forAll(24567) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
-        attempts++
-        true
-      }
-      attempts shouldBe 24567
+      attempts shouldBe 32045
     }
 
     "forAll: six implicit arguments default attempts" {
@@ -551,7 +544,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 24000
+      attempts shouldBe 32000
     }
 
     "sets" {

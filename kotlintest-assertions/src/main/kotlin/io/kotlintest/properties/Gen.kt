@@ -242,7 +242,7 @@ interface Gen<T> {
       override fun random(): Sequence<T> = generateSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
     }
 
-    fun <T: Any> from(values: Array<T>): Gen<T> = from(values.toList())
+    fun <T : Any> from(values: Array<T>): Gen<T> = from(values.toList())
 
     inline fun <reified T : Enum<T>> enum(): Gen<T> = object : Gen<T> {
       val values = T::class.java.enumConstants.toList()
@@ -252,13 +252,25 @@ interface Gen<T> {
 
     /**
      * Returns a stream of values where each value is a random
-     * printed string. In addition the empty string, a multi line string
-     * and a UTF8 string is always included.
+     * printed string.
+     *
+     * The constant values are:
+     * The empty string
+     * A line separator
+     * Multi-line string
+     * a UTF8 string.
      */
     fun string(): Gen<String> = object : Gen<String> {
-      val literals = listOf("", """\nabc\n123\n""", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
+      val literals = listOf("", """\n"""", """\nabc\n123\n""", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
       override fun always(): Iterable<String> = literals
       override fun random(): Sequence<String> = generateSequence { nextPrintableString(RANDOM.nextInt(100)) }
+      override fun shrink(t: String): String = when {
+        t.isEmpty() || t.length == 1 -> ""
+        else -> {
+          val length = t.length / 2
+          t.take(length)
+        }
+      }
     }
 
     /**

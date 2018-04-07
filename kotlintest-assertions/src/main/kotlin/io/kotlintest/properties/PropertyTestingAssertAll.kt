@@ -11,7 +11,11 @@ fun <A> assertAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> U
   val context = PropertyContext()
   fun test(a: A) {
     context.inc()
-    context.fn(a)
+    try {
+      context.fn(a)
+    } catch (e: AssertionError) {
+      throw PropertyAssertionError(e, context.attempts(), listOf(a))
+    }
   }
   for (a in gena.always()) {
     test(a)
@@ -35,7 +39,11 @@ fun <A, B> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyCo
   val context = PropertyContext()
   fun test(a: A, b: B) {
     context.inc()
-    context.fn(a, b)
+    try {
+      context.fn(a, b)
+    } catch (e: AssertionError) {
+      throw PropertyAssertionError(e, context.attempts(), listOf(a, b))
+    }
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -67,7 +75,11 @@ fun <A, B, C> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C
     for (b in genb.always()) {
       for (c in genc.always()) {
         context.inc()
-        context.fn(a, b, c)
+        try {
+          context.fn(a, b, c)
+        } catch (e: AssertionError) {
+          throw PropertyAssertionError(e, context.attempts(), listOf(a, b, c))
+        }
       }
     }
   }
@@ -101,7 +113,11 @@ fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Ge
   val context = PropertyContext()
   fun test(a: A, b: B, c: C, d: D) {
     context.inc()
-    context.fn(a, b, c, d)
+    try {
+      context.fn(a, b, c, d)
+    } catch (e: AssertionError) {
+      throw PropertyAssertionError(e, context.attempts(), listOf(a, b, c, d))
+    }
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -138,7 +154,11 @@ fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc:
   val context = PropertyContext()
   fun test(a: A, b: B, c: C, d: D, e: E) {
     context.inc()
-    context.fn(a, b, c, d, e)
+    try {
+      context.fn(a, b, c, d, e)
+    } catch (ex: AssertionError) {
+      throw PropertyAssertionError(ex, context.attempts(), listOf(a, b, c, d, e))
+    }
   }
   for (a in gena.always()) {
     for (b in genb.always()) {
@@ -178,14 +198,19 @@ inline fun <reified A, reified B, reified C, reified D, reified E, reified F> as
 fun <A, B, C, D, E, F> assertAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) =
     assertAll(1000, gena, genb, genc, gend, gene, genf, fn)
 
-fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) {
+fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>,
+                                 fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
 
   val context = PropertyContext()
 
   fun test(a: A, b: B, c: C, d: D, e: E, f: F) {
     context.inc()
-    context.fn(a, b, c, d, e, f)
+    try {
+      context.fn(a, b, c, d, e, f)
+    } catch (x: AssertionError) {
+      throw PropertyAssertionError(x, context.attempts(), listOf(a, b, c, d, e, f))
+    }
   }
 
   for (a in gena.always()) {

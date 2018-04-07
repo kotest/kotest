@@ -1,14 +1,14 @@
-package io.kotlintest.properties
+package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.matchers.gt
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forNone
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 
 class PropertyForNoneTest : StringSpec() {
   init {
-
-
 
     "forNoneTestStrings" {
       forNone { a: String, b: String ->
