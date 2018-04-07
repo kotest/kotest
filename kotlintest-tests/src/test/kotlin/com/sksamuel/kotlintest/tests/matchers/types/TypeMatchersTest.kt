@@ -3,13 +3,14 @@ package com.sksamuel.kotlintest.tests.matchers.types
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.matchers.should
+import io.kotlintest.should
 import io.kotlintest.matchers.types.haveAnnotation
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.Test
 import java.util.*
 
+@Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
 
   @Test

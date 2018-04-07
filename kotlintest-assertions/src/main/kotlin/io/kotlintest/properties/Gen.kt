@@ -341,6 +341,9 @@ interface Gen<T> {
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
     }
 
+    fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
+    fun negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
+
     /**
      * Returns a stream of values where each value is a randomly
      * chosen Float.

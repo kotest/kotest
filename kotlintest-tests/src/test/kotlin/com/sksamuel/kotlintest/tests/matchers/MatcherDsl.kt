@@ -4,8 +4,8 @@ import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.exactly
 import io.kotlintest.matchers.file.haveExtension
 import io.kotlintest.matchers.plusOrMinus
-import io.kotlintest.matchers.should
 import io.kotlintest.matchers.startWith
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import java.io.File

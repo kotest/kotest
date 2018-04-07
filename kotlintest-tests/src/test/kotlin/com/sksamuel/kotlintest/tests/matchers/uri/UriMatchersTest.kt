@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.tests.matchers.uri
 
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldNot
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import io.kotlintest.matchers.uri.haveFragment
 import io.kotlintest.matchers.uri.haveHost
 import io.kotlintest.matchers.uri.haveParameter

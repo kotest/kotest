@@ -4,8 +4,8 @@ import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.string.include
 import io.kotlintest.matchers.match
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldNot
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import io.kotlintest.matchers.startWith
 import io.kotlintest.matchers.string.beBlank
 import io.kotlintest.matchers.string.beEmpty

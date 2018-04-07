@@ -7,9 +7,6 @@ import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.substring
 import io.kotlintest.properties.Gen
-import io.kotlintest.properties.filter
-import io.kotlintest.properties.map
-import io.kotlintest.properties.orNull
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave

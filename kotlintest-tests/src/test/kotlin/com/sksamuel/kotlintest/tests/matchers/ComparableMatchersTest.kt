@@ -10,8 +10,8 @@ import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.lte
-import io.kotlintest.matchers.should
-import io.kotlintest.matchers.shouldNot
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import io.kotlintest.properties.assertAll
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
@@ -19,7 +19,7 @@ import io.kotlintest.shouldThrow
 
 class ComparableMatchersTest : FreeSpec() {
 
-  class ComparableExample(val underlying: Int) : Comparable<ComparableExample> {
+  class ComparableExample(private val underlying: Int) : Comparable<ComparableExample> {
     override fun compareTo(other: ComparableExample): Int {
       return when {
         underlying == other.underlying -> 0
