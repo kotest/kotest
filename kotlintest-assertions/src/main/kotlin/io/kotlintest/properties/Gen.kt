@@ -361,7 +361,7 @@ interface Gen<T> {
      * Returns a stream of values, where each
      * value is generated from the given function
      */
-    fun <T : Any> create(fn: () -> T): Gen<T> = object : Gen<T> {
+    inline fun <T : Any> create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
       override fun always(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> = generateSequence { fn() }
     }
