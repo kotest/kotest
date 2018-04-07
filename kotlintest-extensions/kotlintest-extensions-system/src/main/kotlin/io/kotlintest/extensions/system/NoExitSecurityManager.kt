@@ -15,6 +15,7 @@ class SystemExitException(val exitCode: Int) : RuntimeException()
  * https://github.com/stefanbirkner/system-rules/blob/72250d0451f9f1a5c5852502b5e9b0c874aeab42/src/main/java/org/junit/contrib/java/lang/system/internal/NoExitSecurityManager.java
  * Apache Licensed.
  */
+@Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class NoExitSecurityManager(private val originalSecurityManager: SecurityManager?) : SecurityManager() {
 
   override fun checkExit(status: Int) = throw SystemExitException(status)

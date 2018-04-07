@@ -4,9 +4,10 @@ import io.kotlintest.Spec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AbstractFreeSpec
 
+@Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class FreeSpecTest : AbstractFreeSpec() {
 
-  var count = 0
+  private var count = 0
 
   override fun interceptSpec(spec: Spec, process: () -> Unit) {
     super.interceptSpec(spec, process)

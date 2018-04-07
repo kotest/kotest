@@ -3,8 +3,8 @@ package com.sksamuel.kotlintest.tests.matchers
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.haveSameHashCode
 import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.should
 import io.kotlintest.specs.FreeSpec
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
@@ -48,7 +48,7 @@ class MatchersTest : FreeSpec() {
           name shouldBe null
         }
         shouldThrow<AssertionError> {
-          val name: String = "notnull"
+          val name = "notnull"
           name shouldBe null
         }
       }

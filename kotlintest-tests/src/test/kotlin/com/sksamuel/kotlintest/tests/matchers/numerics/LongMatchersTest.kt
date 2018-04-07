@@ -5,8 +5,8 @@ import io.kotlintest.matchers.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.beLessThanOrEqualTo
 import io.kotlintest.matchers.between
-import io.kotlintest.matchers.should
 import io.kotlintest.specs.StringSpec
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.tables.forAll

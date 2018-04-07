@@ -4,6 +4,7 @@ import io.kotlintest.Spec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
+@Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class LateinitSpecInterceptorStringSpecTest : StringSpec() {
 
   private lateinit var string: String
