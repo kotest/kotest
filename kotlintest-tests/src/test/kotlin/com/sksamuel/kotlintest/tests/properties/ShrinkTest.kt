@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.lte
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
@@ -47,5 +48,21 @@ class ShrinkTest : StringSpec({
         a + b + c + d shouldBe 4
       }
     }.message shouldBe "Property failed for\n0: -1\n1: -1\n2: -1\n3: -1\nafter 1 attempts"
+  }
+
+  "should report shrinked values for arity 1 doubles" {
+    shouldThrowAny {
+      assertAll(Gen.double()) { a ->
+        a shouldBe lt(3.0)
+      }
+    }.message shouldBe "Property failed for\n0: 3.999999999999999\nafter 2 attempts"
+  }
+
+  "should report shrinked values for choose" {
+    shouldThrowAny {
+      assertAll(Gen.choose(5, 15)) { a ->
+        a shouldBe lte(7)
+      }
+    }.message shouldBe "Property failed for\n0: 8\nafter 1 attempts"
   }
 })

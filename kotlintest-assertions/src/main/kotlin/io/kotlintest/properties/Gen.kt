@@ -221,6 +221,14 @@ interface Gen<T> {
         override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
             generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
+
+        override fun shrink(t: Int): Int = when (t) {
+          min -> min
+          else -> {
+            val gap = (t - min)
+            if (gap < 10) t - 1 else t - ((t - min) / 2)
+          }
+        }
       }
     }
 
@@ -354,6 +362,13 @@ interface Gen<T> {
       val literals = listOf(Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun shrink(t: Double): Double = when (t) {
+        0.0 -> 0.0
+        1.0, -1.0 -> 0.0
+        in 2..10 -> t - 1
+        in -10..-2 -> t + 1
+        else -> t / 2
+      }
     }
 
     fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
