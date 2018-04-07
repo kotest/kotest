@@ -231,6 +231,7 @@ interface Gen<T> {
       }
     }
 
+
     /**
      * Adapts a list into a generator, where random
      * values will be picked. May not choose every
@@ -240,6 +241,8 @@ interface Gen<T> {
       override fun always(): Iterable<T> = emptyList()
       override fun random(): Sequence<T> = generateSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
     }
+
+    fun <T: Any> from(values: Array<T>): Gen<T> = from(values.toList())
 
     inline fun <reified T : Enum<T>> enum(): Gen<T> = object : Gen<T> {
       val values = T::class.java.enumConstants.toList()
