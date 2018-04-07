@@ -292,7 +292,7 @@ interface Gen<T> {
      * the following edge cases: [-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE]
      */
     fun int() = object : Gen<Int> {
-      val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE)
+      val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
       override fun constants(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
       override fun shrink(t: Int): Int = when (t) {
@@ -510,7 +510,7 @@ interface Gen<T> {
    * from the ASCII range 33-126.
    */
   private fun Random.nextPrintableChar(): Char {
-    val low = 33
+    val low = 32
     val high = 127
     return (nextInt(high - low) + low).toChar()
   }

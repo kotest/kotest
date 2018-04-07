@@ -14,7 +14,7 @@ import io.kotlintest.matchers.doubles.beGreaterThan as gtd
 class GenBindTest : StringSpec({
 
   data class FooA(val a: String)
-  data class FooB(val a: String, val b: Int)
+  data class User(val email: String, val id: Int)
   data class FooC(val a: String, val b: Int, val c: Double)
   data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
   data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
@@ -27,10 +27,10 @@ class GenBindTest : StringSpec({
   }
 
   "Gen.bindB" {
-    val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), ::FooB)
+    val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), ::User)
     assertAll(gen) {
-      it.a shouldNotBe null
-      it.b should beGreaterThan(0)
+      it.email shouldNotBe null
+      it.id should beGreaterThan(0)
     }
   }
 

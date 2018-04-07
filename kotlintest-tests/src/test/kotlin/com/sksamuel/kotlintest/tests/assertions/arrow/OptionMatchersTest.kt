@@ -22,7 +22,8 @@ class OptionMatchersTest : WordSpec() {
           Option.pure("boo") shouldBe some("foo")
         }.message shouldBe "Option should be Some(foo) but was Some(boo)"
 
-        Option.pure("foo") shouldBe some("foo")
+        val option = Option.pure("foo")
+        option shouldBe some("foo")
       }
     }
 

@@ -74,16 +74,6 @@ class NelMatchersTest : WordSpec() {
       }
     }
 
-    "contain" should {
-      "test that a collection contains element x"  {
-        val col = NonEmptyList.of(1, 2, 3)
-        shouldThrow<AssertionError> {
-          col should contain(4)
-        }
-        col should contain(2)
-      }
-    }
-
     "containNoNulls" should {
       "test that a collection contains zero nulls"  {
         NonEmptyList.of(1, 2, 3) should containNoNulls()

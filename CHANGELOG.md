@@ -8,9 +8,10 @@ Version 3.1.x - In Progress
 
 * **System out / error extensions**
 
-Allows you to test that a function doesn't use System.out or System.err. By adding the `NoSystemOutListener` or `NoSystemErrListener`
-to your config or spec classes, anytime someone tries to write to either of these streams, an exception will be raised. This allows
-you to test for the exception in your code.
+An extension that allows you to test for a function that writes to System.out or System.err.
+By adding the `NoSystemOutListener` or `NoSystemErrListener` to your config or spec classes, anytime a function tries to write
+ to either of these streams, a `SystemOutWriteException` or `SystemErrWriteException` will be raised with the string that
+ the function tried to write. This allows you to test for the exception in your code.
 
 For example:
 
@@ -24,19 +25,19 @@ class NoSystemOutOrErrTest : StringSpec() {
     "System.out should throw an exception when the listener is added" {
       shouldThrow<SystemOutWriteException> {
         System.out.println("boom")
-      }
+      }.str shouldBe "boom"
     }
 
     "System.err should throw an exception when the listener is added" {
       shouldThrow<SystemErrWriteException> {
         System.err.println("boom")
-      }
+      }.str shouldBe "boom"
     }
   }
 }
 ```
 
-* **Rafts of new Matchers**
+* **Dozens of new Matchers**
 
 * Numbers - Even / Odd / beInRange
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
@@ -50,17 +51,104 @@ class NoSystemOutOrErrTest : StringSpec() {
 
 * **Arrow matcher module**
 
-A new module has been added which includes matchers for [Arrow](http://arrow-kt.io) - popular and awesome functional programming library for Kotlin.
+A new module has been added which includes matchers for [Arrow](http://arrow-kt.io) - the popular and awesome
+ functional programming library for Kotlin. To include this module add `kotlintest-assertions-arrow` to your build.
 
-Option: Test that an option has the given value. For example `someOption shouldBe None` or `someOption shouldBe Some(t)`
+The included matchers are:
 
-Either: Test that an either has either right or left value. For example `myeither shouldBe right("foo")` or `myeither shouldBe left("foo")`
+_Options_ - Test that an `Option` has the given value. For example:
 
-NonEmptyList: A collection (no pun intended) of matchers for Arrow's `NonEmptyList`. These mostly mirror the equivalent `Collection` matchers but for NELs. Such as `nel should contain("foo")`, `nel should haveSize(4)`, `nel should containNull()` and so on.
+```kotlin
+val option = Option.pure("foo")
+option shouldBe some("foo")
+```
+
+_Eithers_- Test that an `Either` is either a `Right` or `Left`. For example:
+
+```kotlin
+Either.right("boo") shouldBe right("boo")
+Either.left("boo") shouldBe left("boo")
+```
+
+_NonEmptyList_- A collection (no pun intended) of matchers for Arrow's `NonEmptyList`.
+These mostly mirror the equivalent `Collection` matchers but for NELs. For example:
+
+```kotlin
+NonEmptyList.of(1, 2, null) should containNull()
+NonEmptyList.of(1, 2, 3, 4) shouldBe sorted<Int>()
+NonEmptyList.of(1, 2, 3, 3) should haveDuplicates()
+NonEmptyList.of(1) shouldBe singleElement(1)
+NonEmptyList.of(1, 2, 3) should contain(2)
+NonEmptyList.of(1, 2, 3) should haveSize(3)
+NonEmptyList.of(1, 2, 3) should containNoNulls()
+NonEmptyList.of(null, null, null) should containOnlyNulls()
+NonEmptyList.of(1, 2, 3, 4, 5) should containAll(3, 2, 1)
+```
+
+_Trys_ - Test that a `Try` is either `Success` or `Failure`.
+
+```kotlin
+Try.Success("foo") shouldBe success("foo")
+Try.Failure<Nothing>(RuntimeException()) shouldBe failure()
+```
 
 * **Generator Bind**
 
+A powerful way of generating random class instances from primitive generators is to use the new `bind` function.
+A simple example is to take a data class of two fields, and then use two base generators and bind them to create
+random values of that class.
+
+```kotlin
+data class User(val email: String, val id: Int)
+
+val userGen = Gen.bind(Gen.string(), Gen.positiveIntegers(), ::User)
+
+assertAll(userGen) {
+  it.email shouldNotBe null
+  it.id should beGreaterThan(0)
+}
+```
+
 * **Property Testing: Classify**
+
+When using property testing, it can be useful to see the distribution of values generated, to ensure you're getting
+ a good spread of values and not just trival ones. For example, you might want to run a test on a String and you want to
+ ensure you're getting good amounts of strings with whitespace.
+
+To generate stats on the distribution, use classify with a predicate, a label if the predicate passes, and a label
+ if the predicate fails. For example:
+
+```kotlin
+assertAll(Gen.string()) { a ->
+    classify(a.contains(" "), "has whitespace", "no whitespace")
+    // some test
+}
+```
+
+And this will output something like:
+
+```
+63.70% no whitespace
+36.30% has whitespace
+```
+
+So we can see we're getting a good spread of both types of value.
+
+You don't have to include two labels if you just wish to tag the "true" case, and you can include more than one
+ classification. For example:
+
+```kotlin
+forAll(Gen.int()) { a ->
+    classify(a == 0, "zero")
+    classify(a % 2 == 0, "even number", "odd number")
+    a + a == 2 * a
+}
+```
+
+This will output something like:
+51.60% even number
+48.40% odd number
+0.10% zero
 
 * **Property Testing: Shrinking**
 

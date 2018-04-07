@@ -24,9 +24,9 @@ class ClassifyTest : StringSpec() {
         (a + a).toDouble() == 5.6
       }
 
-      assertAll(Gen.int()) { a ->
-        classify(a == 0, "zero")
-        classify(a % 2 == 0, "even number", "odd number")
+      assertAll(Gen.string()) { a ->
+        classify(a.contains(" "), "has whitespace", "no whitespace")
+        // some test
       }
 
       assertNone(Gen.int()) { a ->
