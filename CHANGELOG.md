@@ -65,6 +65,26 @@ Either: Test that an either has either right or left value. For example `myeithe
 
 NonEmptyList: A collection (no pun intended) of matchers for Arrow's `NonEmptyList`. These mostly mirror the equivalent `Collection` matchers but for NELs. Such as `nel should contain("foo")`, `nel should haveSize(4)`, `nel should containNull()` and so on.
 
+* **Generator Bind**
+
+```kotlin
+data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
+
+val gen = Gen.bind(
+    Gen.string(),
+    Gen.positiveIntegers(),
+    Gen.double().filter { it > 0 },
+    Gen.negativeIntegers(),
+    ::FooD
+)
+
+assertAll(gen) {
+  it.a shouldNotBe null
+  it.b should beGreaterThan(0)
+  it.c should gtd(0.0)
+  it.d should beLessThan(0)
+}
+```
 
 * **System.exit extension**
 
