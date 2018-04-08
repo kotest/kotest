@@ -2,8 +2,10 @@ package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.lte
+import io.kotlintest.matchers.startWith
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.StringSpec
@@ -63,6 +65,6 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.choose(5, 15)) { a ->
         a shouldBe lte(7)
       }
-    }.message shouldBe "Property failed for\n0: 8\nafter 1 attempts"
+    }.message!! should startWith("Property failed for\n0: 8\nafter")
   }
 })
