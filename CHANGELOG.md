@@ -8,12 +8,47 @@ Version 3.1.x - In Progress
 
 * **Dozens of new Matchers**
 
-* Numbers - Even / Odd / beInRange
+_even_ and _odd_
+
+Tests that an Int is even or odd:
+
+```kotlin
+4 shouldBe even()
+3 shouldNotBe even()
+
+3 shouldBe odd()
+4 shouldNotBe odd()
+```
+
+_beInRange_
+
+Asserts that an int or long is in the given range:
+
+```kotlin
+3 should beInRange(1..10)
+4 shouldNot beInRange(1..3)
+```
+
+_haveElementAt_
+
+Checks that a collection contains the given element at a specified index:
+
+```kotlin
+listOf("a", "b", "c") should haveElementAt(1, "b")
+listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
+```
+
+Help out the type inferrer when using nulls:
+
+```kotlin
+listOf("a", "b", null) should haveElementAt<String?>(2, null)
+```
+
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
 * URI matchers - haveScheme / havePort / haveHost / haveParameter / haveFragment
 * File matchers - startWithPath(prefix), hidden, readable, writable, executable, absolute, relative
 * General - haveSameHashCode
-* Collections - containNull, haveDuplicates, haveElementAt
+* Collections - containNull, haveDuplicates
 * Futures - beCompleted, beCancelled
 * String - haveLineCount, contain(regex), haveSameLengthAs(otherstring)
 * Types - haveAnnotation(class)

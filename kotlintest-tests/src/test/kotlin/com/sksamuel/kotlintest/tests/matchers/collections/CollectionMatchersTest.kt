@@ -6,6 +6,7 @@ import io.kotlintest.matchers.collections.containNoNulls
 import io.kotlintest.matchers.collections.containNull
 import io.kotlintest.matchers.collections.containOnlyNulls
 import io.kotlintest.matchers.collections.haveDuplicates
+import io.kotlintest.matchers.collections.haveElementAt
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
@@ -22,11 +23,19 @@ class CollectionMatchersTest : WordSpec() {
 
   init {
 
+    "haveElementAt" should {
+      "test that a collection contains the specified element at the given index" {
+        listOf("a", "b", "c") should haveElementAt(1, "b")
+        listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
+        listOf("a", "b", null) should haveElementAt<String?>(2, null)
+      }
+    }
+
     "containNull()" should {
       "test that a collection contains at least one null" {
         listOf(1, 2, null) should containNull()
         listOf(null) should containNull()
-        listOf(1,2) shouldNot containNull()
+        listOf(1, 2) shouldNot containNull()
       }
     }
 
