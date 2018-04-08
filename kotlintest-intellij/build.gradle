@@ -15,3 +15,5 @@ intellij {
     version = '2016.3'
     plugins = ['org.jetbrains.kotlin:1.2.0-release-IJ2016.3-1']
 }
+
+uploadArchives.enabled = false
