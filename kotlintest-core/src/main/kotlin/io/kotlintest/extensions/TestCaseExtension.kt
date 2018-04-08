@@ -20,16 +20,20 @@ interface TestCaseExtension : Extension {
    * Implementations must return a [TestResult] which is used to notify
    * the underlying platform (eg, junit5) as to the outcome of the test.
    *
-   * Typically, implementations will invoke the test function to execute
-   * the [TestCase], and return that value. However after the test has finished, you can
-   * discard that result and return an alternative if required.
+   * Typically, implementations will invoke the supplied 'test' function
+   * callback to execute the [TestCase], and return that value. However
+   * after the test callback has returned, implementations are free to
+   * discard that result and return another instance if they wish.
    *
-   * The test function accepts a config parameter which is the [TestCaseConfig] used to execute
-   * the test. Interception functions are able to modify this, opening up the possibility for
-   * dynamic config.
+   * The test callback accepts a config parameter which is the [TestCaseConfig]
+   * used to configure the test runner. By default this comes from the [Spec]
+   * itself but implementations are free to supply their own, opening up the
+   * possibility for dynamic config.
    *
-   * Alternatively, implementations can bypass the test entirely and return a failed, errored
-   * or skipped result.
+   * Alternatively, implementations can bypass the test callback entirely
+   * and return an arbitary test result. For example, an interceptor
+   * could choose to skip tests written for a windows machine if the
+   * interceptor detects a linux environment.
    *
    * @param description full name of the [TestCase] under interception
    * @param spec the [Spec] instance containing the [TestCase]
@@ -43,10 +47,4 @@ interface TestCaseExtension : Extension {
                 spec: Spec,
                 config: TestCaseConfig,
                 test: (TestCaseConfig) -> TestResult): TestResult = test(config)
-}
-
-interface TestCaseContinuation {
-  fun run(): TestResult
-  fun skip()
-  fun abort(t: Throwable)
 }

@@ -1,7 +1,9 @@
 package io.kotlintest.extensions
 
 import io.kotlintest.AbstractProjectConfig
+import io.kotlintest.Description
 import io.kotlintest.Spec
+import io.kotlintest.TestScope
 
 /**
  * Reusable spec extension to be registered project wide
@@ -11,30 +13,20 @@ import io.kotlintest.Spec
 interface SpecExtension : Extension {
 
   /**
-   * You must invoke process() otherwise the spec will
-   * not be executed.
+   * Intercepts execution of a [Spec].
+   *
+   * Implementations must invoke the process callback if they
+   * wish this spec to be executed. If they want to skip
+   * the tests in this spec they can elect not to invoke
+   * the callback.
+   *
+   * Once the process function returns, the execution of this
+   * [Spec] and all it's nested [TestScope]s are guaranteed
+   * to have been completed.
+   *
+   * @param description the name and parents of the spec
+   * @param spec the instance of the spec itself
+   * @param process callback function required to continue spec processing
    */
-  @Deprecated("This interceptor function deprecated, use TestListener for the most common use cases or intercept(Description, Spec, Continuation) in this interface for more complicated requirements", ReplaceWith("intercept()"))
-  fun intercept(spec: Spec, process: () -> Unit) = process()
-
-//  /**
-//   * Intercepts execution of a [Spec].
-//   *
-//   * Implementations must either invoke one of the functions
-//   * of the [Continuation] parameter or throw an exception.
-//   * Otherwise, the Test Runner will continue to wait for the Spec
-//   * to be completed indefinitely.
-//   *
-//   * @param description the name and parents of the spec
-//   * @param spec the instance of the spec itself
-//   * @param continuation callback function required to notify
-//   * the Test Runner of the status of the interception.
-//   */
-//  fun intercept(description: Description, spec: Spec, continuation: Continuation)
-}
-
-interface Continuation {
-  fun run()
-  fun skip()
-  fun abort(t: Throwable)
+  fun intercept(description: Description, spec: Spec, process: () -> Unit) = process()
 }

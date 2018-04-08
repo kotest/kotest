@@ -1,5 +1,6 @@
 @file:Suppress("DEPRECATION")
 
+import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
@@ -8,14 +9,15 @@ import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
 
 fun createSpecInterceptorChain(
+    description: Description,
     spec: Spec,
     extensions: Iterable<SpecExtension>,
-    initial: (() -> Unit) -> Unit): (() -> Unit) -> Unit {
-  return extensions.reversed().fold(initial) { a, extension ->
-    { fn: () -> Unit ->
-      extension.intercept(spec, { a.invoke(fn) })
+    initial: () -> Unit): () -> Unit {
+  return extensions.fold(initial, { fn, extension ->
+    {
+      extension.intercept(description, spec, fn)
     }
-  }
+  })
 }
 
 fun createTestCaseInterceptorChain(testCase: TestCase,

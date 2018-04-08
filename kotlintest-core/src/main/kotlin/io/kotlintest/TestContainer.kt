@@ -29,9 +29,8 @@ interface TestScope {
   fun name(): String
 
   /**
-   * Returns a '/' delimited string which is the full path to the test case.
-   * That is, the string contains the names of all parent scopes flattened.
-   *
+   * Return's the [Description] instance for this [Scope] which
+   * contains the name of this scope along with the parent names.
    */
   fun description(): Description
 

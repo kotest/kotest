@@ -73,8 +73,8 @@ class KotlinTestEngine : TestEngine {
     request.engineExecutionListener.executionStarted(descriptor)
     runSpecInterception(descriptor.scope, {
       descriptor.children.forEach { execute(it, request) }
-      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
     })
+    request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
   }
 
   @Suppress("DEPRECATION")
@@ -88,12 +88,13 @@ class KotlinTestEngine : TestEngine {
       }
     }
 
-    val initialInterceptor = { next: () -> Unit -> scope.spec.interceptSpec(scope.spec, next) }
     val extensions: List<SpecExtension> =
         scope.spec.extensions().filterIsInstance<SpecExtension>() +
             Project.specExtensions()
-    val chain = createSpecInterceptorChain(scope.spec, extensions, initialInterceptor)
-    chain { afterInterception() }
+    val chain = createSpecInterceptorChain(scope.description, scope.spec, extensions) {
+      afterInterception()
+    }
+    chain.invoke()
 
     listeners.reversed().forEach {
       try {

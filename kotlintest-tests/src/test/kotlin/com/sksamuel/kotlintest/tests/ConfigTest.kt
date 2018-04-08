@@ -27,7 +27,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val verificationInterceptor = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
+    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
       process()
       val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
       ProjectConfig.intercepterLog.toString() shouldBe expectedLog
@@ -35,7 +35,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val specInterceptorA = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
+    override fun intercept(description: Description,spec: Spec, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("C1.")
       process()
       ProjectConfig.intercepterLog.append("C2.")
@@ -43,7 +43,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val specInterceptorB = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
+    override fun intercept(description: Description,spec: Spec, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("D1.")
       process()
       ProjectConfig.intercepterLog.append("D2.")
@@ -174,14 +174,6 @@ class ConfigTest : WordSpec() {
         ProjectConfig.afterAll shouldBe 0
       }
     }
-  }
-
-  override fun interceptSpec(spec: Spec, process: () -> Unit) {
-    process()
-
-    invocationCounter.get() shouldBe 5
-    invocationCounter2.get() shouldBe 3
-    threadCounter.get() shouldBe 100
   }
 }
 

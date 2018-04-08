@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest.tests.extensions
 
+import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.extensions.ProjectExtension
@@ -14,7 +15,7 @@ object SpecExtensionNumbers {
   val b = AtomicInteger(1)
 
   val add1 = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
+    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
       if (spec.name() == "SpecExtensionTest") {
         a.addAndGet(2)
         process()
@@ -26,7 +27,7 @@ object SpecExtensionNumbers {
   }
 
   val add2 = object : SpecExtension {
-    override fun intercept(spec: Spec, process: () -> Unit) {
+    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
       if (spec.name() == "SpecExtensionTest") {
         a.addAndGet(3)
         process()

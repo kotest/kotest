@@ -1,8 +1,6 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.Extension
-import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -51,23 +49,6 @@ interface Spec : TestListener {
    * with nested closures and junit test discovery.
    */
   fun isInstancePerTest(): Boolean
-
-  /**
-   * Intercepts the invocation of this spec instance.
-   *
-   * Override this function if you wish to add before and after
-   * logic to the spec.
-   *
-   * If you wish to re-use intercept logic across multiple specs,
-   * then look at [SpecExtension.intercept].
-   *
-   * This intercept function will be called once, before any of the
-   * test cases in the spec are executed. Don't forget to call
-   * `process()` in the body of this method otherwise the
-   * execution of the spec will not continue.
-   */
-  @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
-  fun interceptSpec(spec: Spec, process: () -> Unit) = process()
 
   /**
    * Override this function to register instances of
