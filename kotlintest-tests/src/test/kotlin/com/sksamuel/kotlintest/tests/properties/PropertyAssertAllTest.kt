@@ -241,13 +241,13 @@ class PropertyAssertAllTest : StringSpec({
     attempts shouldBe 1000
   }
 
-  "assertAll: Four explicit generators success after 50 attempts" {
+  "assertAll: Four explicit generators success after 88 attempts" {
     var attempts = 0
-    assertAll(50, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+    assertAll(88, Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
       attempts++
       a + b + c + d shouldBe d + c + b + a
     }
-    attempts shouldBe 50
+    attempts shouldBe 88
   }
 
   "assertAll: Four explicit generators failed after 4 attempts" {
@@ -280,12 +280,12 @@ class PropertyAssertAllTest : StringSpec({
     attempts shouldBe 1000
   }
 
-  "assertAll: four implicit generators with 20 attempts" {
+  "assertAll: four implicit generators with 98 attempts" {
     var attempts = 0
-    assertAll(20) { _: Int, _: Int, _: Int, _: Int ->
+    assertAll(98) { _: Int, _: Int, _: Int, _: Int ->
       attempts++
     }
-    attempts shouldBe 20
+    attempts shouldBe 98
   }
 
   "assertAll: four implicit generators with 250 attempts" {
@@ -364,12 +364,12 @@ class PropertyAssertAllTest : StringSpec({
     attempts shouldBe 1000
   }
 
-  "assertAll six explicit arguments with 78 attempts" {
+  "assertAll six explicit arguments with 999 attempts" {
     var attempts = 0
-    assertAll(78, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
+    assertAll(999, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
       attempts++
     }
-    attempts shouldBe 78
+    attempts shouldBe 999
   }
 
   "assertAll six explicit arguments failing at 40 attempts" {
@@ -457,7 +457,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 1000
+    attempts shouldBe 1350
   }
 
   "sets" {

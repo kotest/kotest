@@ -33,7 +33,7 @@ class GenTest : WordSpec() {
         val string = Gen.string().nextPrintableString(rand)
 
         string.forEach {
-          it.toInt() shouldBe gte(33)
+          it.toInt() shouldBe gte(32)
           it.toInt() shouldBe lt(127)
         }
         string.length shouldBe rand
