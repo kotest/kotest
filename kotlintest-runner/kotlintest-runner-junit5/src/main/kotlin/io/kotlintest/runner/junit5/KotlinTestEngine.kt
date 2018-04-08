@@ -89,9 +89,9 @@ class KotlinTestEngine : TestEngine {
     }
 
     val initialInterceptor = { next: () -> Unit -> scope.spec.interceptSpec(scope.spec, next) }
-    val extensions: List<SpecExtension> = scope.spec.specExtensions() +
+    val extensions: List<SpecExtension> =
         scope.spec.extensions().filterIsInstance<SpecExtension>() +
-        Project.specExtensions()
+            Project.specExtensions()
     val chain = createSpecInterceptorChain(scope.spec, extensions, initialInterceptor)
     chain { afterInterception() }
 
@@ -163,26 +163,28 @@ class KotlinTestEngine : TestEngine {
       }
     }
 
-    val initialInterceptor = { next: () -> Unit -> descriptor.testCase.spec.interceptTestCase(descriptor.testCase, next) }
     val extensions: List<TestCaseExtension> = descriptor.testCase.config.extensions +
-        descriptor.testCase.spec.testCaseExtensions() +
         descriptor.testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
         Project.testCaseExtensions()
-    val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions, initialInterceptor)
-    chain {
-      val result = TestCaseRunner.runTest(descriptor.testCase)
-      listeners.reversed().forEach {
-        try {
-          it.afterTest(descriptor.testCase.description(), result)
-        } catch (t: Throwable) {
-          t.printStackTrace()
-        }
-      }
-      when (result.status) {
-        TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-        TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-        TestStatus.Ignored -> listener.executionSkipped(descriptor, "Ignored")
-        TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+
+    val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions) {
+      TestCaseRunner.runTest(descriptor.testCase.copy(config = it))
+    }
+
+    val result = chain(descriptor.testCase.config)
+
+    when (result.status) {
+      TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
+      TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+      TestStatus.Ignored -> listener.executionSkipped(descriptor, "Ignored")
+      TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+    }
+
+    listeners.reversed().forEach {
+      try {
+        it.afterTest(descriptor.testCase.description(), result)
+      } catch (t: Throwable) {
+        t.printStackTrace()
       }
     }
   }

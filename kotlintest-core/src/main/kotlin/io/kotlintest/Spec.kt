@@ -90,27 +90,6 @@ interface Spec : TestListener {
 
   /**
    * Override this function to register instances of
-   * [SpecExtension] which will intercept this spec.
-   *
-   * If you wish to register an extension for all specs
-   * then use [AbstractProjectConfig.extensions].
-   */
-  @Deprecated("This function has been replaced with extensions()", ReplaceWith("extensions()"))
-  fun specExtensions(): List<SpecExtension> = listOf()
-
-  /**
-   * Override this function to register instances of
-   * [TestCaseExtension] which will intercept all
-   * test cases in this spec.
-   *
-   * If you wish to register an extension for all test cases
-   * then use [AbstractProjectConfig.extensions].
-   */
-  @Deprecated("This function has been replaced with extensions()", ReplaceWith("extensions()"))
-  fun testCaseExtensions(): List<TestCaseExtension> = listOf()
-
-  /**
-   * Override this function to register instances of
    * [Extension] which will be invoked during
    * execution of this spec.
    *

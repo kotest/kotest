@@ -1,10 +1,13 @@
 package com.sksamuel.kotlintest.tests.extensions
 
+import io.kotlintest.Description
 import io.kotlintest.Project
-import io.kotlintest.TestCase
+import io.kotlintest.Spec
+import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 object Numbers {
@@ -13,21 +16,33 @@ object Numbers {
   val b = AtomicInteger(1)
 
   val add1 = object : TestCaseExtension {
-    override fun intercept(testCase: TestCase, test: () -> Unit) {
-      if (testCase.name().contains("ZZQQ")) {
+    override fun intercept(description: Description,
+                           spec: Spec,
+                           config: TestCaseConfig,
+                           test: (TestCaseConfig) -> TestResult): TestResult {
+      return if (description.name.contains("ZZQQ")) {
         a.addAndGet(1)
-        test()
+        val result = test(config)
         b.addAndGet(1)
+        result
+      } else {
+        test(config)
       }
     }
   }
 
   val add2 = object : TestCaseExtension {
-    override fun intercept(testCase: TestCase, test: () -> Unit) {
-      if (testCase.name().contains("ZZQQ")) {
+    override fun intercept(description: Description,
+                           spec: Spec,
+                           config: TestCaseConfig,
+                           test: (TestCaseConfig) -> TestResult): TestResult {
+      return if (description.name.contains("ZZQQ")) {
         a.addAndGet(2)
-        test()
+        val result = test(config)
         b.addAndGet(2)
+        result
+      } else {
+        test(config)
       }
     }
   }

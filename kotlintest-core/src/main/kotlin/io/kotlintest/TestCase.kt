@@ -77,4 +77,8 @@ enum class TestStatus {
   Failure
 }
 
-data class TestResult(val status: TestStatus, val error: Throwable?, val metaData: List<Any> = emptyList())
+data class TestResult(val status: TestStatus, val error: Throwable?, val metaData: List<Any> = emptyList()) {
+  companion object {
+    val Ignored = TestResult(TestStatus.Ignored, null)
+  }
+}
