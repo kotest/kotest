@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.tests.matchers
 
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.matchers.haveSameHashCode
+import io.kotlintest.matchers.haveSameHashCodeAs
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.should
@@ -16,8 +16,8 @@ import java.util.*
 class MatchersTest : FreeSpec({
 
   "haveSameHashCode()" {
-    1 should haveSameHashCode(1)
-    2 shouldNot haveSameHashCode(1)
+    1 should haveSameHashCodeAs(1)
+    2 shouldNot haveSameHashCodeAs(1)
   }
 
   "support 'or' function on matcher" {

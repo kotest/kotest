@@ -3,7 +3,7 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
-fun haveSameHashCode(other: Any) = object : Matcher<Any> {
+fun haveSameHashCodeAs(other: Any) = object : Matcher<Any> {
   override fun test(value: Any): Result {
     return Result(
         value.hashCode() == other.hashCode(),

@@ -2,10 +2,10 @@ package com.sksamuel.kotlintest.tests.matchers.file
 
 import io.kotlintest.matchers.file.aDirectory
 import io.kotlintest.matchers.file.aFile
-import io.kotlintest.matchers.file.absolute
+import io.kotlintest.matchers.file.beAbsolute
 import io.kotlintest.matchers.file.exist
 import io.kotlintest.matchers.file.haveExtension
-import io.kotlintest.matchers.file.relative
+import io.kotlintest.matchers.file.beRelative
 import io.kotlintest.matchers.file.startWithPath
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -19,11 +19,11 @@ class FileMatchersTest : FunSpec() {
   init {
 
     test("relative() should match only relative files") {
-      File("sammy/boy") shouldBe relative()
+      File("sammy/boy") shouldBe beRelative()
     }
 
     test("absolute() should match only absolute files") {
-      File("/sammy/boy") shouldBe absolute()
+      File("/sammy/boy") shouldBe beAbsolute()
     }
 
     test("startWithPath() should only match files that start with the given path") {

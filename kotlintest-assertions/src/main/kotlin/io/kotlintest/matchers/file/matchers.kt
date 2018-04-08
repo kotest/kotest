@@ -21,27 +21,27 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isFile, "File $value should be a file", "File $value should not be a file")
 }
 
-fun absolute(): Matcher<File> = object : Matcher<File> {
+fun beAbsolute(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isAbsolute, "File $value should be absolute", "File $value should not be absolute")
 }
 
-fun relative(): Matcher<File> = object : Matcher<File> {
+fun beRelative(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(!value.isAbsolute, "File $value should be relative", "File $value should not be relative")
 }
 
-fun readable(): Matcher<File> = object : Matcher<File> {
+fun beReadable(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.canRead(), "File $value should be readable", "File $value should not be readable")
 }
 
-fun writeable(): Matcher<File> = object : Matcher<File> {
+fun beWriteable(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.canWrite(), "File $value should be writeable", "File $value should not be writeable")
 }
 
-fun executable(): Matcher<File> = object : Matcher<File> {
+fun beExecutable(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.canExecute(), "File $value should be executable", "File $value should not be executable")
 }
 
-fun hidden(): Matcher<File> = object : Matcher<File> {
+fun beHidden(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isHidden, "File $value should be hidden", "File $value should not be hidden")
 }
 

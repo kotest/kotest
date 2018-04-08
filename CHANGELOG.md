@@ -44,13 +44,57 @@ Help out the type inferrer when using nulls:
 listOf("a", "b", null) should haveElementAt<String?>(2, null)
 ```
 
+_beReadable()_, _beWriteable()_, _beExecutable()_ and _beHidden()_
+
+Tests if a file is readable, writeable, or hidden:
+
+```kotlin
+file shouldBe beReadable()
+file shouldBe beWriteable()
+file shouldBe beExecutable()
+file shouldBe beHidden()
+```
+
+_beAbsolute()_ and _beRelative()_
+
+Tests if a file's path is relative or absolute.
+
+```kotlin
+file shouldBe beAbsolute()
+file shouldBe beRelative()
+```
+
+_startWithPath(path)_
+
+Tests if a file's path begins with the specified prefix:
+
+```kotlin
+file should startWithPath("/usr/home")
+```
+
+_haveSameHashCodeAs(other)_
+
+Asserts that two objects have the same hash code.
+
+```kotlin
+obj1 should haveSameHashCodeAs(obj2)
+"hello" shouldNot haveSameHashCodeAs("world")
+```
+
+_haveSameLengthAs(other)_
+
+Asserts that two strings have the same length.
+
+```kotlin
+"hello" should haveSameLengthAs("world")
+"hello" shouldNot haveSameLengthAs("you")
+```
+
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
 * URI matchers - haveScheme / havePort / haveHost / haveParameter / haveFragment
-* File matchers - startWithPath(prefix), hidden, readable, writable, executable, absolute, relative
-* General - haveSameHashCode
 * Collections - containNull, haveDuplicates
 * Futures - beCompleted, beCancelled
-* String - haveLineCount, contain(regex), haveSameLengthAs(otherstring)
+* String - haveLineCount, contain(regex), (otherstring)
 * Types - haveAnnotation(class)
 
 * **Arrow matcher module**
