@@ -60,8 +60,8 @@ _beAbsolute()_ and _beRelative()_
 Tests if a file's path is relative or absolute.
 
 ```kotlin
-file shouldBe beAbsolute()
-file shouldBe beRelative()
+File("/usr/home/sam") shouldBe beAbsolute()
+File("spark/bin") shouldBe beRelative()
 ```
 
 _startWithPath(path)_
@@ -69,7 +69,8 @@ _startWithPath(path)_
 Tests if a file's path begins with the specified prefix:
 
 ```kotlin
-file should startWithPath("/usr/home")
+File("/usr/home/sam") should startWithPath("/usr/home")
+File("/usr/home/sam") shouldNot startWithPath("/var")
 ```
 
 _haveSameHashCodeAs(other)_
@@ -90,11 +91,24 @@ Asserts that two strings have the same length.
 "hello" shouldNot haveSameLengthAs("you")
 ```
 
+_haveScheme, havePort, haveHost, haveParameter, havePath, haveFragment_
+
+Matchers for URIs:
+
+```kotlin
+val uri = URI.create("https://localhost:443/index.html?q=findme#results")
+uri should haveScheme("https")
+uri should haveHost("localhost")
+uri should havePort(443)
+uri should havePath("/index.html")
+uri should haveParameter("q")
+uri should haveFragment("results")
+```
+
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
-* URI matchers - haveScheme / havePort / haveHost / haveParameter / haveFragment
 * Collections - containNull, haveDuplicates
 * Futures - beCompleted, beCancelled
-* String - haveLineCount, contain(regex), (otherstring)
+* String - haveLineCount, contain(regex)
 * Types - haveAnnotation(class)
 
 * **Arrow matcher module**

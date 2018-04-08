@@ -5,6 +5,7 @@ import io.kotlintest.shouldNot
 import io.kotlintest.matchers.uri.haveFragment
 import io.kotlintest.matchers.uri.haveHost
 import io.kotlintest.matchers.uri.haveParameter
+import io.kotlintest.matchers.uri.havePath
 import io.kotlintest.matchers.uri.havePort
 import io.kotlintest.matchers.uri.haveScheme
 import io.kotlintest.specs.WordSpec
@@ -42,6 +43,12 @@ class UriMatchersTest : WordSpec() {
         URI.create("https://hostname:90?a=b&c=d") should haveParameter("a")
         URI.create("https://hostname:90?a=b&c=d") should haveParameter("c")
         URI.create("https://hostname:90?a=b&c=d") shouldNot haveParameter("b")
+      }
+    }
+
+    "havePath" should {
+      "test that a URI has the specified path" {
+        URI.create("https://hostname:90/index.html#qwerty") should havePath("/index.html")
       }
     }
 
