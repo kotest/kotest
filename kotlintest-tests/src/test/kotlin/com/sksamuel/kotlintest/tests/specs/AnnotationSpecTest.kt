@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest.tests.specs
 
+import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
@@ -19,8 +20,7 @@ class AnnotationSpecTest : AnnotationSpec() {
     count += 1
   }
 
-  override fun interceptSpec(spec: Spec, process: () -> Unit) {
-    process()
+  override fun afterSpec(description: Description, spec: Spec) {
     count shouldBe 2
   }
 }

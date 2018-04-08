@@ -18,7 +18,7 @@ class AllureTest : WordSpec() {
 
     "this test" should {
       "have severity" {
-        withMetaData(Severity(SeverityLevel.CRITICAL))
+        putMetaData("Severity", Severity(SeverityLevel.CRITICAL))
         "bobby" should haveLength(5)
       }
     }

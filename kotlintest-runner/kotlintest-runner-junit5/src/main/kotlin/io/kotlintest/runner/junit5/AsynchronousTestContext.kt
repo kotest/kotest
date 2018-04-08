@@ -1,38 +1,40 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.DefaultTestContext
+import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestScope
 import java.util.concurrent.Phaser
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.concurrent.thread
 
 /**
  * An implementation of [TestContext] that allows asynchronous operations
- * to be executed backed by a [Phaser].
+ * to be executed backed by a [Phaser] for sychronization.
  *
- * This context should not be shared between multiple [TestScope] instances.
+ * This context should not be shared between [TestScope]s or different
+ * executions of the same [TestCase].
  */
 class AsynchronousTestContext(scope: TestScope) : DefaultTestContext(scope) {
 
   private val phaser = Phaser()
   private val error = AtomicReference<Throwable?>(null)
 
-  fun phaser(): Phaser = phaser
-  fun error(): Throwable? = error.get()
-
-  override fun run(fn: () -> Unit) {
+  override fun registerAsync() {
     phaser.register()
-    thread {
-      try {
-        fn()
-      } catch (t: Throwable) {
-        error.set(t)
-      }
-    }
   }
 
-  override fun arrive() {
+  override fun arriveAsync() {
     phaser.arrive()
   }
+
+  fun blockUntilReady() {
+    registerAsync()
+    phaser.arriveAndAwaitAdvance()
+  }
+
+  override fun withError(t: Throwable) {
+    error.set(t)
+  }
+
+  override fun error(): Throwable? = error.get()
 }

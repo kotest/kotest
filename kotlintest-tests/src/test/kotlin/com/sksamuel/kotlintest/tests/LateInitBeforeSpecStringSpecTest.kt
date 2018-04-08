@@ -1,16 +1,16 @@
 package com.sksamuel.kotlintest.tests
 
-import io.kotlintest.TestCase
+import io.kotlintest.Description
+import io.kotlintest.Spec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-class LateinitTestInterceptorStringSpecTest : StringSpec() {
+class LateInitBeforeSpecStringSpecTest : StringSpec() {
 
   private lateinit var string: String
 
-  override fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
+  override fun beforeSpec(description: Description, spec: Spec) {
     string = "Hello"
-    test()
   }
 
   init {

@@ -7,9 +7,16 @@ import java.util.concurrent.CompletableFuture
  * when the future has completed.
  */
 fun <T> TestContext.whenReady(f: CompletableFuture<T>, test: (T) -> Unit) {
-  this.run {
-    val t = f.get()
-    test(t)
-    this.arrive()
+  registerAsync()
+  f.whenComplete { value, throwable ->
+    try {
+      if (throwable != null)
+        throw throwable
+      test(value)
+    } catch (t: Throwable) {
+      withError(t)
+    } finally {
+      arriveAsync()
+    }
   }
 }

@@ -52,8 +52,13 @@ object AllureExtension : TestListener {
           TestStatus.Success -> it.withStatus(Status.PASSED)
         }
         it.withFullName(description.fullName())
-        result.metaData.filterIsInstance<Severity>().map { it.level.name }.forEach { value ->
-          it.withLabels(Label().withName("Severity").withValue(value))
+        val severity = result.metaData["Severity"]
+        when (severity) {
+          is Severity -> {
+            it.withLabels(Label().withName("Severity").withValue(severity.level.name))
+          }
+          else -> {
+          }
         }
       })
       allure.stopTestCase(safeId(description))

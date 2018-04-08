@@ -5,6 +5,7 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import org.junit.runners.model.TestTimedOutException
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -20,18 +21,17 @@ object TestCaseRunner {
   fun runTest(testCase: TestCase): TestResult {
 
     val executor = Executors.newFixedThreadPool(testCase.config.threads)
+    val metadata = ConcurrentHashMap<String, Any?>()
 
     return if (testCase.isActive()) {
-
-      val context = AsynchronousTestContext(testCase)
-      context.phaser().register()
-
       val errors = mutableListOf<Throwable>()
       for (j in 1..testCase.config.invocations) {
         executor.execute {
           try {
+            val context = AsynchronousTestContext(testCase)
             testCase.test(context)
-            context.phaser().arriveAndAwaitAdvance()
+            context.blockUntilReady()
+            metadata.putAll(context.metaData())
             val error = context.error()
             if (error != null)
               errors.add(error)
@@ -46,13 +46,13 @@ object TestCaseRunner {
       val terminated = executor.awaitTermination(timeout.seconds, TimeUnit.SECONDS)
 
       if (!terminated) {
-        TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), context.metaData())
+        TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), metadata)
       } else {
         val first = errors.firstOrNull()
         when (first) {
-          null -> TestResult(TestStatus.Success, null, context.metaData())
-          is AssertionError -> TestResult(TestStatus.Failure, first, context.metaData())
-          else -> TestResult(TestStatus.Error, first, context.metaData())
+          null -> TestResult(TestStatus.Success, null, metadata)
+          is AssertionError -> TestResult(TestStatus.Failure, first, metadata)
+          else -> TestResult(TestStatus.Error, first, metadata)
         }
       }
     } else {

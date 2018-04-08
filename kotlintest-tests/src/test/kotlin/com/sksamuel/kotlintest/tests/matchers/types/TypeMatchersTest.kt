@@ -3,24 +3,26 @@ package com.sksamuel.kotlintest.tests.matchers.types
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.should
 import io.kotlintest.matchers.types.haveAnnotation
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.should
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.Test
+import io.kotlintest.specs.WordSpec
 import java.util.*
 
 @Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
 
-  @Test
+  @Retention(AnnotationRetention.RUNTIME)
+  annotation class Vod
+
+  @Vod
   class Wibble
 
   init {
 
     "haveAnnotation(annotation)" should {
       "test for the presence of an annotation" {
-        Wibble::class.java should haveAnnotation(Test::class.java)
+        Wibble::class.java should haveAnnotation(Vod::class.java)
       }
     }
 

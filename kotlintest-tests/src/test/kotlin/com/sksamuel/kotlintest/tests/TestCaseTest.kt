@@ -1,7 +1,8 @@
 package com.sksamuel.kotlintest.tests
 
+import io.kotlintest.Description
 import io.kotlintest.Tag
-import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -40,8 +41,7 @@ class TestCaseTest : StringSpec() {
     }
   }
 
-  override fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
-    test()
+  override fun afterTest(description: Description, result: TestResult) {
     System.clearProperty("kotlintest.tags.exclude")
     System.clearProperty("kotlintest.tags.include")
   }

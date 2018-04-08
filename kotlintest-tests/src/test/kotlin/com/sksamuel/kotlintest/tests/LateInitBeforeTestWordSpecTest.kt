@@ -1,16 +1,15 @@
 package com.sksamuel.kotlintest.tests
 
-import io.kotlintest.TestCase
+import io.kotlintest.Description
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class LateinitTestInterceptorWordSpecTest : WordSpec() {
+class LateInitBeforeTestWordSpecTest : WordSpec() {
 
   private lateinit var string: String
 
-  override fun interceptTestCase(testCase: TestCase, test: () -> Unit) {
+  override fun beforeTest(description: Description) {
     string = "Hello"
-    test()
   }
 
   init {

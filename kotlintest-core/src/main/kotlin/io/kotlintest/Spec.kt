@@ -69,25 +69,6 @@ interface Spec : TestListener {
   @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
   fun interceptSpec(spec: Spec, process: () -> Unit) = process()
 
-  @Deprecated("This interceptor function is deprecated, please consider using beforeSpec or afterSpec", ReplaceWith("beforeSpec or afterSpec"))
-  fun interceptTestCase(context: TestCaseContext, test: () -> Unit) = test()
-
-  /**
-   * Intercepts the invocation of each test case.
-
-   * Override this function if you wish to add before and after
-   * logic to test case execution.
-   *
-   * If you wish to re-use intercept logic across multiple test cases,
-   * then look at [TestCaseExtension.intercept].
-   *
-   * This intercept function will be called before each test case.
-   * Don't forget to call `process()` in the body of this method.
-   * Otherwise the execution of the test case will not continue.
-   */
-  @Deprecated("This interceptor function is deprecated, please consider using beforeTest or afterTest", ReplaceWith("beforeTest or afterTest"))
-  fun interceptTestCase(testCase: TestCase, test: () -> Unit) = test()
-
   /**
    * Override this function to register instances of
    * [Extension] which will be invoked during

@@ -14,22 +14,26 @@ interface TestContext {
   /**
    * Adds a value to this [TestContext] meta data.
    */
-  fun withMetaData(meta: Any)
+  fun putMetaData(key: String, value: Any?)
 
   /**
    * Returns all the metadata associated with this [TestContext]
    */
-  fun metaData(): List<Any>
+  fun metaData(): Map<String, Any?>
 
   /**
-   * Notifies the framework that a nested [TestScope] has been discovered
-   * during the execution of a scope.
+   * Notifies the framework that a nested [TestScope] has been added
+   * to this scope during this execution.
    */
   fun addScope(scope: TestScope): TestScope
 
-  fun run(fn: () -> Unit)
+  fun registerAsync()
 
-  fun arrive()
+  fun arriveAsync()
+
+  fun withError(t: Throwable)
+
+  fun error(): Throwable?
 
   /**
    * The [TestScope] associated with the current execution
