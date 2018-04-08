@@ -1,4 +1,4 @@
-![KotlinTest](doc/logo3.png)
+![KotlinTest](doc/logo4.png)
 ==========
 
 [![Join the chat at https://gitter.im/kotlintest/lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kotlintest/lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
