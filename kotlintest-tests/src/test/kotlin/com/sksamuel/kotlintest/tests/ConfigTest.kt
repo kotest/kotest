@@ -1,3 +1,5 @@
+@file:Suppress("OverridingDeprecatedMember")
+
 package com.sksamuel.kotlintest.tests
 
 import io.kotlintest.Spec

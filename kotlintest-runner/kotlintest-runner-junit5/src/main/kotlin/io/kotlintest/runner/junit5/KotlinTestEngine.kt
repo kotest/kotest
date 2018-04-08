@@ -6,6 +6,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Project
 import io.kotlintest.SpecScope
 import io.kotlintest.TestCase
+import io.kotlintest.TestContainer
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestCaseExtension
@@ -105,8 +106,21 @@ class KotlinTestEngine : TestEngine {
 
   private fun execute(descriptor: TestContainerDescriptor, request: ExecutionRequest) {
     request.engineExecutionListener.executionStarted(descriptor)
-    val context = JUnit5TestContext(descriptor, request.engineExecutionListener, descriptor.container)
+
+    val context = AsynchronousTestContext(descriptor.container)
     descriptor.container.closure(context)
+
+    // after the container has returned, we should add any nested scopes to the junit test plan
+    context.scopes().forEach {
+      val newDescriptor = when (it) {
+        is TestContainer -> TestContainerDescriptor.fromTestContainer(descriptor.uniqueId, it)
+        is TestCase -> TestCaseDescriptor.fromTestCase(descriptor.uniqueId, it)
+        else -> throw IllegalArgumentException()
+      }
+      descriptor.addChild(newDescriptor)
+      request.engineExecutionListener.dynamicTestRegistered(newDescriptor)
+    }
+
     descriptor.children.forEach { execute(it, request) }
     request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
   }

@@ -23,16 +23,18 @@ object TestCaseRunner {
 
     return if (testCase.isActive()) {
 
-      val context = TestCaseContext(testCase)
+      val context = AsynchronousTestContext(testCase)
+      context.phaser().register()
 
       val errors = mutableListOf<Throwable>()
       for (j in 1..testCase.config.invocations) {
         executor.execute {
           try {
             testCase.test(context)
-            val result = context.future().get()
-            if (result != null)
-              errors.add(result)
+            context.phaser().arriveAndAwaitAdvance()
+            val error = context.error()
+            if (error != null)
+              errors.add(error)
           } catch (t: Throwable) {
             errors.add(t)
           }

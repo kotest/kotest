@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.tests
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
+import io.kotlintest.whenReady
 import java.util.concurrent.CompletableFuture
 import kotlin.concurrent.thread
 
