@@ -14,7 +14,7 @@ object JUnitXmlListener : TestListener {
 
   private val results = ConcurrentHashMap<Description, TestResult>()
 
-  private val outputDirectory = System.getProperty("kotlintest.junit.report.directory") ?: "build/junit-report"
+  private val outputDirectory = System.getProperty("kotlintest.junit.report.directory") ?: "build/test-results"
 
   override fun afterSpec(description: Description, spec: Spec) {
     val testResults = results.filterKeys { it.hasParent(description) }

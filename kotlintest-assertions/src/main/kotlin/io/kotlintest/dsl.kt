@@ -12,6 +12,7 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 // -- equality functions
 
+@Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
     is Matcher<*> -> should(any as Matcher<T>)
@@ -24,6 +25,7 @@ infix fun <T, U : T> T.shouldBe(any: U?) {
   }
 }
 
+@Suppress("UNCHECKED_CAST")
 infix fun <T> T.shouldNotBe(any: Any?) {
   when (any) {
     is Matcher<*> -> shouldNot(any as Matcher<T>)
