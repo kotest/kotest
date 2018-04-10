@@ -28,15 +28,14 @@ Test with Style
 Write simple and beautiful tests with the StringSpec style:
 
 ```kotlin
-class MyTests : StringSpec() {
-  init {
-
-    "length should return size of string" {
-      "hello".length shouldBe 5
-    }
-
+class MyTests : StringSpec({
+  "length should return size of string" {
+    "hello".length shouldBe 5
   }
-}
+  "startsWith should test for a prefix" {
+    "world" should startWith("wor")
+  }
+})
 ```
 
 You can choose the [testing style](doc/reference.md#styles) that fits your needs.
