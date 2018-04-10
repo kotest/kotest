@@ -16,12 +16,6 @@ Community
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotlintest) (don't forget to use the tag "kotlintest".)
 * [Contribute](https://github.com/kotlintest/kotlintest/wiki/contribute)
 
-How to use
-----------
-For latest updates see [Changelog](CHANGELOG.md).
-
-
-
 Test with Style
 ---------------
 
@@ -39,6 +33,23 @@ class MyTests : StringSpec({
 ```
 
 You can choose the [testing style](doc/reference.md#styles) that fits your needs.
+
+Multitude of Matchers
+---------------------
+
+Use over 100 provided matchers to test assertions on many different types:
+
+```kotlin
+"substring" should include("str")
+
+user.email should beLowerCase()
+
+myImmgeFile should haveExtension(".jpg")
+
+cityMap should haveKey("London")
+```
+
+See the [full list of matchers](doc/matchers.md) or write your own.
 
 Let the Computer Generate Your Test Data
 ----------------------------------------
@@ -121,6 +132,7 @@ This page gives you just a short overview over KotlinTest. There are some more u
 * Reuse test logic, e. g. for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
+* Use the [Spring extension](doc/reference.md#spring) to automatically inject your spring test classes.
 
 See [full documentation](doc/reference.md).
 
