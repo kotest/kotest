@@ -2,8 +2,12 @@ package io.kotlintest.matchers.future
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import java.util.concurrent.CompletableFuture
 
+fun <T> CompletableFuture<T>.shouldBeCompleted() = this shouldBe completed<T>()
+fun <T> CompletableFuture<T>.shouldNotBeCompleted() = this shouldNotBe completed<T>()
 fun <T> completed() = object : Matcher<CompletableFuture<T>> {
   override fun test(value: CompletableFuture<T>): Result =
       Result(
@@ -13,6 +17,8 @@ fun <T> completed() = object : Matcher<CompletableFuture<T>> {
       )
 }
 
+fun <T> CompletableFuture<T>.shouldBeCancelled() = this shouldBe cancelled<T>()
+fun <T> CompletableFuture<T>.shouldNotBeCancelled() = this shouldNotBe cancelled<T>()
 fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
   override fun test(value: CompletableFuture<T>): Result =
       Result(
