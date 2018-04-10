@@ -1,36 +1,24 @@
 package com.sksamuel.kotlintest.tests.extensions
 
+import com.sksamuel.kotlintest.tests.extensions.SpecExtensionNumbers.ext
 import io.kotlintest.Project
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import java.util.concurrent.atomic.AtomicInteger
 
 object SpecExtensionNumbers {
 
-  val a = AtomicInteger(1)
-  val b = AtomicInteger(1)
+  var before = 0
+  var after = 0
 
-  val add1 = object : SpecExtension {
+  val ext = object : SpecExtension {
     override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
       if (context.description.name == "SpecExtensionTest") {
-        a.addAndGet(2)
+        before++
         process()
-        b.addAndGet(2)
-      } else {
-        process()
-      }
-    }
-  }
-
-  val add2 = object : SpecExtension {
-    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
-      if (context.description.name == "SpecExtensionTest") {
-        a.addAndGet(3)
-        process()
-        b.addAndGet(3)
+        after++
       } else {
         process()
       }
@@ -39,35 +27,33 @@ object SpecExtensionNumbers {
 }
 
 object SpecSetup {
-  init {
-    Project.registerExtension(SpecExtensionNumbers.add1)
-    Project.registerExtension(SpecExtensionNumbers.add2)
+  fun setup() {
+    Project.registerExtension(ext)
   }
 }
 
 class SpecExtensionTest : WordSpec() {
 
-
   init {
 
-    SpecSetup.toString()
+    SpecSetup.setup()
 
     // use a project after all extension to test the around advice of a spec
     Project.registerExtension(object : ProjectExtension {
       override fun afterAll() {
-        SpecExtensionNumbers.b.get() shouldBe 6
+        SpecExtensionNumbers.after shouldBe 1
       }
     })
 
     "SpecExtensions" should {
       "be activated by registration with ProjectExtensions" {
-        SpecExtensionNumbers.a.get() shouldBe 6
-        SpecExtensionNumbers.b.get() shouldBe 1
+        SpecExtensionNumbers.before shouldBe 1
+        SpecExtensionNumbers.after shouldBe 0
       }
       "only be fired once per spec class" {
         // this test, the intercepts should not have fired
-        SpecExtensionNumbers.a.get() shouldBe 6
-        SpecExtensionNumbers.b.get() shouldBe 1
+        SpecExtensionNumbers.before shouldBe 1
+        SpecExtensionNumbers.after shouldBe 0
       }
     }
   }

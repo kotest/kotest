@@ -4,6 +4,7 @@ import io.kotlintest.extensions.DiscoveryExtension
 import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TagExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 
@@ -56,9 +57,15 @@ object Project {
   private fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
+  fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
   fun listeners(): List<TestListener> = _listeners
 
   fun parallelism() = parallelism
+
+  fun tags(): Tags {
+    val tags = tagExtensions().map { it.tags()}
+    return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
+  }
 
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
     _extensions.addAll(this.extensions())

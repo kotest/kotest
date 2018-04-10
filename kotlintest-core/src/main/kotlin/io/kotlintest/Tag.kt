@@ -12,12 +12,12 @@ package io.kotlintest
  * Therefore, the tags `com.sksamuel.kotlintest.SuperTag` and `io.kotlintest.SuperTag` are
  * considered equal.
  */
-abstract class Tag() {
+abstract class Tag {
 
   /**
    * Simple name of the singleton/class derived from this class.
    */
-  val name: String = javaClass.simpleName
+  open val name: String = javaClass.simpleName
 
   /**
    * Same as [name].

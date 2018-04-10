@@ -51,3 +51,4 @@ abstract class AbstractProjectConfig {
    */
   open fun afterAll() {}
 }
+

@@ -74,10 +74,14 @@ class KotlinTestEngine : TestEngine {
     // we will invoke the spec interceptors and listeners once as we enter the spec, and then
     // again for each fresh spec if we are using one instance per test
     request.engineExecutionListener.executionStarted(descriptor)
-    runSpecInterception(descriptor.scope, {
-      descriptor.children.forEach { execute(it, request) }
-    })
-    request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
+    try {
+      runSpecInterception(descriptor.scope, {
+        descriptor.children.forEach { execute(it, request) }
+      })
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
+    } catch (t: Throwable) {
+      request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.failed(t))
+    }
   }
 
   private fun runSpecInterception(scope: SpecScope, afterInterception: () -> Unit) {
