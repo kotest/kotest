@@ -217,7 +217,36 @@ This will output something like:
 
 * **Property Testing: Shrinking**
 
-* **Spec Instantiation Extensions**
+* **Tag Extensions**
+
+A new type of extension has been added called `TagExtension`. Implementations can override the `tags()` function
+defined in this interface to dynamically return the `Tag` instances that should be active at any moment. The existing
+system properties `kotlintest.tags.include` and `kotlintest.tags.exclude` are still valid and are not deprecated, but
+adding this new extension means extended scope for more complicated logic at runtime.
+
+An example might be to disable any Hadoop tests when not running in an environment that doesn't have the hadoop
+home env variable set. After creating a `TagExtension` it must be registered with the project config.
+
+```kotlin
+object Hadoop : Tag()
+
+object HadoopTagExtension : TagExtension {
+  override fun tags(): Tags =
+      if (System.getenv().containsKey("HADOOP_HOME")) Tags.include(Hadoop) else Tags.exclude(Hadoop)
+}
+
+object MyProjectConfig : AbstractProjectConfig() {
+  override fun extensions(): List<Extension> = listOf(HadoopTagExtension)
+}
+
+object SimpleTest : StringSpec({
+  "simple test" {
+    // this test would only run on environments that have hadoop configured
+  }.config(tags = setOf(HadoopTagExtension))
+})
+```
+
+* **Discovery Extensions: instantiate()**
 
 Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T>): Spec?` has been added which
 allows you to extend the way new instances of `Spec` are created. By default, a no-args constructor is assumed. However, if this
