@@ -2,10 +2,15 @@ package com.sksamuel.kotlintest.tests.matchers.string
 
 import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.haveLength
-import io.kotlintest.matchers.string.include
 import io.kotlintest.matchers.match
-import io.kotlintest.should
-import io.kotlintest.shouldNot
+import io.kotlintest.matchers.shouldEndWith
+import io.kotlintest.matchers.shouldHaveLength
+import io.kotlintest.matchers.shouldMatch
+import io.kotlintest.matchers.shouldNotEndWith
+import io.kotlintest.matchers.shouldNotHaveLength
+import io.kotlintest.matchers.shouldNotMatch
+import io.kotlintest.matchers.shouldNotStartWith
+import io.kotlintest.matchers.shouldStartWith
 import io.kotlintest.matchers.startWith
 import io.kotlintest.matchers.string.beBlank
 import io.kotlintest.matchers.string.beEmpty
@@ -13,12 +18,36 @@ import io.kotlintest.matchers.string.beLowerCase
 import io.kotlintest.matchers.string.beUpperCase
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.containADigit
+import io.kotlintest.matchers.string.containIgnoringCase
 import io.kotlintest.matchers.string.containOnlyDigits
 import io.kotlintest.matchers.string.containOnlyOnce
 import io.kotlintest.matchers.string.haveSameLengthAs
-import io.kotlintest.specs.FreeSpec
+import io.kotlintest.matchers.string.include
+import io.kotlintest.matchers.string.shouldBeBlank
+import io.kotlintest.matchers.string.shouldBeEmpty
+import io.kotlintest.matchers.string.shouldBeLowerCase
+import io.kotlintest.matchers.string.shouldBeUpperCase
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.string.shouldContainADigit
+import io.kotlintest.matchers.string.shouldContainIgnoringCase
+import io.kotlintest.matchers.string.shouldContainOnlyDigits
+import io.kotlintest.matchers.string.shouldHaveSameLengthAs
+import io.kotlintest.matchers.string.shouldInclude
+import io.kotlintest.matchers.string.shouldNotBeBlank
+import io.kotlintest.matchers.string.shouldNotBeEmpty
+import io.kotlintest.matchers.string.shouldNotBeLowerCase
+import io.kotlintest.matchers.string.shouldNotBeUpperCase
+import io.kotlintest.matchers.string.shouldNotContain
+import io.kotlintest.matchers.string.shouldNotContainADigit
+import io.kotlintest.matchers.string.shouldNotContainIgnoringCase
+import io.kotlintest.matchers.string.shouldNotContainOnlyDigits
+import io.kotlintest.matchers.string.shouldNotContainOnlyOnce
+import io.kotlintest.matchers.string.shouldNotHaveSameLengthAs
+import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 import org.junit.ComparisonFailure
 
 class StringMatchersTest : FreeSpec() {
@@ -34,24 +63,46 @@ class StringMatchersTest : FreeSpec() {
 
     "contain only once" {
       "la tour" should containOnlyOnce("tour")
+      "la tour".shouldContain("tour")
       "la tour tour" shouldNot containOnlyOnce("tour")
+      "la tour tour".shouldNotContainOnlyOnce("tour")
+
+      shouldThrow<AssertionError> {
+        "la tour".shouldContain("wibble")
+      }.message shouldBe "String la tour should include substring wibble"
     }
 
     "contain(regex)" {
       "la tour" should contain("^.*?tour$".toRegex())
       "la tour" shouldNot contain(".*?abc.*?".toRegex())
+
+      "la tour".shouldContain("^.*?tour$".toRegex())
+      "la tour".shouldNotContain(".*?abc.*?".toRegex())
+
+      shouldThrow<AssertionError> {
+        "la tour".shouldContain(".*?abc.*?".toRegex())
+      }.message shouldBe "String la tour should contain regex .*?abc.*?"
+
+      shouldThrow<AssertionError> {
+        "la tour".shouldNotContain("^.*?tour$".toRegex())
+      }.message shouldBe "String la tour should not contain regex ^.*?tour\$"
     }
 
     "string should contain" - {
       "should test that a string contains substring" {
         "hello" should include("h")
-        "hello" should include("o")
+        "hello".shouldInclude("o")
         "hello" should include("ell")
         "hello" should include("hello")
         "hello" should include("")
+
         shouldThrow<AssertionError> {
           "hello" should include("allo")
-        }
+        }.message shouldBe "String hello should include substring allo"
+
+        shouldThrow<AssertionError> {
+          "hello".shouldInclude("qwe")
+        }.message shouldBe "String hello should include substring qwe"
       }
     }
 
@@ -59,6 +110,17 @@ class StringMatchersTest : FreeSpec() {
       "should test that a string has length 0" {
         "" should beEmpty()
         "hello" shouldNot beEmpty()
+        "hello".shouldNotBeEmpty()
+        "".shouldBeEmpty()
+
+        shouldThrow<AssertionError> {
+          "hello".shouldBeEmpty()
+        }.message shouldBe "String hello should be empty"
+
+        shouldThrow<AssertionError> {
+          "".shouldNotBeEmpty()
+        }.message shouldBe "String  should not be empty"
+
       }
     }
 
@@ -66,9 +128,14 @@ class StringMatchersTest : FreeSpec() {
       "should test that a string has at least one number" {
         "" shouldNot containADigit()
         "1" should containADigit()
-        "a1" should containADigit()
+        "a1".shouldContainADigit()
         "a1b" should containADigit()
         "hello" shouldNot containADigit()
+        "hello".shouldNotContainADigit()
+
+        shouldThrow<AssertionError> {
+          "hello" should containADigit()
+        }.message shouldBe "String hello should contain at least one digits"
       }
     }
 
@@ -79,6 +146,8 @@ class StringMatchersTest : FreeSpec() {
         "HELLO" should beUpperCase()
         "heLLO" shouldNot beUpperCase()
         "hello" shouldNot beUpperCase()
+        "HELLO".shouldBeUpperCase()
+        "HelLO".shouldNotBeUpperCase()
       }
     }
 
@@ -89,6 +158,9 @@ class StringMatchersTest : FreeSpec() {
         "hello" should beLowerCase()
         "HELLO" shouldNot beLowerCase()
         "HELlo" shouldNot beLowerCase()
+
+        "hello".shouldBeLowerCase()
+        "HELLO".shouldNotBeLowerCase()
       }
     }
 
@@ -98,6 +170,9 @@ class StringMatchersTest : FreeSpec() {
         "" should beBlank()
         "     \t     " should beBlank()
         "hello" shouldNot beBlank()
+
+        "hello".shouldNotBeBlank()
+        "   ".shouldBeBlank()
       }
     }
 
@@ -108,16 +183,22 @@ class StringMatchersTest : FreeSpec() {
         "" should haveSameLengthAs("")
         "" shouldNot haveSameLengthAs("o")
         "5" shouldNot haveSameLengthAs("")
+
+        "".shouldHaveSameLengthAs("")
+        "qwe".shouldHaveSameLengthAs("sdf")
+        "".shouldNotHaveSameLengthAs("qweqweqe")
+        "qe".shouldNotHaveSameLengthAs("")
+        "qe".shouldNotHaveSameLengthAs("fffff")
       }
     }
 
     "string should containIgnoringCase(other)" - {
-      "should test that a string has the same length as another string" {
-        "hello" should haveSameLengthAs("world")
-        "hello" shouldNot haveSameLengthAs("o")
-        "" should haveSameLengthAs("")
-        "" shouldNot haveSameLengthAs("o")
-        "5" shouldNot haveSameLengthAs("")
+      "should test that a string contains another string ignoring case" {
+        "hello" should containIgnoringCase("HELLO")
+        "hello" shouldNot containIgnoringCase("hella")
+
+        "hello".shouldContainIgnoringCase("HEllO")
+        "hello".shouldNotContainIgnoringCase("hella")
       }
     }
 
@@ -127,6 +208,11 @@ class StringMatchersTest : FreeSpec() {
         "123123" should containOnlyDigits()
         "" should containOnlyDigits()
         "aa123" shouldNot containOnlyDigits()
+
+        "123".shouldContainOnlyDigits()
+        "qweqwe123".shouldNotContainOnlyDigits()
+        "qweqwe".shouldNotContainOnlyDigits()
+        "123a".shouldNotContainOnlyDigits()
       }
     }
 
@@ -134,6 +220,10 @@ class StringMatchersTest : FreeSpec() {
       "should test strings" {
         "hello" should endWith("o")
         "hello" should endWith("")
+        "hello".shouldEndWith("")
+        "hello".shouldEndWith("lo")
+        "hello".shouldEndWith("o")
+        "hello".shouldNotEndWith("w")
         "" should endWith("")
         shouldThrow<AssertionError> {
           "" should endWith("h")
@@ -148,6 +238,11 @@ class StringMatchersTest : FreeSpec() {
       "should test strings" {
         "hello" should startWith("h")
         "hello" should startWith("")
+        "hello".shouldStartWith("")
+        "hello".shouldStartWith("h")
+        "hello".shouldStartWith("he")
+        "hello".shouldNotStartWith("w")
+        "hello".shouldNotStartWith("wo")
         "" should startWith("")
         shouldThrow<AssertionError> {
           "" should startWith("h")
@@ -163,37 +258,29 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "Matchers should start with x" - {
-      "should compare prefix of string" {
-        "bibble" should startWith("")
-        "bibble" should startWith("bib")
-        "bibble" should startWith("bibble")
-      }
-      "should fail if string does not start with x" {
-        val t = try {
-          "bibble" should startWith("vv")
-          true
-        } catch (e: AssertionError) {
-          false
-        }
-        t shouldBe false
-      }
-    }
     "should haveLength(5)" - {
       "should compare length of string" {
         "bibble" should haveLength(6)
         "" should haveLength(0)
+        "".shouldHaveLength(0)
+        "hello".shouldNotHaveLength(3)
+        "hello".shouldHaveLength(5)
         shouldThrow<AssertionError> {
           "" should haveLength(3)
-        }
+        }.message shouldBe "String  should have length 3"
+        shouldThrow<AssertionError> {
+          "".shouldHaveLength(3)
+        }.message shouldBe "String  should have length 3"
+        shouldThrow<AssertionError> {
+          "hello".shouldHaveLength(3)
+        }.message shouldBe "String hello should have length 3"
+        shouldThrow<AssertionError> {
+          "hello".shouldNotHaveLength(5)
+        }.message shouldBe "String hello should not have length 5"
       }
     }
+
     "Matchers should end with x" - {
-      "should compare prefix of string" {
-        "bibble" should endWith("")
-        "bibble" should endWith("ble")
-        "bibble" should endWith("bibble")
-      }
       "should fail if string does not end with x" {
         val t = try {
           "bibble" should endWith("qwe")
@@ -225,6 +312,13 @@ class StringMatchersTest : FreeSpec() {
         "sam" should match("sam")
         "bibble" should match("bibb..")
         "foo" should match(".*")
+        "foo".shouldMatch(".*")
+        "foo".shouldMatch("foo")
+        "foo".shouldMatch("f..")
+        "boo".shouldNotMatch("foo")
+        "boo".shouldNotMatch("f..")
+
+
       }
     }
   }

@@ -43,11 +43,7 @@ infix fun <T> T.should(matcher: Matcher<T>) {
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
-infix fun <T> T.shouldNot(matcher: Matcher<T>) {
-  val result = matcher.test(this)
-  if (result.passed)
-    throw AssertionError(result.negatedFailureMessage)
-}
+infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
 
 infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 

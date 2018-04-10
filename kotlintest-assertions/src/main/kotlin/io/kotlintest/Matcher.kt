@@ -16,6 +16,13 @@ interface Matcher<T> {
 
   fun test(value: T): Result
 
+  fun invert(): Matcher<T> = object : Matcher<T> {
+    override fun test(value: T): Result {
+      val result = this@Matcher.test(value)
+      return Result(!result.passed, result.negatedFailureMessage, result.failureMessage)
+    }
+  }
+
   infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
     override fun test(value: U): Result = this@Matcher.test(fn(value))
   }
