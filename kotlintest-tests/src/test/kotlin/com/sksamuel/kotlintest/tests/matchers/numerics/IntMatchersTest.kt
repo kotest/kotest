@@ -8,8 +8,8 @@ import io.kotlintest.matchers.between
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.lte
 import io.kotlintest.matchers.numerics.beInRange
-import io.kotlintest.matchers.numerics.even
-import io.kotlintest.matchers.numerics.odd
+import io.kotlintest.matchers.numerics.beEven
+import io.kotlintest.matchers.numerics.beOdd
 import io.kotlintest.should
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
@@ -26,13 +26,13 @@ class IntMatchersTest : StringSpec() {
   init {
 
     "isEven" {
-      4 shouldBe even()
-      3 shouldNotBe even()
+      4 shouldBe beEven()
+      3 shouldNotBe beEven()
     }
 
     "isOdd" {
-      3 shouldBe odd()
-      4 shouldNotBe odd()
+      3 shouldBe beOdd()
+      4 shouldNotBe beOdd()
     }
 
     "inRange" {

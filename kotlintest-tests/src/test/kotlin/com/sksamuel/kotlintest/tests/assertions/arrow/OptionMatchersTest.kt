@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest.tests.assertions.arrow
 
 import arrow.core.Option
-import io.kotlintest.assertions.arrow.option.none
-import io.kotlintest.assertions.arrow.option.some
+import io.kotlintest.assertions.arrow.option.beNone
+import io.kotlintest.assertions.arrow.option.beSome
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
@@ -15,15 +15,15 @@ class OptionMatchersTest : WordSpec() {
       "test that an option is a Some with the given value" {
 
         shouldThrow<AssertionError> {
-          Option.empty<String>() shouldBe some("foo")
+          Option.empty<String>() shouldBe beSome("foo")
         }.message shouldBe "Option should be Some(foo) but was None"
 
         shouldThrow<AssertionError> {
-          Option.pure("boo") shouldBe some("foo")
+          Option.pure("boo") shouldBe beSome("foo")
         }.message shouldBe "Option should be Some(foo) but was Some(boo)"
 
         val option = Option.pure("foo")
-        option shouldBe some("foo")
+        option shouldBe beSome("foo")
       }
     }
 
@@ -31,10 +31,10 @@ class OptionMatchersTest : WordSpec() {
       "test that an option is a None" {
 
         shouldThrow<AssertionError> {
-          Option.pure("foo") shouldBe none()
+          Option.pure("foo") shouldBe beNone()
         }.message shouldBe "Option should be None but was Some(foo)"
 
-        Option.empty<String>() shouldBe none()
+        Option.empty<String>() shouldBe beNone()
       }
     }
   }

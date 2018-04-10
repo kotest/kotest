@@ -4,7 +4,7 @@ import arrow.core.Either
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
-fun <B> right(b: B) = object : Matcher<Either<Any, B>> {
+fun <B> beRight(b: B) = object : Matcher<Either<Any, B>> {
   override fun test(value: Either<Any, B>): Result {
     return when (value) {
       is Either.Left -> {
@@ -20,7 +20,7 @@ fun <B> right(b: B) = object : Matcher<Either<Any, B>> {
   }
 }
 
-fun <A> left(a: A) = object : Matcher<Either<A, Any>> {
+fun <A> beLeft(a: A) = object : Matcher<Either<A, Any>> {
   override fun test(value: Either<A, Any>): Result {
     return when (value) {
       is Either.Right -> {

@@ -4,7 +4,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import java.util.concurrent.CompletableFuture
 
-fun <T> beCompleted() = object : Matcher<CompletableFuture<T>> {
+fun <T> completed() = object : Matcher<CompletableFuture<T>> {
   override fun test(value: CompletableFuture<T>): Result =
       Result(
           value.isDone,
@@ -13,7 +13,7 @@ fun <T> beCompleted() = object : Matcher<CompletableFuture<T>> {
       )
 }
 
-fun <T> beCancelled() = object : Matcher<CompletableFuture<T>> {
+fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
   override fun test(value: CompletableFuture<T>): Result =
       Result(
           value.isCancelled,

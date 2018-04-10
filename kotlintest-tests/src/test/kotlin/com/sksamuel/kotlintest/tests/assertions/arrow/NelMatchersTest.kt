@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.tests.assertions.arrow
 
 import arrow.data.NonEmptyList
+import io.kotlintest.assertions.arrow.nel.beSorted
 import io.kotlintest.assertions.arrow.nel.contain
 import io.kotlintest.assertions.arrow.nel.containAll
 import io.kotlintest.assertions.arrow.nel.containNoNulls
@@ -9,7 +10,6 @@ import io.kotlintest.assertions.arrow.nel.containOnlyNulls
 import io.kotlintest.assertions.arrow.nel.haveDuplicates
 import io.kotlintest.assertions.arrow.nel.haveSize
 import io.kotlintest.assertions.arrow.nel.singleElement
-import io.kotlintest.assertions.arrow.nel.sorted
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -30,9 +30,9 @@ class NelMatchersTest : WordSpec() {
 
     "sorted" should {
       "test that a collection is sorted" {
-        NonEmptyList.of(1, 2, 3, 4) shouldBe sorted<Int>()
+        NonEmptyList.of(1, 2, 3, 4) should beSorted<Int>()
         shouldThrow<AssertionError> {
-          NonEmptyList.of(2, 1) shouldBe sorted<Int>()
+          NonEmptyList.of(2, 1) should beSorted<Int>()
         }
       }
     }

@@ -4,7 +4,7 @@ import arrow.data.Try
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
-fun <A> success(a: A) = object : Matcher<Try<A>> {
+fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   override fun test(value: Try<A>): Result {
     return when (value) {
       is Try.Failure<*> -> Result(false, "Try should be a Success($a) but was Failure(${value.exception.message})", "")
@@ -18,7 +18,7 @@ fun <A> success(a: A) = object : Matcher<Try<A>> {
   }
 }
 
-fun failure() = object : Matcher<Try<Any>> {
+fun beFailure() = object : Matcher<Try<Any>> {
   override fun test(value: Try<Any>): Result {
     return when (value) {
       is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")

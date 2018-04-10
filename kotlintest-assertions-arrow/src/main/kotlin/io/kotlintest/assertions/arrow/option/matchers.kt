@@ -6,7 +6,7 @@ import arrow.core.Some
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
-fun <T> some(t: T) = object : Matcher<Option<T>> {
+fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   override fun test(value: Option<T>): Result {
     return when (value) {
       is None -> {
@@ -22,7 +22,7 @@ fun <T> some(t: T) = object : Matcher<Option<T>> {
   }
 }
 
-fun none() = object : Matcher<Option<Any>> {
+fun beNone() = object : Matcher<Option<Any>> {
   override fun test(value: Option<Any>): Result {
     return when (value) {
       is None -> {

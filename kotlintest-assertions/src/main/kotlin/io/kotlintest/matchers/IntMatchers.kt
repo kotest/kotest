@@ -3,7 +3,7 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
-
+fun beBetween(a: Int, b: Int) = between(a, b)
 fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
   override fun test(value: Int) = Result(value in a..b, "$value is between ($a, $b)", "$value is not between ($a, $b)")
 }

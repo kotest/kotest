@@ -13,11 +13,11 @@ _even_ and _odd_
 Tests that an Int is even or odd:
 
 ```kotlin
-4 shouldBe even()
-3 shouldNotBe even()
+4 should beEven()
+3 shouldNot beEven()
 
-3 shouldBe odd()
-4 shouldNotBe odd()
+3 should beOdd()
+4 shouldNot beOdd()
 ```
 
 _beInRange_
@@ -26,7 +26,7 @@ Asserts that an int or long is in the given range:
 
 ```kotlin
 3 should beInRange(1..10)
-4 shouldNot beInRange(1..3)
+4 should beInRange(1..3)
 ```
 
 _haveElementAt_
@@ -44,24 +44,24 @@ Help out the type inferrer when using nulls:
 listOf("a", "b", null) should haveElementAt<String?>(2, null)
 ```
 
-_beReadable()_, _beWriteable()_, _beExecutable()_ and _beHidden()_
+_readable_, _writeable_, _executable_ and _hidden_
 
 Tests if a file is readable, writeable, or hidden:
 
 ```kotlin
-file shouldBe beReadable()
-file shouldBe beWriteable()
-file shouldBe beExecutable()
-file shouldBe beHidden()
+file should beRadable()
+file should beWriteable()
+file should beExecutable()
+file should beHidden()
 ```
 
-_beAbsolute()_ and _beRelative()_
+_absolute_ and _relative_
 
 Tests if a file's path is relative or absolute.
 
 ```kotlin
-File("/usr/home/sam") shouldBe beAbsolute()
-File("spark/bin") shouldBe beRelative()
+File("/usr/home/sam") should beAbsolute()
+File("spark/bin") should beRelative()
 ```
 
 _startWithPath(path)_
@@ -107,7 +107,7 @@ uri should haveFragment("results")
 
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
 * Collections - containNull, haveDuplicates
-* Futures - beCompleted, beCancelled
+* Futures - completed, cancelled
 * String - haveLineCount, contain(regex)
 * Types - haveAnnotation(class)
 
@@ -118,18 +118,21 @@ A new module has been added which includes matchers for [Arrow](http://arrow-kt.
 
 The included matchers are:
 
-_Options_ - Test that an `Option` has the given value. For example:
+_Option_ - Test that an `Option` has the given value or is a `None`. For example:
 
 ```kotlin
 val option = Option.pure("foo")
-option shouldBe some("foo")
+option should beSome("foo")
+
+val none = None
+none should beNone()
 ```
 
-_Eithers_- Test that an `Either` is either a `Right` or `Left`. For example:
+_Either_- Test that an `Either` is either a `Right` or `Left`. For example:
 
 ```kotlin
-Either.right("boo") shouldBe right("boo")
-Either.left("boo") shouldBe left("boo")
+Either.right("boo") should beRight("boo")
+Either.left("boo") should beLeft("boo")
 ```
 
 _NonEmptyList_- A collection (no pun intended) of matchers for Arrow's `NonEmptyList`.
@@ -137,7 +140,7 @@ These mostly mirror the equivalent `Collection` matchers but for NELs. For examp
 
 ```kotlin
 NonEmptyList.of(1, 2, null) should containNull()
-NonEmptyList.of(1, 2, 3, 4) shouldBe sorted<Int>()
+NonEmptyList.of(1, 2, 3, 4) should beSorted<Int>()
 NonEmptyList.of(1, 2, 3, 3) should haveDuplicates()
 NonEmptyList.of(1) shouldBe singleElement(1)
 NonEmptyList.of(1, 2, 3) should contain(2)
@@ -147,11 +150,18 @@ NonEmptyList.of(null, null, null) should containOnlyNulls()
 NonEmptyList.of(1, 2, 3, 4, 5) should containAll(3, 2, 1)
 ```
 
-_Trys_ - Test that a `Try` is either `Success` or `Failure`.
+_Try_ - Test that a `Try` is either `Success` or `Failure`.
 
 ```kotlin
-Try.Success("foo") shouldBe success("foo")
-Try.Failure<Nothing>(RuntimeException()) shouldBe failure()
+Try.Success("foo") should beSuccess("foo")
+Try.Failure<Nothing>(RuntimeException()) should beFailure()
+```
+
+_Validation_ - Asserts that a `Validation` is either `Valid` or an `Invalid`
+
+```kotlin
+Valid("foo") should beValid()
+Invalid(RuntimeException()) should beInvalid()
 ```
 
 * **Generator Bind**
@@ -548,7 +558,7 @@ The following matchers have been added for maps: `containAll`, `haveKeys`, `have
 which keys/values or entries were missing.
 
 New matchers added for Strings: `haveSameLengthAs(other)`, `beEmpty()`, `beBlank()`, `containOnlyDigits()`, `containADigit()`, `containIgnoringCase(substring)`,
-`beLowerCase()`, `beUpperCase()`.
+`lowerCase()`, `upperCase()`.
 
 New matchers for URIs: `haveHost(hostname)`, `havePort(port)`, `haveScheme(scheme)`.
 

@@ -38,7 +38,6 @@ fun beUpperCase() = object : Matcher<String> {
   }
 }
 
-
 fun beEmpty() = object : Matcher<String> {
   override fun test(value: String): Result {
     return Result(value.isEmpty(), "String $value should be empty", "String $value should not be empty")

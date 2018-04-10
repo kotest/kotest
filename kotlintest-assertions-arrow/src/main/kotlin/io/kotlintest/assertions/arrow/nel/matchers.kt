@@ -3,6 +3,7 @@ package io.kotlintest.assertions.arrow.nel
 import arrow.data.NonEmptyList
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.sorted
 
 fun <T> containOnlyNulls() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
@@ -86,7 +87,7 @@ fun <T> singleElement(t: T): Matcher<NonEmptyList<T>> = object : Matcher<NonEmpt
   )
 }
 
-fun <T : Comparable<T>> sorted(): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
+fun <T : Comparable<T>> beSorted(): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>): Result {
     val passed = value.all.sorted() == value.all
     val snippet = if (value.size <= 10) value.all.joinToString(",") else value.all.take(10).joinToString(",") + "..."
