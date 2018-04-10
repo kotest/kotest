@@ -175,7 +175,7 @@ class KotlinTestEngine : TestEngine {
       when (result.status) {
         TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
         TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-        TestStatus.Ignored -> listener.executionSkipped(descriptor, "Ignored")
+        TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
         TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
       }
 

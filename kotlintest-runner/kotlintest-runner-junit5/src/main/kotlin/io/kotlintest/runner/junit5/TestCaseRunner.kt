@@ -46,17 +46,17 @@ object TestCaseRunner {
       val terminated = executor.awaitTermination(timeout.seconds, TimeUnit.SECONDS)
 
       if (!terminated) {
-        TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), metadata)
+        TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), null, metadata)
       } else {
         val first = errors.firstOrNull()
         when (first) {
-          null -> TestResult(TestStatus.Success, null, metadata)
-          is AssertionError -> TestResult(TestStatus.Failure, first, metadata)
-          else -> TestResult(TestStatus.Error, first, metadata)
+          null -> TestResult(TestStatus.Success, null, null, metadata)
+          is AssertionError -> TestResult(TestStatus.Failure, first, null, metadata)
+          else -> TestResult(TestStatus.Error, first, null, metadata)
         }
       }
     } else {
-      TestResult(TestStatus.Ignored, null)
+      TestResult(TestStatus.Ignored, null, null)
     }
   }
 }
