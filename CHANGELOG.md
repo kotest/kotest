@@ -242,7 +242,7 @@ object MyProjectConfig : AbstractProjectConfig() {
 object SimpleTest : StringSpec({
   "simple test" {
     // this test would only run on environments that have hadoop configured
-  }.config(tags = setOf(HadoopTagExtension))
+  }.config(tags = setOf(Hadoop))
 })
 ```
 
