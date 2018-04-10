@@ -40,7 +40,6 @@ class KotlinTestEngine : TestEngine {
   private val executor = Executors.newFixedThreadPool(Project.parallelism())
 
   override fun execute(request: ExecutionRequest) {
-    println(request.configurationParameters)
     request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     try {
       Project.beforeAll()
