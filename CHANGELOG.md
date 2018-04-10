@@ -251,7 +251,8 @@ object SimpleTest : StringSpec({
 Inside the `DiscoveryExtension` interface the function `fun <T : Spec> instantiate(clazz: KClass<T>): Spec?` has been added which
 allows you to extend the way new instances of `Spec` are created. By default, a no-args constructor is assumed. However, if this
 function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
-now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class.
+now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class,
+or if you want to ensure that all your tests extend some custom interface or superclass.
 
 * **System out / error extensions**
 
