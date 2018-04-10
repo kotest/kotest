@@ -2,13 +2,13 @@
 
 package com.sksamuel.kotlintest.tests
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.fail
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.provided.ProjectConfig
@@ -27,7 +27,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val verificationInterceptor = object : SpecExtension {
-    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
       process()
       val expectedLog = "A1.B1.C1.D1.E1.F1.test call.F2.E2.D2.C2."
       ProjectConfig.intercepterLog.toString() shouldBe expectedLog
@@ -35,7 +35,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val specInterceptorA = object : SpecExtension {
-    override fun intercept(description: Description,spec: Spec, process: () -> Unit) {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("C1.")
       process()
       ProjectConfig.intercepterLog.append("C2.")
@@ -43,7 +43,7 @@ class ConfigTest : WordSpec() {
   }
 
   private val specInterceptorB = object : SpecExtension {
-    override fun intercept(description: Description,spec: Spec, process: () -> Unit) {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
       ProjectConfig.intercepterLog.append("D1.")
       process()
       ProjectConfig.intercepterLog.append("D2.")
@@ -51,39 +51,38 @@ class ConfigTest : WordSpec() {
   }
 
   private val testCaseinterceptorC = object : TestCaseExtension {
-    override fun intercept(description: Description,
-                           spec: Spec,
-                           config: TestCaseConfig,
-                           test: (TestCaseConfig) -> TestResult): TestResult {
+    override fun intercept(context: TestCaseInterceptContext,
+                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                           complete: (TestResult) -> Unit) {
       testCaseInterceptorLog!!.get().append("E1.")
-      return test(config).apply {
+      test(context.config, {
         testCaseInterceptorLog.get().append("E2.")
-      }
+        complete(it)
+      })
     }
   }
 
   private val testCaseInterceptorD = object : TestCaseExtension {
-    override fun intercept(description: Description,
-                           spec: Spec,
-                           config: TestCaseConfig,
-                           test: (TestCaseConfig) -> TestResult): TestResult {
+    override fun intercept(context: TestCaseInterceptContext,
+                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                           complete: (TestResult) -> Unit) {
       testCaseInterceptorLog!!.get().append("F1.")
-      return test(config).apply {
+      test(context.config, {
         testCaseInterceptorLog.get().append("F2.")
-      }
+        complete(it)
+      })
     }
   }
 
   private val testCaseInterceptorE = object : TestCaseExtension {
-    override fun intercept(description: Description,
-                           spec: Spec,
-                           config: TestCaseConfig,
-                           test: (TestCaseConfig) -> TestResult): TestResult {
+    override fun intercept(context: TestCaseInterceptContext,
+                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                           complete: (TestResult) -> Unit) {
       return try {
-        test(config)
+        test(context.config, { complete(it) })
       } catch (ex: RuntimeException) {
         // ignore
-        TestResult.Ignored
+        complete(TestResult.Ignored)
       }
     }
   }
@@ -144,13 +143,13 @@ class ConfigTest : WordSpec() {
       }.config(invocations = 1)
 
       val orderVerificationInterceptor = object : TestCaseExtension {
-        override fun intercept(description: Description,
-                               spec: Spec,
-                               config: TestCaseConfig,
-                               test: (TestCaseConfig) -> TestResult): TestResult {
-          return test(config).apply {
+        override fun intercept(context: TestCaseInterceptContext,
+                               test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                               complete: (TestResult) -> Unit) {
+          test(context.config, {
             ProjectConfig.intercepterLog.append(testCaseInterceptorLog!!.get().toString())
-          }
+            complete(it)
+          })
         }
       }
 

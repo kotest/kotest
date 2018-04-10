@@ -1,11 +1,10 @@
 package com.sksamuel.kotlintest.tests.extensions
 
-import io.kotlintest.Description
 import io.kotlintest.Project
-import io.kotlintest.Spec
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
@@ -15,37 +14,24 @@ object Numbers {
   val a = AtomicInteger(1)
   val b = AtomicInteger(1)
 
-  val add1 = object : TestCaseExtension {
-    override fun intercept(description: Description,
-                           spec: Spec,
-                           config: TestCaseConfig,
-                           test: (TestCaseConfig) -> TestResult): TestResult {
-      return if (description.name.contains("ZZQQ")) {
-        a.addAndGet(1)
-        val result = test(config)
-        b.addAndGet(1)
-        result
+  fun add(n: Int) = object : TestCaseExtension {
+    override fun intercept(context: TestCaseInterceptContext,
+                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                           complete: (TestResult) -> Unit) {
+      if (context.description.name.contains("ZZQQ")) {
+        a.addAndGet(n)
+        test(context.config, {
+          b.addAndGet(n)
+          complete(it)
+        })
       } else {
-        test(config)
+        test(context.config, { complete(it) })
       }
     }
   }
 
-  val add2 = object : TestCaseExtension {
-    override fun intercept(description: Description,
-                           spec: Spec,
-                           config: TestCaseConfig,
-                           test: (TestCaseConfig) -> TestResult): TestResult {
-      return if (description.name.contains("ZZQQ")) {
-        a.addAndGet(2)
-        val result = test(config)
-        b.addAndGet(2)
-        result
-      } else {
-        test(config)
-      }
-    }
-  }
+  val add1 = add(1)
+  val add2 = add(2)
 
   init {
     Project.registerExtension(add1)

@@ -1,15 +1,18 @@
 package io.kotlintest.runner.junit5
 
 import createSpecInterceptorChain
-import createTestCaseInterceptorChain
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Project
 import io.kotlintest.SpecScope
 import io.kotlintest.TestCase
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContainer
+import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.extensions.TestCaseExtension
+import io.kotlintest.extensions.TestCaseInterceptContext
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.ExecutionRequest
@@ -37,6 +40,7 @@ class KotlinTestEngine : TestEngine {
   private val executor = Executors.newFixedThreadPool(Project.parallelism())
 
   override fun execute(request: ExecutionRequest) {
+    println(request.configurationParameters)
     request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     try {
       Project.beforeAll()
@@ -77,7 +81,6 @@ class KotlinTestEngine : TestEngine {
     request.engineExecutionListener.executionFinished(descriptor, TestExecutionResult.successful())
   }
 
-  @Suppress("DEPRECATION")
   private fun runSpecInterception(scope: SpecScope, afterInterception: () -> Unit) {
     val listeners = listOf(scope.spec) + scope.spec.listeners() + Project.listeners()
     listeners.forEach {
@@ -91,9 +94,13 @@ class KotlinTestEngine : TestEngine {
     val extensions: List<SpecExtension> =
         scope.spec.extensions().filterIsInstance<SpecExtension>() +
             Project.specExtensions()
-    val chain = createSpecInterceptorChain(scope.description, scope.spec, extensions) {
+
+    val context = SpecInterceptContext(scope.description, scope.spec)
+
+    val chain = createSpecInterceptorChain(context, extensions) {
       afterInterception()
     }
+
     chain.invoke()
 
     listeners.reversed().forEach {
@@ -152,7 +159,6 @@ class KotlinTestEngine : TestEngine {
     }
   }
 
-  @Suppress("DEPRECATION")
   private fun runTest(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
 
     val listeners = listOf(descriptor.testCase.spec) + descriptor.testCase.spec.listeners() + Project.listeners()
@@ -164,30 +170,47 @@ class KotlinTestEngine : TestEngine {
       }
     }
 
+    fun complete(result: TestResult) {
+
+      when (result.status) {
+        TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
+        TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+        TestStatus.Ignored -> listener.executionSkipped(descriptor, "Ignored")
+        TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+      }
+
+      listeners.reversed().forEach {
+        try {
+          it.afterTest(descriptor.testCase.description(), result)
+        } catch (t: Throwable) {
+          t.printStackTrace()
+        }
+      }
+    }
+
+    fun intercept(extensions: List<TestCaseExtension>,
+                  config: TestCaseConfig,
+                  complete: (TestResult) -> Unit) {
+      when {
+        extensions.isEmpty() -> {
+          val result = TestCaseRunner.runTest(descriptor.testCase.copy(config = config))
+          complete(result)
+        }
+        else -> {
+          val context = TestCaseInterceptContext(
+              descriptor.testCase.description,
+              descriptor.testCase.spec,
+              config)
+          extensions.first().intercept(context, { conf, callback -> intercept(extensions.drop(1), conf, callback) }, { complete(it) })
+        }
+      }
+    }
+
     val extensions: List<TestCaseExtension> = descriptor.testCase.config.extensions +
         descriptor.testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
         Project.testCaseExtensions()
 
-    val chain = createTestCaseInterceptorChain(descriptor.testCase, extensions) {
-      TestCaseRunner.runTest(descriptor.testCase.copy(config = it))
-    }
-
-    val result = chain(descriptor.testCase.config)
-
-    when (result.status) {
-      TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-      TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-      TestStatus.Ignored -> listener.executionSkipped(descriptor, "Ignored")
-      TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-    }
-
-    listeners.reversed().forEach {
-      try {
-        it.afterTest(descriptor.testCase.description(), result)
-      } catch (t: Throwable) {
-        t.printStackTrace()
-      }
-    }
+    intercept(extensions, descriptor.testCase.config, { complete(it) })
   }
 
   private var result: EngineDescriptor? = null

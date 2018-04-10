@@ -1,9 +1,8 @@
 package com.sksamuel.kotlintest.tests
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -13,7 +12,7 @@ class LateinitSpecInterceptorStringSpecTest : StringSpec() {
   private lateinit var string: String
 
   inner class Interceptor : SpecExtension {
-    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
       this@LateinitSpecInterceptorStringSpecTest.string = "Hello"
       process()
     }

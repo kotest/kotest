@@ -24,9 +24,10 @@ interface SpecExtension : Extension {
    * [Spec] and all it's nested [TestScope]s are guaranteed
    * to have been completed.
    *
-   * @param description the name and parents of the spec
-   * @param spec the instance of the spec itself
+   * @param context contains the [Spec] instance under consideration and the [Description] identifer.
    * @param process callback function required to continue spec processing
    */
-  fun intercept(description: Description, spec: Spec, process: () -> Unit) = process()
+  fun intercept(context: SpecInterceptContext, process: () -> Unit) = process()
 }
+
+data class SpecInterceptContext(val description: Description, val spec: Spec)

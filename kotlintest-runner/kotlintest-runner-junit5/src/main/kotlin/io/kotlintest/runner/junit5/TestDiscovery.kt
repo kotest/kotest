@@ -65,7 +65,7 @@ object TestDiscovery {
     val discoveryExtensions = Project.discoveryExtensions().fold(descriptions, { descs, ext -> ext.afterScan(descs) })
     Project.listeners().forEach { it.afterDiscovery(discoveryExtensions) }
 
-    val root = EngineDescriptor(uniqueId.append("root", "kotlintest"), "KotlinTest")
+    val root = EngineDescriptor(uniqueId, "KotlinTest")
     instances.forEach {
       val specDescriptor = SpecTestDescriptor.fromSpecScope(root.uniqueId, it.root())
       it.root().scopes.forEach {

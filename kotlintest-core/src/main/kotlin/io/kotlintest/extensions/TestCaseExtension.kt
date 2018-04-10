@@ -17,34 +17,48 @@ interface TestCaseExtension : Extension {
   /**
    * Intercepts a [TestCase].
    *
-   * Implementations must return a [TestResult] which is used to notify
-   * the underlying platform (eg, junit5) as to the outcome of the test.
+   * Allows implementations to add logic around a test case as well as control
+   * if and when the test case is executed.
    *
-   * Typically, implementations will invoke the supplied 'test' function
-   * callback to execute the [TestCase], and return that value. However
-   * after the test callback has returned, implementations are free to
-   * discard that result and return another instance if they wish.
+   * The supplied `test` function should be invoked if implementations wish to
+   * execute the test case. The function accepts a config parameter which is the
+   * [TestCaseConfig] to be used when executing the test. The [TestCaseInterceptContext]
+   * contains the config supplied by the author of the test, or it may contain the
+   * config supplied by another interceptor.
    *
-   * The test callback accepts a config parameter which is the [TestCaseConfig]
-   * used to configure the test runner. By default this comes from the [Spec]
-   * itself but implementations are free to supply their own, opening up the
-   * possibility for dynamic config.
+   * The test function additionally expects a callback function which will be invoked
+   * with the [TestResult] returned when executing the test case.
    *
-   * Alternatively, implementations can bypass the test callback entirely
-   * and return an arbitary test result. For example, an interceptor
-   * could choose to skip tests written for a windows machine if the
-   * interceptor detects a linux environment.
+   * Implementations must invoke the `complete` function with a [TestResult]
+   * which is used to notify the underlying platform (eg, junit5)
+   * as to the outcome of the test.
    *
-   * @param description full name of the [TestCase] under interception
-   * @param spec the [Spec] instance containing the [TestCase]
-   * @param config the [TestCaseConfig] defined on the [TestCase]
-   * @param test a function that is invoked to execute the test.
-   * Can be ignored if you wish to return a [TestResult] without executing the test.
+   * Typically the test result recieved in the callback will be used to call
+   * the complete function but this is not required. Implementations may wish to
+   * skip or abort the test case and invoke complete without ever running the test.
+   * Or they may wish to run the test and then invoke complete with a different
+   * result to that received.
+   *
+   * Failure to invoke the complete function will result in the test runnner
+   * waiting indefinitely for the outcome of the test case.
+   *
+   * @param context details of the [TestCase] under interception - contains the [Spec]
+   * instance containing the [TestCase], the [TestCaseConfig] to be passed to the test
+   * and a [Description] which contains the id and parent ids of the test case.
+   *
+   * @param test a function that is invoked to execute the test. Can be ignored if you
+   * wish to return a [TestResult] without executing the test itself.
+   *
+   * @param complete a function that must be invoked with a [TestResult] to
+   * notify the test runner of the outcome of the test.
    *
    * @return a [TestResult] for the desired outcome of this test case.
    */
-  fun intercept(description: Description,
-                spec: Spec,
-                config: TestCaseConfig,
-                test: (TestCaseConfig) -> TestResult): TestResult = test(config)
+  fun intercept(context: TestCaseInterceptContext,
+                test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
+                complete: (TestResult) -> Unit) = test(context.config, { complete(it) })
 }
+
+data class TestCaseInterceptContext(val description: Description,
+                                    val spec: Spec,
+                                    val config: TestCaseConfig)

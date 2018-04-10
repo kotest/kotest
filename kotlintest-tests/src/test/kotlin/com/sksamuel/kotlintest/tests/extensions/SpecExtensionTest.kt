@@ -1,12 +1,11 @@
 package com.sksamuel.kotlintest.tests.extensions
 
-import io.kotlintest.Description
 import io.kotlintest.Project
-import io.kotlintest.Spec
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 object SpecExtensionNumbers {
@@ -15,8 +14,8 @@ object SpecExtensionNumbers {
   val b = AtomicInteger(1)
 
   val add1 = object : SpecExtension {
-    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
-      if (spec.name() == "SpecExtensionTest") {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
+      if (context.description.name == "SpecExtensionTest") {
         a.addAndGet(2)
         process()
         b.addAndGet(2)
@@ -27,8 +26,8 @@ object SpecExtensionNumbers {
   }
 
   val add2 = object : SpecExtension {
-    override fun intercept(description: Description, spec: Spec, process: () -> Unit) {
-      if (spec.name() == "SpecExtensionTest") {
+    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
+      if (context.description.name == "SpecExtensionTest") {
         a.addAndGet(3)
         process()
         b.addAndGet(3)
