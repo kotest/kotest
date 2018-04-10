@@ -165,29 +165,16 @@ class KotlinTestEngine : TestEngine {
   private fun runTest(descriptor: TestCaseDescriptor, listener: EngineExecutionListener) {
 
     val listeners = listOf(descriptor.testCase.spec) + descriptor.testCase.spec.listeners() + Project.listeners()
-    listeners.forEach {
-      try {
-        it.beforeTest(descriptor.testCase.description())
-      } catch (t: Throwable) {
-        t.printStackTrace()
-      }
-    }
 
     fun complete(result: TestResult) {
-
+      listeners.reversed().forEach {
+        it.afterTest(descriptor.testCase.description(), result)
+      }
       when (result.status) {
         TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
         TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
         TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
         TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-      }
-
-      listeners.reversed().forEach {
-        try {
-          it.afterTest(descriptor.testCase.description(), result)
-        } catch (t: Throwable) {
-          t.printStackTrace()
-        }
       }
     }
 
@@ -213,7 +200,15 @@ class KotlinTestEngine : TestEngine {
         descriptor.testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
         Project.testCaseExtensions()
 
-    intercept(extensions, descriptor.testCase.config, { complete(it) })
+    listeners.forEach {
+      try {
+        it.beforeTest(descriptor.testCase.description())
+        intercept(extensions, descriptor.testCase.config, { complete(it) })
+      } catch (t: Throwable) {
+        t.printStackTrace()
+        listener.executionFinished(descriptor, TestExecutionResult.failed(t))
+      }
+    }
   }
 
   private var result: EngineDescriptor? = null

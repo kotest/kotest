@@ -24,3 +24,5 @@ abstract class Tag {
    */
   override fun toString() = name
 }
+
+class StringTag(override val name: String) : Tag()

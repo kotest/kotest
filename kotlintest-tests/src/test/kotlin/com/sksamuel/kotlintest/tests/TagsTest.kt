@@ -6,12 +6,13 @@ import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-class TestCaseTest : StringSpec() {
+class TagsTest : StringSpec() {
 
   object TagA : Tag()
   object TagB : Tag()
 
   init {
+
     val testTaggedA = "should be tagged with tagA" { }
     testTaggedA.config(tags = setOf(TagA))
 
@@ -20,21 +21,21 @@ class TestCaseTest : StringSpec() {
     val testTaggedB = "should be tagged with tagB" { }
     testTaggedB.config(tags = setOf(TagB))
 
-    "only tests without excluded tags should be active" {
+    "test exclude system property" {
       System.setProperty("kotlintest.tags.exclude", "TagB")
       testTaggedA.isActive() shouldBe true
       untaggedTest.isActive() shouldBe true
       testTaggedB.isActive() shouldBe false
     }
 
-    "only tests with included tags should be active" {
+    "test include system property" {
       System.setProperty("kotlintest.tags.include", "TagA")
       testTaggedA.isActive() shouldBe true
       untaggedTest.isActive() shouldBe false
       testTaggedB.isActive() shouldBe false
     }
 
-    "tagged tests should be active by default" {
+    "all tests should be active by default" {
       testTaggedA.isActive() shouldBe true
       untaggedTest.isActive() shouldBe true
       testTaggedB.isActive() shouldBe true

@@ -6,12 +6,12 @@ data class Tags(val included: Set<Tag>, val excluded: Set<Tag>) {
     val Empty = Tags(emptySet(), emptySet())
   }
 
+  fun isActive(tag: Tag): Boolean = isActive(setOf(tag))
   fun isActive(tags: Set<Tag>): Boolean {
-    val includedTagsEmpty = included.isEmpty()
     return when {
-      excluded.intersect(tags).isNotEmpty() -> false
-      includedTagsEmpty -> true
-      included.intersect(tags).isNotEmpty() -> true
+      excluded.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> false
+      included.isEmpty() -> true
+      included.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> true
       else -> false
     }
   }

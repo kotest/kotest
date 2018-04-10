@@ -4,6 +4,7 @@ import io.kotlintest.extensions.DiscoveryExtension
 import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.SystemPropertyTagExtension
 import io.kotlintest.extensions.TagExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
@@ -49,7 +50,7 @@ object Project {
     }
   }
 
-  private val _extensions = mutableListOf<Extension>()
+  private val _extensions = mutableListOf<Extension>().apply { add(SystemPropertyTagExtension) }
   private val _listeners = mutableListOf<TestListener>()
   private var parallelism: Int = 1
 
@@ -63,7 +64,7 @@ object Project {
   fun parallelism() = parallelism
 
   fun tags(): Tags {
-    val tags = tagExtensions().map { it.tags()}
+    val tags = tagExtensions().map { it.tags() }
     return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
   }
 

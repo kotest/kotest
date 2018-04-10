@@ -1,5 +1,6 @@
 package io.kotlintest.extensions
 
+import io.kotlintest.StringTag
 import io.kotlintest.Tag
 import io.kotlintest.Tags
 
@@ -15,18 +16,16 @@ import io.kotlintest.Tags
  *
  * The default [SystemPropertyTagExtension] is automatically registered.
  */
-interface TagExtension {
-  fun tags(): Tags
+interface TagExtension : Extension {
+  fun tags(): Tags = Tags.Empty
 }
 
 object SystemPropertyTagExtension : TagExtension {
 
-  class StringTag(override val name: String) : Tag()
-
   override fun tags(): Tags {
 
     fun readTagsProperty(name: String): List<Tag> =
-        (System.getProperty(name) ?: "").split(',').map { StringTag(it.trim()) }
+        (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map { StringTag(it.trim()) }
 
     val includedTags = readTagsProperty("kotlintest.tags.include")
     val excludedTags = readTagsProperty("kotlintest.tags.exclude")
