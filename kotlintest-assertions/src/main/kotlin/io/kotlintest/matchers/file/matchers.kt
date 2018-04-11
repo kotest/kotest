@@ -3,9 +3,17 @@ package io.kotlintest.matchers.file
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import java.io.File
 import java.nio.file.Path
+
+fun File.shouldBeEmpty() = this shouldBe emptyFile()
+fun File.shouldNotBeEmpty() = this shouldNotBe emptyFile()
+fun emptyFile(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.length() == 0L, "File $value should be empty", "File $value should not be empty")
+}
 
 fun File.shouldExist() = this should exist()
 fun File.shouldNotExist() = this shouldNot exist()
