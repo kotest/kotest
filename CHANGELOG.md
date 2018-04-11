@@ -106,7 +106,7 @@ uri should haveFragment("results")
 ```
 
 * Date matchers - before / after / haveSameYear / haveSameDay / haveSameMonth / within
-* Collections - containNull, haveDuplicates
+* Collections - containNull, containDuplicates
 * Futures - completed, cancelled
 * String - haveLineCount, contain(regex)
 * Types - haveAnnotation(class)

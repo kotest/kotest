@@ -2,7 +2,11 @@ package io.kotlintest.matchers.numerics
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
+fun Int.shouldBeInRange(range: IntRange) = this should beInRange(range)
+fun Int.shouldNotBeInRange(range: IntRange) = this shouldNot beInRange(range)
 fun beInRange(range: IntRange) = object : Matcher<Int> {
   override fun test(value: Int): Result =
       Result(
@@ -12,6 +16,8 @@ fun beInRange(range: IntRange) = object : Matcher<Int> {
       )
 }
 
+fun Long.shouldBeInRange(range: LongRange) = this should beInRange(range)
+fun Long.shouldNotBeInRange(range: LongRange) = this shouldNot beInRange(range)
 fun beInRange(range: LongRange) = object : Matcher<Long> {
   override fun test(value: Long): Result =
       Result(

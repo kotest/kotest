@@ -4,8 +4,8 @@ import io.kotlintest.Matcher
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 
 @Deprecated("use the equivalent function io.kotlintest.shouldBe", ReplaceWith("shouldBe(matcher)", "io.kotlintest.shouldBe"))

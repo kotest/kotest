@@ -12,8 +12,9 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
       )
 }
 
-fun <T, U : Collection<T>> beEmpty(): Matcher<U> = object : Matcher<U> {
-  override fun test(value: U): Result = Result(
+
+fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>): Result = Result(
       value.isEmpty(),
       "Collection should be empty",
       "Collection should not be empty"
@@ -26,8 +27,9 @@ fun <T> containsAll(vararg ts: T) = containAll(ts.asList())
 @Deprecated("use containAll", ReplaceWith("containAll(ts)"))
 fun <T> containsAll(ts: List<T>): Matcher<Collection<T>> = containAll(ts)
 
+
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
-fun <T> containAll(ts: List<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(
       ts.all { value.contains(it) },
       "Collection should contain all of ${ts.take(10).joinToString(",")}",
@@ -77,6 +79,7 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
   )
 }
 
+fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): Result {
     val passed = value.sorted() == value

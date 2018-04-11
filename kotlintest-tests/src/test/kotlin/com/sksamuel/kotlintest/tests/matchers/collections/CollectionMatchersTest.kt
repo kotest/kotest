@@ -5,7 +5,7 @@ import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.containNoNulls
 import io.kotlintest.matchers.collections.containNull
 import io.kotlintest.matchers.collections.containOnlyNulls
-import io.kotlintest.matchers.collections.haveDuplicates
+import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.haveElementAt
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
@@ -50,8 +50,8 @@ class CollectionMatchersTest : WordSpec() {
 
     "haveDuplicates" should {
       "test that a collection is unique" {
-        listOf(1, 2, 3, 3) should haveDuplicates()
-        listOf(1, 2, 3, 4) shouldNot haveDuplicates()
+        listOf(1, 2, 3, 3) should containDuplicates()
+        listOf(1, 2, 3, 4) shouldNot containDuplicates()
       }
     }
 
