@@ -6,6 +6,18 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import java.util.concurrent.CompletableFuture
 
+fun <T> CompletableFuture<T>.shouldBeCompletedExceptionally() = this shouldBe completedExceptionally<T>()
+fun <T> CompletableFuture<T>.shouldNotBeCompletedExceptionally() = this shouldNotBe completedExceptionally<T>()
+fun <T> completedExceptionally() = object : Matcher<CompletableFuture<T>> {
+  override fun test(value: CompletableFuture<T>): Result =
+      Result(
+          value.isCompletedExceptionally,
+          "Future should be completed exceptionally",
+          "Future should not be completed exceptionally"
+      )
+}
+
+
 fun <T> CompletableFuture<T>.shouldBeCompleted() = this shouldBe completed<T>()
 fun <T> CompletableFuture<T>.shouldNotBeCompleted() = this shouldNotBe completed<T>()
 fun <T> completed() = object : Matcher<CompletableFuture<T>> {

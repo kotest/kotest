@@ -31,6 +31,12 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isFile, "File $value should be a file", "File $value should not be a file")
 }
 
+fun File.shouldBeCanonical() = this should beCanonicalPath()
+fun File.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
+fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.canonicalPath == value.path, "File $value should be canonical", "File $value should not be canonical")
+}
+
 fun File.shouldBeAbsolute() = this should beAbsolute()
 fun File.shouldNotBeAbsolute() = this shouldNot beAbsolute()
 fun beAbsolute(): Matcher<File> = object : Matcher<File> {
