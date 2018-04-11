@@ -29,6 +29,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class FileMatchersTest : FunSpec() {
+  private val osName = System.getProperty("os.name").toLowerCase()
+  private val isWindows = osName.contains("windows")
+
   init {
 
     test("relative() should match only relative files") {
@@ -37,17 +40,18 @@ class FileMatchersTest : FunSpec() {
     }
 
     test("absolute() should match only absolute files") {
-      File("/sammy/boy") shouldBe beAbsolute()
-      File("/sammy/boy").shouldBeAbsolute()
+      val root = if (isWindows) "C:/" else "/"
+      File("${root}sammy/boy") shouldBe beAbsolute()
+      File("${root}sammy/boy").shouldBeAbsolute()
     }
 
     test("startWithPath() should only match files that start with the given path") {
       File("sammy/boy") should startWithPath("sammy")
       File("sammy/boy") should startWithPath(Paths.get("sammy"))
-      File("/sammy/boy") should startWithPath("/sammy")
+      File("/sammy/boy") should startWithPath("${File.separator}sammy")
       File("/sammy/boy") should startWithPath(Paths.get("/sammy"))
 
-      File("/sammy/boy").shouldStartWithPath("/sammy")
+      File("/sammy/boy").shouldStartWithPath("${File.separator}sammy")
       File("/sammy/boy").shouldStartWithPath(Paths.get("/sammy"))
     }
 
