@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotlintest.matchers
 
 import io.kotlintest.Matcher

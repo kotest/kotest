@@ -2,6 +2,10 @@ package io.kotlintest.matchers.string
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.endWith
+import io.kotlintest.matchers.haveLength
+import io.kotlintest.matchers.match
+import io.kotlintest.matchers.startWith
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
@@ -122,3 +126,12 @@ fun include(substr: String): Matcher<String> = object : Matcher<String> {
     return Result(passed, "String $value should include substring $substr", "String $value should not include substring $substr")
   }
 }
+
+fun String.shouldHaveLength(length: Int) = this should haveLength(length)
+fun String.shouldNotHaveLength(length: Int) = this shouldNot haveLength(length)
+fun String.shouldMatch(regex: String) = this should match(regex)
+fun String.shouldNotMatch(regex: String) = this shouldNot match(regex)
+fun String.shouldEndWith(suffix: String) = this should endWith(suffix)
+fun String.shouldNotEndWith(suffix: String) = this shouldNot endWith(suffix)
+fun String.shouldStartWith(suffix: String) = this should startWith(suffix)
+fun String.shouldNotStartWith(suffix: String) = this shouldNot startWith(suffix)
