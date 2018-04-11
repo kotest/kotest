@@ -82,3 +82,41 @@ fun startWithPath(prefix: String) = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.toString().startsWith(prefix), "File $value should start with $prefix", "File $value should not start with $prefix")
 }
 
+fun Path.shouldExist() = this.toFile() should exist()
+fun Path.shouldNotExist() = this.toFile() shouldNot exist()
+
+fun Path.shouldHaveExtension(vararg exts: String) = this.toFile() should haveExtension(*exts)
+fun Path.shouldNotHaveExtension(vararg exts: String) = this.toFile() shouldNot haveExtension(*exts)
+
+fun Path.shouldBeADirectory() = this.toFile() should aDirectory()
+fun Path.shouldNotBeADirectory() = this.toFile() shouldNot aDirectory()
+
+fun Path.shouldBeAFile() = this.toFile() should aFile()
+fun Path.shouldNotBeAFile() = this.toFile() shouldNot aFile()
+
+fun Path.shouldBeAbsolute() = this.toFile() should beAbsolute()
+fun Path.shouldNotBeAbsolute() = this.toFile() shouldNot beAbsolute()
+
+fun Path.shouldBeRelative() = this.toFile() should beRelative()
+fun Path.shouldNotBeRelative() = this.toFile() shouldNot beRelative()
+
+fun Path.shouldBeReadable() = this.toFile() should beReadable()
+fun Path.shouldNotBeReadable() = this.toFile() shouldNot beReadable()
+
+fun Path.shouldBeWriteable() = this.toFile() should beWriteable()
+fun Path.shouldNotBeWriteable() = this.toFile() shouldNot beWriteable()
+
+fun Path.shouldBeExecutable() = this.toFile() should beExecutable()
+fun Path.shouldNotBeExecutable() = this.toFile() shouldNot beExecutable()
+
+fun Path.shouldBeHidden() = this.toFile() should beHidden()
+fun Path.shouldNotBeHidden() = this.toFile() shouldNot beHidden()
+
+fun Path.shouldStartWithPath(file: File) = this.toFile() should startWithPath(file)
+fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot startWithPath(file)
+
+fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
+fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
+
+fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
+fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)

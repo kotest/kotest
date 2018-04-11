@@ -5,7 +5,11 @@ import arrow.core.Option
 import arrow.core.Some
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
+fun <T> Option<T>.shouldBeSome(t: T) = this should beSome(t)
+fun <T> Option<T>.shouldNotBeSome(t: T) = this shouldNot beSome(t)
 fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   override fun test(value: Option<T>): Result {
     return when (value) {
@@ -22,6 +26,8 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   }
 }
 
+fun Option<Any>.shouldBeNone() = this should beNone()
+fun Option<Any>.shouldNotBeNone() = this shouldNot beNone()
 fun beNone() = object : Matcher<Option<Any>> {
   override fun test(value: Option<Any>): Result {
     return when (value) {

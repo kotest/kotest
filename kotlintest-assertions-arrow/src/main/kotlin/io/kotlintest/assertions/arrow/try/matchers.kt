@@ -3,7 +3,11 @@ package io.kotlintest.assertions.arrow.`try`
 import arrow.data.Try
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
+fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
+fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)
 fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   override fun test(value: Try<A>): Result {
     return when (value) {
@@ -18,6 +22,8 @@ fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   }
 }
 
+fun Try<Any>.shouldBeFailure() = this should beFailure()
+fun Try<Any>.shouldNotBeFailure() = this shouldNot beFailure()
 fun beFailure() = object : Matcher<Try<Any>> {
   override fun test(value: Try<Any>): Result {
     return when (value) {

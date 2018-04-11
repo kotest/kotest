@@ -3,7 +3,11 @@ package io.kotlintest.assertions.arrow.either
 import arrow.core.Either
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
+fun <B> Either<Any, B>.shouldBeRight(b: B) = this should beRight(b)
+fun <B> Either<Any, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
 fun <B> beRight(b: B) = object : Matcher<Either<Any, B>> {
   override fun test(value: Either<Any, B>): Result {
     return when (value) {
@@ -20,6 +24,8 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any, B>> {
   }
 }
 
+fun <A> Either<A, Any>.shouldBeLeft(a: A) = this should beLeft(a)
+fun <A> Either<A, Any>.shouldNotBeLeft(a: A) = this shouldNot beLeft(a)
 fun <A> beLeft(a: A) = object : Matcher<Either<A, Any>> {
   override fun test(value: Either<A, Any>): Result {
     return when (value) {

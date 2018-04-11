@@ -3,8 +3,11 @@ package io.kotlintest.assertions.arrow.nel
 import arrow.data.NonEmptyList
 import io.kotlintest.Matcher
 import io.kotlintest.Result
-import io.kotlintest.matchers.sorted
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
+fun NonEmptyList<Any>.shouldContainOnlyNulls() = this should containOnlyNulls()
+fun NonEmptyList<Any>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -14,10 +17,8 @@ fun <T> containOnlyNulls() = object : Matcher<NonEmptyList<T>> {
       )
 }
 
-/**
- * `collection should containNull()` tests that the collection
- * contains at least one null
- */
+fun NonEmptyList<Any>.shouldContainNull() = this should containNull()
+fun NonEmptyList<Any>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -27,6 +28,8 @@ fun <T> containNull() = object : Matcher<NonEmptyList<T>> {
       )
 }
 
+fun <T> NonEmptyList<T>.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+fun <T> NonEmptyList<T>.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 fun <T> haveElementAt(index: Int, element: T) = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -36,6 +39,8 @@ fun <T> haveElementAt(index: Int, element: T) = object : Matcher<NonEmptyList<T>
       )
 }
 
+fun NonEmptyList<Any>.shouldContainNoNulls() = this should containNoNulls()
+fun NonEmptyList<Any>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -45,6 +50,8 @@ fun <T> containNoNulls() = object : Matcher<NonEmptyList<T>> {
       )
 }
 
+fun <T> NonEmptyList<T>.shouldContain(t: T) = this should contain(t)
+fun <T> NonEmptyList<T>.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T> contain(t: T) = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
       value.all.contains(t),
@@ -53,6 +60,8 @@ fun <T> contain(t: T) = object : Matcher<NonEmptyList<T>> {
   )
 }
 
+fun NonEmptyList<Any>.shouldHaveDuplicates() = this should haveDuplicates()
+fun NonEmptyList<Any>.shouldNotHaveDuplicates() = this shouldNot haveDuplicates()
 fun <T> haveDuplicates() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
       value.all.toSet().size < value.size,
@@ -61,6 +70,10 @@ fun <T> haveDuplicates() = object : Matcher<NonEmptyList<T>> {
   )
 }
 
+fun <T> NonEmptyList<T>.shouldContainAll(vararg ts: T) = this should containAll(*ts)
+fun <T> NonEmptyList<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
+fun <T> NonEmptyList<T>.shouldContainAll(ts: List<T>) = this should containAll(ts)
+fun <T> NonEmptyList<T>.shouldNotContainAll(ts: List<T>) = this shouldNot containAll(ts)
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: List<T>): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
@@ -70,6 +83,8 @@ fun <T> containAll(ts: List<T>): Matcher<NonEmptyList<T>> = object : Matcher<Non
   )
 }
 
+fun NonEmptyList<Any>.shouldHaveSize(size: Int) = this should haveSize(size)
+fun NonEmptyList<Any>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
 fun <T> haveSize(size: Int): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -79,6 +94,8 @@ fun <T> haveSize(size: Int): Matcher<NonEmptyList<T>> = object : Matcher<NonEmpt
       )
 }
 
+fun <T> NonEmptyList<T>.shouldBeSingleElement(t: T) = this should singleElement(t)
+fun <T> NonEmptyList<T>.shouldNotBeSingleElement(t: T) = this shouldNot singleElement(t)
 fun <T> singleElement(t: T): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
       value.size == 1 && value.head == t,
@@ -87,6 +104,8 @@ fun <T> singleElement(t: T): Matcher<NonEmptyList<T>> = object : Matcher<NonEmpt
   )
 }
 
+fun <T : Comparable<T>> NonEmptyList<T>.shouldBeSorted() = this should beSorted<T>()
+fun <T : Comparable<T>> NonEmptyList<T>.shouldNotBeSorted() = this shouldNot beSorted<T>()
 fun <T : Comparable<T>> beSorted(): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>): Result {
     val passed = value.all.sorted() == value.all
