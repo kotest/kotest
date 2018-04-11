@@ -4,7 +4,7 @@ import io.kotlintest.provided.ProjectConfig
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class ConfigTest2 : WordSpec() {
+class ProjectConfigTest : WordSpec() {
   init {
     "TestCase config" should {
       "only run beforeAll once" {

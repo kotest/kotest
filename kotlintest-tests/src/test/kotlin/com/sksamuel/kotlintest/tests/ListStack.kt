@@ -14,7 +14,7 @@ class ListStack<T> : Stack<T> {
         return t
     }
 
-    override fun push(t: T): Unit {
+    override fun push(t: T) {
         list += t
     }
 

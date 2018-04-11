@@ -10,9 +10,18 @@ import io.kotlintest.shouldNot
 
 fun Validated<Any, Any>.shouldBeValid() = this should beValid()
 fun Validated<Any, Any>.shouldNotBeValid() = this shouldNot beValid()
+
+fun <T> Validated<Any, T>.shouldBeValid(value: T) = this should beValid(value)
+fun <T> Validated<Any, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
+
 fun <A> beValid() = object : Matcher<Validated<Any, A>> {
   override fun test(value: Validated<Any, A>): Result =
       Result(value is Valid, "$value should be Valid", "$value should not be Valid")
+}
+
+fun <A> beValid(a: A) = object : Matcher<Validated<Any, A>> {
+  override fun test(value: Validated<Any, A>): Result =
+      Result(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
 }
 
 fun Validated<Any, Any>.shouldBeInvalid() = this should beInvalid()
