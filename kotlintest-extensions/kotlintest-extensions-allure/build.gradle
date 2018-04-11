@@ -1,9 +1,11 @@
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 dependencies {
-    compile 'io.qameta.allure:allure-java-commons:2.6.0'
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
+    compile 'javax.xml.bind:jaxb-api:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
     testCompile 'log4j:log4j:1.2.17'
     testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
