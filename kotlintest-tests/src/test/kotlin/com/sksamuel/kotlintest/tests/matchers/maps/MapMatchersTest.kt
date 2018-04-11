@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.matchers
+package com.sksamuel.kotlintest.tests.matchers.maps
 
 import io.kotlintest.matchers.contain
 import io.kotlintest.matchers.containAll
@@ -7,6 +7,13 @@ import io.kotlintest.matchers.haveKey
 import io.kotlintest.matchers.haveKeys
 import io.kotlintest.matchers.haveValue
 import io.kotlintest.matchers.haveValues
+import io.kotlintest.matchers.maps.shouldContainKey
+import io.kotlintest.matchers.maps.shouldContainKeys
+import io.kotlintest.matchers.maps.shouldContainValue
+import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldNotContainKey
+import io.kotlintest.matchers.maps.shouldNotContainValue
+import io.kotlintest.matchers.maps.shouldNotContainValues
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -22,9 +29,17 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given key" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should haveKey(1)
+        map.shouldContainKey(1)
+        map.shouldNotContainKey(4)
         shouldThrow<AssertionError> {
           map should haveKey(3)
         }
+        shouldThrow<AssertionError> {
+          map.shouldContainKey(5)
+        }.message.shouldBe("Map should contain key 5")
+        shouldThrow<AssertionError> {
+          map.shouldNotContainKey(1)
+        }.message.shouldBe("Map should not contain key 1")
       }
     }
 
@@ -32,9 +47,14 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given value" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should haveValue("a")
+        map.shouldContainValue("a")
+        map.shouldNotContainValue("A")
         shouldThrow<AssertionError> {
           map should haveValue("c")
         }
+        shouldThrow<AssertionError> {
+          map.shouldContainValue("c")
+        }.message.shouldBe("Map should contain value c")
       }
     }
 
@@ -53,12 +73,17 @@ class MapMatchersTest : WordSpec() {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
         map should haveKeys(1, 3)
         map should haveKeys(1, 2, 3)
+        map.shouldContainKeys(1, 3)
+        map.shouldContainKeys(1, 2, 3)
         shouldThrow<AssertionError> {
           map should haveKeys(4)
         }
         shouldThrow<AssertionError> {
           map should haveKeys(1, 4)
         }
+        shouldThrow<AssertionError> {
+          map.shouldContainKeys(1, 4)
+        }.message.shouldBe("Map did not contain the keys 1, 4")
       }
     }
 
@@ -67,12 +92,20 @@ class MapMatchersTest : WordSpec() {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
         map should haveValues("b", "c")
         map should haveValues("a", "b", "c")
+        map.shouldContainValues("b", "c")
+        map.shouldContainValues("a", "b", "c")
         shouldThrow<AssertionError> {
           map should haveValues("a", "d")
         }
         shouldThrow<AssertionError> {
           map should haveValues("d")
         }
+        shouldThrow<AssertionError> {
+          map.shouldContainValues("d")
+        }.message.shouldBe("Map did not contain the values d")
+        shouldThrow<AssertionError> {
+          map.shouldNotContainValues("a", "b")
+        }.message.shouldBe("Map should not contain the values a, b")
       }
     }
 
