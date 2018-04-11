@@ -31,6 +31,8 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isFile, "File $value should be a file", "File $value should not be a file")
 }
 
+fun Path.shouldBeCanonical() = this.toFile() should beCanonicalPath()
+fun Path.shouldNotBeCanonical() = this.toFile() shouldNot beCanonicalPath()
 fun File.shouldBeCanonical() = this should beCanonicalPath()
 fun File.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
 fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
@@ -49,10 +51,12 @@ fun beRelative(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(!value.isAbsolute, "File $value should be relative", "File $value should not be relative")
 }
 
-fun File.shouldBeReadable() = this should beReadable()
-fun File.shouldNotBeReadable() = this shouldNot beReadable()
-fun beReadable(): Matcher<File> = object : Matcher<File> {
-  override fun test(value: File): Result = Result(value.canRead(), "File $value should be readable", "File $value should not be readable")
+fun Path.shouldHaveFileSize(size: Long) = this.toFile() should haveFileSize(size)
+fun Path.shouldNotHaveFileSize(size: Long) = this.toFile() shouldNot haveFileSize(size)
+fun File.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
+fun File.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
+fun haveFileSize(size: Long): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.length() == size, "File $value should have size $size", "File $value should not have size $size")
 }
 
 fun File.shouldBeWriteable() = this should beWriteable()
@@ -71,6 +75,12 @@ fun File.shouldBeHidden() = this should beHidden()
 fun File.shouldNotBeHidden() = this shouldNot beHidden()
 fun beHidden(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isHidden, "File $value should be hidden", "File $value should not be hidden")
+}
+
+fun File.shouldBeReadable() = this should beReadable()
+fun File.shouldNotBeReadable() = this shouldNot beReadable()
+fun beReadable(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.canRead(), "File $value should be readable", "File $value should not be readable")
 }
 
 fun File.shouldStartWithPath(path: Path) = this should startWithPath(path)
