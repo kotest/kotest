@@ -17,7 +17,7 @@ clone_depth: 50
 
 # Do something useful here to override the default MSBuild (which would fail otherwise).
 build_script:
-  - echo org.gradle.java.home=C:/Program Files/Java/jdk9>>%HOME%\.gradle\gradle.properties
+  - gradlew classes
 
 test_script:
   - gradlew test
