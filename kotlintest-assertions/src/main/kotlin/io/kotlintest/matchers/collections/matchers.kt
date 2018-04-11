@@ -33,8 +33,8 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
       )
 }
 
-fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
-fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
+fun <T> List<T>.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+fun <T> List<T>.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 fun <T> haveElementAt(index: Int, element: T) = object : Matcher<List<T>> {
   override fun test(value: List<T>) =
       Result(
@@ -89,5 +89,7 @@ fun <T : Comparable<T>> List<T>.shouldNotContainInOrder(expected: List<T>) = thi
 fun <T> Collection<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Collection<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 
+fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*ts)
+fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
 fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
 fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)

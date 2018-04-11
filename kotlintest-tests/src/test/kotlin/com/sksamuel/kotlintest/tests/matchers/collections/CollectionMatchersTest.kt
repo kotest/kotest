@@ -7,6 +7,21 @@ import io.kotlintest.matchers.collections.containNull
 import io.kotlintest.matchers.collections.containOnlyNulls
 import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.haveElementAt
+import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.collections.shouldBeSorted
+import io.kotlintest.matchers.collections.shouldContainAll
+import io.kotlintest.matchers.collections.shouldContainElementAt
+import io.kotlintest.matchers.collections.shouldContainNoNulls
+import io.kotlintest.matchers.collections.shouldContainNull
+import io.kotlintest.matchers.collections.shouldContainOnlyNulls
+import io.kotlintest.matchers.collections.shouldNotBeEmpty
+import io.kotlintest.matchers.collections.shouldNotBeSorted
+import io.kotlintest.matchers.collections.shouldNotContainAll
+import io.kotlintest.matchers.collections.shouldNotContainElementAt
+import io.kotlintest.matchers.collections.shouldNotContainNoNulls
+import io.kotlintest.matchers.collections.shouldNotContainNull
+import io.kotlintest.matchers.collections.shouldNotContainOnlyNulls
+import io.kotlintest.matchers.collections.shouldNotHaveSize
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
@@ -28,6 +43,10 @@ class CollectionMatchersTest : WordSpec() {
         listOf("a", "b", "c") should haveElementAt(1, "b")
         listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
         listOf("a", "b", null) should haveElementAt<String?>(2, null)
+
+        listOf("a", "b", "c").shouldContainElementAt(1, "b")
+        listOf("a", "b", "c").shouldNotContainElementAt(1, "c")
+        listOf("a", "b", null).shouldContainElementAt(2, null)
       }
     }
 
@@ -36,6 +55,10 @@ class CollectionMatchersTest : WordSpec() {
         listOf(1, 2, null) should containNull()
         listOf(null) should containNull()
         listOf(1, 2) shouldNot containNull()
+
+        listOf(1, 2, null).shouldContainNull()
+        listOf(null).shouldContainNull()
+        listOf(1, 2).shouldNotContainNull()
       }
     }
 
@@ -45,6 +68,13 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           listOf(2, 1) shouldBe sorted<Int>()
         }
+        listOf(1, 2, 6, 9).shouldBeSorted()
+        shouldThrow<AssertionError> {
+          listOf(2, 1).shouldBeSorted()
+        }.message.shouldBe("Collection 2,1 should be sorted")
+        shouldThrow<AssertionError> {
+          listOf(1, 2, 3).shouldNotBeSorted()
+        }.message.shouldBe("Collection 1,2,3 should not be sorted")
       }
     }
 
@@ -92,6 +122,14 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           col2 should haveSize(1)
         }
+
+        listOf(1, 2, 3).shouldNotHaveSize(1)
+        listOf(1, 2, 3).shouldNotHaveSize(4)
+
+        shouldThrow<AssertionError> {
+          listOf(1, 2, 3).shouldNotHaveSize(3)
+        }.message.shouldBe("Collection should not have size 3")
+
       }
     }
 
@@ -111,7 +149,13 @@ class CollectionMatchersTest : WordSpec() {
 
         shouldThrow<AssertionError> {
           col should beEmpty()
-        }
+        }.message.shouldBe("Collection should be empty")
+
+        shouldThrow<AssertionError> {
+          col.shouldBeEmpty()
+        }.message.shouldBe("Collection should be empty")
+
+        listOf(1, 2, 3).shouldNotBeEmpty()
 
         ArrayList<String>() should beEmpty()
       }
@@ -124,6 +168,18 @@ class CollectionMatchersTest : WordSpec() {
         listOf(null, null, null) shouldNot containNoNulls()
         listOf(1, null, null) shouldNot containNoNulls()
 
+        emptyList<String>().shouldContainNoNulls()
+        listOf(1, 2, 3).shouldContainNoNulls()
+        listOf(null, null, null).shouldNotContainNoNulls()
+        listOf(1, null, null).shouldNotContainNoNulls()
+
+        shouldThrow<AssertionError> {
+          listOf(null, null, null).shouldContainNoNulls()
+        }.message.shouldBe("Collection should not contain nulls")
+
+        shouldThrow<AssertionError> {
+          listOf(1, 2, 3).shouldNotContainNoNulls()
+        }.message.shouldBe("Collection should have at least one null")
       }
     }
 
@@ -133,6 +189,10 @@ class CollectionMatchersTest : WordSpec() {
         listOf(null, null, null) should containOnlyNulls()
         listOf(1, null, null) shouldNot containOnlyNulls()
         listOf(1, 2, 3) shouldNot containOnlyNulls()
+
+        listOf(null, 1, 2, 3).shouldNotContainOnlyNulls()
+        listOf(1, 2, 3).shouldNotContainOnlyNulls()
+        listOf(null, null, null).shouldContainOnlyNulls()
       }
     }
 
@@ -167,6 +227,14 @@ class CollectionMatchersTest : WordSpec() {
         col should containAll(1, 5)
         col should containAll(1)
         col should containAll(5)
+
+        col.shouldContainAll(1, 2, 3)
+        col.shouldContainAll(3, 1)
+        col.shouldContainAll(3)
+
+        col.shouldNotContainAll(6)
+        col.shouldNotContainAll(1, 6)
+        col.shouldNotContainAll(6, 1)
 
         shouldThrow<AssertionError> {
           col should containAll(1, 2, 6)
