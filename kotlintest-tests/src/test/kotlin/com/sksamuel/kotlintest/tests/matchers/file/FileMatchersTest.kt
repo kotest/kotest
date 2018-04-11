@@ -18,7 +18,7 @@ import io.kotlintest.matchers.file.shouldNotExist
 import io.kotlintest.matchers.file.shouldNotHaveExtension
 import io.kotlintest.matchers.file.shouldStartWithPath
 import io.kotlintest.matchers.file.startWithPath
-import io.kotlintest.matchers.shouldEndWith
+import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
