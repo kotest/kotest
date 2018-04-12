@@ -48,7 +48,7 @@ object TestDiscovery {
 
   operator fun invoke(request: DiscoveryRequest, uniqueId: UniqueId): EngineDescriptor {
 
-    val specs = when {
+    val classes = when {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames)
       else -> scan(request.uris)
     }
@@ -59,11 +59,11 @@ object TestDiscovery {
       return instance ?: clazz.createInstance()
     }
 
-    val instances = specs.map { createSpecInstance(it) }.sortedBy { it.name() }
+    val filteredClasses = Project.discoveryExtensions().fold(classes, { cl, ext -> ext.afterScan(cl) })
+    val instances = filteredClasses.map { createSpecInstance(it) }.sortedBy { it.name() }
     val descriptions = instances.map { it.root().description() }
 
-    val discoveryExtensions = Project.discoveryExtensions().fold(descriptions, { descs, ext -> ext.afterScan(descs) })
-    Project.listeners().forEach { it.afterDiscovery(discoveryExtensions) }
+    Project.listeners().forEach { it.afterDiscovery(descriptions) }
 
     val root = EngineDescriptor(uniqueId, "KotlinTest")
     instances.forEach {

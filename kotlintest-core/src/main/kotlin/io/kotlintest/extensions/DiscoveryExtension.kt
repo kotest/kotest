@@ -1,6 +1,5 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import kotlin.reflect.KClass
 
@@ -17,24 +16,25 @@ import kotlin.reflect.KClass
 interface DiscoveryExtension : Extension {
 
   /**
-   * Invoked as soon as the scan phase is complete.
-   * At that point, the [Spec] classes have been detected, but
-   * not yet instantiated or executed.
+   * Invoked as soon as the scan phase is complete. At that point,
+   * the [Spec] classes have been detected, but not yet instantiated
+   * or executed.
    *
    * Overriding this function gives implementations the possibility
-   * of filtering the specs seen by the Test Runner.
+   * of filtering the specs seen by the test engine.
    *
-   * For instance a possible extension may filter any tests for
-   * Windows machines if it is executing in a Linux environment.
+   * For instance, a possible extension may filter tests by package
+   * name, class name, classes that only implement a certain
+   * interface, etc.
    *
-   * @param descriptions the [Description] for each discovered [Spec]
+   * @param classes the [KClass] for each discovered [Spec]
    *
-   * @return  the list of filtered specs to use.
+   * @return  the list of filtered classes to use.
    */
-  fun afterScan(descriptions: List<Description>): List<Description> = descriptions
+  fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> = classes
 
   /**
-   * An extension function invoked to create an instance of a [Spec].
+   * This function is invoked to create an instance of a [Spec].
    *
    * An implementation can choose to create a new instance, or it can
    * choose to return null if it wishes to pass control to the next
