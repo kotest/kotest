@@ -143,6 +143,15 @@ Use
 
 Gradle:
 ```
+buildscript {
+    dependencies {
+        classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"
+    }
+}
+// This allows gradle to execute _jUnit-platform-5_ based tests (which KotlinTest builds upon). 
+// Note: Gradle says that this is **not** required as of 4.6 but even with 4.6 it seems to be required.
+apply plugin: 'org.junit.platform.gradle.plugin'
+
 testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
 ```
 
