@@ -3,24 +3,20 @@
 package com.sksamuel.kotlintest.tests.properties
 
 import io.kotlintest.forAll
+import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.substring
+import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
-import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
 import java.util.Random
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.Set
-import kotlin.collections.last
-import kotlin.collections.listOf
-import kotlin.collections.plusAssign
 
 class GenTest : WordSpec() {
   init {
@@ -185,7 +181,7 @@ class GenTest : WordSpec() {
 
         io.kotlintest.tables.forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldHave substring(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldHave include(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {
@@ -233,5 +229,23 @@ class GenTest : WordSpec() {
         }
       }
     }
+
+    "Gen.from " should {
+      "correctly handle null values" {
+        val list = listOf(null, 1,2,3)
+        val gen = Gen.from(list)
+        val firstElements = gen.random().take(100).toList()
+        firstElements shouldHave contain(null as Int?)
+      }
+    }
+
+    "Gen.constant" should {
+      "handle null value" {
+        io.kotlintest.properties.forAll(Gen.constant(null as Int?)) {n ->
+          n == null
+        }
+      }
+    }
+
   }
 }
