@@ -209,6 +209,24 @@ interface Gen<T> {
               }
     }
 
+    fun <A> oneOf(vararg gens: Gen<A>): Gen<A> = object : Gen<A> {
+      override fun constants(): Iterable<A> = gens.flatMap { it.constants() }
+
+      override fun random(): Sequence<A> {
+        assert(gens.isNotEmpty(), { "List of generators cannot be empty" })
+
+        val iterators = gens.map { it.random().iterator() }
+
+        return generateInfiniteSequence {
+          val iteratorLocation = JavaRandoms.internalNextInt(RANDOM, 0, iterators.size)
+          val iterator = iterators[iteratorLocation]
+          iterator.next()
+        }
+
+      }
+
+    }
+
     fun bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
 
     /**

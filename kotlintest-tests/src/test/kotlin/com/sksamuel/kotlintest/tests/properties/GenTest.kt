@@ -2,15 +2,14 @@
 
 package com.sksamuel.kotlintest.tests.properties
 
-import io.kotlintest.forAll
+import io.kotlintest.*
+import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldThrow
+import io.kotlintest.properties.forAll
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
@@ -244,6 +243,25 @@ class GenTest : WordSpec() {
         io.kotlintest.properties.forAll(Gen.constant(null as Int?)) {n ->
           n == null
         }
+      }
+    }
+
+    "Gen.oneOf" should {
+      "correctly handle multiple generators" {
+        val gen = Gen.oneOf(Gen.positiveIntegers(), Gen.negativeIntegers())
+        var positiveNumbers = 0
+        var negativeNumbers = 0
+        forAll(gen) {
+          if (it > 0) {
+            positiveNumbers++
+          } else if (it < 0) {
+            negativeNumbers++
+          }
+          it shouldNotBe 0
+          true
+        }
+        positiveNumbers shouldBe beGreaterThan(1)
+        negativeNumbers shouldBe beGreaterThan(1)
       }
     }
 

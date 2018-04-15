@@ -2,12 +2,13 @@
 
 package com.sksamuel.kotlintest.tests.properties
 
+import io.kotlintest.*
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.singleElement
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
-import io.kotlintest.should
-import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.matchers.doubles.beGreaterThan as gtd
 
@@ -62,4 +63,5 @@ class GenBindTest : StringSpec({
       it.d should beLessThan(0)
     }
   }
+
 })
