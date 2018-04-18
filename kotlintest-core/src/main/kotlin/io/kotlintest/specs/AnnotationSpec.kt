@@ -17,6 +17,6 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
     val tests = javaClass.methods.filter { it.isAnnotationPresent(Test::class.java) }.map {
       TestCase(rootDescription().append(it.name), this@AbstractAnnotationSpec, { it.invoke(this@AbstractAnnotationSpec) }, lineNumber(), defaultTestCaseConfig)
     }
-    return SpecScope(rootDescription(), this, tests)
+    return SpecScope(rootDescription(), this::class, tests)
   }
 }

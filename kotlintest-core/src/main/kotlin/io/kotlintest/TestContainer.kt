@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import kotlin.reflect.KClass
+
 /**
  * A [TestScope] is a block of code that acts as a node in the test plan tree.
  * A scope can either be a leaf level [TestCase] - which you can think of as a
@@ -33,19 +35,13 @@ interface TestScope {
    * contains the name of this scope along with the parent names.
    */
   fun description(): Description
-
-  /**
-   * Returns a reference to the [Spec] instance that this scope is associated with.
-   */
-  fun spec(): Spec
 }
 
 class SpecScope(val description: Description,
-                val spec: Spec,
+                val sourceClass: KClass<out Spec>,
                 val scopes: List<TestScope>) : TestScope {
   override fun name(): String = description.name
   override fun description(): Description = description
-  override fun spec(): Spec = spec
 }
 
 /**
@@ -75,11 +71,10 @@ class SpecScope(val description: Description,
  * tests inside that particular container.
  */
 class TestContainer(val description: Description,
-                    val spec: Spec,
+                    val sourceClass: KClass<out Spec>,
                     val closure: (TestContext) -> Unit) : TestScope {
   override fun name(): String = description.name
   override fun description(): Description = description
-  override fun spec(): Spec = spec
 }
 
 fun lineNumber(): Int {

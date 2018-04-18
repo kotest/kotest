@@ -1,10 +1,9 @@
-package io.kotlintest.runner.junit5
+package io.kotlintest.runner.jvm
 
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
-import org.junit.runners.model.TestTimedOutException
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -60,3 +59,5 @@ object TestCaseRunner {
     }
   }
 }
+
+class TestTimedOutException(val timeout: Long, val timeUnit: TimeUnit) : RuntimeException()

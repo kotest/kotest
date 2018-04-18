@@ -28,7 +28,6 @@ data class TestCase(
 
   override fun name(): String = description.name
   override fun description(): Description = description
-  override fun spec(): Spec = spec
 
   fun config(
       invocations: Int? = null,
@@ -65,6 +64,7 @@ data class TestResult(val status: TestStatus, val error: Throwable?, val reason:
   companion object {
     val Success = TestResult(TestStatus.Success, null, null)
     val Ignored = TestResult(TestStatus.Ignored, null, null)
+    fun error(t: Throwable) = TestResult(TestStatus.Error, t, null)
     fun ignored(reason: String?) = TestResult(TestStatus.Ignored, null, reason)
   }
 }

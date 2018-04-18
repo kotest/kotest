@@ -1,4 +1,4 @@
-package io.kotlintest.runner.junit5
+package io.kotlintest.runner.jvm
 
 import org.reflections.vfs.Vfs
 import java.net.URL

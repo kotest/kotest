@@ -22,10 +22,12 @@ interface TestContext {
   fun metaData(): Map<String, Any?>
 
   /**
-   * Notifies the framework that a nested [TestScope] has been added
-   * to this scope during this execution.
+   * Notifies the test runner that a nested [TestScope] has been created
+   * during the execution of this scope.
+   *
+   * @return the given scope to allow builder pattern
    */
-  fun addScope(scope: TestScope): TestScope
+  fun executeScope(scope: TestScope): TestScope
 
   fun registerAsync()
 

@@ -15,7 +15,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   final override fun isInstancePerTest(): Boolean = false
 
   infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
-      addRootScope(TestContainer(rootDescription().append(this), this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
+      addRootScope(TestContainer(rootDescription().append(this), this@AbstractFreeSpec::class, { FreeSpecContext(it).init() }))
 
   infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
     val tc = TestCase(rootDescription().append(this), this@AbstractFreeSpec, test, lineNumber(), defaultTestCaseConfig)
@@ -26,11 +26,11 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   inner class FreeSpecContext(val context: TestContext) {
 
     infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
-        context.addScope(TestContainer(context.currentScope().description().append(this), this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
+        context.executeScope(TestContainer(context.currentScope().description().append(this), this@AbstractFreeSpec::class, { FreeSpecContext(it).init() }))
 
     infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append(this), this@AbstractFreeSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.addScope(tc)
+      context.executeScope(tc)
       return tc
     }
   }

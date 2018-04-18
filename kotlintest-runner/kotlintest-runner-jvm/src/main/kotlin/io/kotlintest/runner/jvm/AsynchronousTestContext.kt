@@ -1,4 +1,4 @@
-package io.kotlintest.runner.junit5
+package io.kotlintest.runner.jvm
 
 import io.kotlintest.DefaultTestContext
 import io.kotlintest.TestCase

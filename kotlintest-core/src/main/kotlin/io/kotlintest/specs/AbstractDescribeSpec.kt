@@ -15,22 +15,22 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   final override fun isInstancePerTest(): Boolean = false
 
   fun describe(name: String, init: DescribeScope.() -> Unit) =
-      addRootScope(TestContainer(rootDescription().append("Describe $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+      addRootScope(TestContainer(rootDescription().append("Describe $name"), this@AbstractDescribeSpec::class, { DescribeScope(it).init() }))
 
   inner class DescribeScope(val context: TestContext) {
 
     fun describe(name: String, init: DescribeScope.() -> Unit) =
-        context.addScope(TestContainer(context.currentScope().description().append("Describe $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+        context.executeScope(TestContainer(context.currentScope().description().append("Describe $name"), this@AbstractDescribeSpec::class, { DescribeScope(it).init() }))
 
     fun context(name: String, init: DescribeScope.() -> Unit) =
-        context.addScope(TestContainer(context.currentScope().description().append("Context $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+        context.executeScope(TestContainer(context.currentScope().description().append("Context $name"), this@AbstractDescribeSpec::class, { DescribeScope(it).init() }))
 
     fun and(name: String, init: DescribeScope.() -> Unit) =
-        context.addScope(TestContainer(context.currentScope().description().append("And $name"), this@AbstractDescribeSpec, { DescribeScope(it).init() }))
+        context.executeScope(TestContainer(context.currentScope().description().append("And $name"), this@AbstractDescribeSpec::class, { DescribeScope(it).init() }))
 
     fun it(name: String, test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append("Scenario $name"), this@AbstractDescribeSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.addScope(tc)
+      context.executeScope(tc)
       return tc
     }
   }

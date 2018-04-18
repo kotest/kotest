@@ -15,17 +15,17 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
   final override fun isInstancePerTest(): Boolean = false
 
   fun context(name: String, init: ExpectContext.() -> Unit) {
-    addRootScope(TestContainer(rootDescription().append("Context $name"), this@AbstractExpectSpec, { ExpectContext(it).init() }))
+    addRootScope(TestContainer(rootDescription().append("Context $name"), this@AbstractExpectSpec::class, { ExpectContext(it).init() }))
   }
 
   inner class ExpectContext(val context: TestContext) {
 
     fun context(name: String, init: ExpectContext.() -> Unit) =
-        context.addScope(TestContainer(context.currentScope().description().append("Context $name"), this@AbstractExpectSpec, { ExpectContext(it).init() }))
+        context.executeScope(TestContainer(context.currentScope().description().append("Context $name"), this@AbstractExpectSpec::class, { ExpectContext(it).init() }))
 
     fun expect(name: String, test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append("Expect $name"), this@AbstractExpectSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.addScope(tc)
+      context.executeScope(tc)
       return tc
     }
   }

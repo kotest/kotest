@@ -17,7 +17,7 @@ abstract class AbstractSpec : Spec {
 
   internal fun rootDescription() = Description(emptyList(), name())
 
-  override fun root(): SpecScope = SpecScope(rootDescription(), this, rootScopes.toList())
+  override fun root(): SpecScope = SpecScope(rootDescription(), this::class, rootScopes.toList())
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 

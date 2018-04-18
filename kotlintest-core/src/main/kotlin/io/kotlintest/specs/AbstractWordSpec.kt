@@ -25,13 +25,13 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   final override fun isInstancePerTest(): Boolean = false
 
   infix fun String.should(init: WordContext.() -> Unit) {
-    addRootScope(TestContainer(rootDescription().append(this), this@AbstractWordSpec, { WordContext(it).init() }))
+    addRootScope(TestContainer(rootDescription().append(this), this@AbstractWordSpec::class, { WordContext(it).init() }))
   }
 
   inner class WordContext(val context: TestContext) {
     infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
       val tc = TestCase(context.currentScope().description().append("should " + this), this@AbstractWordSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.addScope(tc)
+      context.executeScope(tc)
       return tc
     }
   }

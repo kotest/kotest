@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':kotlintest-core')
+    compile 'org.reflections:reflections:0.9.11'
+}

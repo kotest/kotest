@@ -5,7 +5,7 @@ abstract class DefaultTestContext(val scope: TestScope) : TestContext {
   private val metadata = mutableMapOf<String, Any?>()
   private val scopes = mutableListOf<TestScope>()
 
-  override fun addScope(scope: TestScope): TestScope {
+  override fun executeScope(scope: TestScope): TestScope {
     scopes.add(scope)
     return scope
   }
