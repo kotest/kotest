@@ -43,8 +43,6 @@ object TestDiscovery {
       reflections(uris)
           .getSubTypesOf(Spec::class.java)
           .map(Class<out Spec>::kotlin)
-          // must filter out abstract to avoid the spec parent classes themselves
-          .filter { !it.isAbstract }
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
       classes.map { Class.forName(it).kotlin }.filterIsInstance<KClass<out Spec>>()
@@ -54,7 +52,8 @@ object TestDiscovery {
     val specs = when {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames)
       else -> scan(request.uris)
-    }
+    }.filter { Spec::class.java.isAssignableFrom(it.java) }
+        .filter { !it.isAbstract }
 
     val instances = specs.map { it.createInstance() }.sortedBy { it.name() }
     val descriptions = instances.map { it.root().description() }
