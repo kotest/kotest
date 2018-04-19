@@ -2,8 +2,13 @@ package io.kotlintest.specs
 
 import io.kotlintest.Matcher
 import io.kotlintest.should as shouldMatch
+import org.junit.jupiter.api.Test
 
-interface IntellijTestMarker
+interface IntellijTestMarker {
+  @Test
+  fun foo() {
+  }
+}
 
 abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractAnnotationSpec(body), IntellijTestMarker
 abstract class BehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractBehaviorSpec(body), IntellijTestMarker

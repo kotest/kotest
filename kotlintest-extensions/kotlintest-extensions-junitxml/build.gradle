@@ -7,6 +7,6 @@ dependencies {
 test {
     useJUnitPlatform()
     testLogging {
-        events "PASSED", "STARTED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
     }
 }

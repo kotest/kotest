@@ -13,6 +13,7 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.engine.support.descriptor.MethodSource
 import java.util.concurrent.ConcurrentHashMap
 
 class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestRunnerListener {
@@ -34,7 +35,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     val descriptor = when (scope) {
       is TestCase -> {
         val id = parent.uniqueId.append("test", scope.name())
-        object : AbstractTestDescriptor(id, scope.description.fullName()) {
+        val source = MethodSource.from(scope.spec.javaClass.name, scope.description.fullName())
+        object : AbstractTestDescriptor(id, scope.description.fullName(), source) {
           override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
         }
       }
