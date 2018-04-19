@@ -6,10 +6,7 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'kotlintest'
-        excludeEngines 'junit', 'junit-jupiter', 'junit-vintage'
-    }
+    useJUnitPlatform()
 
     scanForTestClasses = false
 
