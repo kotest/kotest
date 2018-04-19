@@ -38,7 +38,6 @@ class KotlinTestEngine : TestEngine {
   override fun execute(request: ExecutionRequest) {
     request.engineExecutionListener.executionStarted(request.rootTestDescriptor)
     try {
-      Project.beforeAll()
       // each child of the root is a spec, which we execute in a thread pool so we
       // can parallelise spec execution.
       request.rootTestDescriptor.children.forEach {
@@ -173,6 +172,9 @@ class KotlinTestEngine : TestEngine {
 
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): EngineDescriptor {
+
+    Project.beforeAll()
+
     // inside intellij when running a single test, we might be passed a class selector
     // which will be the classname of a spec implementation
     val classes = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
