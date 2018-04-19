@@ -3,7 +3,7 @@ package io.kotlintest.runner.jvm
 import io.kotlintest.DefaultTestContext
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
-import io.kotlintest.TestScope
+import io.kotlintest.Scope
 import java.util.concurrent.Phaser
 import java.util.concurrent.atomic.AtomicReference
 
@@ -11,10 +11,10 @@ import java.util.concurrent.atomic.AtomicReference
  * An implementation of [TestContext] that allows asynchronous operations
  * to be executed backed by a [Phaser] for sychronization.
  *
- * This context should not be shared between [TestScope]s or different
+ * This context should not be shared between [Scope]s or different
  * executions of the same [TestCase].
  */
-class AsynchronousTestContext(scope: TestScope) : DefaultTestContext(scope) {
+class AsynchronousTestContext(scope: Scope) : DefaultTestContext(scope) {
 
   private val phaser = Phaser()
   private val error = AtomicReference<Throwable?>(null)

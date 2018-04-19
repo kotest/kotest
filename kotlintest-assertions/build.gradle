@@ -1,8 +1,6 @@
 ext.kotlin_version = '1.2.31'
 
 dependencies {
-    // we have junit 4 here so we can use the ComparisonFailure
-    compile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'com.univocity:univocity-parsers:2.6.1'

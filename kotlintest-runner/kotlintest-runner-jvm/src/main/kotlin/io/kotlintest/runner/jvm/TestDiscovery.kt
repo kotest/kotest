@@ -2,12 +2,14 @@ package io.kotlintest.runner.jvm
 
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.extensions.DiscoveryExtension
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 import org.reflections.util.FilterBuilder
 import java.net.URI
-import io.kotlintest.extensions.DiscoveryExtension
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -34,12 +36,16 @@ object TestDiscovery {
     val classOnly = { name: String? -> name?.endsWith(".class") ?: false }
     val excludeJDKPackages = FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun")
 
-    return Reflections(ConfigurationBuilder()
+    val executor = Executors.newSingleThreadExecutor()
+    val classes = Reflections(ConfigurationBuilder()
         .addUrls(uris.map { it.toURL() })
         .setExpandSuperTypes(true)
-        .useParallelExecutor(2)
+        .setExecutorService(executor)
         .filterInputsBy(excludeJDKPackages.add(classOnly))
         .setScanners(SubTypesScanner()))
+    executor.shutdown()
+    executor.awaitTermination(1, TimeUnit.HOURS)
+    return classes
   }
 
   // returns all the locatable specs for the given uris
@@ -47,8 +53,6 @@ object TestDiscovery {
       reflections(uris)
           .getSubTypesOf(Spec::class.java)
           .map(Class<out Spec>::kotlin)
-          // must filter out abstract to avoid the spec parent classes themselves
-          .filter { !it.isAbstract }
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
       classes.map { Class.forName(it).kotlin }.filterIsInstance<KClass<out Spec>>()
@@ -58,6 +62,11 @@ object TestDiscovery {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames)
       else -> scan(request.uris)
     }
+        .filter { Spec::class.java.isAssignableFrom(it.java) }
+        // must filter out abstract to avoid the spec parent classes themselves
+        .filter { !it.isAbstract }
+        // keep only classes
+        .filter { it.objectInstance == null }
     return Project.discoveryExtensions().fold(classes, { cl, ext -> ext.afterScan(cl) })
         .sortedBy { it.simpleName }
   }

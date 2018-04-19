@@ -3,48 +3,6 @@ package io.kotlintest
 import kotlin.reflect.KClass
 
 /**
- * A [TestScope] is a block of code that acts as a node in the test plan tree.
- * A scope can either be a leaf level [TestCase] - which you can think of as a
- * unit test - and branch level [TestContainer]s. Containers can nest
- * further containers - the actual structure of the tree is determined
- * by the implementing [Spec] style.
- */
-interface TestScope {
-
-  /**
-   * Returns the 'name' of this scope. Which is the name of the test,
-   * or the name of the scope that contains tests. So in the following example,
-   *
-   * <pre>
-   * {@code
-   * class StringSpecExample : AbstractStringSpec() {
-   * init {
-   *  "this is a test" {
-   *       // test goes here
-   *      }
-   *    }
-   *  }
-   *  </pre>
-   *
-   *  The name of that test is "this is a test".
-   */
-  fun name(): String
-
-  /**
-   * Return's the [Description] instance for this [Scope] which
-   * contains the name of this scope along with the parent names.
-   */
-  fun description(): Description
-}
-
-class SpecScope(val description: Description,
-                val sourceClass: KClass<out Spec>,
-                val scopes: List<TestScope>) : TestScope {
-  override fun name(): String = description.name
-  override fun description(): Description = description
-}
-
-/**
  * Used to group together [TestCase] instances
  * for heirarchical display and execution order.
  *
@@ -59,7 +17,7 @@ class SpecScope(val description: Description,
  *
  * Fianlly it captures a closure of the body of the container.
  * This is a function which is invoked with a [TestContext],
- * which can, at runtime, register further [TestScope]s with the
+ * which can, at runtime, register further [Scope]s with the
  * test plan.
  *
  * This function is designed so that the closures which
@@ -72,7 +30,7 @@ class SpecScope(val description: Description,
  */
 class TestContainer(val description: Description,
                     val sourceClass: KClass<out Spec>,
-                    val closure: (TestContext) -> Unit) : TestScope {
+                    val closure: (TestContext) -> Unit) : Scope {
   override fun name(): String = description.name
   override fun description(): Description = description
 }

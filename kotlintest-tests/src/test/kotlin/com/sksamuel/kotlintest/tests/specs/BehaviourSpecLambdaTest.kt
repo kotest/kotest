@@ -2,9 +2,7 @@ package com.sksamuel.kotlintest.tests.specs
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AbstractBehaviorSpec
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith()
 class BehaviourSpecLambdaTest : AbstractBehaviorSpec() {
 
   data class User(var email: String? = "")

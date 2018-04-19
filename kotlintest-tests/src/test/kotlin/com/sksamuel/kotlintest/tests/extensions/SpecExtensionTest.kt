@@ -18,6 +18,7 @@ object SpecExtensionNumbers {
       if (context.description.name == "SpecExtensionTest") {
         before++
         process()
+        println("AFTER SPEK")
         after++
       } else {
         process()
@@ -51,7 +52,7 @@ class SpecExtensionTest : WordSpec() {
         SpecExtensionNumbers.after shouldBe 0
       }
       "only be fired once per spec class" {
-        // this test, the intercepts should not have fired
+        // the intercepts should not have fired again
         SpecExtensionNumbers.before shouldBe 1
         SpecExtensionNumbers.after shouldBe 0
       }

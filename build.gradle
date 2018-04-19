@@ -5,7 +5,6 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"
     }
 }
 
@@ -57,35 +56,9 @@ allprojects {
         from sourceSets.main.allSource
     }
 
-    test {
-        useJUnitPlatform()
-
-        // show standard out and standard error of the test JVM(s) on the console
-        testLogging.showStandardStreams = true
-
-        // listen to events in the test execution lifecycle
-        beforeTest { descriptor ->
-            logger.lifecycle("Running test: " + descriptor)
-        }
-
-        test {
-            afterTest { desc, result ->
-                logger.quiet "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
-            }
-        }
-
-        // Always run tests, even when nothing changed.
-        dependsOn 'cleanTest'
-
-        testLogging {
-            events "PASSED", "STARTED", "FAILED", "SKIPPED"
-        }
-    }
-
     artifacts {
         archives javadocJar, sourcesJar
     }
-
 
     build {
         afterReleaseBuild.dependsOn uploadArchives

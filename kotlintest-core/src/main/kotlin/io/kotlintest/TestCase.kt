@@ -24,7 +24,7 @@ data class TestCase(
     val line: Int,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
-    var config: TestCaseConfig) : TestScope {
+    var config: TestCaseConfig) : Scope {
 
   override fun name(): String = description.name
   override fun description(): Description = description

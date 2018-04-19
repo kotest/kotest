@@ -7,9 +7,9 @@ abstract class AbstractSpec : Spec {
 
   override fun isInstancePerTest(): Boolean = false
 
-  private val rootScopes = mutableListOf<TestScope>()
+  private val rootScopes = mutableListOf<Scope>()
 
-  protected fun addRootScope(scope: TestScope) {
+  protected fun addRootScope(scope: Scope) {
     if (rootScopes.any { it.name() == scope.name() })
       throw IllegalArgumentException("Cannot add scope with duplicate name ${scope.name()}")
     rootScopes.add(scope)
@@ -17,7 +17,7 @@ abstract class AbstractSpec : Spec {
 
   internal fun rootDescription() = Description(emptyList(), name())
 
-  override fun root(): SpecScope = SpecScope(rootDescription(), this::class, rootScopes.toList())
+  override fun root(): TestContainer = TestContainer(rootDescription(), this::class, { context -> rootScopes.forEach { context.executeScope(it) } })
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()
 

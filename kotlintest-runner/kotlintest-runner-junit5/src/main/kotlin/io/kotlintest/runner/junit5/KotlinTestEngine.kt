@@ -4,7 +4,6 @@ import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.TestDiscovery
 import io.kotlintest.runner.jvm.TestRunner
-import io.kotlintest.runner.jvm.TestRunnerRequest
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -20,15 +19,15 @@ import kotlin.reflect.KClass
 class KotlinTestEngine : TestEngine {
 
   companion object {
-    const val EngineId = "io.kotlintest"
+    const val EngineId = "kotlintest"
   }
 
   override fun getId(): String = EngineId
 
   override fun execute(request: ExecutionRequest) {
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
-    val listener = JUnitTestRunnerListener(request.engineExecutionListener, root)
-    val runner = TestRunner(TestRunnerRequest(root.classes), listener)
+    val listener = JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)
+    val runner = TestRunner(root.classes, listener)
     runner.execute()
   }
 

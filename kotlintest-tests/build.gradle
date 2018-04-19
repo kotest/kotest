@@ -1,10 +1,29 @@
-apply plugin: 'org.junit.platform.gradle.plugin'
-
 dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
+    testCompile project(':kotlintest-core')
+    testCompile project(':kotlintest-assertions')
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
     testCompile project(':kotlintest-assertions-arrow')
 }
+
+test {
+    useJUnitPlatform {
+        includeEngines 'kotlintest'
+        excludeEngines 'junit', 'junit-jupiter', 'junit-vintage'
+    }
+
+    scanForTestClasses = false
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
+}
+
+
 
 uploadArchives.enabled = false

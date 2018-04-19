@@ -2,24 +2,21 @@ package io.kotlintest.runner.jvm
 
 import createSpecInterceptorChain
 import io.kotlintest.Project
+import io.kotlintest.Scope
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContainer
 import io.kotlintest.TestResult
-import io.kotlintest.TestScope
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
-import io.kotlintest.extensions.TestListener
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
-data class TestRunnerRequest(val classes: List<KClass<out Spec>>)
-
-class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListener) {
+class TestRunner(val classes: List<KClass<out Spec>>, val listener: TestRunnerListener) {
 
   // we execute each spec inside a thread pool so we can parallelise spec execution.
   private val executor = Executors.newFixedThreadPool(Project.parallelism())
@@ -28,7 +25,7 @@ class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListene
     try {
       Project.beforeAll()
       listener.executionStarted()
-      request.classes.forEach {
+      classes.forEach {
         executor.submit {
           executeSpec(it)
         }
@@ -41,11 +38,15 @@ class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListene
       listener.executionFinished(t)
       throw t
     } finally {
-      Project.afterAll()
+      try {
+        Project.afterAll()
+      } catch (t: Throwable) {
+        t.printStackTrace()
+      }
     }
   }
 
-  internal fun execute(scope: TestScope) {
+  internal fun execute(scope: Scope) {
     when (scope) {
       is TestContainer -> execute(scope)
       is TestCase -> execute(scope)
@@ -65,8 +66,10 @@ class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListene
 
       runSpecInterception(spec, {
         // creating the spec instance will have invoked `init` on the class setting up
-        // the nested scopes. These scopes will now be available on the spec root
-        spec.root().scopes.forEach { execute(it) }
+        // the nested scopes. These scopes will now be available on the test context
+        val context = AsynchronousTestContext(spec.root())
+        spec.root().closure(context)
+        context.scopes().forEach { execute(it) }
       })
       listener.executionFinished(spec.root(), TestResult.Success)
     } catch (t: Throwable) {
@@ -134,7 +137,9 @@ class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListene
 
         // we can now fish out the fresh testcase that pertains to this test
         // it must be a scope directly under the spec root
-        val freshTestCase = freshSpec.root().scopes.find { it.name() == testCase.name() } as TestCase
+        val context = AsynchronousTestContext(freshSpec.root())
+        freshSpec.root().closure(context)
+        val freshTestCase = context.scopes().find { it.name() == testCase.name() } as TestCase
 
         // now we can re-run interception, and then, straight into the test case
         runSpecInterception(freshSpec, {
@@ -153,22 +158,16 @@ class TestRunner(val request: TestRunnerRequest, val listener: TestRunnerListene
         testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
         Project.testCaseExtensions()
 
-    listeners.forEach {
-      try {
-        it.beforeTest(testCase.description())
-        intercept(testCase, extensions, testCase.config, { complete(testCase, listeners, it) })
-      } catch (t: Throwable) {
-        t.printStackTrace()
-        listener.executionFinished(testCase, TestResult.error(t))
-      }
+    try {
+      listeners.forEach { it.beforeTest(testCase.description()) }
+      intercept(testCase, extensions, testCase.config, { result ->
+        listeners.reversed().forEach { it.afterTest(testCase.description(), result) }
+        listener.executionFinished(testCase, result)
+      })
+    } catch (t: Throwable) {
+      t.printStackTrace()
+      listener.executionFinished(testCase, TestResult.error(t))
     }
-  }
-
-  private fun complete(testCase: TestCase, listeners: List<TestListener>, result: TestResult) {
-    listeners.reversed().forEach {
-      it.afterTest(testCase.description(), result)
-    }
-    listener.executionFinished(testCase, result)
   }
 
   private fun intercept(testCase: TestCase,

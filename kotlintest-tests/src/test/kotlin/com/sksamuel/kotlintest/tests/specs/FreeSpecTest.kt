@@ -3,10 +3,10 @@ package com.sksamuel.kotlintest.tests.specs
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFreeSpec
+import io.kotlintest.specs.FreeSpec
 
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
-class FreeSpecTest : AbstractFreeSpec() {
+class FreeSpecTest : FreeSpec() {
 
   private var count = 0
 
