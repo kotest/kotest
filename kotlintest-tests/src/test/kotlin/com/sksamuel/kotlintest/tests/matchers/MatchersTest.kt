@@ -10,7 +10,6 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
-import org.junit.ComparisonFailure
 import java.util.*
 
 class MatchersTest : FreeSpec({
@@ -29,7 +28,7 @@ class MatchersTest : FreeSpec({
     "should compare equality" {
       "a" shouldBe "a"
 
-      shouldThrow<ComparisonFailure> {
+      shouldThrow<AssertionError> {
         "a" shouldBe "b"
       }
 

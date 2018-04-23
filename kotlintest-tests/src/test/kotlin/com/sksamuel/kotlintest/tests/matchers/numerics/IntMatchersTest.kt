@@ -26,6 +26,12 @@ import io.kotlintest.tables.table
 class IntMatchersTest : StringSpec() {
   init {
 
+    "should return expected/actual in intellij format" {
+      shouldThrow<AssertionError> {
+       1 shouldBe 444
+      }.message shouldBe "expected: 444 but was: 1"
+    }
+
     "shouldBe should support ints" {
       1 shouldBe 1
       2 shouldBe2 2
