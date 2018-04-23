@@ -152,7 +152,7 @@ buildscript {
 // Note: Gradle says that this is **not** required as of 4.6 but even with 4.6 it seems to be required.
 apply plugin: 'org.junit.platform.gradle.plugin'
 
-testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.4'
 ```
 
 Maven:
@@ -161,7 +161,7 @@ Maven:
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4</version>
     <scope>test</scope>
 </dependency>
 ```
