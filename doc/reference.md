@@ -573,7 +573,7 @@ object DemoConfig : ProjectConfig() {
 
 ### Project Extensions
 
-To provide resuable beforeAll and afterAll callbacks you can implement the interface `ProjectExtension`:
+To provide reusable beforeAll and afterAll callbacks you can implement the interface `ProjectExtension`:
 
 ```kotlin
 interface ProjectExtension {
