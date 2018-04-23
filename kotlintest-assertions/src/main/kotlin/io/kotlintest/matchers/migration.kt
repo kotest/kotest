@@ -12,7 +12,7 @@ import io.kotlintest.shouldThrow
 infix fun <T, U : T> T.shouldBe(any: U?) = shouldBe(any)
 
 @Deprecated("use the equivalent function io.kotlintest.shouldNotBe", ReplaceWith("shouldNotBe(matcher)", "io.kotlintest.shouldNotBe"))
-infix fun <T> T.shouldNotBe(matcher: Matcher<T>) = shouldNotBe(matcher)
+infix fun <T> T.shouldNotBe(any: Any?) = shouldNotBe(any)
 
 @Deprecated("use the equivalent function io.kotlintest.shouldNot", ReplaceWith("shouldNot(matcher)", "io.kotlintest.shouldNot"))
 infix fun <T> T.shouldNot(matcher: Matcher<T>) = shouldNot(matcher)

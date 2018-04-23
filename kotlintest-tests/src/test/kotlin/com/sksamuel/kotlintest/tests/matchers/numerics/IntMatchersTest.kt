@@ -27,8 +27,8 @@ class IntMatchersTest : StringSpec() {
   init {
 
     "shouldBe should support ints" {
-      1 shouldBe 2
-      1 shouldBe2 2
+      1 shouldBe 1
+      2 shouldBe2 2
     }
 
     "isEven" {
