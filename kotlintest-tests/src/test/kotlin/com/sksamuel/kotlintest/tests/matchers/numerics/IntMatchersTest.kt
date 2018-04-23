@@ -13,6 +13,7 @@ import io.kotlintest.matchers.numerics.beOdd
 import io.kotlintest.should
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
+import io.kotlintest.matchers.shouldBe as shouldBe2
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
@@ -24,6 +25,11 @@ import io.kotlintest.tables.table
 
 class IntMatchersTest : StringSpec() {
   init {
+
+    "shouldBe should support ints" {
+      1 shouldBe 2
+      1 shouldBe2 2
+    }
 
     "isEven" {
       4 shouldBe beEven()
