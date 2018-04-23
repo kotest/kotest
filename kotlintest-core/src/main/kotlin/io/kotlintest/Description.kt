@@ -27,6 +27,8 @@ data class Description(val parents: List<String>, val name: String) {
 
   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 
+  fun dropRoot() = Description(parents.drop(1), name)
+
   /**
    * Returns a String version of this description, which is
    * the parents + this name concatenated with slashes.
