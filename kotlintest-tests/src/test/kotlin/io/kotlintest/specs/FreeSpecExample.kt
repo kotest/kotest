@@ -12,5 +12,8 @@ class FreeSpecExample : FreeSpec() {
         }
       }
     }
+    "then a test" {
+      // test case
+    }
   }
 }

@@ -17,6 +17,12 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
       rootScopes.add(TestContainer(rootDescription().append(this), this@AbstractFreeSpec, { FreeSpecContext(it).init() }))
 
+  infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
+    val tc = TestCase(rootDescription().append(this), this@AbstractFreeSpec, test, lineNumber(), defaultTestCaseConfig)
+    rootScopes.add(tc)
+    return tc
+  }
+
   inner class FreeSpecContext(val context: TestContext) {
 
     infix operator fun String.minus(init: FreeSpecContext.() -> Unit) =
