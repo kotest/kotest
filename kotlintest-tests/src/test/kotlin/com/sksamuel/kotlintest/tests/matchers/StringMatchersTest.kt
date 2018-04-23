@@ -17,14 +17,13 @@ import io.kotlintest.matchers.string.haveSameLengthAs
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import org.junit.ComparisonFailure
 
 class StringMatchersTest : FreeSpec() {
   init {
 
     "string shouldBe other" - {
       "should show divergence in error message" {
-        shouldThrow<ComparisonFailure> {
+        shouldThrow<AssertionError> {
           "la tour eiffel" shouldBe "la tour tower london"
         }.message shouldBe "expected:<la tour [tower london]> but was:<la tour [eiffel]>"
       }
