@@ -2,7 +2,6 @@ package com.sksamuel.kotlintest.tests.specs
 
 import io.kotlintest.specs.FreeSpec
 
-
 class FreeSpecExample : FreeSpec() {
   init {
     "some context" - {
@@ -13,6 +12,8 @@ class FreeSpecExample : FreeSpec() {
           }
         }
       }
+    }
+    "a test without a context block" {
     }
   }
 }
