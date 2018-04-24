@@ -5,7 +5,7 @@ import io.kotlintest.AbstractProjectConfig
 /**
  * Reusable extension to be registered with [AbstractProjectConfig.extensions].
  */
-interface ProjectExtension : Extension {
+interface ProjectExtension : ProjectLevelExtension {
 
   /**
    * Executed before the first test of the project and before [AbstractProjectConfig.beforeAll].

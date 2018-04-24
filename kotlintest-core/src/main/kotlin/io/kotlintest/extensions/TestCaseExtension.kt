@@ -12,7 +12,7 @@ import io.kotlintest.TestResult
  * using [AbstractProjectConfig.extensions] or on a per-spec
  * single spec by overriding `extensions()` in a [Spec] class.
  */
-interface TestCaseExtension : Extension {
+interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
 
   /**
    * Intercepts a [TestCase].

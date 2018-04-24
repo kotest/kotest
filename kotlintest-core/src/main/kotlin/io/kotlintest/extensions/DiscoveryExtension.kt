@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * Note: If multiple [DiscoveryExtension]s are registered, the order
  * in which they execute is not specified.
  */
-interface DiscoveryExtension : Extension {
+interface DiscoveryExtension : ProjectLevelExtension {
 
   /**
    * Invoked as soon as the scan phase is complete. At that point,

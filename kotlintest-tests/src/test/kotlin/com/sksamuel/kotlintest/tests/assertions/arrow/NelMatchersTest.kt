@@ -9,6 +9,7 @@ import io.kotlintest.assertions.arrow.nel.containNull
 import io.kotlintest.assertions.arrow.nel.containOnlyNulls
 import io.kotlintest.assertions.arrow.nel.haveDuplicates
 import io.kotlintest.assertions.arrow.nel.haveSize
+import io.kotlintest.assertions.arrow.nel.shouldBeSingleElement
 import io.kotlintest.assertions.arrow.nel.singleElement
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -53,6 +54,8 @@ class NelMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           NonEmptyList.of(1, 2) shouldBe singleElement(2)
         }
+
+        NonEmptyList.of(1).shouldBeSingleElement(1)
       }
     }
 

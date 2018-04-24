@@ -10,7 +10,7 @@ import io.kotlintest.Scope
  * using [AbstractProjectConfig.extensions] or on a
  * per-spec basis by overriding `extensions()` in a [Spec] class.
  */
-interface SpecExtension : Extension {
+interface SpecExtension : ProjectLevelExtension, SpecLevelExtension {
 
   /**
    * Intercepts execution of a [Spec].

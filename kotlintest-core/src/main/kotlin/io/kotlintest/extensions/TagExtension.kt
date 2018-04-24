@@ -16,7 +16,7 @@ import io.kotlintest.Tags
  *
  * The default [SystemPropertyTagExtension] is automatically registered.
  */
-interface TagExtension : Extension {
+interface TagExtension : ProjectLevelExtension {
   fun tags(): Tags = Tags.Empty
 }
 

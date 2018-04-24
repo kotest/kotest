@@ -1,7 +1,7 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
+import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -20,9 +20,9 @@ import io.kotlintest.extensions.TestListener
 abstract class AbstractProjectConfig {
 
   /**
-   * List of project wide [Extension]s.
+   * List of project wide extensions, ie instances of [ProjectLevelExtension]
    */
-  open fun extensions(): List<Extension> = emptyList()
+  open fun extensions(): List<ProjectLevelExtension> = emptyList()
 
   /**
    * List of project wide [TestListener]s.

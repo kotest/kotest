@@ -6,6 +6,31 @@ This project follows [semantic versioning](http://semver.org/).
 Version 3.1.x - In Progress
 ----------
 
+* **Matchers as extension functions**
+
+All matchers can now be used as extension functions. So instead of:
+
+```kotlin
+file should exist()
+
+or
+
+listOf(1, 2) should containNull()
+```
+
+You can do:
+
+```kotlin
+file.shouldExist()
+
+or
+
+listOf(1, 2).shouldContainNull()
+```
+
+Note: The infix style is **not** deprecated and will be supported in future releases, but the extension function
+is intended to be the preferred style as it allows discovery in the IDE.
+
 * **Dozens of new Matchers**
 
 _even_ and _odd_
@@ -139,15 +164,15 @@ _NonEmptyList_- A collection (no pun intended) of matchers for Arrow's `NonEmpty
 These mostly mirror the equivalent `Collection` matchers but for NELs. For example:
 
 ```kotlin
-NonEmptyList.of(1, 2, null) should containNull()
-NonEmptyList.of(1, 2, 3, 4) should beSorted<Int>()
-NonEmptyList.of(1, 2, 3, 3) should haveDuplicates()
-NonEmptyList.of(1) shouldBe singleElement(1)
-NonEmptyList.of(1, 2, 3) should contain(2)
-NonEmptyList.of(1, 2, 3) should haveSize(3)
-NonEmptyList.of(1, 2, 3) should containNoNulls()
-NonEmptyList.of(null, null, null) should containOnlyNulls()
-NonEmptyList.of(1, 2, 3, 4, 5) should containAll(3, 2, 1)
+NonEmptyList.of(1, 2, null).shouldContainNull()
+NonEmptyList.of(1, 2, 3, 4).shouldBeSorted<Int>()
+NonEmptyList.of(1, 2, 3, 3).shouldHaveDuplicates()
+NonEmptyList.of(1).shouldBeSingleElement(1)
+NonEmptyList.of(1, 2, 3).shouldContain(2)
+NonEmptyList.of(1, 2, 3).shouldHaveSize(3)
+NonEmptyList.of(1, 2, 3).shouldContainNoNulls()
+NonEmptyList.of(null, null, null).shouldContainOnlyNulls()
+NonEmptyList.of(1, 2, 3, 4, 5).shouldContainAll(3, 2, 1)
 ```
 
 _Try_ - Test that a `Try` is either `Success` or `Failure`.
@@ -263,6 +288,8 @@ allows you to extend the way new instances of `Spec` are created. By default, a 
 function is overridden then it's possible to support `Spec` classes which have other constructors. For example, the Spring module
 now supports constructor injection using this extension. Other use cases might be when you want to always inject some config class,
 or if you want to ensure that all your tests extend some custom interface or superclass.
+
+As a reminder, `DiscoveryExtension` instances are added to Project config.
 
 * **System out / error extensions**
 

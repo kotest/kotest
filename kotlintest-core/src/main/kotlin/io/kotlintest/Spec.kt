@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.Extension
+import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -51,14 +51,13 @@ interface Spec : TestListener {
   fun isInstancePerTest(): Boolean
 
   /**
-   * Override this function to register instances of
-   * [Extension] which will be invoked during
-   * execution of this spec.
+   * Override this function to register extensions
+   * which will be invoked during execution of this spec.
    *
    * If you wish to register an extension across the project
    * then use [AbstractProjectConfig.extensions].
    */
-  fun extensions(): List<Extension> = listOf()
+  fun extensions(): List<SpecLevelExtension> = listOf()
 
   /**
    * Override this function to register instances of
