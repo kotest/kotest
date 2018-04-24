@@ -27,6 +27,18 @@ fun haveExtension(vararg exts: String) = object : Matcher<File> {
   override fun test(value: File) = Result(exts.any { value.name.endsWith(it) }, "File $value should end with one of ${exts.joinToString(",")}", "File $value should not end with one of ${exts.joinToString(",")}")
 }
 
+fun File.shouldHavePath(name: String) = this should havePath(name)
+fun File.shouldNotHavePath(name: String) = this shouldNot havePath(name)
+fun havePath(name: String) = object : Matcher<File> {
+  override fun test(value: File) = Result(value.path == name, "File $value should have path $name", "File $value should not have path $name")
+}
+
+fun File.shouldHaveName(name: String) = this should haveName(name)
+fun File.shouldNotHaveName(name: String) = this shouldNot haveName(name)
+fun haveName(name: String) = object : Matcher<File> {
+  override fun test(value: File) = Result(value.name == name, "File $value should have name $name", "File $value should not have name $name")
+}
+
 fun File.shouldBeADirectory() = this should aDirectory()
 fun File.shouldNotBeADirectory() = this shouldNot aDirectory()
 fun aDirectory(): Matcher<File> = object : Matcher<File> {
@@ -100,6 +112,9 @@ fun File.shouldNotStartWithPath(prefix: String) = this shouldNot startWithPath(p
 fun File.shouldStartWithPath(file: File) = this should startWithPath(file)
 fun File.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)
 
+fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
+fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)
+
 fun startWithPath(path: Path) = startWithPath(path.toFile())
 fun startWithPath(file: File) = startWithPath(file.toString())
 fun startWithPath(prefix: String) = object : Matcher<File> {
@@ -142,5 +157,3 @@ fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot startWithP
 fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
 fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
 
-fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
-fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)
