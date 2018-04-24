@@ -27,6 +27,7 @@ test {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
     }
 }
+```
 
 * **Matchers as extension functions**
 
@@ -51,7 +52,7 @@ listOf(1, 2).shouldContainNull()
 ```
 
 Note: The infix style is **not** deprecated and will be supported in future releases, but the extension function
-is intended to be the preferred style as it allows discovery in the IDE.
+is intended to be the preferred style moving forward as it allows discovery in the IDE.
 
 * **Dozens of new Matchers**
 

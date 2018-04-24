@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest.tests
 
-import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
+import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
@@ -17,7 +17,7 @@ class LateinitSpecInterceptorWordSpecTest : WordSpec() {
     }
   }
 
-  override fun extensions(): List<Extension> = listOf(Interceptor())
+  override fun extensions(): List<SpecLevelExtension> = listOf(Interceptor())
 
   init {
     "setting a late init var" should {

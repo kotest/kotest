@@ -1,8 +1,8 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.DiscoveryExtension
-import io.kotlintest.extensions.Extension
 import io.kotlintest.extensions.ProjectExtension
+import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SystemPropertyTagExtension
 import io.kotlintest.extensions.TagExtension
@@ -50,7 +50,7 @@ object Project {
     }
   }
 
-  private val _extensions = mutableListOf<Extension>().apply { add(SystemPropertyTagExtension) }
+  private val _extensions = mutableListOf<ProjectLevelExtension>().apply { add(SystemPropertyTagExtension) }
   private val _listeners = mutableListOf<TestListener>()
   private var parallelism: Int = 1
 
@@ -91,8 +91,8 @@ object Project {
     _listeners.add(listener)
   }
 
-  fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
-  fun registerExtension(extension: Extension) {
+  fun registerExtensions(vararg extensions: ProjectLevelExtension) = extensions.forEach { registerExtension(it) }
+  fun registerExtension(extension: ProjectLevelExtension) {
     _extensions.add(extension)
   }
 }

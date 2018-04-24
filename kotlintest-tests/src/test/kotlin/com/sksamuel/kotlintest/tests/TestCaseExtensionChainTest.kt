@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.tests
 
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.Extension
+import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.specs.StringSpec
@@ -33,7 +33,7 @@ class TestCaseExtensionChainTest : StringSpec() {
     }
   }
 
-  override fun extensions(): List<Extension> = listOf(MyExt1, MyExt2)
+  override fun extensions(): List<SpecLevelExtension> = listOf(MyExt1, MyExt2)
 
   init {
     "test1" {
