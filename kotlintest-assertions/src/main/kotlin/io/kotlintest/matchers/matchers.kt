@@ -5,6 +5,14 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
+fun withClue(clue: String, thunk: () -> Any) {
+  try {
+    thunk()
+  } catch (e: AssertionError) {
+    throw AssertionError("$clue $e")
+  }
+}
+
 fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
 fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)
 
