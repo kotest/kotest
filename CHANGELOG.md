@@ -6,6 +6,28 @@ This project follows [semantic versioning](http://semver.org/).
 Version 3.1.x - In Progress
 ----------
 
+* **Simplified Setup**
+
+In KotlinTest 3.1.x it is sufficent to enable JUnit in the test block instead of using the junit plugin. This step
+is the same as for any test framework that builds on the JUnit Platform.
+Assuming you have gradle 4.6 or above, then setup your test block like this:
+
+```groovy
+test {
+    useJUnitPlatform()
+}
+```
+
+You can additionally enable extra test logging:
+
+```groovy
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
+}
+
 * **Matchers as extension functions**
 
 All matchers can now be used as extension functions. So instead of:
@@ -366,6 +388,19 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec({
   }
 })
 ```
+
+* **JUnit 4 Runner**
+
+A JUnit 4 runner has been added which allows KotlinTest to run using the legacy JUnit 4 platform.
+To use this, add `kotlintest-runner-junit4` to your build instead of `kotlintest-runner-junit5`.
+
+Note: This is intended for use when junit5 cannot be used.
+It should not be the first choice as functionality is restricted.
+
+Namely:
+
+* In intellij, test output will not be nested
+* Project wide beforeAll/afterAll cannot be supported.
 
 Version 3.0.x - March 29 2018
 -------------
