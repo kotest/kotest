@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  *
  * Fianlly it captures a closure of the body of the container.
  * This is a function which is invoked with a [TestContext],
- * which can, at runtime, register further [Scope]s with the
+ * which can, at runtime, register further [TestScope]s with the
  * test plan.
  *
  * This function is designed so that the closures which
@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  */
 class TestContainer(val description: Description,
                     val sourceClass: KClass<out Spec>,
-                    val closure: (TestContext) -> Unit) : Scope {
+                    val closure: (TestContext) -> Unit) : TestScope {
   override fun name(): String = description.name
   override fun description(): Description = description
 }

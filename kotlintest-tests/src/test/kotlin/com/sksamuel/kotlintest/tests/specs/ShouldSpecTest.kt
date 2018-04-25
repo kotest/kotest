@@ -51,7 +51,7 @@ class ShouldSpecTest : AbstractShouldSpec() {
       stack.size() shouldBe 2
     }
 
-    should("support config") {
-    }.config(invocations = 5)
+    should("support config").config(invocations = 5) {
+    }
   }
 }

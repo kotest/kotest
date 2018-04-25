@@ -1,6 +1,6 @@
 package io.kotlintest.runner.junit4
 
-import io.kotlintest.Scope
+import io.kotlintest.TestScope
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
@@ -14,17 +14,17 @@ import org.junit.runner.Description as JDescription
 class JUnitTestRunnerListener(val testClass: KClass<out Spec>,
                               val notifier: RunNotifier) : TestRunnerListener {
 
-  private fun desc(scope: Scope): JDescription? =
+  private fun desc(scope: TestScope): JDescription? =
       when (scope) {
         is TestCase -> JDescription.createTestDescription(testClass.java.canonicalName, scope.description.dropRoot().fullName())
         else -> null
       }
 
-  override fun executionStarted(scope: Scope) {
-    notifier.fireTestStarted(describeScope(scope))
+  override fun executionStarted(scope: TestScope) {
+    notifier.fireTestStarted(desc(scope))
   }
 
-  override fun executionFinished(scope: Scope, result: TestResult) {
+  override fun executionFinished(scope: TestScope, result: TestResult) {
     val desc = describeScope(scope)
     when (result.status) {
       TestStatus.Success -> notifier.fireTestFinished(desc)

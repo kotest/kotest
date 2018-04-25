@@ -41,12 +41,12 @@ class TestCaseExtensionTest : StringSpec() {
       // this exception will be thrown but then the test extension will override and return success
       throw WibbleException()
     }
-    "test3" {
+    "test3".config(enabled = false) {
       // the config for this test should be carried through to the interceptor
-    }.config(enabled = false)
-    "test4" {
+    }
+    "test4".config(enabled = true) {
       //  config for this test should be overriden to skip it
       throw RuntimeException()
-    }.config(enabled = true)
+    }
   }
 }

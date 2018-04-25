@@ -4,7 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
-import io.kotlintest.Scope
+import io.kotlintest.TestScope
 
 interface TestListener {
 
@@ -30,7 +30,7 @@ interface TestListener {
    * Note: If the spec is running with one instance per test, then this
    * function will be invoked multiple times.
    *
-   * @param description the [Description] for the root [Scope] of the spec.
+   * @param description the [Description] for the root [TestScope] of the spec.
    * @param spec the actual [Spec] instance.
    */
   fun beforeSpec(description: Description, spec: Spec): Unit = Unit
@@ -41,7 +41,7 @@ interface TestListener {
    * Note: If the spec is running with one instance per test, then this
    * function will be invoked multiple times.
    *
-   * @param description the [Description] for the root [Scope] of the spec.
+   * @param description the [Description] for the root [TestScope] of the spec.
    * @param spec the actual [Spec] instance.
    */
   fun afterSpec(description: Description, spec: Spec): Unit = Unit

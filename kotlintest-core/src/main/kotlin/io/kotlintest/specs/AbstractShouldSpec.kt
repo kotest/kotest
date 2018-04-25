@@ -1,10 +1,8 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.TestCase
 import io.kotlintest.TestContainer
 import io.kotlintest.TestContext
-import io.kotlintest.lineNumber
 
 /**
  * Example:
@@ -31,11 +29,8 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
   final override fun isInstancePerTest(): Boolean = false
 
-  fun should(name: String, test: TestContext.() -> Unit): TestCase {
-    val tc = TestCase(rootDescription().append("should $name"), this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
-    addRootScope(tc)
-    return tc
-  }
+  fun should(name: String) = RootTestBuilder("should $name")
+  fun should(name: String, test: TestContext.() -> Unit) = should(name).invoke(test)
 
   operator fun String.invoke(init: ShouldContext.() -> Unit) =
       addRootScope(TestContainer(rootDescription().append(this), this@AbstractShouldSpec::class, { ShouldContext(it).init() }))
@@ -45,12 +40,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     operator fun String.invoke(init: ShouldContext.() -> Unit) =
         context.executeScope(TestContainer(context.currentScope().description().append(this), this@AbstractShouldSpec::class, { ShouldContext(it).init() }))
 
-    fun should(name: String, test: TestContext.() -> Unit): TestCase {
-      val tc = TestCase(context.currentScope().description().append("should $name"), this@AbstractShouldSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.executeScope(tc)
-      return tc
-    }
+    fun should(name: String) = TestBuilder(context, "should $name")
+    fun should(name: String, test: TestContext.() -> Unit) = should(name).invoke(test)
   }
-
-
 }

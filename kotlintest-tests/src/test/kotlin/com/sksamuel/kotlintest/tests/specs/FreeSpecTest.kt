@@ -31,8 +31,8 @@ class FreeSpecTest : FreeSpec() {
 
 
     "params" - {
-      "support config" {
-      }.config(invocations = 5)
+      "support config".config(invocations = 5) {
+      }
     }
   }
 }

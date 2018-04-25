@@ -26,7 +26,12 @@ class FunSpecTest : FunSpec() {
       stack.size() shouldBe 2
     }
 
-    test("FunSpec should support config syntax") {
-    }.config(invocations = 5)
+    var count = 0
+
+    test("FunSpec should support config syntax").config(invocations = 5) {
+      count += 1
+    }
+
+    count shouldBe 5
   }
 }

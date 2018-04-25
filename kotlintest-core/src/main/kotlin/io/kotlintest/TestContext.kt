@@ -1,12 +1,12 @@
 package io.kotlintest
 
 /**
- * A [TestContext] is used as the receiver of a closure that represents a [Scope]
+ * A [TestContext] is used as the receiver of a closure that represents a [TestScope]
  * so that functions inside the test scope can interact with the test runner
  * in a platform independent way.
  *
  * The context is used to store metadata associated with a test, notifying
- * the test runner about any nested nested [Scope]s that were discovered
+ * the test runner about any nested nested [TestScope]s that were discovered
  * when executing the closure, and allowing async operations.
  */
 interface TestContext {
@@ -22,12 +22,12 @@ interface TestContext {
   fun metaData(): Map<String, Any?>
 
   /**
-   * Notifies the test runner that a nested [Scope] has been created
+   * Notifies the test runner that a nested [TestScope] has been created
    * during the execution of this scope.
    *
    * @return the given scope to allow builder pattern
    */
-  fun executeScope(scope: Scope): Scope
+  fun executeScope(scope: TestScope): TestScope
 
   fun registerAsync()
 
@@ -38,12 +38,12 @@ interface TestContext {
   fun error(): Throwable?
 
   /**
-   * The [Scope] associated with the current execution
+   * The [TestScope] associated with the current execution
    */
-  fun currentScope(): Scope
+  fun currentScope(): TestScope
 
   /**
-   * The [Description] of the executing [Scope].
+   * The [Description] of the executing [TestScope].
    */
   fun description(): Description
 }

@@ -46,10 +46,10 @@ class TagExtensionTest : StringSpec() {
 
     Project.registerExtension(ext)
 
-    "should be tagged with tagA" { }.config(tags = setOf(TagA))
+    "should be tagged with tagA".config(tags = setOf(TagA)) { }
 
     "should be untagged" { }
 
-    "should be tagged with tagB" { }.config(tags = setOf(TagB))
+    "should be tagged with tagB".config(tags = setOf(TagB)) { }
   }
 }
