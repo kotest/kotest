@@ -13,13 +13,11 @@ class TagsTest : StringSpec() {
 
   init {
 
-    val testTaggedA = "should be tagged with tagA" { }
-    testTaggedA.config(tags = setOf(TagA))
+    val testTaggedA = "should be tagged with tagA".config(tags = setOf(TagA)) { }
 
     val untaggedTest = "should be untagged" { }
 
-    val testTaggedB = "should be tagged with tagB" { }
-    testTaggedB.config(tags = setOf(TagB))
+    val testTaggedB = "should be tagged with tagB".config(tags = setOf(TagB)) { }
 
     "test exclude system property" {
       System.setProperty("kotlintest.tags.exclude", "TagB")

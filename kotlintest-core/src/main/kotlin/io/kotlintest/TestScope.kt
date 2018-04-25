@@ -1,13 +1,13 @@
 package io.kotlintest
 
 /**
- * A [Scope] is a block of code that acts as a node in the test plan tree.
+ * A [TestScope] is a block of code that acts as a node in the test plan tree.
  * A scope can either be a leaf level [TestCase] - which you can think of as a
  * unit test - and branch level [TestContainer]s. Containers can nest
  * further containers - the actual structure of the tree is determined
  * by the implementing [Spec] style.
  */
-interface Scope {
+interface TestScope {
 
   /**
    * Returns the 'name' of this scope. Which is the name of the test,
@@ -29,7 +29,7 @@ interface Scope {
   fun name(): String
 
   /**
-   * Return's the [Description] instance for this [Scope] which
+   * Return's the [Description] instance for this [TestScope] which
    * contains the name of this scope along with the parent names.
    */
   fun description(): Description

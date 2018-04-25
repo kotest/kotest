@@ -1,7 +1,7 @@
 package io.kotlintest
 
 /**
- * The description gives the full path to a [Scope].
+ * The description gives the full path to a [TestScope].
  *
  * It contains the name of every parent, with the root at index 0.
  * And it includes the name of the test scope it represents.

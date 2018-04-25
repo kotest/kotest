@@ -1,7 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.Description
-import io.kotlintest.Scope
+import io.kotlintest.TestScope
 import io.kotlintest.TestCase
 import io.kotlintest.TestContainer
 import io.kotlintest.TestResult
@@ -20,7 +20,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
   private val descriptors = ConcurrentHashMap<Description, TestDescriptor>()
 
-  override fun executionStarted(scope: Scope) {
+  override fun executionStarted(scope: TestScope) {
     val descriptor = createDescriptor(scope)
     try {
       listener.executionStarted(descriptor)
@@ -29,7 +29,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     }
   }
 
-  private fun createDescriptor(scope: Scope): TestDescriptor {
+  private fun createDescriptor(scope: TestScope): TestDescriptor {
     val parentDescription = scope.description().parent()
     val parent = if (parentDescription == null) root else descriptors[parentDescription]!!
     val descriptor = when (scope) {
@@ -56,7 +56,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     return descriptor
   }
 
-  override fun executionFinished(scope: Scope, result: TestResult) {
+  override fun executionFinished(scope: TestScope, result: TestResult) {
     val descriptor = descriptors[scope.description()]
     when (descriptor) {
       null -> System.exit(-8)

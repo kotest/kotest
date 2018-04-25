@@ -20,7 +20,7 @@ import kotlin.collections.ArrayList
 class GenTest : WordSpec() {
   init {
     "Gen.string.nextPrintableString" should {
-      "give out a argument long string" {
+      "give out a argument long string".config(invocations = 100, threads = 8) {
         val random = Random()
         var rand = random.nextInt(10000)
         if (rand <= 0)
@@ -32,11 +32,11 @@ class GenTest : WordSpec() {
           it.toInt() shouldBe lt(127)
         }
         string.length shouldBe rand
-      }.config(invocations = 100, threads = 8)
+      }
     }
     "Gen.choose<int, int>" should {
 
-      "only give out numbers in the given range" {
+      "only give out numbers in the given range".config(invocations = 10000, threads = 8) {
         val random = Random()
 
         val min = random.nextInt(10000) - 10000
@@ -47,9 +47,9 @@ class GenTest : WordSpec() {
           it shouldBe gte(min)
           it shouldBe lt(max)
         }
-      }.config(invocations = 10000, threads = 8)
+      }
 
-      "support negative bounds" {
+      "support negative bounds".config(invocations = 1000, threads = 8) {
 
         val random = Random()
 
@@ -61,10 +61,10 @@ class GenTest : WordSpec() {
           it shouldBe lt(max)
         }
 
-      }.config(invocations = 1000, threads = 8)
+      }
     }
     "Gen.choose<long, long>" should {
-      "only give out numbers in the given range" {
+      "only give out numbers in the given range".config(invocations = 10000, threads = 8) {
         val random = Random()
 
         val min = random.nextInt(10000) - 10000
@@ -76,8 +76,8 @@ class GenTest : WordSpec() {
           it shouldBe lt(max.toLong())
         }
 
-      }.config(invocations = 10000, threads = 8)
-      "support negative bounds" {
+      }
+      "support negative bounds".config(invocations = 10000, threads = 8) {
         val random = Random()
 
         val max = random.nextInt(10000) + 10000
@@ -88,7 +88,7 @@ class GenTest : WordSpec() {
           it shouldBe lt(max.toLong())
         }
 
-      }.config(invocations = 10000, threads = 8)
+      }
     }
     "Gen.forClassName" should {
       "gives the right result" {

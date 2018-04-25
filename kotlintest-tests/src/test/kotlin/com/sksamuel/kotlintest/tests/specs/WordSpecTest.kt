@@ -36,8 +36,8 @@ class WordSpecTest : WordSpec() {
       }
     }
     "WordSpec" should {
-      "support config syntax" {
-      }.config(invocations = 3)
+      "support config syntax".config(invocations = 3) {
+      }
     }
   }
 }

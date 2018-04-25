@@ -1,8 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
-
 /**
  * Describes an actual testcase.
  * That is, a unit of code that will be tested.
@@ -24,27 +21,10 @@ data class TestCase(
     val line: Int,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
-    var config: TestCaseConfig) : Scope {
+    val config: TestCaseConfig) : TestScope {
 
   override fun name(): String = description.name
   override fun description(): Description = description
-
-  fun config(
-      invocations: Int? = null,
-      enabled: Boolean? = null,
-      timeout: Duration? = null,
-      threads: Int? = null,
-      tags: Set<Tag>? = null,
-      extensions: List<TestCaseExtension>? = null) {
-    config =
-        TestCaseConfig(
-            enabled ?: config.enabled,
-            invocations ?: config.invocations,
-            timeout ?: config.timeout,
-            threads ?: config.threads,
-            tags ?: config.tags,
-            extensions ?: config.extensions)
-  }
 
   fun isActive() = config.enabled && Project.tags().isActive(config.tags)
 }

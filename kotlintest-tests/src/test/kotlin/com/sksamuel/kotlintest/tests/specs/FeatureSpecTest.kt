@@ -20,8 +20,8 @@ class FeatureSpecTest : FeatureSpec() {
     }
 
     feature("featurespec") {
-      scenario("support config syntax") {
-      }.config(invocations = 5)
+      scenario("support config syntax").config(invocations = 5) {
+      }
     }
   }
 }

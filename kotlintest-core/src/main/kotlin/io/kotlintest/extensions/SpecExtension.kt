@@ -3,7 +3,7 @@ package io.kotlintest.extensions
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.Scope
+import io.kotlintest.TestScope
 
 /**
  * Reusable spec extension to be registered project wide
@@ -21,7 +21,7 @@ interface SpecExtension : ProjectLevelExtension, SpecLevelExtension {
    * the callback.
    *
    * Once the process function returns, the execution of this
-   * [Spec] and all it's nested [Scope]s are guaranteed
+   * [Spec] and all it's nested [TestScope]s are guaranteed
    * to have been completed.
    *
    * @param context contains the [Spec] instance under consideration and the [Description] identifer.

@@ -84,7 +84,7 @@ interface Spec : TestListener {
   }
 
   /**
-   * Returns the top level [Scope] for this Spec.
+   * Returns the top level [TestScope] for this Spec.
    */
   fun root(): TestContainer
 }

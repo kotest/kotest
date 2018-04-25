@@ -11,6 +11,8 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
     body()
   }
 
+  fun test(name: String): RootTestBuilder = RootTestBuilder(name)
+
   fun test(name: String, test: TestContext.() -> Unit): TestCase {
     val tc = TestCase(rootDescription().append(name), this@AbstractFunSpec, test, lineNumber(), defaultTestCaseConfig)
     addRootScope(tc)

@@ -54,9 +54,9 @@ class TestCaseExtensionTest : WordSpec() {
         Numbers.a.get() shouldBe 7
         Numbers.b.get() shouldBe 4
       }
-      "use extensions registered on config ZZQQ" {
+      "use extensions registered on config ZZQQ".config(extensions = listOf(Numbers.add1)) {
         Numbers.a.get() shouldBe 11
-      }.config(extensions = listOf(Numbers.add1))
+      }
     }
   }
 }

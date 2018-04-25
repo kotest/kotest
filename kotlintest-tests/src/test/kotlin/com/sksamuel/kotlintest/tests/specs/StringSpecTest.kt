@@ -14,9 +14,9 @@ class StringSpecTest : AbstractStringSpec() {
       "hello" should haveLength(5)
     }
 
-    "strings should support config" {
+    "strings should support config".config(invocations = 5) {
       "hello".length shouldBe 5
-    }.config(invocations = 5)
+    }
   }
 }
 

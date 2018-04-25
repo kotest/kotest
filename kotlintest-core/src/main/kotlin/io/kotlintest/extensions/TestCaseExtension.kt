@@ -9,8 +9,9 @@ import io.kotlintest.TestResult
 
 /**
  * Reusable test case extension to be registered project wide
- * using [AbstractProjectConfig.extensions] or on a per-spec
- * single spec by overriding `extensions()` in a [Spec] class.
+ * using [AbstractProjectConfig.extensions], on a per-spec
+ * single spec by overriding `extensions()` in a [Spec] class,
+ * or via [TestCaseConfig]
  */
 interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
 

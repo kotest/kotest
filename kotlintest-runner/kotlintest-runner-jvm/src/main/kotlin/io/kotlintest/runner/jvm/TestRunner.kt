@@ -2,7 +2,7 @@ package io.kotlintest.runner.jvm
 
 import createSpecInterceptorChain
 import io.kotlintest.Project
-import io.kotlintest.Scope
+import io.kotlintest.TestScope
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
@@ -46,7 +46,7 @@ class TestRunner(val classes: List<KClass<out Spec>>, val listener: TestRunnerLi
     }
   }
 
-  internal fun execute(scope: Scope) {
+  internal fun execute(scope: TestScope) {
     when (scope) {
       is TestContainer -> execute(scope)
       is TestCase -> execute(scope)

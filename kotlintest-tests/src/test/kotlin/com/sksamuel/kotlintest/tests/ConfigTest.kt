@@ -24,44 +24,42 @@ class ConfigTest : WordSpec() {
   init {
 
     "TestCase config" should {
-      "support invocation parameter" {
+      "support invocation parameter".config(invocations = 5) {
         // this test should run 5 times
         invocationCounter.incrementAndGet()
-      }.config(invocations = 5)
+      }
 
-      "support ignored" {
+      "support ignored".config(enabled = false) {
         fail("shouldn't run")
-      }.config(enabled = false)
+      }
 
       // If we have 100 threads, and each one sleeps for 1000 milliseconds, then the total time
       // should still be approx 1000 ms. So we set the timeout an order of magnitude higher, and it
       // should never hit.
-      "support threads parameter" {
+      "support threads parameter".config(timeout = Duration.ofMillis(10000), threads = 100, invocations = 100) {
         // this test should timeout
         Thread.sleep(1000)
         threadCounter.incrementAndGet()
-      }.config(timeout = Duration.ofMillis(10000), threads = 100, invocations = 100)
+      }
 
       "use default config" {
         invocationCounter2.incrementAndGet()
       }
 
       "override only actually set values" {
-        val testCase = "some test case" {}
-        testCase.config(invocations = 2, threads = 4)
-
+        val testCase = "some test case".config(invocations = 2, threads = 4) {}
         testCase.config.invocations shouldBe 2
         testCase.config.threads shouldBe 4
         testCase.config.tags shouldBe setOf(TagZ)
       }
 
       "use default config, if no test case config is given" {
-        val testCase = "some test case" {}
+        val testCase = "some test case".config(invocations = 1) {}
 
         testCase.config.invocations shouldBe 3
         testCase.config.threads shouldBe 1
         testCase.config.tags shouldBe setOf(TagZ)
-      }.config(invocations = 1)
+      }
 
       "only run beforeAll once" {
         ProjectConfig.beforeAll shouldBe 1
