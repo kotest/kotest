@@ -14,6 +14,10 @@ package io.kotlintest
  */
 data class Description(val parents: List<String>, val name: String) {
 
+  companion object {
+    fun root(name: String) = Description(emptyList(), name)
+  }
+
   fun append(name: String) =
       Description(this.parents + listOf(this.name), name)
 

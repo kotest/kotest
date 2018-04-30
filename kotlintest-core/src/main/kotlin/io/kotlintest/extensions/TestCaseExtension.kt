@@ -3,7 +3,7 @@ package io.kotlintest.extensions
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
+import io.kotlintest.TestScope
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 
@@ -16,7 +16,7 @@ import io.kotlintest.TestResult
 interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
 
   /**
-   * Intercepts a [TestCase].
+   * Intercepts a [TestScope].
    *
    * Allows implementations to add logic around a test case as well as control
    * if and when the test case is executed.
@@ -43,8 +43,8 @@ interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
    * Failure to invoke the complete function will result in the test runnner
    * waiting indefinitely for the outcome of the test case.
    *
-   * @param context details of the [TestCase] under interception - contains the [Spec]
-   * instance containing the [TestCase], the [TestCaseConfig] to be passed to the test
+   * @param context details of the [TestScope] under interception - contains the [Spec]
+   * instance containing the [TestScope], the [TestCaseConfig] to be passed to the test
    * and a [Description] which contains the id and parent ids of the test case.
    *
    * @param test a function that is invoked to execute the test. Can be ignored if you

@@ -1,5 +1,8 @@
 package io.kotlintest
 
+import java.util.concurrent.Phaser
+import java.util.concurrent.atomic.AtomicReference
+
 /**
  * A [TestContext] is used as the receiver of a closure that represents a [TestScope]
  * so that functions inside the test scope can interact with the test runner
@@ -9,41 +12,57 @@ package io.kotlintest
  * the test runner about any nested nested [TestScope]s that were discovered
  * when executing the closure, and allowing async operations.
  */
-interface TestContext {
+abstract class TestContext {
+
+  private val metadata = mutableMapOf<String, Any?>()
 
   /**
    * Adds a value to this [TestContext] meta data.
    */
-  fun putMetaData(key: String, value: Any?)
+  fun putMetaData(key: String, value: Any?) {
+    metadata[key] = value
+  }
+
+  abstract fun description(): Description
 
   /**
    * Returns all the metadata associated with this [TestContext]
    */
-  fun metaData(): Map<String, Any?>
+  fun metaData() = metadata.toMap()
 
   /**
-   * Notifies the test runner that a nested [TestScope] has been created
-   * during the execution of this scope.
-   *
-   * @return the given scope to allow builder pattern
+   * Creates a new [TestScope] as a child of the currently executing test
+   * and then notifies the test runner with the new instance.
    */
-  fun executeScope(scope: TestScope): TestScope
-
-  fun registerAsync()
-
-  fun arriveAsync()
-
-  fun withError(t: Throwable)
-
-  fun error(): Throwable?
+  fun registerTestScope(name: String, spec: Spec, test: TestContext.() -> Unit, config: TestCaseConfig) {
+    val tc = TestScope(description().append(name), spec, test, lineNumber(), config)
+    registerTestScope(tc)
+  }
 
   /**
-   * The [TestScope] associated with the current execution
+   * Notifies the test runner about a nested [TestScope].
    */
-  fun currentScope(): TestScope
+  abstract fun registerTestScope(testScope: TestScope)
 
-  /**
-   * The [Description] of the executing [TestScope].
-   */
-  fun description(): Description
+  private val phaser = Phaser()
+  private val error = AtomicReference<Throwable?>(null)
+
+  fun registerAsync() {
+    phaser.register()
+  }
+
+  fun arriveAsync() {
+    phaser.arrive()
+  }
+
+  fun blockUntilReady() {
+    registerAsync()
+    phaser.arriveAndAwaitAdvance()
+  }
+
+  fun withError(t: Throwable) {
+    error.set(t)
+  }
+
+  fun error(): Throwable? = error.get()
 }

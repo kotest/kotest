@@ -1,57 +1,26 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import com.sksamuel.kotlintest.tests.ListStack
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractShouldSpec
+import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.specs.ShouldSpec
 
-class ShouldSpecTest : AbstractShouldSpec() {
+class ShouldSpecTest : ShouldSpec() {
 
   init {
-    // should allow multi nested
-    "List" {
-      "pop" {
-        should("remove the last element from stack") {
-          val stack = ListStack<String>()
-          stack.push("hello")
-          stack.push("world")
-          stack.size() shouldBe 2
-          stack.pop() shouldBe "world"
-          stack.size() shouldBe 1
+    "a context" {
+      should("a test") {
+        1.shouldBeLessThan(2)
+      }
+      should("a test with config").config(invocations = 3) {
+        1.shouldBeLessThan(2)
+      }
+      "a nested context" {
+        should("a test") {
+          1.shouldBeLessThan(2)
         }
       }
-      should("remove the last element from stack") {
-        val stack = ListStack<String>()
-        stack.push("hello")
-        stack.push("world")
-        stack.size() shouldBe 2
-        stack.pop() shouldBe "world"
-        stack.size() shouldBe 1
+      should("a test without a parent context") {
+        1.shouldBeLessThan(2)
       }
-    }
-
-    // should allow nested
-    "List.pop" {
-      should("remove the last element from stack") {
-        val stack = ListStack<String>()
-        stack.push("hello")
-        stack.push("world")
-        stack.size() shouldBe 2
-        stack.pop() shouldBe "world"
-        stack.size() shouldBe 1
-      }
-    }
-
-    // and un-nested
-    should("leave the stack unmodified") {
-      val stack = ListStack<String>()
-      stack.push("hello")
-      stack.push("world")
-      stack.size() shouldBe 2
-      stack.peek() shouldBe "world"
-      stack.size() shouldBe 2
-    }
-
-    should("support config").config(invocations = 5) {
     }
   }
 }

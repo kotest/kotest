@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import io.kotlintest.specs.AnnotationSpec
+import io.kotlintest.specs.AbstractAnnotationSpec
 import io.kotlintest.specs.Test
 
-class AnnotationSpecExample : AnnotationSpec() {
+class AnnotationSpecExample : AbstractAnnotationSpec() {
 
   @Test
   fun test1() {

@@ -2,9 +2,9 @@ package com.sksamuel.kotlintest.tests.specs
 
 import com.sksamuel.kotlintest.tests.ListStack
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotlintest.specs.AbstractBehaviorSpec
 
-class BehaviorSpecTest : BehaviorSpec() {
+class BehaviorSpecTest : AbstractBehaviorSpec() {
   init {
     given("a ListStack") {
       `when`("pop is invoked") {

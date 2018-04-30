@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests
+package com.sksamuel.kotlintest.tests.extensions
 
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult

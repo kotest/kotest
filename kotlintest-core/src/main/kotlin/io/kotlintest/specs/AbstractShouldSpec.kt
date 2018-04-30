@@ -1,8 +1,11 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.TestContainer
+import io.kotlintest.Tag
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.extensions.TestCaseExtension
+import java.time.Duration
 
 /**
  * Example:
@@ -29,18 +32,62 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
   final override fun isInstancePerTest(): Boolean = false
 
-  fun should(name: String) = RootTestBuilder("should $name")
-  fun should(name: String, test: TestContext.() -> Unit) = should(name).invoke(test)
+  operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
+      addTestCase(this, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
 
-  operator fun String.invoke(init: ShouldContext.() -> Unit) =
-      addRootScope(TestContainer(rootDescription().append(this), this@AbstractShouldSpec::class, { ShouldContext(it).init() }))
+  fun should(name: String, test: TestContext.() -> Unit) =
+      addTestCase("should $name", test, defaultTestCaseConfig)
 
-  inner class ShouldContext(val context: TestContext) {
+  fun should(name: String) = ExpectsConfig({ test, config -> addTestCase("should $name", test, config) })
 
-    operator fun String.invoke(init: ShouldContext.() -> Unit) =
-        context.executeScope(TestContainer(context.currentScope().description().append(this), this@AbstractShouldSpec::class, { ShouldContext(it).init() }))
+  inner class ExpectsConfig(val register: (TestContext.() -> Unit, TestCaseConfig) -> Unit) {
+    fun config(
+        invocations: Int? = null,
+        enabled: Boolean? = null,
+        timeout: Duration? = null,
+        threads: Int? = null,
+        tags: Set<Tag>? = null,
+        extensions: List<TestCaseExtension>? = null,
+        test: TestContext.() -> Unit) {
+      val config = TestCaseConfig(
+          enabled ?: defaultTestCaseConfig.enabled,
+          invocations ?: defaultTestCaseConfig.invocations,
+          timeout ?: defaultTestCaseConfig.timeout,
+          threads ?: defaultTestCaseConfig.threads,
+          tags ?: defaultTestCaseConfig.tags,
+          extensions ?: defaultTestCaseConfig.extensions)
+      register(test, config)
+    }
+  }
 
-    fun should(name: String) = TestBuilder(context, "should $name")
-    fun should(name: String, test: TestContext.() -> Unit) = should(name).invoke(test)
+  inner class ShouldSpecContext(val context: TestContext) {
+
+    operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
+        addTestCase(this, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
+
+    fun should(name: String, test: TestContext.() -> Unit) =
+        addTestCase("should $name", test, defaultTestCaseConfig)
+
+    fun should(name: String) = ExpectsConfig("should $name")
+
+    inner class ExpectsConfig(val name: String) {
+      fun config(
+          invocations: Int? = null,
+          enabled: Boolean? = null,
+          timeout: Duration? = null,
+          threads: Int? = null,
+          tags: Set<Tag>? = null,
+          extensions: List<TestCaseExtension>? = null,
+          test: TestContext.() -> Unit) {
+        val config = TestCaseConfig(
+            enabled ?: defaultTestCaseConfig.enabled,
+            invocations ?: defaultTestCaseConfig.invocations,
+            timeout ?: defaultTestCaseConfig.timeout,
+            threads ?: defaultTestCaseConfig.threads,
+            tags ?: defaultTestCaseConfig.tags,
+            extensions ?: defaultTestCaseConfig.extensions)
+        context.registerTestScope("should $name", this@AbstractShouldSpec, test, config)
+      }
+    }
   }
 }

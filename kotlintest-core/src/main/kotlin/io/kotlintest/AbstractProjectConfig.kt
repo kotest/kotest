@@ -6,7 +6,7 @@ import io.kotlintest.extensions.TestListener
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [Spec] and [TestCase]s.
+ * instance of this class will be applied to all [Spec] and [TestScope]s.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotlintest.provided`.

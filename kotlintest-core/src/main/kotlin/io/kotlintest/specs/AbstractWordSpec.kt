@@ -2,12 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
-import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContainer
 import io.kotlintest.TestContext
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.lineNumber
 import java.time.Duration
 
 /**
@@ -28,9 +25,8 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
   final override fun isInstancePerTest(): Boolean = false
 
-  infix fun String.should(init: WordContext.() -> Unit) {
-    addRootScope(TestContainer(rootDescription().append(this), this@AbstractWordSpec::class, { WordContext(it).init() }))
-  }
+  infix fun String.should(init: WordContext.() -> Unit) =
+      addTestCase(this, { WordContext(this).init() }, defaultTestCaseConfig)
 
   inner class WordContext(val context: TestContext) {
 
@@ -41,7 +37,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: TestContext.() -> Unit): TestCase {
+        test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: defaultTestCaseConfig.enabled,
           invocations ?: defaultTestCaseConfig.invocations,
@@ -49,15 +45,10 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      val tc = TestCase(context.currentScope().description().append("should " + this), this@AbstractWordSpec, test, lineNumber(), config)
-      context.executeScope(tc)
-      return tc
+      context.registerTestScope("should $this", this@AbstractWordSpec, test, config)
     }
 
-    infix operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
-      val tc = TestCase(context.currentScope().description().append("should " + this), this@AbstractWordSpec, test, lineNumber(), defaultTestCaseConfig)
-      context.executeScope(tc)
-      return tc
-    }
+    infix operator fun String.invoke(test: TestContext.() -> Unit) =
+        context.registerTestScope("should $this", this@AbstractWordSpec, test, defaultTestCaseConfig)
   }
 }

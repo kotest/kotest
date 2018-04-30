@@ -175,7 +175,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "string should haveSameLengthAs(other)" - {
+    "string should haveSameLengthAs(other)" {
       "should test that a string has the same length as another string" {
         "hello" should haveSameLengthAs("world")
         "hello" shouldNot haveSameLengthAs("o")
@@ -191,7 +191,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "string should containIgnoringCase(other)" - {
+    "string should containIgnoringCase(other)" {
       "should test that a string contains another string ignoring case" {
         "hello" should containIgnoringCase("HELLO")
         "hello" shouldNot containIgnoringCase("hella")
@@ -201,7 +201,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "should containOnlyDigits()" - {
+    "should containOnlyDigits()" {
       "should test that a string only contains 0-9" {
         "hello" shouldNot containOnlyDigits()
         "123123" should containOnlyDigits()
@@ -215,7 +215,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "should endWith" - {
+    "should endWith" {
       "should test strings" {
         "hello" should endWith("o")
         "hello" should endWith("")
@@ -233,7 +233,7 @@ class StringMatchersTest : FreeSpec() {
       }
     }
 
-    "should startWith" - {
+    "should startWith" {
       "should test strings" {
         "hello" should startWith("h")
         "hello" should startWith("")

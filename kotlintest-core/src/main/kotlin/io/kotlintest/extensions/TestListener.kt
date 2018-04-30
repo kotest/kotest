@@ -2,24 +2,23 @@ package io.kotlintest.extensions
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
 import io.kotlintest.TestScope
+import io.kotlintest.TestResult
 
 interface TestListener {
 
   /**
-   * This function will be invoked each time a new [TestCase] is executed.
+   * This function will be invoked each time a new [TestScope] is executed.
    *
-   * @param description the [Description] for the [TestCase] instance.
+   * @param description the [Description] for the [TestScope] instance.
    */
   fun beforeTest(description: Description): Unit = Unit
 
   /**
-   * Is invoked when a [TestCase] has finished. This includes when a test case
+   * Is invoked when a [TestScope] has finished. This includes when a test case
    * is ignored (skipped), passes (is successful), or fails (errors).
    *
-   * @param description the [Description] for the [TestCase] instance.
+   * @param description the [Description] for the [TestScope] instance.
    * @param result the [TestResult] which contains the outcome of the test.
    */
   fun afterTest(description: Description, result: TestResult): Unit = Unit

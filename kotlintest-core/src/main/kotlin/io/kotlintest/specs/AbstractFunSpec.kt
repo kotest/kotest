@@ -1,9 +1,11 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.TestCase
+import io.kotlintest.Tag
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
-import io.kotlintest.lineNumber
+import io.kotlintest.extensions.TestCaseExtension
+import java.time.Duration
 
 abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -11,11 +13,28 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
     body()
   }
 
-  fun test(name: String): RootTestBuilder = RootTestBuilder(name)
-
-  fun test(name: String, test: TestContext.() -> Unit): TestCase {
-    val tc = TestCase(rootDescription().append(name), this@AbstractFunSpec, test, lineNumber(), defaultTestCaseConfig)
-    addRootScope(tc)
-    return tc
+  inner class TestBuilder(val name: String) {
+    fun config(
+        invocations: Int? = null,
+        enabled: Boolean? = null,
+        timeout: Duration? = null,
+        threads: Int? = null,
+        tags: Set<Tag>? = null,
+        extensions: List<TestCaseExtension>? = null,
+        test: TestContext.() -> Unit) {
+      val config = TestCaseConfig(
+          enabled ?: defaultTestCaseConfig.enabled,
+          invocations ?: defaultTestCaseConfig.invocations,
+          timeout ?: defaultTestCaseConfig.timeout,
+          threads ?: defaultTestCaseConfig.threads,
+          tags ?: defaultTestCaseConfig.tags,
+          extensions ?: defaultTestCaseConfig.extensions)
+      addTestCase(name, test, config)
+    }
   }
+
+  fun test(name: String) = TestBuilder(name)
+
+  fun test(name: String, test: TestContext.() -> Unit) =
+      addTestCase(name, test, defaultTestCaseConfig)
 }

@@ -3,16 +3,16 @@ package com.sksamuel.kotlintest.tests
 import io.kotlintest.eventually
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractWordSpec
+import io.kotlintest.specs.WordSpec
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.time.Duration
 
-class EventuallyTest : AbstractWordSpec() {
+class EventuallyTest : WordSpec() {
 
   init {
     "eventually" should {
-      "pass working tests"  {
+      "pass working tests" {
         eventually(Duration.ofDays(5)) {
           System.currentTimeMillis()
         }
@@ -24,7 +24,7 @@ class EventuallyTest : AbstractWordSpec() {
             throw RuntimeException("foo")
         }
       }
-      "fail tests that do not complete within the time allowed"  {
+      "fail tests that do not complete within the time allowed" {
         shouldThrow<AssertionError> {
           eventually(Duration.ofSeconds(2)) {
             throw RuntimeException("foo")

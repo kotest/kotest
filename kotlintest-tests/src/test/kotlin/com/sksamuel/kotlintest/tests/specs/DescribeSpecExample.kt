@@ -13,8 +13,12 @@ class DescribeSpecExample : DescribeSpec() {
           it("test name") {
             // test here
           }
+          it("test name").config(invocations = 2) {
+            // test here
+          }
         }
       }
     }
   }
 }
+
