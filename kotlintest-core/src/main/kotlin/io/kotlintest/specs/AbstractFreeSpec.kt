@@ -13,8 +13,6 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   @Deprecated("You can now nest contexts without needing the minus symbol")
   infix operator fun String.minus(test: FreeSpecContext.() -> Unit) = this.invoke(test)
 

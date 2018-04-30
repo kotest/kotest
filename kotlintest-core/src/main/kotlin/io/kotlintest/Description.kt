@@ -19,7 +19,7 @@ data class Description(val parents: List<String>, val name: String) {
   }
 
   fun append(name: String) =
-      Description(this.parents + listOf(this.name), name)
+      Description(this.parents + this.name, name)
 
   fun hasParent(description: Description): Boolean = parents.containsAll(description.parents + listOf(description.name))
 
@@ -27,13 +27,37 @@ data class Description(val parents: List<String>, val name: String) {
 
   fun isSpec(): Boolean = parents.isEmpty()
 
-  fun fullName(): String = (parents + listOf(name)).joinToString(" ")
+  fun isRoot(): Boolean = parents.isEmpty()
 
-  fun dropRoot() = Description(parents.drop(1), name)
+  fun head(): Description = Description(emptyList(), parents.first())
+
+  fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(parents.drop(1), name)
+
+  fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 
   /**
    * Returns a String version of this description, which is
    * the parents + this name concatenated with slashes.
    */
   fun id(): String = (parents + listOf(name)).joinToString("/")
+
+  fun names(): List<String> = parents + name
+
+  fun depth() = names().size
+
+  /**
+   * Returns true if this instance is the immediate parent of the supplied argument.
+   */
+  fun isParentOf(description: Description): Boolean =
+      parents + name == description.parents
+
+  /**
+   * Returns true if this instance is an ancestor of the supplied argument.
+   */
+  fun isAncestorOf(description: Description): Boolean {
+    if (isParentOf(description))
+      return true
+    val p = description.parent() ?: return false
+    return isAncestorOf(p)
+  }
 }

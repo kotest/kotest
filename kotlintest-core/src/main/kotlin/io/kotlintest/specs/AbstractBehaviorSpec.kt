@@ -10,8 +10,6 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   inner class GivenContext(val context: TestContext) {
     fun And(name: String, test: WhenContext.() -> Unit) = and(name, test)
     fun and(name: String, test: WhenContext.() -> Unit) = add("Add: $name", test)
