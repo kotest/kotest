@@ -2,11 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
-import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.lineNumber
 import java.time.Duration
 
 /**
@@ -29,7 +27,7 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: TestContext.() -> Unit): TestCase {
+      test: TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -37,15 +35,9 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
         threads ?: defaultTestCaseConfig.threads,
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
-    val tc = TestCase(root().description().append("should " + this), this@AbstractStringSpec, test, lineNumber(), config)
-    addRootScope(tc)
-    return tc
+    addTestCase(this, test, config)
   }
 
-  // adds a test directly from the root context
-  operator fun String.invoke(test: TestContext.() -> Unit): TestCase {
-    val tc = TestCase(rootDescription().append(this), this@AbstractStringSpec, test, lineNumber(), defaultTestCaseConfig)
-    addRootScope(tc)
-    return tc
-  }
+  operator fun String.invoke(test: TestContext.() -> Unit) =
+      addTestCase(this, test, defaultTestCaseConfig)
 }

@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests
+package com.sksamuel.kotlintest.tests.extensions
 
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
@@ -7,7 +7,8 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.specs.StringSpec
 
-class TestCaseExtensionTest : StringSpec() {
+// this tests that we can manipulate the result of a test case from an extension
+class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
   class WibbleException : RuntimeException()
 
@@ -34,7 +35,7 @@ class TestCaseExtensionTest : StringSpec() {
 
   init {
     "test1" {
-      // this exception should not be thrown as the extension will skip test execution
+      // this exception should not be thrown as the extension will skip evaluation of the test
       throw RuntimeException()
     }
     "test2" {
@@ -45,7 +46,7 @@ class TestCaseExtensionTest : StringSpec() {
       // the config for this test should be carried through to the interceptor
     }
     "test4".config(enabled = true) {
-      //  config for this test should be overriden to skip it
+      //  config for this test should be overriden so that the value set on the test case itself is overruled
       throw RuntimeException()
     }
   }

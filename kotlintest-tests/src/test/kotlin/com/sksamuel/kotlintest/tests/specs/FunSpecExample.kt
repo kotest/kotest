@@ -8,5 +8,8 @@ class FunSpecExample : FunSpec() {
     test("this is a test") {
       // test here
     }
+    test("this test has config").config(invocations = 1, enabled = true) {
+      // test here
+    }
   }
 }

@@ -1,9 +1,8 @@
 package io.kotlintest.runner.junit5
 
 import io.kotlintest.Description
+import io.kotlintest.Spec
 import io.kotlintest.TestScope
-import io.kotlintest.TestCase
-import io.kotlintest.TestContainer
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.runner.jvm.TestRunnerListener
@@ -19,55 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestRunnerListener {
 
   private val descriptors = ConcurrentHashMap<Description, TestDescriptor>()
-
-  override fun executionStarted(scope: TestScope) {
-    val descriptor = createDescriptor(scope)
-    try {
-      listener.executionStarted(descriptor)
-    } catch (t: Throwable) {
-      t.printStackTrace()
-    }
-  }
-
-  private fun createDescriptor(scope: TestScope): TestDescriptor {
-    val parentDescription = scope.description().parent()
-    val parent = if (parentDescription == null) root else descriptors[parentDescription]!!
-    val descriptor = when (scope) {
-      is TestCase -> {
-        val id = parent.uniqueId.append("test", scope.name())
-        val source = MethodSource.from(scope.spec.javaClass.name, scope.description.fullName())
-        object : AbstractTestDescriptor(id, scope.description.fullName(), source) {
-          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
-        }
-      }
-      is TestContainer -> {
-        val id = parent.uniqueId.append("container", scope.name())
-        val source = ClassSource.from(scope.sourceClass.java)
-        object : AbstractTestDescriptor(id, scope.description.fullName(), source) {
-          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-          override fun mayRegisterTests(): Boolean = true
-        }
-      }
-      else -> throw IllegalStateException()
-    }
-    descriptors[scope.description()] = descriptor
-    parent.addChild(descriptor)
-    listener.dynamicTestRegistered(descriptor)
-    return descriptor
-  }
-
-  override fun executionFinished(scope: TestScope, result: TestResult) {
-    val descriptor = descriptors[scope.description()]
-    when (descriptor) {
-      null -> System.exit(-8)
-      else -> when (result.status) {
-        TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-        TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-        TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
-        TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-      }
-    }
-  }
+  private val results = ConcurrentHashMap<Description, TestResult>()
 
   override fun executionStarted() {
     listener.executionStarted(root)
@@ -76,5 +27,96 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   override fun executionFinished(t: Throwable?) {
     val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
     listener.executionFinished(root, result)
+  }
+
+  override fun executionStarted(spec: Spec) {
+    val descriptor = createDescriptor(spec)
+    try {
+      listener.executionStarted(descriptor)
+    } catch (t: Throwable) {
+      t.printStackTrace()
+    }
+  }
+
+  override fun executionFinished(spec: Spec, t: Throwable?) {
+    val descriptor = descriptors[spec.description()]
+    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
+    listener.executionFinished(descriptor, result)
+  }
+
+  override fun executionStarted(testScope: TestScope) {
+    val descriptor = createDescriptor(testScope)
+    try {
+      listener.executionStarted(descriptor)
+    } catch (t: Throwable) {
+      t.printStackTrace()
+    }
+  }
+
+  override fun executionFinished(testScope: TestScope, result: TestResult) {
+
+    fun storeResult(description: Description, result: TestResult) {
+      results[description] = result
+      val parent = description.parent()
+      if (parent != null)
+        storeResult(parent, result)
+    }
+
+    // if we have a failed result, then for all parents we need to store this, so we
+    // can fail the parents later as they complete
+    when (result.status) {
+      TestStatus.Failure -> storeResult(testScope.description, result)
+      TestStatus.Error -> storeResult(testScope.description, result)
+      else -> {
+      }
+    }
+
+    // check the stored list of results which could have been set by the child of this test case
+    // if the child test did store a result (failed or aborted) then we need to use it here as well
+    // in order to 'propagate' up the failures
+    var resultp = results[testScope.description]
+    if (resultp == null)
+      resultp = result
+
+    val descriptor = descriptors[testScope.description]
+    when (descriptor) {
+      null -> System.exit(-108)
+      else -> when (resultp.status) {
+        TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
+        TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(resultp.error))
+        TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
+        TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(resultp.error))
+      }
+    }
+  }
+
+
+  private fun createDescriptor(testScope: TestScope): TestDescriptor {
+    val parentDescription = testScope.description.parent()
+    val parent = if (parentDescription == null) root else descriptors[parentDescription]!!
+    val id = parent.uniqueId.append("test", testScope.name)
+    val source = MethodSource.from(testScope.spec.javaClass.name, testScope.description.fullName())
+    val descriptor = object : AbstractTestDescriptor(id, testScope.name, source) {
+      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER_AND_TEST
+    }
+    descriptors[testScope.description] = descriptor
+    parent.addChild(descriptor)
+    listener.dynamicTestRegistered(descriptor)
+    return descriptor
+  }
+
+  private fun createDescriptor(spec: Spec): TestDescriptor {
+    val parentDescription = spec.description().parent()
+    val parent = if (parentDescription == null) root else descriptors[parentDescription]!!
+    val id = parent.uniqueId.append("spec", spec.name())
+    val source = ClassSource.from(spec.javaClass)
+    val descriptor = object : AbstractTestDescriptor(id, spec.name(), source) {
+      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
+      override fun mayRegisterTests(): Boolean = true
+    }
+    descriptors[spec.description()] = descriptor
+    parent.addChild(descriptor)
+    listener.dynamicTestRegistered(descriptor)
+    return descriptor
   }
 }

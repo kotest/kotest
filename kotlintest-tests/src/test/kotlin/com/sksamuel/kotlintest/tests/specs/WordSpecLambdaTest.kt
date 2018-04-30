@@ -3,15 +3,34 @@ package com.sksamuel.kotlintest.tests.specs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-@Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
 class WordSpecLambdaTest : WordSpec({
 
-  var wibble = "sammy"
+  var name: String? = null
 
-  "Testing Word Spec Lambas" should {
-    wibble = "jammy"
-    "a" {
-      wibble shouldBe "jammy"
+  "the name" should {
+    "start off null" {
+      name.shouldBe(null)
+    }
+    name = "foo"
+    "now be foo" {
+      name.shouldBe("foo")
+    }
+    "it should still be foo" {
+      name.shouldBe("foo")
+    }
+    name = "koo"
+    "now be koo" {
+      name.shouldBe("koo")
+    }
+  }
+
+  "the second context" should {
+    "inherit the state from context 1" {
+      name shouldBe "koo"
+    }
+    name = "roo"
+    "allow the name to be changed" {
+      name shouldBe "roo"
     }
   }
 })

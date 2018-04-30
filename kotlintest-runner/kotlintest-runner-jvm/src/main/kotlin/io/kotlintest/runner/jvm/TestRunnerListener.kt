@@ -1,7 +1,8 @@
 package io.kotlintest.runner.jvm
 
-import io.kotlintest.TestResult
+import io.kotlintest.Spec
 import io.kotlintest.TestScope
+import io.kotlintest.TestResult
 
 /**
  * Implementations of this interface will be notified of events
@@ -12,6 +13,9 @@ interface TestRunnerListener {
   fun executionStarted()
   fun executionFinished(t: Throwable?)
 
-  fun executionStarted(scope: TestScope)
-  fun executionFinished(scope: TestScope, result: TestResult)
+  fun executionStarted(spec: Spec)
+  fun executionFinished(spec: Spec, t: Throwable?)
+
+  fun executionStarted(testScope: TestScope)
+  fun executionFinished(testScope: TestScope, result: TestResult)
 }

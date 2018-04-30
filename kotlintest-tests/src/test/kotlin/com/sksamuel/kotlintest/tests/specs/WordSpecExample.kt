@@ -8,6 +8,9 @@ class WordSpecExample : WordSpec() {
       "test something" {
         // test here
       }
+      "allow config".config(invocations = 2) {
+
+      }
     }
   }
 }

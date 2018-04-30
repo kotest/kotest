@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import io.kotlintest.specs.BehaviorSpec
+import io.kotlintest.specs.AbstractBehaviorSpec
 
-class BehaviorSpecExample : BehaviorSpec() {
+class BehaviorSpecExample : AbstractBehaviorSpec() {
 
   init {
     given("a sheet of string cells 4x4") {

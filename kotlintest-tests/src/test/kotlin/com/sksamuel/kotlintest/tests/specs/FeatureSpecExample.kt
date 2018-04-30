@@ -15,5 +15,12 @@ class FeatureSpecExample : FeatureSpec() {
         1.shouldBeLessThan(4)
       }
     }
+    feature("this feature") {
+      and("has nested feature contexts") {
+        scenario("test with config").config(invocations = 4, threads = 2) {
+          1.shouldBeLessThan(4)
+        }
+      }
+    }
   }
 }

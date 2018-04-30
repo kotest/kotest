@@ -16,13 +16,13 @@ class FreeSpecTest : FreeSpec() {
 
   init {
 
-    "context a" - {
-      "b1" - {
+    "context a" {
+      "b1" {
         "c" {
           count += 1
         }
       }
-      "b2" - {
+      "b2" {
         "d" {
           count += 2
         }

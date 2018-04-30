@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.extensions
+package com.sksamuel.kotlintest.tests.listeners
 
 import io.kotlintest.Description
 import io.kotlintest.Spec

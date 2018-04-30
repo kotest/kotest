@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import io.kotlintest.specs.ExpectSpec
+import io.kotlintest.specs.AbstractExpectSpec
 
 
-class ExpectSpecExample : ExpectSpec() {
+class ExpectSpecExample : AbstractExpectSpec() {
   init {
     context("some context") {
       expect("some test") {

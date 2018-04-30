@@ -1,18 +1,19 @@
-package com.sksamuel.kotlintest.tests
+package com.sksamuel.kotlintest.tests.extensions
 
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.specs.StringSpec
 
-class LateinitSpecInterceptorWordSpecTest : WordSpec() {
+@Suppress("OverridingDeprecatedMember", "DEPRECATION")
+class LateinitSpecInterceptorStringSpecTest : StringSpec() {
 
   private lateinit var string: String
 
   inner class Interceptor : SpecExtension {
     override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
-      this@LateinitSpecInterceptorWordSpecTest.string = "Hello"
+      this@LateinitSpecInterceptorStringSpecTest.string = "Hello"
       process()
     }
   }
@@ -20,10 +21,8 @@ class LateinitSpecInterceptorWordSpecTest : WordSpec() {
   override fun extensions(): List<SpecLevelExtension> = listOf(Interceptor())
 
   init {
-    "setting a late init var" should {
-      "be supported by word spec" {
-        string shouldBe "Hello"
-      }
+    "Hello should equal to Hello" {
+      string shouldBe "Hello"
     }
   }
 }

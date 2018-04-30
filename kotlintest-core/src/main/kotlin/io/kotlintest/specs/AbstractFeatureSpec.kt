@@ -1,8 +1,11 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.TestContainer
+import io.kotlintest.Tag
+import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.extensions.TestCaseExtension
+import java.time.Duration
 
 abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -12,15 +15,37 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
 
   final override fun isInstancePerTest(): Boolean = false
 
-  fun feature(name: String, init: FeatureScope.() -> Unit) =
-      addRootScope(TestContainer(rootDescription().append("Feature $name"), this@AbstractFeatureSpec::class, { FeatureScope(it).init() }))
+  inner class ScenarioBuilder(val name: String, val context: TestContext) {
+    fun config(
+        invocations: Int? = null,
+        enabled: Boolean? = null,
+        timeout: Duration? = null,
+        threads: Int? = null,
+        tags: Set<Tag>? = null,
+        extensions: List<TestCaseExtension>? = null,
+        test: TestContext.() -> Unit) {
+      val config = TestCaseConfig(
+          enabled ?: defaultTestCaseConfig.enabled,
+          invocations ?: defaultTestCaseConfig.invocations,
+          timeout ?: defaultTestCaseConfig.timeout,
+          threads ?: defaultTestCaseConfig.threads,
+          tags ?: defaultTestCaseConfig.tags,
+          extensions ?: defaultTestCaseConfig.extensions)
+      context.registerTestScope(name, this@AbstractFeatureSpec, test, config)
+    }
+  }
 
-  inner class FeatureScope(val context: TestContext) {
+  fun feature(name: String, init: FeatureContext.() -> Unit) =
+      addTestCase("Feature $name", { FeatureContext(this).init() }, defaultTestCaseConfig)
 
-    fun and(name: String, init: FeatureScope.() -> Unit) =
-        context.executeScope(TestContainer(context.currentScope().description().append("And $name"), this@AbstractFeatureSpec::class, { FeatureScope(it).init() }))
+  inner class FeatureContext(val context: TestContext) {
 
-    fun scenario(name: String) = TestBuilder(context, "Scenario $name")
-    fun scenario(name: String, test: TestContext.() -> Unit) = scenario(name).invoke(test)
+    fun and(name: String, init: FeatureContext.() -> Unit) =
+        addTestCase("And $name", { FeatureContext(this).init() }, defaultTestCaseConfig)
+
+    fun scenario(name: String, test: TestContext.() -> Unit) =
+        addTestCase("Scenario $name", test, defaultTestCaseConfig)
+
+    fun scenario(name: String) = ScenarioBuilder("Scenario $name", context)
   }
 }
