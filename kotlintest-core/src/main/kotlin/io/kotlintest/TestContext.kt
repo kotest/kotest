@@ -1,6 +1,5 @@
 package io.kotlintest
 
-import java.util.concurrent.Phaser
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -44,21 +43,7 @@ abstract class TestContext {
    */
   abstract fun registerTestScope(scope: TestScope)
 
-  private val phaser = Phaser()
   private val error = AtomicReference<Throwable?>(null)
-
-  fun registerAsync() {
-    phaser.register()
-  }
-
-  fun arriveAsync() {
-    phaser.arrive()
-  }
-
-  fun blockUntilReady() {
-    registerAsync()
-    phaser.arriveAndAwaitAdvance()
-  }
 
   fun withError(t: Throwable) {
     error.set(t)
