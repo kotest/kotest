@@ -21,17 +21,22 @@ class JUnitTestRunnerListener(val testClass: KClass<out Spec>,
       }
 
   override fun executionStarted(scope: Scope) {
-    notifier.fireTestStarted(desc(scope))
+    notifier.fireTestStarted(describeScope(scope))
   }
 
   override fun executionFinished(scope: Scope, result: TestResult) {
-    val desc = desc(scope)
+    val desc = describeScope(scope)
     when (result.status) {
       TestStatus.Success -> notifier.fireTestFinished(desc)
-      TestStatus.Error -> notifier.fireTestFailure(Failure(desc, result.error))
+      TestStatus.Error -> notifyFailure(desc, result)
       TestStatus.Ignored -> notifier.fireTestIgnored(desc)
-      TestStatus.Failure -> notifier.fireTestFailure(Failure(desc, result.error))
+      TestStatus.Failure -> notifyFailure(desc, result)
     }
+  }
+
+  private fun notifyFailure(description: JDescription, result: TestResult) {
+    notifier.fireTestFailure(Failure(description, result.error))
+    notifier.fireTestFinished(description)
   }
 
   override fun executionStarted() {}
