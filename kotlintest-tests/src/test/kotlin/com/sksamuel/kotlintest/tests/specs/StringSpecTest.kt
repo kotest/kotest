@@ -20,17 +20,3 @@ class StringSpecTest : AbstractStringSpec() {
   }
 }
 
-class StringSpecConstructorTest : AbstractStringSpec({
-
-  "strings.size should return size of string" {
-    "hello".length shouldBe 5
-    "hello" should haveLength(5)
-  }
-})
-
-class StringSpecParenthesisTest : AbstractStringSpec() {
-  init {
-    "parenthesis (here) " {
-    }
-  }
-}

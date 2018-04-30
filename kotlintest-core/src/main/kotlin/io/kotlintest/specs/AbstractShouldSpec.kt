@@ -63,10 +63,10 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   inner class ShouldSpecContext(val context: TestContext) {
 
     operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
-        addTestCase(this, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
+        context.registerTestScope(this, this@AbstractShouldSpec, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
 
     fun should(name: String, test: TestContext.() -> Unit) =
-        addTestCase("should $name", test, defaultTestCaseConfig)
+        context.registerTestScope("should $name", this@AbstractShouldSpec, test, defaultTestCaseConfig)
 
     fun should(name: String) = ExpectsConfig("should $name")
 
