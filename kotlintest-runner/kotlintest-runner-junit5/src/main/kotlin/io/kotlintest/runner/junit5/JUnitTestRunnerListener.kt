@@ -5,7 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestResult
 import io.kotlintest.TestScope
 import io.kotlintest.TestStatus
-import io.kotlintest.runner.jvm.TestRunnerListener
+import io.kotlintest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -18,7 +18,7 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 
-class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestRunnerListener {
+class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestEngineListener {
 
   private val descriptors = ConcurrentHashMap<Description, TestDescriptor>()
   private val results = ConcurrentHashMap<Description, TestResult>()

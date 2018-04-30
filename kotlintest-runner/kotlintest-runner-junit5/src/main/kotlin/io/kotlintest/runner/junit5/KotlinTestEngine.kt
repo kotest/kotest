@@ -3,10 +3,8 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.TestDiscovery
-import io.kotlintest.runner.jvm.TestRunner
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
-import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
@@ -16,7 +14,7 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.util.ClasspathHelper
 import kotlin.reflect.KClass
 
-class KotlinTestEngine : TestEngine {
+class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
   companion object {
     const val EngineId = "kotlintest"
@@ -27,7 +25,7 @@ class KotlinTestEngine : TestEngine {
   override fun execute(request: ExecutionRequest) {
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
     val listener = JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)
-    val runner = TestRunner(root.classes, listener)
+    val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, listener)
     runner.execute()
   }
 
