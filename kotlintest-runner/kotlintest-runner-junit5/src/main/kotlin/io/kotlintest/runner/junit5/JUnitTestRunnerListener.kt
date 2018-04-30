@@ -2,8 +2,8 @@ package io.kotlintest.runner.junit5
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestScope
 import io.kotlintest.TestResult
+import io.kotlintest.TestScope
 import io.kotlintest.TestStatus
 import io.kotlintest.runner.jvm.TestRunnerListener
 import org.junit.platform.engine.EngineExecutionListener
@@ -12,8 +12,11 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
-import org.junit.platform.engine.support.descriptor.MethodSource
+import org.junit.platform.engine.support.descriptor.FilePosition
+import org.junit.platform.engine.support.descriptor.FileSource
+import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.max
 
 class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestRunnerListener {
 
@@ -90,16 +93,16 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     }
   }
 
-
-  private fun createDescriptor(testScope: TestScope): TestDescriptor {
-    val parentDescription = testScope.description.parent()
+  private fun createDescriptor(scope: TestScope): TestDescriptor {
+    val parentDescription = scope.description.parent()
     val parent = if (parentDescription == null) root else descriptors[parentDescription]!!
-    val id = parent.uniqueId.append("test", testScope.name)
-    val source = MethodSource.from(testScope.spec.javaClass.name, testScope.description.fullName())
-    val descriptor = object : AbstractTestDescriptor(id, testScope.name, source) {
+    val id = parent.uniqueId.append("test", scope.name)
+    val f = File(scope.spec.javaClass.protectionDomain.codeSource.location.path)
+    val source = FileSource.from(f, FilePosition.from(max(1, scope.line)))
+    val descriptor = object : AbstractTestDescriptor(id, scope.name, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER_AND_TEST
     }
-    descriptors[testScope.description] = descriptor
+    descriptors[scope.description] = descriptor
     parent.addChild(descriptor)
     listener.dynamicTestRegistered(descriptor)
     return descriptor

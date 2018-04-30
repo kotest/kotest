@@ -36,16 +36,16 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   }
 
   fun feature(name: String, init: FeatureContext.() -> Unit) =
-      addTestCase("Feature $name", { FeatureContext(this).init() }, defaultTestCaseConfig)
+      addTestCase("Feature: $name", { FeatureContext(this).init() }, defaultTestCaseConfig)
 
   inner class FeatureContext(val context: TestContext) {
 
     fun and(name: String, init: FeatureContext.() -> Unit) =
-        addTestCase("And $name", { FeatureContext(this).init() }, defaultTestCaseConfig)
+        context.registerTestScope("And: $name", this@AbstractFeatureSpec, { FeatureContext(this).init() }, defaultTestCaseConfig)
 
     fun scenario(name: String, test: TestContext.() -> Unit) =
-        addTestCase("Scenario $name", test, defaultTestCaseConfig)
+        context.registerTestScope("Scenario: $name", this@AbstractFeatureSpec, test, defaultTestCaseConfig)
 
-    fun scenario(name: String) = ScenarioBuilder("Scenario $name", context)
+    fun scenario(name: String) = ScenarioBuilder("Scenario: $name", context)
   }
 }

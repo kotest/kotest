@@ -3,48 +3,37 @@ package com.sksamuel.kotlintest.tests.specs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 
-class FeatureSpecLambdaTest : FeatureSpec() {
+class FeatureSpecLambdaTest : FeatureSpec({
 
-  data class User(var email: String? = "")
+  var name: String? = null
 
-  var user: User? = null
-
-  init {
-
-    feature("user") {
-      user = User(null)
-
-      and("set valid email") {
-        user!!.email = "sam@kotlintest.io"
-
-        scenario("should get correct email") {
-          user!!.email shouldBe "sam@kotlintest.io"
-        }
+  feature("feature 1") {
+    scenario("the name should start off null") {
+      name.shouldBe(null)
+    }
+    name = "foo"
+    and("now the name should be set to foo") {
+      name.shouldBe("foo")
+      scenario("should still be foo for this nested test") {
+        name.shouldBe("foo")
       }
-
-      and("set null email") {
-        user!!.email = null
-
-        scenario("should get null email") {
-          user!!.email shouldBe null
-        }
+      name = "boo"
+      scenario("now the name should be boo") {
+        name.shouldBe("boo")
       }
     }
-
-    feature("null") {
-      user = null
-
-      scenario("user should be null") {
-        user shouldBe null
-      }
-
-      and("setting user to not null") {
-        user = User("sam@kotlintest.io")
-
-        scenario("should get correct email") {
-          user!!.email shouldBe "sam@kotlintest.io"
-        }
-      }
+    scenario("it should still be boo as this test should run after all the above") {
+      name.shouldBe("boo")
+    }
+    name = "koo"
+    scenario("now the name should be set to koo") {
+      name.shouldBe("koo")
     }
   }
-}
+
+  feature("feature 2 should run after feature 1") {
+    scenario("name should still be the last value which was koo") {
+      name shouldBe "koo"
+    }
+  }
+})
