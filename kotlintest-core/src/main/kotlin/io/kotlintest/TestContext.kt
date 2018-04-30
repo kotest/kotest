@@ -42,7 +42,7 @@ abstract class TestContext {
   /**
    * Notifies the test runner about a nested [TestScope].
    */
-  abstract fun registerTestScope(testScope: TestScope)
+  abstract fun registerTestScope(scope: TestScope)
 
   private val phaser = Phaser()
   private val error = AtomicReference<Throwable?>(null)
