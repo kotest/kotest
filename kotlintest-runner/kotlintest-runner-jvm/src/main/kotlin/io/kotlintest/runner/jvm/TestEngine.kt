@@ -20,8 +20,8 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
         // so the error will be caught and shutdown the executor
         val spec = createSpecInstance(it)
         val executor = when {
-          spec.isInstancePerTest() -> SingleInstanceSpecExecutor(listener)
-          else -> SharedInstanceSpecExecutor(listener)
+          spec.isInstancePerTest() -> InstancePerTestSpecExecutor(listener)
+          else -> SingleInstanceSpecExecutor(listener)
         }
         specExecutor.submit {
           executor.execute(spec)

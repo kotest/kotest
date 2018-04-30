@@ -93,7 +93,6 @@ abstract class SpecExecutor(val listener: TestEngineListener) {
       executor.execute {
         try {
           scope.test(context)
-          context.blockUntilReady()
           val error = context.error()
           if (error != null)
             errors.add(error)
