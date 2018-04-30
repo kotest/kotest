@@ -23,8 +23,6 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   infix fun String.should(init: WordContext.() -> Unit) =
       addTestCase(this, { WordContext(this).init() }, defaultTestCaseConfig)
 
