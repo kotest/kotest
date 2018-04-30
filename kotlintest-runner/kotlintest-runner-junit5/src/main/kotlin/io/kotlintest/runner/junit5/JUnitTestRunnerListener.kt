@@ -44,8 +44,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     listener.executionFinished(descriptor, result)
   }
 
-  override fun executionStarted(testScope: TestScope) {
-    val descriptor = createDescriptor(testScope)
+  override fun executionStarted(scope: TestScope) {
+    val descriptor = createDescriptor(scope)
     try {
       listener.executionStarted(descriptor)
     } catch (t: Throwable) {
@@ -53,7 +53,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     }
   }
 
-  override fun executionFinished(testScope: TestScope, result: TestResult) {
+  override fun executionFinished(scope: TestScope, result: TestResult) {
 
     fun storeResult(description: Description, result: TestResult) {
       results[description] = result
@@ -65,8 +65,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     // if we have a failed result, then for all parents we need to store this, so we
     // can fail the parents later as they complete
     when (result.status) {
-      TestStatus.Failure -> storeResult(testScope.description, result)
-      TestStatus.Error -> storeResult(testScope.description, result)
+      TestStatus.Failure -> storeResult(scope.description, result)
+      TestStatus.Error -> storeResult(scope.description, result)
       else -> {
       }
     }
@@ -74,11 +74,11 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     // check the stored list of results which could have been set by the child of this test case
     // if the child test did store a result (failed or aborted) then we need to use it here as well
     // in order to 'propagate' up the failures
-    var resultp = results[testScope.description]
+    var resultp = results[scope.description]
     if (resultp == null)
       resultp = result
 
-    val descriptor = descriptors[testScope.description]
+    val descriptor = descriptors[scope.description]
     when (descriptor) {
       null -> System.exit(-108)
       else -> when (resultp.status) {

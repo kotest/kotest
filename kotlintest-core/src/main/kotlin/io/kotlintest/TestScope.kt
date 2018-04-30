@@ -62,7 +62,7 @@ enum class TestStatus {
   Failure
 }
 
-data class TestResult(val status: TestStatus, val error: Throwable?, val reason: String?, val metaData: Map<String, Any?> = emptyMap()) {
+data class  TestResult(val status: TestStatus, val error: Throwable?, val reason: String?, val metaData: Map<String, Any?> = emptyMap()) {
   companion object {
     val Success = TestResult(TestStatus.Success, null, null)
     val Ignored = TestResult(TestStatus.Ignored, null, null)

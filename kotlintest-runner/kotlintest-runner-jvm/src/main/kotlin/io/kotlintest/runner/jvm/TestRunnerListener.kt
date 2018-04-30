@@ -16,6 +16,6 @@ interface TestRunnerListener {
   fun executionStarted(spec: Spec)
   fun executionFinished(spec: Spec, t: Throwable?)
 
-  fun executionStarted(testScope: TestScope)
-  fun executionFinished(testScope: TestScope, result: TestResult)
+  fun executionStarted(scope: TestScope)
+  fun executionFinished(scope: TestScope, result: TestResult)
 }
