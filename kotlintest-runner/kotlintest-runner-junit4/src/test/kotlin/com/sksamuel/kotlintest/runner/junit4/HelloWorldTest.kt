@@ -10,7 +10,7 @@ class HelloWorldTest : FreeSpec() {
     "first test ()" {
       1.shouldBeLessThan(2)
     }
-    "string tests .@#@$#(!)@#" - {
+    "string tests .@#@$#(!)@#" {
       "substring" {
         "helloworld".shouldContain("world")
       }
