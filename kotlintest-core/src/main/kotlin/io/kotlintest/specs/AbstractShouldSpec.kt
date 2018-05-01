@@ -30,8 +30,6 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
       addTestCase(this, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
 
