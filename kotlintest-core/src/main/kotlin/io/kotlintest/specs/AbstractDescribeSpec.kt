@@ -13,8 +13,6 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   inner class TestBuilder(val context: TestContext, val name: String) {
 
     fun config(
