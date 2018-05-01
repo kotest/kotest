@@ -13,9 +13,6 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
-
   inner class TestBuilder(val context: TestContext, val name: String) {
 
     fun config(

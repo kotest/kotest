@@ -13,8 +13,6 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
     body()
   }
 
-  final override fun isInstancePerTest(): Boolean = false
-
   inner class ScenarioBuilder(val name: String, val context: TestContext) {
     fun config(
         invocations: Int? = null,

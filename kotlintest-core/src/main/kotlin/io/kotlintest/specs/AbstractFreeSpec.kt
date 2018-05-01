@@ -13,7 +13,6 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  @Deprecated("You can now nest contexts without needing the minus symbol")
   infix operator fun String.minus(test: FreeSpecContext.() -> Unit) = this.invoke(test)
 
   infix operator fun String.invoke(test: FreeSpecContext.() -> Unit) =
@@ -39,7 +38,6 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
 
   inner class FreeSpecContext(val context: TestContext) {
 
-    @Deprecated("You can now nest contexts without needing the minus symbol")
     infix operator fun String.minus(test: FreeSpecContext.() -> Unit) = this.invoke(test)
 
     infix operator fun String.invoke(test: FreeSpecContext.() -> Unit) {
