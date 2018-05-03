@@ -13,7 +13,6 @@ fun <T> TestContext.whenReady(f: CompletableFuture<T>, test: (T) -> Unit) {
         throw throwable
       test(value)
     } catch (t: Throwable) {
-      withError(t)
     } finally {
     }
   }

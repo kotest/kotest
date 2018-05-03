@@ -33,12 +33,13 @@ class ConfigTest : WordSpec() {
         fail("shouldn't run")
       }
 
-      // If we have 100 threads, and each one sleeps for 1000 milliseconds, then the total time
-      // should still be approx 1000 ms. So we set the timeout an order of magnitude higher, and it
-      // should never hit.
-      "support threads parameter".config(timeout = Duration.ofMillis(10000), threads = 100, invocations = 100) {
-        // this test should timeout
-        Thread.sleep(1000)
+      // If we have 100 threads, and each one sleeps for 100 milliseconds, then the total time
+      // should still be approx 100 ms as each of our threads will block for 100ms.
+      // So we set the timeout an order of magnitude higher to account for a bit of thread
+      // context switching and it should never hit.
+      "support threads parameter".config(timeout = Duration.ofMillis(2000), threads = 100, invocations = 100) {
+        // this test should not timeout
+        Thread.sleep(100)
         threadCounter.incrementAndGet()
       }
 
@@ -46,15 +47,13 @@ class ConfigTest : WordSpec() {
         invocationCounter2.incrementAndGet()
       }
 
-      "override only actually set values" {
-        val testCase = "some test case".config(invocations = 2, threads = 4) {}
+      "override only actually set values".config(invocations = 2, threads = 4) {
         //  testCase.config.invocations shouldBe 2
         // testCase.config.threads shouldBe 4
         //  testCase.config.tags shouldBe setOf(TagZ)
       }
 
-      "use default config, if no test case config is given" {
-        val testCase = "some test case".config(invocations = 1) {}
+      "use default config, if no test case config is given".config(invocations = 1) {
 
         //  testCase.config.invocations shouldBe 3
         //   testCase.config.threads shouldBe 1

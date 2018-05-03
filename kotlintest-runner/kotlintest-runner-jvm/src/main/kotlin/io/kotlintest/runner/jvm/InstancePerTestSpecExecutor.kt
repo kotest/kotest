@@ -11,19 +11,13 @@ class InstancePerTestSpecExecutor(listener: TestEngineListener) : SpecExecutor(l
   data class ExecutionContext(val spec: Spec, val target: Description)
 
   override fun execute(spec: Spec) {
-    try {
-      listener.executionStarted(spec)
-      spec.testCases().forEach { locateAndExecute(spec::class, it.description) }
-      listener.executionFinished(spec, null)
-    } catch (t: Throwable) {
-      listener.executionFinished(spec, t)
-    }
+    spec.testCases().forEach { locateAndExecute(spec::class, it.description) }
   }
 
   private fun locateAndExecute(klass: KClass<out Spec>, target: Description) {
     val spec = createSpecInstance(klass)
     spec.testCases().forEach {
-      if (it.description == target) interceptSpec(spec, { executeTestCase(it, targetContext(spec, target)) })
+      if (it.description == target) interceptSpec(spec, { TestScopeExecutor(listener, it, targetContext(spec, target)).execute() })
       else if (it.description.isAncestorOf(target)) interceptSpec(spec, { execute(spec, it, target) })
     }
   }
@@ -33,7 +27,7 @@ class InstancePerTestSpecExecutor(listener: TestEngineListener) : SpecExecutor(l
       override fun description(): Description = current.description
       override fun registerTestScope(scope: TestScope) {
         if (scope.description == target) {
-          executeTestCase(scope, targetContext(spec, target))
+          TestScopeExecutor(listener, scope, targetContext(spec, target)).execute()
         } else if (scope.description.isAncestorOf(target)) {
           execute(spec, scope, target)
         }
