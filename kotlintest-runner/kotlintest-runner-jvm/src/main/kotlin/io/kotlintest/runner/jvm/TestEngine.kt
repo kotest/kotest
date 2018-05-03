@@ -23,6 +23,7 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
           // we need to instantiate the spec outside of the executor
           // so any error will be caught and shutdown the executor
           val spec = createSpecInstance(it)
+          listener.prepareSpec(spec)
 
           val executor = when {
             spec.isInstancePerTest() -> InstancePerTestSpecExecutor(listener)
@@ -31,7 +32,6 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
 
           specsExecutor.submit {
             try {
-              listener.prepareSpec(spec)
               executor.execute(spec)
               listener.completeSpec(spec, null)
             } catch (t: Throwable) {
