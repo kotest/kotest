@@ -13,7 +13,6 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
-import org.junit.platform.engine.support.descriptor.MethodSource
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -21,9 +20,9 @@ import kotlin.reflect.KClass
  * Notifies JUnit Platform of test statuses via a [EngineExecutionListener].
  *
  * JUnit platform supports out of order notification of tests, in that sibling
- * tests can be executing in parallel and updating JUnit out of order.
- *
- * However the gradle test task in intellij gets confused by this and mixes up the results.
+ * tests can be executing in parallel and updating JUnit out of order. However the gradle test
+ * task gets confused if we are executing two or more tests directly under the root at once.
+ * Therefore we must queue up notifications until each spec is completed.
  */
 class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestEngineListener {
 
@@ -55,16 +54,17 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   }
 
   override fun completeSpec(spec: Spec, t: Throwable?) {
+
     // when a spec is completed, we need to complete all the test scopes that we have for that spec
-    // squashing all the results for each individual scope as there may be several
-    results.filter { it.scope.spec.javaClass == spec.javaClass }
-        .sortedBy { it.scope.description.depth() }
+    val descriptions = started.filter { spec.description().isAncestorOf(it) }
+
+    // for each description we can grab the best result and use that
+    descriptions.sortedBy { it.depth() }
         .reversed()
         .forEach {
-          val descriptor = descriptors[it.scope.description] ?: getOrCreateDescriptor(it.scope)
+          val descriptor = descriptors[it] ?: getOrCreateDescriptor(it)
           // find an error by priority
-          val result = findResult(it.scope.description)
-          println("COMPLETING ${it.scope.description} with $result")
+          val result = findResult(it) ?: throw RuntimeException("Every description must have a result")
           when (result.status) {
             TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
             TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
@@ -76,7 +76,6 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     // now we can complete the spec
     val descriptor = descriptors[spec.description()]
     val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-    println("ENDING SPEC ${spec.description()} with $result")
     listener.executionFinished(descriptor, result)
   }
 
@@ -97,7 +96,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       if (!started.contains(set.scope.description)) {
         try {
           started.add(set.scope.description)
-          val descriptor = createDescriptor(set.scope)
+          val descriptor = createDescriptor(set.scope.description)
           listener.executionStarted(descriptor)
         } catch (t: Throwable) {
           t.printStackTrace()
@@ -109,12 +108,12 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   override fun testRun(set: TestSet, k: Int) {}
   override fun completeTestSet(set: TestSet, result: TestResult) {}
 
-  private fun getOrCreateDescriptor(scope: TestScope): TestDescriptor =
-      descriptors.getOrPut(scope.description, { createDescriptor(scope) })
+  private fun getOrCreateDescriptor(description: Description): TestDescriptor =
+      descriptors.getOrPut(description, { createDescriptor(description) })
 
   // returns the most important result for a given scope
   // by searching all the results stored for that scope and child scopes
-  private fun findResult(description: Description): TestResult {
+  private fun findResult(description: Description): TestResult? {
 
     fun findByStatus(status: TestStatus): TestResult? = results
         .filter { it.scope.description == description || description.isAncestorOf(it.scope.description) }
@@ -129,22 +128,22 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       result = findByStatus(TestStatus.Success)
     if (result == null)
       result = findByStatus(TestStatus.Ignored)
-    return result!!
+    return result
   }
 
-  private fun createDescriptor(scope: TestScope): TestDescriptor {
+  private fun createDescriptor(description: Description): TestDescriptor {
 
-    val parentDescription = scope.description.parent() ?: throw RuntimeException("All test scopes must have a parent")
+    val parentDescription = description.parent() ?: throw RuntimeException("All test scopes must have a parent")
     val parent = descriptors[parentDescription]!!
-    val id = parent.uniqueId.append("test", scope.name)
-    val source = MethodSource.from(scope.spec.javaClass.canonicalName, scope.description.fullName())
+    val id = parent.uniqueId.append("test", description.name)
+    //val source = MethodSource.from(scope.spec.javaClass.canonicalName, scope.description.fullName())
 
-    val descriptor = object : AbstractTestDescriptor(id, scope.name, source) {
+    val descriptor = object : AbstractTestDescriptor(id, description.name) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER_AND_TEST
       override fun mayRegisterTests(): Boolean = true
     }
 
-    descriptors[scope.description] = descriptor
+    descriptors[description] = descriptor
 
     // we need to synchronize because we don't want to allow multiple specs adding
     // to the root container at the same time
