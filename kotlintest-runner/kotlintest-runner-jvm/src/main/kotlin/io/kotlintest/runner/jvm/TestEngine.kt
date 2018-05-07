@@ -61,7 +61,7 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
   private fun specExecutor(spec: Spec): SpecExecutor =
       when {
         spec.isInstancePerTest() -> InstancePerTestSpecExecutor(listener)
-        else -> SingleInstanceSpecExecutor(listener)
+        else -> SharedInstanceSpecExecutor(listener)
       }
 
   fun submitSpec(klass: KClass<out Spec>) {
