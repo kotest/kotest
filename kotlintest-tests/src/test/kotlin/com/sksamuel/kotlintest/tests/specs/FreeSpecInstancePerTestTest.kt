@@ -4,7 +4,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import java.util.concurrent.atomic.AtomicInteger
 
-class FreeSpecOneInstanceTest : FreeSpec() {
+class FreeSpecInstancePerTestTest : FreeSpec() {
 
   override fun isInstancePerTest(): Boolean = true
 

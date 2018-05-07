@@ -220,7 +220,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     val id = parent.uniqueId.append("test", description.name)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name) {
-      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
+      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER_AND_TEST
       override fun mayRegisterTests(): Boolean = true
     }
 
