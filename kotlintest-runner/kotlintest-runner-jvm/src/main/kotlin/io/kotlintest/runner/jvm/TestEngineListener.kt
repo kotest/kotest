@@ -2,7 +2,7 @@ package io.kotlintest.runner.jvm
 
 import io.kotlintest.Spec
 import io.kotlintest.TestResult
-import io.kotlintest.TestScope
+import io.kotlintest.TestCase
 import kotlin.reflect.KClass
 
 /**
@@ -33,28 +33,28 @@ interface TestEngineListener {
   fun prepareSpec(spec: Spec)
 
   /**
-   * Is invoked once per [Spec] to indicate that all [TestScope] instances
+   * Is invoked once per [Spec] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
   fun completeSpec(spec: Spec, t: Throwable?)
 
   /**
-   * Executed each time a [TestScope] has been entered from a parent scope.
+   * Executed each time a [TestCase] has been entered from a parent test.
    *
-   * If a parent scope has been configured with multiple invocations, then this
+   * If a parent test has been configured with multiple invocations, then this
    * function will be executed once per parent invocation.
    */
-  fun prepareScope(scope: TestScope)
+  fun prepareTestCase(testCase: TestCase)
 
   /**
-   * Executed each time a [TestScope] has completed.
+   * Executed each time a [TestCase] has completed.
    * This function will always be executed even if the scope is skipped.
    * The result passed in here will be after test scope interception.
    *
    * If a parent scope has been configured with multiple invocations, then this
    * function will be executed once per parent invocation.
    */
-  fun completeScope(scope: TestScope, result: TestResult)
+  fun completeTestCase(testCase: TestCase, result: TestResult)
 
   /**
    * Invoked each time a new [TestSet] is being prepared for execution.

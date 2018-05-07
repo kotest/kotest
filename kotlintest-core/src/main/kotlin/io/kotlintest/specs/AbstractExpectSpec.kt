@@ -30,17 +30,17 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestScope(name, this@AbstractExpectSpec, test, config)
+      context.registerTestCase(name, this@AbstractExpectSpec, test, config)
     }
   }
 
   inner class ExpectContext(val context: TestContext) {
 
     fun context(name: String, test: ExpectContext.() -> Unit) =
-        context.registerTestScope("Context: $name", this@AbstractExpectSpec, { ExpectContext(this).test() }, defaultTestCaseConfig)
+        context.registerTestCase("Context: $name", this@AbstractExpectSpec, { ExpectContext(this).test() }, defaultTestCaseConfig)
 
     fun expect(name: String, test: TestContext.() -> Unit) =
-        context.registerTestScope("Expect: $name", this@AbstractExpectSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, defaultTestCaseConfig)
 
     fun expect(name: String) = TestBuilder(context, "Expect: $name")
   }

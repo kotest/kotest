@@ -3,7 +3,7 @@ package io.kotlintest
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * A [TestContext] is used as the receiver of a closure that is associated with a [TestScope].
+ * A [TestContext] is used as the receiver of a closure that is associated with a [TestCase].
  * This allows the scope body to interact with the test engine, for instance, adding metadata
  * during a test, reporting that an error was raised, or notifying the discovery
  * of a nested scope.
@@ -26,21 +26,21 @@ abstract class TestContext {
   fun metaData() = metadata.toMap()
 
   /**
-   * Returns the [Description] of the current [TestScope].
+   * Returns the [Description] of the current [TestCase].
    */
   abstract fun description(): Description
 
   /**
-   * Creates a new [TestScope] as a child scope of the currently executing scope
+   * Creates a new [TestCase] as a child of the currently executing test
    * and then notifies the test runner with the new instance.
    */
-  fun registerTestScope(name: String, spec: Spec, test: TestContext.() -> Unit, config: TestCaseConfig) {
-    val tc = TestScope(description().append(name), spec, test, lineNumber(), config)
-    registerTestScope(tc)
+  fun registerTestCase(name: String, spec: Spec, test: TestContext.() -> Unit, config: TestCaseConfig) {
+    val tc = TestCase(description().append(name), spec, test, lineNumber(), config)
+    registerTestCase(tc)
   }
 
   /**
-   * Notifies the test runner about a nested [TestScope].
+   * Notifies the test runner about a nested [TestCase].
    */
-  abstract fun registerTestScope(scope: TestScope)
+  abstract fun registerTestCase(testCase: TestCase)
 }

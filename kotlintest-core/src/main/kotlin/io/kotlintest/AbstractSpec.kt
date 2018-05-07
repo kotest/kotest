@@ -12,12 +12,12 @@ abstract class AbstractSpec : Spec {
 
   override fun isInstancePerTest(): Boolean = false
 
-  private val rootTestCases = mutableListOf<TestScope>()
+  private val rootTestCases = mutableListOf<TestCase>()
 
-  override fun testCases(): List<TestScope> = rootTestCases.toList()
+  override fun testCases(): List<TestCase> = rootTestCases.toList()
 
   protected fun createTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig) =
-      TestScope(description().append(name), this, test, lineNumber(), config)
+      TestCase(description().append(name), this, test, lineNumber(), config)
 
   protected fun addTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig) {
     if (rootTestCases.any { it.name == name })

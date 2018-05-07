@@ -16,5 +16,5 @@ class KotlinTestRunner(private val testClass: Class<out Spec>) : Runner() {
   }
 
   override fun getDescription(): Description =
-      describeScope(createSpecInstance(testClass.kotlin))
+      describeSpec(createSpecInstance(testClass.kotlin))
 }

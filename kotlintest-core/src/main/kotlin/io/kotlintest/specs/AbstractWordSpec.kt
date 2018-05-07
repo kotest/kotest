@@ -43,10 +43,10 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestScope("should $this", this@AbstractWordSpec, test, config)
+      context.registerTestCase("should $this", this@AbstractWordSpec, test, config)
     }
 
     infix operator fun String.invoke(test: TestContext.() -> Unit) =
-        context.registerTestScope("should $this", this@AbstractWordSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("should $this", this@AbstractWordSpec, test, defaultTestCaseConfig)
   }
 }

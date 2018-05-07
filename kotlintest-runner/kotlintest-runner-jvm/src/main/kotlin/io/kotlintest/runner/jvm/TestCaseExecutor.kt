@@ -4,7 +4,7 @@ import io.kotlintest.Project
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
-import io.kotlintest.TestScope
+import io.kotlintest.TestCase
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
@@ -13,54 +13,54 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
-class TestScopeExecutor(val listener: TestEngineListener,
-                        val scope: TestScope,
-                        val context: TestContext) {
+class TestCaseExecutor(val listener: TestEngineListener,
+                       val case: TestCase,
+                       val context: TestContext) {
 
   fun execute() {
     try {
 
-      listener.prepareScope(scope)
+      listener.prepareTestCase(case)
 
-      val listeners = listOf(scope.spec) + scope.spec.listeners() + Project.listeners()
+      val listeners = listOf(case.spec) + case.spec.listeners() + Project.listeners()
 
-      val extensions = scope.config.extensions +
-          scope.spec.extensions().filterIsInstance<TestCaseExtension>() +
+      val extensions = case.config.extensions +
+          case.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      listeners.forEach { it.beforeTest(scope.description) }
+      listeners.forEach { it.beforeTest(case.description) }
 
       fun onComplete(result: TestResult) {
-        listeners.reversed().forEach { it.afterTest(scope.description, result) }
-        listener.completeScope(scope, result)
+        listeners.reversed().forEach { it.afterTest(case.description, result) }
+        listener.completeTestCase(case, result)
       }
 
-      fun interceptTestScope(remaining: List<TestCaseExtension>,
-                             config: TestCaseConfig,
-                             onComplete: (TestResult) -> Unit) {
+      fun interceptTestCase(remaining: List<TestCaseExtension>,
+                            config: TestCaseConfig,
+                            onComplete: (TestResult) -> Unit) {
         when {
           remaining.isEmpty() -> {
             val result = executeTestIfActive(config)
             onComplete(result)
           }
           else -> {
-            val ctx = TestCaseInterceptContext(scope.description, scope.spec, config)
-            remaining.first().intercept(ctx, { conf, callback -> interceptTestScope(remaining.drop(1), conf, callback) }, { onComplete(it) })
+            val ctx = TestCaseInterceptContext(case.description, case.spec, config)
+            remaining.first().intercept(ctx, { conf, callback -> interceptTestCase(remaining.drop(1), conf, callback) }, { onComplete(it) })
           }
         }
       }
 
-      interceptTestScope(extensions, scope.config, ::onComplete)
+      interceptTestCase(extensions, case.config, ::onComplete)
 
     } catch (t: Throwable) {
       t.printStackTrace()
-      listener.completeScope(scope, TestResult.error(t))
+      listener.completeTestCase(case, TestResult.error(t))
     }
   }
 
   private fun executeTestIfActive(config: TestCaseConfig): TestResult {
     return if (config.enabled && Project.tags().isActive(config.tags)) {
-      executeTestSet(TestSet(scope, config.timeout, config.invocations, config.threads))
+      executeTestSet(TestSet(case, config.timeout, config.invocations, config.threads))
     } else {
       TestResult.Ignored
     }
@@ -87,7 +87,7 @@ class TestScopeExecutor(val listener: TestEngineListener,
       executor.execute {
         try {
           listener.testRun(set, j)
-          set.scope.test(context)
+          set.testCase.test(context)
         } catch (t: Throwable) {
           error.set(t)
           // if an error is detected we'll abort any further invocations
@@ -120,9 +120,9 @@ class TestScopeExecutor(val listener: TestEngineListener,
 }
 
 /**
- * A testset comprises the parameters of a particular scope's execution.
+ * A testset comprises the parameters of a particular [TestCase]s execution.
  */
-data class TestSet(val scope: TestScope,
+data class TestSet(val testCase: TestCase,
                    val timeout: Duration,
                    val invocations: Int,
                    val threads: Int)

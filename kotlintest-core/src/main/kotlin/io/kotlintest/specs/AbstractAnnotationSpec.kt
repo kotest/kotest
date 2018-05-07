@@ -1,7 +1,7 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.TestScope
+import io.kotlintest.TestCase
 
 annotation class Test
 
@@ -11,7 +11,7 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
     body()
   }
 
-  override fun testCases(): List<TestScope> {
+  override fun testCases(): List<TestCase> {
     return javaClass.methods.filter { it.isAnnotationPresent(Test::class.java) }.map {
       createTestCase(it.name, { it.invoke(this@AbstractAnnotationSpec) }, defaultTestCaseConfig)
     }

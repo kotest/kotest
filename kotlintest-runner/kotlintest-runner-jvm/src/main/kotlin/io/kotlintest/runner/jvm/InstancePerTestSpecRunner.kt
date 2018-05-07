@@ -3,7 +3,7 @@ package io.kotlintest.runner.jvm
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestContext
-import io.kotlintest.TestScope
+import io.kotlintest.TestCase
 import kotlin.reflect.KClass
 
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
@@ -17,7 +17,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
   }
 
   /**
-   * When a new [TestScope] is registered, we require a new instance of the [Spec] class.
+   * When a new [TestCase] is registered, we require a new instance of the [Spec] class.
    * A new instance is created, and then the root test that matches the required test scope
    * is located. This may be the test itself, or a parent of the test.
    *
@@ -30,25 +30,25 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
   private fun locateAndExecute(klass: KClass<out Spec>, target: Description) {
     val spec = createSpecInstance(klass)
     spec.testCases().forEach {
-      if (it.description == target) interceptSpec(spec, { TestScopeExecutor(listener, it, targetContext(spec, target)).execute() })
+      if (it.description == target) interceptSpec(spec, { TestCaseExecutor(listener, it, targetContext(spec, target)).execute() })
       else if (it.description.isAncestorOf(target)) interceptSpec(spec, { execute(spec, it, target) })
     }
   }
 
-  private fun execute(spec: Spec, current: TestScope, target: Description) {
+  private fun execute(spec: Spec, current: TestCase, target: Description) {
 
     val nestedContext = object : TestContext() {
       override fun description(): Description = current.description
-      override fun registerTestScope(scope: TestScope) {
-        if (scope.description == target) {
+      override fun registerTestCase(testCase: TestCase) {
+        if (testCase.description == target) {
 
-          if (executed.contains(scope.description))
-            throw IllegalStateException("Cannot add duplicate test name ${scope.name}")
-          executed.add(scope.description)
+          if (executed.contains(testCase.description))
+            throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
+          executed.add(testCase.description)
 
-          TestScopeExecutor(listener, scope, targetContext(spec, target)).execute()
-        } else if (scope.description.isAncestorOf(target)) {
-          execute(spec, scope, target)
+          TestCaseExecutor(listener, testCase, targetContext(spec, target)).execute()
+        } else if (testCase.description.isAncestorOf(target)) {
+          execute(spec, testCase, target)
         }
       }
     }
@@ -58,6 +58,6 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
 
   private fun targetContext(spec: Spec, target: Description) = object : TestContext() {
     override fun description(): Description = target
-    override fun registerTestScope(scope: TestScope) = locateAndExecute(spec::class, scope.description)
+    override fun registerTestCase(testCase: TestCase) = locateAndExecute(spec::class, testCase.description)
   }
 }

@@ -41,7 +41,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
     infix operator fun String.minus(test: FreeSpecContext.() -> Unit) = this.invoke(test)
 
     infix operator fun String.invoke(test: FreeSpecContext.() -> Unit) {
-      context.registerTestScope(this, this@AbstractFreeSpec, { FreeSpecContext(this).test() }, defaultTestCaseConfig)
+      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecContext(this).test() }, defaultTestCaseConfig)
     }
 
     fun String.config(
@@ -59,7 +59,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestScope(this, this@AbstractFreeSpec, { FreeSpecContext(this).test() }, config)
+      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecContext(this).test() }, config)
     }
   }
 }

@@ -1,11 +1,11 @@
 package io.kotlintest.runner.junit4
 
 import io.kotlintest.Spec
-import io.kotlintest.TestScope
+import io.kotlintest.TestCase
 import org.junit.runner.Description
 
-internal fun describeScope(spec: Spec): Description =
+internal fun describeSpec(spec: Spec): Description =
     Description.createSuiteDescription(spec::class.java)
 
-fun describeScope(scope: TestScope): Description =
-    Description.createTestDescription(scope.spec.javaClass, scope.description.fullName())
+fun describeSpec(testCase: TestCase): Description =
+    Description.createTestDescription(testCase.spec.javaClass, testCase.description.fullName())

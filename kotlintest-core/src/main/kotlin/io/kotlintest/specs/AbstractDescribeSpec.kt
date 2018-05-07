@@ -30,7 +30,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestScope(name, this@AbstractDescribeSpec, test, config)
+      context.registerTestCase(name, this@AbstractDescribeSpec, test, config)
     }
   }
 
@@ -38,10 +38,10 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
 
     fun it(name: String) = TestBuilder(context, "Scenario: $name")
     fun it(name: String, test: TestContext.() -> Unit) =
-        context.registerTestScope("Scenario: $name", this@AbstractDescribeSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, defaultTestCaseConfig)
 
     fun context(name: String, test: DescribeContext.() -> Unit) =
-        context.registerTestScope("Context: $name", this@AbstractDescribeSpec, { DescribeContext(this).test() }, defaultTestCaseConfig)
+        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { DescribeContext(this).test() }, defaultTestCaseConfig)
   }
 
   fun describe(name: String, test: DescribeContext.() -> Unit) =

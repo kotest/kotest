@@ -61,10 +61,10 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   inner class ShouldSpecContext(val context: TestContext) {
 
     operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
-        context.registerTestScope(this, this@AbstractShouldSpec, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractShouldSpec, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
 
     fun should(name: String, test: TestContext.() -> Unit) =
-        context.registerTestScope("should $name", this@AbstractShouldSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("should $name", this@AbstractShouldSpec, test, defaultTestCaseConfig)
 
     fun should(name: String) = ExpectsConfig("should $name")
 
@@ -84,7 +84,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
             threads ?: defaultTestCaseConfig.threads,
             tags ?: defaultTestCaseConfig.tags,
             extensions ?: defaultTestCaseConfig.extensions)
-        context.registerTestScope("should $name", this@AbstractShouldSpec, test, config)
+        context.registerTestCase("should $name", this@AbstractShouldSpec, test, config)
       }
     }
   }

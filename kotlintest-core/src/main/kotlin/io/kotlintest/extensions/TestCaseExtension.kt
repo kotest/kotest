@@ -3,29 +3,32 @@ package io.kotlintest.extensions
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestScope
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
+import io.kotlintest.TestCase
+import io.kotlintest.TestStatus
 
 /**
- * Reusable test case extension to be registered project wide
- * using [AbstractProjectConfig.extensions], on a per-spec
- * single spec by overriding `extensions()` in a [Spec] class,
- * or via [TestCaseConfig]
+ * Reusable extension that intercepts calls to a [TestCase].
+ *
+ * These extensions can be registered project wide using
+ * [AbstractProjectConfig.extensions], or on a per-spec basis
+ * by overriding `extensions()` in a [Spec] class, or finally
+ * on individual tests themselves via [TestCaseConfig].
  */
 interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
 
   /**
-   * Intercepts a [TestScope].
+   * Intercepts a [TestCase].
    *
-   * Allows implementations to add logic around a test case as well as control
-   * if and when the test case is executed.
+   * Allows implementations to add logic around a [TestCase] as well as
+   * control if (or when) the scope is executed.
    *
    * The supplied `test` function should be invoked if implementations wish to
    * execute the test case. The function accepts a config parameter which is the
    * [TestCaseConfig] to be used when executing the test. The [TestCaseInterceptContext]
-   * contains the config supplied by the author of the test, or it may contain the
-   * config supplied by another interceptor.
+   * contains the config supplied by the author of the test, or it may contain an
+   * overriden config supplied by an earlier interceptor.
    *
    * The test function additionally expects a callback function which will be invoked
    * with the [TestResult] returned when executing the test case.
@@ -40,11 +43,14 @@ interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
    * Or they may wish to run the test and then invoke complete with a different
    * result to that received.
    *
-   * Failure to invoke the complete function will result in the test runnner
+   * Note: Failure to invoke the complete function will result in the test runnner
    * waiting indefinitely for the outcome of the test case.
    *
-   * @param context details of the [TestScope] under interception - contains the [Spec]
-   * instance containing the [TestScope], the [TestCaseConfig] to be passed to the test
+   * Note: A test cannot be skipped after it has been executed. Executing a test
+   * and then returning [TestStatus.Ignored] can result in errors on the JUnit platform.
+   *
+   * @param context details of the [TestCase] under interception - contains the [Spec]
+   * instance containing the [TestCase], the [TestCaseConfig] to be passed to the test
    * and a [Description] which contains the id and parent ids of the test case.
    *
    * @param test a function that is invoked to execute the test. Can be ignored if you
