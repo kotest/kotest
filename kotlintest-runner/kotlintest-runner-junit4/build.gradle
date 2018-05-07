@@ -1,6 +1,10 @@
+test {
+	exclude 'io/kotlintest/runner/junit4/samples/**'
+}
 dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
     compile 'junit:junit:4.12'
+    testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
 }
