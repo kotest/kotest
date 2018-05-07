@@ -1,30 +1,30 @@
 package io.kotlintest.runner.junit4
 
-import io.kotlintest.TestScope
 import io.kotlintest.Spec
-import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.TestScope
 import io.kotlintest.TestStatus
-import io.kotlintest.runner.jvm.TestRunnerListener
+import io.kotlintest.runner.jvm.TestEngineListener
+import io.kotlintest.runner.jvm.TestSet
 import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunNotifier
 import kotlin.reflect.KClass
 import org.junit.runner.Description as JDescription
 
 class JUnitTestRunnerListener(val testClass: KClass<out Spec>,
-                              val notifier: RunNotifier) : TestRunnerListener {
+                              val notifier: RunNotifier) : TestEngineListener {
 
-  private fun desc(scope: TestScope): JDescription? =
-      when (scope) {
-        is TestCase -> JDescription.createTestDescription(testClass.java.canonicalName, scope.description.dropRoot().fullName())
-        else -> null
-      }
+  override fun engineStarted(classes: List<KClass<out Spec>>) {}
 
-  override fun executionStarted(scope: TestScope) {
-    notifier.fireTestStarted(desc(scope))
-  }
+  override fun engineFinished(t: Throwable?) {}
 
-  override fun executionFinished(scope: TestScope, result: TestResult) {
+  override fun prepareSpec(spec: Spec) {}
+
+  override fun completeSpec(spec: Spec, t: Throwable?) {}
+
+  override fun prepareScope(scope: TestScope) {}
+
+  override fun completeScope(scope: TestScope, result: TestResult) {
     val desc = describeScope(scope)
     when (result.status) {
       TestStatus.Success -> notifier.fireTestFinished(desc)
@@ -34,12 +34,18 @@ class JUnitTestRunnerListener(val testClass: KClass<out Spec>,
     }
   }
 
+  override fun prepareTestSet(set: TestSet) {
+    notifier.fireTestStarted(desc(set.scope))
+  }
+
+  override fun testRun(set: TestSet, k: Int) {}
+  override fun completeTestSet(set: TestSet, result: TestResult) {}
+
+  private fun desc(scope: TestScope): JDescription =
+      JDescription.createTestDescription(testClass.java.canonicalName, scope.description.tail().fullName())
+
   private fun notifyFailure(description: JDescription, result: TestResult) {
     notifier.fireTestFailure(Failure(description, result.error))
     notifier.fireTestFinished(description)
   }
-
-  override fun executionStarted() {}
-
-  override fun executionFinished(t: Throwable?) {}
 }
