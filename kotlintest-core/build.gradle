@@ -2,4 +2,5 @@ ext.kotlin_version = '1.2.31'
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
 }
