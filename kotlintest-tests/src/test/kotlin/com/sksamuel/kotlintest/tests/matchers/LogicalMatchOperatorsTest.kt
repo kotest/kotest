@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests
+package com.sksamuel.kotlintest.tests.matchers
 
 import io.kotlintest.matchers.between
 import io.kotlintest.shouldBe
