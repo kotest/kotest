@@ -24,7 +24,7 @@ class FreeSpecOneInstanceTest : FreeSpec() {
         "1.2.2" {
           count.incrementAndGet().shouldBe(3)
           "1.2.2.1" {
-            count.incrementAndGet().shouldBe(12)
+            count.incrementAndGet().shouldBe(4)
           }
           "1.2.2.2" {
             count.incrementAndGet().shouldBe(4)

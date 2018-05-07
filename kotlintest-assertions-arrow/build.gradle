@@ -1,5 +1,5 @@
 dependencies {
     compile project(":kotlintest-assertions")
-    compile 'io.arrow-kt:arrow-typeclasses:0.6.1'
-    compile 'io.arrow-kt:arrow-data:0.6.1'
+    compile 'io.arrow-kt:arrow-typeclasses:0.7.1'
+    compile 'io.arrow-kt:arrow-data:0.7.1'
 }
