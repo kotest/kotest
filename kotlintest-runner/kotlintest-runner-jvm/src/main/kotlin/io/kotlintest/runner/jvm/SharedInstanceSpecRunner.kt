@@ -5,7 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestContext
 import io.kotlintest.TestScope
 
-class SharedInstanceSpecExecutor(listener: TestEngineListener) : SpecExecutor(listener) {
+class SharedInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
   override fun execute(spec: Spec) {
     interceptSpec(spec, {

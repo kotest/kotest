@@ -6,7 +6,7 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestScope
 import kotlin.reflect.KClass
 
-class InstancePerTestSpecExecutor(listener: TestEngineListener) : SpecExecutor(listener) {
+class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
   data class ExecutionContext(val spec: Spec, val target: Description)
 

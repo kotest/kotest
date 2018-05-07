@@ -28,13 +28,13 @@ interface TestEngineListener {
 
   /**
    * Is invoked once per [Spec] when the [TestEngine] is preparing
-   * to submit the spec for execution to a [SpecExecutor].
+   * to submit the spec for execution to a [SpecRunner].
    */
   fun prepareSpec(spec: Spec)
 
   /**
    * Is invoked once per [Spec] to indicate that all [TestScope] instances
-   * of the spec have returned and the [SpecExecutor] has completed.
+   * of the spec have returned and the [SpecRunner] has completed.
    */
   fun completeSpec(spec: Spec, t: Throwable?)
 

@@ -5,11 +5,18 @@ import arrow.core.transform
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import org.slf4j.LoggerFactory
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
+
+  private val executor = Project.parallelism().let {
+    logger.info("Creating spec executor service with $it threads")
+    Executors.newFixedThreadPool(it)
+  }
 
   fun execute() {
 
@@ -25,7 +32,7 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
       Project.afterAll()
     }
 
-    fun submit() = Try {
+    fun submitAll() = Try {
       logger.error("Submitting ${classes.size} specs")
       classes.forEach { submitSpec(it) }
     }
@@ -34,9 +41,13 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
 
     val t = start().flatMap {
       beforeAll().flatMap {
-        submit()
+        submitAll()
       }
     }
+
+    executor.shutdown()
+    executor.awaitTermination(1, TimeUnit.DAYS)
+    logger.debug("Spec executor has terminated")
 
     val u = t.transform({
       afterAll()
@@ -53,17 +64,6 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
     })
   }
 
-  // inside the init method of a spec) then we fail fast (terminate all specs)
-//        specsExecutor.shutdownNow()
-//        specsExecutor.awaitTermination(1, TimeUnit.DAYS)
-//        logger.debug("Spec thread pool has terminated")
-
-  private fun specExecutor(spec: Spec): SpecExecutor =
-      when {
-        spec.isInstancePerTest() -> InstancePerTestSpecExecutor(listener)
-        else -> SharedInstanceSpecExecutor(listener)
-      }
-
   fun submitSpec(klass: KClass<out Spec>) {
 
     // we need to instantiate the spec outside of the executor
@@ -71,26 +71,37 @@ class TestEngine(val classes: List<KClass<out Spec>>, val listener: TestEngineLi
     val spec = createSpecInstance(klass)
     logger.debug("Spec instance created [$klass=$spec]")
 
-    val executor = specExecutor(spec)
-    logger.debug("Created spec executor [$executor")
+    executor.submit {
 
-    fun completeSpec(t: Throwable?) {
+      val runner = runner(spec)
+      logger.debug("Created spec runner [$runner")
+
+      fun completeSpec(t: Throwable?) {
+        try {
+          listener.completeSpec(spec, t)
+        } catch (t: Throwable) {
+          t.printStackTrace()
+          logger.error("Error when completing spec", t)
+          executor.shutdownNow()
+        }
+      }
+
       try {
-        listener.completeSpec(spec, t)
+        listener.prepareSpec(spec)
+        runner.execute(spec)
+        completeSpec(null)
       } catch (t: Throwable) {
         t.printStackTrace()
-        logger.error("Error when completing spec", t)
+        logger.error("Error when executing spec", t)
+        completeSpec(t)
+        executor.shutdownNow()
       }
     }
-
-    try {
-      listener.prepareSpec(spec)
-      executor.execute(spec)
-      completeSpec(null)
-    } catch (t: Throwable) {
-      t.printStackTrace()
-      logger.error("Error when executing spec", t)
-      completeSpec(t)
-    }
   }
+
+  private fun runner(spec: Spec): SpecRunner =
+      when {
+        spec.isInstancePerTest() -> InstancePerTestSpecRunner(listener)
+        else -> SharedInstanceSpecRunner(listener)
+      }
 }

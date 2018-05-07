@@ -76,52 +76,6 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   override fun engineStarted(classes: List<KClass<out Spec>>) {
     logger.debug("Engine started; classes=[$classes]")
     listener.executionStarted(root)
-
-//    val a = object : AbstractTestDescriptor(root.uniqueId.append("container", "a"), "a", ClassSource.from("com.sksamuel.Wobble")) {
-//      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-//    }
-//
-//    val b = object : AbstractTestDescriptor(root.uniqueId.append("container", "b"), "b") {
-//      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-//    }
-//
-//    val c = object : AbstractTestDescriptor(a.uniqueId.append("test", "ccfff"), "ccsdfef", MethodSource.from("com.sksamuel.WWWW", "fo")) {
-//      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
-//    }
-//
-//    val d = object : AbstractTestDescriptor(a.uniqueId.append("test", "d"), "d") {
-//      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
-//    }
-//
-//    val e = object : AbstractTestDescriptor(a.uniqueId.append("test", "e"), "e") {
-//      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.TEST
-//    }
-//
-//    root.addChild(a)
-//    listener.dynamicTestRegistered(a)
-//
-//    root.addChild(b)
-//    listener.dynamicTestRegistered(b)
-//
-//    a.addChild(c)
-//    listener.dynamicTestRegistered(c)
-//
-//    b.addChild(d)
-//    listener.dynamicTestRegistered(d)
-//
-//    c.addChild(e)
-//    listener.dynamicTestRegistered(e)
-//
-//    listener.executionStarted(a)
-//    listener.executionStarted(b)
-//    listener.executionStarted(c)
-//    listener.executionStarted(d)
-//    listener.executionStarted(e)
-//    listener.executionFinished(e, TestExecutionResult.successful())
-//    listener.executionFinished(d, TestExecutionResult.successful())
-//    listener.executionFinished(c, TestExecutionResult.successful())
-//    listener.executionFinished(a, TestExecutionResult.successful())
-//    listener.executionFinished(b, TestExecutionResult.failed(RuntimeException()))
   }
 
   override fun engineFinished(t: Throwable?) {

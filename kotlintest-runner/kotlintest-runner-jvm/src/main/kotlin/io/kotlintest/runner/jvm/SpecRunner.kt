@@ -6,7 +6,7 @@ import io.kotlintest.Spec
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 
-abstract class SpecExecutor(val listener: TestEngineListener) {
+abstract class SpecRunner(val listener: TestEngineListener) {
 
   abstract fun execute(spec: Spec)
 
