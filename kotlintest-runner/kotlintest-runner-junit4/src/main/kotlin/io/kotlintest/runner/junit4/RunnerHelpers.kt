@@ -7,5 +7,5 @@ import org.junit.runner.Description
 internal fun describeScope(spec: Spec): Description =
     Description.createSuiteDescription(spec::class.java)
 
-private fun describeTestContainer(scope: TestScope): Description =
+fun describeScope(scope: TestScope): Description =
     Description.createTestDescription(scope.spec.javaClass, scope.description.fullName())
