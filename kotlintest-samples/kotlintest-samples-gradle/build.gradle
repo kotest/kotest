@@ -7,10 +7,9 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"
     }
 }
 
 dependencies {
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.2'
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
 }
