@@ -26,4 +26,6 @@ allure-results/
 !gradle/wrapper/gradle-wrapper.jar
 
 allure.log
+kotlintest.log
+
 local.properties

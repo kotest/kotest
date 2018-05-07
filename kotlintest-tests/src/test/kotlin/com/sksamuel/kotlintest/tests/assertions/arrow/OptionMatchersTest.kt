@@ -19,10 +19,10 @@ class OptionMatchersTest : WordSpec() {
         }.message shouldBe "Option should be Some(foo) but was None"
 
         shouldThrow<AssertionError> {
-          Option.pure("boo") shouldBe beSome("foo")
+          Option.just("boo") shouldBe beSome("foo")
         }.message shouldBe "Option should be Some(foo) but was Some(boo)"
 
-        val option = Option.pure("foo")
+        val option = Option.just("foo")
         option shouldBe beSome("foo")
       }
     }
@@ -31,7 +31,7 @@ class OptionMatchersTest : WordSpec() {
       "test that an option is a None" {
 
         shouldThrow<AssertionError> {
-          Option.pure("foo") shouldBe beNone()
+          Option.just("foo") shouldBe beNone()
         }.message shouldBe "Option should be None but was Some(foo)"
 
         Option.empty<String>() shouldBe beNone()

@@ -1,6 +1,6 @@
 package io.kotlintest.assertions.arrow.`try`
 
-import arrow.data.Try
+import arrow.core.Try
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should

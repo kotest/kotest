@@ -26,7 +26,6 @@ class SynchronizedEngineExecutionListener(val listener: EngineExecutionListener)
   }
 
   override fun executionStarted(testDescriptor: TestDescriptor?) {
-    println("STARTING $testDescriptor")
     synchronized(listener) {
       listener.executionStarted(testDescriptor)
     }

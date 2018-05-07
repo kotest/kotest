@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.tests.assertions.arrow
 
-import arrow.data.Try
+import arrow.core.Try
 import io.kotlintest.assertions.arrow.`try`.beFailure
 import io.kotlintest.assertions.arrow.`try`.beSuccess
 import io.kotlintest.should

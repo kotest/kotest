@@ -12,9 +12,12 @@ import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.reflections.util.ClasspathHelper
+import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 class KotlinTestEngine : org.junit.platform.engine.TestEngine {
+
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   companion object {
     const val EngineId = "kotlintest"
@@ -23,6 +26,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
   override fun getId(): String = EngineId
 
   override fun execute(request: ExecutionRequest) {
+    logger.debug("Execution request [$request]")
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
     val listener = JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)
     val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, listener)
@@ -31,6 +35,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): EngineDescriptor {
+    logger.debug("Discovery request [request=$request; uniqueId=$uniqueId]")
 
     // inside intellij when running a single test, we might be passed a class selector
     // which will be the classname of a spec implementation
