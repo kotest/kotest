@@ -231,7 +231,7 @@ interface Gen<T> {
 
     /**
      * Returns a stream of values, where each value is
-     * random Int between the given min and max.
+     * a random Int between the given min and max.
      */
     fun choose(min: Int, max: Int): Gen<Int> {
       assert(min < max, { "min must be < max" })
