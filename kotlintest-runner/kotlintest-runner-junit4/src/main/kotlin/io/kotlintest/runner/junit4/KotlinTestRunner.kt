@@ -15,6 +15,12 @@ class KotlinTestRunner(private val testClass: Class<out Spec>) : Runner() {
     runner.execute()
   }
 
-  override fun getDescription(): Description =
-      describeSpec(createSpecInstance(testClass.kotlin))
+  private val description: Description = testClass.let {
+    val spec = createSpecInstance(it.kotlin)
+    val desc = Description.createSuiteDescription(spec::class.java)
+    spec.testCases().forEach { desc.addChild(describeTestCase(it)) }
+    desc
+  }
+
+  override fun getDescription(): Description = description
 }

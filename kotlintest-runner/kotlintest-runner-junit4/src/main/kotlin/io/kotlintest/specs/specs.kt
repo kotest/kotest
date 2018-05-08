@@ -24,7 +24,11 @@ abstract class FeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : Abstract
 abstract class FreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractFreeSpec(body)
 
 @RunWith(KotlinTestRunner::class)
-abstract class FunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractFunSpec(body)
+abstract class FunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractFunSpec(body) {
+  @org.junit.Test
+  @org.junit.Ignore
+  fun primer() {}
+}
 
 @RunWith(KotlinTestRunner::class)
 abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractShouldSpec(body) {
@@ -34,11 +38,19 @@ abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractSh
 }
 
 @RunWith(KotlinTestRunner::class)
-abstract class StringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractStringSpec(body)
+abstract class StringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractStringSpec(body) {
+  @org.junit.Test
+  @org.junit.Ignore
+  fun primer() {}
+}
 
 @RunWith(KotlinTestRunner::class)
 abstract class WordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractWordSpec(body) {
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
   // clash with the other should method
   infix fun String.should(matcher: Matcher<String>) = this shouldMatch matcher
+
+  @org.junit.Test
+  @org.junit.Ignore
+  fun primer() {}
 }

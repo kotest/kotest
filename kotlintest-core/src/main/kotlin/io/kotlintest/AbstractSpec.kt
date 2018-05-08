@@ -1,14 +1,9 @@
 package io.kotlintest
 
-import org.junit.jupiter.api.DynamicNode
-import org.junit.jupiter.api.TestFactory
 import java.io.Closeable
 import java.util.*
 
 abstract class AbstractSpec : Spec {
-
-  @TestFactory
-  fun primer() = emptyList<DynamicNode>()
 
   override fun isInstancePerTest(): Boolean = false
 
