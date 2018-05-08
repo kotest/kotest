@@ -38,6 +38,25 @@ implementation difficulties. This has been addressed in 3.1.x and so all spec st
 per test as in the 2.0.x releases. Note: The default value is false, so tests will use a single shared
 instance of the spec for all tests unless the `isInstancePerTest()` function is overriden to return true.
 
+* **Breaking Change: Config Syntax**
+
+The syntax for config has now changed. Instead of a function call after the test has been defined, it is
+now specified after the name of the test.
+
+So, instead of:
+
+```kotlin
+"this is a test" {
+}.config(...)
+```
+
+You would now do:
+
+```kotlin
+"this is a test".config(...) {
+}
+```
+
 * **Matchers as extension functions**
 
 All matchers can now be used as extension functions. So instead of:

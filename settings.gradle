@@ -9,4 +9,5 @@ include 'kotlintest-core',
         'kotlintest-extensions:kotlintest-extensions-allure',
         'kotlintest-extensions:kotlintest-extensions-system',
         'kotlintest-intellij',
-        'kotlintest-tests'
+        'kotlintest-tests:kotlintest-tests-core',
+        'kotlintest-tests:kotlintest-tests-junit-report'
