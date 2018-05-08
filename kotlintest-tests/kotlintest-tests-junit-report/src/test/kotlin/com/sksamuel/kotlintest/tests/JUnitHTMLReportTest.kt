@@ -14,7 +14,7 @@ class JUnitHTMLReportTest : WordSpec() {
       val file = if (System.getenv("TRAVIS") == "true") {
         File("/home/travis/build/kotlintest/kotlintest/kotlintest-tests/kotlintest-tests-core/build/reports/tests/index.html")
       } else {
-        File("./kotlintest-tests/kotlintest-tests-core/build/reports/tests/index.html")
+        File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html")
       }
 
       val html = Files.readAllLines(file.toPath()).joinToString("\n")
