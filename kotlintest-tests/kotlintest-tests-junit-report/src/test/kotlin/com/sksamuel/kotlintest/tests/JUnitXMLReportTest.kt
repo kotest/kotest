@@ -10,11 +10,13 @@ class JUnitXMLReportTest : WordSpec() {
     // we test the output from the earlier test of tests in
     // kotlintest-tests/kotlintest-tests-core
     "JUnit XML Output" should {
+
       val file = if (System.getenv("TRAVIS") == "true") {
         File("/home/travis/build/kotlintest/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
       } else {
         File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
       }
+
       val builder = SAXBuilder()
       val doc = builder.build(file)
       val root = doc.rootElement
