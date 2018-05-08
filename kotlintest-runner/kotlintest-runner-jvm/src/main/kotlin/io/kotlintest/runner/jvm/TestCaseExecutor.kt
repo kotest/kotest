@@ -14,25 +14,25 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 class TestCaseExecutor(val listener: TestEngineListener,
-                       val case: TestCase,
+                       val testCase: TestCase,
                        val context: TestContext) {
 
   fun execute() {
     try {
 
-      listener.prepareTestCase(case)
+      listener.prepareTestCase(testCase)
 
-      val listeners = listOf(case.spec) + case.spec.listeners() + Project.listeners()
+      val listeners = listOf(testCase.spec) + testCase.spec.listeners() + Project.listeners()
 
-      val extensions = case.config.extensions +
-          case.spec.extensions().filterIsInstance<TestCaseExtension>() +
+      val extensions = testCase.config.extensions +
+          testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      listeners.forEach { it.beforeTest(case.description) }
+      listeners.forEach { it.beforeTest(testCase.description) }
 
       fun onComplete(result: TestResult) {
-        listeners.reversed().forEach { it.afterTest(case.description, result) }
-        listener.completeTestCase(case, result)
+        listeners.reversed().forEach { it.afterTest(testCase.description, result) }
+        listener.completeTestCase(testCase, result)
       }
 
       fun interceptTestCase(remaining: List<TestCaseExtension>,
@@ -44,23 +44,23 @@ class TestCaseExecutor(val listener: TestEngineListener,
             onComplete(result)
           }
           else -> {
-            val ctx = TestCaseInterceptContext(case.description, case.spec, config)
+            val ctx = TestCaseInterceptContext(testCase.description, testCase.spec, config)
             remaining.first().intercept(ctx, { conf, callback -> interceptTestCase(remaining.drop(1), conf, callback) }, { onComplete(it) })
           }
         }
       }
 
-      interceptTestCase(extensions, case.config, ::onComplete)
+      interceptTestCase(extensions, testCase.config, ::onComplete)
 
     } catch (t: Throwable) {
       t.printStackTrace()
-      listener.completeTestCase(case, TestResult.error(t))
+      listener.completeTestCase(testCase, TestResult.error(t))
     }
   }
 
   private fun executeTestIfActive(config: TestCaseConfig): TestResult {
-    return if (config.enabled && Project.tags().isActive(config.tags)) {
-      executeTestSet(TestSet(case, config.timeout, config.invocations, config.threads))
+    return if (config.enabled && Project.tags().isActive(config.tags) && !testCase.name.startsWith("!")) {
+      executeTestSet(TestSet(testCase, config.timeout, config.invocations, config.threads))
     } else {
       TestResult.Ignored
     }
