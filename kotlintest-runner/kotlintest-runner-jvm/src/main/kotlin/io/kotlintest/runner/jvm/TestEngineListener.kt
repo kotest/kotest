@@ -16,7 +16,7 @@ interface TestEngineListener {
    *
    * @param classes the [Spec] classes that will be used by the [TestEngine].
    */
-  fun engineStarted(classes: List<KClass<out Spec>>)
+  fun engineStarted(classes: List<KClass<out Spec>>) {}
 
   /**
    * Is invoked when the [TestEngine] has finished execution.
@@ -24,19 +24,19 @@ interface TestEngineListener {
    * If an unrecoverable error was detected during execution then it will be passed
    * as the parameter to the engine.
    */
-  fun engineFinished(t: Throwable?)
+  fun engineFinished(t: Throwable?) {}
 
   /**
    * Is invoked once per [Spec] when the [TestEngine] is preparing
    * to submit the spec for execution to a [SpecRunner].
    */
-  fun prepareSpec(spec: Spec)
+  fun prepareSpec(spec: Spec) {}
 
   /**
    * Is invoked once per [Spec] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun completeSpec(spec: Spec, t: Throwable?)
+  fun completeSpec(spec: Spec, t: Throwable?) {}
 
   /**
    * Executed each time a [TestCase] has been entered from a parent test.
@@ -44,7 +44,7 @@ interface TestEngineListener {
    * If a parent test has been configured with multiple invocations, then this
    * function will be executed once per parent invocation.
    */
-  fun prepareTestCase(testCase: TestCase)
+  fun prepareTestCase(testCase: TestCase) {}
 
   /**
    * Executed each time a [TestCase] has completed.
@@ -54,13 +54,13 @@ interface TestEngineListener {
    * If a parent scope has been configured with multiple invocations, then this
    * function will be executed once per parent invocation.
    */
-  fun completeTestCase(testCase: TestCase, result: TestResult)
+  fun completeTestCase(testCase: TestCase, result: TestResult) {}
 
   /**
    * Invoked each time a new [TestSet] is being prepared for execution.
    * This function will only be invoked if a test scope is actually being executed, and not skipped.
    */
-  fun prepareTestSet(set: TestSet)
+  fun prepareTestSet(set: TestSet) {}
 
   /**
    * Invoked for each run of a [TestSet].
@@ -70,13 +70,19 @@ interface TestEngineListener {
    *
    * @param k indicates which position in the [TestSet] this execution is.
    */
-  fun testRun(set: TestSet, k: Int)
+  fun testRun(set: TestSet, k: Int) {}
 
   /**
    * Invoked when all the runs of a [TestSet] have completed.
    * This function will only be invoked if a test scope is actually being executed.
    * The result passed in here is the result directly from the test run, before any interception.
    */
-  fun completeTestSet(set: TestSet, result: TestResult)
+  fun completeTestSet(set: TestSet, result: TestResult) {}
+
+  /**
+   * Invoked each time an instance of a [Spec] is created.
+   * A spec may be created once per class, or one per [TestCase].
+   */
+  fun specCreated(spec: Spec) {}
 
 }

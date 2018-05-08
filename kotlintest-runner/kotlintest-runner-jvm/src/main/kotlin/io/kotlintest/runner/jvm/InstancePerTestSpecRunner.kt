@@ -1,5 +1,7 @@
 package io.kotlintest.runner.jvm
 
+import arrow.core.Failure
+import arrow.core.Success
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestContext
@@ -28,10 +30,17 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    * the correct child scope until the actual test is found.
    */
   private fun locateAndExecute(klass: KClass<out Spec>, target: Description) {
-    val spec = createSpecInstance(klass)
-    spec.testCases().forEach {
-      if (it.description == target) interceptSpec(spec, { TestCaseExecutor(listener, it, targetContext(spec, target)).execute() })
-      else if (it.description.isAncestorOf(target)) interceptSpec(spec, { execute(spec, it, target) })
+    instantiateSpec(klass).let {
+      when (it) {
+        is Failure -> throw it.exception
+        is Success -> {
+          val spec = it.value
+          spec.testCases().forEach {
+            if (it.description == target) interceptSpec(spec, { io.kotlintest.runner.jvm.TestCaseExecutor(listener, it, targetContext(spec, target)).execute() })
+            else if (it.description.isAncestorOf(target)) interceptSpec(spec, { execute(spec, it, target) })
+          }
+        }
+      }
     }
   }
 

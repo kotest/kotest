@@ -122,8 +122,6 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     listener.executionFinished(descriptor, result)
   }
 
-  override fun prepareTestCase(testCase: TestCase) {}
-
   override fun completeTestCase(testCase: TestCase, result: TestResult) {
     // we don't immediately finish a test, we just store the result until we have completed the spec
     // this allows us to handle multiple invocations of the same test case, deferring the notification
@@ -143,9 +141,6 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       }
     }
   }
-
-  override fun testRun(set: TestSet, k: Int) {}
-  override fun completeTestSet(set: TestSet, result: TestResult) {}
 
   private fun getOrCreateDescriptor(description: Description): TestDescriptor =
       descriptors.getOrPut(description, { createTestCaseDescriptor(description) })
