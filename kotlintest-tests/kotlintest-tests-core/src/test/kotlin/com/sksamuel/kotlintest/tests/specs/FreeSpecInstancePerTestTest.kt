@@ -11,17 +11,17 @@ class FreeSpecInstancePerTestTest : FreeSpec() {
   val count = AtomicInteger(0)
 
   init {
-    "1" {
+    "1" - {
       count.incrementAndGet().shouldBe(1)
       "1.1" {
         count.incrementAndGet().shouldBe(2)
       }
-      "1.2" {
+      "1.2" - {
         count.incrementAndGet().shouldBe(2)
         "1.2.1" {
           count.incrementAndGet().shouldBe(3)
         }
-        "1.2.2" {
+        "1.2.2" - {
           count.incrementAndGet().shouldBe(3)
           "1.2.2.1" {
             count.incrementAndGet().shouldBe(4)
@@ -32,9 +32,9 @@ class FreeSpecInstancePerTestTest : FreeSpec() {
         }
       }
     }
-    "2" {
+    "2" - {
       count.incrementAndGet().shouldBe(1)
-      "2.1" {
+      "2.1" - {
         count.incrementAndGet().shouldBe(2)
         "2.1.1" {
           count.incrementAndGet().shouldBe(3)

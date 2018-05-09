@@ -20,7 +20,7 @@ class FreeSpecMultipleInvocationTest : FreeSpec() {
       counter.incrementAndGet()
     }
 
-    "c" {
+    "c" - {
       counter.incrementAndGet()
       "d".config(invocations = 4) {
         counter.incrementAndGet()
