@@ -16,8 +16,8 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
       addTestCase(this, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
-  infix operator fun String.invoke(test: TestContext.() -> Unit) =
-      addTestCase(this, test, defaultTestCaseConfig)
+  infix operator fun String.invoke(test: InvokeScope.() -> Unit) =
+      addTestCase(this, { InvokeScope(this).test() }, defaultTestCaseConfig)
 
   fun String.config(
       invocations: Int? = null,
@@ -35,6 +35,11 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
     addTestCase(this, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, config)
+  }
+
+  @KotlinTestDsl
+  inner class InvokeScope(val context: TestContext) {
+    infix operator fun String.invoke(test: InvokeScope.() -> Unit): Nothing = throw IllegalStateException("Cannot nest test case in another test case. Use the minus symbol for outer scopes, eg \"test scope\" - { \"test case\" { } }")
   }
 
   @KotlinTestDsl
