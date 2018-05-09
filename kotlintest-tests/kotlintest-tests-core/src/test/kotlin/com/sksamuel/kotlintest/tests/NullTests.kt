@@ -12,6 +12,7 @@ class NullTests : WordSpec() {
   fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
 
   init {
+
     "null" should {
       "not match value" {
         shouldThrow<AssertionError> {

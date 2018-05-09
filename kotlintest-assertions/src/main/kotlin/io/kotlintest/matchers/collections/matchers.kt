@@ -33,10 +33,16 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
       )
 }
 
-fun <T> List<T>.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
-fun <T> List<T>.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
-fun <T> haveElementAt(index: Int, element: T) = object : Matcher<List<T>> {
-  override fun test(value: List<T>) =
+@Deprecated("Use shouldContainElemenetAt", ReplaceWith("this should haveElementAt(index, element)", "io.kotlintest.should"))
+fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+
+@Deprecated("Use shouldContainElemenetAt", ReplaceWith("this should haveElementAt(index, element)", "io.kotlintest.should"))
+fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
+
+fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+fun <T, L : List<T>> L.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
+fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
+  override fun test(value: L) =
       Result(
           value[index] == element,
           "Collection should contain $element at index $index",
@@ -55,10 +61,10 @@ fun <T> containNoNulls() = object : Matcher<Collection<T>> {
       )
 }
 
-fun <T> Collection<T>.shouldContain(t: T) = this should contain(t)
-fun <T> Collection<T>.shouldNotContain(t: T) = this shouldNot contain(t)
-fun <T> contain(t: T) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = Result(
+fun <T, C : Collection<T>> C.shouldContain(t: T) = this should contain(t)
+fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
+fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
+  override fun test(value: C) = Result(
       value.contains(t),
       "Collection should contain element $t",
       "Collection should not contain element $t"

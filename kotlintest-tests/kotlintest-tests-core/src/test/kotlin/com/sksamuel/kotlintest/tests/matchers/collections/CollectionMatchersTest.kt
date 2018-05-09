@@ -9,7 +9,9 @@ import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.haveElementAt
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeSorted
+import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
+import io.kotlintest.matchers.collections.shouldContainDuplicates
 import io.kotlintest.matchers.collections.shouldContainElementAt
 import io.kotlintest.matchers.collections.shouldContainNoNulls
 import io.kotlintest.matchers.collections.shouldContainNull
@@ -17,6 +19,7 @@ import io.kotlintest.matchers.collections.shouldContainOnlyNulls
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.matchers.collections.shouldNotBeSorted
 import io.kotlintest.matchers.collections.shouldNotContainAll
+import io.kotlintest.matchers.collections.shouldNotContainDuplicates
 import io.kotlintest.matchers.collections.shouldNotContainElementAt
 import io.kotlintest.matchers.collections.shouldNotContainNoNulls
 import io.kotlintest.matchers.collections.shouldNotContainNull
@@ -42,11 +45,19 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection contains the specified element at the given index" {
         listOf("a", "b", "c") should haveElementAt(1, "b")
         listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
-        listOf("a", "b", null) should haveElementAt<String?>(2, null)
+        listOf("a", "b", null) should haveElementAt(2, null)
 
         listOf("a", "b", "c").shouldContainElementAt(1, "b")
         listOf("a", "b", "c").shouldNotContainElementAt(1, "c")
         listOf("a", "b", null).shouldContainElementAt(2, null)
+      }
+      "support type inference for subtypes of collection" {
+        val tests = listOf(
+            TestSealed.Test1("test1"),
+            TestSealed.Test2(2)
+        )
+        tests should haveElementAt(0, TestSealed.Test1("test1"))
+        tests.shouldContainElementAt(1, TestSealed.Test2(2))
       }
     }
 
@@ -82,6 +93,8 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection is unique" {
         listOf(1, 2, 3, 3) should containDuplicates()
         listOf(1, 2, 3, 4) shouldNot containDuplicates()
+        listOf(1, 2, 3, 3).shouldContainDuplicates()
+        listOf(1, 2, 3, 4).shouldNotContainDuplicates()
       }
     }
 
@@ -141,6 +154,14 @@ class CollectionMatchersTest : WordSpec() {
         }
         col should contain(2)
       }
+      "support type inference for subtypes of collection" {
+        val tests = listOf(
+            TestSealed.Test1("test1"),
+            TestSealed.Test2(2)
+        )
+        tests should contain(TestSealed.Test1("test1"))
+        tests.shouldContain(TestSealed.Test2(2))
+      }
     }
 
     "empty" should {
@@ -180,6 +201,14 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           listOf(1, 2, 3).shouldNotContainNoNulls()
         }.message.shouldBe("Collection should have at least one null")
+      }
+      "support type inference for subtypes of collection" {
+        val tests = listOf(
+            TestSealed.Test1("test1"),
+            TestSealed.Test2(2)
+        )
+        tests should containNoNulls()
+        tests.shouldContainNoNulls()
       }
     }
 
@@ -254,4 +283,9 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
   }
+}
+
+sealed class TestSealed {
+  data class Test1(val value: String) : TestSealed()
+  data class Test2(val value: Int) : TestSealed()
 }
