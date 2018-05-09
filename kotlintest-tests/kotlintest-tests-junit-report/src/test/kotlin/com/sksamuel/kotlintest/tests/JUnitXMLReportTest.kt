@@ -11,10 +11,13 @@ class JUnitXMLReportTest : WordSpec() {
     // kotlintest-tests/kotlintest-tests-core
     "JUnit XML Output" should {
 
-      val file = if (System.getenv("TRAVIS") == "true") {
-        File("/home/travis/build/kotlintest/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
-      } else {
-        File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+      val file = when {
+        System.getenv("TRAVIS") == "true" ->
+          File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+        System.getenv("APPVEYOR") == "true" ->
+          File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+        else ->
+          File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
       }
 
       val builder = SAXBuilder()
