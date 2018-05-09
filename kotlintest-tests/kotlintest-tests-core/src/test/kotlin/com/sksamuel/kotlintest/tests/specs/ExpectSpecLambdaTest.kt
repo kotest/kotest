@@ -12,15 +12,12 @@ class ExpectSpecLambdaTest : ExpectSpec({
       name.shouldBe(null)
     }
     name = "foo"
-    context("the name should be foo in this context") {
+    expect("the name should be foo in this test") {
       name.shouldBe("foo")
-      expect("should still be foo for this nested test") {
-        name.shouldBe("foo")
-      }
-      name = "boo"
-      expect("now the name should be boo") {
-        name.shouldBe("boo")
-      }
+    }
+    name = "boo"
+    expect("now the name should be boo") {
+      name.shouldBe("boo")
     }
     expect("it should still be boo as this test should run after all the above") {
       name.shouldBe("boo")

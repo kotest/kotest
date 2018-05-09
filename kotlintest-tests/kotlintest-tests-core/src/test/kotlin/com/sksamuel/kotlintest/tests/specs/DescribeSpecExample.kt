@@ -13,14 +13,14 @@ class DescribeSpecExample : DescribeSpec() {
         it("test name") {
           // test here
         }
-        it("test name").config(invocations = 2) {
+        it("test name 2").config(invocations = 2) {
           // test here
         }
         context("with some context") {
           it("test name") {
             // test here
           }
-          it("test name").config(invocations = 2) {
+          it("test name 2").config(invocations = 2) {
             // test here
           }
         }
@@ -32,14 +32,14 @@ class DescribeSpecExample : DescribeSpec() {
         it("test name") {
           // test here
         }
-        it("test name").config(invocations = 2) {
+        it("test name 2").config(invocations = 2) {
           // test here
         }
         context("with some context") {
           it("test name") {
             // test here
           }
-          it("test name").config(invocations = 2) {
+          it("test name 2").config(invocations = 2) {
             // test here
           }
         }

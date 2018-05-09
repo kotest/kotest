@@ -1,15 +1,14 @@
 package com.sksamuel.kotlintest.tests.specs
 
-import io.kotlintest.specs.AbstractExpectSpec
+import io.kotlintest.specs.ExpectSpec
 
-
-class ExpectSpecExample : AbstractExpectSpec() {
+class ExpectSpecExample : ExpectSpec() {
   init {
     context("some context") {
       expect("some test") {
         // test here
       }
-      expect("some test").config(invocations = 2) {
+      expect("some test 2").config(invocations = 2) {
         // test here
       }
     }
