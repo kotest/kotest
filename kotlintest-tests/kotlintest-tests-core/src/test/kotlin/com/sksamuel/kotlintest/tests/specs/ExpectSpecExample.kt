@@ -9,10 +9,8 @@ class ExpectSpecExample : AbstractExpectSpec() {
       expect("some test") {
         // test here
       }
-      context("nested context even") {
-        expect("some test") {
-          // test here
-        }
+      expect("some test").config(invocations = 2) {
+        // test here
       }
     }
   }

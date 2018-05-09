@@ -8,6 +8,7 @@ class FeatureSpecExample : FeatureSpec() {
   init {
     feature("some feature") {
       scenario("some scenario") {
+
       }
     }
     feature("another feature") {

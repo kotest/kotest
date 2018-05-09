@@ -23,10 +23,11 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  infix fun String.should(init: WordContext.() -> Unit) =
-      addTestCase(this, { WordContext(this).init() }, defaultTestCaseConfig)
+  infix fun String.should(init: WordScope.() -> Unit) =
+      addTestCase(this, { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig)
 
-  inner class WordContext(val context: TestContext) {
+  @KotlinTestDsl
+  inner class WordScope(val context: TestContext) {
 
     fun String.config(
         invocations: Int? = null,
@@ -37,16 +38,16 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
         extensions: List<TestCaseExtension>? = null,
         test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
-          enabled ?: defaultTestCaseConfig.enabled,
-          invocations ?: defaultTestCaseConfig.invocations,
-          timeout ?: defaultTestCaseConfig.timeout,
-          threads ?: defaultTestCaseConfig.threads,
-          tags ?: defaultTestCaseConfig.tags,
-          extensions ?: defaultTestCaseConfig.extensions)
+          enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
+          invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
+          timeout ?: this@AbstractWordSpec.defaultTestCaseConfig.timeout,
+          threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
+          tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
+          extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
       context.registerTestCase("should $this", this@AbstractWordSpec, test, config)
     }
 
     infix operator fun String.invoke(test: TestContext.() -> Unit) =
-        context.registerTestCase("should $this", this@AbstractWordSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("should $this", this@AbstractWordSpec, test, this@AbstractWordSpec.defaultTestCaseConfig)
   }
 }

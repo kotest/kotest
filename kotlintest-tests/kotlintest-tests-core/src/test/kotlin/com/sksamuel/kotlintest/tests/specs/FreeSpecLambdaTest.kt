@@ -7,12 +7,12 @@ class FreeSpecLambdaTest : FreeSpec({
 
   var name: String? = null
 
-  "context 1" {
+  "context 1" - {
     "the name should start off null" {
       name.shouldBe(null)
     }
     name = "foo"
-    "now the name should be set to foo" {
+    "now the name should be set to foo" - {
       name.shouldBe("foo")
       "should still be foo for this nested test" {
         name.shouldBe("foo")
@@ -31,7 +31,7 @@ class FreeSpecLambdaTest : FreeSpec({
     }
   }
 
-  "context 2 should run after context 1" {
+  "context 2 should run after context 1" - {
     "name should still be the last value which was koo" {
       name shouldBe "koo"
     }

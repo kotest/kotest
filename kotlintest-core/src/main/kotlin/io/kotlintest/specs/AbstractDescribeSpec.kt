@@ -13,6 +13,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
     body()
   }
 
+  @KotlinTestDsl
   inner class TestBuilder(val context: TestContext, val name: String) {
 
     fun config(
@@ -24,27 +25,28 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
         extensions: List<TestCaseExtension>? = null,
         test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
-          enabled ?: defaultTestCaseConfig.enabled,
-          invocations ?: defaultTestCaseConfig.invocations,
-          timeout ?: defaultTestCaseConfig.timeout,
-          threads ?: defaultTestCaseConfig.threads,
-          tags ?: defaultTestCaseConfig.tags,
-          extensions ?: defaultTestCaseConfig.extensions)
+          enabled ?: this@AbstractDescribeSpec.defaultTestCaseConfig.enabled,
+          invocations ?: this@AbstractDescribeSpec.defaultTestCaseConfig.invocations,
+          timeout ?: this@AbstractDescribeSpec.defaultTestCaseConfig.timeout,
+          threads ?: this@AbstractDescribeSpec.defaultTestCaseConfig.threads,
+          tags ?: this@AbstractDescribeSpec.defaultTestCaseConfig.tags,
+          extensions ?: this@AbstractDescribeSpec.defaultTestCaseConfig.extensions)
       context.registerTestCase(name, this@AbstractDescribeSpec, test, config)
     }
   }
 
-  inner class DescribeContext(val context: TestContext) {
+  @KotlinTestDsl
+  inner class DescribeScope(val context: TestContext) {
 
-    fun it(name: String) = TestBuilder(context, "Scenario: $name")
+    fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "Scenario: $name")
     fun it(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig)
 
-    fun context(name: String, test: DescribeContext.() -> Unit) =
-        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { DescribeContext(this).test() }, defaultTestCaseConfig)
+    fun context(name: String, test: DescribeScope.() -> Unit) =
+        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig)
   }
 
-  fun describe(name: String, test: DescribeContext.() -> Unit) =
-      addTestCase("Describe: $name", { DescribeContext(this).test() }, defaultTestCaseConfig)
+  fun describe(name: String, test: DescribeScope.() -> Unit) =
+      addTestCase("Describe: $name", { this@AbstractDescribeSpec.DescribeScope(this).test() }, defaultTestCaseConfig)
 
 }

@@ -34,19 +34,17 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
     }
   }
 
-  inner class ExpectContext(val context: TestContext) {
-
-    fun context(name: String, test: ExpectContext.() -> Unit) =
-        context.registerTestCase("Context: $name", this@AbstractExpectSpec, { ExpectContext(this).test() }, defaultTestCaseConfig)
+  @KotlinTestDsl
+  inner class ExpectScope(val context: TestContext) {
 
     fun expect(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig)
 
-    fun expect(name: String) = TestBuilder(context, "Expect: $name")
+    fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, "Expect: $name")
   }
 
-  fun context(name: String, test: ExpectContext.() -> Unit) =
-      addTestCase("Context: $name", { ExpectContext(this).test() }, defaultTestCaseConfig)
+  fun context(name: String, test: ExpectScope.() -> Unit) =
+      addTestCase("Context: $name", { this@AbstractExpectSpec.ExpectScope(this).test() }, defaultTestCaseConfig)
 
 
 }

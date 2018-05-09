@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.specs.KotlinTestDsl
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -8,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
  * during a test, reporting that an error was raised, or notifying the discovery
  * of a nested scope.
  */
+@KotlinTestDsl
 abstract class TestContext {
 
   // needs to be thread safe as a context can be shared amongst many executing instances of the same scope

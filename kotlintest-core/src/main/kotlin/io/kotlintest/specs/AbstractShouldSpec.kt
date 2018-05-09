@@ -30,15 +30,15 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     body()
   }
 
-  operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
-      addTestCase(this, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
+  operator fun String.invoke(init: ShouldScope.() -> Unit) =
+      addTestCase(this, { this@AbstractShouldSpec.ShouldScope(this).init() }, defaultTestCaseConfig)
 
   fun should(name: String, test: TestContext.() -> Unit) =
       addTestCase("should $name", test, defaultTestCaseConfig)
 
-  fun should(name: String) = ExpectsConfig({ test, config -> addTestCase("should $name", test, config) })
+  fun should(name: String) = Testbuilder({ test, config -> addTestCase("should $name", test, config) })
 
-  inner class ExpectsConfig(val register: (TestContext.() -> Unit, TestCaseConfig) -> Unit) {
+  inner class Testbuilder(val register: (TestContext.() -> Unit, TestCaseConfig) -> Unit) {
     fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
@@ -58,34 +58,17 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     }
   }
 
-  inner class ShouldSpecContext(val context: TestContext) {
+  @KotlinTestDsl
+  inner class ShouldScope(val context: TestContext) {
 
-    operator fun String.invoke(init: ShouldSpecContext.() -> Unit) =
-        context.registerTestCase(this, this@AbstractShouldSpec, { ShouldSpecContext(this).init() }, defaultTestCaseConfig)
+    operator fun String.invoke(init: ShouldScope.() -> Unit) =
+        context.registerTestCase(this, this@AbstractShouldSpec, { this@AbstractShouldSpec.ShouldScope(this).init() }, this@AbstractShouldSpec.defaultTestCaseConfig)
 
     fun should(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("should $name", this@AbstractShouldSpec, test, defaultTestCaseConfig)
+        context.registerTestCase("should $name", this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig)
 
-    fun should(name: String) = ExpectsConfig("should $name")
+    fun should(name: String) =
+        this@AbstractShouldSpec.Testbuilder({ test, config -> context.registerTestCase("should $name", this@AbstractShouldSpec, test, config) })
 
-    inner class ExpectsConfig(val name: String) {
-      fun config(
-          invocations: Int? = null,
-          enabled: Boolean? = null,
-          timeout: Duration? = null,
-          threads: Int? = null,
-          tags: Set<Tag>? = null,
-          extensions: List<TestCaseExtension>? = null,
-          test: TestContext.() -> Unit) {
-        val config = TestCaseConfig(
-            enabled ?: defaultTestCaseConfig.enabled,
-            invocations ?: defaultTestCaseConfig.invocations,
-            timeout ?: defaultTestCaseConfig.timeout,
-            threads ?: defaultTestCaseConfig.threads,
-            tags ?: defaultTestCaseConfig.tags,
-            extensions ?: defaultTestCaseConfig.extensions)
-        context.registerTestCase("should $name", this@AbstractShouldSpec, test, config)
-      }
-    }
   }
 }

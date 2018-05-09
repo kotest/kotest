@@ -3,9 +3,9 @@ package com.sksamuel.kotlintest.tests.specs
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractStringSpec
+import io.kotlintest.specs.StringSpec
 
-class StringSpecTest : AbstractStringSpec() {
+class StringSpecTest : StringSpec() {
 
   init {
 
