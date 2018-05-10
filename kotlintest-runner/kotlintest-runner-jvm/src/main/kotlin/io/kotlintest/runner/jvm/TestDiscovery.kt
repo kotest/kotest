@@ -7,6 +7,7 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.util.ConfigurationBuilder
 import org.reflections.util.FilterBuilder
+import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -26,6 +27,8 @@ data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
  * optionally filter the returned classes.
  */
 object TestDiscovery {
+
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   init {
     ReflectionsHelper.registerUrlTypes()
@@ -55,7 +58,8 @@ object TestDiscovery {
           .map(Class<out Spec>::kotlin)
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
-      classes.map { Class.forName(it).kotlin }.filterIsInstance<KClass<out Spec>>()
+      classes.map { Class.forName(it).kotlin }
+          .filterIsInstance<KClass<out Spec>>()
 
   private fun scan(request: DiscoveryRequest): List<KClass<out Spec>> {
 
@@ -64,6 +68,8 @@ object TestDiscovery {
       else -> scan(request.uris)
     }
 
+    logger.debug("Scan discovered ${classes.size} subtypes of Spec...")
+
     val specs = classes
         .filter { Spec::class.java.isAssignableFrom(it.java) }
         // must filter out abstract to avoid the spec parent classes themselves
@@ -71,6 +77,7 @@ object TestDiscovery {
         // keep only classes
         .filter { it.objectInstance == null }
 
+    logger.debug("...which has filtered to ${specs.size} non abstract classes")
     return specs
   }
 
