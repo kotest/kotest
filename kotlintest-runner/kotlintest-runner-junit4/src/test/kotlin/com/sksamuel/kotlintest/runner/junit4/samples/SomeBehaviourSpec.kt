@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.runner.junit4.samples
+package com.sksamuel.kotlintest.runner.junit4.samples
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec

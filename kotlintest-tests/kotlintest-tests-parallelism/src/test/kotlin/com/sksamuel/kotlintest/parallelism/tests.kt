@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.parallelism
+package com.sksamuel.kotlintest.parallelism
 
 import io.kotlintest.specs.StringSpec
 

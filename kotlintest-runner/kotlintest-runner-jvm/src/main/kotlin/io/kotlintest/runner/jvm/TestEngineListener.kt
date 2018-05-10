@@ -63,7 +63,7 @@ interface TestEngineListener {
   fun prepareTestSet(set: TestSet) {}
 
   /**
-   * Invoked for each run of a [TestSet].
+   * Invoked for each execution of the test inside a [TestSet].
    *
    * If a scope is configured with invocations = k, then this function
    * will be invoked k times.

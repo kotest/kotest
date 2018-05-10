@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests.runner.junit4
+package com.sksamuel.kotlintest.runner.junit4
 
 import io.kotlintest.matchers.numerics.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldContain

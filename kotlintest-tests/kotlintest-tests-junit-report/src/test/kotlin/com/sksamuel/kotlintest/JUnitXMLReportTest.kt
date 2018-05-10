@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.tests
+package com.sksamuel.kotlintest
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
@@ -15,10 +15,7 @@ class JUnitXMLReportTest : WordSpec() {
         System.getenv("TRAVIS") == "true" ->
           File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
         System.getenv("APPVEYOR") == "True" -> {
-          val f = File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
-          println("build_folder=" + File(System.getenv("APPVEYOR_BUILD_FOLDER")).listFiles().joinToString(","))
-          println("build_folder=" + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results").listFiles().joinToString(","))
-          f
+          File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
         }
         else ->
           File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")

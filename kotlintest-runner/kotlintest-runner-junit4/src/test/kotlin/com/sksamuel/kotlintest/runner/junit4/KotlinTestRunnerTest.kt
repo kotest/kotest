@@ -1,9 +1,9 @@
-package com.sksamuel.kotlintest.tests.runner.junit4
+package com.sksamuel.kotlintest.runner.junit4
 
 import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
-import com.sksamuel.kotlintest.tests.runner.junit4.samples.SomeBehaviourSpec
+import com.sksamuel.kotlintest.runner.junit4.samples.SomeBehaviourSpec
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.runner.junit4.KotlinTestRunner

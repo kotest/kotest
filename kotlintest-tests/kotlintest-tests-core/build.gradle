@@ -4,8 +4,8 @@ dependencies {
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
     testImplementation project(':kotlintest-assertions-arrow')
     testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.0'
-
-    // this is here to ensure that the intellij marker doesn't show up
+    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
+    // this is here to test the intellij marker
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 }
 
