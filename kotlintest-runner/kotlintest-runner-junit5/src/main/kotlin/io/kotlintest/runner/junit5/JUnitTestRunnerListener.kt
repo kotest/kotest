@@ -2,8 +2,8 @@ package io.kotlintest.runner.junit5
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestResult
 import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.TestSet
@@ -67,6 +67,9 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   // contains a mapping of a Description to a junit TestDescription
   private val descriptors = ConcurrentHashMap<Description, TestDescriptor>()
 
+  // contains every test that was discovered but not necessarily executed
+  private val discovered = ConcurrentHashMap.newKeySet<Description>()
+
   // contains a set of all the tests we have notified as started, to avoid
   // double notification when a test is set to run multiple times
   private val started = ConcurrentHashMap.newKeySet<Description>()
@@ -88,40 +91,65 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
   override fun prepareSpec(spec: Spec) {
     logger.debug("prepareSpec [$spec]")
-    val descriptor = createSpecDescriptor(spec)
-    listener.executionStarted(descriptor)
+    try {
+      val descriptor = createSpecDescriptor(spec)
+      listener.executionStarted(descriptor)
+    } catch (t: Throwable) {
+      logger.error("Error in JUnit Platform listener", t)
+    }
   }
 
   override fun completeSpec(spec: Spec, t: Throwable?) {
     logger.debug("completeSpec [$spec]")
 
+    // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
     // to wait until all possible invocations of each scope have completed.
     // for each description we can grab the best result and use that
-    results
-        .map { it.testCase.description }
+    discovered
+        .filter { spec.description().isAncestorOf(it) }
         .sortedBy { it.depth() }
         .reversed()
         .forEach {
           val descriptor = descriptors[it] ?: getOrCreateDescriptor(it)
           // find an error by priority
           val result = findResultFor(it)
-              ?: throw RuntimeException("Every description must have a result")
-          when (result.status) {
-            TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-            TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-            TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
-            TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+          if (result == null) {
+            logger.error("Could not find result for $it")
+            throw RuntimeException("Every description must have a result but could not find one for $it")
+          } else {
+            logger.debug("Notifying junit of completion event ${descriptor.uniqueId}=$result")
+            try {
+              when (result.status) {
+                TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
+                TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+                TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
+                TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+              }
+            } catch (t: Throwable) {
+              logger.error("Error in JUnit Platform listener", t)
+            }
           }
         }
 
     // now we can complete the spec
     val descriptor = descriptors[spec.description()]
-    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-    listener.executionFinished(descriptor, result)
+    if (descriptor == null) {
+      logger.error("Spec descriptor cannot be null ${spec.description()}")
+      throw RuntimeException("Spec descriptor cannot be null")
+    } else {
+      val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
+      logger.debug("Notifying junit that spec finished ${descriptor.uniqueId}=$result")
+      listener.executionFinished(descriptor, result)
+    }
+  }
+
+  override fun prepareTestCase(testCase: TestCase) {
+    discovered.add(testCase.description)
   }
 
   override fun completeTestCase(testCase: TestCase, result: TestResult) {
+    logger.debug("completeTestCase ${testCase.description} with result $result")
     // we don't immediately finish a test, we just store the result until we have completed the spec
     // this allows us to handle multiple invocations of the same test case, deferring the notification
     // to junit until all invocations have completed
@@ -129,6 +157,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   }
 
   override fun testRun(set: TestSet, k: Int) {
+    logger.debug("testRun ${set.testCase.description} k=$k")
+
     // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
@@ -136,6 +166,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       if (!started.contains(set.testCase.description)) {
         started.add(set.testCase.description)
         val descriptor = createTestCaseDescriptor(set.testCase.description)
+        logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
         listener.executionStarted(descriptor)
       }
     }
