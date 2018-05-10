@@ -19,7 +19,7 @@ class TestCaseExtensionAdder(val n: Int) : TestCaseExtension {
                          test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
                          complete: (TestResult) -> Unit) {
     when (context.description.name) {
-      "should be activated by registration with ProjectExtensions", "should use around advice", "should use extensions registered on config" -> {
+      "be activated by registration with ProjectExtensions", "use around advice", "use extensions registered on config" -> {
         Numbers.a.addAndGet(n)
         test(context.config, {
           Numbers.b.addAndGet(n)

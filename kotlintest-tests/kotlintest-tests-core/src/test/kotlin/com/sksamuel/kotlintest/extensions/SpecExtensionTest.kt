@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.extensions
 
-import com.sksamuel.kotlintest.extensions.SpecExtensionNumbers.ext
 import io.kotlintest.Project
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.SpecExtension
