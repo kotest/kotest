@@ -1,17 +1,31 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.fail
+import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.WordSpec
 
-class BandDisableFunSpec : FunSpec({
+class BangDisableFunSpec : FunSpec({
   test("!should not run") {
     fail("boom")
   }
 })
 
-class BandDisableStringSpec : StringSpec({
+class BangDisableStringSpec : StringSpec({
   "!should not run" {
     fail("boom")
+  }
+})
+
+class BangOverridenWordSpec : WordSpec({
+  "setting system property to override bang" should {
+    var run = false
+    System.setProperty("kotlintest.bang.disable", "true")
+    "!allow this test to run" {
+      run = true
+    }
+    System.setProperty("kotlintest.bang.disable", null)
+    run.shouldBeTrue()
   }
 })
