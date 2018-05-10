@@ -2,10 +2,13 @@ package com.sksamuel.kotlintest
 
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.specs.WordSpec
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 
 class JUnitHTMLReportTest : WordSpec() {
+
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/index.html"
 
@@ -17,14 +20,14 @@ class JUnitHTMLReportTest : WordSpec() {
       val file = when {
         System.getenv("TRAVIS") == "true" -> {
           val f = File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
-          println("build_folder=" + f.listFiles().joinToString(","))
-          println("parent=" + f.parentFile.listFiles().joinToString(","))
+          logger.info("build_folder=" + f.listFiles().joinToString(","))
+          logger.info("parent=" + f.parentFile.listFiles().joinToString(","))
           f
         }
         System.getenv("APPVEYOR") == "True" -> {
           val f = File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
-          println("build_folder=" + f.listFiles().joinToString(","))
-          println("parent=" + f.parentFile.listFiles().joinToString(","))
+          logger.info("build_folder=" + f.listFiles().joinToString(","))
+          logger.info("parent=" + f.parentFile.listFiles().joinToString(","))
           f
         }
         else ->
