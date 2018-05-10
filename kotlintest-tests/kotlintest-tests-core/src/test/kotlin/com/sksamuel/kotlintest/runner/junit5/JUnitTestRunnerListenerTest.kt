@@ -141,6 +141,23 @@ class JUnitTestRunnerListenerTest : WordSpec({
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
     }
-  }
 
+    "mark inactive test as skipped" {
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc = TestCase(spec.description().append("test"), spec, { }, 1, TestCaseConfig())
+
+      listener.prepareSpec(spec)
+      listener.prepareTestCase(tc)
+      listener.completeTestCase(tc, TestResult.Ignored)
+      listener.completeSpec(spec, null)
+
+      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
+      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
+    }
+  }
 })

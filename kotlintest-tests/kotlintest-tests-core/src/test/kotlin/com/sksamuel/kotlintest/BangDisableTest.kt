@@ -6,19 +6,19 @@ import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.specs.WordSpec
 
-class BangDisableFunSpec : FunSpec({
+class BangDisableFunTest : FunSpec({
   test("!should not run") {
     fail("boom")
   }
 })
 
-class BangDisableStringSpec : StringSpec({
+class BangDisableStringTest : StringSpec({
   "!should not run" {
     fail("boom")
   }
 })
 
-class BangOverridenWordSpec : WordSpec({
+class BangOverridenWordTest : WordSpec({
   "setting system property to override bang" should {
     var run = false
     System.setProperty("kotlintest.bang.disable", "true")

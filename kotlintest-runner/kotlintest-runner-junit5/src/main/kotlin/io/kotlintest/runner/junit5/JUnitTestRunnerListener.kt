@@ -98,16 +98,16 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
     // we wait until the spec is completed before completing all child scopes, because we need
     // to wait until all possible invocations of each scope have completed.
-    val descriptions = started.filter { spec.description().isAncestorOf(it) }
-    logger.debug("spec contains ${descriptions.size} child descriptions")
-
     // for each description we can grab the best result and use that
-    descriptions.sortedBy { it.depth() }
+    results
+        .map { it.testCase.description }
+        .sortedBy { it.depth() }
         .reversed()
         .forEach {
           val descriptor = descriptors[it] ?: getOrCreateDescriptor(it)
           // find an error by priority
-          val result = findResult(it) ?: throw RuntimeException("Every description must have a result")
+          val result = findResult(it)
+              ?: throw RuntimeException("Every description must have a result")
           when (result.status) {
             TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
             TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
