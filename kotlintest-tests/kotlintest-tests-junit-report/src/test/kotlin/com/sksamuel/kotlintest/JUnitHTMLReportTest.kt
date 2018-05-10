@@ -32,13 +32,13 @@ class JUnitHTMLReportTest : WordSpec() {
 
       "include classnames" {
         val html = Files.readAllLines(file.toPath()).joinToString("\n")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.AutoCloseTest.html">com.sksamuel.kotlintest.tests.AutoCloseTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.tests.specs.FeatureSpecTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.TagTest.html">com.sksamuel.kotlintest.tests.TagTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.matchers.string.StringMatchersTest.html">com.sksamuel.kotlintest.tests.matchers.string.StringMatchersTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.BehaviorSpecLambdaTest.html">com.sksamuel.kotlintest.tests.specs.BehaviorSpecLambdaTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.listeners.TestListenerTest.html">com.sksamuel.kotlintest.tests.listeners.TestListenerTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.assertions.arrow.ValidatedMatchersTest.html">com.sksamuel.kotlintest.tests.assertions.arrow.ValidatedMatchersTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.AutoCloseTest.html">com.sksamuel.kotlintest.AutoCloseTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.specs.FeatureSpecTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.TagTest.html">com.sksamuel.kotlintest.TagTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.matchers.string.StringMatchersTest.html">com.sksamuel.kotlintest.matchers.string.StringMatchersTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.BehaviorSpecLambdaTest.html">com.sksamuel.kotlintest.specs.BehaviorSpecLambdaTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.listeners.TestListenerTest.html">com.sksamuel.kotlintest.listeners.TestListenerTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.assertions.arrow.ValidatedMatchersTest.html">com.sksamuel.kotlintest.assertions.arrow.ValidatedMatchersTest</a>""")
       }
     }
   }
