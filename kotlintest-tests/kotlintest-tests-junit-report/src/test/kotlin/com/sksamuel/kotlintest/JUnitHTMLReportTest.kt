@@ -10,7 +10,7 @@ class JUnitHTMLReportTest : WordSpec() {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/index.html"
+  private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html"
 
   init {
     // we test the output from the earlier test of tests in
