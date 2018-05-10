@@ -17,12 +17,12 @@ clone_depth: 50
 
 configuration:
   - Java8
-  - Java10
+  - Java9
 
 # Do something useful here to override the default MSBuild (which would fail otherwise).
 build_script:
   - if not exist %HOME%\.gradle mkdir %HOME%\.gradle
-  - if %CONFIGURATION%==Java10 echo org.gradle.java.home=C:/Program Files/Java/jdk10>%HOME%\.gradle\gradle.properties
+  - if %CONFIGURATION%==Java9 echo org.gradle.java.home=C:/Program Files/Java/jdk9>%HOME%\.gradle\gradle.properties
   - gradlew --info
 
 test_script:
