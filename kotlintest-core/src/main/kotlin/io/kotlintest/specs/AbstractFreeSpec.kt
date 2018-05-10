@@ -1,9 +1,7 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.Description
 import io.kotlintest.Tag
-import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.extensions.TestCaseExtension
@@ -16,23 +14,10 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   }
 
   infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
-      addTestCase(this, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, defaultTestCaseConfig)
+      addTestCase(this, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
-  infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
-      addTestCase(this, { FinalTestContext(this).test() }, defaultTestCaseConfig)
-
-  @KotlinTestDsl
-  inner class FinalTestContext(val context: TestContext) : TestContext() {
-    override fun description(): Description = context.description()
-    override fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)
-
-    @Deprecated("Cannot nest contexts inside a final context", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix operator fun String.invoke(test: () -> Unit) {
-    }
-
-    @Deprecated("Cannot nest contexts inside a final context", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix operator fun String.minus(test: () -> Unit) = {}
-  }
+  infix operator fun String.invoke(test: TestContext.() -> Unit) =
+      addTestCase(this, test, defaultTestCaseConfig)
 
   fun String.config(
       invocations: Int? = null,
@@ -41,7 +26,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: FinalTestContext.() -> Unit) {
+      test: TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -49,16 +34,16 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         threads ?: defaultTestCaseConfig.threads,
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
-    addTestCase(this, { FinalTestContext(this).test() }, config)
+    addTestCase(this, test, config)
   }
 
   inner class FreeSpecScope(val context: TestContext) {
 
     infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
-        context.registerTestCase(this, this@AbstractFreeSpec, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, this@AbstractFreeSpec.defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
     infix operator fun String.invoke(test: TestContext.() -> Unit) =
-        context.registerTestCase(this, this@AbstractFreeSpec, test, this@AbstractFreeSpec.defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractFreeSpec, test, defaultTestCaseConfig)
 
     fun String.config(
         invocations: Int? = null,
@@ -69,13 +54,13 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         extensions: List<TestCaseExtension>? = null,
         test: FreeSpecScope.() -> Unit) {
       val config = TestCaseConfig(
-          enabled ?: this@AbstractFreeSpec.defaultTestCaseConfig.enabled,
-          invocations ?: this@AbstractFreeSpec.defaultTestCaseConfig.invocations,
-          timeout ?: this@AbstractFreeSpec.defaultTestCaseConfig.timeout,
-          threads ?: this@AbstractFreeSpec.defaultTestCaseConfig.threads,
-          tags ?: this@AbstractFreeSpec.defaultTestCaseConfig.tags,
-          extensions ?: this@AbstractFreeSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase(this, this@AbstractFreeSpec, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, config)
+          enabled ?: defaultTestCaseConfig.enabled,
+          invocations ?: defaultTestCaseConfig.invocations,
+          timeout ?: defaultTestCaseConfig.timeout,
+          threads ?: defaultTestCaseConfig.threads,
+          tags ?: defaultTestCaseConfig.tags,
+          extensions ?: defaultTestCaseConfig.extensions)
+      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, config)
     }
   }
 }

@@ -8,7 +8,7 @@ class FreeSpecInvocationTest : FreeSpec({
 
   val count = AtomicInteger(0)
 
-  "a" {
+  "a" - {
     count.get().shouldBe(0)
     "b".config(invocations = 5) {
       count.incrementAndGet()
@@ -16,7 +16,7 @@ class FreeSpecInvocationTest : FreeSpec({
     count.get().shouldBe(5)
     count.incrementAndGet()
     count.get().shouldBe(6)
-    "c" {
+    "c" - {
       count.get().shouldBe(6)
       count.incrementAndGet()
       count.get().shouldBe(7)
@@ -42,7 +42,7 @@ class FreeSpecInvocationTest : FreeSpec({
     }
   }
 
-  "g" {
+  "g" - {
     count.get().shouldBe(14)
     count.incrementAndGet()
     count.get().shouldBe(15)
