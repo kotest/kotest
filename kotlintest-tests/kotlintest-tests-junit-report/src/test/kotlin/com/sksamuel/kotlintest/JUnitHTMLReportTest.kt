@@ -19,11 +19,11 @@ class JUnitHTMLReportTest : WordSpec() {
 
       val file = when {
         System.getenv("TRAVIS") == "true" -> {
-          println(File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/reports").listFiles().joinToString("\n"))
+          println("HTML: " +File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests").listFiles().joinToString("\n"))
           File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
         }
         System.getenv("APPVEYOR") == "True" -> {
-          println(File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports").listFiles().joinToString("\n"))
+          println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests").listFiles().joinToString("\n"))
           File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
         }
         else ->
