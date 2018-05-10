@@ -50,7 +50,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       listener.prepareSpec(spec)
       listener.prepareTestCase(tc)
-      listener.prepareTestSet(set)
+      listener.testRun(set, 1)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
       rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
@@ -99,13 +99,11 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareSpec(spec)
 
       listener.prepareTestCase(tc)
-      listener.prepareTestSet(set)
       listener.testRun(set, 1)
       listener.testRun(set, 2)
       listener.completeTestCase(tc, TestResult.Success)
 
       listener.prepareTestCase(tc)
-      listener.prepareTestSet(set)
       listener.testRun(set, 1)
       listener.testRun(set, 2)
       listener.completeTestCase(tc, TestResult.Success)
@@ -127,13 +125,11 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       listener.prepareSpec(spec)
       listener.prepareTestCase(tc1)
-      listener.prepareTestSet(set1)
       listener.testRun(set1, 1)
       listener.completeTestCase(tc1, TestResult.Success)
 
       listener.prepareSpec(spec)
       listener.prepareTestCase(tc2)
-      listener.prepareTestSet(set2)
       listener.testRun(set2, 1)
       listener.completeTestCase(tc2, TestResult.error(RuntimeException("boom")))
 
@@ -158,6 +154,30 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
+    }
+
+    "a skipped child should not set parent as skipped" {
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestCaseConfig())
+      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestCaseConfig())
+      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
+
+      listener.prepareSpec(spec)
+      listener.prepareTestCase(tc1)
+      listener.prepareTestSet(set1)
+      listener.testRun(set1, 1)
+      listener.prepareTestCase(tc2)
+      listener.completeTestCase(tc2, TestResult.Ignored)
+      listener.completeTestCase(tc1, TestResult.Success)
+      listener.completeSpec(spec, null)
+
+      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
+      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, any())
     }
   }
 })

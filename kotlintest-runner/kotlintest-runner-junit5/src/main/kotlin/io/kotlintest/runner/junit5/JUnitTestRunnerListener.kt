@@ -129,8 +129,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     results.add(ResultState(testCase, result))
   }
 
-  override fun prepareTestSet(set: TestSet) {
-    // we only "start" a test once, the first time a TestSet is seen for a TestCase, because
+  override fun testRun(set: TestSet, k: Int) {
+    // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
     synchronized(this) {
