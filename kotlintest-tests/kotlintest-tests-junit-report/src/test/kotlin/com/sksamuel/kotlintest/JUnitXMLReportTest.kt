@@ -32,7 +32,7 @@ class JUnitXMLReportTest : WordSpec() {
         root.getAttributeValue("failures").shouldBe("0")
       }
       "include test names" {
-        root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet().shouldBe(setOf("should have another test", "should have a test with config", "should have a test", "a context"))
+        root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet().shouldBe(setOf("have another test", "have a test with config", "have a test", "a context should"))
         root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet().shouldBe(setOf("com.sksamuel.kotlintest.tests.specs.WordSpecTest"))
       }
     }
