@@ -10,7 +10,7 @@ class JUnitHTMLReportTest : WordSpec() {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/index.html"
+  private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html"
 
   init {
     // we test the output from the earlier test of tests in
@@ -19,31 +19,26 @@ class JUnitHTMLReportTest : WordSpec() {
 
       val file = when {
         System.getenv("TRAVIS") == "true" -> {
-          val f = File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
-          logger.info("build_folder=" + f.listFiles().joinToString(","))
-          logger.info("parent=" + f.parentFile.listFiles().joinToString(","))
-          f
+          println("HTML: " +File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
+          File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
         }
         System.getenv("APPVEYOR") == "True" -> {
-          val f = File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
-          logger.info("build_folder=" + f.listFiles().joinToString(","))
-          logger.info("parent=" + f.parentFile.listFiles().joinToString(","))
-          f
+          println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
+          File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
         }
         else ->
           File(System.getProperty("user.home") + "/development/workspace/kotlintest/$ReportPath")
       }
 
-      val html = Files.readAllLines(file.toPath()).joinToString("\n")
-
       "include classnames" {
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.AutoCloseTest.html">com.sksamuel.kotlintest.tests.AutoCloseTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.tests.specs.FeatureSpecTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.TagTest.html">com.sksamuel.kotlintest.tests.TagTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.matchers.string.StringMatchersTest.html">com.sksamuel.kotlintest.tests.matchers.string.StringMatchersTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.BehaviorSpecLambdaTest.html">com.sksamuel.kotlintest.tests.specs.BehaviorSpecLambdaTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.listeners.TestListenerTest.html">com.sksamuel.kotlintest.tests.listeners.TestListenerTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.assertions.arrow.ValidatedMatchersTest.html">com.sksamuel.kotlintest.tests.assertions.arrow.ValidatedMatchersTest</a>""")
+        val html = Files.readAllLines(file.toPath()).joinToString("\n")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.AutoCloseTest.html">com.sksamuel.kotlintest.AutoCloseTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.specs.FeatureSpecTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.TagTest.html">com.sksamuel.kotlintest.TagTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.matchers.string.StringMatchersTest.html">com.sksamuel.kotlintest.matchers.string.StringMatchersTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.BehaviorSpecLambdaTest.html">com.sksamuel.kotlintest.specs.BehaviorSpecLambdaTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.listeners.TestListenerTest.html">com.sksamuel.kotlintest.listeners.TestListenerTest</a>""")
+        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.assertions.arrow.ValidatedMatchersTest.html">com.sksamuel.kotlintest.assertions.arrow.ValidatedMatchersTest</a>""")
       }
     }
   }

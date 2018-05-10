@@ -21,7 +21,6 @@ import java.time.Duration
 
 class JUnitTestRunnerListenerTest : WordSpec({
 
-
   "JUnitTestRunnerListener" should {
 
     "add spec to root and dynamically register" {
