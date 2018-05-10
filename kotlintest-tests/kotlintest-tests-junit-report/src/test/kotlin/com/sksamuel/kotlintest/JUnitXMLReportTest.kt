@@ -7,6 +7,9 @@ import java.io.File
 
 class JUnitXMLReportTest : WordSpec() {
   init {
+
+    val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.specs.WordSpecTest.xml"
+
     // we test the output from the earlier test of tests in
     // kotlintest-tests/kotlintest-tests-core
     "JUnit XML Output" should {
@@ -14,14 +17,14 @@ class JUnitXMLReportTest : WordSpec() {
       val file = when {
         System.getenv("TRAVIS") == "true" -> {
           println("XML: " + File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
-          File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+          File(System.getenv("TRAVIS_BUILD_DIR") + ReportPath)
         }
         System.getenv("APPVEYOR") == "True" -> {
           println("XML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
-          File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+          File(System.getenv("APPVEYOR_BUILD_FOLDER") + ReportPath)
         }
         else ->
-          File(System.getProperty("user.home") + "/development/workspace/kotlintest/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+          File(System.getProperty("user.home") + "/development/workspace/kotlintest/" + ReportPath)
       }
 
       val builder = SAXBuilder()
