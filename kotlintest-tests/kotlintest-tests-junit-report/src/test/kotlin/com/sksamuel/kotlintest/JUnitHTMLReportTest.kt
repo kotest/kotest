@@ -34,9 +34,8 @@ class JUnitHTMLReportTest : WordSpec() {
           File(System.getProperty("user.home") + "/development/workspace/kotlintest/$ReportPath")
       }
 
-      val html = Files.readAllLines(file.toPath()).joinToString("\n")
-
       "include classnames" {
+        val html = Files.readAllLines(file.toPath()).joinToString("\n")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.AutoCloseTest.html">com.sksamuel.kotlintest.tests.AutoCloseTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.tests.specs.FeatureSpecTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.tests.TagTest.html">com.sksamuel.kotlintest.tests.TagTest</a>""")
