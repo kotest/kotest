@@ -11,12 +11,13 @@ class JUnitXMLReportTest : WordSpec() {
     // kotlintest-tests/kotlintest-tests-core
     "JUnit XML Output" should {
 
-      println(File(System.getenv("TRAVIS_BUILD_DIR")).listFiles().joinToString("\n"))
-
       val file = when {
-        System.getenv("TRAVIS") == "true" ->
+        System.getenv("TRAVIS") == "true" -> {
+          println(File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build").listFiles().joinToString("\n"))
           File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
+        }
         System.getenv("APPVEYOR") == "True" -> {
+          println(File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build").listFiles().joinToString("\n"))
           File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.tests.specs.WordSpecTest.xml")
         }
         else ->
