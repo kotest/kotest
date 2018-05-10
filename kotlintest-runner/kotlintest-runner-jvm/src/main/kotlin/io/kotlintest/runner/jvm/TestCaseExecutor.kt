@@ -60,7 +60,7 @@ class TestCaseExecutor(val listener: TestEngineListener,
 
   private fun executeTestIfActive(config: TestCaseConfig): TestResult {
 
-    val bang = testCase.name.startsWith("!") && System.getProperty("kotlintest.disable.bang") == null
+    val bang = testCase.name.startsWith("!") && System.getProperty("kotlintest.bang.disable") == null
     val enabled = config.enabled && Project.tags().isActive(config.tags) && !bang
 
     return if (enabled) {

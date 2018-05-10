@@ -25,7 +25,7 @@ class BangOverridenWordSpec : WordSpec({
     "!allow this test to run" {
       run = true
     }
-    System.setProperty("kotlintest.bang.disable", null)
+    System.getProperties().remove("kotlintest.bang.disable")
     run.shouldBeTrue()
   }
 })

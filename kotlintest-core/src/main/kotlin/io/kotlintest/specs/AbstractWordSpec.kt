@@ -46,11 +46,11 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
           threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
           tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
           extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase("$this", this@AbstractWordSpec, { FinalTestContext(this).test() }, config)
+      context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, config)
     }
 
     infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
-        context.registerTestCase("$this", this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig)
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
