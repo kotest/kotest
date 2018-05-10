@@ -1,7 +1,9 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
+import io.kotlintest.Description
 import io.kotlintest.Tag
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.extensions.TestCaseExtension
@@ -16,8 +18,21 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
       addTestCase(this, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
-  infix operator fun String.invoke(test: FreeSpecScope.() -> Unit) =
-      addTestCase(this, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
+  infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
+      addTestCase(this, { FinalTestContext(this).test() }, defaultTestCaseConfig)
+
+  @KotlinTestDsl
+  inner class FinalTestContext(val context: TestContext) : TestContext() {
+    override fun description(): Description = context.description()
+    override fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)
+
+    @Deprecated("Cannot nest contexts inside a final context", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
+    infix operator fun String.invoke(test: () -> Unit) {
+    }
+
+    @Deprecated("Cannot nest contexts inside a final context", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
+    infix operator fun String.minus(test: () -> Unit) = {}
+  }
 
   fun String.config(
       invocations: Int? = null,
@@ -26,7 +41,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: FreeSpecScope.() -> Unit) {
+      test: FinalTestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -34,7 +49,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         threads ?: defaultTestCaseConfig.threads,
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
-    addTestCase(this, { this@AbstractFreeSpec.FreeSpecScope(this).test() }, config)
+    addTestCase(this, { FinalTestContext(this).test() }, config)
   }
 
   inner class FreeSpecScope(val context: TestContext) {

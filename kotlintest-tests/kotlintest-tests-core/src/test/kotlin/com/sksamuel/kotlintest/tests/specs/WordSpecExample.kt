@@ -9,7 +9,6 @@ class WordSpecExample : WordSpec() {
         // test here
       }
       "allow config".config(invocations = 2) {
-
       }
     }
   }

@@ -1,7 +1,9 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
+import io.kotlintest.Description
 import io.kotlintest.Tag
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.extensions.TestCaseExtension
@@ -36,7 +38,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: TestContext.() -> Unit) {
+        test: FinalTestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
           invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
@@ -44,10 +46,24 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
           threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
           tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
           extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase("should $this", this@AbstractWordSpec, test, config)
+      context.registerTestCase("should $this", this@AbstractWordSpec, { FinalTestContext(this).test() }, config)
     }
 
-    infix operator fun String.invoke(test: TestContext.() -> Unit) =
-        context.registerTestCase("should $this", this@AbstractWordSpec, test, this@AbstractWordSpec.defaultTestCaseConfig)
+    infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
+        context.registerTestCase("should $this", this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig)
+
+    // we need to override the should method to stop people nesting a should inside a should
+    @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
+    infix fun String.should(init: () -> Unit) = {}
+  }
+
+  @KotlinTestDsl
+  inner class FinalTestContext(val context: TestContext) : TestContext() {
+    override fun description(): Description = context.description()
+    override fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)
+
+    // we need to override the should method to stop people nesting a should inside a should
+    @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
+    infix fun String.should(init: () -> Unit) = {}
   }
 }
