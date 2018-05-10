@@ -10,28 +10,29 @@ class JUnitHTMLReportTest : WordSpec() {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  private val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html"
+  fun indexHtml(): String {
+    val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html"
+    val file = when {
+      isTravis() -> {
+        println("HTML: " + File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
+        File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
+      }
+      isAppveyor() -> {
+        println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
+        File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
+      }
+      else ->
+        File(System.getProperty("user.home") + "/development/workspace/kotlintest/$ReportPath")
+    }
+    return Files.readAllLines(file.toPath()).joinToString("\n")
+  }
 
   init {
     // we test the output from the earlier test of tests in
     // kotlintest-tests/kotlintest-tests-core
     "JUnit HTML Output" should {
-
-      val file = when {
-        System.getenv("TRAVIS") == "true" -> {
-          println("HTML: " +File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
-          File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
-        }
-        System.getenv("APPVEYOR") == "True" -> {
-          println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
-          File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
-        }
-        else ->
-          File(System.getProperty("user.home") + "/development/workspace/kotlintest/$ReportPath")
-      }
-
-      "include classnames" {
-        val html = Files.readAllLines(file.toPath()).joinToString("\n")
+      "include classnames".config(tags = setOf(CITag)) {
+        val html = indexHtml()
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.AutoCloseTest.html">com.sksamuel.kotlintest.AutoCloseTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.specs.FeatureSpecTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.TagTest.html">com.sksamuel.kotlintest.TagTest</a>""")

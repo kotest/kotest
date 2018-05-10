@@ -57,17 +57,27 @@ object TestDiscovery {
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
       classes.map { Class.forName(it).kotlin }.filterIsInstance<KClass<out Spec>>()
 
-  fun discover(request: DiscoveryRequest): List<KClass<out Spec>> {
+  private fun scan(request: DiscoveryRequest): List<KClass<out Spec>> {
+
     val classes = when {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames)
       else -> scan(request.uris)
     }
+
+    val specs = classes
         .filter { Spec::class.java.isAssignableFrom(it.java) }
         // must filter out abstract to avoid the spec parent classes themselves
         .filter { !it.isAbstract }
         // keep only classes
         .filter { it.objectInstance == null }
-    return Project.discoveryExtensions().fold(classes, { cl, ext -> ext.afterScan(cl) })
+
+    return specs
+  }
+
+  fun discover(request: DiscoveryRequest): List<KClass<out Spec>> {
+    val classes = scan(request)
+    return Project.discoveryExtensions()
+        .fold(classes, { cl, ext -> ext.afterScan(cl) })
         .sortedBy { it.simpleName }
   }
 }
