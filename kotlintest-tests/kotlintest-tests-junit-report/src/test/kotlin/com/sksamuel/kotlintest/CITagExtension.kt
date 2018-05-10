@@ -6,6 +6,6 @@ import io.kotlintest.extensions.TagExtension
 
 object CITag : Tag()
 
-class CITagExtension : TagExtension {
+object CITagExtension : TagExtension {
   override fun tags(): Tags = if (isCI()) Tags.include(CITag) else Tags.Empty
 }

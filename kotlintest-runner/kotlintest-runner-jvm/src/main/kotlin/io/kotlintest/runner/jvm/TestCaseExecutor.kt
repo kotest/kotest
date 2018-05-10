@@ -79,7 +79,6 @@ class TestCaseExecutor(val listener: TestEngineListener,
    * errors of failure are detected.
    */
   private fun executeTestSet(set: TestSet): TestResult {
-    listener.prepareTestSet(set)
 
     // each test set runs inside its own execution service, so we can easily support multiple threads
     val executor = Executors.newFixedThreadPool(set.threads)
@@ -101,8 +100,12 @@ class TestCaseExecutor(val listener: TestEngineListener,
     }
 
     executor.shutdown()
-    val terminated = executor.awaitTermination(set.timeout.seconds, TimeUnit.SECONDS)
-    val result = buildTestResult(terminated, set.timeout, error.get(), context.metaData())
+    val cleanExit = try {
+      executor.awaitTermination(set.timeout.seconds, TimeUnit.SECONDS)
+    } catch (e: InterruptedException) {
+      false
+    }
+    val result = buildTestResult(cleanExit, set.timeout, error.get(), context.metaData())
     listener.completeTestSet(set, result)
     return result
   }
@@ -110,8 +113,8 @@ class TestCaseExecutor(val listener: TestEngineListener,
   /**
    * Creates the correct [TestResult] given the state of the test invocations.
    */
-  private fun buildTestResult(terminated: Boolean, timeout: Duration, error: Throwable?, metadata: Map<String, Any?>): TestResult {
-    return if (!terminated) {
+  private fun buildTestResult(cleanExit: Boolean, timeout: Duration, error: Throwable?, metadata: Map<String, Any?>): TestResult {
+    return if (!cleanExit) {
       TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), null, metadata)
     } else {
       when (error) {

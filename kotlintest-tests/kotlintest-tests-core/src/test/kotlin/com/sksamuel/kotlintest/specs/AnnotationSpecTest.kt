@@ -3,10 +3,10 @@ package com.sksamuel.kotlintest.specs
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractAnnotationSpec
+import io.kotlintest.specs.AnnotationSpec
 import io.kotlintest.specs.Test
 
-class AnnotationSpecTest : AbstractAnnotationSpec() {
+class AnnotationSpecTest : AnnotationSpec() {
 
   var count = 0
 

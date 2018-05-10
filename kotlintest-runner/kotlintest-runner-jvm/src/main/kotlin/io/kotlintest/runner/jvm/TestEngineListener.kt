@@ -57,12 +57,6 @@ interface TestEngineListener {
   fun completeTestCase(testCase: TestCase, result: TestResult) {}
 
   /**
-   * Invoked each time a new [TestSet] is being prepared for execution.
-   * This function will only be invoked if a test scope is actually being executed, and not skipped.
-   */
-  fun prepareTestSet(set: TestSet) {}
-
-  /**
    * Invoked for each execution of the test inside a [TestSet].
    *
    * If a scope is configured with invocations = k, then this function
