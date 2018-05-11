@@ -192,7 +192,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
@@ -202,7 +202,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
@@ -212,7 +212,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
@@ -222,7 +222,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
@@ -232,7 +232,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
@@ -242,7 +242,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
@@ -252,7 +252,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A,
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
@@ -262,7 +262,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
@@ -272,7 +272,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Tabl
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
@@ -282,7 +282,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: T
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
@@ -292,7 +292,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
@@ -302,7 +302,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(ta
   }
 }
 
-fun <A> forNone(table: Table1<A>, fn: (A) -> Unit): Unit {
+fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a)
@@ -312,7 +312,7 @@ fun <A> forNone(table: Table1<A>, fn: (A) -> Unit): Unit {
   }
 }
 
-fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit): Unit {
+fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b)
@@ -322,7 +322,7 @@ fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit): Unit {
   }
 }
 
-fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit): Unit {
+fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c)
@@ -332,7 +332,7 @@ fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit): Unit {
   }
 }
 
-fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit): Unit {
+fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d)
@@ -342,7 +342,7 @@ fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit): U
   }
 }
 
-fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit): Unit {
+fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e)
@@ -353,7 +353,7 @@ fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) ->
 }
 
 
-fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit): Unit {
+fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f)
@@ -363,7 +363,7 @@ fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D,
   }
 }
 
-fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit): Unit {
+fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
@@ -373,7 +373,7 @@ fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B,
   }
 }
 
-fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
@@ -383,7 +383,7 @@ fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: 
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
@@ -393,7 +393,7 @@ fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
@@ -403,7 +403,7 @@ fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
@@ -413,7 +413,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
@@ -423,7 +423,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
@@ -433,7 +433,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
@@ -443,7 +443,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
@@ -453,7 +453,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
@@ -463,7 +463,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
@@ -473,7 +473,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
@@ -483,7 +483,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table1
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
@@ -493,7 +493,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Tab
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
@@ -503,7 +503,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: 
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
@@ -513,7 +513,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(tabl
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit): Unit {
+fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
