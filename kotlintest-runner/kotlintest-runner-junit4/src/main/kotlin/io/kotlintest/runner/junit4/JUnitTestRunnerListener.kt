@@ -12,7 +12,6 @@ import org.junit.runner.Description as JDescription
 
 class JUnitTestRunnerListener(val testClass: KClass<out Spec>,
                               val notifier: RunNotifier) : TestEngineListener {
-  override fun completeSpec(spec: Spec, t: Throwable?) {}
 
   override fun prepareTestCase(testCase: TestCase) {
     notifier.fireTestStarted(describeTestCase(testCase))
