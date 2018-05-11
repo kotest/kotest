@@ -628,10 +628,9 @@ object TestExtension : ProjectExtension {
 One Instance Per Test
 ---------------------
 
-Certain specs (those which do not offer a nested context, eg FunSpec) allow you to instruct the test runner to create
-a new instance of the Spec for every test case.
+All specs allow you to instruct the test runner to create a new instance of the Spec for every test case.
  
-To do this simply override the `isInstancePerTest()` function returning true,eg:
+To do this simply override the `isInstancePerTest()` function returning true:
 
 ```kotlin
 class MyTests : FunSpec() {
@@ -642,10 +641,13 @@ class MyTests : FunSpec() {
 }
 ```
 
+This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` return false.
+
 Test Case Config <a name="config"></a>
 ------------------------------
 
-Each test can be configured with various parameters. After the test block, invoke the config method passing in the parameters you wish to set. The available parameters are:
+Each test can be configured with various parameters. After the test name, invoke the config function
+ passing in the parameters you wish to set. The available parameters are:
 
 * `invocations` - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
@@ -656,43 +658,35 @@ Each test can be configured with various parameters. After the test block, invok
 Examples of setting config:
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.ShouldSpec
-
 class MyTests : ShouldSpec() {
   init {
-    should("return the length of the string") {
+    should("return the length of the string").config(invocations = 10, threads = 2) {
       "sammy".length shouldBe 5
       "".length shouldBe 0
-    }.config(invocations = 10, threads = 2)
-  }
-}
-```
-
-```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.WordSpec
-
-class MyTests : WordSpec() {
-  init {
-    "String.length" should {
-      "return the length of the string" {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-      }.config(timeout = 2.seconds)
     }
   }
 }
 ```
 
 ```kotlin
-import io.kotlintest.specs.FunSpec
+class MyTests : WordSpec() {
+  init {
+    "String.length" should {
+      "return the length of the string".config(timeout = 2.seconds) {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+      }
+    }
+  }
+}
+```
 
+```kotlin
 class FunSpecTest : FunSpec() {
   init {
-    test("FunSpec should support config syntax") {
+    test("FunSpec should support config syntax").config(tags = setOf(Database, Linux)) {
       // ...
-    }.config(tags = setOf(Database, Linux))
+    }
   }
 }
 ```
@@ -700,8 +694,6 @@ class FunSpecTest : FunSpec() {
 You can also specify a default TestCaseConfig for all test cases of a Spec:
 
 ```kotlin
-import io.kotlintest.specs.StringSpec
-
 class MySpec : StringSpec() {
 
   override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
@@ -716,20 +708,23 @@ class MySpec : StringSpec() {
 Disabling Test Cases and Running Test Cases Conditionally
 ---------------------------------------------------------
 
-You can disable a test case simply by setting the config parameter `enabled` to `false`. If you're looking for something like JUnit's `@Ignore`, this is for you.
+You can disable a test case simply by setting the config parameter `enabled` to `false`.
+If you're looking for something like JUnit's `@Ignore`, this is for you.
 
 ```kotlin
-"should do something" {
+"should do something".config(enabled = false) {
   ...
-}.config(enabled = false)
+}
 ```
 
-You can use the same mechanism to run tests only under certain conditions. For example you could run certain tests only on Linux systems using [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
+You can use the same mechanism to run tests only under certain conditions.
+ For example you could run certain tests only on Linux systems using
+ [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
 
 ```kotlin
-"should do something" {
+"should do something".config(enabled = IS_OS_LINUX) {
   ...
-}.config(enabled = IS_OS_LINUX)
+}
 ```
 
 `isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
@@ -755,17 +750,17 @@ import io.kotlintest.specs.StringSpec
 
 class MyTest : StringSpec() {
   init {
-    "should run on Windows" {
+    "should run on Windows".config(tags = setOf(Windows)) {
       // ...
-    }.config(tags = setOf(Windows))
+    }
 
-    "should run on Linux" {
+    "should run on Linux".config(tags = setOf(Linux)) {
       // ...
-    }.config(tags = setOf(Linux))
+    }
 
-    "should run on Windows and Linux" {
+    "should run on Windows and Linux".config(tags = setOf(Windows, Linux)) {
       // ...
-    }.config(tags = setOf(Windows, Linux))
+    }
   }
 }
 ```
@@ -798,9 +793,6 @@ Closing resource automatically <a name="autoclose"></a>
 You can let KotlinTest close resources automatically after all tests have been run:
 
 ```kotlin
-import io.kotlintest.specs.StringSpec
-import java.io.StringReader
-
 class StringSpecExample : StringSpec() {
 
   val reader = autoClose(StringReader("xyz"))
@@ -822,12 +814,7 @@ Inspectors <a name="inspectors"></a>
 Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
 
 ```kotlin
-import io.kotlintest.matchers.*
-import io.kotlintest.specs.StringSpec
-
-class StringSpecExample : StringSpec() {
-
-  init {
+class StringSpecExample : StringSpec({
     "your test case" {
       val xs = listOf("aasdf", "basdf", "casdf")
           forAll(xs) { x ->
@@ -835,8 +822,7 @@ class StringSpecExample : StringSpec() {
             x should startWith("q")
           }
     }
-  }
-}
+})
 ```
 
 Similarly, if we wanted to asset that NO elements in a collection passed some assertions, we can do:
@@ -869,18 +855,15 @@ When testing future based code, it's useful to have a test run as soon as a futu
 KotlinTest allows you to do this, by using the `whenReady(future, fn)` construct.
 
 ```kotlin
-import io.kotlintest.specs.ShouldSpec
+class MyTests : StringSpec({
 
-class MyTests : ShouldSpec() {
-  init {
-    should("test a future") {
-      val f: CompletableFuture<String> = someFuture()
-      whenReady(f) { 
-        it shouldBe "wibble"
-      }
+    "test a future" {
+        val f: CompletableFuture<String> = someFuture()
+        whenReady(f) {
+            it shouldBe "wibble"
+        }
     }
-  }
-}
+})
 ```
 
 Eventually <a name="eventually"></a>
@@ -893,8 +876,6 @@ KotlinTest provides the `Eventually` mixin, which gives you the `eventually` fun
 or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin
-import io.kotlintest.specs.ShouldSpec
-
 class MyTests : ShouldSpec() {
   init {
     should("do something") {
