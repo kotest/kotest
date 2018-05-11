@@ -33,18 +33,18 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     executor.shutdown()
 
     logger.debug("Waiting for spec execution service to terminate")
-    executor.awaitTermination(1, TimeUnit.DAYS)
+    try {
+      executor.awaitTermination(1, TimeUnit.DAYS)
+    } catch (t: InterruptedException) {
+      error.compareAndSet(null, t)
+    }
 
     // the executor may have terminated early because it was shutdown immediately
     // by an error in a submission. This will be reflected in the error reference
     // being set to non null
-
-    error.get().let {
-      when (it) {
-        null -> Try.just(Unit)
-        else -> Try.raise(it)
-      }
-    }
+    val t = error.get()
+    if (t != null)
+      throw t
   }
 
   private fun end(t: Throwable?) = Try {
@@ -73,7 +73,8 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun submitSpec(klass: KClass<out Spec>) {
     val onError = { t: Throwable ->
       executor.shutdownNow()
-      error.set(t)
+      error.compareAndSet(null, t)
+      Unit
     }
     executor.submit {
       createSpec(klass).fold(onError, {

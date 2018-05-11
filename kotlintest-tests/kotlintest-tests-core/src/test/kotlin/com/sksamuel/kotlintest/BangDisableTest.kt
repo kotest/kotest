@@ -6,11 +6,13 @@ import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.specs.WordSpec
 
-class BangDisableFunTest : FunSpec({
-  test("!should not run") {
-    fail("boom")
+class BangDisableFunTest : FunSpec() {
+  init {
+    test("!should not run") {
+      fail("boom")
+    }
   }
-})
+}
 
 class BangDisableStringTest : StringSpec({
   "!should not run" {
