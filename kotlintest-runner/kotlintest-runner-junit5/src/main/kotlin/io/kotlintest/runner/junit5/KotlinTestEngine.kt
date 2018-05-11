@@ -47,11 +47,12 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
         request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
         ClasspathHelper.forClassLoader().toList().map { it.toURI() }
 
-    val classes = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors))
-    return KotlinTestEngineDescriptor(uniqueId, classes)
+    val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors))
+    return KotlinTestEngineDescriptor(uniqueId, result.classes)
   }
 
-  class KotlinTestEngineDescriptor(val id: UniqueId, val classes: List<KClass<out Spec>>) : EngineDescriptor(id, "KotlinTest") {
+  class KotlinTestEngineDescriptor(val id: UniqueId,
+                                   val classes: List<KClass<out Spec>>) : EngineDescriptor(id, "KotlinTest") {
     override fun mayRegisterTests(): Boolean = true
   }
 }

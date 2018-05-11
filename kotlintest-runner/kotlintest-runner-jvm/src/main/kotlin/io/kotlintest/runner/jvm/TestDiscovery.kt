@@ -9,6 +9,7 @@ import org.reflections.util.ConfigurationBuilder
 import org.reflections.util.FilterBuilder
 import org.slf4j.LoggerFactory
 import java.net.URI
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
@@ -21,6 +22,8 @@ import kotlin.reflect.KClass
  */
 data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
 
+data class DiscoveryResult(val classes: List<KClass<out Spec>>)
+
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
@@ -29,6 +32,7 @@ data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
 object TestDiscovery {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
+  private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
   init {
     ReflectionsHelper.registerUrlTypes()
@@ -78,13 +82,19 @@ object TestDiscovery {
         .filter { it.objectInstance == null }
 
     logger.debug("...which has filtered to ${specs.size} non abstract classes")
-    return specs
+
+    val extensions = Project.discoveryExtensions()
+    val filtered = extensions
+        .fold(specs, { cl, ext -> ext.afterScan(cl) })
+        .sortedBy { it.simpleName }
+
+    logger.debug("Result is ${filtered.size} classes after applying extensions")
+    return filtered
   }
 
-  fun discover(request: DiscoveryRequest): List<KClass<out Spec>> {
-    val classes = scan(request)
-    return Project.discoveryExtensions()
-        .fold(classes, { cl, ext -> ext.afterScan(cl) })
-        .sortedBy { it.simpleName }
-  }
+  fun discover(request: DiscoveryRequest): DiscoveryResult =
+      requests.getOrPut(request, {
+        val classes = scan(request)
+        DiscoveryResult(classes)
+      })
 }
