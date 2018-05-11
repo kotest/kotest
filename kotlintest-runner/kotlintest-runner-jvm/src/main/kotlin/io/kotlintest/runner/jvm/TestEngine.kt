@@ -1,6 +1,7 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
+import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import org.slf4j.LoggerFactory
@@ -8,6 +9,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  val parallelism: Int,
@@ -71,15 +73,25 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   }
 
   private fun submitSpec(klass: KClass<out Spec>) {
-    val onError = { t: Throwable ->
-      executor.shutdownNow()
-      error.compareAndSet(null, t)
-      Unit
-    }
     executor.submit {
-      createSpec(klass).fold(onError, {
-        executeSpec(it).onf(onError)
-      })
+      createSpec(klass).fold(
+          // if there is an error creating the spec then we
+          // will add a placeholder spec so we can see the error in intellij/gradle
+          // otherwise it won't appear
+          {
+            val desc = Description.root(klass.jvmName)
+            listener.prepareSpec(desc, klass)
+            listener.completeSpec(desc, it)
+            error.compareAndSet(null, it)
+            executor.shutdownNow()
+          },
+          {
+            executeSpec(it).onf { t ->
+              error.compareAndSet(null, t)
+              executor.shutdownNow()
+            }
+          }
+      )
     }
   }
 
@@ -92,12 +104,12 @@ class TestEngine(val classes: List<KClass<out Spec>>,
       }
 
   private fun executeSpec(spec: Spec) = Try {
-    listener.prepareSpec(spec)
+    listener.prepareSpec(spec.description(), spec::class)
     Try {
       runner(spec).execute(spec)
     }.fold(
-        { listener.completeSpec(spec, it) },
-        { listener.completeSpec(spec, null) }
+        { listener.completeSpec(spec.description(), it) },
+        { listener.completeSpec(spec.description(), null) }
     )
   }
 

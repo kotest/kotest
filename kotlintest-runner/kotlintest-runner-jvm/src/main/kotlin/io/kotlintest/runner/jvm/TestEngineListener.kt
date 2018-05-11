@@ -1,5 +1,6 @@
 package io.kotlintest.runner.jvm
 
+import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestResult
 import io.kotlintest.TestCase
@@ -30,13 +31,13 @@ interface TestEngineListener {
    * Is invoked once per [Spec] when the [TestEngine] is preparing
    * to submit the spec for execution to a [SpecRunner].
    */
-  fun prepareSpec(spec: Spec) {}
+  fun prepareSpec(description: Description, klass: KClass<out Spec>) {}
 
   /**
    * Is invoked once per [Spec] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun completeSpec(spec: Spec, t: Throwable?) {}
+  fun completeSpec(description: Description, t: Throwable?) {}
 
   /**
    * Executed each time a [TestCase] has been entered from a parent test.

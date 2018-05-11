@@ -89,25 +89,25 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     listener.executionFinished(root, result)
   }
 
-  override fun prepareSpec(spec: Spec) {
-    logger.debug("prepareSpec [$spec]")
+  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
+    logger.debug("prepareSpec [$description]")
     try {
-      val descriptor = createSpecDescriptor(spec)
+      val descriptor = createSpecDescriptor(description, klass)
       listener.executionStarted(descriptor)
     } catch (t: Throwable) {
       logger.error("Error in JUnit Platform listener", t)
     }
   }
 
-  override fun completeSpec(spec: Spec, t: Throwable?) {
-    logger.debug("completeSpec [$spec]")
+  override fun completeSpec(description: Description, t: Throwable?) {
+    logger.debug("completeSpec [$description]")
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
     // to wait until all possible invocations of each scope have completed.
     // for each description we can grab the best result and use that
     discovered
-        .filter { spec.description().isAncestorOf(it) }
+        .filter { description.isAncestorOf(it) }
         .sortedBy { it.depth() }
         .reversed()
         .forEach {
@@ -133,9 +133,9 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
         }
 
     // now we can complete the spec
-    val descriptor = descriptors[spec.description()]
+    val descriptor = descriptors[description]
     if (descriptor == null) {
-      logger.error("Spec descriptor cannot be null ${spec.description()}")
+      logger.error("Spec descriptor cannot be null $description")
       throw RuntimeException("Spec descriptor cannot be null")
     } else {
       val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
@@ -216,17 +216,17 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     return descriptor
   }
 
-  private fun createSpecDescriptor(spec: Spec): TestDescriptor {
+  private fun createSpecDescriptor(description: Description, klass: KClass<out Spec>): TestDescriptor {
 
-    val id = root.uniqueId.append("spec", spec.name())
-    val source = ClassSource.from(spec.javaClass)
+    val id = root.uniqueId.append("spec", description.name)
+    val source = ClassSource.from(klass.java)
 
-    val descriptor = object : AbstractTestDescriptor(id, spec.name(), source) {
+    val descriptor = object : AbstractTestDescriptor(id, description.name, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
       override fun mayRegisterTests(): Boolean = true
     }
 
-    descriptors[spec.description()] = descriptor
+    descriptors[description] = descriptor
 
     // we need to synchronize because we don't want to allow multiple specs adding
     // to the root container at the same time
