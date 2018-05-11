@@ -1,241 +1,235 @@
 KotlinTest
 ==========
 
+[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+
 How to use
 ----------
 
-KotlinTest is published to Maven Central, so to use, simply add the dependency in test scope to your build file. 
-You can get the latest version from the little badge at the top of the readme.
+KotlinTest is published to Maven Central so you can get the latest version from the little badge at the top of the readme.
 
-Gradle:
+#### Gradle
 
-    testCompile "io.kotlintest:kotlintest-runner-junit5:xxx"
+To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
+ as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the KotlinTest dependency.
 
-Maven:
+```groovy
+test {
+  useJUnitPlatform()
+}
+
+dependencies {
+  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
+}
+```
+
+#### Maven
+
+For maven you must configure the surefire plugin for junit tests.
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.19.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+
+And then add the KotlinTest JUnit5 runner to your build.
 
 ```xml
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>xxx</version>
+    <version>3.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
+
 Testing Styles<a name="styles"></a>
 --------------
 
-You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec or FreeSpec in your test class, and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
+KotlinTest is permissive in the way you can lay out tests, which it calls a testing _style_.
+There are several styles to pick from. There is no functional difference between them -
+ it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
+
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, or ExpectSpec in your test class,
+ and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
+
+For example, using a lambda expression in the constructor, with the StringSpec gives us:
 
 ```kotlin
-import io.kotlintest.specs.StringSpec
-
-// test cases in init block
-class MyTests : StringSpec() {
-  init {
-    // tests here
-  }
-}
-
-// test cases in lambda expression
 class MyTests : StringSpec({
   // tests here
 })
 ```
 
-### String Spec
-
-`StringSpec` reduces the syntax to the absolute minimum. Just write a string followed by a lambda expression with your test code. If in doubt, use this style.
+And using an init block, again with the StringSpec looks like:
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.StringSpec
-
 class MyTests : StringSpec() {
   init {
+    // tests here
+  }
+}
+```
+
+Using the lambda expression avoids another level of indentation and looks neater,
+ but it means you cannot override methods in the Spec parent such as `beforeTest` and `afterTest`.
+
+What follows is an example of each testing style.
+
+### String Spec
+
+`StringSpec` reduces the syntax to the absolute minimum.
+ Just write a string followed by a lambda expression with your test code. If in doubt, this is the style to use.
+
+```kotlin
+class MyTests : StringSpec({
     "strings.length should return size of string" {
       "hello".length shouldBe 5
     }
-  }
-}
+})
 ```
 
 ### Fun Spec
 
-`FunSpec` allows you to create tests similar to the junit style. You invoke a method called test, with a string parameter to describe the test, and then the test itself:
+`FunSpec` allows you to create tests similar to the classic jUnit style.
+ You invoke a method called test, with a string parameter to describe the test, and then the test itself.
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.FunSpec
-
-class MyTests : FunSpec() {
-  init {
+class MyTests : FunSpec({
     test("String.length should return the length of the string") {
-      "sammy".length shouldBe 5
-      "".length shouldBe 0
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
     }
-  }
-}
+})
 ```
 
 ### Should Spec
 
-`ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`. Eg:
+`ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`.
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.ShouldSpec
-
-class MyTests : ShouldSpec() {
-  init {
+class MyTests : ShouldSpec({
     should("return the length of the string") {
-      "sammy".length shouldBe 5
-      "".length shouldBe 0
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
     }
-  }
-}
+})
 ```
 
 This can be nested in context strings too, eg
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.ShouldSpec
-
-class MyTests : ShouldSpec() {
-  init {
+class MyTests : ShouldSpec({
     "String.length" {
-      should("return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
+        should("return the length of the string") {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
       }
     }
-  }
-}
+})
 ```
 
 ### Word Spec
 
-`WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string, eg:
+`WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string.
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.WordSpec
-
-class MyTests : WordSpec() {
-  init {
+class MyTests : WordSpec({
     "String.length" should {
-      "return the length of the string" {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
+        "return the length of the string" {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
       }
     }
-  }
-}
+})
 ```
 
 ### Feature Spec
 
-`FeatureSpec` allows you to use `feature`, `and` and `scenario`, as such:
+`FeatureSpec` allows you to use `feature` and `scenario`.
 
 ```kotlin
-import io.kotlintest.specs.FeatureSpec
-
-class MyTests : FeatureSpec() {
-  init {
-    feature("the thingy bob") {
-      and("when enabled") {
-        scenario("should explode when I touch it") {
+class MyTests : FeatureSpec({
+    feature("the can of coke") {
+        scenario("should be fizzy when I shake it") {
           // test here
         }
-        scenario("and should do this when I wibble it") {
+        scenario("and should be tasty") {
           // test heree
         }
-      }
     }
-  }
-}
+})
 ```
-
-`and` blocks are completely optional.
-s
 ### Behavior Spec
 
-`BehaviorSpec` allows you to use `given`, `when`, `then`, and `and` as such:
+`BehaviorSpec` allows you to use `given`, `when`, `then`.
 
 ```kotlin
-import io.kotlintest.specs.BehaviorSpec
-
-class MyTests : BehaviorSpec() {
-  init {
+class MyTests : BehaviorSpec({
     given("a broomstick") {
-      and("I am a witch") {
         `when`("I sit on it") {
-          then("I should be able to fly") {
-            // test code
-          }
-        }
+                then("I should be able to fly") {
+                  // test code
+                }
+            }
         `when`("I throw it away") {
-          then("it should come back") {
-            // test code
-          }
+                then("it should come back") {
+                  // test code
+                }
+            }
         }
-      }
     }
-  }
-}
+})
 ```
 
 Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
-
-`and` blocks are completely optional.
 
 ### Free Spec
 
 `FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.FreeSpec
-
-class MyTests : FreeSpec() {
-  init {
+class MyTests : FreeSpec({
     "String.length" - {
-      "should return the length of the string" {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-      }
+        "should return the length of the string" {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
     }
-  }
-}
+})
 ```
 
 ### Expect Spec
 
-`ExpectSpec` allows you to use `context`, `and`, and `expect` as such:
+`ExpectSpec` allows you to use `context` and `expect`.
 
 ```kotlin
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class MyTests : FreeSpec() {
-  init {
-    context("the thingy bob") {
-      and("a button") {
-        expect("explode when I touch it") {
+class MyTests : FreeSpec({
+    context("a calculator") {
+        expect("simple addition") {
           // test here
         }
-        expect("wobble when I wibble it") {
-          // test heree
+        expect("integer overflow") {
+          // test here
         }
-      }
     }
-  }
-}
+})
 ```
-
-`and` blocks are completely optional.
 
 Property-based Testing <a name="property-based"></a>
 ----------------------
@@ -361,36 +355,55 @@ class StringSpecExample : StringSpec() {
 Matchers <a name="matchers"></a>
 --------
 
-KotlinTest has many built in matchers, along a similar line to the popular [hamcrest](http://hamcrest.org/) project. 
-The simplest assertion is that a value should be equal to something, eg: `x shouldBe y`. 
-This will also work for null values, eg `x shouldBe null`. 
+KotlinTest has over 100 built in matchers. Matchers can be used in two styles:
 
-To negate a matcher, use _shouldNot_ eg `x shouldNotBe lt(4)`
+* Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
+* Infix functions like `a shouldBe b` or `a should startWith("foo")`
+
+Both styles are supported. The advantage of the extension function style is that the IDE can autocomplete for you,
+but some people may prefer the infix style as it is slightly cleaner.
+
+Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
+For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
+
+Matchers are available in the `kotlintest-assertions` module, which is usually added to the build
+when you add a KotlinTest test runner to your build (eg, `kotlintest-runner-junit5`). Of course, you could always add
+this to your build explicitly.
+
+The simplest matcher is that a value should be equal to something, eg: `x.shouldBe(y)`.
+This will also work for null values, eg `x.shouldBe(null)`.
 
 See the [full list of matchers](matchers.md).
 
 Custom Matchers
 --------------
 
-It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match again.
-For example to add a matcher that checks that a string contains the substring "foo", we can do the following:
+It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match against.
+The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result.
+The Result contains a boolean to indicate if the test passed or failed, and two messages.
+
+The first message should always be in the positive, ie, indicate what "should" happen, and the second message
+is used when the matcher is used with _not_.
+
+For example to create a matcher that checks that a string contains the substring "foo", we can do the following:
 
 ```kotlin
 fun containFoo() = object : Matcher<String> {
   override fun test(value: String) = Result(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
 }
 ```
-
-The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result. 
-The Result contains a boolean to indicate if the test passed or failed, and two messages. 
-The first message should always be in the positive, ie, indicate what "should" happen, and the second message
-is used when the matcher is used with _not_.
-
 This matcher could then be used as follows:
 
 ```kotlin
 "hello foo" should containFoo()
 "hello bar" shouldNot containFoo()
+```
+
+And we should then create an extension function version, like this:
+
+```kotlin
+fun String.shouldContainFoo() = this should containFoo()
+fun String.shouldNotContainFoo() = this shouldNot containFoo()
 ```
 
 Exceptions <a name="exceptions"></a>

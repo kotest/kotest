@@ -3,18 +3,14 @@ Matchers
 
 This page lists all current matchers in Kotlintest. Matchers can be used in two styles:
 
- * Infix functions like `a shouldBe b` or `a should startWith("foo")`
  * Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
+ * Infix functions like `a shouldBe b` or `a should startWith("foo")`
 
 Both styles are supported. The advantage of the extension function style is that the IDE can autocomplete for you,
  but some people may prefer the infix style as it is slightly cleaner.
 
 Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
 For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
-
-The following table shows the matchers available in the `kotlintest-assertions` module, which is usually added to the build
-when you add a KotlinTest test runner to your build (eg, `kotlintest-runner-junit5`). Of course, you could always add
-this to your build explicitly.
 
 | General |
 | -------- |
@@ -104,7 +100,6 @@ this to your build explicitly.
 | `collection.shouldContainOnlyNulls()`<br/>Asserts that the collection contains only null elements, or is empty. |
 | `collection.shouldContainNull()`<br/>Asserts that the collection contains at least one null element. |
 | `collection.shouldContainDuplicates()`<br/>Asserts that the collection contains at least one duplicate element. |
-
 | `list.shouldContainInOrder(other)`<br/>Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldContainElementAt()`<br/>Asserts that this list contains the given element at the given position. |
 

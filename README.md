@@ -144,7 +144,7 @@ Use
 
 #### Gradle
 
-To use in gradle, configure your build to use the [JUnit Plaform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
+To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
  as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the KotlinTest dependency.
 
 ```groovy
