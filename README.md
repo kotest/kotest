@@ -21,7 +21,7 @@ Community
 Test with Style
 ---------------
 
-Write simple and beautiful tests with the StringSpec style:
+Write simple and beautiful tests with the `StringSpec` style:
 
 ```kotlin
 class MyTests : StringSpec({
@@ -34,7 +34,7 @@ class MyTests : StringSpec({
 })
 ```
 
-You can choose the [testing style](doc/reference.md#styles) that fits your needs.
+KotlinTest comes with several [testing styles](doc/reference.md#styles) so you can choose one that fits your needs.
 
 Multitude of Matchers
 ---------------------
@@ -42,16 +42,16 @@ Multitude of Matchers
 Use over 100 provided matchers to test assertions on many different types:
 
 ```kotlin
-"substring" should include("str")
+"substring".shouldContain("str")
 
-user.email should beLowerCase()
+user.email.shouldBeLowerCase()
 
-myImmgeFile should haveExtension(".jpg")
+myImmgeFile.shouldHaveExtension(".jpg")
 
-cityMap should haveKey("London")
+cityMap.shouldContainKey("London")
 ```
 
-See the [full list of matchers](doc/matchers.md) or write your own.
+Matchers are extension methods and so your IDE will auto complete. See the [full list of matchers](doc/matchers.md) or write your own.
 
 Let the Computer Generate Your Test Data
 ----------------------------------------
@@ -108,7 +108,8 @@ exception.message should startWith("Something went wrong")
 Fine Tune Test Execution
 ------------------------
 
-You can specify the number of threads, invocations, and a timeout for each test or for all tests. And you can group tests by tags or disable them conditionally. 
+You can specify the number of threads, invocations, and a timeout for each test or for all tests.
+And you can group tests by tags or disable them conditionally.
 All you need is [`config`](doc/reference.md#config):
 
 ```kotlin
@@ -117,9 +118,9 @@ class MySpec : StringSpec() {
   override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
 
   init {
-    "should use config" {
+    "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
       // ...
-    }.config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux))
+    }
   }
 }
 ```
@@ -127,14 +128,15 @@ class MySpec : StringSpec() {
 And More ...
 ------------
 
-This page gives you just a short overview over KotlinTest. There are some more useful things:
+This page gives you just a short overview of KotlinTest. There are many more features:
 
-* Check whole collections with [Inspectors](doc/reference.md#inspectors).
-* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello" should haveSubstring("ell")`.
-* Reuse test logic, e. g. for setup or tear down, with [Listeners](doc/reference.md#listeners).
-* Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
+* Test whole collections with [Inspectors](doc/reference.md#inspectors).
+* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello".shouldHaveSubstring("ell")`.
+* Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
+* Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Use the [Spring extension](doc/reference.md#spring) to automatically inject your spring test classes.
+* Test [Arrow](https://github.com/arrow-kt/arrow) data types with the Arrow extension.
 
 See [full documentation](doc/reference.md).
 
@@ -142,26 +144,40 @@ Use
 ---
 
 Gradle:
-```
-buildscript {
-    dependencies {
-        classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"
-    }
-}
-// This allows gradle to execute _jUnit-platform-5_ based tests (which KotlinTest builds upon). 
-// Note: Gradle says that this is **not** required as of 4.6 but even with 4.6 it seems to be required.
-apply plugin: 'org.junit.platform.gradle.plugin'
 
-testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.4'
+To use in gradle, configure your build to use the [JUnit Plaform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
+ as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the following dependency.
+
+```groovy
+testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
 ```
 
 Maven:
+
+For maven you must configure the surefire plugin for junit tests.
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.19.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+
+And then add the KotlinTest JUnit 5 runner to your build.
 
 ```xml
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.0.4</version>
+    <version>3.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
