@@ -142,16 +142,24 @@ See [full documentation](doc/reference.md).
 Use
 ---
 
-Gradle:
+Gradle
+======
 
 To use in gradle, configure your build to use the [JUnit Plaform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
- as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the following dependency.
+ as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the KotlinTest dependency.
 
 ```groovy
-testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
+test {
+  useJUnitPlatform()
+}
+
+dependencies {
+  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.0'
+}
 ```
 
-Maven:
+Maven
+=====
 
 For maven you must configure the surefire plugin for junit tests.
 
@@ -170,7 +178,7 @@ For maven you must configure the surefire plugin for junit tests.
 </plugin>
 ```
 
-And then add the KotlinTest JUnit 5 runner to your build.
+And then add the KotlinTest JUnit5 runner to your build.
 
 ```xml
 <dependency>
