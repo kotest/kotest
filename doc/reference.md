@@ -157,7 +157,8 @@ class MyTests : WordSpec({
 
 ### Feature Spec
 
-`FeatureSpec` allows you to use `feature` and `scenario`.
+`FeatureSpec` allows you to use `feature` and `scenario`, which will be familar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/)
+Although not intended to be exactly the same as cucumber, the keywords mimic the style.
 
 ```kotlin
 class MyTests : FeatureSpec({
@@ -173,7 +174,7 @@ class MyTests : FeatureSpec({
 ```
 ### Behavior Spec
 
-`BehaviorSpec` allows you to use `given`, `when`, `then`.
+Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `given`, `when`, `then`.
 
 ```kotlin
 class MyTests : BehaviorSpec({
@@ -211,21 +212,40 @@ class MyTests : FreeSpec({
 })
 ```
 
+### Describe Spec
+
+`DescribeSpec` offers functionality familar to those who are coming from a Ruby background, as this testing style
+ mimics the popular ruby test framework [rspec](http://rspec.info/). The scopes available are `describe`, `context`, and `it.
+
+```kotlin
+class MyTests : DescribeSpec({
+    describe("score") {
+        it("start as zero") {
+            // test here
+        }
+        context("with a strike") {
+            it("adds ten") {
+                // test here
+            }
+            it("carries strike to the next frame") {
+                // test here
+            }
+       }
+   }
+}
+```
 ### Expect Spec
 
 `ExpectSpec` allows you to use `context` and `expect`.
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.specs.FreeSpec
-
-class MyTests : FreeSpec({
+class MyTests : ExpectSpec({
     context("a calculator") {
         expect("simple addition") {
-          // test here
+            // test here
         }
         expect("integer overflow") {
-          // test here
+            // test here
         }
     }
 })
