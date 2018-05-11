@@ -82,7 +82,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       // no completions yet until complete spec is called
       then(mock).should(never()).executionFinished(any(), any())
 
-      listener.prepareSpec(spec.description(), spec::class)
+      listener.completeSpec(spec.description(), null)
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
     }

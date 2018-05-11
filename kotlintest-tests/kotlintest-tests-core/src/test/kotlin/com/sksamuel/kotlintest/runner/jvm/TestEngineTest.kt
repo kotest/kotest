@@ -13,6 +13,7 @@ import kotlin.reflect.jvm.jvmName
 
 class TestEngineTest : WordSpec({
   "TestEngine" should {
+    System.setProperty("TestEngineTest", "true")
     "notify of a project failure if a spec has an init error" {
       val listener = mock<TestEngineListener> {}
       val engine = TestEngine(listOf(InitErrorSpec::class), 1, listener)
@@ -27,11 +28,15 @@ class TestEngineTest : WordSpec({
       then(listener).should().completeSpec(argThat { name == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" }, any<InvocationTargetException>())
       then(listener).should().engineFinished(any<InvocationTargetException>())
     }
+    System.getProperties().remove("TestEngineTest")
   }
 })
 
 class InitErrorSpec : StringSpec() {
   init {
-    throw RuntimeException("kabloom")
+    // we only want to throw this when are testing it via TestEngineTest above
+    // and not through normal discovery of all tests
+    if (System.getProperty("TestEngineTest") == "true")
+      throw RuntimeException("kaboom")
   }
 }
