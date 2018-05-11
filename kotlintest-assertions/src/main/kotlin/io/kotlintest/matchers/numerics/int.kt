@@ -2,6 +2,7 @@ package io.kotlintest.matchers.numerics
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.between
 import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
@@ -24,6 +25,9 @@ fun beOdd() = object : Matcher<Int> {
   override fun test(value: Int): Result =
       Result(value % 2 == 1, "$value should be odd", "$value should be even")
 }
+
+fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
+fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
 
 fun Int.shouldBeLessThan(x: Int) = this shouldBe lt(x)
 fun Int.shouldNotBeLessThan(x: Int) = this shouldNotBe lt(x)

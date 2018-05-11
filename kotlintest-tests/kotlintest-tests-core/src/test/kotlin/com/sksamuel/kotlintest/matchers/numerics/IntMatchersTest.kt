@@ -10,6 +10,11 @@ import io.kotlintest.matchers.lte
 import io.kotlintest.matchers.numerics.beInRange
 import io.kotlintest.matchers.numerics.beEven
 import io.kotlintest.matchers.numerics.beOdd
+import io.kotlintest.matchers.numerics.shouldBeBetween
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
+import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.should
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
@@ -28,7 +33,7 @@ class IntMatchersTest : StringSpec() {
 
     "should return expected/actual in intellij format" {
       shouldThrow<AssertionError> {
-       1 shouldBe 444
+        1 shouldBe 444
       }.message shouldBe "expected: 444 but was: 1"
     }
 
@@ -57,6 +62,7 @@ class IntMatchersTest : StringSpec() {
 
     "beGreaterThan" {
       1 should beGreaterThan(0)
+      3.shouldBeGreaterThan(2)
 
       shouldThrow<AssertionError> {
         2 should beGreaterThan(3)
@@ -65,6 +71,7 @@ class IntMatchersTest : StringSpec() {
 
     "beLessThan" {
       1 should beLessThan(2)
+      1.shouldBeLessThan(2)
 
       shouldThrow<AssertionError> {
         2 shouldBe lt(1)
@@ -73,14 +80,16 @@ class IntMatchersTest : StringSpec() {
 
     "beLessThanOrEqualTo" {
       1 should beLessThanOrEqualTo(2)
+      2.shouldBeLessThanOrEqual(3)
 
       shouldThrow<AssertionError> {
         2 shouldBe lte(1)
       }
     }
 
-    "greaterThan" {
+    "beGreaterThanOrEqualTo" {
       1 should beGreaterThanOrEqualTo(0)
+      3.shouldBeGreaterThanOrEqual(1)
 
       shouldThrow<AssertionError> {
         2 should beGreaterThanOrEqualTo(3)
@@ -99,6 +108,7 @@ class IntMatchersTest : StringSpec() {
 
       forAll(table) { a, b ->
         1 shouldBe between(a, b)
+        1.shouldBeBetween(a, b)
       }
     }
 

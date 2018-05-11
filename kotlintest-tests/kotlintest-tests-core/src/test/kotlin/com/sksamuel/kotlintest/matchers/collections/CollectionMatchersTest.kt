@@ -16,6 +16,8 @@ import io.kotlintest.matchers.collections.shouldContainElementAt
 import io.kotlintest.matchers.collections.shouldContainNoNulls
 import io.kotlintest.matchers.collections.shouldContainNull
 import io.kotlintest.matchers.collections.shouldContainOnlyNulls
+import io.kotlintest.matchers.collections.shouldHaveSingleElement
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.matchers.collections.shouldNotBeSorted
 import io.kotlintest.matchers.collections.shouldNotContainAll
@@ -101,6 +103,7 @@ class CollectionMatchersTest : WordSpec() {
     "singleElement" should {
       "test that a collection contains a single given element"  {
         listOf(1) shouldBe singleElement(1)
+        listOf(1).shouldHaveSingleElement(1)
         shouldThrow<AssertionError> {
           listOf(1) shouldBe singleElement(2)
         }
@@ -126,6 +129,7 @@ class CollectionMatchersTest : WordSpec() {
       "test that a collection has a certain size" {
         val col1 = listOf(1, 2, 3)
         col1 should haveSize(3)
+        col1.shouldHaveSize(3)
         shouldThrow<AssertionError> {
           col1 should haveSize(2)
         }

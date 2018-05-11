@@ -7,10 +7,14 @@ import io.kotlintest.matchers.haveKey
 import io.kotlintest.matchers.haveKeys
 import io.kotlintest.matchers.haveValue
 import io.kotlintest.matchers.haveValues
+import io.kotlintest.matchers.maps.shouldContain
+import io.kotlintest.matchers.maps.shouldContainAll
+import io.kotlintest.matchers.maps.shouldContainExactly
 import io.kotlintest.matchers.maps.shouldContainKey
 import io.kotlintest.matchers.maps.shouldContainKeys
 import io.kotlintest.matchers.maps.shouldContainValue
 import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldNotContainAll
 import io.kotlintest.matchers.maps.shouldNotContainKey
 import io.kotlintest.matchers.maps.shouldNotContainValue
 import io.kotlintest.matchers.maps.shouldNotContainValues
@@ -62,6 +66,7 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains the given pair" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should contain(1, "a")
+        map.shouldContain(2, "b")
         shouldThrow<AssertionError> {
           map should contain(2, "a")
         }
@@ -116,9 +121,12 @@ class MapMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           map should containAll(mapOf(3 to "c"))
         }
+        map.shouldContainAll(mapOf(1 to "a", 3 to "c"))
+        map.shouldNotContainAll(mapOf(1 to "a", 3 to "h"))
       }
       "test empty map" {
         emptyMap<Any, Any>() should containAll(emptyMap<Any, Any>())
+        emptyMap<Any, Any>().shouldContainAll(emptyMap<Any, Any>())
       }
       "test assertion that map does not contain entries from the given map" {
         val e = shouldThrow<AssertionError> {
@@ -203,6 +211,7 @@ class MapMatchersTest : WordSpec() {
     "containExactly" should {
       "test empty map" {
         emptyMap<Any, Any>() should containExactly(emptyMap<Any, Any>())
+        emptyMap<Any, Any>().shouldContainExactly(emptyMap<Any, Any>())
       }
       "test assertion that a map contains extra keys" {
         val e = shouldThrow<AssertionError> {

@@ -5,6 +5,15 @@ import io.kotlintest.matchers.date.before
 import io.kotlintest.matchers.date.haveSameDay
 import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
+import io.kotlintest.matchers.date.shouldBeAfter
+import io.kotlintest.matchers.date.shouldBeBefore
+import io.kotlintest.matchers.date.shouldBeWithin
+import io.kotlintest.matchers.date.shouldHaveSameDayAs
+import io.kotlintest.matchers.date.shouldHaveSameMonthAs
+import io.kotlintest.matchers.date.shouldHaveSameYearAs
+import io.kotlintest.matchers.date.shouldNotBeAfter
+import io.kotlintest.matchers.date.shouldNotBeBefore
+import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
 import io.kotlintest.matchers.date.within
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -23,6 +32,8 @@ class DateMatchersTest : StringSpec() {
     "LocalDate should have same year ignoring other fields" {
       LocalDate.of(2014, 1, 2) should haveSameYear(LocalDate.of(2014, 5, 6))
       LocalDate.of(2014, 1, 2) shouldNot haveSameYear(LocalDate.of(2018, 5, 6))
+      LocalDate.of(2014, 1, 2).shouldHaveSameYearAs(LocalDate.of(2014, 5, 6))
+      LocalDate.of(2014, 1, 2).shouldNotHaveSameYearAs(LocalDate.of(2018, 5, 6))
     }
 
     "LocalDateTime should have same year ignoring other fields" {
@@ -42,6 +53,7 @@ class DateMatchersTest : StringSpec() {
 
     "LocalDate should have same month ignoring other fields" {
       LocalDate.of(2014, 1, 2) should haveSameMonth(LocalDate.of(2016, 1, 6))
+      LocalDate.of(2014, 1, 2).shouldHaveSameMonthAs(LocalDate.of(2016, 1, 6))
       LocalDate.of(2014, 1, 2) shouldNot haveSameMonth(LocalDate.of(2018, 4, 6))
     }
 
@@ -62,6 +74,7 @@ class DateMatchersTest : StringSpec() {
 
     "LocalDate should have same day ignoring other fields" {
       LocalDate.of(2014, 1, 2) should haveSameDay(LocalDate.of(2014, 1, 2))
+      LocalDate.of(2014, 1, 2).shouldHaveSameDayAs(LocalDate.of(2014, 1, 2))
       LocalDate.of(2014, 1, 2) shouldNot haveSameDay(LocalDate.of(2014, 4, 6))
     }
 
@@ -82,7 +95,9 @@ class DateMatchersTest : StringSpec() {
 
     "LocalDate shouldBe before" {
       LocalDate.of(2014, 1, 2) shouldBe before(LocalDate.of(2014, 1, 3))
+      LocalDate.of(2014, 1, 2).shouldBeBefore(LocalDate.of(2014, 1, 3))
       LocalDate.of(2014, 1, 2) shouldNotBe before(LocalDate.of(2014, 1, 1))
+      LocalDate.of(2014, 1, 2).shouldNotBeBefore(LocalDate.of(2014, 1, 1))
     }
 
     "LocalDateTime shouldBe before" {
@@ -103,6 +118,8 @@ class DateMatchersTest : StringSpec() {
     "LocalDate shouldBe after" {
       LocalDate.of(2014, 1, 2) shouldBe after(LocalDate.of(2013, 1, 3))
       LocalDate.of(2014, 1, 2) shouldNotBe after(LocalDate.of(2014, 1, 3))
+      LocalDate.of(2014, 1, 2).shouldBeAfter(LocalDate.of(2013, 1, 3))
+      LocalDate.of(2014, 1, 2).shouldNotBeAfter(LocalDate.of(2014, 1, 3))
     }
 
     "LocalDateTime shouldBe after" {
@@ -124,6 +141,7 @@ class DateMatchersTest : StringSpec() {
     "LocalDate shouldBe within(period, date)" {
       LocalDate.of(2014, 1, 2) shouldBe within(Period.ofDays(3), LocalDate.of(2014, 1, 1))
       LocalDate.of(2014, 1, 2) shouldBe within(Period.ofDays(3), LocalDate.of(2014, 1, 5))
+      LocalDate.of(2014, 1, 2).shouldBeWithin(Period.ofDays(3), LocalDate.of(2014, 1, 5))
       LocalDate.of(2014, 1, 2) shouldNotBe within(Period.ofDays(3), LocalDate.of(2014, 1, 6))
     }
 
