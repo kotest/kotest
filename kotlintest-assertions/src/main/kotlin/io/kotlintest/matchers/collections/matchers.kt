@@ -33,10 +33,10 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
       )
 }
 
-@Deprecated("Use shouldContainElemenetAt", ReplaceWith("this should haveElementAt(index, element)", "io.kotlintest.should"))
+@Deprecated("Use shouldContainElementAt", ReplaceWith("this.shouldContainElementAt(index, element)", "io.kotlintest.should"))
 fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
 
-@Deprecated("Use shouldContainElemenetAt", ReplaceWith("this should haveElementAt(index, element)", "io.kotlintest.should"))
+@Deprecated("Use shouldContainElementAt", ReplaceWith("this.shouldContainElementAt(index, element)", "io.kotlintest.should"))
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
