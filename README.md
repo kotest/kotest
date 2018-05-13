@@ -135,7 +135,7 @@ This page gives you just a short overview of KotlinTest. There are many more fea
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Use the [Spring extension](doc/reference.md#spring) to automatically inject your spring test classes.
-* Test [Arrow](https://github.com/arrow-kt/arrow) data types with the Arrow extension.
+* Test [Arrow](doc/reference.md#arrow-matchers) data types with the Arrow extension.
 
 See [full documentation](doc/reference.md).
 
