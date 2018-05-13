@@ -924,7 +924,7 @@ val option: Option<String> = ...
 option shouldBe beSome("foo")
 ```
 
-For the full list of arrow matchers [click here](docs/arrow-matchers.md).
+For the full list of arrow matchers [click here](arrow-matchers.md).
 
 ### Spring
 
