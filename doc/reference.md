@@ -375,6 +375,7 @@ class StringSpecExample : StringSpec() {
 Matchers <a name="matchers"></a>
 --------
 
+Matchers are used to assert a variable or function should have a particular value.
 KotlinTest has over 100 built in matchers. Matchers can be used in two styles:
 
 * Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
@@ -391,12 +392,12 @@ when you add a KotlinTest test runner to your build (eg, `kotlintest-runner-juni
 this to your build explicitly.
 
 The simplest matcher is that a value should be equal to something, eg: `x.shouldBe(y)`.
-This will also work for null values, eg `x.shouldBe(null)`.
+This will also work for null values, eg `x.shouldBe(null)`. More specialized matchers test for things like string length, file size,
+ collection duplicates and so on.
 
-See the [full list of matchers](matchers.md).
+See the [full list of matchers](matchers.md) for more details.
 
-Custom Matchers
---------------
+### Custom Matchers
 
 It is easy to add your own matchers. Simply extend the Matcher<T> interface, where T is the type you wish to match against.
 The Matcher interface specifies one method, `test`, which you must implement returning an instance of Result.
@@ -426,8 +427,7 @@ fun String.shouldContainFoo() = this should containFoo()
 fun String.shouldNotContainFoo() = this shouldNot containFoo()
 ```
 
-Exceptions <a name="exceptions"></a>
-----------
+### Exceptions <a name="exceptions"></a>
 
 To assert that a given block of code throws an exception, one can use the `shouldThrow` function. Eg,
 
@@ -450,15 +450,101 @@ If you want to test that _exactly_ a type of exception is thrown, then use `shou
 If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 
 
-ProjectConfig
--------------
+Project Config
+--------------
+
+KotlinTest is flexible and has many configuration aspects. Project-wide configuration is used by creating a special singleton object
+ which is loaded at runtime by KotlinTest.
+
+To enable this, create an object that is derived from `AbstractProjectConfig`, name this object `ProjectConfig`
+and place it in a package called `io.kotlintest.provided`. KotlinTest will detect its presence and use any configuration
+defined there when executing tests.
+
+###  Executing Code Before and After a Whole Project
+
+To run some logic before the very first test case and/or after the very last test case of your project, you can
+ override `beforeAll` and `afterAll` in the _ProjectConfig_ singleton.
+
+Example:
+
+```kotlin
+object DemoConfig : ProjectConfig() {
+
+  private var started: Long = 0
+
+  override fun beforeAll() {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterAll() {
+    val time = System.currentTimeMillis() - started
+    println("overall time [ms]: " + time)
+  }
+}
+```
+
+### Project Extensions
+
+Reusable extensions can be registered in the _ProjectConfig_. Where appropriate these will be executed for all
+ test cases and specs.
+
+For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
+
+```kotlin
+interface ProjectExtension {
+  fun beforeAll() {}
+  fun afterAll() {}
+}
+```
+
+This extension can then be registered with the project config.
+
+```kotlin
+object DemoConfig : ProjectConfig() {
+  override val extensions = listOf(MyProjectExtension)
+}
+```
+
+### Discovery Extension
+
+Another type of extension that can be used inside project config is the `DiscoveryExtension`. This extension is designed
+ to allow customisable of the way spec classes are discovered and instantiated. There are two functions of interest that
+ can be overridden.
+
+The first is `afterScan` which accepts a list of Spec classes that were discovered by KotlinTest during the _discovery_ phase
+ of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
+ overriding this function, you are able to customize which classes are found, by filtering some, or adding in others.
+
+The second function is `instantiate` whch acccepts a `KClass<Spec>` and then attempts to create an instance of this Spec class.
+ By default, test classes are assumed to have zero-arg primary constructors. If you wish to use non-zero arg primary constructors,
+ this function can be implemented with logic on how to instantiate a test class.
+
+An implementation can choose to create a new instance, or it can choose to return null if it wishes to pass control to the next
+extension (or if no more extensions, then back to the Test Engine itself).
+
+By overriding this function, extensions are able to customize the way classes are created, to support things like constructors
+with parameters, or classes that require special initization logic. This type of extension is how the Spring Constructor Injection
+add-on works.
+
+### Parallelism
+
+KotlinTest supports running specs in parallel to take advantage of modern cpus with several cores. To do this, override
+ the `parallelism` function inside the project config.
+
+object ProjectConfig : AbstractProjectConfig() {
+   override fun parallelism(): Int = 2
+}
+
+By default the value is 1, which will run each spec serially.
+
+Note: Test cases inside each spec will always run strictly in definition order.
+
 
 Interceptors <a name="interceptors"></a>
 ------------
 
 If you need to execute some logic before and/or after each test case, then you can use an interceptor. This is for example useful to cleanup a database after the test have run. 
 
-In the `ProjectConfig` (see below) you can override `beforeAll` and `afterAll` or add extentions with such methods to the ProjectConfig. Logic in theses methods will be executed before and/or after the first/last test of the project.
 
 In a spec class you can intercept the spec execution by overriding the `interceptors` property and providing a list of interceptors or by overriding `interceptSpec`.
 
@@ -582,50 +668,6 @@ val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, te
 }
 ```
 
-###  Executing Code Before and After a Whole Project
-
-To run some logic before the very first test case or after the very last test case of you your project you can define a ProjectConfig singleton object derived from `ProjectConfig` somewhere in your test folder (preferably in the top-level test folder, but it will be found anywhere on the class path).
-
-Override `beforeAll` and/or `afterAll`, to provide logic to be run before or after all tests of the project.
-
-Example:
-
-```kotlin
-object DemoConfig : ProjectConfig() {
-
-  override val extensions = listOf(TestExtension)
-
-  private var started: Long = 0
-
-  override fun beforeAll() {
-    started = System.currentTimeMillis()
-  }
-
-  override fun afterAll() {
-    val time = System.currentTimeMillis() - started
-    println("overall time [ms]: " + time)
-  }
-}
-```
-
-### Project Extensions
-
-To provide reusable beforeAll and afterAll callbacks you can implement the interface `ProjectExtension`:
-
-```kotlin
-interface ProjectExtension {
-  fun beforeAll() {}
-  fun afterAll() {}
-}
-```
-
-Extensions are registered with the project config:
-
-```kotlin
-object DemoConfig : ProjectConfig() {
-  override val extensions = listOf(MyProjectExtension)
-}
-```
 
 The `beforeAll` methods of the extensions are executed in the order of extensions (from left to right). The `afterAll` methods are executed in reversed order (from right to left). If you had two extensions `listOf(A, B)` the order of execution would be:
 
