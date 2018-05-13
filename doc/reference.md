@@ -54,11 +54,11 @@ And then add the KotlinTest JUnit5 runner to your build.
 ```
 
 
-Testing Styles<a name="styles"></a>
+Testing Styles
 --------------
 
 KotlinTest is permissive in the way you can lay out tests, which it calls a testing _style_.
-There are several styles to pick from. There is no functional difference between them -
+There are [several styles](styles.md) to pick from. There is no functional difference between these -
  it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
 
 You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, or ExpectSpec in your test class,
@@ -83,173 +83,9 @@ class MyTests : StringSpec() {
 ```
 
 Using the lambda expression avoids another level of indentation and looks neater,
- but it means you cannot override methods in the Spec parent such as `beforeTest` and `afterTest`.
+ but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
 
-What follows is an example of each testing style.
-
-### String Spec
-
-`StringSpec` reduces the syntax to the absolute minimum.
- Just write a string followed by a lambda expression with your test code. If in doubt, this is the style to use.
-
-```kotlin
-class MyTests : StringSpec({
-    "strings.length should return size of string" {
-      "hello".length shouldBe 5
-    }
-})
-```
-
-### Fun Spec
-
-`FunSpec` allows you to create tests similar to the classic jUnit style.
- You invoke a method called test, with a string parameter to describe the test, and then the test itself.
-
-```kotlin
-class MyTests : FunSpec({
-    test("String.length should return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-    }
-})
-```
-
-### Should Spec
-
-`ShouldSpec` is similar to fun spec, but uses the keyword `should` instead of `test`.
-
-```kotlin
-class MyTests : ShouldSpec({
-    should("return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-    }
-})
-```
-
-This can be nested in context strings too, eg
-
-```kotlin
-class MyTests : ShouldSpec({
-    "String.length" {
-        should("return the length of the string") {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-      }
-    }
-})
-```
-
-### Word Spec
-
-`WordSpec` uses the keyword `should` and uses that to nest test blocks after a context string.
-
-```kotlin
-class MyTests : WordSpec({
-    "String.length" should {
-        "return the length of the string" {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-      }
-    }
-})
-```
-
-### Feature Spec
-
-`FeatureSpec` allows you to use `feature` and `scenario`, which will be familar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/)
-Although not intended to be exactly the same as cucumber, the keywords mimic the style.
-
-```kotlin
-class MyTests : FeatureSpec({
-    feature("the can of coke") {
-        scenario("should be fizzy when I shake it") {
-          // test here
-        }
-        scenario("and should be tasty") {
-          // test heree
-        }
-    }
-})
-```
-### Behavior Spec
-
-Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` allows you to use `given`, `when`, `then`.
-
-```kotlin
-class MyTests : BehaviorSpec({
-    given("a broomstick") {
-        `when`("I sit on it") {
-                then("I should be able to fly") {
-                  // test code
-                }
-            }
-        `when`("I throw it away") {
-                then("it should come back") {
-                  // test code
-                }
-            }
-        }
-    }
-})
-```
-
-Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
-available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
-
-### Free Spec
-
-`FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
-
-```kotlin
-class MyTests : FreeSpec({
-    "String.length" - {
-        "should return the length of the string" {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-        }
-    }
-})
-```
-
-### Describe Spec
-
-`DescribeSpec` offers functionality familar to those who are coming from a Ruby background, as this testing style
- mimics the popular ruby test framework [rspec](http://rspec.info/). The scopes available are `describe`, `context`, and `it.
-
-```kotlin
-class MyTests : DescribeSpec({
-    describe("score") {
-        it("start as zero") {
-            // test here
-        }
-        context("with a strike") {
-            it("adds ten") {
-                // test here
-            }
-            it("carries strike to the next frame") {
-                // test here
-            }
-       }
-   }
-}
-```
-### Expect Spec
-
-`ExpectSpec` allows you to use `context` and `expect`.
-
-```kotlin
-class MyTests : ExpectSpec({
-    context("a calculator") {
-        expect("simple addition") {
-            // test here
-        }
-        expect("integer overflow") {
-            // test here
-        }
-    }
-})
-```
+[See an example](styles.md) of each testing style.
 
 Matchers and Assertions
 --------
@@ -776,7 +612,7 @@ object TestExtension : ProjectExtension {
 One Instance Per Test
 ---------------------
 
-All specs allow you to instruct the test runner to create a new instance of the Spec for every test case.
+All specs allow you to instruct the test engine to create a new instance of the Spec for every test case.
  
 To do this simply override the `isInstancePerTest()` function returning true:
 
@@ -789,7 +625,7 @@ class MyTests : FunSpec() {
 }
 ```
 
-This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` return false.
+This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` returns false.
 
 
 
