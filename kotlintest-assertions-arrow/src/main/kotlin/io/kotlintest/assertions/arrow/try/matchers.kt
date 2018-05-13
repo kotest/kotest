@@ -1,10 +1,16 @@
 package io.kotlintest.assertions.arrow.`try`
 
+import arrow.core.Success
 import arrow.core.Try
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+
+fun <T> Try<T>.shouldBeSuccess() = this should beSuccess<T>()
+fun <T> Try<T>.shouldNotBeSuccess() = this shouldNot beSuccess<T>()
+fun <T> beSuccess() = beInstanceOf2<Try<T>, Success<T>>()
 
 fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
 fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)

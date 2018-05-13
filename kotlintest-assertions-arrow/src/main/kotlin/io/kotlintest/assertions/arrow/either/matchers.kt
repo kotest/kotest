@@ -3,8 +3,17 @@ package io.kotlintest.assertions.arrow.either
 import arrow.core.Either
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+
+fun <T> Either<Any, T>.shouldBeRight() = this should beRight()
+fun <T> Either<Any, T>.shouldNotBeRight() = this shouldNot beRight()
+fun <T> beRight() = beInstanceOf2<Either<Any, T>, Either.Right<Any, T>>()
+
+fun <T> Either<T, Any>.shouldBeLeft() = this should beLeft()
+fun <T> Either<T, Any>.shouldNotBeLeft() = this shouldNot beLeft()
+fun <T> beLeft() = beInstanceOf2<Either<T, Any>, Either.Right<T, Any>>()
 
 fun <B> Either<Any, B>.shouldBeRight(b: B) = this should beRight(b)
 fun <B> Either<Any, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)

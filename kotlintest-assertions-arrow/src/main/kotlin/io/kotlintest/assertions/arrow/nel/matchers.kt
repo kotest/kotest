@@ -6,8 +6,8 @@ import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
-fun NonEmptyList<Any>.shouldContainOnlyNulls() = this should containOnlyNulls()
-fun NonEmptyList<Any>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
+fun <T> NonEmptyList<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
+fun <T> NonEmptyList<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -17,8 +17,8 @@ fun <T> containOnlyNulls() = object : Matcher<NonEmptyList<T>> {
       )
 }
 
-fun NonEmptyList<Any>.shouldContainNull() = this should containNull()
-fun NonEmptyList<Any>.shouldNotContainNull() = this shouldNot containNull()
+fun <T> NonEmptyList<T>.shouldContainNull() = this should containNull()
+fun <T> NonEmptyList<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(
@@ -39,8 +39,8 @@ fun <T> haveElementAt(index: Int, element: T) = object : Matcher<NonEmptyList<T>
       )
 }
 
-fun NonEmptyList<Any>.shouldContainNoNulls() = this should containNoNulls()
-fun NonEmptyList<Any>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
+fun <T> NonEmptyList<T>.shouldContainNoNulls() = this should containNoNulls()
+fun <T> NonEmptyList<T>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) =
       Result(

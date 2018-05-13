@@ -4,6 +4,7 @@ import arrow.data.Invalid
 import arrow.data.Valid
 import io.kotlintest.assertions.arrow.validation.beInvalid
 import io.kotlintest.assertions.arrow.validation.beValid
+import io.kotlintest.assertions.arrow.validation.shouldBeInvalid
 import io.kotlintest.assertions.arrow.validation.shouldBeValid
 import io.kotlintest.assertions.arrow.validation.shouldNotBeValid
 import io.kotlintest.should
@@ -39,5 +40,6 @@ class ValidatedMatchersTest : StringSpec({
     }.message shouldBe "Valid(a=foo) should be Invalid"
 
     Invalid("error") should beInvalid()
+    Invalid("error").shouldBeInvalid()
   }
 })

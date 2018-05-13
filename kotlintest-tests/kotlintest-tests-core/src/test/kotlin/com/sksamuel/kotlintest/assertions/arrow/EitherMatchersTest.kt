@@ -3,6 +3,9 @@ package com.sksamuel.kotlintest.assertions.arrow
 import arrow.core.Either
 import io.kotlintest.assertions.arrow.either.beLeft
 import io.kotlintest.assertions.arrow.either.beRight
+import io.kotlintest.assertions.arrow.either.shouldBeLeft
+import io.kotlintest.assertions.arrow.either.shouldBeRight
+import io.kotlintest.assertions.arrow.either.shouldNotBeRight
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -12,7 +15,13 @@ class EitherMatchersTest : WordSpec() {
 
   init {
 
-    "Either shouldBe right(value)" should {
+    "Either should beRight()" should {
+      "test that the either is of type right" {
+        Either.right("boo").shouldBeRight()
+      }
+    }
+
+    "Either should beRight(value)" should {
       "test that an either is a right with the given value" {
 
         shouldThrow<AssertionError> {
@@ -23,11 +32,20 @@ class EitherMatchersTest : WordSpec() {
           Either.right("foo") should beRight("boo")
         }.message shouldBe "Either should be Right(boo) but was Right(foo)"
 
+        Either.left("foo").shouldNotBeRight("foo")
+
         Either.right("boo") should beRight("boo")
+        Either.right("boo").shouldBeRight("boo")
       }
     }
 
-    "Either shouldBe left(value)" should {
+    "Either should beLeft()" should {
+      "test that the either is of type left" {
+        Either.right("boo").shouldBeLeft()
+      }
+    }
+
+    "Either should beLeft(value)" should {
       "test that an either is a left with the given value" {
 
         shouldThrow<AssertionError> {
@@ -39,6 +57,7 @@ class EitherMatchersTest : WordSpec() {
         }.message shouldBe "Either should be Left(boo) but was Left(foo)"
 
         Either.left("boo") should beLeft("boo")
+        Either.left("boo").shouldBeLeft("boo")
       }
     }
   }

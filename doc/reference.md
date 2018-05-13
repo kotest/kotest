@@ -907,8 +907,27 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-Spring
----------
+Extensions
+----------
+
+KotlinTest comes with several extension modules which are not part of the main build.
+
+### Arrow Matchers
+
+Extra matchers for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
+ To use this library you need to add `kotlintest-assertions-arrow` to your build.
+
+Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
+
+```kotlin
+val option: Option<String> = ...
+option shouldBe beSome("foo")
+```
+
+For the full list of arrow matchers [click here](docs/arrow-matchers.md).
+
+### Spring
+
 
 KotlinTest offers a Spring extension to allow you to test code that uses uses Spring to inject dependencies.
 To enable this, add the `kotlintest-extensions-spring` module to your test compile path. Then add the `SpringListener`

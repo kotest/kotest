@@ -20,6 +20,18 @@ fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
   override fun test(value: T) = Result(value === ref, "$value should be the same reference as $ref", "$value should not be the same reference as $ref")
 }
 
+inline fun <U : Any, reified T : U> beInstanceOf2(): Matcher<U> = object : Matcher<U> {
+
+  override fun test(value: U): Result =
+      Result(
+          T::class.java.isAssignableFrom(value.javaClass),
+          "$value is of type ${value.javaClass} but expected ${T::class.java.canonicalName}",
+          "$value should not be an instance of ${T::class.java.canonicalName}")
+
+}
+
+
+// checks that the given value is an instance (of type or of subtype) of T
 inline fun <reified T : Any> beInstanceOf(): Matcher<T> = object : Matcher<T> {
 
   override fun test(value: T): Result =
