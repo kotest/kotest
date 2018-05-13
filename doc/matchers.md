@@ -20,14 +20,12 @@ For the extension function style, each function has an equivalent negated versio
 | `shouldThrow<E> { block }` | General purpose construct that asserts that the block throws an exception of E or a subtype of E |
 | `shouldThrowExactly<E> { block }` | General purpose construct that asserts that the block throws an exception of exactly E |
 | `shouldThrowAny<E> { block }` | General purpose construct that asserts that the block throws an exception of any type (including Throwable) |
-
 | Types ||
 | ------- | ---- |
 | `obj.shouldBeSameInstanceAs(other)` | Compares objects by identity, that is, they are the same exact reference. |
 | `obj.shouldBeTypeOf<T>()` | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
 | `obj.shouldBeInstanceOf<T>` | Asserts that the given reference is of type T or a subclass of T. |
-| `obj.shouldHaveAnnotation(annotationClass) | Asserts that the object has an annotation of the given type. |
-
+| `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | Maps ||
 | -------- | ---- |
 | `map.shouldContainKey(key)` | Asserts that the map contains a key called `key` with any value |
@@ -37,7 +35,6 @@ For the extension function style, each function has an equivalent negated versio
 | `map.shouldContain("key", "value")` | Asserts that the map contains the mapping "key" to "value" |
 | `map.shouldContainAll(other)` | Asserts that the map contains all the pairs from the given map. |
 | `map.shouldContainExactly(other)` | Asserts that the map contains exactly the pairs from given map, and no extra. |
-
 | Strings ||
 | -------- | ---- |
 | `str.shouldEndWith("suffix")` | Asserts that the string ends with the given suffix. The suffix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
@@ -55,7 +52,6 @@ For the extension function style, each function has an equivalent negated versio
 | `str.shouldBeEmpty()` | Asserts that the string has length zero. |
 | `str.shouldBeBlank()` | Asserts that the string contains only whitespace, or is empty. |
 | `str.shouldHaveLineCount(count)` | Asserts that the string contains the given number of lines. Similar to `str.split("\n").length.shouldBe(n)` |
-
 | Integers ||
 | -------- | ---- |
 | `int.shouldBeBetween(x, y)` | Asserts that the integer is between x and y, inclusive on both x and y |
@@ -66,7 +62,6 @@ For the extension function style, each function has an equivalent negated versio
 | `int.shouldBeEven()` | Asserts that the integer is even. |
 | `int.shouldBeOdd()` | Asserts that the integer is odd. |
 | `int.shouldBeInRange(range)` | Asserts that the integer is included in the given range. |
-
 | Longs ||
 | -------- | ---- |
 | `long.shouldBeBetween(x, y)` | Asserts that the long is between x and y, inclusive on both x and y |
@@ -77,7 +72,6 @@ For the extension function style, each function has an equivalent negated versio
 | `long.shouldBeInRange(range)` | Asserts that the long is included in the given range. |
 | `long.shouldBeEven()` | Asserts that the long is even. |
 | `long.shouldBeOdd()` | Asserts that the long is odd. |
-
 | Doubles or Floats ||
 | -------- | ---- |
 | `double.shouldBeExactly(value)` | Asserts that the double is exactly equal to the given value. Exactly equal means the same representation. |
@@ -87,7 +81,6 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeLessThanOrEqual(n)` | Asserts that the double is less or equal to than the given value n |
 | `double.shouldBeGreaterThan(n)` | Asserts that the double is greater than the given value n |
 | `double.shouldBeGreaterThanOrEqual(n)` | Asserts that the double is greater than or equal to the given value n |
-
 | Collections ||
 | -------- | ---- |
 | `collection.shouldBeEmpty()` | Asserts that the collections has zero elements. |
@@ -102,7 +95,6 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldContainDuplicates()` | Asserts that the collection contains at least one duplicate element. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldContainElementAt()` | Asserts that this list contains the given element at the given position. |
-
 | URIs ||
 | -------- | ---- |
 | `uri.shouldHaveScheme(scheme)` | Asserts that the uri has the given scheme. |
@@ -111,7 +103,6 @@ For the extension function style, each function has an equivalent negated versio
 | `uri.shouldHavePath(scheme)` | Asserts that the uri has the given path. |
 | `uri.shouldHaveParameter(scheme)` | Asserts that the uri's query string contains the given parameter. |
 | `uri.shouldHaveFragemnt(fragment)` | Asserts that the uri has the given fragment. |
-
 | Files ||
 | -------- | ---- |
 | `file.shouldExist()` | Asserts that the file exists on disk, either a directory or as a file. |
@@ -130,7 +121,6 @@ For the extension function style, each function has an equivalent negated versio
 | `file.shouldHaveName(name)` | Asserts that the file's name matches the given name. |
 | `file.shouldHavePath(path)` | Asserts that the file's path matches the given path. |
 | `file.shouldStartWithPath(prefix)` | Asserts that the file's path starts with the given prefix. |
-
 | Dates ||
 | -------- | ---- |
 | `date.shouldHaveSameYearAs(otherDate)` | Asserts that the date has the same year as the given date. |
@@ -139,8 +129,12 @@ For the extension function style, each function has an equivalent negated versio
 | `date.shouldBeBefore(otherDate)` | Asserts that the date is before the given date. |
 | `date.shouldBeAfter(otherDate)` | Asserts that the date is after the given date. |
 | `date.shouldBeWithin(period, otherDate)` | Asserts that the date is within the period of the given date. |
-
 | Concurrent ||
 | -------- | ---- |
 | `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration. |
 | `shouldTimeout(timeout, unit, function)` | Asserts that given function does not complete within the given duration. |
+| Futures ||
+| -------- | ---- |
+| `shouldBeCancelled()` | Asserts that the future has been cancelled. |
+| `shouldBeCompleted()` | Asserts that the future has completed. |
+| `shouldBeCompletedExceptionally()` | Asserts that the the future has completed with an exception. |
