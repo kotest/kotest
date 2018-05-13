@@ -453,22 +453,28 @@ If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 Project Config
 --------------
 
-KotlinTest is flexible and has many configuration aspects. Project-wide configuration is used by creating a special singleton object
+KotlinTest is flexible and has many ways to configure tests.
+ Project-wide configuration is used by creating a special singleton object
  which is loaded at runtime by KotlinTest.
 
-To enable this, create an object that is derived from `AbstractProjectConfig`, name this object `ProjectConfig`
-and place it in a package called `io.kotlintest.provided`. KotlinTest will detect its presence and use any configuration
+To do this, create an object that is derived from `AbstractProjectConfig`, name this object `ProjectConfig`
+and place it in a package called `io.kotlintest.provided`. KotlinTest will detect it's presence and use any configuration
 defined there when executing tests.
+
+Some of the configuration available in `ProjectConfig` includes parallelism of tests, executing code before and after
+ all tests, and re-usable listeners or extensions.
 
 ###  Executing Code Before and After a Whole Project
 
-To run some logic before the very first test case and/or after the very last test case of your project, you can
- override `beforeAll` and `afterAll` in the _ProjectConfig_ singleton.
+To execute some logic before the very first test case and/or after the very last test case of your project, you can
+ override `beforeAll` and `afterAll` in the `ProjectConfig` singleton.
 
 Example:
 
 ```kotlin
-object DemoConfig : ProjectConfig() {
+package io.kotlintest.provided
+
+object ProjectConfig : AbstractProjectConfig() {
 
   private var started: Long = 0
 
@@ -483,48 +489,36 @@ object DemoConfig : ProjectConfig() {
 }
 ```
 
-### Project Extensions
+### Project Extensions <a name="projectconfig"></a>
 
-Reusable extensions can be registered in the _ProjectConfig_. Where appropriate these will be executed for all
- test cases and specs.
+Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
+ test cases and specs. Test level extensions will be covered in the next section.
 
 For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
 
 ```kotlin
-interface ProjectExtension {
-  fun beforeAll() {}
-  fun afterAll() {}
+class TimerExtension: ProjectExtension {
+
+  private var started: Long = 0
+
+  override fun beforeAll() {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterAll() {
+    val time = System.currentTimeMillis() - started
+    println("overall time [ms]: " + time)
+  }
 }
 ```
 
 This extension can then be registered with the project config.
 
 ```kotlin
-object DemoConfig : ProjectConfig() {
-  override val extensions = listOf(MyProjectExtension)
+object ProjectConfig : AbstractProjectConfig() {
+  override val extensions = listOf(TimerExtension)
 }
 ```
-
-### Discovery Extension
-
-Another type of extension that can be used inside project config is the `DiscoveryExtension`. This extension is designed
- to allow customisable of the way spec classes are discovered and instantiated. There are two functions of interest that
- can be overridden.
-
-The first is `afterScan` which accepts a list of Spec classes that were discovered by KotlinTest during the _discovery_ phase
- of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
- overriding this function, you are able to customize which classes are found, by filtering some, or adding in others.
-
-The second function is `instantiate` whch acccepts a `KClass<Spec>` and then attempts to create an instance of this Spec class.
- By default, test classes are assumed to have zero-arg primary constructors. If you wish to use non-zero arg primary constructors,
- this function can be implemented with logic on how to instantiate a test class.
-
-An implementation can choose to create a new instance, or it can choose to return null if it wishes to pass control to the next
-extension (or if no more extensions, then back to the Test Engine itself).
-
-By overriding this function, extensions are able to customize the way classes are created, to support things like constructors
-with parameters, or classes that require special initization logic. This type of extension is how the Spring Constructor Injection
-add-on works.
 
 ### Parallelism
 
@@ -539,8 +533,31 @@ By default the value is 1, which will run each spec serially.
 
 Note: Test cases inside each spec will always run strictly in definition order.
 
+### Discovery Extension
 
-Interceptors <a name="interceptors"></a>
+_Advanced Feature_
+
+Another type of extension that can be used inside `ProjectConfig` is the `DiscoveryExtension`. This extension is designed
+ to allow customisation of the way spec classes are discovered and instantiated. There are two functions of interest that
+ can be overridden.
+
+The first is `afterScan` which accepts a list of Spec classes that were discovered by KotlinTest during the _discovery_ phase
+ of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
+ overriding this function, you are able to filter which classes are used, or even add in extra classes not originally discovered.
+
+The second function is `instantiate` whch acccepts a `KClass<Spec>` and then attempts to create an instance of this Spec class in order
+ to then run the test cases defined in it. By default, Spec classes are assumed to have a zero-arg primary constructor.
+ If you wish to use non-zero arg primary constructors this function can be implemented with logic on how to instantiate a test class.
+
+An implementation can choose to create a new instance, or it can choose to return null if it wishes to pass control to the next
+extension (or if no more extensions, then back to the Test Engine itself).
+
+By overriding this function, extensions are able to customize the way classes are created, to support things like constructors
+with parameters, or classes that require special initization logic. This type of extension is how the Spring Constructor Injection
+add-on works for example.
+
+
+Extensions <a name="interceptors"></a>
 ------------
 
 If you need to execute some logic before and/or after each test case, then you can use an interceptor. This is for example useful to cleanup a database after the test have run. 
@@ -1007,12 +1024,12 @@ class SpringExampleSpec : WordSpec() {
 }
 ```
 
-You could add the `SpringListener` project wide by registering the listener in the [ProjectConfig](link).
+You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](#projectconfig).
 
 ##### Constructor Injection
 
 For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
- must be registered with [ProjectConfig](link). This extension will intercept each call to create a Spec instance
+ must be registered with [ProjectConfig](#projectconfig). This extension will intercept each call to create a Spec instance
  and will autowire the beans declared in the primary constructor.
 
 First an example of the project config.
