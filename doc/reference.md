@@ -449,6 +449,10 @@ exception.message should start with "Something went wrong"
 If you want to test that _exactly_ a type of exception is thrown, then use `shouldThrowExactly<E>`.
 If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 
+
+ProjectConfig
+-------------
+
 Interceptors <a name="interceptors"></a>
 ------------
 
@@ -928,16 +932,19 @@ For the full list of arrow matchers [click here](arrow-matchers.md).
 
 ### Spring
 
-
-KotlinTest offers a Spring extension to allow you to test code that uses uses Spring to inject dependencies.
-To enable this, add the `kotlintest-extensions-spring` module to your test compile path. Then add the `SpringListener`
-to any spec that needs to test spring beans, or you can add it project wide by using `ProjectConfig`.
+KotlinTest offers a Spring extension that allows you to test code that wires dependencies using Spring.
+To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
 
 In order to let Spring know which configuration class to use, you must annotation your Spec classes with `@ContextConfiguration`.
 This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
-At the moment, only field based injection is supported - you can't put the dependencies in the constructor. For example:
+There are two ways to eanble spring wiring depending on if you want to use constructor injection, or field injection.
+
+##### Field Injection
+
+If you wish to use field injection, then the `SpringListener` must be registered with any
+ Spec that uses spring beans. For example:
 
 ```kotlin
 @ContextConfiguration(classes = [(TestConfiguration::class)])
@@ -957,3 +964,36 @@ class SpringExampleSpec : WordSpec() {
   }
 }
 ```
+
+You could add the `SpringListener` project wide by registering the listener in the [ProjectConfig](link).
+
+##### Constructor Injection
+
+For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
+ must be registered with [ProjectConfig](link). This extension will intercept each call to create a Spec instance
+ and will autowire the beans declared in the primary constructor.
+
+First an example of the project config.
+
+```kotlin
+class ProjectConfig : AbstractProjectConfig() {
+  override fun extensions(): List<ProjectLevelExtension> = listOf(SpringAutowireConstructorExtension)
+}
+```
+
+And now an example of a test class which requires a service called `UserService` in it's primary constructor. This service
+ class is just a regular spring bean which has been annotated with @Component.
+
+```kotlin
+@ContextConfiguration(classes = [(Components::class)])
+class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
+  init {
+    "SpringListener" should {
+      "have autowired the service" {
+        service.repository.findUser().name shouldBe "system_user"
+      }
+    }
+  }
+}
+```
+
