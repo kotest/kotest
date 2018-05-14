@@ -130,7 +130,7 @@ And More ...
 This page gives you just a short overview of KotlinTest. There are many more features:
 
 * Test whole collections with [Inspectors](doc/reference.md#inspectors).
-* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers): `"hello".shouldHaveSubstring("ell")`.
+* Write elegant conditions with the [matcher DSL](doc/reference.md#matchers-and-assertions): `"hello".shouldHaveSubstring("ell")`.
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
