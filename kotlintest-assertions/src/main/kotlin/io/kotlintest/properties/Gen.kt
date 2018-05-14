@@ -488,6 +488,8 @@ interface Gen<T> {
         "kotlin.Float" -> float()
         "java.lang.Double" -> double()
         "kotlin.Double" -> double()
+        "java.util.UUID" -> uuid()
+        "java.io.File" -> file()
         else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
       }
     }
