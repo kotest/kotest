@@ -1,5 +1,8 @@
 package com.sksamuel.kotlintest
 
+import io.kotlintest.extensions.TestListener
+import io.kotlintest.matchers.boolean.shouldBeFalse
+import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.StringSpec
 import java.io.Closeable
 
@@ -17,30 +20,36 @@ class AutoCloseTest : StringSpec() {
       // nothing to do here
     }
   }
+}
 
-  private object Closeable1 : Closeable {
-
-    var closed = false
-
-    override fun close() {
-      closed = true
-    }
+object AutoCloseListener : TestListener {
+  override fun afterProject() {
+    Closeable1.closed.shouldBeTrue()
+    Closeable2.closed.shouldBeFalse()
   }
+}
 
-  private object Closeable2 : Closeable {
+object Closeable1 : Closeable {
 
-    var closed = false
+  var closed = false
 
-    override fun close() {
-      assert(Closeable1.closed)
-      closed = true
-    }
+  override fun close() {
+    closed = true
   }
+}
 
-  private object Checker : Closeable {
-    override fun close() {
-      assert(Closeable1.closed && Closeable2.closed)
-    }
+object Closeable2 : Closeable {
 
+  var closed = false
+
+  override fun close() {
+    assert(Closeable1.closed)
+    closed = true
+  }
+}
+
+object Checker : Closeable {
+  override fun close() {
+    assert(Closeable1.closed && Closeable2.closed)
   }
 }

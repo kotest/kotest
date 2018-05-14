@@ -30,7 +30,7 @@ abstract class AbstractSpec : Spec {
     return closeable
   }
 
-  internal fun closeResources() {
+  override fun closeResources() {
     closeablesInReverseOrder.forEach { it.close() }
   }
 

@@ -6,18 +6,9 @@ import io.kotlintest.extensions.TestListener
 /**
  * A [Spec] is the top level component in KotlinTest.
  *
- * It contains a single root [TestContainer] which in turn
- * contains [TestCase] instances or further scopes.
- *
- * A test case is the actual test unit. A test case will
- * never reside in a spec directly, but always as
- * part of a test scope.
- *
- * Typically, users do not interact with instances of
- * [TestContainer] or [TestCase] directly, instead each
- * concrete implementation of Spec offers a different way to
- * create these using an easy to read DSL.
- *
+ * It contains the root [TestCase] instances which in turn
+ * can contain nested [TestCase] instances.
+
  * For example, the FunSpec allows us to create tests using
  * the "test(name)" function, such as:
  *
@@ -89,4 +80,6 @@ interface Spec : TestListener {
    *  These are the top level [TestCase] instances for this Spec.
    */
   fun testCases(): List<TestCase>
+
+  fun closeResources()
 }

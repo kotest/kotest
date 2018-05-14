@@ -111,6 +111,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
         { listener.completeSpec(spec.description(), it) },
         { listener.completeSpec(spec.description(), null) }
     )
+    spec.closeResources()
   }
 
   private fun runner(spec: Spec): SpecRunner =

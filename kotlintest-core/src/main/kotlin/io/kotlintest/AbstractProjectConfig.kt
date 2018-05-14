@@ -25,7 +25,7 @@ abstract class AbstractProjectConfig {
   open fun extensions(): List<ProjectLevelExtension> = emptyList()
 
   /**
-   * List of project wide [TestListener]s.
+   * List of project wide [TestListener] instances.
    */
   open fun listeners(): List<TestListener> = emptyList()
 

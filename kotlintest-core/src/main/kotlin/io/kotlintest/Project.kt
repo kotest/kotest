@@ -59,6 +59,7 @@ object Project {
   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
   fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
+
   fun listeners(): List<TestListener> = _listeners
 
   fun parallelism() = parallelism
