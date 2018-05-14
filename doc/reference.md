@@ -54,6 +54,14 @@ And then add the KotlinTest JUnit5 runner to your build.
 ```
 
 
+
+
+
+
+
+
+
+
 Testing Styles
 --------------
 
@@ -86,6 +94,18 @@ Using the lambda expression avoids another level of indentation and looks neater
  but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
 
 [See an example](styles.md) of each testing style.
+
+
+
+
+
+
+
+
+
+
+
+
 
 Matchers and Assertions
 --------
@@ -147,6 +167,11 @@ fun String.shouldNotContainFoo() = this shouldNot containFoo()
 
 
 
+
+
+
+
+
 Exceptions
 ----------
 
@@ -169,6 +194,13 @@ exception.message should start with "Something went wrong"
 
 If you want to test that _exactly_ a type of exception is thrown, then use `shouldThrowExactly<E>`.
 If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
+
+
+
+
+
+
+
 
 
 
@@ -215,6 +247,65 @@ The full list of inspectors are:
 * `forAny` which is an alias for `forAtLeastOne`
 * `forSome` which asserts that between 1 and n-1 elements passed. Ie, if NONE pass or ALL pass then we consider that a failure.
 * `forExactly(k)` which is a generalization that exactly k elements passed. This is the basis for the implementation of the other methods
+
+
+
+Listeners
+---------
+
+It is a common requirement to run setup or teardown code before and after a test, or before and after all tests in a Spec class. Or sometimes
+ before and after the entire project. For this KotlinTest provides the `TestListener` interface. Instances of this interface can be registered
+ with a `Spec` class or project wide by using [ProjectConfig](#project-config).
+
+ This interface contains several functions,
+ such as `beforeTest`, `afterTest`, `beforeSpec` and so on, which are used to hook into the lifecycle of the test engine.
+
+Let's say we want to log the time taken for each test case. We can do this by using the `beforeTest` and `afterTest` functions
+ as follows:
+
+```kotlin
+object TimerListener : TestListener {
+
+  var started = 0L
+
+  override fun beforeTest(description: Description): Unit {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterTest(description: Description, result: TestResult): Unit {
+    println("Duration of $description = " + System.currentTimeMillis() - started)
+  }
+}
+```
+
+Then we can register this with a particular Spec, like so:
+
+```kotlin
+class MyTestClass : WordSpec() {
+
+  override fun listeners(): List<TestListener> = listOf(TimerListener)
+
+  // tests here
+
+}
+```
+
+These functions will now be invoked for every test case inside the `MyTestClass` test class. Maybe you want
+ this listener to run for every test in the entire project. To do that, you would register the listener with
+ the project config singleton. For more information on this see [ProjectConfig](#project-config).
+
+The full list of the functions in the `TestListener` interface is as follows:
+
+|Function|Purpose|
+|--------|-------|
+|beforeTest|This function will be invoked each time a new Test Case is executed.|
+|afterTest|Is invoked when a Test Case has finished. This includes when a test case is ignored (skipped), passes (is successful), or fails (errors).|
+|beforeSpec|Is invoked each time a Spec is started, before any `beforeTest` functions are invoked. |
+|afterSpec|Is invoked each time a Spec completes, after all `afterTest` functions are invoked. |
+|beforeProject|Is invoked as soon as the Test Engine is started.|
+|afterProject|Is invoked as soon as the Test Engine has finished.|
+|afterDiscovery|Is invoked after all the Spec classes have been discovered, but before any `beforeSpec` functions are called, and before any specs are instantiated by the Test Engine. |
+
 
 Project Config
 --------------
@@ -454,156 +545,6 @@ class StringSpecExample : StringSpec() {
 
 
 
-Extensions <a name="interceptors"></a>
-------------
-
-If you need to execute some logic before and/or after each test case, then you can use an interceptor. This is for example useful to cleanup a database after the test have run. 
-
-
-In a spec class you can intercept the spec execution by overriding the `interceptors` property and providing a list of interceptors or by overriding `interceptSpec`.
-
-A single test case can be intercepted by overriding `interceptTestCase` or by providing a list of interceptors in the `defaultTestCaseConfig` or in the `config` of a test case.
-
-Interceptors replace `beforeEach`, `afterEach`, `beforeAll`, and `afterAll` functions from KotlinTest 1.x.
-
-### Interceptor Execution Order
-
-There are several points where you can hook in the test execution. 
-
-* ProjectConfig.extensions beforeAll
-  * ProjectConfig.beforeAll
-    * Spec.interceptors
-      * Spec.interceptSpec
-        * test case
-      * Spec.interceptSpec (interceptor from above continued)
-    * Spec.interceptors (interceptors from above continued)
-  * ProjectConfig.afterAll
-* ProjectConfig.extensions afterAll
-
-The general philoshopy here, is that the closer an interceptor is to a test case, the closer it is to the test case in the execution order.
-
-The execution order within an interceptor collection (`ProjectConfig.extentions`, `Spec.interceptors`) is from left to right.
-
-### Intercepting a Test Case
-
-Override `interceptTestCase` in a spec class to provide logic that should be called before and after each test case. 
-
-You could for example create a stopwatch by overriding `interceptTestCase`:
-
-```kotlin
-override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-  // before
-  val started = System.currentTimeMillis()
-
-  test() // don't forget to call test()!
-
-  // after
-  val finished = System.currentTimeMillis()
-  val time = finished - started
-  println("time [ms]: $time")
-} 
-```
-**Attention: Don't forget to call `test()` in your interceptor! Otherwise the test case wouldn't be called.**
-
-As you can see, you can keep some state, since an interceptor is really just a function and all variables are kept in this scope for the duration of the execution.
-
-You can even use interceptors to catch exceptions:
-
-```kotlin
-override fun interceptTestCase(context: TestCaseContext, test: () -> Unit) {
-  try {
-    test()
-  } 
-  catch (exception: SomeException) {
-    // ok
-  }
-  catch (exception: Exception) {
-    throw exception
-  }
-} 
-```
-
-If you define a separate interceptor function, you add it to the `defaultTestCaseConfig` or to the `config` of a test case:
-
-```kotlin
-  val interceptorA: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
-    println("A before")
-    testCase()
-    println("A after")
-  }
-
-  val interceptorB: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
-    println("B before")
-    testCase()
-    println("B after")
-  }
-
-class MySpec : StringSpec {
-
-  override val defaultTestCaseConfig = TestCaseConfig(interceptors = listOf(interceptorA, interceptorB))
-
-  init {
-    "should do something" {
-      ...
-    }.config(interceptors = listOf(interceptorA)) // overrides the interceptors from above
-  }
-}
-```
-
-### Intercepting a Spec
-
-To run logic before and after a spec, you can override `interceptSpec`. The principle is the same as above:
-
-```kotlin
-protected fun interceptSpec(context: Spec, spec: () -> Unit) {
-  println("before spec")
-  spec() // don't forget to call spec()!
-  println("after spec")
-}
-```
-
-### Reusable Interceptors
-
-Interceptors are just functions and can be reused between specs or even between projects. Just pass interceptors to the `config` on test case or spec level.
-
-```kotlin
-"should do it correctly" {
-  ...
-}.config(interceptors = listOf(myTestCaseInterceptor))
-```
-
-An interceptor would look like this:
-
-```kotlin
-val myTestCaseInterceptor: (TestCaseContext, () -> Unit) -> Unit = { context, testCase ->
-  println("before")
-  testCase() // Don't forget to call testCase()!
-  println("after")
-}
-```
-
-
-The `beforeAll` methods of the extensions are executed in the order of extensions (from left to right). The `afterAll` methods are executed in reversed order (from right to left). If you had two extensions `listOf(A, B)` the order of execution would be:
-
-* `A.beforeAll`
-  * `B.beforeAll`
-    * test execution
-  * `B.afterAll`
-* `A.afterAll`.
-
-A `ProjectExtension` implementation would look like this:
-
-```kotlin
-object TestExtension : ProjectExtension {
-  override fun beforeAll() {
-    println("before all extension")
-  }
-
-  override fun afterAll() {
-    println("after all extension")
-  }
-}
-```
 
 
 
@@ -626,6 +567,15 @@ class MyTests : FunSpec() {
 ```
 
 This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` returns false.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -694,6 +644,14 @@ class MySpec : StringSpec() {
 
 
 
+
+
+
+
+
+
+
+
 Disabling Test Cases and Running Test Cases Conditionally
 ---------------------------------------------------------
 
@@ -717,6 +675,16 @@ You can use the same mechanism to run tests only under certain conditions.
 ```
 
 `isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
+
+
+
+
+
+
+
+
+
+
 
 
 Grouping Tests with Tags
@@ -780,6 +748,11 @@ all tests but the tests tagged with the given tags are are run.
 
 
 
+
+
+
+
+
 Closing resource automatically
 --------------------------------------------
 
@@ -800,6 +773,10 @@ class StringSpecExample : StringSpec() {
 
 Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in  
 reversed order of declaration after the return of the last spec interceptor.
+
+
+
+
 
 
 
