@@ -33,14 +33,15 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
       )
 }
 
-@Deprecated("Use shouldContainElementAt", ReplaceWith("this.shouldContainElementAt(index, element)", "io.kotlintest.should"))
 fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
 
-@Deprecated("Use shouldContainElementAt", ReplaceWith("this.shouldContainElementAt(index, element)", "io.kotlintest.should"))
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
+@Deprecated("Use shouldHaveElementAt", ReplaceWith("this.shouldHaveElementAt(index, element)", "io.kotlintest.should"))
 fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+@Deprecated("Use shouldNotHaveElementAt", ReplaceWith("this.shouldNotHaveElementAt(index, element)", "io.kotlintest.should"))
 fun <T, L : List<T>> L.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
+
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
   override fun test(value: L) =
       Result(
@@ -99,6 +100,7 @@ fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleEl
 fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size)
 fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
 
+fun <T : Comparable<T>> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
 fun <T : Comparable<T>> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
 fun <T : Comparable<T>> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
 

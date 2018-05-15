@@ -1,19 +1,5 @@
 package io.kotlintest.properties
 
-fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T {
-  val smallerT = gen.shrink(t)
-  // shrunk to the base case
-  if (t == smallerT) return t
-  return try {
-    test(smallerT)
-    // no error means we've found a passing value
-    // so the previous value is the smallest failure
-    t
-  } catch (e: AssertionError) {
-    shrink(smallerT, gen, test)
-  }
-}
-
 inline fun <reified A> assertAll(noinline fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, fn)
 inline fun <reified A> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Unit) {
   assertAll(iterations, Gen.default(), fn)
@@ -29,7 +15,8 @@ fun <A> assertAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> U
       context.fn(a)
     } catch (e: AssertionError) {
       val smallestA = shrink(a, gena, { context.fn(it) })
-      throw PropertyAssertionError(e, context.attempts(), listOf(smallestA))
+      val inputs = listOf(PropertyFailureInput<A>(a, smallestA))
+      throw PropertyAssertionError(e, context.attempts(), inputs)
     }
   }
   for (a in gena.constants()) {
@@ -60,7 +47,11 @@ fun <A, B> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyCo
     } catch (e: AssertionError) {
       val smallestA = shrink(a, gena, { context.fn(it, b) })
       val smallestB = shrink(b, genb, { context.fn(smallestA, it) })
-      throw PropertyAssertionError(e, context.attempts(), listOf(smallestA, smallestB))
+      val inputs = listOf(
+          PropertyFailureInput<A>(a, smallestA),
+          PropertyFailureInput<B>(b, smallestB)
+      )
+      throw PropertyAssertionError(e, context.attempts(), inputs)
     }
   }
   for (a in gena.constants()) {
@@ -97,7 +88,12 @@ fun <A, B, C> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C
       val smallestA = shrink(a, gena, { context.fn(it, b, c) })
       val smallestB = shrink(b, genb, { context.fn(smallestA, it, c) })
       val smallestC = shrink(c, genc, { context.fn(smallestA, smallestB, c) })
-      throw PropertyAssertionError(e, context.attempts(), listOf(smallestA, smallestB, smallestC))
+      val inputs = listOf(
+          PropertyFailureInput<A>(a, smallestA),
+          PropertyFailureInput<B>(b, smallestB),
+          PropertyFailureInput<C>(c, smallestC)
+      )
+      throw PropertyAssertionError(e, context.attempts(), inputs)
     }
   }
   for (a in gena.constants()) {
@@ -143,7 +139,13 @@ fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Ge
       val smallestB = shrink(b, genb, { context.fn(smallestA, it, c, d) })
       val smallestC = shrink(c, genc, { context.fn(smallestA, smallestB, it, d) })
       val smallestD = shrink(d, gend, { context.fn(smallestA, smallestB, smallestC, it) })
-      throw PropertyAssertionError(e, context.attempts(), listOf(smallestA, smallestB, smallestC, smallestD))
+      val inputs = listOf(
+          PropertyFailureInput<A>(a, smallestA),
+          PropertyFailureInput<B>(b, smallestB),
+          PropertyFailureInput<C>(c, smallestC),
+          PropertyFailureInput<D>(d, smallestD)
+      )
+      throw PropertyAssertionError(e, context.attempts(), inputs)
     }
   }
   for (a in gena.constants()) {
@@ -189,7 +191,14 @@ fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc:
       val smallestC = shrink(c, genc, { context.fn(smallestA, smallestB, it, d, e) })
       val smallestD = shrink(d, gend, { context.fn(smallestA, smallestB, smallestC, it, e) })
       val smallestE = shrink(e, gene, { context.fn(smallestA, smallestB, smallestC, smallestD, it) })
-      throw PropertyAssertionError(ex, context.attempts(), listOf(smallestA, smallestB, smallestC, smallestD, smallestE))
+      val inputs = listOf(
+          PropertyFailureInput<A>(a, smallestA),
+          PropertyFailureInput<B>(b, smallestB),
+          PropertyFailureInput<C>(c, smallestC),
+          PropertyFailureInput<D>(d, smallestD),
+          PropertyFailureInput<E>(e, smallestE)
+      )
+      throw PropertyAssertionError(ex, context.attempts(), inputs)
     }
   }
   for (a in gena.constants()) {
@@ -247,7 +256,15 @@ fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, ge
       val smallestD = shrink(d, gend, { context.fn(smallestA, smallestB, smallestC, it, e, f) })
       val smallestE = shrink(e, gene, { context.fn(smallestA, smallestB, smallestC, smallestD, it, f) })
       val smallestF = shrink(f, genf, { context.fn(smallestA, smallestB, smallestC, smallestD, smallestE, it) })
-      throw PropertyAssertionError(x, context.attempts(), listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF))
+      val inputs = listOf(
+          PropertyFailureInput<A>(a, smallestA),
+          PropertyFailureInput<B>(b, smallestB),
+          PropertyFailureInput<C>(c, smallestC),
+          PropertyFailureInput<D>(d, smallestD),
+          PropertyFailureInput<E>(e, smallestE),
+          PropertyFailureInput<F>(f, smallestF)
+      )
+      throw PropertyAssertionError(x, context.attempts(), inputs)
     }
   }
 

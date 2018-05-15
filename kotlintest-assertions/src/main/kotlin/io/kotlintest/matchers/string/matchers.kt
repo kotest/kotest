@@ -127,6 +127,20 @@ fun include(substr: String): Matcher<String> = object : Matcher<String> {
   }
 }
 
+fun String.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
+fun String.shouldNotHaveMaxLength(length: Int) = this shouldNot haveMaxLength(length)
+
+fun haveMaxLength(length: Int): Matcher<String> = object : Matcher<String> {
+  override fun test(value: String) = Result(value.length >= length, "String $value should have maximum length of $length", "String $value should have minimum length of ${length - 1}")
+}
+
+fun String.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
+fun String.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
+
+fun haveMinLength(length: Int): Matcher<String> = object : Matcher<String> {
+  override fun test(value: String) = Result(value.length >= length, "String $value should have minimum length of $length", "String $value should have maximum length of ${length - 1}")
+}
+
 fun String.shouldHaveLength(length: Int) = this should haveLength(length)
 fun String.shouldNotHaveLength(length: Int) = this shouldNot haveLength(length)
 fun String.shouldMatch(regex: String) = this should match(regex)
