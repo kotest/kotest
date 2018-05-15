@@ -1,6 +1,7 @@
 package io.kotlintest.properties
 
 import io.kotlintest.JavaRandoms
+import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.properties.shrinking.DoubleShrinker
 import io.kotlintest.properties.shrinking.IntShrinker
 import io.kotlintest.properties.shrinking.Shrinker

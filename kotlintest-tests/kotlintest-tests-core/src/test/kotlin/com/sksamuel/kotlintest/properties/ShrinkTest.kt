@@ -2,14 +2,13 @@ package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.matchers.doubles.lt
 import io.kotlintest.matchers.lte
-import io.kotlintest.matchers.match
 import io.kotlintest.matchers.numerics.shouldBeLessThan
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.shrinking.Shrinker
 import io.kotlintest.properties.shrinking.StringShrinker
-import io.kotlintest.properties.assertAll
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrowAny
@@ -61,9 +60,10 @@ class ShrinkTest : StringSpec({
   "should shrink Gen.choose" {
     shouldThrowAny {
       assertAll(Gen.choose(5, 15)) { a ->
-        a shouldBe lte(10)
+        if (a != 11)
+          a shouldBe lte(10)
       }
-    }.message!! should contain("Property failed for\n0: 11 \\(shrunk from \\d{2}\\)\nafter \\d{1,2} attempts".toRegex())
+    }.message!! should contain("Property failed for\n0: 12 \\(shrunk from \\d{2}\\)\nafter \\d{1,2} attempts".toRegex())
   }
 
   "should shrink strings to empty string" {

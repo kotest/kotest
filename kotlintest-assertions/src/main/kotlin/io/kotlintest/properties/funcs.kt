@@ -16,6 +16,7 @@ fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T {
   if (shrinker == null) return t
   else {
     val tested = HashSet<T>()
+    var count = 0
     while (true) {
       val candidates = shrinker.shrink(candidate).filterNot { tested.contains(it) }
       if (candidates.isEmpty()) {
@@ -24,13 +25,14 @@ fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T {
       } else {
         val next = candidates.firstOrNull {
           tested.add(it)
+          count++
           fun whitespace(str: String) = str.isBlank()
           try {
             test(it)
-            println("Shrink: ${convertValueToString(it)} pass")
+            println("Shrink #$count: ${convertValueToString(it)} pass")
             false
           } catch (t: Throwable) {
-            println("Shrink: ${convertValueToString(it)} fail")
+            println("Shrink #$count: ${convertValueToString(it)} fail")
             true
           }
         }
