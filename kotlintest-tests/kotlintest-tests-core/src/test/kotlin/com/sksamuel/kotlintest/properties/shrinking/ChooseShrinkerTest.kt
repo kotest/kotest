@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest.properties.shrinking
 
+import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldHaveElementAt
@@ -10,6 +11,9 @@ import io.kotlintest.specs.WordSpec
 class ChooseShrinkerTest : WordSpec({
 
   "ChooseShrinker" should {
+    "return empty list for the min value" {
+      ChooseShrinker(100, 200).shrink(100).shouldBeEmpty()
+    }
     "include min value as the first candidate" {
       ChooseShrinker(100, 200).shrink(55).shouldHaveElementAt(0, 100)
     }

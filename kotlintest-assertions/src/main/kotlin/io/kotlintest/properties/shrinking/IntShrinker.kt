@@ -9,8 +9,8 @@ object IntShrinker : Shrinker<Int> {
         1, -1 -> listOf(0)
         else -> {
           val a = listOf(0, 1, -1, abs(failure), failure / 3, failure / 2, failure * 2 / 3)
-          val b = (1..10).map { failure - it }.reversed().filter { it > 0 }
-          (a + b).distinct()
+          val b = (1..5).map { failure - it }.reversed().filter { it > 0 }
+          (a + b).distinct().filterNot { it == failure }
         }
       }
 }
