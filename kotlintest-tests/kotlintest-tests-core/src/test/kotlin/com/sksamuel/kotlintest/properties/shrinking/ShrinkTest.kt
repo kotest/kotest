@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.properties
+package com.sksamuel.kotlintest.properties.shrinking
 
 import io.kotlintest.matchers.doubles.lt
 import io.kotlintest.matchers.lte
