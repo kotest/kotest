@@ -27,7 +27,7 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: TestContext.() -> Unit) {
+      test: suspend TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -38,6 +38,6 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
     addTestCase(this, test, config)
   }
 
-  operator fun String.invoke(test: TestContext.() -> Unit) =
+  operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTestCase(this, test, defaultTestCaseConfig)
 }

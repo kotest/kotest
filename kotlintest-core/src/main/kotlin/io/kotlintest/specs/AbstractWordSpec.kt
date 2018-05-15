@@ -25,7 +25,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  infix fun String.should(init: WordScope.() -> Unit) =
+  infix fun String.should(init: suspend WordScope.() -> Unit) =
       addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig)
 
   @KotlinTestDsl
@@ -49,12 +49,12 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
       context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, config)
     }
 
-    infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
+    infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig)
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: () -> Unit) = {}
+    infix fun String.should(init: suspend () -> Unit) = {}
   }
 
   @KotlinTestDsl
@@ -64,6 +64,6 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: () -> Unit) = {}
+    infix fun String.should(init: suspend () -> Unit) = {}
   }
 }

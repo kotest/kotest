@@ -13,10 +13,10 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
+  infix operator fun String.minus(test: suspend FreeSpecScope.() -> Unit) =
       addTestCase(this, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
-  infix operator fun String.invoke(test: TestContext.() -> Unit) =
+  infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTestCase(this, test, defaultTestCaseConfig)
 
   fun String.config(
@@ -26,7 +26,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: TestContext.() -> Unit) {
+      test: suspend TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -39,10 +39,10 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
 
   inner class FreeSpecScope(val context: TestContext) {
 
-    infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
+    infix operator fun String.minus(test: suspend FreeSpecScope.() -> Unit) =
         context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
 
-    infix operator fun String.invoke(test: TestContext.() -> Unit) =
+    infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractFreeSpec, test, defaultTestCaseConfig)
 
     fun String.config(

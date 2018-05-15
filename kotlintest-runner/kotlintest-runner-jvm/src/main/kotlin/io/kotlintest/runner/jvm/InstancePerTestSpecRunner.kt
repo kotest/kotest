@@ -6,6 +6,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestContext
 import io.kotlintest.TestCase
+import kotlinx.coroutines.experimental.runBlocking
 import kotlin.reflect.KClass
 
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
@@ -62,7 +63,9 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       }
     }
 
-    current.test.invoke(nestedContext)
+    runBlocking {
+      current.test.invoke(nestedContext)
+    }
   }
 
   private fun targetContext(spec: Spec, target: Description) = object : TestContext() {

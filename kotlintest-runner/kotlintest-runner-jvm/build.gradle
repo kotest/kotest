@@ -3,4 +3,10 @@ dependencies {
     compile 'org.reflections:reflections:0.9.11'
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'io.arrow-kt:arrow-core:0.7.1'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5'
+}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
