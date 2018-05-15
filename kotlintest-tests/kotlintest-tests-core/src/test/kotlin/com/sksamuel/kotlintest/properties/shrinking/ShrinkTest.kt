@@ -54,7 +54,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.double()) { a ->
         a shouldBe lt(3.0)
       }
-    }.message shouldBe "Property failed for\n0: 3.0 (shrunk from 1.7976931348623157E308)\nafter 2 attempts"
+    }.message shouldBe "Property failed for\n0: 3.0 (shrunk from 1.7976931348623157E308)\nafter 3 attempts"
   }
 
   "should shrink Gen.choose" {

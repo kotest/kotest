@@ -4,8 +4,8 @@ import arrow.core.Failure
 import arrow.core.Success
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestContext
 import io.kotlintest.TestCase
+import io.kotlintest.TestContext
 import kotlin.reflect.KClass
 
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
@@ -15,7 +15,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
   private val executed = HashSet<Description>()
 
   override fun execute(spec: Spec) {
-    spec.testCases().forEach { locateAndExecute(spec::class, it.description) }
+    topLevelTests(spec).forEach { locateAndExecute(spec::class, it.description) }
   }
 
   /**

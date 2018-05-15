@@ -5,7 +5,6 @@ import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldHaveElementAt
 import io.kotlintest.matchers.collections.shouldHaveSingleElement
-import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotContain
 import io.kotlintest.properties.shrinking.IntShrinker
 import io.kotlintest.specs.WordSpec
@@ -15,7 +14,7 @@ class IntShrinkerTest : WordSpec({
     "return empty list for zero" {
       IntShrinker.shrink(0).shouldBeEmpty()
     }
-    "return zero for 1 or 01" {
+    "include zero for 1 or -1" {
       IntShrinker.shrink(1).shouldHaveSingleElement(0)
       IntShrinker.shrink(-1).shouldHaveSingleElement(0)
     }

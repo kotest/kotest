@@ -11,7 +11,7 @@ class SharedInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
     interceptSpec(spec, {
       // creating the spec instance will have invoked the init block, resulting
       // in the top level test cases being available on the spec class
-      spec.testCases().forEach { TestCaseExecutor(listener, it, callingThreadContext(it.description)).execute() }
+      topLevelTests(spec).forEach { TestCaseExecutor(listener, it, callingThreadContext(it.description)).execute() }
     })
   }
 

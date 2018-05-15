@@ -3,12 +3,19 @@ package io.kotlintest.runner.jvm
 import createSpecInterceptorChain
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 
 abstract class SpecRunner(val listener: TestEngineListener) {
 
   abstract fun execute(spec: Spec)
+
+  protected fun topLevelTests(spec: Spec): List<TestCase> {
+    val tests = spec.testCases()
+    val focused = tests.find { it.name.startsWith("f:") }
+    return if (focused == null) tests else listOf(focused)
+  }
 
   protected fun interceptSpec(spec: Spec, afterInterception: () -> Unit) {
 
