@@ -1,6 +1,10 @@
 package io.kotlintest.properties
 
 import io.kotlintest.JavaRandoms
+import io.kotlintest.properties.shrinking.DoubleShrinker
+import io.kotlintest.properties.shrinking.IntShrinker
+import io.kotlintest.properties.shrinking.Shrinker
+import io.kotlintest.properties.shrinking.StringShrinker
 import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -65,12 +69,17 @@ interface Gen<T> {
   /**
    * Create a new [Gen] by filtering the output of this gen.
    */
-  fun filter(f: (T) -> Boolean): Gen<T> {
+  fun filter(pred: (T) -> Boolean): Gen<T> {
     val outer = this
     return object : Gen<T> {
-      override fun constants(): Iterable<T> = outer.constants().filter(f)
-      override fun random(): Sequence<T> = outer.random().filter(f)
-      override fun shrinker(): Shrinker<T>? = outer.shrinker()
+      override fun constants(): Iterable<T> = outer.constants().filter(pred)
+      override fun random(): Sequence<T> = outer.random().filter(pred)
+      override fun shrinker(): Shrinker<T>? {
+        val s = outer.shrinker()
+        return if (s == null) null else object : Shrinker<T> {
+          override fun shrink(failure: T): List<T> = s.shrink(failure).filter(pred)
+        }
+      }
     }
   }
 
@@ -231,6 +240,8 @@ interface Gen<T> {
         override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
             generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
+
+        override fun shrinker() = ChooseShrinker(min, max)
       }
     }
 
@@ -357,6 +368,7 @@ interface Gen<T> {
       val literals = listOf(Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun shrinker(): Shrinker<Double>? = DoubleShrinker
     }
 
     fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }

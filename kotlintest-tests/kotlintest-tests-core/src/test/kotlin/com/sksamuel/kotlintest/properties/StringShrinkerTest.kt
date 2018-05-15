@@ -3,7 +3,7 @@ package com.sksamuel.kotlintest.properties
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.properties.Gen
-import io.kotlintest.properties.StringShrinker
+import io.kotlintest.properties.shrinking.StringShrinker
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.shrink
 import io.kotlintest.shouldBe

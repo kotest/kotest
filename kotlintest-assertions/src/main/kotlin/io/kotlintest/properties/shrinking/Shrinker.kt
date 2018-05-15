@@ -1,4 +1,4 @@
-package io.kotlintest.properties
+package io.kotlintest.properties.shrinking
 
 interface Shrinker<T> {
 

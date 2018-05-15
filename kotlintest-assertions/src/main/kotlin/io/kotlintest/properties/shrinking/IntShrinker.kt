@@ -1,4 +1,4 @@
-package io.kotlintest.properties
+package io.kotlintest.properties.shrinking
 
 import java.lang.Math.abs
 
