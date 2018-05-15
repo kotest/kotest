@@ -425,7 +425,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 1800
+    attempts shouldBe 2592
   }
 
   "sets" {

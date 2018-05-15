@@ -366,7 +366,7 @@ interface Gen<T> {
      * chosen Double.
      */
     fun double(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+      val literals = listOf(0.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
@@ -380,7 +380,7 @@ interface Gen<T> {
      * chosen Float.
      */
     fun float(): Gen<Float> = object : Gen<Float> {
-      val literals = listOf(Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+      val literals = listOf(0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun constants(): Iterable<Float> = literals
       override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
     }
