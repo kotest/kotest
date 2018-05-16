@@ -29,12 +29,14 @@ fun endWith(suffix: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String) = Result(value.endsWith(suffix), "String $value should end with $suffix", "String $value should not end with $suffix")
 }
 
-fun match(regex: String): Matcher<String> = object : Matcher<String> {
+fun match(regex: Regex): Matcher<String> = object : Matcher<String> {
   override fun test(value: String) = Result(
-      value.matches(regex.toRegex()),
+      value.matches(regex),
       "String $value should match regex $regex",
       "String $value should not match regex $regex")
 }
+
+fun match(regex: String): Matcher<String> = match(regex.toRegex())
 
 fun strlen(length: Int): Matcher<String> = haveLength(length)
 

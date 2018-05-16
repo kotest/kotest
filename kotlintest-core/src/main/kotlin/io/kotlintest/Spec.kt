@@ -82,4 +82,18 @@ interface Spec : TestListener {
   fun testCases(): List<TestCase>
 
   fun closeResources()
+
+  /**
+   * Sets the order of top level [TestCase]s in this spec.
+   * If this function returns a null value, then the value set in
+   * the [AbstractProjectConfig] will be used.
+   */
+  fun testCaseOrder(): TestCaseOrder? = null
+
+  /**
+   * Any tags added here will be in applied to all [TestCase]s defined
+   * in this [Spec] in addition to any defined on the individual
+   * tests themselves.
+   */
+  fun tags(): Set<Tag> = emptySet()
 }

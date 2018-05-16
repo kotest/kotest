@@ -40,6 +40,17 @@ abstract class AbstractProjectConfig {
   open fun parallelism(): Int = 1
 
   /**
+   * Sets the order of top level tests in a spec.
+   * The value set here will be used unless overriden in a [Spec].
+   * The value in a [Spec] is always taken in preference to the value here.
+   * Nested tests will always be executed in discovery order.
+   *
+   * If this function returns null then the default of Sequential
+   * will be used.
+   */
+  open fun testCaseOrder(): TestCaseOrder? = null
+
+  /**
    * Executed before the first test of the project, but after the
    * [ProjectExtension.beforeAll] methods.
    */

@@ -1,6 +1,11 @@
 package io.kotlintest.properties
 
 import io.kotlintest.JavaRandoms
+import io.kotlintest.properties.shrinking.ChooseShrinker
+import io.kotlintest.properties.shrinking.DoubleShrinker
+import io.kotlintest.properties.shrinking.IntShrinker
+import io.kotlintest.properties.shrinking.Shrinker
+import io.kotlintest.properties.shrinking.StringShrinker
 import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -60,29 +65,21 @@ interface Gen<T> {
    */
   fun random(): Sequence<T>
 
-  /**
-   * Given a value, T, this function should attempt to return
-   * a 'smaller' value, for some definition of smaller.
-   *
-   * If the value cannot be shrunk further, or the type
-   * doesn't support shrinking, then this method should
-   * return the input value.
-   *
-   * For example, given a String, this function
-   */
-  fun shrink(t: T): T = t
+  fun shrinker(): Shrinker<T>? = null
 
   /**
    * Create a new [Gen] by filtering the output of this gen.
    */
-  fun filter(f: (T) -> Boolean): Gen<T> {
+  fun filter(pred: (T) -> Boolean): Gen<T> {
     val outer = this
     return object : Gen<T> {
-      override fun constants(): Iterable<T> = outer.constants().filter(f)
-      override fun random(): Sequence<T> = outer.random().filter(f)
-      override fun shrink(t: T): T {
-        val t2 = outer.shrink(t)
-        return if (f(t2)) t2 else t
+      override fun constants(): Iterable<T> = outer.constants().filter(pred)
+      override fun random(): Sequence<T> = outer.random().filter(pred)
+      override fun shrinker(): Shrinker<T>? {
+        val s = outer.shrinker()
+        return if (s == null) null else object : Shrinker<T> {
+          override fun shrink(failure: T): List<T> = s.shrink(failure).filter(pred)
+        }
       }
     }
   }
@@ -119,7 +116,12 @@ interface Gen<T> {
     return object : Gen<T?> {
       override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
       override fun random(): Sequence<T?> = outer.random().map { if (RANDOM.nextBoolean()) null else it }
-      override fun shrink(t: T?): T? = if (t == null) null else outer.shrink(t)
+      override fun shrinker(): Shrinker<T?>? {
+        val s = outer.shrinker()
+        return if (s == null) null else object : Shrinker<T?> {
+          override fun shrink(failure: T?): List<T?> = if (failure == null) emptyList() else s.shrink(failure)
+        }
+      }
     }
   }
 
@@ -240,13 +242,7 @@ interface Gen<T> {
         override fun random(): Sequence<Int> =
             generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
 
-        override fun shrink(t: Int): Int = when (t) {
-          min -> min
-          else -> {
-            val gap = (t - min)
-            if (gap < 10) t - 1 else t - ((t - min) / 2)
-          }
-        }
+        override fun shrinker() = ChooseShrinker(min, max)
       }
     }
 
@@ -292,16 +288,10 @@ interface Gen<T> {
      * a UTF8 string.
      */
     fun string(): Gen<String> = object : Gen<String> {
-      val literals = listOf("\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
+      val literals = listOf("", "\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
       override fun constants(): Iterable<String> = literals
       override fun random(): Sequence<String> = generateSequence { nextPrintableString(RANDOM.nextInt(100)) }
-      override fun shrink(t: String): String = when {
-        t.isEmpty() || t.length == 1 -> ""
-        else -> {
-          val length = t.length / 2
-          t.take(length)
-        }
-      }
+      override fun shrinker(): Shrinker<String>? = StringShrinker
     }
 
     /**
@@ -313,13 +303,7 @@ interface Gen<T> {
       val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
       override fun constants(): Iterable<Int> = literals
       override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
-      override fun shrink(t: Int): Int = when (t) {
-        0 -> 0
-        1, -1 -> 0
-        in 2..10 -> t - 1
-        in -10..-2 -> t + 1
-        else -> t / 2
-      }
+      override fun shrinker() = IntShrinker
     }
 
     /**
@@ -372,21 +356,20 @@ interface Gen<T> {
       override fun random(): Sequence<Boolean> = generateSequence { RANDOM.nextBoolean() }
     }
 
+    fun uuid(): Gen<UUID> = object : Gen<UUID> {
+      override fun constants(): Iterable<UUID> = emptyList()
+      override fun random(): Sequence<UUID> = generateSequence { UUID.randomUUID() }
+    }
+
     /**
      * Returns a stream of values where each value is a randomly
      * chosen Double.
      */
     fun double(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+      val literals = listOf(0.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
-      override fun shrink(t: Double): Double = when (t) {
-        0.0 -> 0.0
-        1.0, -1.0 -> 0.0
-        in 2..10 -> t - 1
-        in -10..-2 -> t + 1
-        else -> t / 2
-      }
+      override fun shrinker(): Shrinker<Double>? = DoubleShrinker
     }
 
     fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
@@ -397,7 +380,7 @@ interface Gen<T> {
      * chosen Float.
      */
     fun float(): Gen<Float> = object : Gen<Float> {
-      val literals = listOf(Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
+      val literals = listOf(0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun constants(): Iterable<Float> = literals
       override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
     }
@@ -482,6 +465,8 @@ interface Gen<T> {
         "kotlin.Float" -> float()
         "java.lang.Double" -> double()
         "kotlin.Double" -> double()
+        "java.util.UUID" -> uuid()
+        "java.io.File" -> file()
         else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
       }
     }
@@ -574,9 +559,11 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
 }
 
 inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequence<T> =
-        Sequence({ object: Iterator<T> {
-          override fun hasNext() = true
+    Sequence({
+      object : Iterator<T> {
+        override fun hasNext() = true
 
-          override fun next() = generator()
+        override fun next() = generator()
 
-        } })
+      }
+    })

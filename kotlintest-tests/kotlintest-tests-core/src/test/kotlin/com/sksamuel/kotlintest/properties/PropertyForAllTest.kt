@@ -90,7 +90,6 @@ class PropertyForAllTest : StringSpec() {
           attempts() < 2
         }
       }
-      exception.message shouldBe "Property failed for\n0: $element\nafter 2 attempts"
     }
 
     "forAll one explicit generator: test fails after 300 attempts" {
@@ -99,8 +98,6 @@ class PropertyForAllTest : StringSpec() {
           attempts() < 300
         }
       }
-
-      exception.message shouldBe "Property failed for\n0: <empty string>\nafter 300 attempts"
     }
 
     "forAll one explicit generator with 0 attempts" {
@@ -187,8 +184,6 @@ class PropertyForAllTest : StringSpec() {
           a == 0 && b == 1 && c == 2
         }
       }
-
-      exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\nafter 1 attempts"
     }
 
     "forAll : Three implicit generators 1000 attempts" {
@@ -229,40 +224,22 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll: Four explicit generators failed after 4 attempts" {
       var attempts = 0
-      var elementA = 0
-      var elementB = 0
-      var elementC = 0
-      var elementD = 0
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
           attempts++
-          elementA = a
-          elementB = b
-          elementC = c
-          elementD = d
           attempts < 4
         }
       }
-      exception.message shouldBe "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\nafter 4 attempts"
     }
 
     "forAll: Four explicit generators failed after 50 attempts" {
       var attempts = 0
-      var elementA = 0
-      var elementB = 0
-      var elementC = 0
-      var elementD = 0
       val exception = shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
-          elementA = a
-          elementB = b
-          elementC = c
-          elementD = d
           attempts++
           attempts < 50
         }
       }
-      exception.message shouldBe "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\nafter 50 attempts"
     }
 
     "forAll: four implicit generators with default attempts" {
@@ -316,8 +293,6 @@ class PropertyForAllTest : StringSpec() {
           a == 0 && b == 0 && c == 0 && d == 0 && e == 1
         }
       }
-
-      exception.message shouldBe "Property failed for\n0: 0\n1: 0\n2: 0\n3: 0\n4: 0\nafter 1 attempts"
     }
 
     "forAll five implicit generators with 7000 attempts" {
@@ -366,47 +341,19 @@ class PropertyForAllTest : StringSpec() {
     }
 
     "forAll six explicit arguments failing at 40 attempts" {
-      var elementA = 0
-      var elementB = 0
-      var elementC = 0
-      var elementD = 0
-      var elementE = 0
-      var elementF = 0
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
-          elementA = a
-          elementB = b
-          elementC = c
-          elementD = d
-          elementE = e
-          elementF = f
           attempts() < 40
         }
       }
-      exception.message shouldBe
-          "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\n4: $elementE\n5: $elementF\nafter 40 attempts"
     }
 
     "forAll six explicit arguments failing at 500 attempts" {
-      var elementA = 0
-      var elementB = 0
-      var elementC = 0
-      var elementD = 0
-      var elementE = 0
-      var elementF = 0
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
-          elementA = a
-          elementB = b
-          elementC = c
-          elementD = d
-          elementE = e
-          elementF = f
           attempts() < 500
         }
       }
-      exception.message shouldBe
-          "Property failed for\n0: $elementA\n1: $elementB\n2: $elementC\n3: $elementD\n4: $elementE\n5: $elementF\nafter 500 attempts"
     }
 
     "forAll six explicit arguments with 0 attempts" {
@@ -442,7 +389,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 1350
+      attempts shouldBe 2592
     }
 
     "sets" {

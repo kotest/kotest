@@ -41,7 +41,7 @@ class TestCaseExecutor(val listener: TestEngineListener,
                             onComplete: (TestResult) -> Unit) {
         when {
           remaining.isEmpty() -> {
-            val result = executeTestIfActive(config)
+            val result = executeTestIfActive(testCase, config)
             onComplete(result)
           }
           else -> {
@@ -59,10 +59,11 @@ class TestCaseExecutor(val listener: TestEngineListener,
     }
   }
 
-  private fun executeTestIfActive(config: TestCaseConfig): TestResult {
+  private fun executeTestIfActive(testCase: TestCase, config: TestCaseConfig): TestResult {
 
     val bang = testCase.name.startsWith("!") && System.getProperty("kotlintest.bang.disable") == null
-    val enabled = config.enabled && Project.tags().isActive(config.tags) && !bang
+    val tags = config.tags + testCase.spec.tags()
+    val enabled = config.enabled && Project.tags().isActive(tags) && !bang
 
     return if (enabled) {
       executeTestSet(TestSet(testCase, config.timeout, config.invocations, config.threads))

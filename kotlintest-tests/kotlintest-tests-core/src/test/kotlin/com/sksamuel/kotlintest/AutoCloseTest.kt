@@ -11,9 +11,8 @@ internal object Resources
 
 class AutoCloseTest : StringSpec() {
 
-  private val resourceA = autoClose(Checker)
-  private val resourceB = autoClose(Closeable2)
-  private val resourceC = autoClose(Closeable1)
+  private val resourceA = autoClose(Closeable2)
+  private val resourceB = autoClose(Closeable1)
 
   init {
     "should close resources in reverse order" {
@@ -25,7 +24,7 @@ class AutoCloseTest : StringSpec() {
 object AutoCloseListener : TestListener {
   override fun afterProject() {
     Closeable1.closed.shouldBeTrue()
-    Closeable2.closed.shouldBeFalse()
+    Closeable2.closed.shouldBeTrue()
   }
 }
 
@@ -45,11 +44,5 @@ object Closeable2 : Closeable {
   override fun close() {
     assert(Closeable1.closed)
     closed = true
-  }
-}
-
-object Checker : Closeable {
-  override fun close() {
-    assert(Closeable1.closed && Closeable2.closed)
   }
 }
