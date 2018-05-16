@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest
 
+import io.kotlintest.Tag
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.jdom2.Element
@@ -7,6 +8,8 @@ import org.jdom2.input.SAXBuilder
 import java.io.File
 
 class JUnitXMLReportTest : WordSpec() {
+
+  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag)
 
   fun root(): Element {
 
@@ -20,7 +23,7 @@ class JUnitXMLReportTest : WordSpec() {
         println("XML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
         File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
       }
-      else -> throw RuntimeException("Should not be called")
+      else -> throw RuntimeException()
     }
 
     val builder = SAXBuilder()
@@ -34,7 +37,7 @@ class JUnitXMLReportTest : WordSpec() {
     // kotlintest-tests/kotlintest-tests-core
     "JUnit XML Output" should {
 
-      "include top level information".config(enabled = isCI()) {
+      "include top level information" {
         val root = root()
         root.getAttributeValue("name").shouldBe("com.sksamuel.kotlintest.specs.WordSpecTest")
         root.getAttributeValue("tests").shouldBe("4")
@@ -43,7 +46,7 @@ class JUnitXMLReportTest : WordSpec() {
         root.getAttributeValue("failures").shouldBe("0")
       }
 
-      "include test names".config(enabled = isCI()) {
+      "include test names" {
         val root = root()
         root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet().shouldBe(setOf("have another test", "have a test with config", "have a test", "a context should"))
         root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet().shouldBe(setOf("com.sksamuel.kotlintest.specs.WordSpecTest"))

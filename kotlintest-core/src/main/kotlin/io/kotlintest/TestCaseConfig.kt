@@ -8,7 +8,7 @@ data class TestCaseConfig(
     val invocations: Int = 1,
     val timeout: Duration = Duration.ofSeconds(600),
     val threads: Int = 1,
-    val tags: Set<Tag> = setOf(),
+    val tags: Set<Tag> = emptySet(),
     val extensions: List<TestCaseExtension> = emptyList()) {
   init {
     require(threads > 0, { "Theads must be > 0" })

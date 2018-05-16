@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest
 
+import io.kotlintest.Tag
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.specs.WordSpec
 import org.slf4j.LoggerFactory
@@ -9,6 +10,8 @@ import java.nio.file.Files
 class JUnitHTMLReportTest : WordSpec() {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
+
+  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag)
 
   fun indexHtml(): String {
     val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/reports/tests/test/index.html"
@@ -21,7 +24,7 @@ class JUnitHTMLReportTest : WordSpec() {
         println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotlintest-tests/kotlintest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
         File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
       }
-      else -> throw RuntimeException("Should not be called")
+      else -> throw RuntimeException()
     }
     return Files.readAllLines(file.toPath()).joinToString("\n")
   }
@@ -30,7 +33,7 @@ class JUnitHTMLReportTest : WordSpec() {
     // we test the output from the earlier test of tests in
     // kotlintest-tests/kotlintest-tests-core
     "JUnit HTML Output" should {
-      "include classnames".config(enabled = isCI()) {
+      "include classnames" {
         val html = indexHtml()
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.AutoCloseTest.html">com.sksamuel.kotlintest.AutoCloseTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.FeatureSpecTest.html">com.sksamuel.kotlintest.specs.FeatureSpecTest</a>""")
