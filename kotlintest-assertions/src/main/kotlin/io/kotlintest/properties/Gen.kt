@@ -5,6 +5,7 @@ import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.properties.shrinking.DoubleShrinker
 import io.kotlintest.properties.shrinking.FloatShrinker
 import io.kotlintest.properties.shrinking.IntShrinker
+import io.kotlintest.properties.shrinking.ListShrinker
 import io.kotlintest.properties.shrinking.Shrinker
 import io.kotlintest.properties.shrinking.StringShrinker
 import java.io.File
@@ -418,6 +419,8 @@ interface Gen<T> {
         val size = RANDOM.nextInt(100)
         gen.random().take(size).toList()
       }
+
+      override fun shrinker() = ListShrinker<T>()
     }
 
     /**
