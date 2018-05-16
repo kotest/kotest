@@ -82,4 +82,11 @@ interface Spec : TestListener {
   fun testCases(): List<TestCase>
 
   fun closeResources()
+
+  /**
+   * Sets the order of top level [TestCase]s in this spec.
+   * If this function returns a null value, then the value set in
+   * the [AbstractProjectConfig] will be used.
+   */
+  fun testCaseOrder(): TestCaseOrder? = null
 }

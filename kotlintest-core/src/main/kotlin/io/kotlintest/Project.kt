@@ -96,4 +96,6 @@ object Project {
   fun registerExtension(extension: ProjectLevelExtension) {
     _extensions.add(extension)
   }
+
+  fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
 }

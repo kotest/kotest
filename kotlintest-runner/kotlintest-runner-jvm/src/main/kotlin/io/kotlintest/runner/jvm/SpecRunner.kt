@@ -4,6 +4,7 @@ import createSpecInterceptorChain
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
+import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 
@@ -11,8 +12,16 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
   abstract fun execute(spec: Spec)
 
-  protected fun topLevelTests(spec: Spec): List<TestCase> {
-    val tests = spec.testCases()
+  /**
+   * Returns the top level [TestCase]s to run, in the order they
+   * should be run. Takes into account focused tests.
+   */
+  fun topLevelTests(spec: Spec): List<TestCase> {
+    val order = spec.testCaseOrder() ?: Project.testCaseOrder()
+    val tests = when (order) {
+      TestCaseOrder.Sequential -> spec.testCases()
+      TestCaseOrder.Random -> spec.testCases().shuffled()
+    }
     val focused = tests.find { it.name.startsWith("f:") }
     return if (focused == null) tests else listOf(focused)
   }
