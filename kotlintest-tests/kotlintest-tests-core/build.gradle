@@ -27,8 +27,3 @@ test {
 
 
 uploadArchives.enabled = false
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
