@@ -3,6 +3,7 @@ package io.kotlintest.properties
 import io.kotlintest.JavaRandoms
 import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.properties.shrinking.DoubleShrinker
+import io.kotlintest.properties.shrinking.FloatShrinker
 import io.kotlintest.properties.shrinking.IntShrinker
 import io.kotlintest.properties.shrinking.Shrinker
 import io.kotlintest.properties.shrinking.StringShrinker
@@ -383,6 +384,7 @@ interface Gen<T> {
       val literals = listOf(0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun constants(): Iterable<Float> = literals
       override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
+      override fun shrinker() = FloatShrinker
     }
 
     /**
@@ -536,7 +538,7 @@ data class ConstGen<T : Any>(val value: T) : Gen<T> {
  * An extension function for [Gen] that filters values
  * from an underlying generator using a predicate function.
  */
-@Deprecated("use gen.filter(T -> Boolean", ReplaceWith("generate().filter(isGood)"))
+@Deprecated("use gen.filter(T -> Boolean)", ReplaceWith("generate().filter(isGood)"))
 internal fun <T> Gen<T>.generateGood(isGood: (T) -> Boolean) = filter(isGood)
 
 // need some supertype that types a type param so it gets baked into the class file
