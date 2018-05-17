@@ -82,6 +82,70 @@ fun <T> forNone(col: Collection<T>, f: (T) -> Unit) {
   }
 }
 
+/**
+ * Inspecting allows to assert the properties of an object in a typed fashion providing a proper testing context.
+ *
+ * The **simple example** shows how inspecting can build up a assertion context making the tests more readable.
+ * ```
+ * inspecting(person){
+ *  name shouldBe "John Doe"
+ *  age shouldBe 20
+ * }
+ * ```
+ *
+ * The **elaborate example** shows that inspecting can be used in a nested fashion in combination with other inspectors
+ * to simplify the property accesses.
+ * ```
+ * inspecting(person){
+ *   name shouldBe "John Doe"
+ *   age shouldBe 20
+ *   forOne(friends){
+ *     inspecting(it){
+ *       name shouldBe "Samantha Rose"
+ *       age shouldBe 19
+ *     }
+ *   }
+ * }
+ * ```
+ * @param obj the object that is being inspected
+ * @param inspector the inspector in which further assertions and inspections can be done
+ * @author Hannes Thaller
+ */
+fun <K> inspecting(obj: K, inspector: K.() -> Unit) {
+    obj.inspector()
+}
+
+/**
+ * `extracting` pulls property values out of a list of objects for _typed_ bulk assertions on properties.
+ *
+ * The **simple example** shows how `extracting` helps with disjunct collection assertions:
+ * ```
+ * extracting(persons){ name }
+ *   .shouldContainAll("John Doe", "Samantha Roes")
+ * ```
+ *
+ * This is similar to using multiple [forOne] however allows for a more concise notation.
+ * ```
+ * forOne(persons){ it.name shouldBe "John Doe" }
+ * forOne(persons){ it.name shouldBe "Samantha Rose" }
+ * ```
+ *
+ * `extracting` also allows to define complex return types shown in this **elaborate example**:
+ * ```
+ * extracting(persons){ Pair(name, age) }
+ *   .shouldContainAll(
+ *     Pair("John Doe", 20),
+ *     Pair("Samantha Roes", 19)
+ *   )
+ * ```
+ * @param col the collection of objects from which to extract the properties
+ * @param extractor the extractor that defines _which_ properties are returned
+ * @author Hannes Thaller
+ */
+fun <K, T> extracting(col: Collection<K>, extractor: K.() -> T): List<T> {
+    return col.map(extractor)
+}
+
 private fun <T> buildAssertionError(msg: String, results: List<Pair<T, String?>>): String {
 
   val passed = results.filter { it.second == null }
