@@ -60,6 +60,9 @@ fun <T> contain(t: T) = object : Matcher<NonEmptyList<T>> {
   )
 }
 
+fun NonEmptyList<Any>.shouldBeUnique() = this shouldNot haveDuplicates()
+fun NonEmptyList<Any>.shouldNotBeUnique() = this should haveDuplicates()
+
 fun NonEmptyList<Any>.shouldHaveDuplicates() = this should haveDuplicates()
 fun NonEmptyList<Any>.shouldNotHaveDuplicates() = this shouldNot haveDuplicates()
 fun <T> haveDuplicates() = object : Matcher<NonEmptyList<T>> {
