@@ -382,9 +382,11 @@ object ProjectConfig : AbstractProjectConfig() {
 KotlinTest supports running specs in parallel to take advantage of modern cpus with several cores. To do this, override
  the `parallelism` function inside the project config.
 
+```kotlin
 object ProjectConfig : AbstractProjectConfig() {
    override fun parallelism(): Int = 2
 }
+```
 
 By default the value is 1, which will run each spec serially.
 
