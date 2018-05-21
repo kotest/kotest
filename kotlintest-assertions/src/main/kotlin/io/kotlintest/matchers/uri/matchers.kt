@@ -1,4 +1,4 @@
-package  io.kotlintest.matchers.uri
+package io.kotlintest.matchers.uri
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
@@ -36,8 +36,8 @@ fun haveHost(host: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHavePath(path: String) = this should io.kotlintest.matchers.uri.haveScheme(path)
-fun URI.shouldNotHavePath(path: String) = this shouldNot io.kotlintest.matchers.uri.haveScheme(path)
+fun URI.shouldHavePath(path: String) = this should io.kotlintest.matchers.uri.havePath(path)
+fun URI.shouldNotHavePath(path: String) = this shouldNot io.kotlintest.matchers.uri.havePath(path)
 fun havePath(path: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.path == path,
@@ -47,7 +47,7 @@ fun havePath(path: String) = object : Matcher<URI> {
 }
 
 fun URI.shouldHaveParameter(key: String) = this should io.kotlintest.matchers.uri.haveParameter(key)
-fun URI.shouldNotHaveParameter(key: String) = this shouldNot io.kotlintest.matchers.uri.haveScheme(key)
+fun URI.shouldNotHaveParameter(key: String) = this shouldNot io.kotlintest.matchers.uri.haveParameter(key)
 fun haveParameter(key: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.query.split("&").any { it.split("=").first() == key },
