@@ -122,9 +122,13 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
             try {
               when (result.status) {
                 TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-                TestStatus.Error -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+                TestStatus.Error, TestStatus.Failure -> {
+                  if (System.getProperty("kotlintest.gradle.workaround") != null) {
+                    println("Test failure: $result")
+                  }
+                  listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
+                }
                 TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
-                TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
               }
             } catch (t: Throwable) {
               logger.error("Error in JUnit Platform listener", t)
@@ -202,7 +206,17 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     val id = parent.uniqueId.append("test", description.name)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name) {
-      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER_AND_TEST
+      override fun getType(): TestDescriptor.Type {
+        // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
+        // see https://github.com/gradle/gradle/issues/4912
+        // so we have a hacky fix, we report all tests as containers in gradle, which works (sans output) but intellij (correctly)
+        // reports leaf containers as empty which adds a bit of noise, so we need to detect the env
+        return when {
+          System.getProperty("kotlintest.gradle.workaround") != null -> TestDescriptor.Type.CONTAINER
+          else -> TestDescriptor.Type.CONTAINER_AND_TEST
+        }
+      }
+
       override fun mayRegisterTests(): Boolean = true
     }
 
