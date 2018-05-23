@@ -61,37 +61,65 @@ infix fun String.shouldBe(other: String) {
   }
 }
 
-infix fun BooleanArray.shouldBe(other: BooleanArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun BooleanArray?.shouldBe(other: BooleanArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun IntArray.shouldBe(other: IntArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun IntArray?.shouldBe(other: IntArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun DoubleArray.shouldBe(other: DoubleArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun ShortArray?.shouldBe(other: ShortArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun LongArray.shouldBe(other: LongArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun FloatArray?.shouldBe(other: FloatArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun <T> Array<T>.shouldBe(other: Array<T>) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun DoubleArray?.shouldBe(other: DoubleArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun LongArray?.shouldBe(other: LongArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun ByteArray?.shouldBe(other: ByteArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun CharArray?.shouldBe(other: CharArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
