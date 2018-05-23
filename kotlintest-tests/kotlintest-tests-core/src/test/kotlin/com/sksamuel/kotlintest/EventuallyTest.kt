@@ -19,7 +19,7 @@ class EventuallyTest : WordSpec() {
       }
       "pass tests that completed within the time allowed"  {
         val end = System.currentTimeMillis() + 2000
-        eventually(Duration.ofDays(5)) {
+        eventually(Duration.ofSeconds(3)) {
           if (System.currentTimeMillis() < end)
             throw RuntimeException("foo")
         }
