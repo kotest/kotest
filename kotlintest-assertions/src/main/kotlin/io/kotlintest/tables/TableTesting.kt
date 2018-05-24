@@ -523,28 +523,28 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(t
   }
 }
 
-data class Table1<A>(val headers: Headers1, val rows: List<Row1<A>>)
-data class Table2<A, B>(val headers: Headers2, val rows: List<Row2<A, B>>)
-data class Table3<A, B, C>(val headers: Headers3, val rows: List<Row3<A, B, C>>)
-data class Table4<A, B, C, D>(val headers: Headers4, val rows: List<Row4<A, B, C, D>>)
-data class Table5<A, B, C, D, E>(val headers: Headers5, val rows: List<Row5<A, B, C, D, E>>)
-data class Table6<A, B, C, D, E, F>(val headers: Headers6, val rows: List<Row6<A, B, C, D, E, F>>)
-data class Table7<A, B, C, D, E, F, G>(val headers: Headers7, val rows: List<Row7<A, B, C, D, E, F, G>>)
-data class Table8<A, B, C, D, E, F, G, H>(val headers: Headers8, val rows: List<Row8<A, B, C, D, E, F, G, H>>)
-data class Table9<A, B, C, D, E, F, G, H, I>(val headers: Headers9, val rows: List<Row9<A, B, C, D, E, F, G, H, I>>)
-data class Table10<A, B, C, D, E, F, G, H, I, J>(val headers: Headers10, val rows: List<Row10<A, B, C, D, E, F, G, H, I, J>>)
-data class Table11<A, B, C, D, E, F, G, H, I, J, K>(val headers: Headers11, val rows: List<Row11<A, B, C, D, E, F, G, H, I, J, K>>)
-data class Table12<A, B, C, D, E, F, G, H, I, J, K, L>(val headers: Headers12, val rows: List<Row12<A, B, C, D, E, F, G, H, I, J, K, L>>)
-data class Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>(val headers: Headers13, val rows: List<Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>>)
-data class Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(val headers: Headers14, val rows: List<Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>>)
-data class Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(val headers: Headers15, val rows: List<Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>>)
-data class Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(val headers: Headers16, val rows: List<Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>)
-data class Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(val headers: Headers17, val rows: List<Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>)
-data class Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(val headers: Headers18, val rows: List<Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>)
-data class Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(val headers: Headers19, val rows: List<Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>)
-data class Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
-data class Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
-data class Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
+data class Table1<out A>(val headers: Headers1, val rows: List<Row1<A>>)
+data class Table2<out A, out B>(val headers: Headers2, val rows: List<Row2<A, B>>)
+data class Table3<out A, out B, out C>(val headers: Headers3, val rows: List<Row3<A, B, C>>)
+data class Table4<out A, out B, out C, out D>(val headers: Headers4, val rows: List<Row4<A, B, C, D>>)
+data class Table5<out A, out B, out C, out D, out E>(val headers: Headers5, val rows: List<Row5<A, B, C, D, E>>)
+data class Table6<out A, out B, out C, out D, out E, out F>(val headers: Headers6, val rows: List<Row6<A, B, C, D, E, F>>)
+data class Table7<out A, out B, out C, out D, out E, out F, out G>(val headers: Headers7, val rows: List<Row7<A, B, C, D, E, F, G>>)
+data class Table8<out A, out B, out C, out D, out E, out F, out G, out H>(val headers: Headers8, val rows: List<Row8<A, B, C, D, E, F, G, H>>)
+data class Table9<out A, out B, out C, out D, out E, out F, out G, out H, out I>(val headers: Headers9, val rows: List<Row9<A, B, C, D, E, F, G, H, I>>)
+data class Table10<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J>(val headers: Headers10, val rows: List<Row10<A, B, C, D, E, F, G, H, I, J>>)
+data class Table11<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K>(val headers: Headers11, val rows: List<Row11<A, B, C, D, E, F, G, H, I, J, K>>)
+data class Table12<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L>(val headers: Headers12, val rows: List<Row12<A, B, C, D, E, F, G, H, I, J, K, L>>)
+data class Table13<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M>(val headers: Headers13, val rows: List<Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>>)
+data class Table14<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N>(val headers: Headers14, val rows: List<Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>>)
+data class Table15<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O>(val headers: Headers15, val rows: List<Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>>)
+data class Table16<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P>(val headers: Headers16, val rows: List<Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>)
+data class Table17<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q>(val headers: Headers17, val rows: List<Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>)
+data class Table18<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R>(val headers: Headers18, val rows: List<Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>)
+data class Table19<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S>(val headers: Headers19, val rows: List<Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>)
+data class Table20<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
+data class Table21<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
+data class Table22<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U, out V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
 
 data class Headers1(val labelA: String) {
   fun values() = listOf(labelA)
@@ -634,90 +634,90 @@ data class Headers22(val labelA: String, val labelB: String, val labelC: String,
   fun values() = listOf(labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ, labelK, labelL, labelM, labelN, labelO, labelP, labelQ, labelR, labelS, labelT, labelU, labelV)
 }
 
-data class Row1<A>(val a: A) {
+data class Row1<out A>(val a: A) {
   fun values() = listOf(a)
 }
 
-data class Row2<A, B>(val a: A, val b: B) {
+data class Row2<out A, out B>(val a: A, val b: B) {
   fun values() = listOf(a, b)
 }
 
-data class Row3<A, B, C>(val a: A, val b: B, val c: C) {
+data class Row3<out A, out B, out C>(val a: A, val b: B, val c: C) {
   fun values() = listOf(a, b, c)
 }
 
-data class Row4<A, B, C, D>(val a: A, val b: B, val c: C, val d: D) {
+data class Row4<out A, out B, out C, out D>(val a: A, val b: B, val c: C, val d: D) {
   fun values() = listOf(a, b, c, d)
 }
 
-data class Row5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
+data class Row5<out A, out B, out C, out D, out E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
   fun values() = listOf(a, b, c, d, e)
 }
 
-data class Row6<A, B, C, D, E, F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
+data class Row6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
   fun values() = listOf(a, b, c, d, e, f)
 }
 
-data class Row7<A, B, C, D, E, F, G>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G) {
+data class Row7<out A, out B, out C, out D, out E, out F, out G>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G) {
   fun values() = listOf(a, b, c, d, e, f, g)
 }
 
-data class Row8<A, B, C, D, E, F, G, H>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H) {
+data class Row8<out A, out B, out C, out D, out E, out F, out G, out H>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H) {
   fun values() = listOf(a, b, c, d, e, f, g, h)
 }
 
-data class Row9<A, B, C, D, E, F, G, H, I>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I) {
+data class Row9<out A, out B, out C, out D, out E, out F, out G, out H, out I>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i)
 }
 
-data class Row10<A, B, C, D, E, F, G, H, I, J>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J) {
+data class Row10<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j)
 }
 
-data class Row11<A, B, C, D, E, F, G, H, I, J, K>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K) {
+data class Row11<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k)
 }
 
-data class Row12<A, B, C, D, E, F, G, H, I, J, K, L>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L) {
+data class Row12<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l)
 }
 
-data class Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M) {
+data class Row13<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m)
 }
 
-data class Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N) {
+data class Row14<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
 }
 
-data class Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O) {
+data class Row15<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
 }
 
-data class Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P) {
+data class Row16<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
 }
 
-data class Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q) {
+data class Row17<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
 }
 
-data class Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R) {
+data class Row18<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
 }
 
-data class Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S) {
+data class Row19<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
 }
 
-data class Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T) {
+data class Row20<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
 }
 
-data class Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U) {
+data class Row21<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
 }
 
-data class Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V) {
+data class Row22<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U, out V>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
 }

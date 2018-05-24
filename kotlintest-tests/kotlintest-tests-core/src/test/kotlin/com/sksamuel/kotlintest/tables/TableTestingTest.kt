@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.tables
 
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.forAll
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
@@ -73,6 +73,18 @@ class TableTestingTest : StringSpec() {
       forAll(table5) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, result ->
         a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u shouldBe result
       }
+    }
+
+    "should be able to combine subtypes in one table" {
+      abstract class Shape
+      val circle = object : Shape() {}
+      val square = object : Shape() {}
+
+      val table6 = table(
+          headers("a", "b", "c"),
+          row("foo", 5, circle),
+          row("bar", 42, square)
+      )
     }
   }
 }
