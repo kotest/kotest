@@ -404,7 +404,7 @@ The first is `afterScan` which accepts a list of Spec classes that were discover
  of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
  overriding this function, you are able to filter which classes are used, or even add in extra classes not originally discovered.
 
-The second function is `instantiate` whch acccepts a `KClass<Spec>` and then attempts to create an instance of this Spec class in order
+The second function is `instantiate` which accepts a `KClass<Spec>` and then attempts to create an instance of this Spec class in order
  to then run the test cases defined in it. By default, Spec classes are assumed to have a zero-arg primary constructor.
  If you wish to use non-zero arg primary constructors this function can be implemented with logic on how to instantiate a test class.
 
@@ -412,7 +412,7 @@ An implementation can choose to create a new instance, or it can choose to retur
 extension (or if no more extensions, then back to the Test Engine itself).
 
 By overriding this function, extensions are able to customize the way classes are created, to support things like constructors
-with parameters, or classes that require special initization logic. This type of extension is how the Spring Constructor Injection
+with parameters, or classes that require special initialization logic. This type of extension is how the Spring Constructor Injection
 add-on works for example.
 
 
@@ -865,11 +865,11 @@ For the full list of arrow matchers [click here](arrow-matchers.md).
 KotlinTest offers a Spring extension that allows you to test code that wires dependencies using Spring.
 To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
 
-In order to let Spring know which configuration class to use, you must annotation your Spec classes with `@ContextConfiguration`.
+In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
 This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
 point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 
-There are two ways to eanble spring wiring depending on if you want to use constructor injection, or field injection.
+There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
 
 #### Field Injection
 
@@ -911,7 +911,7 @@ class ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-And now an example of a test class which requires a service called `UserService` in it's primary constructor. This service
+And now an example of a test class which requires a service called `UserService` in its primary constructor. This service
  class is just a regular spring bean which has been annotated with @Component.
 
 ```kotlin
