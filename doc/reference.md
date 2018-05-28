@@ -457,7 +457,7 @@ class PropertyExample: StringSpec() {
 
     "String size" {
       forAll(2300) { a: String, b: String ->
-        (a + b).length shouldBe a.length + b.length
+        (a + b).length == a.length + b.length
       }
     }
 
