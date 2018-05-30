@@ -13,14 +13,38 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 // -- equality functions
 
+fun compare(a: Any?, b: Any?): Boolean {
+  return if (a == null && b == null) true
+  else if (a == null) false
+  else if (b == null) false
+  else when (a) {
+    is Int -> when (b) {
+      is Long -> a.toLong() == b
+      is Double -> a.toDouble() == b
+      else -> a == b
+    }
+    is Float -> when (b) {
+      is Double -> a.toDouble() == b
+      else -> a == b
+    }
+    is Double -> when (b) {
+      is Float -> a == b.toDouble()
+      else -> a == b
+    }
+    is Long -> when (b) {
+      is Int -> a == b.toLong()
+      else -> a == b
+    }
+    else -> a == b
+  }
+}
+
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {
-      if (this == null && any != null)
-        throw equalsError(any, this)
-      if (this != any)
+      if (!compare(any, this))
         throw equalsError(any, this)
     }
   }
