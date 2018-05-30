@@ -14,10 +14,7 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 // -- equality functions
 
 fun compare(a: Any?, b: Any?): Boolean {
-  return if (a == null && b == null) true
-  else if (a == null) false
-  else if (b == null) false
-  else when (a) {
+  return when (a) {
     is Int -> when (b) {
       is Long -> a.toLong() == b
       is Double -> a.toDouble() == b
@@ -44,7 +41,9 @@ infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {
-      if (!compare(any, this))
+      if (this == null && any != null)
+        throw equalsError(any, this)
+      if (!compare(this, any))
         throw equalsError(any, this)
     }
   }
