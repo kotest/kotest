@@ -139,7 +139,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       throw RuntimeException("Spec descriptor cannot be null")
     } else {
       val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-      logger.debug("Notifying junit that spec finished ${descriptor.uniqueId}=$result")
+      logger.debug("Notifying junit that spec finished ${descriptor.uniqueId} $result")
       listener.executionFinished(descriptor, result)
     }
   }
@@ -162,13 +162,11 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
-    synchronized(this) {
-      if (!started.contains(set.testCase.description)) {
-        started.add(set.testCase.description)
-        val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
-        logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
-        listener.executionStarted(descriptor)
-      }
+    if (!started.contains(set.testCase.description)) {
+      started.add(set.testCase.description)
+      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
+      logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
+      listener.executionStarted(descriptor)
     }
   }
 
@@ -176,7 +174,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       descriptors.getOrPut(description, { createTestCaseDescriptor(description, type) })
 
   // returns the most important result for a given description
-  // by searching all the results stored for that description and child descriptions
+// by searching all the results stored for that description and child descriptions
   private fun findResultFor(description: Description): TestResult? {
 
     fun findByStatus(status: TestStatus): TestResult? = results
@@ -217,10 +215,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
     descriptors[description] = descriptor
 
-    synchronized(this) {
-      parent.addChild(descriptor)
-      listener.dynamicTestRegistered(descriptor)
-    }
+    parent.addChild(descriptor)
+    listener.dynamicTestRegistered(descriptor)
 
     return descriptor
   }
@@ -239,10 +235,8 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
     // we need to synchronize because we don't want to allow multiple specs adding
     // to the root container at the same time
-    synchronized(this) {
-      root.addChild(descriptor)
-      listener.dynamicTestRegistered(descriptor)
-    }
+    root.addChild(descriptor)
+    listener.dynamicTestRegistered(descriptor)
 
     return descriptor
   }
