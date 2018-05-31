@@ -13,7 +13,7 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 // -- equality functions
 
-fun compare(a: Any?, b: Any?): Boolean {
+private fun compare(a: Any?, b: Any?): Boolean {
   return when (a) {
     is Int -> when (b) {
       is Long -> a.toLong() == b
