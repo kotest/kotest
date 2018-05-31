@@ -1,7 +1,6 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.ToleranceMatcher
-import io.kotlintest.matchers.shouldBe
 import org.junit.ComparisonCompactor
 
 fun <T> be(expected: T) = equalityMatcher(expected)
