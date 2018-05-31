@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -31,12 +32,12 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   }
 
   operator fun String.invoke(init: ShouldScope.() -> Unit) =
-      addTestCase(this, { this@AbstractShouldSpec.ShouldScope(this).init() }, defaultTestCaseConfig)
+      addTestCase(this, { this@AbstractShouldSpec.ShouldScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   fun should(name: String, test: TestContext.() -> Unit) =
-      addTestCase("should $name", test, defaultTestCaseConfig)
+      addTestCase("should $name", test, defaultTestCaseConfig, TestType.Test)
 
-  fun should(name: String) = Testbuilder({ test, config -> addTestCase("should $name", test, config) })
+  fun should(name: String) = Testbuilder({ test, config -> addTestCase("should $name", test, config, TestType.Test) })
 
   inner class Testbuilder(val register: (TestContext.() -> Unit, TestCaseConfig) -> Unit) {
     fun config(
@@ -62,13 +63,13 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   inner class ShouldScope(val context: TestContext) {
 
     operator fun String.invoke(init: ShouldScope.() -> Unit) =
-        context.registerTestCase(this, this@AbstractShouldSpec, { this@AbstractShouldSpec.ShouldScope(this).init() }, this@AbstractShouldSpec.defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractShouldSpec, { this@AbstractShouldSpec.ShouldScope(this).init() }, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Container)
 
     fun should(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("should $name", this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig)
+        context.registerTestCase("should $name", this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Test)
 
     fun should(name: String) =
-        this@AbstractShouldSpec.Testbuilder({ test, config -> context.registerTestCase("should $name", this@AbstractShouldSpec, test, config) })
+        this@AbstractShouldSpec.Testbuilder({ test, config -> context.registerTestCase("should $name", this@AbstractShouldSpec, test, config, TestType.Test) })
 
   }
 }

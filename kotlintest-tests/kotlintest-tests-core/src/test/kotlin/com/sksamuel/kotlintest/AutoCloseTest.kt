@@ -1,7 +1,6 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.matchers.boolean.shouldBeFalse
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.StringSpec
 import java.io.Closeable

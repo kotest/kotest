@@ -10,11 +10,13 @@ import com.sksamuel.kotlintest.runner.jvm.ReflectionsHelperTest
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
+import io.kotlintest.TestType
 import io.kotlintest.runner.junit5.JUnitTestRunnerListener
 import io.kotlintest.runner.jvm.TestSet
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.junit.platform.engine.EngineExecutionListener
+import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
@@ -46,7 +48,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestCaseConfig())
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
       val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
@@ -58,6 +60,44 @@ class JUnitTestRunnerListenerTest : WordSpec({
       then(mock).should().dynamicTestRegistered(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
     }
 
+    "set TestDescriptor.Type to CONTAINER when TestType is Container" {
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
+      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
+
+      listener.prepareSpec(spec.description(), spec::class)
+      listener.prepareTestCase(tc)
+      listener.testRun(set, 1)
+
+      rootDescriptor.children.first().children.size.shouldBe(1)
+      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
+      rootDescriptor.children.first().children.first().type shouldBe TestDescriptor.Type.CONTAINER
+    }
+
+    "set TestDescriptor.Type to TEST when TestType is Test" {
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Test, TestCaseConfig())
+      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
+
+      listener.prepareSpec(spec.description(), spec::class)
+      listener.prepareTestCase(tc)
+      listener.testRun(set, 1)
+
+      rootDescriptor.children.first().children.size.shouldBe(1)
+      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
+      rootDescriptor.children.first().children.first().type shouldBe TestDescriptor.Type.TEST
+    }
+
     "notify engine listener in sequence" {
       val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
 
@@ -65,7 +105,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestCaseConfig())
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
       val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
@@ -93,7 +133,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestCaseConfig(invocations = 3))
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig(invocations = 3))
       val set = TestSet(tc, Duration.ofMinutes(2), 3, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
@@ -118,8 +158,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestCaseConfig())
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
       val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
       val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
 
@@ -143,7 +183,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("test"), spec, { }, 1, TestCaseConfig())
+      val tc = TestCase(spec.description().append("test"), spec, { }, 1, TestType.Container, TestCaseConfig())
 
       listener.prepareSpec(spec.description(), spec::class)
       listener.prepareTestCase(tc)
@@ -161,8 +201,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestCaseConfig())
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
       val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
@@ -185,8 +225,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestCaseConfig())
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
       val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
@@ -204,7 +244,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { status == TestExecutionResult.Status.SUCCESSFUL })
     }
 
-    "only notifiy for descriptions that belong to the spec" {
+    "only notify for descriptions that belong to the spec" {
 
       val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
 
@@ -213,8 +253,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec1 = JUnitTestRunnerListenerTest()
       val spec2 = ReflectionsHelperTest()
-      val tc1 = TestCase(spec1.description().append("test1"), spec1, { }, 1, TestCaseConfig())
-      val tc2 = TestCase(spec2.description().append("test2"), spec2, { }, 1, TestCaseConfig())
+      val tc1 = TestCase(spec1.description().append("test1"), spec1, { }, 1, TestType.Container, TestCaseConfig())
+      val tc2 = TestCase(spec2.description().append("test2"), spec2, { }, 1, TestType.Container, TestCaseConfig())
       val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
       val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
 

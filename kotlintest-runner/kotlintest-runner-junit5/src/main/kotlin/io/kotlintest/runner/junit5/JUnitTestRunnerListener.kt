@@ -5,6 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
+import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.TestSet
 import org.junit.platform.engine.EngineExecutionListener
@@ -68,7 +69,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   private val descriptors = ConcurrentHashMap<Description, TestDescriptor>()
 
   // contains every test that was discovered but not necessarily executed
-  private val discovered = ConcurrentHashMap.newKeySet<Description>()
+  private val discovered = ConcurrentHashMap.newKeySet<Pair<Description, TestType>>()
 
   // contains a set of all the tests we have notified as started, to avoid
   // double notification when a test is set to run multiple times
@@ -107,13 +108,13 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     // to wait until all possible invocations of each scope have completed.
     // for each description we can grab the best result and use that
     discovered
-        .filter { description.isAncestorOf(it) }
-        .sortedBy { it.depth() }
+        .filter { description.isAncestorOf(it.first) }
+        .sortedBy { it.first.depth() }
         .reversed()
         .forEach {
-          val descriptor = descriptors[it] ?: getOrCreateDescriptor(it)
+          val descriptor = descriptors[it.first] ?: getOrCreateDescriptor(it.first, it.second)
           // find an error by priority
-          val result = findResultFor(it)
+          val result = findResultFor(it.first)
           if (result == null) {
             logger.error("Could not find result for $it")
             throw RuntimeException("Every description must have a result but could not find one for $it")
@@ -122,12 +123,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
             try {
               when (result.status) {
                 TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
-                TestStatus.Error, TestStatus.Failure -> {
-                  if (System.getProperty("kotlintest.gradle.workaround") != null) {
-                    println("Test failure: $result")
-                  }
-                  listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-                }
+                TestStatus.Error, TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
                 TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
               }
             } catch (t: Throwable) {
@@ -149,7 +145,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   }
 
   override fun prepareTestCase(testCase: TestCase) {
-    discovered.add(testCase.description)
+    discovered.add(Pair(testCase.description, testCase.type))
   }
 
   override fun completeTestCase(testCase: TestCase, result: TestResult) {
@@ -169,15 +165,15 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     synchronized(this) {
       if (!started.contains(set.testCase.description)) {
         started.add(set.testCase.description)
-        val descriptor = createTestCaseDescriptor(set.testCase.description)
+        val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
         logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
         listener.executionStarted(descriptor)
       }
     }
   }
 
-  private fun getOrCreateDescriptor(description: Description): TestDescriptor =
-      descriptors.getOrPut(description, { createTestCaseDescriptor(description) })
+  private fun getOrCreateDescriptor(description: Description, type: TestType): TestDescriptor =
+      descriptors.getOrPut(description, { createTestCaseDescriptor(description, type) })
 
   // returns the most important result for a given description
   // by searching all the results stored for that description and child descriptions
@@ -199,7 +195,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     return result
   }
 
-  private fun createTestCaseDescriptor(description: Description): TestDescriptor {
+  private fun createTestCaseDescriptor(description: Description, type: TestType): TestDescriptor {
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
     val parent = descriptors[parentDescription]!!
@@ -209,11 +205,10 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
       override fun getType(): TestDescriptor.Type {
         // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
         // see https://github.com/gradle/gradle/issues/4912
-        // so we have a hacky fix, we report all tests as containers in gradle, which works (sans output) but intellij (correctly)
-        // reports leaf containers as empty which adds a bit of noise, so we need to detect the env
-        return when {
-          System.getProperty("kotlintest.gradle.workaround") != null -> TestDescriptor.Type.CONTAINER
-          else -> TestDescriptor.Type.CONTAINER_AND_TEST
+        // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+        return when (type) {
+          TestType.Container -> TestDescriptor.Type.CONTAINER
+          TestType.Test -> TestDescriptor.Type.TEST
         }
       }
 

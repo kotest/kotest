@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -29,21 +30,21 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestCase(name, this@AbstractFeatureSpec, test, config)
+      context.registerTestCase(name, this@AbstractFeatureSpec, test, config, TestType.Test)
     }
   }
 
   fun feature(name: String, init: FeatureScope.() -> Unit) =
-      addTestCase("Feature: $name", { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig)
+      addTestCase("Feature: $name", { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   @KotlinTestDsl
   inner class FeatureScope(val context: TestContext) {
 
     fun and(name: String, init: FeatureScope.() -> Unit) =
-        context.registerTestCase("And: $name", this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig)
+        context.registerTestCase("And: $name", this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Container)
 
     fun scenario(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig)
+        context.registerTestCase("Scenario: $name", this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Test)
 
     fun scenario(name: String) = this@AbstractFeatureSpec.ScenarioBuilder("Scenario: $name", context)
   }

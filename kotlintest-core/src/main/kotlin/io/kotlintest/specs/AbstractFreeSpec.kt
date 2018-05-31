@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -14,10 +15,10 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   }
 
   infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
-      addTestCase(this, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
+      addTestCase(this, { FreeSpecScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
   infix operator fun String.invoke(test: TestContext.() -> Unit) =
-      addTestCase(this, test, defaultTestCaseConfig)
+      addTestCase(this, test, defaultTestCaseConfig, TestType.Test)
 
   fun String.config(
       invocations: Int? = null,
@@ -34,16 +35,16 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         threads ?: defaultTestCaseConfig.threads,
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
-    addTestCase(this, test, config)
+    addTestCase(this, test, config, TestType.Test)
   }
 
   inner class FreeSpecScope(val context: TestContext) {
 
     infix operator fun String.minus(test: FreeSpecScope.() -> Unit) =
-        context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
     infix operator fun String.invoke(test: TestContext.() -> Unit) =
-        context.registerTestCase(this, this@AbstractFreeSpec, test, defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractFreeSpec, test, defaultTestCaseConfig, TestType.Test)
 
     fun String.config(
         invocations: Int? = null,
@@ -60,7 +61,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, config)
+      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, config, TestType.Test)
     }
   }
 }

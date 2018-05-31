@@ -11,13 +11,13 @@ abstract class AbstractSpec : Spec {
 
   override fun testCases(): List<TestCase> = rootTestCases.toList()
 
-  protected fun createTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig) =
-      TestCase(description().append(name), this, test, lineNumber(), config)
+  protected fun createTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
+      TestCase(description().append(name), this, test, lineNumber(), type, config)
 
-  protected fun addTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig) {
+  protected fun addTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     if (rootTestCases.any { it.name == name })
       throw IllegalArgumentException("Cannot add test with duplicate name $name")
-    rootTestCases.add(createTestCase(name, test, config))
+    rootTestCases.add(createTestCase(name, test, config, type))
   }
 
   private val closeablesInReverseOrder = LinkedList<Closeable>()

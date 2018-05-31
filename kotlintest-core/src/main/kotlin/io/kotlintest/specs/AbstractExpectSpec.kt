@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -30,7 +31,7 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestCase(name, this@AbstractExpectSpec, test, config)
+      context.registerTestCase(name, this@AbstractExpectSpec, test, config, TestType.Test)
     }
   }
 
@@ -38,13 +39,13 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
   inner class ExpectScope(val context: TestContext) {
 
     fun expect(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig)
+        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
 
     fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, "Expect: $name")
   }
 
   fun context(name: String, test: ExpectScope.() -> Unit) =
-      addTestCase("Context: $name", { this@AbstractExpectSpec.ExpectScope(this).test() }, defaultTestCaseConfig)
+      addTestCase("Context: $name", { this@AbstractExpectSpec.ExpectScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
 
 }
