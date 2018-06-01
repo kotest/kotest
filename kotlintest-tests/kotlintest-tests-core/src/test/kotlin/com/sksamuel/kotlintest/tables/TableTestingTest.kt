@@ -2,10 +2,7 @@ package com.sksamuel.kotlintest.tables
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.tables.forAll
-import io.kotlintest.tables.headers
-import io.kotlintest.tables.row
-import io.kotlintest.tables.table
+import io.kotlintest.tables.*
 
 class TableTestingTest : StringSpec() {
   init {
@@ -34,7 +31,29 @@ class TableTestingTest : StringSpec() {
       )
 
       forAll(table2) { a, b ->
-        a + b == 10
+        a + b shouldBe 10
+      }
+    }
+
+    "numbers should add up to ten using extension function" {
+
+      table(headers("a", "b"),
+              row(5, 5),
+              row(4, 6),
+              row(3, 7)
+      ).forAll { a, b ->
+        a + b shouldBe 10
+      }
+    }
+
+    "numbers all be different using extension function" {
+
+      table(headers("a", "b"),
+              row(1, 2),
+              row(3, 4),
+              row(5, 6)
+      ).forNone { a, b ->
+        a shouldBe b
       }
     }
 
