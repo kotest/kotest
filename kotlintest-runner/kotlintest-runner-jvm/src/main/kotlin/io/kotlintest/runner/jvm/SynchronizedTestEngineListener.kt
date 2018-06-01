@@ -26,9 +26,9 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
-  override fun completeSpec(description: Description, t: Throwable?) {
+  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
     synchronized(listener) {
-      listener.completeSpec(description, t)
+      listener.completeSpec(description, klass, t)
     }
   }
 

@@ -3,6 +3,7 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.DiscoveryRequest
+import io.kotlintest.runner.jvm.IsolationTestEngineListener
 import io.kotlintest.runner.jvm.SynchronizedTestEngineListener
 import io.kotlintest.runner.jvm.TestDiscovery
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -38,7 +39,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
   override fun execute(request: ExecutionRequest) {
     logger.debug("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
-    val listener = SynchronizedTestEngineListener(JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root))
+    val listener = SynchronizedTestEngineListener(IsolationTestEngineListener(JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)))
     val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, Project.parallelism(), listener)
     runner.execute()
   }

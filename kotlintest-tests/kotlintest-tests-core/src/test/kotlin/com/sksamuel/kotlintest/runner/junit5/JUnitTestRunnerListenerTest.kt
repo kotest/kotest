@@ -35,6 +35,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       listener.prepareSpec(spec.description(), spec::class)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       rootDescriptor.children.size.shouldBe(1)
       rootDescriptor.children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]")
@@ -54,6 +55,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareSpec(spec.description(), spec::class)
       listener.prepareTestCase(tc)
       listener.testRun(set, 1)
+      listener.completeTestCase(tc, TestResult.Success)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
       rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
@@ -73,6 +76,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareSpec(spec.description(), spec::class)
       listener.prepareTestCase(tc)
       listener.testRun(set, 1)
+      listener.completeTestCase(tc, TestResult.Success)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
       rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
@@ -92,6 +97,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareSpec(spec.description(), spec::class)
       listener.prepareTestCase(tc)
       listener.testRun(set, 1)
+      listener.completeTestCase(tc, TestResult.Success)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
       rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
@@ -109,20 +116,21 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
       listener.prepareSpec(spec.description(), spec::class)
-      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" })
-
       listener.prepareTestCase(tc)
+
+      // no start notifications until we see a test run
       then(mock).should(never()).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
 
       listener.testRun(set, 1)
-      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
-
       listener.completeTestCase(tc, TestResult.Success)
 
-      // no completions yet until complete spec is called
+      // no finished notifications until complete spec is called
       then(mock).should(never()).executionFinished(any(), any())
 
-      listener.completeSpec(spec.description(), null)
+      listener.completeSpec(spec.description(), spec::class, null)
+
+      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" })
+      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
     }
@@ -148,6 +156,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.testRun(set, 2)
       listener.completeTestCase(tc, TestResult.Success)
 
+      listener.completeSpec(spec.description(), spec::class, null)
+
       then(mock).should(times(1)).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
     }
 
@@ -170,7 +180,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.testRun(set2, 1)
       listener.completeTestCase(tc2, TestResult.error(RuntimeException("boom")))
       listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), null)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
@@ -188,7 +198,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareSpec(spec.description(), spec::class)
       listener.prepareTestCase(tc)
       listener.completeTestCase(tc, TestResult.Ignored)
-      listener.completeSpec(spec.description(), null)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
@@ -211,7 +221,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareTestCase(tc2)
       listener.completeTestCase(tc2, TestResult.Ignored)
       listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), null)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
       then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
@@ -235,7 +245,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.prepareTestCase(tc2)
       listener.completeTestCase(tc2, TestResult.Ignored)
       listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), null)
+      listener.completeSpec(spec.description(), spec::class, null)
 
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
       then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
@@ -270,8 +280,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.completeTestCase(tc1, TestResult.Success)
       listener.completeTestCase(tc2, TestResult.Success)
 
-      listener.completeSpec(spec1.description(), null)
-      listener.completeSpec(spec2.description(), null)
+      listener.completeSpec(spec1.description(), spec1::class, null)
+      listener.completeSpec(spec2.description(), spec2::class, null)
 
       then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, any())
       then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:ReflectionsHelperTest]/[test:test2]" }, argThat { status == TestExecutionResult.Status.SUCCESSFUL })

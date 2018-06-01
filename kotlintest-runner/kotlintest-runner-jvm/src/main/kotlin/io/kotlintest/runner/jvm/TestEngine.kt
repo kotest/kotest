@@ -81,7 +81,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           {
             val desc = Description.root(klass.jvmName)
             listener.prepareSpec(desc, klass)
-            listener.completeSpec(desc, it)
+            listener.completeSpec(desc, klass, it)
             error.compareAndSet(null, it)
             executor.shutdownNow()
           },
@@ -108,8 +108,8 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     Try {
       runner(spec).execute(spec)
     }.fold(
-        { listener.completeSpec(spec.description(), it) },
-        { listener.completeSpec(spec.description(), null) }
+        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, it) },
+        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, null) }
     )
     spec.closeResources()
   }
