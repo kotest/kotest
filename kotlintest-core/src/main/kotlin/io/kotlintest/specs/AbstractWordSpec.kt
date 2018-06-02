@@ -55,7 +55,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: suspend () -> Unit) = { init() }
+    infix fun String.should(init: () -> Unit) = { init() }
   }
 
   @KotlinTestDsl
@@ -65,6 +65,6 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: suspend () -> Unit) = { init() }
+    infix fun String.should(init: () -> Unit) = { init() }
   }
 }
