@@ -390,7 +390,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
 By default the value is 1, which will run each spec serially.
 
-Note: Test cases inside each spec will always run strictly in definition order.
+Note: Test cases inside each spec will always run sequentially (either in definition order, or in a random order, see documentation on test ordering).
 
 ### Discovery Extension
 
