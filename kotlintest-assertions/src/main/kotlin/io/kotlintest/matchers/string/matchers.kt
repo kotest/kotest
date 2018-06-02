@@ -1,6 +1,5 @@
 package io.kotlintest.matchers.string
 
-import com.sun.org.apache.regexp.internal.RE
 import convertValueToString
 import io.kotlintest.Matcher
 import io.kotlintest.Result
