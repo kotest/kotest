@@ -1,5 +1,7 @@
 package io.kotlintest.properties
 
+import outputClassifications
+
 inline fun <reified A> verifyNone(noinline fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, fn)
 inline fun <reified A> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {
   verifyNone(iterations, Gen.default(), fn)

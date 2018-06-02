@@ -5,9 +5,9 @@ import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.shrinking.StringShrinker
 import io.kotlintest.properties.assertAll
-import io.kotlintest.properties.shrink
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import shrink
 
 class StringShrinkerTest : StringSpec({
 
