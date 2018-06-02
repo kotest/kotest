@@ -1,5 +1,6 @@
 package io.kotlintest.matchers.string
 
+import convertValueToString
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.matchers.endWith
@@ -14,7 +15,7 @@ fun String.shouldNotContainOnlyDigits() = this shouldNot containOnlyDigits()
 fun containOnlyDigits() = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.chars().allMatch { Character.isDigit(it) }
-    return Result(passed, "String $value should contain only digits", "String $value should not contain only digits")
+    return Result(passed, "${convertValueToString(value)} should contain only digits", "${convertValueToString(value)} should not contain only digits")
   }
 }
 
@@ -23,7 +24,7 @@ fun String.shouldNotContainADigit() = this shouldNot containADigit()
 fun containADigit() = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.chars().anyMatch { Character.isDigit(it) }
-    return Result(passed, "String $value should contain at least one digits", "String $value should not contain any digits")
+    return Result(passed, "${convertValueToString(value)} should contain at least one digits", "${convertValueToString(value)} should not contain any digits")
   }
 }
 
@@ -32,7 +33,7 @@ fun String.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnly
 fun containOnlyOnce(substring: String) = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.indexOf(substring) == value.lastIndexOf(substring)
-    return Result(passed, "String $value should contain the substring $substring only once", "String $value should not contain the substring $substring exactly once")
+    return Result(passed, "${convertValueToString(value)} should contain the substring $substring only once", "${convertValueToString(value)} should not contain the substring $substring exactly once")
   }
 }
 
@@ -41,7 +42,7 @@ fun String.shouldNotBeLowerCase() = this shouldNot beLowerCase()
 fun beLowerCase() = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.toLowerCase() == value
-    return Result(passed, "String $value should be lower case", "String $value should not should be lower case")
+    return Result(passed, "${convertValueToString(value)} should be lower case", "${convertValueToString(value)} should not should be lower case")
   }
 }
 
@@ -50,7 +51,7 @@ fun String.shouldNotBeUpperCase() = this shouldNot beUpperCase()
 fun beUpperCase() = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.toUpperCase() == value
-    return Result(passed, "String $value should be upper case", "String $value should not should be upper case")
+    return Result(passed, "${convertValueToString(value)} should be upper case", "${convertValueToString(value)} should not should be upper case")
   }
 }
 
@@ -58,7 +59,7 @@ fun String.shouldBeEmpty() = this should beEmpty()
 fun String.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun beEmpty() = object : Matcher<String> {
   override fun test(value: String): Result {
-    return Result(value.isEmpty(), "String $value should be empty", "String $value should not be empty")
+    return Result(value.isEmpty(), "${convertValueToString(value)} should be empty", "${convertValueToString(value)} should not be empty")
   }
 }
 
@@ -67,8 +68,8 @@ fun String.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLen
 fun haveSameLengthAs(other: String) = object : Matcher<String> {
   override fun test(value: String): Result {
     return Result(value.length == other.length,
-        "String $value should have the same length as $other",
-        "String $value should not have the same length as $other")
+        "${convertValueToString(value)} should have the same length as ${convertValueToString(value)}",
+        "${convertValueToString(value)} should not have the same length as ${convertValueToString(value)}")
   }
 }
 
@@ -78,8 +79,8 @@ fun haveLineCount(count: Int) = object : Matcher<String> {
   override fun test(value: String): Result {
     val lines = value.split(System.lineSeparator()).size
     return Result(lines == count,
-        "String $value should have $count lines but had $lines",
-        "String $value should not have $count lines")
+        "${convertValueToString(value)} should have $count lines but had $lines",
+        "${convertValueToString(value)} should not have $count lines")
   }
 }
 
@@ -89,8 +90,8 @@ fun containOnlyWhitespace() = beBlank()
 fun beBlank() = object : Matcher<String> {
   override fun test(value: String): Result {
     return Result(value.isBlank(),
-        "String $value should contain only whitespace",
-        "String $value should not contain only whitespace")
+        "${convertValueToString(value)} should contain only whitespace",
+        "${convertValueToString(value)} should not contain only whitespace")
   }
 }
 
@@ -100,8 +101,8 @@ fun containIgnoringCase(substr: String) = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.toLowerCase().indexOf(substr.toLowerCase()) >= 0
     return Result(passed,
-        "String $value should contain the substring $substr (case insensitive)",
-        "String $value should not contain the substring $substr (case insensitive)")
+        "${convertValueToString(value)} should contain the substring $substr (case insensitive)",
+        "${convertValueToString(value)} should not contain the substring $substr (case insensitive)")
   }
 }
 
@@ -110,7 +111,7 @@ fun String.shouldNotContain(regex: Regex) = this shouldNot contain(regex)
 fun contain(regex: Regex) = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.contains(regex)
-    return Result(passed, "String $value should contain regex $regex", "String $value should not contain regex $regex")
+    return Result(passed, "${convertValueToString(value)} should contain regex $regex", "${convertValueToString(value)} should not contain regex $regex")
   }
 }
 
@@ -123,7 +124,7 @@ fun String.shouldNotInclude(substr: String) = this shouldNot include(substr)
 fun include(substr: String): Matcher<String> = object : Matcher<String> {
   override fun test(value: String): Result {
     val passed = value.contains(substr)
-    return Result(passed, "String $value should include substring $substr", "String $value should not include substring $substr")
+    return Result(passed, "${convertValueToString(value)} should include substring $substr", "$value should not include substring $substr")
   }
 }
 
@@ -131,14 +132,14 @@ fun String.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
 fun String.shouldNotHaveMaxLength(length: Int) = this shouldNot haveMaxLength(length)
 
 fun haveMaxLength(length: Int): Matcher<String> = object : Matcher<String> {
-  override fun test(value: String) = Result(value.length >= length, "String $value should have maximum length of $length", "String $value should have minimum length of ${length - 1}")
+  override fun test(value: String) = Result(value.length >= length, "${convertValueToString(value)} should have maximum length of $length", "${convertValueToString(value)} should have minimum length of ${length - 1}")
 }
 
 fun String.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
 fun String.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
 
 fun haveMinLength(length: Int): Matcher<String> = object : Matcher<String> {
-  override fun test(value: String) = Result(value.length >= length, "String $value should have minimum length of $length", "String $value should have maximum length of ${length - 1}")
+  override fun test(value: String) = Result(value.length >= length, "${convertValueToString(value)} should have minimum length of $length", "${convertValueToString(value)} should have maximum length of ${length - 1}")
 }
 
 fun String.shouldHaveLength(length: Int) = this should haveLength(length)
