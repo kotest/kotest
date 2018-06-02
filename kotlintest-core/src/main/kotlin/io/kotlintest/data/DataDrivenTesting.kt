@@ -1,6 +1,7 @@
 package io.kotlintest.data
 
 import io.kotlintest.tables.Row1
+import io.kotlintest.tables.Row10
 import io.kotlintest.tables.Row2
 import io.kotlintest.tables.Row3
 import io.kotlintest.tables.Row4
@@ -8,6 +9,7 @@ import io.kotlintest.tables.Row5
 import io.kotlintest.tables.Row6
 import io.kotlintest.tables.Row7
 import io.kotlintest.tables.Row8
+import io.kotlintest.tables.Row9
 import io.kotlintest.tables.forAll
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.table
@@ -100,4 +102,35 @@ fun <A, B, C, D, E, F, G, H> forall(vararg rows: Row8<A, B, C, D, E, F, G, H>,
   val paramG = params.getOrElse(6, { "g" })
   val paramH = params.getOrElse(7, { "h" })
   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH), *rows).forAll { a, b, c, d, e, f, g, h -> testfn(a, b, c, d, e, f, g, h) }
+}
+
+fun <A, B, C, D, E, F, G, H, I> forall(vararg rows: Row9<A, B, C, D, E, F, G, H, I>,
+                                       testfn: (A, B, C, D, E, F, G, H, I) -> Unit) {
+  val params = testfn.reflect()?.parameters?.mapNotNull { it.name } ?: emptyList()
+  val paramA = params.getOrElse(0, { "a" })
+  val paramB = params.getOrElse(1, { "b" })
+  val paramC = params.getOrElse(2, { "c" })
+  val paramD = params.getOrElse(3, { "d" })
+  val paramE = params.getOrElse(4, { "e" })
+  val paramF = params.getOrElse(5, { "f" })
+  val paramG = params.getOrElse(6, { "g" })
+  val paramH = params.getOrElse(7, { "h" })
+  val paramI = params.getOrElse(8, { "i" })
+  table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI), *rows).forAll { a, b, c, d, e, f, g, h, i -> testfn(a, b, c, d, e, f, g, h, i) }
+}
+
+fun <A, B, C, D, E, F, G, H, I, J> forall(vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
+                                          testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
+  val params = testfn.reflect()?.parameters?.mapNotNull { it.name } ?: emptyList()
+  val paramA = params.getOrElse(0, { "a" })
+  val paramB = params.getOrElse(1, { "b" })
+  val paramC = params.getOrElse(2, { "c" })
+  val paramD = params.getOrElse(3, { "d" })
+  val paramE = params.getOrElse(4, { "e" })
+  val paramF = params.getOrElse(5, { "f" })
+  val paramG = params.getOrElse(6, { "g" })
+  val paramH = params.getOrElse(7, { "h" })
+  val paramI = params.getOrElse(8, { "i" })
+  val paramJ = params.getOrElse(9, { "i" })
+  table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forAll { a, b, c, d, e, f, g, h, i, j -> testfn(a, b, c, d, e, f, g, h, i, j) }
 }

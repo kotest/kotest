@@ -79,5 +79,25 @@ class DataDrivenTestingTest : StringSpec() {
         }
       }.message shouldBe "Test failed for (foo, 2) with error expected: 0 but was: 2"
     }
+
+    "row9 should detect header names from params" {
+      shouldThrow<AssertionError> {
+        forall(
+            row(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        ) { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9 ->
+          foo1 shouldBe 0
+        }
+      }.message shouldBe "Test failed for (foo1, 1), (foo2, 2), (foo3, 3), (foo4, 4), (foo5, 5), (foo6, 6), (foo7, 7), (foo8, 8), (foo9, 9) with error expected: 0 but was: 1"
+    }
+
+    "row10 should detect header names from params" {
+      shouldThrow<AssertionError> {
+        forall(
+            row(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        ) { foo1, foo2, foo3, foo4, foo5, foo6, foo7, foo8, foo9, foo10 ->
+          foo1 shouldBe 0
+        }
+      }.message shouldBe "Test failed for (foo1, 1), (foo2, 2), (foo3, 3), (foo4, 4), (foo5, 5), (foo6, 6), (foo7, 7), (foo8, 8), (foo9, 9), (foo10, 10) with error expected: 0 but was: 1"
+    }
   }
 }
