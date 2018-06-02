@@ -68,7 +68,7 @@ class StringMatchersTest : FreeSpec() {
 
       shouldThrow<AssertionError> {
         "la tour".shouldContain("wibble")
-      }.message shouldBe "String la tour should include substring wibble"
+      }.message shouldBe "la tour should include substring wibble"
     }
 
     "contain(regex)" {
@@ -80,11 +80,11 @@ class StringMatchersTest : FreeSpec() {
 
       shouldThrow<AssertionError> {
         "la tour".shouldContain(".*?abc.*?".toRegex())
-      }.message shouldBe "String la tour should contain regex .*?abc.*?"
+      }.message shouldBe "la tour should contain regex .*?abc.*?"
 
       shouldThrow<AssertionError> {
         "la tour".shouldNotContain("^.*?tour$".toRegex())
-      }.message shouldBe "String la tour should not contain regex ^.*?tour\$"
+      }.message shouldBe "la tour should not contain regex ^.*?tour\$"
     }
 
     "string should contain" - {
@@ -97,11 +97,11 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "hello" should include("allo")
-        }.message shouldBe "String hello should include substring allo"
+        }.message shouldBe "hello should include substring allo"
 
         shouldThrow<AssertionError> {
           "hello".shouldInclude("qwe")
-        }.message shouldBe "String hello should include substring qwe"
+        }.message shouldBe "hello should include substring qwe"
       }
     }
 
@@ -114,11 +114,11 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "hello".shouldBeEmpty()
-        }.message shouldBe "String hello should be empty"
+        }.message shouldBe "hello should be empty"
 
         shouldThrow<AssertionError> {
           "".shouldNotBeEmpty()
-        }.message shouldBe "String  should not be empty"
+        }.message shouldBe "<empty string> should not be empty"
 
       }
     }
@@ -134,7 +134,7 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "hello" should containADigit()
-        }.message shouldBe "String hello should contain at least one digits"
+        }.message shouldBe "hello should contain at least one digits"
       }
     }
 
@@ -253,7 +253,7 @@ class StringMatchersTest : FreeSpec() {
       "should show divergence in error message" {
         shouldThrow<AssertionError> {
           "la tour eiffel" should startWith("la tour tower london")
-        }.message shouldBe "String la tour eiffel should start with la tour tower london (diverged at index 8)"
+        }.message shouldBe "la tour eiffel should start with la tour tower london (diverged at index 8)"
       }
     }
 
@@ -266,16 +266,16 @@ class StringMatchersTest : FreeSpec() {
         "hello".shouldHaveLength(5)
         shouldThrow<AssertionError> {
           "" should haveLength(3)
-        }.message shouldBe "String  should have length 3"
+        }.message shouldBe "<empty string> should have length 3"
         shouldThrow<AssertionError> {
           "".shouldHaveLength(3)
-        }.message shouldBe "String  should have length 3"
+        }.message shouldBe "<empty string> should have length 3"
         shouldThrow<AssertionError> {
           "hello".shouldHaveLength(3)
-        }.message shouldBe "String hello should have length 3"
+        }.message shouldBe "hello should have length 3"
         shouldThrow<AssertionError> {
           "hello".shouldNotHaveLength(5)
-        }.message shouldBe "String hello should not have length 5"
+        }.message shouldBe "hello should not have length 5"
       }
     }
 
