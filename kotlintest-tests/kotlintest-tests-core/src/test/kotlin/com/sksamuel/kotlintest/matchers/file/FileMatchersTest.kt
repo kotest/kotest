@@ -10,15 +10,18 @@ import io.kotlintest.matchers.file.shouldBeADirectory
 import io.kotlintest.matchers.file.shouldBeAFile
 import io.kotlintest.matchers.file.shouldBeAbsolute
 import io.kotlintest.matchers.file.shouldBeRelative
+import io.kotlintest.matchers.file.shouldContainFile
 import io.kotlintest.matchers.file.shouldExist
 import io.kotlintest.matchers.file.shouldHaveExtension
 import io.kotlintest.matchers.file.shouldNotBeADirectory
 import io.kotlintest.matchers.file.shouldNotBeAFile
+import io.kotlintest.matchers.file.shouldNotContainFile
 import io.kotlintest.matchers.file.shouldNotExist
 import io.kotlintest.matchers.file.shouldNotHaveExtension
 import io.kotlintest.matchers.file.shouldStartWithPath
 import io.kotlintest.matchers.file.startWithPath
 import io.kotlintest.matchers.string.shouldEndWith
+import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -127,6 +130,17 @@ class FileMatchersTest : FunSpec() {
       shouldThrow<AssertionError> {
         dir shouldBe aFile()
       }
+    }
+
+    test("directory contains file matching predicate") {
+      val dir = Files.createTempDirectory("testdir")
+      dir.resolve("a").toFile().createNewFile()
+      dir.resolve("b").toFile().createNewFile()
+      dir.shouldContainFile("a")
+      dir.shouldNotContainFile("c")
+      shouldThrow<AssertionError> {
+        dir.shouldContainFile("c")
+      }.message?.shouldMatch("^Directory .+ should contain a file with filename c \\(detected 2 other files\\)$".toRegex())
     }
   }
 }

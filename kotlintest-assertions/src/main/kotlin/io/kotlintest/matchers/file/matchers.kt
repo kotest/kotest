@@ -39,6 +39,22 @@ fun haveName(name: String) = object : Matcher<File> {
   override fun test(value: File) = Result(value.name == name, "File $value should have name $name", "File $value should not have name $name")
 }
 
+fun Path.shouldContainFile(name: String) = this.toFile() should containFile(name)
+fun Path.shouldNotContainFile(name: String) = this.toFile() shouldNot containFile(name)
+
+fun File.shouldContainFile(name: String) = this should containFile(name)
+fun File.shouldNotContainFile(name: String) = this shouldNot containFile(name)
+fun containFile(name: String) = object : Matcher<File> {
+  override fun test(value: File): Result {
+    val contents = value.list()
+    val passed = value.isDirectory && contents.contains(name)
+    return Result(passed,
+        "Directory $value should contain a file with filename $name (detected ${contents.size} other files)",
+        "Directory $value should not contain a file with filename $name"
+    )
+  }
+}
+
 fun File.shouldBeADirectory() = this should aDirectory()
 fun File.shouldNotBeADirectory() = this shouldNot aDirectory()
 fun aDirectory(): Matcher<File> = object : Matcher<File> {
