@@ -38,9 +38,9 @@ class TableTestingTest : StringSpec() {
     "numbers should add up to ten using extension function" {
 
       table(headers("a", "b"),
-              row(5, 5),
-              row(4, 6),
-              row(3, 7)
+          row(5, 5),
+          row(4, 6),
+          row(3, 7)
       ).forAll { a, b ->
         a + b shouldBe 10
       }
@@ -49,9 +49,9 @@ class TableTestingTest : StringSpec() {
     "numbers all be different using extension function" {
 
       table(headers("a", "b"),
-              row(1, 2),
-              row(3, 4),
-              row(5, 6)
+          row(1, 2),
+          row(3, 4),
+          row(5, 6)
       ).forNone { a, b ->
         a shouldBe b
       }
@@ -67,6 +67,10 @@ class TableTestingTest : StringSpec() {
       )
 
       forAll(table3) { a, b, c ->
+        a * a + b * b shouldBe c * c
+      }
+
+      table3.forAll { a, b, c ->
         a * a + b * b shouldBe c * c
       }
     }
@@ -96,6 +100,7 @@ class TableTestingTest : StringSpec() {
 
     "should be able to combine subtypes in one table" {
       abstract class Shape
+
       val circle = object : Shape() {}
       val square = object : Shape() {}
 
