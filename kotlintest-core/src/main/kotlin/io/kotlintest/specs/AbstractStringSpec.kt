@@ -6,6 +6,7 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
+import org.junit.platform.commons.annotation.Testable
 import java.time.Duration
 
 /**

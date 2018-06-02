@@ -1,8 +1,10 @@
 package io.kotlintest
 
+import org.junit.platform.commons.annotation.Testable
 import java.io.Closeable
 import java.util.*
 
+@Testable
 abstract class AbstractSpec : Spec {
 
   override fun isInstancePerTest(): Boolean = false
