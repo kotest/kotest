@@ -36,7 +36,7 @@ abstract class TestContext {
    * Creates a new [TestCase] as a child of the currently executing test
    * and then notifies the test runner with the new instance.
    */
-  fun registerTestCase(name: String, spec: Spec, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+  fun registerTestCase(name: String, spec: Spec, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     val tc = TestCase(description().append(name), spec, test, lineNumber(), type, config)
     registerTestCase(tc)
   }

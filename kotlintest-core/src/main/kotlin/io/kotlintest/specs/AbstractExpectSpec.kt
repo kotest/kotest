@@ -23,7 +23,7 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: TestContext.() -> Unit) {
+        test: suspend TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: defaultTestCaseConfig.enabled,
           invocations ?: defaultTestCaseConfig.invocations,
@@ -38,7 +38,7 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
   @KotlinTestDsl
   inner class ExpectScope(val context: TestContext) {
 
-    fun expect(name: String, test: TestContext.() -> Unit) =
+    fun expect(name: String, test: suspend TestContext.() -> Unit) =
         context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
 
     fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, "Expect: $name")

@@ -120,6 +120,11 @@ allprojects {
             }
         }
     }
+    kotlin {
+        experimental {
+            coroutines "enable"
+        }
+    }
 }
 
 project(":") {
