@@ -846,9 +846,9 @@ Extensions
 
 KotlinTest comes with several extension modules which are not part of the main build.
 
-### Arrow Matchers
+### Arrow
 
-Extra matchers for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
+The arrow extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
  To use this library you need to add `kotlintest-assertions-arrow` to your build.
 
 Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
@@ -859,6 +859,18 @@ option shouldBe beSome("foo")
 ```
 
 For the full list of arrow matchers [click here](arrow-matchers.md).
+
+Additionally, the module provides inspectors that work specifically for the `NonEmptyList` type.
+For example, we can test that a set of assertions hold only for a single element in a Nel by using the `forOne` inspector.
+
+```kotlin
+val list = NonEmptyList(2, 4, 6, 7,8)
+list.forOne {
+  it.shouldBeOdd()
+}
+```
+
+Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotlintest/kotlintest/blob/master/doc/reference.md#inspectors) for more details.
 
 ### Spring
 
