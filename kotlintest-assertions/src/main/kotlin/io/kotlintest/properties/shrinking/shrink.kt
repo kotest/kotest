@@ -15,14 +15,14 @@ fun <T> shrink2(t: T, shrinker: Shrinker<T>?, test: (T) -> Unit): T {
 
 fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
   val sb = StringBuilder()
-  sb.appendln("Attempting to shrink failed arg ${convertValueToString(t)}")
+  sb.append("Attempting to shrink failed arg ${convertValueToString(t)}\n")
   var candidate = t
   val tested = HashSet<T>()
   var count = 0
   while (true) {
     val candidates = shrinker.shrink(candidate).filterNot { tested.contains(it) }
     if (candidates.isEmpty()) {
-      sb.appendln("Shrink result => ${convertValueToString(candidate)}")
+      sb.append("Shrink result => ${convertValueToString(candidate)}\n")
       println(sb)
       return candidate
     } else {
@@ -32,15 +32,15 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
         fun whitespace(str: String) = str.isBlank()
         try {
           test(it)
-          sb.appendln("Shrink #$count: ${convertValueToString(it)} pass")
+          sb.append("Shrink #$count: ${convertValueToString(it)} pass\n")
           false
         } catch (t: Throwable) {
-          sb.appendln("Shrink #$count: ${convertValueToString(it)} fail")
+          sb.append("Shrink #$count: ${convertValueToString(it)} fail\n")
           true
         }
       }
       if (next == null) {
-        sb.appendln("Shrink result => ${convertValueToString(candidate)}")
+        sb.append("Shrink result => ${convertValueToString(candidate)}\n")
         println(sb)
         return candidate
       } else {
