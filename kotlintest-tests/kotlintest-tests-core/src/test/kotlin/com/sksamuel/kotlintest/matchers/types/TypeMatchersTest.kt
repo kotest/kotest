@@ -1,5 +1,7 @@
 package com.sksamuel.kotlintest.matchers.types
 
+import com.sksamuel.kotlintest.extensions.Numbers.a
+import com.sksamuel.kotlintest.extensions.Numbers.b
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
@@ -80,9 +82,9 @@ class TypeMatchersTest : WordSpec() {
 
     "TypeMatchers.theSameInstanceAs" should {
       "test that references are equal" {
-        val b = listOf(1, 2, 3)
-        val a = b
-        val c = listOf(1, 2, 3)
+        val b: List<Int>? = listOf(1, 2, 3)
+        val a: List<Int>? = b
+        val c: List<Int>? = listOf(1, 2, 3)
 
         a should beTheSameInstanceAs(b)
         a.shouldBeSameInstanceAs(b)

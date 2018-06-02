@@ -73,11 +73,11 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 // -- specialized overrides of shouldBe --
 
-infix fun Double.shouldBe(other: Double) = should(ToleranceMatcher(other, 0.0))
+infix fun Double?.shouldBe(other: Double?) = should(ToleranceMatcher(other, 0.0))
 
 // https://stackoverflow.com/questions/10934743/formatting-output-so-that-intellij-idea-shows-diffs-for-two-texts
 // https://github.com/JetBrains/intellij-community/blob/3f7e93e20b7e79ba389adf593b3b59e46a3e01d1/plugins/testng/src/com/theoryinpractice/testng/model/TestProxy.java#L50
-infix fun String.shouldBe(other: String) {
+infix fun String?.shouldBe(other: String?) {
   if (this != other) {
     throw AssertionError(ComparisonCompactor.getMessage(other, this))
   }
