@@ -25,7 +25,7 @@ class TestEngineTest : WordSpec({
       val engine = TestEngine(listOf(InitErrorSpec::class), 1, listener)
       engine.execute()
       then(listener).should().prepareSpec(argThat { name == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" }, argThat { jvmName == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" })
-      then(listener).should().completeSpec(argThat { name == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" }, any<InvocationTargetException>())
+      then(listener).should().completeSpec(argThat { name == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" }, any(), any<InvocationTargetException>())
       then(listener).should().engineFinished(any<InvocationTargetException>())
     }
     System.getProperties().remove("TestEngineTest")

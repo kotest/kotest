@@ -26,10 +26,11 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
   }
 }
 
-class ToleranceMatcher(private val expected: Double, private val tolerance: Double) : Matcher<Double> {
-
-  override fun test(value: Double): Result {
-    return if (Double.NaN == expected && Double.NaN == value) {
+class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> {
+  override fun test(value: Double?): Result {
+    return if(value == null || expected == null) {
+      Result(value == expected, "$value should be equal to $expected", "$value should not be equal to $expected")
+    } else if (Double.NaN == expected && Double.NaN == value) {
       println("[WARN] By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776")
       Result(false,
           "By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776",
@@ -42,6 +43,4 @@ class ToleranceMatcher(private val expected: Double, private val tolerance: Doub
       Result(diff <= tolerance, "$value should be equal to $expected", "$value should not be equal to $expected")
     }
   }
-
-  infix fun plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(expected, tolerance)
 }

@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -31,7 +32,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
           threads ?: this@AbstractDescribeSpec.defaultTestCaseConfig.threads,
           tags ?: this@AbstractDescribeSpec.defaultTestCaseConfig.tags,
           extensions ?: this@AbstractDescribeSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase(name, this@AbstractDescribeSpec, test, config)
+      context.registerTestCase(name, this@AbstractDescribeSpec, test, config, TestType.Test)
     }
   }
 
@@ -40,13 +41,13 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
 
     fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "Scenario: $name")
     fun it(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig)
+        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
 
     fun context(name: String, test: suspend DescribeScope.() -> Unit) =
-        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig)
+        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
   }
 
   fun describe(name: String, test: DescribeScope.() -> Unit) =
-      addTestCase("Describe: $name", { this@AbstractDescribeSpec.DescribeScope(this).test() }, defaultTestCaseConfig)
+      addTestCase("Describe: $name", { this@AbstractDescribeSpec.DescribeScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
 }

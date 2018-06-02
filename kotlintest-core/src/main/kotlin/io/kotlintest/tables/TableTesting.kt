@@ -302,6 +302,29 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(ta
   }
 }
 
+@JvmName("forAll1receiver") fun <A> Table1<A>.forAll(fn: (A) -> Unit) = forAll(this, fn)
+@JvmName("forAll2receiver") fun <A, B> Table2<A, B>.forAll(fn: (A, B) -> Unit) = forAll(this, fn)
+@JvmName("forAll3receiver") fun <A, B, C> Table3<A, B, C>.forAll(fn: (A, B, C) -> Unit) = forAll(this, fn)
+@JvmName("forAll4receiver") fun <A, B, C, D> Table4<A, B, C, D>.forAll(fn: (A, B, C, D) -> Unit) = forAll(this, fn)
+@JvmName("forAll5receiver") fun <A, B, C, D, E> Table5<A, B, C, D, E>.forAll(fn: (A, B, C, D, E) -> Unit) = forAll(this, fn)
+@JvmName("forAll6receiver") fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forAll(fn: (A, B, C, D, E, F) -> Unit) = forAll(this, fn)
+@JvmName("forAll7receiver") fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forAll(fn: (A, B, C, D, E, F, G) -> Unit) = forAll(this, fn)
+@JvmName("forAll8receiver") fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forAll(fn: (A, B, C, D, E, F, G, H) -> Unit) = forAll(this, fn)
+@JvmName("forAll9receiver") fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forAll(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forAll(this, fn)
+@JvmName("forAll10receiver") fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forAll(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forAll(this, fn)
+@JvmName("forAll11receiver") fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forAll(this, fn)
+@JvmName("forAll12receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forAll(this, fn)
+@JvmName("forAll13receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forAll(this, fn)
+@JvmName("forAll14receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forAll(this, fn)
+@JvmName("forAll15receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forAll(this, fn)
+@JvmName("forAll16receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forAll(this, fn)
+@JvmName("forAll17receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forAll(this, fn)
+@JvmName("forAll18receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forAll(this, fn)
+@JvmName("forAll19receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forAll(this, fn)
+@JvmName("forAll20receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forAll(this, fn)
+@JvmName("forAll21receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forAll(this, fn)
+@JvmName("forAll22receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forAll(this, fn)
+
 fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
   for (row in table.rows) {
     try {
@@ -523,28 +546,52 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(t
   }
 }
 
-data class Table1<A>(val headers: Headers1, val rows: List<Row1<A>>)
-data class Table2<A, B>(val headers: Headers2, val rows: List<Row2<A, B>>)
-data class Table3<A, B, C>(val headers: Headers3, val rows: List<Row3<A, B, C>>)
-data class Table4<A, B, C, D>(val headers: Headers4, val rows: List<Row4<A, B, C, D>>)
-data class Table5<A, B, C, D, E>(val headers: Headers5, val rows: List<Row5<A, B, C, D, E>>)
-data class Table6<A, B, C, D, E, F>(val headers: Headers6, val rows: List<Row6<A, B, C, D, E, F>>)
-data class Table7<A, B, C, D, E, F, G>(val headers: Headers7, val rows: List<Row7<A, B, C, D, E, F, G>>)
-data class Table8<A, B, C, D, E, F, G, H>(val headers: Headers8, val rows: List<Row8<A, B, C, D, E, F, G, H>>)
-data class Table9<A, B, C, D, E, F, G, H, I>(val headers: Headers9, val rows: List<Row9<A, B, C, D, E, F, G, H, I>>)
-data class Table10<A, B, C, D, E, F, G, H, I, J>(val headers: Headers10, val rows: List<Row10<A, B, C, D, E, F, G, H, I, J>>)
-data class Table11<A, B, C, D, E, F, G, H, I, J, K>(val headers: Headers11, val rows: List<Row11<A, B, C, D, E, F, G, H, I, J, K>>)
-data class Table12<A, B, C, D, E, F, G, H, I, J, K, L>(val headers: Headers12, val rows: List<Row12<A, B, C, D, E, F, G, H, I, J, K, L>>)
-data class Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>(val headers: Headers13, val rows: List<Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>>)
-data class Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(val headers: Headers14, val rows: List<Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>>)
-data class Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(val headers: Headers15, val rows: List<Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>>)
-data class Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(val headers: Headers16, val rows: List<Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>)
-data class Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(val headers: Headers17, val rows: List<Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>)
-data class Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(val headers: Headers18, val rows: List<Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>)
-data class Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(val headers: Headers19, val rows: List<Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>)
-data class Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
-data class Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
-data class Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
+@JvmName("forNone1receiver") fun <A> Table1<A>.forNone(fn: (A) -> Unit) = forNone(this, fn)
+@JvmName("forNone2receiver") fun <A, B> Table2<A, B>.forNone(fn: (A, B) -> Unit) = forNone(this, fn)
+@JvmName("forNone3receiver") fun <A, B, C> Table3<A, B, C>.forNone(fn: (A, B, C) -> Unit) = forNone(this, fn)
+@JvmName("forNone4receiver") fun <A, B, C, D> Table4<A, B, C, D>.forNone(fn: (A, B, C, D) -> Unit) = forNone(this, fn)
+@JvmName("forNone5receiver") fun <A, B, C, D, E> Table5<A, B, C, D, E>.forNone(fn: (A, B, C, D, E) -> Unit) = forNone(this, fn)
+@JvmName("forNone6receiver") fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forNone(fn: (A, B, C, D, E, F) -> Unit) = forNone(this, fn)
+@JvmName("forNone7receiver") fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forNone(fn: (A, B, C, D, E, F, G) -> Unit) = forNone(this, fn)
+@JvmName("forNone8receiver") fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forNone(fn: (A, B, C, D, E, F, G, H) -> Unit) = forNone(this, fn)
+@JvmName("forNone9receiver") fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forNone(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forNone(this, fn)
+@JvmName("forNone10receiver") fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forNone(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forNone(this, fn)
+@JvmName("forNone11receiver") fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forNone(this, fn)
+@JvmName("forNone12receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forNone(this, fn)
+@JvmName("forNone13receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forNone(this, fn)
+@JvmName("forNone14receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forNone(this, fn)
+@JvmName("forNone15receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forNone(this, fn)
+@JvmName("forNone16receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forNone(this, fn)
+@JvmName("forNone17receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forNone(this, fn)
+@JvmName("forNone18receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forNone(this, fn)
+@JvmName("forNone19receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forNone(this, fn)
+@JvmName("forNone20receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forNone(this, fn)
+@JvmName("forNone21receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forNone(this, fn)
+@JvmName("forNone22receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forNone(this, fn)
+
+
+data class Table1<out A>(val headers: Headers1, val rows: List<Row1<A>>)
+data class Table2<out A, out B>(val headers: Headers2, val rows: List<Row2<A, B>>)
+data class Table3<out A, out B, out C>(val headers: Headers3, val rows: List<Row3<A, B, C>>)
+data class Table4<out A, out B, out C, out D>(val headers: Headers4, val rows: List<Row4<A, B, C, D>>)
+data class Table5<out A, out B, out C, out D, out E>(val headers: Headers5, val rows: List<Row5<A, B, C, D, E>>)
+data class Table6<out A, out B, out C, out D, out E, out F>(val headers: Headers6, val rows: List<Row6<A, B, C, D, E, F>>)
+data class Table7<out A, out B, out C, out D, out E, out F, out G>(val headers: Headers7, val rows: List<Row7<A, B, C, D, E, F, G>>)
+data class Table8<out A, out B, out C, out D, out E, out F, out G, out H>(val headers: Headers8, val rows: List<Row8<A, B, C, D, E, F, G, H>>)
+data class Table9<out A, out B, out C, out D, out E, out F, out G, out H, out I>(val headers: Headers9, val rows: List<Row9<A, B, C, D, E, F, G, H, I>>)
+data class Table10<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J>(val headers: Headers10, val rows: List<Row10<A, B, C, D, E, F, G, H, I, J>>)
+data class Table11<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K>(val headers: Headers11, val rows: List<Row11<A, B, C, D, E, F, G, H, I, J, K>>)
+data class Table12<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L>(val headers: Headers12, val rows: List<Row12<A, B, C, D, E, F, G, H, I, J, K, L>>)
+data class Table13<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M>(val headers: Headers13, val rows: List<Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>>)
+data class Table14<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N>(val headers: Headers14, val rows: List<Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>>)
+data class Table15<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O>(val headers: Headers15, val rows: List<Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>>)
+data class Table16<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P>(val headers: Headers16, val rows: List<Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>>)
+data class Table17<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q>(val headers: Headers17, val rows: List<Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>>)
+data class Table18<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R>(val headers: Headers18, val rows: List<Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>>)
+data class Table19<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S>(val headers: Headers19, val rows: List<Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>>)
+data class Table20<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T>(val headers: Headers20, val rows: List<Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>>)
+data class Table21<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U>(val headers: Headers21, val rows: List<Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>>)
+data class Table22<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U, out V>(val headers: Headers22, val rows: List<Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>>)
 
 data class Headers1(val labelA: String) {
   fun values() = listOf(labelA)
@@ -634,90 +681,90 @@ data class Headers22(val labelA: String, val labelB: String, val labelC: String,
   fun values() = listOf(labelA, labelB, labelC, labelD, labelE, labelF, labelG, labelH, labelI, labelJ, labelK, labelL, labelM, labelN, labelO, labelP, labelQ, labelR, labelS, labelT, labelU, labelV)
 }
 
-data class Row1<A>(val a: A) {
+data class Row1<out A>(val a: A) {
   fun values() = listOf(a)
 }
 
-data class Row2<A, B>(val a: A, val b: B) {
+data class Row2<out A, out B>(val a: A, val b: B) {
   fun values() = listOf(a, b)
 }
 
-data class Row3<A, B, C>(val a: A, val b: B, val c: C) {
+data class Row3<out A, out B, out C>(val a: A, val b: B, val c: C) {
   fun values() = listOf(a, b, c)
 }
 
-data class Row4<A, B, C, D>(val a: A, val b: B, val c: C, val d: D) {
+data class Row4<out A, out B, out C, out D>(val a: A, val b: B, val c: C, val d: D) {
   fun values() = listOf(a, b, c, d)
 }
 
-data class Row5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
+data class Row5<out A, out B, out C, out D, out E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
   fun values() = listOf(a, b, c, d, e)
 }
 
-data class Row6<A, B, C, D, E, F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
+data class Row6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
   fun values() = listOf(a, b, c, d, e, f)
 }
 
-data class Row7<A, B, C, D, E, F, G>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G) {
+data class Row7<out A, out B, out C, out D, out E, out F, out G>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G) {
   fun values() = listOf(a, b, c, d, e, f, g)
 }
 
-data class Row8<A, B, C, D, E, F, G, H>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H) {
+data class Row8<out A, out B, out C, out D, out E, out F, out G, out H>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H) {
   fun values() = listOf(a, b, c, d, e, f, g, h)
 }
 
-data class Row9<A, B, C, D, E, F, G, H, I>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I) {
+data class Row9<out A, out B, out C, out D, out E, out F, out G, out H, out I>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i)
 }
 
-data class Row10<A, B, C, D, E, F, G, H, I, J>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J) {
+data class Row10<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j)
 }
 
-data class Row11<A, B, C, D, E, F, G, H, I, J, K>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K) {
+data class Row11<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k)
 }
 
-data class Row12<A, B, C, D, E, F, G, H, I, J, K, L>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L) {
+data class Row12<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l)
 }
 
-data class Row13<A, B, C, D, E, F, G, H, I, J, K, L, M>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M) {
+data class Row13<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m)
 }
 
-data class Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N) {
+data class Row14<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
 }
 
-data class Row15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O) {
+data class Row15<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
 }
 
-data class Row16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P) {
+data class Row16<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
 }
 
-data class Row17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q) {
+data class Row17<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
 }
 
-data class Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R) {
+data class Row18<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
 }
 
-data class Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S) {
+data class Row19<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
 }
 
-data class Row20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T) {
+data class Row20<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
 }
 
-data class Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U) {
+data class Row21<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
 }
 
-data class Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V) {
+data class Row22<out A, out B, out C, out D, out E, out F, out G, out H, out I, out J, out K, out L, out M, out N, out O, out P, out Q, out R, out S, out T, out U, out V>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F, val g: G, val h: H, val i: I, val j: J, val k: K, val l: L, val m: M, val n: N, val o: O, val p: P, val q: Q, val r: R, val s: S, val t: T, val u: U, val v: V) {
   fun values() = listOf(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
 }

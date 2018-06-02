@@ -4,7 +4,9 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
+import org.junit.platform.commons.annotation.Testable
 import java.time.Duration
 
 /**
@@ -35,9 +37,9 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
         threads ?: defaultTestCaseConfig.threads,
         tags ?: defaultTestCaseConfig.tags,
         extensions ?: defaultTestCaseConfig.extensions)
-    addTestCase(this, test, config)
+    addTestCase(this, test, config, TestType.Test)
   }
 
   operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      addTestCase(this, test, defaultTestCaseConfig)
+      addTestCase(this, test, defaultTestCaseConfig, TestType.Test)
 }

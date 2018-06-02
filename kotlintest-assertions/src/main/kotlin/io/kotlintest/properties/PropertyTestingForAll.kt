@@ -2,13 +2,6 @@ package io.kotlintest.properties
 
 import io.kotlintest.shouldBe
 
-fun outputClassifications(context: PropertyContext) {
-  context.classificationCounts().entries.sortedByDescending { it.value }.forEach {
-    val percentage = (it.value / context.attempts().toDouble() * 100)
-    println("${String.format("%.2f", percentage)}% ${it.key}")
-  }
-}
-
 inline fun <reified A> forAll(noinline fn: PropertyContext.(a: A) -> Boolean) = forAll(1000, fn)
 inline fun <reified A> forAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {
   forAll(iterations, Gen.default(), fn)

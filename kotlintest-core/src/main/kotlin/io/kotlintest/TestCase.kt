@@ -35,10 +35,15 @@ data class TestCase(
     val test: suspend TestContext.() -> Unit,
     // the first line number of the test
     val line: Int,
+    val type: TestType,
     // config used when running the test, such as number of
     // invocations, number of threads, etc
     val config: TestCaseConfig) {
   val name = description.name
+}
+
+enum class TestType {
+  Container, Test
 }
 
 enum class TestStatus {

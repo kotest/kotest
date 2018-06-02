@@ -4,6 +4,7 @@ import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -29,12 +30,12 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
           threads ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
-      addTestCase(name, test, config)
+      addTestCase(name, test, config, TestType.Test)
     }
   }
 
   fun test(name: String) = TestBuilder(name)
 
   fun test(name: String, test: suspend TestContext.() -> Unit) =
-      addTestCase(name, test, defaultTestCaseConfig)
+      addTestCase(name, test, defaultTestCaseConfig, TestType.Test)
 }

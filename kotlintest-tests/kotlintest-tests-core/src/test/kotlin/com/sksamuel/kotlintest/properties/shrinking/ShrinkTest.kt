@@ -20,7 +20,10 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.int()) {
         it.shouldBeLessThan(5)
       }
-    }.message shouldBe "Property failed for\n0: 5 (shrunk from 2147483647)\nafter 2 attempts"
+    }.message shouldBe "Property failed for\n" +
+        "Arg 0: 5 (shrunk from 2147483647)\n" +
+        "after 2 attempts\n" +
+        "Caused by: 2147483647 should be < 5"
   }
 
   "should shrink arity 2 strings" {
@@ -28,8 +31,14 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.string(), Gen.string()) { a, b ->
         (a.length + b.length).shouldBeLessThan(4)
       }
-    }.message shouldBe
-        "Property failed for\n0: <empty string>\n1: aaaa (shrunk from \nabc\n123\n)\nafter 3 attempts"
+    }.message shouldBe "Property failed for\n" +
+        "Arg 0: <empty string>\n" +
+        "Arg 1: aaaa (shrunk from \n" +
+        "abc\n" +
+        "123\n" +
+        ")\n" +
+        "after 3 attempts\n" +
+        "Caused by: 9 should be < 4"
   }
 
   "should shrink arity 3 positiveIntegers" {
@@ -37,7 +46,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.positiveIntegers(), Gen.positiveIntegers(), Gen.positiveIntegers()) { a, b, c ->
         a.toLong() + b.toLong() + c.toLong() shouldBe 4L
       }
-    }.message shouldBe "Property failed for\n0: 1 (shrunk from 2147483647)\n1: 1 (shrunk from 2147483647)\n2: 1 (shrunk from 2147483647)\nafter 1 attempts"
+    }.message shouldBe "Property failed for\nArg 0: 1 (shrunk from 2147483647)\nArg 1: 1 (shrunk from 2147483647)\nArg 2: 1 (shrunk from 2147483647)\nafter 1 attempts\nCaused by: expected: 4 but was: 6442450941"
   }
 
   "should shrink arity 4 negativeIntegers" {
@@ -45,7 +54,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.negativeIntegers(), Gen.negativeIntegers(), Gen.negativeIntegers(), Gen.negativeIntegers()) { a, b, c, d ->
         a + b + c + d shouldBe 4
       }
-    }.message shouldBe "Property failed for\n0: -1 (shrunk from -2147483648)\n1: -1 (shrunk from -2147483648)\n2: -1 (shrunk from -2147483648)\n3: -1 (shrunk from -2147483648)\nafter 1 attempts"
+    }.message shouldBe "Property failed for\nArg 0: -1 (shrunk from -2147483648)\nArg 1: -1 (shrunk from -2147483648)\nArg 2: -1 (shrunk from -2147483648)\nArg 3: -1 (shrunk from -2147483648)\nafter 1 attempts\nCaused by: expected: 4 but was: 0"
   }
 
   "should shrink arity 1 doubles" {
@@ -53,7 +62,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.double()) { a ->
         a shouldBe lt(3.0)
       }
-    }.message shouldBe "Property failed for\n0: 3.0 (shrunk from 1.7976931348623157E308)\nafter 3 attempts"
+    }.message shouldBe "Property failed for\nArg 0: 3.0 (shrunk from 1.7976931348623157E308)\nafter 3 attempts\nCaused by: 1.7976931348623157E308 should be < 3.0"
   }
 
   "should shrink Gen.choose" {
@@ -65,7 +74,7 @@ class ShrinkTest : StringSpec({
       }) { a ->
         a shouldBe lte(10)
       }
-    }.message!! shouldBe "Property failed for\n0: 11 (shrunk from 14)\nafter 1 attempts"
+    }.message!! shouldBe "Property failed for\nArg 0: 11 (shrunk from 14)\nafter 1 attempts\nCaused by: 14 should be <= 10"
   }
 
   "should shrink strings to empty string" {
@@ -78,7 +87,7 @@ class ShrinkTest : StringSpec({
       assertAll(gen) { a ->
         a.shouldHaveLength(10)
       }
-    }.message shouldBe "Property failed for\n0: <empty string> (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts"
+    }.message shouldBe "Property failed for\nArg 0: <empty string> (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
   }
 
   "should shrink strings to min failing size" {
@@ -91,6 +100,6 @@ class ShrinkTest : StringSpec({
       assertAll(gen) { a ->
         a.padEnd(10, '*').shouldHaveLength(10)
       }
-    }.message shouldBe "Property failed for\n0: aaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts"
+    }.message shouldBe "Property failed for\nArg 0: aaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
   }
 })

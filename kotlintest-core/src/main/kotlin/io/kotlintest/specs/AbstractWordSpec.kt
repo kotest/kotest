@@ -6,6 +6,7 @@ import io.kotlintest.Tag
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -26,7 +27,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   }
 
   infix fun String.should(init: suspend WordScope.() -> Unit) =
-      addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig)
+      addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   @KotlinTestDsl
   inner class WordScope(val context: TestContext) {
@@ -46,15 +47,15 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
           threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
           tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
           extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, config)
+      context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, config, TestType.Test)
     }
 
     infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
-        context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig)
+        context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: suspend () -> Unit) = {}
+    infix fun String.should(init: suspend () -> Unit) = { init() }
   }
 
   @KotlinTestDsl
@@ -64,6 +65,6 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-    infix fun String.should(init: suspend () -> Unit) = {}
+    infix fun String.should(init: suspend () -> Unit) = { init() }
   }
 }

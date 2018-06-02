@@ -68,11 +68,13 @@ object TestDiscovery {
   private fun scan(request: DiscoveryRequest): List<KClass<out Spec>> {
 
     val classes = when {
-      request.classNames.isNotEmpty() -> loadClasses(request.classNames)
-      else -> scan(request.uris)
+      request.classNames.isNotEmpty() -> loadClasses(request.classNames).apply {
+        logger.debug("Loaded ${this.size} classes from classnames...")
+      }
+      else -> scan(request.uris).apply {
+        logger.debug("Scan discovered ${this.size} classes...")
+      }
     }
-
-    logger.debug("Scan discovered ${classes.size} subtypes of Spec...")
 
     val specs = classes
         .filter { Spec::class.java.isAssignableFrom(it.java) }

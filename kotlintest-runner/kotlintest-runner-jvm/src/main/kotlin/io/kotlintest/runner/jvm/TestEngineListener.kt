@@ -37,7 +37,7 @@ interface TestEngineListener {
    * Is invoked once per [Spec] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun completeSpec(description: Description, t: Throwable?) {}
+  fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {}
 
   /**
    * Executed each time a [TestCase] has been entered from a parent test.

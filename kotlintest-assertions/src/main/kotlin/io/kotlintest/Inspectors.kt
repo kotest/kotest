@@ -98,7 +98,7 @@ private fun <T> buildAssertionError(msg: String, results: List<Pair<T, String?>>
   if (failed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(failed.map { it.first.toString() + " => " + it.second }.joinToString("\n"))
+    builder.append(failed.joinToString("\n") { it.first.toString() + " => " + it.second })
   }
   throw AssertionError(builder.toString())
 }

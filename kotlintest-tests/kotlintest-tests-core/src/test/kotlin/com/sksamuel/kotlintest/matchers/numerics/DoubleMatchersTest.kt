@@ -29,6 +29,12 @@ class DoubleMatchersTest : ShouldSpec() {
       1.0 shouldBe 1.0
     }
 
+    should("accept nullable arguments") {
+      val l: Double? = 1.0
+      val r: Double? = 1.0
+      l shouldBe r
+    }
+
     should("match exactly") {
       1.0 shouldBe exactly(1.0)
       shouldThrow<AssertionError> {

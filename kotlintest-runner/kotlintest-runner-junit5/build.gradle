@@ -2,7 +2,6 @@ dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
-    compile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
     compile 'org.junit.platform:junit-platform-engine:1.2.0'
     compile 'org.junit.platform:junit-platform-suite-api:1.2.0'
     compile 'org.junit.platform:junit-platform-launcher:1.2.0'

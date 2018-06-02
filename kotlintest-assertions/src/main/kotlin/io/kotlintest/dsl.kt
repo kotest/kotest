@@ -1,7 +1,6 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.ToleranceMatcher
-import io.kotlintest.matchers.shouldBe
 import org.junit.ComparisonCompactor
 
 fun <T> be(expected: T) = equalityMatcher(expected)
@@ -13,6 +12,29 @@ fun fail(msg: String): Nothing = throw AssertionError(msg)
 
 // -- equality functions
 
+private fun compare(a: Any?, b: Any?): Boolean {
+  return when (a) {
+    is Int -> when (b) {
+      is Long -> a.toLong() == b
+      is Double -> a.toDouble() == b
+      else -> a == b
+    }
+    is Float -> when (b) {
+      is Double -> a.toDouble() == b
+      else -> a == b
+    }
+    is Double -> when (b) {
+      is Float -> a == b.toDouble()
+      else -> a == b
+    }
+    is Long -> when (b) {
+      is Int -> a == b.toLong()
+      else -> a == b
+    }
+    else -> a == b
+  }
+}
+
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
@@ -20,7 +42,7 @@ infix fun <T, U : T> T.shouldBe(any: U?) {
     else -> {
       if (this == null && any != null)
         throw equalsError(any, this)
-      if (this != any)
+      if (!compare(this, any))
         throw equalsError(any, this)
     }
   }
@@ -51,47 +73,75 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 // -- specialized overrides of shouldBe --
 
-infix fun Double.shouldBe(other: Double) = should(ToleranceMatcher(other, 0.0))
+infix fun Double?.shouldBe(other: Double?) = should(ToleranceMatcher(other, 0.0))
 
 // https://stackoverflow.com/questions/10934743/formatting-output-so-that-intellij-idea-shows-diffs-for-two-texts
 // https://github.com/JetBrains/intellij-community/blob/3f7e93e20b7e79ba389adf593b3b59e46a3e01d1/plugins/testng/src/com/theoryinpractice/testng/model/TestProxy.java#L50
-infix fun String.shouldBe(other: String) {
-  if (this != other) {
-    throw AssertionError(ComparisonCompactor.getMessage(other, this))
+infix fun String?.shouldBe(expected: String?) {
+  if (this != expected) {
+    throw AssertionError(ComparisonCompactor.getMessage(expected, this))
   }
 }
 
-infix fun BooleanArray.shouldBe(other: BooleanArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun BooleanArray?.shouldBe(other: BooleanArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun IntArray.shouldBe(other: IntArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun IntArray?.shouldBe(other: IntArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun DoubleArray.shouldBe(other: DoubleArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun ShortArray?.shouldBe(other: ShortArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun LongArray.shouldBe(other: LongArray) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun FloatArray?.shouldBe(other: FloatArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }
 
-infix fun <T> Array<T>.shouldBe(other: Array<T>) {
-  val expected = other.toList()
-  val actual = this.toList()
+infix fun DoubleArray?.shouldBe(other: DoubleArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun LongArray?.shouldBe(other: LongArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun ByteArray?.shouldBe(other: ByteArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun CharArray?.shouldBe(other: CharArray?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
+  if (actual != expected)
+    throw equalsError(expected, actual)
+}
+
+infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
+  val expected = other?.asList()
+  val actual = this?.asList()
   if (actual != expected)
     throw equalsError(expected, actual)
 }

@@ -11,6 +11,7 @@ import io.kotlintest.assertions.arrow.nel.haveDuplicates
 import io.kotlintest.assertions.arrow.nel.haveSize
 import io.kotlintest.assertions.arrow.nel.shouldBeSingleElement
 import io.kotlintest.assertions.arrow.nel.shouldBeSorted
+import io.kotlintest.assertions.arrow.nel.shouldBeUnique
 import io.kotlintest.assertions.arrow.nel.shouldContain
 import io.kotlintest.assertions.arrow.nel.shouldContainAll
 import io.kotlintest.assertions.arrow.nel.shouldContainNoNulls
@@ -18,14 +19,18 @@ import io.kotlintest.assertions.arrow.nel.shouldContainNull
 import io.kotlintest.assertions.arrow.nel.shouldContainOnlyNulls
 import io.kotlintest.assertions.arrow.nel.shouldHaveDuplicates
 import io.kotlintest.assertions.arrow.nel.shouldHaveSize
+import io.kotlintest.assertions.arrow.nel.shouldNotBeUnique
 import io.kotlintest.assertions.arrow.nel.shouldNotContain
+import io.kotlintest.assertions.arrow.nel.shouldNotContainNull
 import io.kotlintest.assertions.arrow.nel.shouldNotContainOnlyNulls
+import io.kotlintest.assertions.arrow.nel.shouldNotHaveDuplicates
 import io.kotlintest.assertions.arrow.nel.shouldNotHaveSize
 import io.kotlintest.assertions.arrow.nel.singleElement
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.StringSpec
 import io.kotlintest.specs.WordSpec
 
 class NelMatchersTest : WordSpec() {
@@ -57,6 +62,14 @@ class NelMatchersTest : WordSpec() {
         NonEmptyList.of(1, 2, 3, 3) should haveDuplicates()
         NonEmptyList.of(1, 2, 3, 4) shouldNot haveDuplicates()
         NonEmptyList.of(1, 2, 3, 3).shouldHaveDuplicates()
+        NonEmptyList.of(1, 2, 3, 4).shouldNotHaveDuplicates()
+      }
+    }
+
+    "beUnique" should {
+      "test that a collection is unique or not" {
+        NonEmptyList.of(1, 2, 3, 4).shouldBeUnique()
+        NonEmptyList.of(1, 2, 3, 3).shouldNotBeUnique()
       }
     }
 
