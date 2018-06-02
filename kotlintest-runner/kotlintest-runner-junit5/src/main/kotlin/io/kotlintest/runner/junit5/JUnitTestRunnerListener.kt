@@ -104,8 +104,6 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
   }
 
   override fun testRun(set: TestSet, k: Int) {
-    logger.debug("testRun ${set.testCase.description} k=$k")
-
     // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
