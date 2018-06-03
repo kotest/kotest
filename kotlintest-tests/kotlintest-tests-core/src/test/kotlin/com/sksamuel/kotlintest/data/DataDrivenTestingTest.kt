@@ -16,8 +16,8 @@ class DataDrivenTestingTest : StringSpec() {
           row(3, 9),
           row(4, 16),
           row(5, 25)
-      ) { a, b ->
-        a * a shouldBe b
+      ) { root, square ->
+        root * root shouldBe square
       }
     }
 
@@ -29,8 +29,8 @@ class DataDrivenTestingTest : StringSpec() {
           row(0, 1, 1),
           row(1, 0, 1),
           row(0, 0, 0)
-      ) { a, b, c ->
-        Math.max(a, b) shouldBe c
+      ) { a, b, max ->
+        Math.max(a, b) shouldBe max
       }
     }
 
