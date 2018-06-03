@@ -68,28 +68,23 @@ class PropertyExample: StringSpec() {
 }
 ```
 
-Check all the Tricky Cases With Table Testing
+Check all the Tricky Cases With Data Driven Testing
 --------------------------
 
-Handle even an enormous amount of input parameter combinations easily with [table driven tests](doc/reference.md#table):
+Handle even an enormous amount of input parameter combinations easily with [data driven tests](doc/reference.md#table):
 
 ```kotlin
-class StringSpecExample : StringSpec() {
-  init {
-
-    "should add" {
-       val myTable = table(
-         headers("a", "b", "result"),
-         row(1, 2, 3),
-         row(1, 1, 2)
-       )
-       forAll(myTable) { a, b, result ->
-         a + b shouldBe result
-       }
+class StringSpecExample : StringSpec({
+  "maximum of two numbers" {
+    forall(
+        row(1, 5, 5),
+        row(1, 0, 1),
+        row(0, 0, 0)
+    ) { a, b, max ->
+      Math.max(a, b) shouldBe max
     }
-
   }
-}
+})
 ```
 
 Test Exceptions
