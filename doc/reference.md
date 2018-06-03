@@ -530,10 +530,11 @@ To test your code with different parameter combinations, you can use a table of 
 cases. This is sometimes called data driven testing or sometimes called table driven testing.
 
 Invoke the `forAll` or `forNone` function, passing in one or more `row` objects, where each row object contains
-the values to be used be a single invocation of the test. After for the `forAll` or `forNone` function, setup your
-actual test function that will use the values from each row.
+the values to be used be a single invocation of the test. After the `forAll` or `forNone` function, setup your
+actual test function to accept the values of each row as parameters.
 
-The row object accepts any type, and the type checker will ensure your types are consistent across multiple rows.
+The row object accepts any set of types, and the type checker will ensure your types are consistent with the parameter
+types in the test function.
 
 ```kotlin
 "square roots" {
@@ -548,8 +549,10 @@ The row object accepts any type, and the type checker will ensure your types are
 }
 ```
 
-If there is an error for any particular row of values, then the test will fail and KotlinTest will automatically
-match up the inputs to the parameter names. For example, if we change the previous example to include the row `row(5,55)`
+In the above example, the `root` and `square` parameters are automatically inferrred to be integers.
+
+If there is an error for any particular input row, then the test will fail and KotlinTest will automatically
+match up each input to the corresponding parameter names. For example, if we change the previous example to include the row `row(5,55)`
 then the test will be marked as a failure with the following erorr message.
 
 ```
