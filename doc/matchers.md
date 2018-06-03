@@ -158,6 +158,13 @@ For the extension function style, each function has an equivalent negated versio
 
 | Futures ||
 | -------- | ---- |
-| `shouldBeCancelled()` | Asserts that the future has been cancelled. |
-| `shouldBeCompleted()` | Asserts that the future has completed. |
-| `shouldBeCompletedExceptionally()` | Asserts that the the future has completed with an exception. |
+| `future.shouldBeCancelled()` | Asserts that the future has been cancelled. |
+| `future.shouldBeCompleted()` | Asserts that the future has completed. |
+| `future.shouldBeCompletedExceptionally()` | Asserts that the the future has completed with an exception. |
+
+| Threads ||
+| -------- | ---- |
+| `thread.shouldBeBlocked()` | Asserts that the thread is currently blocked. |
+| `thread.shouldBeDaemon()` | Asserts that the thread is a daemon thread. |
+| `thread.shouldBeAlive()` | Asserts that the thread is alive. |
+| `thread.shouldBeTerminated()` | Asserts that the thread has been terminated. |
