@@ -1,9 +1,56 @@
 Changelog
 =========
 
-This project follows [semantic versioning](http://semver.org/).
+##### 3.1.6
 
-Version 3.1.x - In Progress
+* Specs now support co-routines #332
+* Extension function version of inspectors.
+* Inspectors for arrow NonEmptyLists
+* New style of data driven tests with parameter name detection
+* Extension function style of assert all for property testing
+* Updated string matchers to show better error when input is null or empty string
+* Allow nullable arguments to more matcher functions. #350
+* Added extension functions for table tests #349
+
+##### 3.1.5
+
+* Fix for bug in gradle which doesn't support parallel test events
+* Bring back Duration extension properties #343
+* Added fix for gradle 4.7 issues #336
+* shouldBe does not handle java long  #346
+* Fixing function return type in documentation for forAll() (#345)
+* Fixing typos in reference.md (#344)
+* Make the Table & Row data classes covariant (#342)
+* Fixing argument names in ReplaceWith of deprecated matchers (#341)
+
+###### 3.1.4
+
+* Fix eventually nanos conversion (#340)
+* Improve array shouldBe overloads (#339)
+
+###### 3.1.3
+
+* Added workaround for gradle 4.7/4.8 error #336
+* Fix URI path and URI parameter matchers (#338)
+
+###### 3.1.2
+
+* Added arrow NonEmptyList isUnique matchers
+* Added Float and List Shrinker
+* Added inspecting and extracting helper functions. (#334)
+* Allow tags to be added to specs for all test cases #333
+* Support randomized order of top level tests #328
+
+###### 3.1.1
+
+* Focus option for top level tests #329
+* Improve shrinkage #331
+* Updated readme for custom generators #313
+* Added generator for UUIDs
+* Fixed bug with auto-close not being called. Deprecated ProjectExtension in favour of TestListener.
+* Added a couple of edge case matchers to the arrow extension; added arrow matchers for lists.
+
+Version 3.1.0
 ----------
 
 * **Simplified Setup**
