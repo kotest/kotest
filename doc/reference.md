@@ -690,6 +690,14 @@ class MySpec : StringSpec() {
 Disabling Test Cases and Running Test Cases Conditionally
 ---------------------------------------------------------
 
+Sometimes we want to temporarily disable some tests in of a test suite.
+Perhaps we’re experimenting with some API changes and don’t want to have to keep changing all the tests until we’re happy with the new API.
+Or perhaps we’re debugging and want to reduce the noise in the output.
+
+There are several ways to disable tests.
+
+### By Config
+
 You can disable a test case simply by setting the config parameter `enabled` to `false`.
 If you're looking for something like JUnit's `@Ignore`, this is for you.
 
@@ -712,12 +720,49 @@ You can use the same mechanism to run tests only under certain conditions.
 `isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
 
 
+### Focus
+
+KotlinTest supports isolating a single top level test by preceding the test name with `f:`.
+Then only that test (and any subtests defined inside that scope) will be executed, with the rest being skipped.
+
+For example, in the following snippet only the middle test will be executed.
+
+```kotlin
+class FocusExample : StringSpec({
+    "test 1" {
+     // this will be skipped
+    }
+
+    "f:test 2" {
+     // this will be executed
+    }
+
+    "test 3" {
+     // this will be skipped
+    }
+})
+```kotlin
 
 
+### Bang
 
+The opposite of focus is possible, which is to prefix a test with an exclamation mark `!` and then that test (and any subtests defined inside that scope) will be skipped.
+In the next example we’ve disabled the first test by adding the “!” prefix.
 
+class BangExample : StringSpec({
 
+  "!test 1" {
+    // this will be ignored
+  }
 
+  "test 2" {
+    // this will run
+  }
+
+  "test 3" {
+    // this will run too
+  }
+})
 
 
 
