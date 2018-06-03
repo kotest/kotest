@@ -38,7 +38,7 @@ KotlinTest comes with several [testing styles](doc/reference.md#testing-styles) 
 Multitude of Matchers
 ---------------------
 
-Use over 100 provided matchers to test assertions on many different types:
+Use over 120 provided matchers to test assertions on many different types:
 
 ```kotlin
 "substring".shouldContain("str")
