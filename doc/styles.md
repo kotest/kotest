@@ -19,12 +19,12 @@ class MyTests : StringSpec({
 
 ### Fun Spec
 
-`FunSpec` allows you to create tests similar to the classic jUnit style.
- You invoke a method called test, with a string parameter to describe the test, and then the test itself.
+`FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
+and then the test itself as a closure.
 
 ```kotlin
 class MyTests : FunSpec({
-    test("String.length should return the length of the string") {
+    test("String length should return the length of the string") {
         "sammy".length shouldBe 5
         "".length shouldBe 0
     }
@@ -166,4 +166,24 @@ class MyTests : ExpectSpec({
         }
     }
 })
+```
+
+### Annotation Spec
+
+If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4.
+Just add the `@Test` annotation to any function defined in the spec class.
+
+```kotlin
+class AnnotationSpecExample : AnnotationSpec() {
+
+  @Test
+  fun test1() {
+    1 shouldBe 1
+  }
+
+  @Test
+  fun test2() {
+    3 shouldBe 3
+  }
+}
 ```
