@@ -39,6 +39,7 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 
 @Deprecated("Use shouldHaveElementAt", ReplaceWith("this.shouldHaveElementAt(index, element)", "io.kotlintest.should"))
 fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+
 @Deprecated("Use shouldNotHaveElementAt", ReplaceWith("this.shouldNotHaveElementAt(index, element)", "io.kotlintest.should"))
 fun <T, L : List<T>> L.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
@@ -69,6 +70,24 @@ fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
       value.contains(t),
       "Collection should contain element $t",
       "Collection should not contain element $t"
+  )
+}
+
+fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
+fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T) = object : Matcher<C> {
+  override fun test(value: C) = Result(
+      value.all { it <= t },
+      "Collection should have upper bound $t",
+      "Collection should not have upper bound $t"
+  )
+}
+
+fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
+fun <T : Comparable<T>, C : Collection<T>> haveLowerBound(t: T) = object : Matcher<C> {
+  override fun test(value: C) = Result(
+      value.all { t <= it },
+      "Collection should have lower bound $t",
+      "Collection should not have lower bound $t"
   )
 }
 

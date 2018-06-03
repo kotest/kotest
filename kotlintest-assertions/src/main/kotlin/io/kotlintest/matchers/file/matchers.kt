@@ -67,6 +67,40 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isFile, "File $value should be a file", "File $value should not be a file")
 }
 
+fun Path.shouldBeSmaller(other: Path) = this.toFile() should beSmaller(other.toFile())
+fun File.shouldBeSmaller(other: Path) = this should beSmaller(other.toFile())
+fun Path.shouldBeSmaller(other: File) = this.toFile() should beSmaller(other)
+fun File.shouldBeSmaller(other: File) = this should beSmaller(other)
+fun Path.shouldNotBeSmaller(other: Path) = this.toFile() shouldNot beSmaller(other.toFile())
+fun File.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other.toFile())
+fun Path.shouldNotBeSmaller(other: File) = this.toFile() shouldNot beSmaller(other)
+fun File.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other)
+
+fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result {
+    val sizea = value.length()
+    val sizeb = other.length()
+    return Result(value.length() < other.length(), "File $value ($sizea bytes) should be smaller than $other ($sizeb bytes)", "File $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)")
+  }
+}
+
+fun Path.shouldBeLarger(other: Path) = this.toFile() should beLarger(other.toFile())
+fun File.shouldBeLarger(other: Path) = this should beLarger(other.toFile())
+fun Path.shouldBeLarger(other: File) = this.toFile() should beLarger(other)
+fun File.shouldBeLarger(other: File) = this should beLarger(other)
+fun Path.shouldNotBeLarger(other: Path) = this.toFile() shouldNot beLarger(other.toFile())
+fun File.shouldNotBeLarger(other: Path) = this shouldNot beLarger(other.toFile())
+fun Path.shouldNotBeLarger(other: File) = this.toFile() shouldNot beLarger(other)
+fun File.shouldNotBeLarger(other: File) = this shouldNot beLarger(other)
+
+fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result {
+    val sizea = value.length()
+    val sizeb = other.length()
+    return Result(value.length() > other.length(), "File $value ($sizea bytes) should be larger than $other ($sizeb bytes)", "File $value ($sizea bytes) should not be larger than $other ($sizeb bytes)")
+  }
+}
+
 fun Path.shouldBeCanonical() = this.toFile() should beCanonicalPath()
 fun Path.shouldNotBeCanonical() = this.toFile() shouldNot beCanonicalPath()
 fun File.shouldBeCanonical() = this should beCanonicalPath()

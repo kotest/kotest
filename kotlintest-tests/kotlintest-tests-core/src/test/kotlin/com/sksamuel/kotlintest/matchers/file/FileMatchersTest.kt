@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest.matchers.file
 
+import com.sksamuel.kotlintest.extensions.Numbers.a
 import io.kotlintest.matchers.file.aDirectory
 import io.kotlintest.matchers.file.aFile
 import io.kotlintest.matchers.file.beAbsolute
@@ -9,7 +10,9 @@ import io.kotlintest.matchers.file.haveExtension
 import io.kotlintest.matchers.file.shouldBeADirectory
 import io.kotlintest.matchers.file.shouldBeAFile
 import io.kotlintest.matchers.file.shouldBeAbsolute
+import io.kotlintest.matchers.file.shouldBeLarger
 import io.kotlintest.matchers.file.shouldBeRelative
+import io.kotlintest.matchers.file.shouldBeSmaller
 import io.kotlintest.matchers.file.shouldContainFile
 import io.kotlintest.matchers.file.shouldExist
 import io.kotlintest.matchers.file.shouldHaveExtension
@@ -141,6 +144,26 @@ class FileMatchersTest : FunSpec() {
       shouldThrow<AssertionError> {
         dir.shouldContainFile("c")
       }.message?.shouldMatch("^Directory .+ should contain a file with filename c \\(detected 2 other files\\)$".toRegex())
+    }
+
+    test("beSmaller should compare file sizes") {
+      val dir = Files.createTempDirectory("testdir")
+      Files.write(dir.resolve("a"), byteArrayOf(1, 2))
+      Files.write(dir.resolve("b"), byteArrayOf(1, 2, 3))
+      dir.resolve("a").shouldBeSmaller(dir.resolve("b"))
+      shouldThrow<AssertionError> {
+        dir.resolve("b").shouldBeSmaller(dir.resolve("a"))
+      }.message shouldBe "File ${dir.resolve("b")} (3 bytes) should be smaller than ${dir.resolve("a")} (2 bytes)"
+    }
+
+    test("beLarger should compare file sizes") {
+      val dir = Files.createTempDirectory("testdir")
+      Files.write(dir.resolve("a"), byteArrayOf(1, 2, 3))
+      Files.write(dir.resolve("b"), byteArrayOf(1, 2))
+      dir.resolve("a").shouldBeLarger(dir.resolve("b"))
+      shouldThrow<AssertionError> {
+        dir.resolve("b").shouldBeLarger(dir.resolve("a"))
+      }.message shouldBe "File ${dir.resolve("b")} (2 bytes) should be larger than ${dir.resolve("a")} (3 bytes)"
     }
   }
 }

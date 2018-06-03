@@ -36,6 +36,26 @@ fun haveHost(host: String) = object : Matcher<URI> {
   )
 }
 
+fun URI.shouldHaveQuery(q: String) = this should io.kotlintest.matchers.uri.haveQuery(q)
+fun URI.shouldNotHaveQuery(q: String) = this shouldNot io.kotlintest.matchers.uri.haveQuery(q)
+fun haveQuery(q: String) = object : Matcher<URI> {
+  override fun test(value: URI) = Result(
+      value.query == q,
+      "Uri $value should have query $q but was ${value.query}",
+      "Uri $value should not have query $q"
+  )
+}
+
+fun URI.shouldHaveAuthority(authority: String) = this should io.kotlintest.matchers.uri.haveAuthority(authority)
+fun URI.shouldNotHaveAuthority(authority: String) = this shouldNot io.kotlintest.matchers.uri.haveAuthority(authority)
+fun haveAuthority(authority: String) = object : Matcher<URI> {
+  override fun test(value: URI) = Result(
+      value.authority == authority,
+      "Uri $value should have authority $authority but was ${value.authority}",
+      "Uri $value should not have authority $authority"
+  )
+}
+
 fun URI.shouldHavePath(path: String) = this should io.kotlintest.matchers.uri.havePath(path)
 fun URI.shouldNotHavePath(path: String) = this shouldNot io.kotlintest.matchers.uri.havePath(path)
 fun havePath(path: String) = object : Matcher<URI> {
