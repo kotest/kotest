@@ -9,6 +9,22 @@ import io.kotlintest.shouldNotBe
 import java.io.File
 import java.nio.file.Path
 
+fun File.shouldBeNonEmptyDirectory() = this should beNonEmptyDirectory()
+fun Path.shouldBeNonEmptyDirectory() = this.toFile() should beNonEmptyDirectory()
+fun File.shouldNotBeNonEmptyDirectory() = this shouldNot beNonEmptyDirectory()
+fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() shouldNot beNonEmptyDirectory()
+fun beNonEmptyDirectory(): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.isDirectory && value.list().isNotEmpty(), "$value should be a non empty directory", "$value should not be a non empty directory")
+}
+
+fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
+fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
+fun File.shouldNotContainNFiles(n: Int) = this shouldNotBe containNFiles(n)
+fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
+fun containNFiles(n: Int): Matcher<File> = object : Matcher<File> {
+  override fun test(value: File): Result = Result(value.isDirectory && value.list().size == n, "$value should be a directory and contain $n files", "$value should not be a directory containing $n files")
+}
+
 fun File.shouldBeEmpty() = this shouldBe emptyFile()
 fun File.shouldNotBeEmpty() = this shouldNotBe emptyFile()
 fun emptyFile(): Matcher<File> = object : Matcher<File> {

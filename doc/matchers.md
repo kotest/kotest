@@ -134,7 +134,9 @@ For the extension function style, each function has an equivalent negated versio
 | `file.shouldBeSmaller(file)` | Asserts that this file is smaller than the given file. |
 | `file.shouldBeLarger(file)` | Asserts that this file is larger than the given file. |
 | `file.shouldBeWriteable()` | Asserts that the file is writeable by the current process. |
-| `dir.shouldContainFile(name)` | Asserts that a directory contains a file with the given name. |
+| `dir.shouldBeNonEmptyDirectory()` | Asserts that the file is a directory and is non empty. |
+| `dir.shouldContainFile(name)` | Asserts that the file is a directory and that it contains a file with the given name. |
+| `dir.shouldContainNFiles(name)` | Asserts that the file is a directory and that it contains exactly n files. |
 | `file.shouldExist()` | Asserts that the file exists on disk, either a directory or as a file. |
 | `file.shouldHaveExtension(ext)` | Asserts that the file ends with the given extension. |
 | `file.shouldHaveFileSize(size)` | Asserts that the file has the given file size. |
