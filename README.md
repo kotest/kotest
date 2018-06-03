@@ -33,7 +33,7 @@ class MyTests : StringSpec({
 })
 ```
 
-KotlinTest comes with several [testing styles](doc/reference.md#styles) so you can choose one that fits your needs.
+KotlinTest comes with several [testing styles](doc/reference.md#testing-styles) so you can choose one that fits your needs.
 
 Multitude of Matchers
 ---------------------
