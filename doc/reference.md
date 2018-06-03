@@ -527,7 +527,7 @@ Table-driven Testing
 --------------------
 
 To test your code with different parameter combinations, you can use a table of values as input for your test
-cases.
+cases. This is sometimes called data driven testing or sometimes called table driven testing.
 
 Invoke the `forAll` or `forNone` function, passing in one or more `row` objects, where each row object contains
 the values to be used be a single invocation of the test. After for the `forAll` or `forNone` function, setup your
