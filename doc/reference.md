@@ -526,38 +526,50 @@ class PersonGenerator : Gen<Person> {
 Table-driven Testing
 --------------------
 
-To test your code with different parameter combinations, you can use tables as input for your test
+To test your code with different parameter combinations, you can use a table of values as input for your test
 cases.
 
-Your test class should import `io.kotlintest.properties.*` for table testing support. Create a table
-with the `table` function and pass a header and one or more row objects. You create the headers with
-the `headers` function, and a row with the `row` function. A row can have up to 22 entries. Headers
-and and rows must all have the same number of entries.
+Invoke the `forAll` or `forNone` function, passing in one or more `row` objects, where each row object contains
+the values to be used be a single invocation of the test. After for the `forAll` or `forNone` function, setup your
+actual test function that will use the values from each row.
 
-To use the table, you invoke `forAll(table)` inside a test plan and pass a closure with the actual test code.
-The entries of the rows are passed as parameters to the closure.
-
-Table testing can be used with any spec. Here is an example using `StringSpec`.
+The row object accepts any type, and the type checker will ensure your types are consistent across multiple rows.
 
 ```kotlin
-import io.kotlintest.matchers.shouldBe
-import io.kotlintest.properties.*
-import io.kotlintest.specs.StringSpec
-
-class StringSpecExample : StringSpec() {
-  init {
-    "should add" {
-      val myTable = table(
-          headers("a", "b", "result"),
-          row(1, 2, 3),
-          row(1, 1, 2)
-      )
-      forAll(myTable) { a, b, result ->
-        a + b shouldBe result
-      }
-    }
+"square roots" {
+  forall(
+      row(2, 4),
+      row(3, 9),
+      row(4, 16),
+      row(5, 25)
+  ) { root, square ->
+    root * root shouldBe square
   }
 }
+```
+
+If there is an error for any particular row of values, then the test will fail and KotlinTest will automatically
+match up the inputs to the parameter names. For example, if we change the previous example to include the row `row(5,55)`
+then the test will be marked as a failure with the following erorr message.
+
+```
+Test failed for (root, 5), (square, 55) with error expected: 55 but was: 25
+```
+
+Table testing can be used within any spec. Here is an example using `StringSpec`.
+
+```kotlin
+class StringSpecExample : StringSpec({
+  "string concat" {
+    forall(
+      row("a", "b", "c", "abc"),
+      row("hel", "lo wo", "rld", "hello world"),
+      row("", "z", "", "z")
+    ) { a, b, c, d ->
+      a + b + c shouldBe d
+    }
+  }
+})
 ```
 
 
