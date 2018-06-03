@@ -71,235 +71,302 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> table(headers: 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> table(headers: Headers21, vararg rows: Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>) = Table21(headers, rows.asList())
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> table(headers: Headers22, vararg rows: Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>) = Table22(headers, rows.asList())
 
-fun error(e: AssertionError, headers: List<String>, values: List<*>): AssertionError {
+private fun error(e: Throwable, headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
-  return AssertionError("Test failed for $params with error ${e.message}")
+  // Include class name for non-assertion errors, since the class is often meaningful and there might not
+  // be a message (e.g. NullPointerException)
+  val message = when (e) {
+    is AssertionError -> e.message
+    else -> e.toString()
+  }
+
+  return AssertionError("Test failed for $params with error $message", e)
 }
 
-fun error(headers: List<String>, values: List<*>): AssertionError {
+private fun error(headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
   return AssertionError("Test passed for $params but expected failure")
 }
 
+private class ErrorCollector {
+  private val errors = mutableListOf<Throwable>()
+
+  operator fun plusAssign(t: Throwable) {
+    errors += t
+  }
+
+  fun assertAll() {
+    if (errors.size == 1) {
+      throw errors[0]
+    } else if (errors.size > 1) {
+      throw MultiAssertionError(errors)
+    }
+  }
+}
+
 fun <A> forAll(table: Table1<A>, fn: (A) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 
 fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
+  val collector = ErrorCollector()
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
-    } catch (e: AssertionError) {
-      throw error(e, table.headers.values(), row.values())
+    } catch (e: Throwable) {
+      collector += error(e, table.headers.values(), row.values())
     }
   }
+  collector.assertAll()
 }
 
 @JvmName("forAll1receiver") fun <A> Table1<A>.forAll(fn: (A) -> Unit) = forAll(this, fn)

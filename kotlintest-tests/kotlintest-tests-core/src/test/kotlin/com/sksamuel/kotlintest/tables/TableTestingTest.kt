@@ -1,8 +1,12 @@
 package com.sksamuel.kotlintest.tables
 
-import io.kotlintest.shouldBe
+import io.kotlintest.*
+import io.kotlintest.matchers.beInstanceOf
+import io.kotlintest.matchers.string.contain
+import io.kotlintest.matchers.types.shouldNotBeInstanceOf
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.*
+import org.mockito.internal.matchers.Null
 
 class TableTestingTest : StringSpec() {
   init {
@@ -109,6 +113,82 @@ class TableTestingTest : StringSpec() {
           row("foo", 5, circle),
           row("bar", 42, square)
       )
+    }
+
+    "rows should be executed after error" {
+      var count = 0
+      shouldThrow<AssertionError> {
+        val table1 = table(
+            headers("name"),
+            row("sam"),
+            row("billy"),
+            row("christian")
+        )
+
+        forAll(table1) {
+          count += 1
+          it shouldNotBe "sam"
+        }
+      }
+
+      count shouldBe 3
+    }
+
+    "assertions should be grouped in order" {
+      shouldThrow<MultiAssertionError> {
+        val table1 = table(
+            headers("name"),
+            row("sam"),
+            row("billy"),
+            row("christian")
+        )
+
+        forAll(table1) {
+          it shouldBe "christian"
+        }
+      }.let {
+        it.message shouldNotBe null
+        it.message!! should contain("1) Test failed for (name, sam) with error expected:<[christian]> but was:<[sam]>")
+        it.message!! should contain("2) Test failed for (name, billy) with error expected:<[christian]> but was:<[billy]>")
+        it.message!! shouldNot contain("3)")
+      }
+    }
+
+    "single failures should not be grouped" {
+      shouldThrow<AssertionError> {
+        val table1 = table(
+            headers("name"),
+            row("sam"),
+            row("billy"),
+            row("christian")
+        )
+
+        forAll(table1) {
+          it shouldNotBe "christian"
+        }
+      }.let {
+        it.shouldNotBeInstanceOf<MultiAssertionError>()
+        it.message shouldBe "Test failed for (name, christian) with error christian should not equal christian"
+      }
+    }
+
+    "all exceptions should be grouped" {
+      shouldThrow<MultiAssertionError> {
+        val table1 = table(
+            headers("name"),
+            row(null),
+            row("billy"),
+            row("christian")
+        )
+
+        forAll(table1) {
+          it!! shouldNotBe "christian"
+        }
+      }.let {
+        it.message!! should contain("1) Test failed for (name, null) with error kotlin.KotlinNullPointerException")
+        it.message!! should contain("2) Test failed for (name, christian) with error christian should not equal christian")
+        it.message!! shouldNot contain("3)")
+      }
     }
   }
 }

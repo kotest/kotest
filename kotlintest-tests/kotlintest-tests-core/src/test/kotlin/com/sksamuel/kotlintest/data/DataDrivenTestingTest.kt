@@ -47,9 +47,7 @@ class DataDrivenTestingTest : StringSpec() {
     "row3 should detect header names from params" {
       shouldThrow<AssertionError> {
         forall(
-            row(1, 2, 3),
-            row(4, 5, 6),
-            row(7, 8, 9)
+            row(1, 2, 3)
         ) { foo, bar, woo ->
           foo * bar * woo shouldBe 0
         }
@@ -59,9 +57,7 @@ class DataDrivenTestingTest : StringSpec() {
     "row2 should detect header names from params" {
       shouldThrow<AssertionError> {
         forall(
-            row(2, 4),
-            row(3, 9),
-            row(5, 25)
+            row(2, 4)
         ) { foo, bar ->
           foo * bar shouldBe 0
         }
@@ -71,9 +67,7 @@ class DataDrivenTestingTest : StringSpec() {
     "row1 should detect header names from params" {
       shouldThrow<AssertionError> {
         forall(
-            row(2),
-            row(3),
-            row(4)
+            row(2)
         ) { foo ->
           foo shouldBe 0
         }
