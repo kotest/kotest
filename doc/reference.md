@@ -211,27 +211,28 @@ If you want to test that _any_ exception is thrown, then use `shouldThrowAny`.
 Inspectors
 ----------
 
-Inspectors allow us to test elements in a collection. For example, if we had a collection from a method and we wanted to test that every element in the collection passed some assertions, we can do:
+Inspectors allow us to test elements in a collection. They are extension functions for collections and arrays that test
+that all, none or some of the elements pass the given assertions. For example, to test that all elements in a collection
+contain an undercore and start with "aa" we could do:
 
 ```kotlin
 class StringSpecExample : StringSpec({
-    "your test case" {
-      val xs = listOf("aasdf", "basdf", "casdf")
-          forAll(xs) { x ->
-            x should include("as")
-            x should startWith("q")
-          }
+  "your test case" {
+    val xs = listOf("aa_1", "aa_2", "aa_3")
+    xs.forAll {
+      it.shouldContain("_")
+      it.shouldStartWith("aa")
     }
+  }
 })
 ```
 
-Similarly, if we wanted to asset that NO elements in a collection passed some assertions, we can do:
+Similarly, if we wanted to asset that *no* elements in a collection passed the assertions, we can do:
 
 ```kotlin
-val xs = // some collection
-forNone(xs) { x ->
-  x should include("qwerty")
-  x should startWith("q")
+xs.forNone {
+  it.shouldContain("x")
+  it.shouldStartWith("bb")
 }
 ```
 
