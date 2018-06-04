@@ -85,11 +85,11 @@ class FileMatchersTest : FunSpec() {
 
       shouldThrow<AssertionError> {
         file should haveExtension(".jpeg")
-      }.message!!.shouldEndWith("with one of .jpeg")
+      }.message.shouldEndWith("with one of .jpeg")
 
       shouldThrow<AssertionError> {
         file.shouldHaveExtension(".jpeg")
-      }.message!!.shouldEndWith("with one of .jpeg")
+      }.message.shouldEndWith("with one of .jpeg")
 
       file.shouldHaveExtension(".test")
       file.shouldNotHaveExtension(".wibble")

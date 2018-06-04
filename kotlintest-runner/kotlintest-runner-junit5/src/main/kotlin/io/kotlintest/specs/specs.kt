@@ -34,5 +34,5 @@ abstract class StringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractSt
 abstract class WordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractWordSpec(body), IntelliMarker {
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
   // clash with the other should method
-  infix fun String.should(matcher: Matcher<String>) = this shouldMatch matcher
+  infix fun String?.should(matcher: Matcher<String?>) = this shouldMatch matcher
 }

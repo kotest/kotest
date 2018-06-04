@@ -104,7 +104,7 @@ class GenTest : WordSpec() {
         )
 
         io.kotlintest.tables.forAll(table1) { clazz ->
-          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe clazz
+          Gen.forClassName(clazz).random().firstOrNull()?.javaClass?.name shouldBe clazz
         }
 
         val table2 = table(
@@ -118,10 +118,10 @@ class GenTest : WordSpec() {
 
         io.kotlintest.tables.forAll(table2) { clazz ->
           val tmp = clazz.split(".").last()
-          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldBe "java.lang.$tmp"
+          Gen.forClassName(clazz).random().firstOrNull()?.javaClass?.name shouldBe "java.lang.$tmp"
         }
 
-        Gen.forClassName("kotlin.Int").random().firstOrNull()!!.javaClass.name shouldBe "java.lang.Integer"
+        Gen.forClassName("kotlin.Int").random().firstOrNull()?.javaClass?.name shouldBe "java.lang.Integer"
       }
       "throw an exception, with a wrong class" {
         shouldThrow<IllegalArgumentException> {
@@ -180,7 +180,7 @@ class GenTest : WordSpec() {
 
         io.kotlintest.tables.forAll(table) { clazz ->
           val tmp = clazz.split(".")
-          Gen.forClassName(clazz).random().firstOrNull()!!.javaClass.name shouldHave include(tmp[tmp.size - 1])
+          Gen.forClassName(clazz).random().firstOrNull()?.javaClass?.name shouldHave include(tmp[tmp.size - 1])
         }
       }
       "throw an exeption, with a wrong class" {
