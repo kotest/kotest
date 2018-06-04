@@ -16,7 +16,7 @@ class SpringListenerTest : WordSpec() {
   init {
     "SpringListener" should {
       "have autowired the service" {
-        service!!.repository.findUser().name shouldBe "system_user"
+        service?.repository?.findUser()?.name shouldBe "system_user"
       }
     }
   }

@@ -74,7 +74,7 @@ class ShrinkTest : StringSpec({
       }) { a ->
         a shouldBe lte(10)
       }
-    }.message!! shouldBe "Property failed for\nArg 0: 11 (shrunk from 14)\nafter 1 attempts\nCaused by: 14 should be <= 10"
+    }.message shouldBe "Property failed for\nArg 0: 11 (shrunk from 14)\nafter 1 attempts\nCaused by: 14 should be <= 10"
   }
 
   "should shrink strings to empty string" {
