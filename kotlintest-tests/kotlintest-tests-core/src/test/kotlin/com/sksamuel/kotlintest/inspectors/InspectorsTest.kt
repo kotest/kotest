@@ -1,5 +1,7 @@
 package com.sksamuel.kotlintest.inspectors
 
+import io.kotlintest.forAll
+import io.kotlintest.inspectors.forAll
 import io.kotlintest.inspectors.forAny
 import io.kotlintest.inspectors.forExactly
 import io.kotlintest.inspectors.forNone
@@ -18,6 +20,18 @@ class InspectorsTest : WordSpec() {
   private val array = arrayOf(1, 2, 3, 4, 5)
 
   init {
+
+    "forAll" should {
+      "fail when an exception is thrown" {
+        val items = listOf(1, 2, 3)
+        forAll(items) { x ->
+          if (true) throw NullPointerException()
+        }
+        items.forAll { x ->
+          if (true) throw NullPointerException()
+        }
+      }
+    }
 
     "forNone" should {
       "pass if no elements pass fn test for a list" {
