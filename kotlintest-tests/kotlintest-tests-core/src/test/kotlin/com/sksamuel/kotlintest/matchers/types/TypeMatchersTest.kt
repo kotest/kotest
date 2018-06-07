@@ -1,18 +1,11 @@
 package com.sksamuel.kotlintest.matchers.types
 
-import com.sksamuel.kotlintest.extensions.Numbers.a
-import com.sksamuel.kotlintest.extensions.Numbers.b
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.matchers.types.haveAnnotation
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.matchers.types.shouldHaveAnnotation
-import io.kotlintest.matchers.types.shouldNotBeInstanceOf
-import io.kotlintest.matchers.types.shouldNotBeTypeOf
+import io.kotlintest.matchers.types.*
 import io.kotlintest.should
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
@@ -62,6 +55,14 @@ class TypeMatchersTest : WordSpec() {
           arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
         }
       }
+
+      "accepts null values" {
+        val arrayList: List<Int>? = null
+        shouldThrow<AssertionError> { arrayList should beInstanceOf(ArrayList::class) }
+        shouldThrow<AssertionError> { arrayList.shouldBeInstanceOf<ArrayList<*>>() }
+        shouldThrow<AssertionError> { arrayList shouldNot beInstanceOf(List::class) }
+        shouldThrow<AssertionError> { arrayList.shouldNotBeInstanceOf<LinkedList<*>>() }
+      }
     }
 
     "beOfType" should {
@@ -77,6 +78,14 @@ class TypeMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           arrayList should beOfType<List<Int>>()
         }
+      }
+
+      "accepts null values" {
+        val arrayList: List<Int>? = null
+        shouldThrow<AssertionError> { arrayList should beOfType<List<Int>>() }
+        shouldThrow<AssertionError> { arrayList.shouldBeTypeOf<List<*>>() }
+        shouldThrow<AssertionError> { arrayList shouldNot beOfType<List<Int>>() }
+        shouldThrow<AssertionError> { arrayList.shouldNotBeTypeOf<List<*>>() }
       }
     }
 

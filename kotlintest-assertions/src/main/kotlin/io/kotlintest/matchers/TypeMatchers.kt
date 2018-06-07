@@ -2,18 +2,18 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.neverNullMatcher
 import kotlin.reflect.KClass
 
 // alias for beInstanceOf
-fun instanceOf(expected: KClass<*>): Matcher<Any> = beInstanceOf(expected)
+fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
 
-fun beInstanceOf(expected: KClass<*>): Matcher<Any> = object : Matcher<Any> {
-  override fun test(value: Any): Result =
-      Result(
-          expected.java.isAssignableFrom(value.javaClass),
-          "$value is of type ${value.javaClass} but expected $expected",
-          "$value should not be of type $expected"
-      )
+fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
+  Result(
+      expected.java.isAssignableFrom(value.javaClass),
+      "$value is of type ${value.javaClass} but expected $expected",
+      "$value should not be of type $expected"
+  )
 }
 
 fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
@@ -32,20 +32,13 @@ inline fun <U : Any, reified T : U> beInstanceOf2(): Matcher<U> = object : Match
 
 
 // checks that the given value is an instance (of type or of subtype) of T
-inline fun <reified T : Any> beInstanceOf(): Matcher<T> = object : Matcher<T> {
+inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = beInstanceOf(T::class)
 
-  override fun test(value: T): Result =
-      Result(
-          T::class.java.isAssignableFrom(value.javaClass),
-          "$value is of type ${value.javaClass} but expected ${T::class.java.canonicalName}",
-          "$value should not be an instance of ${T::class.java.canonicalName}")
-
+fun beOfType(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
+  Result(
+      value.javaClass == expected.java,
+      "$value should be of type ${expected.qualifiedName}",
+      "$value should not be of type ${expected.qualifiedName}")
 }
 
-inline fun <reified T : Any> beOfType() = object : Matcher<Any> {
-
-  val className = T::class.qualifiedName
-
-  override fun test(value: Any) =
-      Result(value.javaClass == T::class.java, "$value should be of type $className", "$value should not be of type $className")
-}
+inline fun <reified T : Any> beOfType(): Matcher<Any?> = beOfType(T::class)
