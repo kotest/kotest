@@ -9,22 +9,22 @@ import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 
-inline fun <reified T : Any> Any.shouldBeInstanceOf() {
+inline fun <reified T : Any> Any?.shouldBeInstanceOf() {
   val matcher = beInstanceOf<T>()
   this shouldBe matcher
 }
 
-inline fun <reified T : Any> Any.shouldNotBeInstanceOf() {
+inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
   val matcher = beInstanceOf<T>()
   this shouldNotBe matcher
 }
 
-inline fun <reified T : Any> Any.shouldBeTypeOf() {
+inline fun <reified T : Any> Any?.shouldBeTypeOf() {
   val matcher = beOfType<T>()
   this shouldBe matcher
 }
 
-inline fun <reified T : Any> Any.shouldNotBeTypeOf() {
+inline fun <reified T : Any> Any?.shouldNotBeTypeOf() {
   val matcher = beOfType<T>()
   this shouldNotBe matcher
 }
