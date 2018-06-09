@@ -46,21 +46,21 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): EngineDescriptor {
-    logger.debug("JUnit discovery request [" +
-        "configParameters=${request.configurationParameters}; " +
-        "classSelectors=${request.getSelectorsByType(ClassSelector::class.java)}; " +
-        "classpathResourceSelectors=${request.getSelectorsByType(ClasspathResourceSelector::class.java)}; " +
-        "classpathRootSelectors=${request.getSelectorsByType(ClasspathRootSelector::class.java)}; " +
-        "methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}; " +
-        "fileSelectors=${request.getSelectorsByType(FileSelector::class.java)}; " +
-        "directorySelectors=${request.getSelectorsByType(DirectorySelector::class.java)}; " +
-        "moduleSelectors=${request.getSelectorsByType(ModuleSelector::class.java)}; " +
-        "packageSelectors=${request.getSelectorsByType(PackageSelector::class.java)}; " +
-        "uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}; " +
-        "uriSelectors=${request.getSelectorsByType(UriSelector::class.java)}; " +
-        "classnameFilters=${request.getFiltersByType(ClassNameFilter::class.java)}; " +
-        "packageNameFilters=${request.getFiltersByType(PackageNameFilter::class.java)}; " +
-        "uniqueId=$uniqueId]")
+    logger.debug("JUnit discovery request [\n" +
+        "configParameters=${request.configurationParameters}\n" +
+        "classpathRootSelectors=${request.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +
+        "classpathResourceSelectors=${request.getSelectorsByType(ClasspathResourceSelector::class.java)}\n" +
+        "classSelectors=${request.getSelectorsByType(ClassSelector::class.java).map { it.className }}\n" +
+        "methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}\n" +
+        "directorySelectors=${request.getSelectorsByType(DirectorySelector::class.java)}\n" +
+        "fileSelectors=${request.getSelectorsByType(FileSelector::class.java)}\n" +
+        "moduleSelectors=${request.getSelectorsByType(ModuleSelector::class.java)}\n" +
+        "packageSelectors=${request.getSelectorsByType(PackageSelector::class.java)}\n" +
+        "uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}\n" +
+        "uriSelectors=${request.getSelectorsByType(UriSelector::class.java)}\n" +
+        "classnameFilters=${request.getFiltersByType(ClassNameFilter::class.java)}\n" +
+        "packageNameFilters=${request.getFiltersByType(PackageNameFilter::class.java)}\n" +
+        "uniqueId=$uniqueId\n]")
 
     // inside intellij when running a single test, we might be passed a class selector
     // and gradle will sometimes pass a class selector for each class it has detected
