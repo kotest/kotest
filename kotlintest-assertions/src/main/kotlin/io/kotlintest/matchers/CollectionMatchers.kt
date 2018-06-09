@@ -82,12 +82,16 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): Result {
-    val passed = value.sorted() == value
-    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",") + "..."
+    val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i+1] }
+    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",", postfix =  "...")
+    val elementMessage = when (failure) {
+        null -> ""
+        else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index+1]}"
+    }
     return Result(
-        passed,
-        "Collection $snippet should be sorted",
-        "Collection $snippet should not be sorted"
+        failure == null,
+        "List [$snippet] should be sorted$elementMessage",
+        "List [$snippet] should not be sorted"
     )
   }
 }
