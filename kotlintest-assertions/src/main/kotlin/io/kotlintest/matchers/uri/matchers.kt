@@ -6,6 +6,16 @@ import io.kotlintest.should
 import io.kotlintest.shouldNot
 import java.net.URI
 
+fun URI.shouldBeOpaque() = this should io.kotlintest.matchers.uri.beOpaque()
+fun URI.shouldNotBeOpaque() = this shouldNot io.kotlintest.matchers.uri.beOpaque()
+fun beOpaque() = object : Matcher<URI> {
+  override fun test(value: URI) = Result(
+      value.isOpaque,
+      "Uri $value should be opaque",
+      "Uri $value should not be opaque"
+  )
+}
+
 fun URI.shouldHaveScheme(scheme: String) = this should io.kotlintest.matchers.uri.haveScheme(scheme)
 fun URI.shouldNotHaveScheme(scheme: String) = this shouldNot io.kotlintest.matchers.uri.haveScheme(scheme)
 fun haveScheme(scheme: String) = object : Matcher<URI> {

@@ -8,6 +8,10 @@ import io.kotlintest.matchers.uri.haveParameter
 import io.kotlintest.matchers.uri.havePath
 import io.kotlintest.matchers.uri.havePort
 import io.kotlintest.matchers.uri.haveScheme
+import io.kotlintest.matchers.uri.shouldBeOpaque
+import io.kotlintest.matchers.uri.shouldHaveScheme
+import io.kotlintest.matchers.uri.shouldNotBeOpaque
+import io.kotlintest.matchers.uri.shouldNotHaveScheme
 import io.kotlintest.specs.WordSpec
 import java.net.URI
 
@@ -15,9 +19,18 @@ class UriMatchersTest : WordSpec() {
 
   init {
 
+    "beOpaque" should {
+      "test that a URI is opaque" {
+        URI.create("https:hostname:8080").shouldBeOpaque()
+        URI.create("hostname").shouldNotBeOpaque()
+      }
+    }
+
     "haveScheme" should {
       "test that a URI has the specified scheme" {
+        URI.create("https://hostname").shouldHaveScheme("https")
         URI.create("https://hostname") should haveScheme("https")
+        URI.create("ftp://hostname").shouldNotHaveScheme("https")
         URI.create("ftp://hostname") shouldNot haveScheme("https")
       }
     }
