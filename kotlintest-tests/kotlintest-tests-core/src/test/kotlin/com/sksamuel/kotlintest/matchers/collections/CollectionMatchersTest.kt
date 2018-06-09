@@ -1,42 +1,17 @@
 package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.matchers.beEmpty
-import io.kotlintest.matchers.collections.contain
-import io.kotlintest.matchers.collections.containNoNulls
-import io.kotlintest.matchers.collections.containNull
-import io.kotlintest.matchers.collections.containOnlyNulls
-import io.kotlintest.matchers.collections.containDuplicates
-import io.kotlintest.matchers.collections.haveElementAt
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldBeSorted
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldContainAll
-import io.kotlintest.matchers.collections.shouldContainDuplicates
-import io.kotlintest.matchers.collections.shouldContainElementAt
-import io.kotlintest.matchers.collections.shouldContainNoNulls
-import io.kotlintest.matchers.collections.shouldContainNull
-import io.kotlintest.matchers.collections.shouldContainOnlyNulls
-import io.kotlintest.matchers.collections.shouldHaveSingleElement
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.collections.shouldNotBeEmpty
-import io.kotlintest.matchers.collections.shouldNotBeSorted
-import io.kotlintest.matchers.collections.shouldNotContainAll
-import io.kotlintest.matchers.collections.shouldNotContainDuplicates
-import io.kotlintest.matchers.collections.shouldNotContainElementAt
-import io.kotlintest.matchers.collections.shouldNotContainNoNulls
-import io.kotlintest.matchers.collections.shouldNotContainNull
-import io.kotlintest.matchers.collections.shouldNotContainOnlyNulls
-import io.kotlintest.matchers.collections.shouldNotHaveSize
+import io.kotlintest.matchers.collections.*
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
-import io.kotlintest.should
-import io.kotlintest.shouldNot
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.WordSpec
 import java.util.*
 
 class CollectionMatchersTest : WordSpec() {
@@ -165,6 +140,48 @@ class CollectionMatchersTest : WordSpec() {
         )
         tests should contain(TestSealed.Test1("test1"))
         tests.shouldContain(TestSealed.Test2(2))
+      }
+    }
+
+    "containExactly" should {
+      "test that a collection contains given elements exactly"  {
+        val actual = listOf(1, 2, 3)
+        emptyList<Int>() should containExactly()
+        actual should containExactly(1, 2, 3)
+        actual.shouldContainExactly(1, 2, 3)
+        actual.shouldContainExactly(linkedSetOf(1, 2, 3))
+
+        actual shouldNot containExactly(1, 2)
+        actual.shouldNotContainExactly(3, 2, 1)
+        actual.shouldNotContainExactly(listOf(5, 6, 7))
+        shouldThrow<AssertionError> {
+          actual should containExactly(1, 2)
+        }
+        shouldThrow<AssertionError> {
+          actual should containExactly(1, 2, 3, 4)
+        }
+        shouldThrow<AssertionError> {
+          actual.shouldContainExactly(3, 2, 1)
+        }
+      }
+    }
+
+    "containExactlyInAnyOrder" should {
+      "test that a collection contains given elements in any order"  {
+        val actual = listOf(1, 2, 3)
+        actual should containExactlyInAnyOrder(1, 2, 3)
+        actual.shouldContainExactlyInAnyOrder(3, 2, 1)
+        actual.shouldContainExactlyInAnyOrder(linkedSetOf(2, 1, 3))
+
+        actual shouldNot containExactlyInAnyOrder(1, 2)
+        actual.shouldNotContainExactlyInAnyOrder(1, 2, 3, 4)
+        actual.shouldNotContainExactlyInAnyOrder(listOf(5, 6, 7))
+        shouldThrow<AssertionError> {
+          actual should containExactlyInAnyOrder(1, 2)
+        }
+        shouldThrow<AssertionError> {
+          actual should containExactlyInAnyOrder(1, 2, 3, 4)
+        }
       }
     }
 
