@@ -8,6 +8,7 @@ import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
+import io.kotlintest.neverNullMatcher
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
@@ -70,6 +71,36 @@ fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
       value.contains(t),
       "Collection should contain element $t",
       "Collection should not contain element $t"
+  )
+}
+
+fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
+fun <T, C : Collection<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
+fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
+fun <T, C : Collection<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
+fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(expected.asList())
+/** Assert that a collection contains exactly the given values and nothing else, in order. */
+fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
+  val passed = value.size == expected.size && value.zip(expected) { a, b -> a == b }.all { it }
+  Result(
+      passed,
+      "Collection should be exactly $expected but was $value",
+      "Collection should not be exactly $expected"
+  )
+}
+
+fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) = this shouldNot containExactlyInAnyOrder(expected)
+fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) = this shouldNot containExactlyInAnyOrder(*expected)
+fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: C) = this should containExactlyInAnyOrder(expected)
+fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) = this should containExactlyInAnyOrder(*expected)
+fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> = containExactlyInAnyOrder(expected.asList())
+/** Assert that a collection contains exactly the given values and nothing else, in any order. */
+fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
+  val passed = value.size == expected.size && expected.all { value.contains(it) }
+  Result(
+      passed,
+      "Collection should contain $expected in any order, but was $value",
+      "Collection should not contain exactly $expected in any order"
   )
 }
 
