@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.inspectors
 
 import io.kotlintest.forAll
+import io.kotlintest.forNone
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.inspectors.forAny
 import io.kotlintest.inspectors.forExactly
@@ -9,11 +10,14 @@ import io.kotlintest.inspectors.forOne
 import io.kotlintest.inspectors.forSome
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.WordSpec
 
+@Suppress("ConstantConditionIf")
 class InspectorsTest : WordSpec() {
 
   private val list = listOf(1, 2, 3, 4, 5)
@@ -22,14 +26,49 @@ class InspectorsTest : WordSpec() {
   init {
 
     "forAll" should {
-      "fail when an exception is thrown" {
-        val items = listOf(1, 2, 3)
-        forAll(items) { x ->
-          if (true) throw NullPointerException()
+      "pass if all elements of an array pass" {
+        array.forAll {
+          it.shouldBeGreaterThan(0)
         }
-        items.forAll { x ->
-          if (true) throw NullPointerException()
+      }
+      "pass if all elements of a collection pass" {
+        list.forAll {
+          it.shouldBeGreaterThan(0)
         }
+      }
+      "fail when an exception is thrown inside an array" {
+        shouldThrowAny {
+          array.forAll {
+            if (true) throw NullPointerException()
+          }
+        }.message shouldBe "0 elements passed but expected 5\n" +
+            "\n" +
+            "The following elements passed:\n" +
+            "--none--\n" +
+            "\n" +
+            "The following elements failed:\n" +
+            "1 => java.lang.NullPointerException\n" +
+            "2 => java.lang.NullPointerException\n" +
+            "3 => java.lang.NullPointerException\n" +
+            "4 => java.lang.NullPointerException\n" +
+            "5 => java.lang.NullPointerException"
+      }
+      "fail when an exception is thrown inside a list" {
+        shouldThrowAny {
+          list.forAll {
+            if (true) throw NullPointerException()
+          }
+        }.message shouldBe "0 elements passed but expected 5\n" +
+            "\n" +
+            "The following elements passed:\n" +
+            "--none--\n" +
+            "\n" +
+            "The following elements failed:\n" +
+            "1 => java.lang.NullPointerException\n" +
+            "2 => java.lang.NullPointerException\n" +
+            "3 => java.lang.NullPointerException\n" +
+            "4 => java.lang.NullPointerException\n" +
+            "5 => java.lang.NullPointerException"
       }
     }
 
@@ -42,6 +81,15 @@ class InspectorsTest : WordSpec() {
       "pass if no elements pass fn test for an array" {
         array.forNone {
           it shouldBe 10
+        }
+      }
+      "pass if an element throws an exception" {
+        val items = listOf(1, 2, 3)
+        forNone(items) {
+          if (true) throw NullPointerException()
+        }
+        items.forNone {
+          if (true) throw NullPointerException()
         }
       }
       "fail if one elements passes fn test" {

@@ -468,7 +468,7 @@ class PropertyExample: StringSpec() {
 
 There are generators defined for all the common base types - String, Ints, UUIDs, etc. If you need to generate custom types
 then you can simply specify the generator manually (or write your own). For example here is the same test again but
-with the generators specified.
+with the generators explicitly specified.
 
 ```kotlin
 class PropertyExample: StringSpec() {
@@ -527,7 +527,7 @@ Table-driven Testing
 --------------------
 
 To test your code with different parameter combinations, you can use a table of values as input for your test
-cases. This is sometimes called data driven testing or sometimes called table driven testing.
+cases. This is sometimes called _data driven testing_ and other times called _table driven testing_.
 
 Invoke the `forAll` or `forNone` function, passing in one or more `row` objects, where each row object contains
 the values to be used be a single invocation of the test. After the `forAll` or `forNone` function, setup your

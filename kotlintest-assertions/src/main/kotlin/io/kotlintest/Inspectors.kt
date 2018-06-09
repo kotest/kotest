@@ -1,10 +1,14 @@
 package io.kotlintest
 
+import io.kotlintest.inspectors.ElementPass
+import io.kotlintest.inspectors.buildAssertionError
+import io.kotlintest.inspectors.runTests
+
 fun <T> forAll(array: Array<T>, fn: (T) -> Unit) = forAll(array.asList(), fn)
 
 fun <T> forAll(col: Collection<T>, fn: (T) -> Unit) {
   val results = runTests(col, fn)
-  val passed = results.filter { it.second == null }
+  val passed = results.filterIsInstance<ElementPass<T>>()
   if (passed.size < col.size) {
     val msg = "${passed.size} elements passed but expected ${col.size}"
     buildAssertionError(msg, results)
@@ -19,7 +23,7 @@ fun <T> forExactly(k: Int, array: Array<T>, f: (T) -> Unit) = forExactly(k, arra
 
 fun <T> forExactly(k: Int, col: Collection<T>, fn: (T) -> Unit) {
   val results = runTests(col, fn)
-  val passed = results.filter { it.second == null }
+  val passed = results.filterIsInstance<ElementPass<T>>()
   if (passed.size != k) {
     val msg = "${passed.size} elements passed but expected $k"
     buildAssertionError(msg, results)
@@ -31,7 +35,7 @@ fun <T> forSome(array: Array<T>, f: (T) -> Unit) = forSome(array.asList(), f)
 fun <T> forSome(col: Collection<T>, fn: (T) -> Unit) {
   val size = col.size
   val results = runTests(col, fn)
-  val passed = results.filter { it.second == null }
+  val passed = results.filterIsInstance<ElementPass<T>>()
   if (passed.isEmpty()) {
     buildAssertionError("No elements passed but expected at least one", results)
   } else if (passed.size == size) {
@@ -51,7 +55,7 @@ fun <T> forAtLeast(k: Int, array: Array<T>, f: (T) -> Unit) = forAtLeast(k, arra
 
 fun <T> forAtLeast(k: Int, col: Collection<T>, f: (T) -> Unit) {
   val results = runTests(col, f)
-  val passed = results.filter { it.second == null }
+  val passed = results.filterIsInstance<ElementPass<T>>()
   if (passed.size < k) {
     val msg = "${passed.size} elements passed but expected at least $k"
     buildAssertionError(msg, results)
@@ -64,52 +68,12 @@ fun <T> forAtMostOne(col: Collection<T>, f: (T) -> Unit) = forAtMost(1, col, f)
 
 fun <T> forAtMost(k: Int, col: Collection<T>, f: (T) -> Unit) {
   val results = runTests(col, f)
-  val passed = results.filter { it.second == null }
+  val passed = results.filterIsInstance<ElementPass<T>>()
   if (passed.size > k) {
     val msg = "${passed.size} elements passed but expected at most $k"
     buildAssertionError(msg, results)
   }
 }
 
-fun <T> forNone(array: Array<T>, f: (T) -> Unit) = forNone(array.asList(), f)
-
-fun <T> forNone(col: Collection<T>, f: (T) -> Unit) {
-  val results = runTests(col, f)
-  val passed = results.filter { it.second == null }
-  if (passed.isNotEmpty()) {
-    val msg = "${passed.size} elements passed but expected 0"
-    buildAssertionError(msg, results)
-  }
-}
-
-private fun <T> buildAssertionError(msg: String, results: List<Pair<T, String?>>): String {
-
-  val passed = results.filter { it.second == null }
-  val failed = results.filter { it.second != null }
-
-  val builder = StringBuilder(msg)
-  builder.append("\n\nThe following elements passed:\n")
-  if (passed.isEmpty()) {
-    builder.append("--none--")
-  } else {
-    builder.append(passed.map { it.first }.joinToString("\n"))
-  }
-  builder.append("\n\nThe following elements failed:\n")
-  if (failed.isEmpty()) {
-    builder.append("--none--")
-  } else {
-    builder.append(failed.joinToString("\n") { it.first.toString() + " => " + it.second })
-  }
-  throw AssertionError(builder.toString())
-}
-
-private fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<Pair<T, String?>> {
-  return col.map { t ->
-    try {
-      f(t)
-      Pair(t, null)
-    } catch (e: Throwable) {
-      Pair(t, e.message)
-    }
-  }
-}
+fun <T> forNone(array: Array<T>, testFn: (T) -> Unit) = forNone(array.asList(), testFn)
+fun <T> forNone(col: Collection<T>, testFn: (T) -> Unit) = forExactly(0, col, testFn)
