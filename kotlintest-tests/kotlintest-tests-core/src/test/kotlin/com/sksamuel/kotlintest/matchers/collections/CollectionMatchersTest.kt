@@ -59,10 +59,10 @@ class CollectionMatchersTest : WordSpec() {
         listOf(1, 2, 6, 9).shouldBeSorted()
         shouldThrow<AssertionError> {
           listOf(2, 1).shouldBeSorted()
-        }.message.shouldBe("Collection 2,1 should be sorted")
+        }.message.shouldBe("List [2,1] should be sorted. Element 2 at index 0 was greater than element 1")
         shouldThrow<AssertionError> {
           listOf(1, 2, 3).shouldNotBeSorted()
-        }.message.shouldBe("Collection 1,2,3 should not be sorted")
+        }.message.shouldBe("List [1,2,3] should not be sorted")
       }
     }
 
@@ -264,6 +264,10 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           col should containsInOrder(2, 1, 3)
         }
+      }
+      "work with unsorted collections" {
+        val actual = listOf(5, 3, 1, 2, 4, 2)
+        actual should containsInOrder(3, 2, 2)
       }
     }
 

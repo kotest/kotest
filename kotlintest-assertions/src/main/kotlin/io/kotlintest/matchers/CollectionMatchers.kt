@@ -2,6 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.neverNullMatcher
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
@@ -37,33 +38,23 @@ fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher
   )
 }
 
-// should contain the expected list in order, but allows duplicates,
-// so listOf(1, 2, 2, 3, 3, 3, 4, 4) should containInOrder(listOf(1,4)) is true
-fun <T : Comparable<T>> containsInOrder(vararg ts: T) = containsInOrder(ts.asList())
+fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
+/** Assert that a collection contains a given subsequence, possibly with values in between. */
+fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
+  assert(subsequence.isNotEmpty(), { "expected values must not be empty" })
 
-fun <T : Comparable<T>> containsInOrder(expected: List<T>) = object : Matcher<List<T>> {
-  override fun test(value: List<T>): Result {
-    assert(expected.isNotEmpty(), { "expected values must not be empty" })
-    assert(expected.sorted() == expected, { "expected values must be sorted but was $expected" })
+  var subsequenceIndex = 0
+  val actualIterator = actual.iterator()
 
-    var cursor = 0
-    var passed = true
-    // to pass, all the indexes of element n must occur before the indexes of element n+1,n+2,...
-    expected.forEach { expected ->
-      val indexes = value.withIndex().filter { it.value == expected }.map { it.index }
-      if (indexes.isEmpty()) {
-        passed = false
-      }
-      indexes.forEach {
-        if (passed && it < cursor) passed = false
-        else cursor = indexes.max()!!
-      }
-    }
-
-    val failureMessage = "[$value] did not contain the same elements in order as [$expected]"
-    val negatedFailureMessage = "[$value] should not contain the same elements in order as [$expected]"
-    return Result(passed, failureMessage, negatedFailureMessage)
+  while (actualIterator.hasNext() && subsequenceIndex < subsequence.size) {
+    if (actualIterator.next() == subsequence[subsequenceIndex]) subsequenceIndex += 1
   }
+
+  Result(
+      subsequenceIndex == subsequence.size,
+      "[$actual] did not contain the elements [$subsequence] in order",
+      "[$actual] should not contain the elements [$subsequence] in order"
+  )
 }
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
@@ -82,12 +73,16 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): Result {
-    val passed = value.sorted() == value
-    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",") + "..."
+    val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i+1] }
+    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",", postfix =  "...")
+    val elementMessage = when (failure) {
+        null -> ""
+        else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index+1]}"
+    }
     return Result(
-        passed,
-        "Collection $snippet should be sorted",
-        "Collection $snippet should not be sorted"
+        failure == null,
+        "List [$snippet] should be sorted$elementMessage",
+        "List [$snippet] should not be sorted"
     )
   }
 }
