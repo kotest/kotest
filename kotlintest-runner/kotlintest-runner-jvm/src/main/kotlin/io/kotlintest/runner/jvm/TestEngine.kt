@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
 class TestEngine(val classes: List<KClass<out Spec>>,
-                 val parallelism: Int,
+                 parallelism: Int,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)

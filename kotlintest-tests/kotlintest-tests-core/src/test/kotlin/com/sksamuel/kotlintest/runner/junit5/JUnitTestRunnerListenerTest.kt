@@ -283,8 +283,89 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.completeSpec(spec1.description(), spec1::class, null)
       listener.completeSpec(spec2.description(), spec2::class, null)
 
-      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, any())
-      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:ReflectionsHelperTest]/[test:test2]" }, argThat { status == TestExecutionResult.Status.SUCCESSFUL })
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          any()
+      )
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:ReflectionsHelperTest]/[test:test2]" },
+          argThat { status == TestExecutionResult.Status.SUCCESSFUL }
+      )
+    }
+
+    "a failed test should not be propagated to the spec" {
+
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
+      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
+
+      listener.prepareSpec(spec.description(), spec::class)
+      listener.prepareTestCase(tc1)
+      listener.prepareTestCase(tc2)
+      listener.testRun(set1, 1)
+      listener.testRun(set2, 1)
+      listener.completeTestCase(tc1, TestResult.failure(AssertionError("boom")))
+      listener.completeTestCase(tc2, TestResult.Success)
+      listener.completeSpec(spec.description(), spec::class, null)
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          argThat { this.status == TestExecutionResult.Status.FAILED }
+      )
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test2]" },
+          argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
+      )
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" },
+          argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
+      )
+    }
+
+    "an errored test should not be propagated to the spec" {
+
+      val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
+      val mock = mock<EngineExecutionListener> {}
+      val listener = JUnitTestRunnerListener(mock, rootDescriptor)
+
+      val spec = JUnitTestRunnerListenerTest()
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
+      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
+
+      listener.prepareSpec(spec.description(), spec::class)
+      listener.prepareTestCase(tc1)
+      listener.prepareTestCase(tc2)
+      listener.testRun(set1, 1)
+      listener.testRun(set2, 1)
+      listener.completeTestCase(tc1, TestResult.error(RuntimeException("boom")))
+      listener.completeTestCase(tc2, TestResult.Success)
+      listener.completeSpec(spec.description(), spec::class, null)
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          argThat { this.status == TestExecutionResult.Status.FAILED }
+      )
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test2]" },
+          argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
+      )
+
+      then(mock).should(times(1)).executionFinished(
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" },
+          argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
+      )
     }
   }
 })
