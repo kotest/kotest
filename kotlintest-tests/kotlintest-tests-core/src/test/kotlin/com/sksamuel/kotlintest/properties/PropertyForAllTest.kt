@@ -84,16 +84,15 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll one explicit generator: test fails after second attempt" {
       var element = 0.0
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.double()) { a ->
-          element = a
           attempts() < 2
         }
       }
     }
 
     "forAll one explicit generator: test fails after 300 attempts" {
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.string()) {
           attempts() < 300
         }
@@ -179,7 +178,7 @@ class PropertyForAllTest : StringSpec() {
     }
 
     "forAll: Three explicit generators failure" {
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
           a == 0 && b == 1 && c == 2
         }
@@ -225,7 +224,7 @@ class PropertyForAllTest : StringSpec() {
     "forAll: Four explicit generators failed after 4 attempts" {
       var attempts = 0
       shouldThrow<AssertionError> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
           attempts++
           attempts < 4
         }
@@ -234,8 +233,8 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll: Four explicit generators failed after 50 attempts" {
       var attempts = 0
-      val exception = shouldThrow<AssertionError> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d ->
+      shouldThrow<AssertionError> {
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
           attempts++
           attempts < 50
         }
@@ -288,7 +287,7 @@ class PropertyForAllTest : StringSpec() {
     }
 
     "forAll: five explicit generators failure" {
-      val exception = shouldThrow<AssertionError> {
+      shouldThrow<AssertionError> {
         forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e ->
           a == 0 && b == 0 && c == 0 && d == 0 && e == 1
         }
@@ -342,7 +341,7 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll six explicit arguments failing at 40 attempts" {
       shouldThrow<AssertionError> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
           attempts() < 40
         }
       }
@@ -350,7 +349,7 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll six explicit arguments failing at 500 attempts" {
       shouldThrow<AssertionError> {
-        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+        forAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
           attempts() < 500
         }
       }

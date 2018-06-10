@@ -78,15 +78,15 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           // if there is an error creating the spec then we
           // will add a placeholder spec so we can see the error in intellij/gradle
           // otherwise it won't appear
-          {
+          { t ->
             val desc = Description.root(klass.jvmName)
             listener.prepareSpec(desc, klass)
-            listener.completeSpec(desc, klass, it)
-            error.compareAndSet(null, it)
+            listener.completeSpec(desc, klass, t)
+            error.compareAndSet(null, t)
             executor.shutdownNow()
           },
-          {
-            executeSpec(it).onf { t ->
+          { spec ->
+            executeSpec(spec).onf { t ->
               error.compareAndSet(null, t)
               executor.shutdownNow()
             }

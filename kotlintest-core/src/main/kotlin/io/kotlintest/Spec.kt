@@ -66,15 +66,9 @@ interface Spec : TestListener {
    * the spec. Alternatively, a user can override this function
    * to return a customized name.
    */
-  fun name(): String {
-    val displayName = this::class.annotations.find { it is DisplayName }
-    return when (displayName) {
-      is DisplayName -> displayName.name
-      else -> javaClass.simpleName
-    }
-  }
+  fun name(): String = javaClass.displayName()
 
-  fun description() = Description.root(name())
+  fun description() = javaClass.description()
 
   /**
    *  These are the top level [TestCase] instances for this Spec.
@@ -97,3 +91,13 @@ interface Spec : TestListener {
    */
   fun tags(): Set<Tag> = emptySet()
 }
+
+fun Class<out Spec>.displayName(): String {
+  val displayName = annotations.find { it is DisplayName }
+  return when (displayName) {
+    is DisplayName -> displayName.name
+    else -> simpleName
+  }
+}
+
+fun Class<out Spec>.description() = Description.root(this.displayName())

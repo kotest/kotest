@@ -1,12 +1,19 @@
 package com.sksamuel.kotlintest.tables
 
-import io.kotlintest.*
-import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.types.shouldNotBeInstanceOf
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.tables.*
-import org.mockito.internal.matchers.Null
+import io.kotlintest.tables.MultiAssertionError
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.forNone
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 
 class TableTestingTest : StringSpec() {
   init {
@@ -108,7 +115,7 @@ class TableTestingTest : StringSpec() {
       val circle = object : Shape() {}
       val square = object : Shape() {}
 
-      val table6 = table(
+      table(
           headers("a", "b", "c"),
           row("foo", 5, circle),
           row("bar", 42, square)

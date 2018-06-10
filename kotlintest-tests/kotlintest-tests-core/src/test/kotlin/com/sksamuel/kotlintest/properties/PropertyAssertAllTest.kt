@@ -97,7 +97,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll one explicit generator: test fails after second attempt" {
     var attempts = 0
     shouldThrow<AssertionError> {
-      assertAll(Gen.double()) { a ->
+      assertAll(Gen.double()) { _ ->
         attempts++
         attempts shouldBe lt(2)
       }
@@ -186,7 +186,7 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll: Three explicit generators failure at the third attempt" {
     var attempts = 0
-    val exception = shouldThrow<AssertionError> {
+    shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
         attempts shouldBe lt(3)
@@ -196,7 +196,7 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll : Three explicit generators failure at the 26th attempt" {
     var attempts = 0
-    val exception = shouldThrow<AssertionError> {
+    shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
         attempts shouldBe lt(26)
@@ -359,7 +359,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll six explicit arguments failing at 40 attempts" {
     var attempts = 0
     shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         attempts shouldBe lt(40)
       }
@@ -368,20 +368,8 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll six explicit arguments failing at 500 attempts" {
     var attempts = 0
-    var elementA = 0
-    var elementB = 0
-    var elementC = 0
-    var elementD = 0
-    var elementE = 0
-    var elementF = 0
-    val exception = shouldThrow<AssertionError> {
-      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { a, b, c, d, e, f ->
-        elementA = a
-        elementB = b
-        elementC = c
-        elementD = d
-        elementE = e
-        elementF = f
+    shouldThrow<AssertionError> {
+      assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
         attempts shouldBe lt(500)
       }

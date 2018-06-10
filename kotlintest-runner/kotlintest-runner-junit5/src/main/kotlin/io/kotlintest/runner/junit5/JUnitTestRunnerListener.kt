@@ -11,6 +11,7 @@ import io.kotlintest.runner.jvm.TestSet
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
@@ -58,7 +59,8 @@ import kotlin.reflect.KClass
  * Must start tests after their parent or they can go missing.
  * Sibling containers can start and finish in parallel.
  */
-class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: EngineDescriptor) : TestEngineListener {
+class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
+                              val root: EngineDescriptor) : TestEngineListener {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -221,7 +223,7 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
 
   private fun createSpecDescriptor(description: Description, klass: KClass<out Spec>): TestDescriptor {
 
-    val id = root.uniqueId.append("spec", description.name)
+    val id = root.uniqueId.appendSpec(description)
     val source = ClassSource.from(klass.java)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name, source) {
@@ -239,3 +241,5 @@ class JUnitTestRunnerListener(val listener: EngineExecutionListener, val root: E
     return descriptor
   }
 }
+
+fun UniqueId.appendSpec(description: Description) = this.append("spec", description.name)

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
- * [DiscoveryRequest] is used to focus the scope of which classes to discover.
+ * [DiscoveryRequest] describes how to discover test classes.
  *
  * @param uris a list of uris to act as a classpath roots to search
  * @param classNames if specified then these classes will be used instead of searching
@@ -78,9 +78,9 @@ object TestDiscovery {
 
     val specs = classes
         .filter { Spec::class.java.isAssignableFrom(it.java) }
-        // must filter out abstract to avoid the spec parent classes themselves
+        // must filter out abstract classes to avoid the spec parent classes themselves
         .filter { !it.isAbstract }
-        // keep only classes
+        // keep only class instances
         .filter { it.objectInstance == null }
 
     logger.debug("...which has filtered to ${specs.size} non abstract classes")
@@ -90,7 +90,7 @@ object TestDiscovery {
         .fold(specs, { cl, ext -> ext.afterScan(cl) })
         .sortedBy { it.simpleName }
 
-    logger.debug("Result is ${filtered.size} classes after applying extensions")
+    logger.debug("${filtered.size} classes after applying discovery extensions")
     return filtered
   }
 
