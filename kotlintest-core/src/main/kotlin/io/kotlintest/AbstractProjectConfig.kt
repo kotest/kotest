@@ -30,6 +30,11 @@ abstract class AbstractProjectConfig {
   open fun listeners(): List<TestListener> = emptyList()
 
   /**
+   * List of project wide [TestCaseFilter] instances.
+   */
+  open fun filters(): List<ProjectLevelFilter> = emptyList()
+
+  /**
    * Override this function and return a number greater than 1 if you wish to
    * enable parallel execution of tests. The number returned is the number of
    * concurrently executing specs.

@@ -52,6 +52,7 @@ object Project {
 
   private val _extensions = mutableListOf<ProjectLevelExtension>().apply { add(SystemPropertyTagExtension) }
   private val _listeners = mutableListOf<TestListener>()
+  private val _filters = mutableListOf<ProjectLevelFilter>()
   private var parallelism: Int = 1
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
@@ -61,6 +62,7 @@ object Project {
   fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
 
   fun listeners(): List<TestListener> = _listeners
+  fun testCaseFilters(): List<TestCaseFilter> = _filters.filterIsInstance<TestCaseFilter>()
 
   fun parallelism() = parallelism
 
@@ -72,6 +74,7 @@ object Project {
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
     _extensions.addAll(this.extensions())
     _listeners.addAll(this.listeners())
+    _filters.addAll(this.filters())
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
   }
 
@@ -88,7 +91,7 @@ object Project {
   }
 
   fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
-  fun registerListener(listener: TestListener) {
+  private fun registerListener(listener: TestListener) {
     _listeners.add(listener)
   }
 
