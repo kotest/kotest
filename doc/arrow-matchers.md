@@ -36,5 +36,5 @@ This page lists all current matchers in the KotlinTest arrow matchers extension 
 | Validated | |
 | -------- | ---- |
 | `validated.shouldBeValid()` | Asserts that the validated is of type Valid |
-| `validated.shouldNotBeValid(v)` | Asserts that the validated is of type Valid with specific value v |
+| `validated.shouldBeValid(v)` | Asserts that the validated is of type Valid with specific value v |
 | `validated.shouldBeInvalid()` | Asserts that the validated is of type Invalid |
