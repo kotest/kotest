@@ -741,7 +741,7 @@ class FocusExample : StringSpec({
      // this will be skipped
     }
 })
-```kotlin
+```
 
 
 ### Bang
@@ -749,6 +749,7 @@ class FocusExample : StringSpec({
 The opposite of focus is possible, which is to prefix a test with an exclamation mark `!` and then that test (and any subtests defined inside that scope) will be skipped.
 In the next example we’ve disabled the first test by adding the “!” prefix.
 
+```kotlin
 class BangExample : StringSpec({
 
   "!test 1" {
@@ -763,7 +764,7 @@ class BangExample : StringSpec({
     // this will run too
   }
 })
-
+```
 
 
 
