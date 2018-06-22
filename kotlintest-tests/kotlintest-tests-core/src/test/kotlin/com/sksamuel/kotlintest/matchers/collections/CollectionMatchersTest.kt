@@ -9,7 +9,9 @@ import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
 import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldHave
 import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotHave
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
@@ -122,6 +124,62 @@ class CollectionMatchersTest : WordSpec() {
           listOf(1, 2, 3).shouldNotHaveSize(3)
         }.message.shouldBe("Collection should not have size 3")
 
+      }
+    }
+
+    "shouldHaveAtLeastSize" should {
+      "test that a collection has at least a certain number of elements" {
+        val list = listOf(1, 2, 3)
+
+        list.shouldHaveAtLeastSize(2)
+        list shouldHave atLeastSize(2)
+
+        val set = setOf(1, 2, 3)
+        set.shouldHaveAtLeastSize(3)
+        set shouldHave atLeastSize(3)
+
+        shouldThrow<AssertionError> {
+          list.shouldHaveAtLeastSize(4)
+        }.message shouldBe "Collection should contain at least 4 elements"
+
+        shouldThrow<AssertionError> {
+          list shouldHave atLeastSize(4)
+        }.message shouldBe "Collection should contain at least 4 elements"
+
+        shouldThrow<AssertionError> {
+          list shouldNotHave atLeastSize(2)
+        }.message.shouldBe("Collection should contain less than 2 elements")
+      }
+    }
+
+    "shouldHaveAtMostSize" should {
+      "test that a collection has at least a certain number of elements" {
+        val list = listOf(1, 2, 3)
+
+        list.shouldHaveAtMostSize(3)
+        list shouldHave atMostSize(3)
+
+        list.shouldHaveAtMostSize(4)
+        list shouldHave atMostSize(4)
+
+        val set = setOf(1, 2, 3)
+        set.shouldHaveAtMostSize(3)
+        set shouldHave atMostSize(3)
+
+        set.shouldHaveAtMostSize(4)
+        set shouldHave atMostSize(4)
+
+        shouldThrow<AssertionError> {
+          list.shouldHaveAtMostSize(2)
+        }.message shouldBe "Collection should contain at most 2 elements"
+
+        shouldThrow<AssertionError> {
+          list shouldHave atMostSize(2)
+        }.message shouldBe "Collection should contain at most 2 elements"
+
+        shouldThrow<AssertionError> {
+          list shouldNotHave atMostSize(4)
+        }.message.shouldBe("Collection should contain more than 4 elements")
       }
     }
 

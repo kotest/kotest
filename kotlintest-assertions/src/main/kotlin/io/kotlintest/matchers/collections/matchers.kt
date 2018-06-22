@@ -10,6 +10,7 @@ import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.neverNullMatcher
 import io.kotlintest.should
+import io.kotlintest.shouldHave
 import io.kotlintest.shouldNot
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
@@ -149,6 +150,24 @@ fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(
 fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size)
 fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
+
+fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int) = this shouldHave atLeastSize(n)
+fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      value.size >= n,
+      "Collection should contain at least $n elements",
+      "Collection should contain less than $n elements"
+  )
+}
+
+fun <T> Collection<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostSize(n)
+fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      value.size <= n,
+      "Collection should contain at most $n elements",
+      "Collection should contain more than $n elements"
+  )
+}
 
 fun <T : Comparable<T>> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
 fun <T : Comparable<T>> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
