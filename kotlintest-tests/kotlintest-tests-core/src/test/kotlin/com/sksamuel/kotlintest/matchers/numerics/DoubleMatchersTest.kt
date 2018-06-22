@@ -1,6 +1,8 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
 import io.kotlintest.matchers.between
+import io.kotlintest.matchers.doubles.shouldBeNegative
+import io.kotlintest.matchers.doubles.shouldBePositive
 import io.kotlintest.matchers.exactly
 import io.kotlintest.matchers.plusOrMinus
 import io.kotlintest.specs.ShouldSpec
@@ -46,6 +48,31 @@ class DoubleMatchersTest : ShouldSpec() {
       shouldThrow<AssertionError> {
         Double.NaN shouldBe Double.NaN
       }
+    }
+
+    should("be positive") {
+      1.0.shouldBePositive()
+
+      shouldThrow<AssertionError> {
+        (-1.0).shouldBePositive()
+      }.message shouldBe "-1.0 should be > 0.0"
+
+      shouldThrow<AssertionError> {
+        (0.0).shouldBePositive()
+      }.message shouldBe "0.0 should be > 0.0"
+    }
+
+
+    should("be negative") {
+      (-1.0).shouldBeNegative()
+
+      shouldThrow<AssertionError> {
+        1.0.shouldBeNegative()
+      }.message shouldBe "1.0 should be < 0.0"
+
+      shouldThrow<AssertionError> {
+        0.0.shouldBeNegative()
+      }.message shouldBe "0.0 should be < 0.0"
     }
 
     should("match between") {
