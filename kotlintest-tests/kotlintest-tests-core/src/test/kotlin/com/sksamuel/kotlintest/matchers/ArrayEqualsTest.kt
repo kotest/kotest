@@ -25,5 +25,9 @@ class ArrayEqualsTest : StringSpec() {
       val array = arrayOf("hello", "welcome")
       array shouldBe arrayOf("hello", "welcome")
     }
+    "shouldBe should support nullable boolean arrays" {
+      val someBooleans = arrayOf(false, true, false) as Array<Boolean?>
+      someBooleans shouldBe arrayOf<Boolean?>(false, true, false)
+    }
   }
 }
