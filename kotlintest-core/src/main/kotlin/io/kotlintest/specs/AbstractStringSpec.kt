@@ -6,7 +6,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
-import org.junit.platform.commons.annotation.Testable
 import java.time.Duration
 
 /**
@@ -29,7 +28,7 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
-      test: suspend TestContext.() -> Unit) {
+      test: TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,
@@ -40,6 +39,6 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
     addTestCase(this, test, config, TestType.Test)
   }
 
-  operator fun String.invoke(test: suspend TestContext.() -> Unit) =
+  operator fun String.invoke(test: TestContext.() -> Unit) =
       addTestCase(this, test, defaultTestCaseConfig, TestType.Test)
 }

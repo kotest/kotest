@@ -26,7 +26,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     body()
   }
 
-  infix fun String.should(init: suspend WordScope.() -> Unit) =
+  infix fun String.should(init: WordScope.() -> Unit) =
       addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   @KotlinTestDsl
@@ -50,7 +50,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
       context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, config, TestType.Test)
     }
 
-    infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
+    infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
 
     // we need to override the should method to stop people nesting a should inside a should

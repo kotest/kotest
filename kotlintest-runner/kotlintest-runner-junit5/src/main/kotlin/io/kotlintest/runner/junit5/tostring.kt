@@ -16,7 +16,8 @@ import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 
 fun EngineDiscoveryRequest.string() =
-    "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +
+    "EngineDiscoveryRequest [\n" +
+        "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +
         "classpathResourceSelectors=${this.getSelectorsByType(ClasspathResourceSelector::class.java)}\n" +
         "classSelectors=${this.getSelectorsByType(ClassSelector::class.java).map { it.className }}\n" +
         "methodSelectors=${this.getSelectorsByType(MethodSelector::class.java)}\n" +
@@ -27,10 +28,11 @@ fun EngineDiscoveryRequest.string() =
         "uniqueIdSelectors=${this.getSelectorsByType(UniqueIdSelector::class.java)}\n" +
         "uriSelectors=${this.getSelectorsByType(UriSelector::class.java)}\n" +
         "classnameFilters=${this.getFiltersByType(ClassNameFilter::class.java)}\n" +
-        "packageNameFilters=${this.getFiltersByType(PackageNameFilter::class.java)}"
+        "packageNameFilters=${this.getFiltersByType(PackageNameFilter::class.java)}\n]"
 
 fun LauncherDiscoveryRequest.string() =
-    "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +
+    "LauncherDiscoveryRequest [\n" +
+        "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +
         "classpathResourceSelectors=${this.getSelectorsByType(ClasspathResourceSelector::class.java)}\n" +
         "classSelectors=${this.getSelectorsByType(ClassSelector::class.java).map { it.className }}\n" +
         "methodSelectors=${this.getSelectorsByType(MethodSelector::class.java)}\n" +
@@ -40,7 +42,7 @@ fun LauncherDiscoveryRequest.string() =
         "packageSelectors=${this.getSelectorsByType(PackageSelector::class.java)}\n" +
         "uniqueIdSelectors=${this.getSelectorsByType(UniqueIdSelector::class.java)}\n" +
         "uriSelectors=${this.getSelectorsByType(UriSelector::class.java)}\n" +
-        "classnameFilters=${this.getFiltersByType(ClassNameFilter::class.java)}\n" +
-        "packageNameFilters=${this.getFiltersByType(PackageNameFilter::class.java)}\n" +
+        "engineFilters=${this.engineFilters}\n" +
         "postDiscoveryFilters=${this.postDiscoveryFilters}\n" +
-        "engineFilters=${this.engineFilters}"
+        "classnameFilters=${this.getFiltersByType(ClassNameFilter::class.java)}\n" +
+        "packageNameFilters=${this.getFiltersByType(PackageNameFilter::class.java)}\n]"

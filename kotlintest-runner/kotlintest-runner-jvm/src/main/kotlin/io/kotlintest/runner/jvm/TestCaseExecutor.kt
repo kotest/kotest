@@ -1,15 +1,14 @@
 package io.kotlintest.runner.jvm
 
 import io.kotlintest.Project
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
-import io.kotlintest.TestCase
 import io.kotlintest.TestFilterResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
-import kotlinx.coroutines.experimental.runBlocking
 import java.time.Duration
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -94,10 +93,7 @@ class TestCaseExecutor(val listener: TestEngineListener,
       executor.execute {
         try {
           listener.testRun(set, j)
-          val testContext = context
-          runBlocking {
-            set.testCase.test(testContext)
-          }
+          set.testCase.test(context)
         } catch (t: Throwable) {
           error.set(t)
           // if an error is detected we'll abort any further invocations

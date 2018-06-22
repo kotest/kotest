@@ -32,7 +32,7 @@ data class TestCase(
     // the spec that contains this testcase
     val spec: Spec,
     // a closure of the test function
-    val test: suspend TestContext.() -> Unit,
+    val test: TestContext.() -> Unit,
     // the first line number of the test
     val line: Int,
     val type: TestType,

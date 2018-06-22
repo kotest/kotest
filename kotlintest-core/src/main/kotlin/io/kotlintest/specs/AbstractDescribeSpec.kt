@@ -24,7 +24,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: suspend TestContext.() -> Unit) {
+        test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: this@AbstractDescribeSpec.defaultTestCaseConfig.enabled,
           invocations ?: this@AbstractDescribeSpec.defaultTestCaseConfig.invocations,
@@ -40,10 +40,10 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   inner class DescribeScope(val context: TestContext) {
 
     fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "Scenario: $name")
-    fun it(name: String, test: suspend TestContext.() -> Unit) =
+    fun it(name: String, test: TestContext.() -> Unit) =
         context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
 
-    fun context(name: String, test: suspend DescribeScope.() -> Unit) =
+    fun context(name: String, test: DescribeScope.() -> Unit) =
         context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
   }
 

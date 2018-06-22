@@ -70,7 +70,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
         request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
         ClasspathHelper.forClassLoader().toList().map { it.toURI() }
 
-    val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors))
+    val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors, emptyList()))
 
     // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
     // internal gradle class called ClassMethodNameFilter. That class makes all kinds of

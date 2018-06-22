@@ -31,15 +31,15 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     body()
   }
 
-  operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =
+  operator fun String.invoke(init: ShouldScope.() -> Unit) =
       addTestCase(this, { this@AbstractShouldSpec.ShouldScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
-  fun should(name: String, test: suspend TestContext.() -> Unit) =
+  fun should(name: String, test: TestContext.() -> Unit) =
       addTestCase("should $name", test, defaultTestCaseConfig, TestType.Test)
 
   fun should(name: String) = Testbuilder({ test, config -> addTestCase("should $name", test, config, TestType.Test) })
 
-  inner class Testbuilder(val register: (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
+  inner class Testbuilder(val register: (TestContext.() -> Unit, TestCaseConfig) -> Unit) {
     fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
@@ -47,7 +47,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: suspend TestContext.() -> Unit) {
+        test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: defaultTestCaseConfig.enabled,
           invocations ?: defaultTestCaseConfig.invocations,
@@ -62,10 +62,10 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   @KotlinTestDsl
   inner class ShouldScope(val context: TestContext) {
 
-    operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =
+    operator fun String.invoke(init: ShouldScope.() -> Unit) =
         context.registerTestCase(this, this@AbstractShouldSpec, { this@AbstractShouldSpec.ShouldScope(this).init() }, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Container)
 
-    fun should(name: String, test: suspend TestContext.() -> Unit) =
+    fun should(name: String, test: TestContext.() -> Unit) =
         context.registerTestCase("should $name", this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Test)
 
     fun should(name: String) =

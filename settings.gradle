@@ -10,6 +10,5 @@ include 'kotlintest-core',
         'kotlintest-extensions:kotlintest-extensions-system',
         'kotlintest-intellij',
         'kotlintest-tests:kotlintest-tests-core',
-        'kotlintest-tests:kotlintest-tests-coroutines',
         'kotlintest-tests:kotlintest-tests-junit-report',
         'kotlintest-tests:kotlintest-tests-parallelism'

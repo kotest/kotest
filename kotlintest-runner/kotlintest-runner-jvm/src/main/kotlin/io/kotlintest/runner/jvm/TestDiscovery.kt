@@ -19,8 +19,9 @@ import kotlin.reflect.KClass
  *
  * @param uris a list of uris to act as a classpath roots to search
  * @param classNames if specified then these classes will be used instead of searching
+ * @param classNameFilters list of class name filters
  */
-data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>)
+data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>, val classNameFilters: List<((String) -> Boolean)>)
 
 data class DiscoveryResult(val classes: List<KClass<out Spec>>)
 
