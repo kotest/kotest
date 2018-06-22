@@ -15,6 +15,8 @@ import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.numerics.shouldBeLessThan
 import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
+import io.kotlintest.matchers.numerics.shouldBeNegative
+import io.kotlintest.matchers.numerics.shouldBePositive
 import io.kotlintest.should
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
@@ -30,6 +32,31 @@ import io.kotlintest.tables.table
 
 class IntMatchersTest : StringSpec() {
   init {
+
+    "be positive" {
+      1.shouldBePositive()
+
+      shouldThrow<AssertionError> {
+        (-1).shouldBePositive()
+      }.message shouldBe "-1 should be > 0"
+
+      shouldThrow<AssertionError> {
+        (0).shouldBePositive()
+      }.message shouldBe "0 should be > 0"
+    }
+
+
+    "be negative" {
+      (-1).shouldBeNegative()
+
+      shouldThrow<AssertionError> {
+        1.shouldBeNegative()
+      }.message shouldBe "1 should be < 0"
+
+      shouldThrow<AssertionError> {
+        0.shouldBeNegative()
+      }.message shouldBe "0 should be < 0"
+    }
 
     "should return expected/actual in intellij format" {
       shouldThrow<AssertionError> {

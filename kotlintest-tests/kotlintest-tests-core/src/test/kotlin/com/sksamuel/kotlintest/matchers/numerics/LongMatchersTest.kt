@@ -5,6 +5,8 @@ import io.kotlintest.matchers.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.beLessThanOrEqualTo
 import io.kotlintest.matchers.between
+import io.kotlintest.matchers.numerics.shouldBeNegative
+import io.kotlintest.matchers.numerics.shouldBePositive
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -17,6 +19,31 @@ import io.kotlintest.tables.table
 
 class LongMatchersTest : StringSpec() {
   init {
+
+    "be positive" {
+      1L.shouldBePositive()
+
+      shouldThrow<AssertionError> {
+        (-1L).shouldBePositive()
+      }.message shouldBe "-1 should be > 0"
+
+      shouldThrow<AssertionError> {
+        (0L).shouldBePositive()
+      }.message shouldBe "0 should be > 0"
+    }
+
+
+    "be negative" {
+      (-1L).shouldBeNegative()
+
+      shouldThrow<AssertionError> {
+        1L.shouldBeNegative()
+      }.message shouldBe "1 should be < 0"
+
+      shouldThrow<AssertionError> {
+        0L.shouldBeNegative()
+      }.message shouldBe "0 should be < 0"
+    }
 
     "Ge should be valid" {
       1L should beGreaterThan(0L)

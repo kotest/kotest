@@ -11,6 +11,16 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 
+fun Long.shouldBePositive() = this shouldBe positiveL()
+fun positiveL() = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value > 0, "$value should be > 0", "$value should not be > 0")
+}
+
+fun Long.shouldBeNegative() = this shouldBe negativeL()
+fun negativeL() = object : Matcher<Long> {
+  override fun test(value: Long) = Result(value < 0, "$value should be < 0", "$value should not be < 0")
+}
+
 fun Long.shouldBeEven() = this should lbeEven()
 fun Long.shouldNotBeEven() = this shouldNot lbeEven()
 fun lbeEven() = object : Matcher<Long> {
