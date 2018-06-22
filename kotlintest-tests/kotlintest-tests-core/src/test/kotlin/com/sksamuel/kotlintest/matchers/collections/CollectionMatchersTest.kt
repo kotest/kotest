@@ -102,6 +102,52 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "shouldBeLargerThan" should {
+      "test that a collection is larger than another collection"  {
+        val col1 = listOf(1, 2, 3)
+        val col2 = setOf(1, 2, 3, 4)
+
+        col2.shouldBeLargerThan(col1)
+        col2 should beLargerThan(col1)
+        col1 shouldNot beLargerThan(col2)
+
+        shouldThrow<AssertionError> {
+          col1.shouldBeLargerThan(col2)
+        }.message shouldBe "Collection of size 3 should be larger than collection of size 4"
+      }
+    }
+
+    "shouldBeSmallerThan" should {
+      "test that a collection is smaller than another collection"  {
+        val col1 = listOf(1, 2, 3)
+        val col2 = setOf(1, 2, 3, 4)
+
+        col1.shouldBeSmallerThan(col2)
+        col1 should beSmallerThan(col2)
+        col2 shouldNot beSmallerThan(col1)
+
+        shouldThrow<AssertionError> {
+          col2.shouldBeSmallerThan(col1)
+        }.message shouldBe "Collection of size 4 should be smaller than collection of size 3"
+      }
+    }
+
+    "shouldBeSameSizeAs" should {
+      "test that a collection is the same size as another collection"  {
+        val col1 = listOf(1, 2, 3)
+        val col2 = setOf(1, 2, 3)
+        val col3 = listOf(1, 2, 3, 4)
+
+        col1.shouldBeSameSizeAs(col2)
+        col1 should beSameSizeAs(col2)
+        col1 shouldNot beSameSizeAs(col3)
+
+        shouldThrow<AssertionError> {
+          col1.shouldBeSameSizeAs(col3)
+        }.message shouldBe "Collection of size 3 should be the same size as collection of size 4"
+      }
+    }
+
     "haveSize" should {
       "test that a collection has a certain size" {
         val col1 = listOf(1, 2, 3)
