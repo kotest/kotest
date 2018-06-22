@@ -196,6 +196,15 @@ fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
   )
 }
 
+fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
+fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
+  override fun test(value: Collection<T>) = Result(
+      value.any { p(it) },
+      "Collection should contain an element that matches the predicate $p",
+      "Collection should not contain an element that matches the predicate $p"
+  )
+}
+
 fun <T : Comparable<T>> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
 fun <T : Comparable<T>> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
 fun <T : Comparable<T>> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)

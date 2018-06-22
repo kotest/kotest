@@ -173,6 +173,13 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "shouldExist" should {
+      "test that a collection contains at least one element that matches a predicate" {
+        val list = listOf(1, 2, 3)
+        list.shouldExist { it == 2 }
+      }
+    }
+
     "shouldHaveAtLeastSize" should {
       "test that a collection has at least a certain number of elements" {
         val list = listOf(1, 2, 3)
