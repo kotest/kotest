@@ -148,7 +148,7 @@ test {
 }
 
 dependencies {
-  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.6'
+  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.7'
 }
 ```
 
@@ -177,7 +177,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.1.6</version>
+    <version>3.1.7</version>
     <scope>test</scope>
 </dependency>
 ```
