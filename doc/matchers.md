@@ -98,6 +98,8 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldContain(element)` | Asserts that the collection contains the given element. |
 | `collection.shouldContainAll(e1, e2, ..., en)` | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
 | `collection.shouldContainDuplicates()` | Asserts that the collection contains at least one duplicate element. |
+| `collection.shouldContainExactly()` | Assert that a collection contains exactly the given values and nothing else, in order. |
+| `collection.shouldContainExactlyInAnyOrder()` | Assert that a collection contains exactly the given values and nothing else, in _any_ order. |
 | `collection.shouldContainNoNulls()` | Asserts that the collection contains no null elements, or is empty. |
 | `collection.shouldContainNull()` | Asserts that the collection contains at least one null element. |
 | `collection.shouldContainOnlyNulls()` | Asserts that the collection contains only null elements, or is empty. |
@@ -105,6 +107,11 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldHaveSize(length)` | Asserts that the collection is exactly the given length. |
 | `collection.shouldHaveLowerBound(element)` | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldHaveUpperBound(element)` | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable. |
+| `collection.shouldBeSmallerThan(col)` | Asserts that the collection is smaller than the other collection. |
+| `collection.shouldBeLargerThen(col)` | Asserts that the collection is larger than the other collection. |
+| `collection.shouldBeSameSizeAs(col)` | Asserts that the collection has the same size as the other collection. |
+| `collection.shouldHaveAtLeastSize(n)` | Asserts that the collection has at least size n. |
+| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
