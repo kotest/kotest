@@ -6,7 +6,7 @@ import io.kotlintest.whenReady
 import java.util.concurrent.CompletableFuture
 import kotlin.concurrent.thread
 
-class FuturesTest : WordSpec() {
+class WhenReadyTest : WordSpec() {
   init {
 
     "Futures" should {
