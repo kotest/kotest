@@ -155,8 +155,8 @@ class TableTestingTest : StringSpec() {
         }
       }.let {
         it.message shouldNotBe null
-        it.message should contain("1) Test failed for (name, sam) with error expected:<[christian]> but was:<[sam]>")
-        it.message should contain("2) Test failed for (name, billy) with error expected:<[christian]> but was:<[billy]>")
+        it.message should contain("1) Test failed for (name, sam) with error expected: <christian> but was: <sam>")
+        it.message should contain("2) Test failed for (name, billy) with error expected: <christian> but was: <billy>")
         it.message shouldNot contain("3)")
       }
     }
