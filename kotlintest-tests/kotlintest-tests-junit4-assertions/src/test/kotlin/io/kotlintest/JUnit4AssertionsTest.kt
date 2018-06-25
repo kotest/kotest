@@ -9,8 +9,8 @@ class JUnit4AssertionsTest {
     shouldThrow<ComparisonFailure> {
       "a" shouldBe "b"
     }.let {
-      it.actual shouldBe "a"
-      it.expected shouldBe "b"
+      it.actual shouldBe "\"a\""
+      it.expected shouldBe "\"b\""
     }
   }
 }

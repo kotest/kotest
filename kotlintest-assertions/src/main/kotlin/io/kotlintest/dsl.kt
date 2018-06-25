@@ -1,10 +1,17 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.ToleranceMatcher
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
-  override fun test(value: T): Result = Result(expected == value, equalsErrorMessage(expected, value), "$value should not equal $expected")
+  override fun test(value: T): Result {
+    val expectedRepr = stringRepr(expected)
+    val valueRepr = stringRepr(value)
+    return Result(expected == value, equalsErrorMessage(expectedRepr, valueRepr), "$expectedRepr should not equal $valueRepr")
+  }
 }
 
 fun fail(msg: String): Nothing = throw AssertionError(msg)
@@ -74,15 +81,6 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 infix fun Double?.shouldBe(other: Double?) = should(ToleranceMatcher(other, 0.0))
 
-infix fun String?.shouldBe(expected: String?) {
-  if (this != expected) {
-    val message = equalsErrorMessage("<$expected>", "<$this>")
-    throw junit5assertionFailedError(message, expected, this)
-            ?: junit4comparisonFailure(expected, this)
-            ?: AssertionError(message)
-  }
-}
-
 infix fun BooleanArray?.shouldBe(other: BooleanArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
@@ -146,7 +144,14 @@ infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
     throw equalsError(expected, actual)
 }
 
-private fun equalsError(expected: Any?, actual: Any?) = AssertionError(equalsErrorMessage(expected, actual))
+private fun equalsError(expected: Any?, actual: Any?): Throwable {
+  val expectedRepr = stringRepr(expected)
+  val actualRepr = stringRepr(actual)
+  val message = equalsErrorMessage(expectedRepr, actualRepr)
+  return junit5assertionFailedError(message, expectedRepr, actualRepr)
+          ?: junit4comparisonFailure(expectedRepr, actualRepr)
+          ?: AssertionError(message)
+}
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
 
 /** If JUnit5 is present, return an AssertionFailedError */
@@ -157,10 +162,10 @@ private fun junit5assertionFailedError(message: String, expected: Any?, actual: 
 }
 
 /** If JUnit4 is present, return a ComparisonFailure */
-private fun junit4comparisonFailure(expected: Any?, actual: Any?): Throwable? {
+private fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
   return callPublicConstructor("org.junit.ComparisonFailure",
           arrayOf(String::class.java, String::class.java, String::class.java),
-          arrayOf("", expected.toString(), actual.toString())) as? Throwable
+          arrayOf("", expected, actual)) as? Throwable
 }
 
 /**
@@ -178,6 +183,25 @@ private fun callPublicConstructor(className: String, parameterTypes: Array<Class
   } catch (t: Throwable) {
     null
   }
+}
+
+/** Return a string representation of [obj] that is less ambiguous than `toString` */
+private fun stringRepr(obj: Any?): String = when (obj) {
+  is Float -> "${obj}f"
+  is Long -> "${obj}L"
+  is Char -> "'$obj'"
+  is String -> "\"$obj\""
+  is Array<*> -> obj.map { recursiveRepr(obj, it) }.toString()
+  is FloatArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is LongArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is CharArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is Iterable<*> -> obj.map { recursiveRepr(obj, it) }.toString()
+  is Map<*, *> -> obj.map { (k, v) -> recursiveRepr(obj, k) to recursiveRepr(obj, v) }.toMap().toString()
+  else -> obj.toString()
+}
+
+private fun  recursiveRepr(root: Any, node: Any?): String {
+  return if (root == node) "(this ${root::class.java.simpleName})" else stringRepr(node)
 }
 
 // -- deprecated dsl

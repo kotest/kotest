@@ -46,7 +46,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.positiveIntegers(), Gen.positiveIntegers(), Gen.positiveIntegers()) { a, b, c ->
         a.toLong() + b.toLong() + c.toLong() shouldBe 4L
       }
-    }.message shouldBe "Property failed for\nArg 0: 1 (shrunk from 2147483647)\nArg 1: 1 (shrunk from 2147483647)\nArg 2: 1 (shrunk from 2147483647)\nafter 1 attempts\nCaused by: expected: 4 but was: 6442450941"
+    }.message shouldBe "Property failed for\nArg 0: 1 (shrunk from 2147483647)\nArg 1: 1 (shrunk from 2147483647)\nArg 2: 1 (shrunk from 2147483647)\nafter 1 attempts\nCaused by: expected: 4L but was: 6442450941L"
   }
 
   "should shrink arity 4 negativeIntegers" {
