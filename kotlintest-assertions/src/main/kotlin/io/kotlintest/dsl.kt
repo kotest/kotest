@@ -1,7 +1,6 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.ToleranceMatcher
-import org.junit.ComparisonCompactor
 
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
@@ -75,11 +74,12 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 infix fun Double?.shouldBe(other: Double?) = should(ToleranceMatcher(other, 0.0))
 
-// https://stackoverflow.com/questions/10934743/formatting-output-so-that-intellij-idea-shows-diffs-for-two-texts
-// https://github.com/JetBrains/intellij-community/blob/3f7e93e20b7e79ba389adf593b3b59e46a3e01d1/plugins/testng/src/com/theoryinpractice/testng/model/TestProxy.java#L50
 infix fun String?.shouldBe(expected: String?) {
   if (this != expected) {
-    throw AssertionError(ComparisonCompactor.getMessage(expected, this))
+    val message = equalsErrorMessage("<$expected>", "<$this>")
+    throw junit5assertionFailedError(message, expected, this)
+            ?: junit4comparisonFailure(expected, this)
+            ?: AssertionError(message)
   }
 }
 
@@ -148,6 +148,37 @@ infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
 
 private fun equalsError(expected: Any?, actual: Any?) = AssertionError(equalsErrorMessage(expected, actual))
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
+
+/** If JUnit5 is present, return an AssertionFailedError */
+private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
+  return callPublicConstructor("org.opentest4j.AssertionFailedError",
+          arrayOf(String::class.java, Object::class.java, Object::class.java),
+          arrayOf(message, expected, actual)) as? Throwable
+}
+
+/** If JUnit4 is present, return a ComparisonFailure */
+private fun junit4comparisonFailure(expected: Any?, actual: Any?): Throwable? {
+  return callPublicConstructor("org.junit.ComparisonFailure",
+          arrayOf(String::class.java, String::class.java, String::class.java),
+          arrayOf("", expected.toString(), actual.toString())) as? Throwable
+}
+
+/**
+ * Create an instance of the class named [className], with the [args] of type [parameterTypes]
+ *
+ * The constructor must be public.
+ *
+ * @return The constructed object, or null if any error occurred.
+ */
+private fun callPublicConstructor(className: String, parameterTypes: Array<Class<*>>, args: Array<Any?>): Any? {
+  return try {
+    val targetType = Class.forName(className)
+    val constructor = targetType.getConstructor(*parameterTypes)
+    constructor.newInstance(*args)
+  } catch (t: Throwable) {
+    null
+  }
+}
 
 // -- deprecated dsl
 

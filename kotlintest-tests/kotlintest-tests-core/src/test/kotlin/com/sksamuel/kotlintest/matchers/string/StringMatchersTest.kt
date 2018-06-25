@@ -11,21 +11,25 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
+import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
   init {
 
     "string shouldBe other" - {
-      "should show divergence in error message" {
-        shouldThrow<AssertionError> {
-          "la tour eiffel" shouldBe "la tour tower london"
-        }.message shouldBe "expected:<la tour [tower london]> but was:<la tour [eiffel]>"
-      }
-
       "should support null arguments" {
         val a: String? = "a"
         val b: String? = "a"
         a shouldBe b
+      }
+
+      "should use junit5 assertion type when available" {
+        shouldThrow<AssertionFailedError> {
+          "a" shouldBe "b"
+        }.let {
+          it.actual.value shouldBe "a"
+          it.expected.value shouldBe "b"
+        }
       }
     }
 

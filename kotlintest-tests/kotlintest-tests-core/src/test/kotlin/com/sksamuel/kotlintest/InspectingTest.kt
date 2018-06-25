@@ -51,7 +51,7 @@ class InspectingTest : WordSpec() {
               age shouldBe 19
             }
           }
-        }.message shouldBe "expected:<[<Some name that is wrong>]> but was:<[John Doe]>"
+        }.message shouldBe "expected: <<Some name that is wrong>> but was: <John Doe>"
       }
     }
   }
