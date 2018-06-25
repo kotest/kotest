@@ -2,6 +2,7 @@
 
 package io.kotlintest.matchers
 
+import io.kotlintest.Failures
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
@@ -9,7 +10,7 @@ fun withClue(clue: String, thunk: () -> Any) {
   try {
     thunk()
   } catch (e: AssertionError) {
-    throw AssertionError("$clue $e")
+    throw Failures.failure("$clue $e")
   }
 }
 

@@ -1,6 +1,7 @@
 package io.kotlintest.properties
 
 import convertValueToString
+import io.kotlintest.Failures
 
 fun propertyTestFailureMessage(attempt: Int,
                                inputs: List<PropertyFailureInput<out Any?>>,
@@ -24,6 +25,8 @@ fun propertyTestFailureMessage(attempt: Int,
 
 data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
-class PropertyAssertionError(val e: AssertionError,
-                             val attempt: Int,
-                             val inputs: List<PropertyFailureInput<out Any?>>) : AssertionError(propertyTestFailureMessage(attempt, inputs, e), e)
+internal fun propertyAssertionError(e: AssertionError,
+                                    attempt: Int,
+                                    inputs: List<PropertyFailureInput<out Any?>>): AssertionError {
+  return Failures.failure(propertyTestFailureMessage(attempt, inputs, e), e)
+}

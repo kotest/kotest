@@ -1,5 +1,5 @@
 import io.kotlintest.properties.Gen
-import io.kotlintest.properties.PropertyAssertionError
+import io.kotlintest.properties.propertyAssertionError
 import io.kotlintest.properties.PropertyContext
 import io.kotlintest.properties.PropertyFailureInput
 import io.kotlintest.properties.shrinking.Shrinker
@@ -72,5 +72,5 @@ fun <A, B, C, D> shrinkInputs(a: A,
       PropertyFailureInput<C>(c, smallestC),
       PropertyFailureInput<D>(d, smallestD)
   )
-  throw PropertyAssertionError(e, context.attempts(), inputs)
+  throw propertyAssertionError(e, context.attempts(), inputs)
 }

@@ -1,5 +1,6 @@
 package io.kotlintest.matchers.concurrent
 
+import io.kotlintest.Failures
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -17,7 +18,7 @@ fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A) {
 
   if (!latch.await(timeout, unit)) {
     t.interrupt()
-    throw AssertionError("Test should have completed within $timeout/$unit")
+    throw Failures.failure("Test should have completed within $timeout/$unit")
   }
 
   ref.get()
@@ -38,6 +39,6 @@ fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: () -> A) {
   if (timedOut) {
     t.interrupt()
   } else {
-    throw AssertionError("Expected test to timeout for $timeout/$unit")
+    throw Failures.failure("Expected test to timeout for $timeout/$unit")
   }
 }

@@ -15,12 +15,12 @@ inline fun <reified T : Throwable> shouldThrow(thunk: () -> Any?): T {
   val exceptionClass = T::class.java
   try {
     thunk()
-    throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
+    throw Failures.failure("Expected exception ${T::class.qualifiedName} but no exception was thrown")
   } catch (e: Throwable) {
     return when {
       exceptionClass.isAssignableFrom(e.javaClass) -> e as T
       e is AssertionError -> throw e
-      else -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
+      else -> throw Failures.failure("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
     }
   }
 }
@@ -33,7 +33,7 @@ fun shouldFail(thunk: () -> Any?) {
     false
   }
   if (passed)
-    throw AssertionError("This block should fail by throwing by exception but not exception was thrown")
+    throw Failures.failure("This block should fail by throwing by exception but not exception was thrown")
 }
 
 /**
@@ -51,12 +51,12 @@ inline fun <reified T : Throwable> shouldThrowExactly(thunk: () -> Any?): T {
   val exceptionClass = T::class.java
   try {
     thunk()
-    throw AssertionError("Expected exception ${T::class.qualifiedName} but no exception was thrown")
+    throw Failures.failure("Expected exception ${T::class.qualifiedName} but no exception was thrown")
   } catch (e: Throwable) {
     return when {
       e.javaClass == exceptionClass -> e as T
       e is AssertionError -> throw e
-      else -> throw AssertionError("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
+      else -> throw Failures.failure("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
     }
   }
 }
@@ -74,7 +74,7 @@ inline fun shouldThrowAny(thunk: () -> Any?): Throwable {
   }
 
   if (e == null)
-    throw AssertionError("Expected exception but no exception was thrown")
+    throw Failures.failure("Expected exception but no exception was thrown")
   else
     return e
 }
