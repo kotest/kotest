@@ -11,6 +11,7 @@ import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import java.util.*
+import kotlin.collections.HashMap
 
 class MatchersTest : FreeSpec({
 
@@ -54,6 +55,49 @@ class MatchersTest : FreeSpec({
         name shouldBe null
       }
     }
+
+    "formats value representations" {
+      shouldThrow<AssertionError> {
+        1f shouldBe 2f
+      }.message shouldBe "expected: 2.0f but was: 1.0f"
+      shouldThrow<AssertionError> {
+        1L shouldBe 2L
+      }.message shouldBe "expected: 2L but was: 1L"
+      shouldThrow<AssertionError> {
+        'a' shouldBe 'b'
+      }.message shouldBe "expected: 'b' but was: 'a'"
+      shouldThrow<AssertionError> {
+        "a" shouldBe "b"
+      }.message shouldBe "expected: \"b\" but was: \"a\""
+      shouldThrow<AssertionError> {
+        arrayOf("a") shouldBe arrayOf("b")
+      }.message shouldBe "expected: [\"b\"] but was: [\"a\"]"
+      shouldThrow<AssertionError> {
+        floatArrayOf(1f) shouldBe floatArrayOf(2f)
+      }.message shouldBe "expected: [2.0f] but was: [1.0f]"
+      shouldThrow<AssertionError> {
+        longArrayOf(1L) shouldBe longArrayOf(2L)
+      }.message shouldBe "expected: [2L] but was: [1L]"
+      shouldThrow<AssertionError> {
+        charArrayOf('a') shouldBe charArrayOf('b')
+      }.message shouldBe "expected: ['b'] but was: ['a']"
+      shouldThrow<AssertionError> {
+        listOf('a') shouldBe listOf('b')
+      }.message shouldBe "expected: ['b'] but was: ['a']"
+      shouldThrow<AssertionError> {
+        mapOf('a' to 1L) shouldBe mapOf('b' to 2L)
+      }.message shouldBe "expected: {'b'=2L} but was: {'a'=1L}"
+      shouldThrow<AssertionError> {
+        val l = ArrayList<Any>()
+        l.add(l)
+        l shouldBe emptyList<Any>()
+      }.message shouldBe "expected: [] but was: [(this ArrayList)]"
+      shouldThrow<AssertionError> {
+        val l = HashMap<Any, Any>()
+        l[1L] = l
+        l shouldBe emptyMap<Any, Any>()
+      }.message shouldBe "expected: {} but was: {1L=(this HashMap)}"
+    }
   }
 
   "Matchers.shouldNotBe" - {
@@ -82,12 +126,6 @@ class MatchersTest : FreeSpec({
       shouldThrow<AssertionError> {
         null shouldNotBe null
       }
-    }
-  }
-
-  "Matchers.shouldEqual" - {
-    "should compare equality" {
-      "a" shouldBe "a"
     }
   }
 

@@ -27,8 +27,8 @@ class StringMatchersTest : FreeSpec() {
         shouldThrow<AssertionFailedError> {
           "a" shouldBe "b"
         }.let {
-          it.actual.value shouldBe "a"
-          it.expected.value shouldBe "b"
+          it.actual.value shouldBe "\"a\""
+          it.expected.value shouldBe "\"b\""
         }
       }
     }

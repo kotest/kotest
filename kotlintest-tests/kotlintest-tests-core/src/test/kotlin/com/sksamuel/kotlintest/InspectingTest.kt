@@ -47,11 +47,11 @@ class InspectingTest : WordSpec() {
             name shouldBe "Samantha Rose"
             age shouldBe 19
             inspecting(friends.first()) {
-              name shouldBe "<Some name that is wrong>"
+              name shouldBe "Some name that is wrong"
               age shouldBe 19
             }
           }
-        }.message shouldBe "expected: <<Some name that is wrong>> but was: <John Doe>"
+        }.message shouldBe "expected: \"Some name that is wrong\" but was: \"John Doe\""
       }
     }
   }
