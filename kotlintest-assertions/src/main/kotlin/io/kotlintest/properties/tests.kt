@@ -1,5 +1,5 @@
 import io.kotlintest.properties.Gen
-import io.kotlintest.properties.PropertyAssertionError
+import io.kotlintest.properties.propertyAssertionError
 import io.kotlintest.properties.PropertyContext
 import io.kotlintest.properties.PropertyFailureInput
 import io.kotlintest.properties.shrinking.Shrinker
@@ -11,7 +11,7 @@ fun <A> testAndShrink(a: A, shrinkera: Shrinker<A>?, context: PropertyContext, f
   } catch (e: AssertionError) {
     val smallestA = shrink2(a, shrinkera, { context.fn(it) })
     val inputs = listOf(PropertyFailureInput<A>(a, smallestA))
-    throw PropertyAssertionError(e, context.attempts(), inputs)
+    throw propertyAssertionError(e, context.attempts(), inputs)
   }
 }
 
@@ -26,7 +26,7 @@ fun <A, B> testAndShrink(a: A, b: B, shrinkera: Shrinker<A>?, shrinkerb: Shrinke
         PropertyFailureInput<A>(a, smallestA),
         PropertyFailureInput<B>(b, smallestB)
     )
-    throw PropertyAssertionError(e, context.attempts(), inputs)
+    throw propertyAssertionError(e, context.attempts(), inputs)
   }
 }
 
@@ -43,7 +43,7 @@ fun <A, B, C> testAndShrink(a: A, b: B, c: C, gena: Gen<A>, genb: Gen<B>, genc: 
         PropertyFailureInput<B>(b, smallestB),
         PropertyFailureInput<C>(c, smallestC)
     )
-    throw PropertyAssertionError(e, context.attempts(), inputs)
+    throw propertyAssertionError(e, context.attempts(), inputs)
   }
 }
 
@@ -73,6 +73,6 @@ fun <A, B, C, D, E> testAndShrink(a: A, b: B, c: C, d: D, e: E, gena: Gen<A>, ge
         PropertyFailureInput<D>(d, smallestD),
         PropertyFailureInput<E>(e, smallestE)
     )
-    throw PropertyAssertionError(ex, context.attempts(), inputs)
+    throw propertyAssertionError(ex, context.attempts(), inputs)
   }
 }

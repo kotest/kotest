@@ -1,5 +1,7 @@
 package io.kotlintest.tables
 
+import io.kotlintest.Failures
+
 fun headers(a: String) = Headers1(a)
 fun headers(a: String, b: String) = Headers2(a, b)
 fun headers(a: String, b: String, c: String) = Headers3(a, b, c)
@@ -80,12 +82,12 @@ private fun error(e: Throwable, headers: List<String>, values: List<*>): Asserti
     else -> e.toString()
   }
 
-  return AssertionError("Test failed for $params with error $message", e)
+  return Failures.failure("Test failed for $params with error $message")
 }
 
 private fun error(headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
-  return AssertionError("Test passed for $params but expected failure")
+  return Failures.failure("Test passed for $params but expected failure")
 }
 
 private class ErrorCollector {

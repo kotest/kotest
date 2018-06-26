@@ -3,7 +3,6 @@ package com.sksamuel.kotlintest.properties
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldHaveSameLengthAs
-import io.kotlintest.properties.PropertyAssertionError
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -21,7 +20,7 @@ class ExtensionAssertAllTest : StringSpec({
   }
 
   "KFunction1 should report errors" {
-    shouldThrow<PropertyAssertionError> {
+    shouldThrow<AssertionError> {
       ::reverse.assertAll { input, _ ->
         input.shouldHaveSameLengthAs("qwqew")
       }
@@ -37,7 +36,7 @@ class ExtensionAssertAllTest : StringSpec({
     }
   }
   "KFunction2 should report errors" {
-    shouldThrow<PropertyAssertionError> {
+    shouldThrow<AssertionError> {
       ::concat.assertAll { _, _, output ->
         output.length shouldBe lt(5)
       }

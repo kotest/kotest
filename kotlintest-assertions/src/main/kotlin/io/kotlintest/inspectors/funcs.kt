@@ -2,6 +2,7 @@ package io.kotlintest.inspectors
 
 import convertValueToString
 import exceptionToMessage
+import io.kotlintest.Failures
 
 fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
   return col.map {
@@ -32,6 +33,6 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Strin
   } else {
     builder.append(failed.joinToString("\n") { convertValueToString(it.value) + " => " + exceptionToMessage(it.error) })
   }
-  throw AssertionError(builder.toString())
+  throw Failures.failure(builder.toString())
 }
 

@@ -20,7 +20,7 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
     }
     times++
   }
-  throw AssertionError("Test failed after ${duration.seconds} seconds; attempted $times times")
+  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times")
 }
 
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T {
@@ -34,5 +34,5 @@ fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T
       times++
     }
   }
-  throw AssertionError("Test failed after ${duration.seconds} seconds; attempted $times times")
+  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times")
 }

@@ -11,7 +11,7 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
   }
 }
 
-fun fail(msg: String): Nothing = throw AssertionError(msg)
+fun fail(msg: String): Nothing = throw Failures.failure(msg)
 
 // -- equality functions
 
@@ -65,7 +65,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed)
-    throw AssertionError(result.failureMessage)
+    throw Failures.failure(result.failureMessage)
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
@@ -145,24 +145,29 @@ private fun equalsError(expected: Any?, actual: Any?): Throwable {
   val expectedRepr = stringRepr(expected)
   val actualRepr = stringRepr(actual)
   val message = equalsErrorMessage(expectedRepr, actualRepr)
-  return junit5assertionFailedError(message, expectedRepr, actualRepr)
-          ?: junit4comparisonFailure(expectedRepr, actualRepr)
-          ?: AssertionError(message)
+  val throwable = junit5assertionFailedError(message, expectedRepr, actualRepr)
+      ?: junit4comparisonFailure(expectedRepr, actualRepr)
+      ?: AssertionError(message)
+  if (Failures.shouldRemoveKotlintestElementsFromStacktrace) {
+    Failures.removeKotlintestElementsFromStacktrace(throwable)
+  }
+  return throwable
 }
+
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
 
 /** If JUnit5 is present, return an AssertionFailedError */
 private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
   return callPublicConstructor("org.opentest4j.AssertionFailedError",
-          arrayOf(String::class.java, Object::class.java, Object::class.java),
-          arrayOf(message, expected, actual)) as? Throwable
+      arrayOf(String::class.java, Object::class.java, Object::class.java),
+      arrayOf(message, expected, actual)) as? Throwable
 }
 
 /** If JUnit4 is present, return a ComparisonFailure */
 private fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
   return callPublicConstructor("org.junit.ComparisonFailure",
-          arrayOf(String::class.java, String::class.java, String::class.java),
-          arrayOf("", expected, actual)) as? Throwable
+      arrayOf(String::class.java, String::class.java, String::class.java),
+      arrayOf("", expected, actual)) as? Throwable
 }
 
 /**
@@ -197,7 +202,7 @@ private fun stringRepr(obj: Any?): String = when (obj) {
   else -> obj.toString()
 }
 
-private fun  recursiveRepr(root: Any, node: Any?): String {
+private fun recursiveRepr(root: Any, node: Any?): String {
   return if (root == node) "(this ${root::class.java.simpleName})" else stringRepr(node)
 }
 

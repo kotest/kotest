@@ -202,7 +202,7 @@ fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, ge
           PropertyFailureInput<E>(e, smallestE),
           PropertyFailureInput<F>(f, smallestF)
       )
-      throw PropertyAssertionError(x, context.attempts(), inputs)
+      throw propertyAssertionError(x, context.attempts(), inputs)
     }
   }
 
