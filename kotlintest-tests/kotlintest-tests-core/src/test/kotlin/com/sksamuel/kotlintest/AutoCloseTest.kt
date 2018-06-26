@@ -15,7 +15,8 @@ class AutoCloseTest : StringSpec() {
 
   init {
     "should close resources in reverse order" {
-      // nothing to do here
+      resourceA.closed = false
+      resourceB.closed = false
     }
   }
 }
@@ -29,7 +30,7 @@ object AutoCloseListener : TestListener {
 
 object Closeable1 : Closeable {
 
-  var closed = false
+  var closed = true
 
   override fun close() {
     closed = true
@@ -38,7 +39,7 @@ object Closeable1 : Closeable {
 
 object Closeable2 : Closeable {
 
-  var closed = false
+  var closed = true
 
   override fun close() {
     assert(Closeable1.closed)
