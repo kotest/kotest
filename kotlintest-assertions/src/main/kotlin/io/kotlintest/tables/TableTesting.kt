@@ -85,7 +85,7 @@ private fun error(e: Throwable, headers: List<String>, values: List<*>): Asserti
   return Failures.failure("Test failed for $params with error $message")
 }
 
-private fun error(headers: List<String>, values: List<*>): AssertionError {
+private fun forNoneError(headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
   return Failures.failure("Test passed for $params but expected failure")
 }
@@ -398,9 +398,10 @@ fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -408,9 +409,10 @@ fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -418,9 +420,10 @@ fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -428,9 +431,10 @@ fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -438,9 +442,10 @@ fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) ->
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -449,9 +454,10 @@ fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D,
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -459,9 +465,10 @@ fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B,
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -469,9 +476,10 @@ fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: 
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -479,9 +487,10 @@ fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -489,9 +498,10 @@ fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -499,9 +509,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -509,9 +520,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -519,9 +531,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -529,9 +542,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -539,9 +553,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -549,9 +564,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -559,9 +575,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -569,9 +586,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table1
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -579,9 +597,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Tab
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -589,9 +608,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: 
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -599,9 +619,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(tabl
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
@@ -609,9 +630,10 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(t
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
-      throw error(table.headers.values(), row.values())
     } catch (e: AssertionError) {
+      continue
     }
+    throw forNoneError(table.headers.values(), row.values())
   }
 }
 
