@@ -347,7 +347,8 @@ object ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-### Project Extensions
+### Project Extensions 
+_(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 
 Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
  test cases and specs. Test level extensions will be covered in the next section.
