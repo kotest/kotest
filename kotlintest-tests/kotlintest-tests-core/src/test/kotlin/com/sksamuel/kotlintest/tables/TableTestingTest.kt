@@ -1,19 +1,10 @@
 package com.sksamuel.kotlintest.tables
 
+import io.kotlintest.*
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.types.shouldNotBeInstanceOf
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.tables.MultiAssertionError
-import io.kotlintest.tables.forAll
-import io.kotlintest.tables.forNone
-import io.kotlintest.tables.headers
-import io.kotlintest.tables.row
-import io.kotlintest.tables.table
+import io.kotlintest.tables.*
 
 class TableTestingTest : StringSpec() {
   init {
@@ -57,7 +48,7 @@ class TableTestingTest : StringSpec() {
       }
     }
 
-    "numbers all be different using extension function" {
+    "numbers should all be different using extension function" {
 
       table(headers("a", "b"),
           row(1, 2),
@@ -65,6 +56,16 @@ class TableTestingTest : StringSpec() {
           row(5, 6)
       ).forNone { a, b ->
         a shouldBe b
+      }
+    }
+
+    "forNone should fail if any rows succeed" {
+      shouldThrow<AssertionError> {
+        table(headers("a", "b"),
+            row(1, 1)
+        ).forNone { a, b ->
+          a shouldBe b
+        }
       }
     }
 

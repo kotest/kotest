@@ -2,6 +2,7 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import kotlin.math.abs
 
 infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(this, tolerance)
 
@@ -14,11 +15,11 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
     val differenceToMinimum = value - a
     val differenceToMaximum = b - value
 
-    if (differenceToMinimum < 0 && differenceToMinimum > tolerance) {
+    if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
       return Result(false, "$value should be bigger than $a", "$value should not be bigger than $a")
     }
 
-    if (differenceToMaximum < 0 && differenceToMaximum > tolerance) {
+    if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
       return Result(false, "$value should be smaller than $b", "$value should not be smaller than $b")
     }
 
