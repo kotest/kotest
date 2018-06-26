@@ -3,8 +3,17 @@ package io.kotlintest
 object Failures {
   /**
    * Whether KotlinTest-related frames will be removed from the stack traces of thrown [AssertionError]s.
+   *
+   * This defaults to `true`. You can change it at runtime, or set it with the system property
+   * `kotlintest.failures.stacktrace.clean`.
+   *
+   * e.g.
+   *
+   * ```
+   * -Dkotlintest.failures.stacktrace.clean=false
+   * ```
    */
-  var shouldRemoveKotlintestElementsFromStacktrace: Boolean = true
+  var shouldRemoveKotlintestElementsFromStacktrace: Boolean = readSystemProperty()
 
   /**
    * Creates an [AssertionError] with the given [message] and [cause]
@@ -32,5 +41,9 @@ object Failures {
       it.className.startsWith("io.kotlintest") && ! it.className.startsWith("io.kotlintest.runner")
     }
     throwable.stackTrace = stackTrace.drop(lastKotlintestIndex + 1).toTypedArray()
+  }
+
+  private fun readSystemProperty(): Boolean {
+    return System.getProperty("kotlintest.failures.stacktrace.clean")?.toBoolean() ?: true
   }
 }

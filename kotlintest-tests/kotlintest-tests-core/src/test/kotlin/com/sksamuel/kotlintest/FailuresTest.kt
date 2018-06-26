@@ -12,8 +12,10 @@ class FailuresTest : FreeSpec({
   "Failures.failure" - {
 
     "filters stacktrace" {
-      val failure = Failures.failure("msg")
+      val cause = RuntimeException()
+      val failure = Failures.failure("msg", cause)
       failure.message shouldBe "msg"
+      failure.cause shouldBe cause
       failure.stackTrace[0].className.shouldStartWith("com.sksamuel.kotlintest.FailuresTest")
     }
 
