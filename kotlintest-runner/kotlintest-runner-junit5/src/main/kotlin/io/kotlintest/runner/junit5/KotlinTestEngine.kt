@@ -16,6 +16,7 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
+import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
@@ -65,34 +66,44 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
     // and gradle will sometimes pass a class selector for each class it has detected
     val classSelectors = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
 
-    val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
-        request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-        request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
-        ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+    // a method selector is passed by intellij to run just a single method inside a test file
+    // this happens for example, when trying to run a junit test alongside kotlintest tests,
+    // and kotlintest will then run all other tests.
+    // therefore, the presence of a MethodSelector means we must run no tests in KT.
+    if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
-    val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors, emptyList()))
+      val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
+          request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
+          request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
+          ClasspathHelper.forClassLoader().toList().map { it.toURI() }
 
-    // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
-    // internal gradle class called ClassMethodNameFilter. That class makes all kinds of
-    // assumptions around what is a test and what isn't, via the source so we must fool it.
-    // this is liable to be buggy as well, and should be stripped out as soon as gradle
-    // fix their bugs around junit 5 support
-    class ClassMethodAdaptingFilter(val filter: PostDiscoveryFilter) : SpecFilter {
-      override fun invoke(klass: KClass<out Spec>): Boolean {
-        val id = uniqueId.appendSpec(klass.java.description())
-        val descriptor = object : AbstractTestDescriptor(id, klass.java.description().name) {
-          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-          override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(klass.java))
+      val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors, emptyList()))
+
+      // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
+      // internal gradle class called ClassMethodNameFilter. That class makes all kinds of
+      // assumptions around what is a test and what isn't, via the source so we must fool it.
+      // this is liable to be buggy as well, and should be stripped out as soon as gradle
+      // fix their bugs around junit 5 support
+      class ClassMethodAdaptingFilter(val filter: PostDiscoveryFilter) : SpecFilter {
+        override fun invoke(klass: KClass<out Spec>): Boolean {
+          val id = uniqueId.appendSpec(klass.java.description())
+          val descriptor = object : AbstractTestDescriptor(id, klass.java.description().name) {
+            override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
+            override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(klass.java))
+          }
+          val parent = KotlinTestEngineDescriptor(uniqueId, emptyList())
+          parent.addChild(descriptor)
+          return filter.apply(descriptor).included()
         }
-        val parent = KotlinTestEngineDescriptor(uniqueId, emptyList())
-        parent.addChild(descriptor)
-        return filter.apply(descriptor).included()
       }
-    }
 
-    val testFilters = postFilters.map { ClassMethodAdaptingFilter(it) }
-    val classes = result.classes.filter { klass -> testFilters.isEmpty() || testFilters.any { it.invoke(klass) } }
-    return KotlinTestEngineDescriptor(uniqueId, classes)
+      val testFilters = postFilters.map { ClassMethodAdaptingFilter(it) }
+      val classes = result.classes.filter { klass -> testFilters.isEmpty() || testFilters.any { it.invoke(klass) } }
+      return KotlinTestEngineDescriptor(uniqueId, classes)
+
+    } else {
+      return KotlinTestEngineDescriptor(uniqueId, emptyList())
+    }
   }
 
   class KotlinTestEngineDescriptor(id: UniqueId, val classes: List<KClass<out Spec>>) : EngineDescriptor(id, "KotlinTest") {
