@@ -172,6 +172,33 @@ fun String.shouldNotContainFoo() = this shouldNot containFoo()
 
 
 
+Soft Assertions
+---------------
+
+Normally, assertions like `shouldBe` throw an exception when they fail.
+But sometimes you want to perform multiple assertions in a test, and
+would like to see all of the assertions that failed. KotlinTest provides
+the `assertSoftly` function for this purpose.
+
+```kotlin
+assertSoftly {
+  foo shouldBe bar
+  foo should contain(baz)
+}
+```
+
+If any assertions inside the block failed, the test will continue to
+run. All failures will be reported in a single exception at the end of
+the block.
+
+
+
+
+
+
+
+
+
 Exceptions
 ----------
 
@@ -347,7 +374,7 @@ object ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-### Project Extensions 
+### Project Extensions
 _(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 
 Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
@@ -590,7 +617,7 @@ One Instance Per Test
 ---------------------
 
 All specs allow you to instruct the test engine to create a new instance of the Spec for every test case.
- 
+
 To do this simply override the `isInstancePerTest()` function returning true:
 
 ```kotlin
@@ -812,7 +839,7 @@ can control which tests are run:
 * If only `kotlintest.tags.exclude` are specified, only tests without that tag are run (untagged tests *are* run).
 * If you provide more than one tag for `kotlintest.tags.include` or `kotlintest.tags.exclude`, a test case with at least one of the given tags is included/excluded.
 
-Provide the simple names of tag object (without package) when you run the tests. 
+Provide the simple names of tag object (without package) when you run the tests.
 Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
 
 Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
@@ -853,7 +880,7 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in  
+Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in
 reversed order of declaration after the return of the last spec interceptor.
 
 
@@ -883,10 +910,10 @@ class MyTests : StringSpec({
 
 ### Eventually <a name="eventually"></a>
 
-When testing non-deterministic code, it's handy to be able to say "I expect these assertions to pass in a certain time". 
-Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely. 
-Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches. 
-KotlinTest provides the `Eventually` mixin, which gives you the `eventually` function which will repeatedly test the code until it either passes, 
+When testing non-deterministic code, it's handy to be able to say "I expect these assertions to pass in a certain time".
+Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely.
+Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches.
+KotlinTest provides the `Eventually` mixin, which gives you the `eventually` function which will repeatedly test the code until it either passes,
 or the timeout is reached. This is perfect for nondeterministic code. For example:
 
 ```kotlin

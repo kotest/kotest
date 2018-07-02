@@ -2,6 +2,27 @@ package io.kotlintest
 
 import io.kotlintest.matchers.ToleranceMatcher
 
+/**
+ * Run multiple assertions, collecting any failures into a single exception that is thrown at the end of the
+ * block.
+ *
+ * ```
+ * verifyAll {
+ *   foo shouldBe bar
+ *   baz.shouldBeLessThan(qux)
+ * }
+ * ```
+ */
+inline fun <T> assertSoftly(assertions: () -> T): T {
+  // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
+  // outermost verifyAll block
+  if (ErrorCollector.shouldCollectErrors.get()) return assertions()
+  ErrorCollector.shouldCollectErrors.set(true)
+  return assertions().apply {
+    ErrorCollector.throwCollectedErrors()
+  }
+}
+
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
   override fun test(value: T): Result {
@@ -44,9 +65,9 @@ infix fun <T, U : T> T.shouldBe(any: U?) {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {
       if (this == null && any != null)
-        throw equalsError(any, this)
+        ErrorCollector.collectOrThrow(equalsError(any, this))
       if (!compare(this, any))
-        throw equalsError(any, this)
+        ErrorCollector.collectOrThrow(equalsError(any, this))
     }
   }
 }
@@ -65,7 +86,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed)
-    throw Failures.failure(result.failureMessage)
+    ErrorCollector.collectOrThrow(Failures.failure(result.failureMessage))
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
@@ -82,63 +103,63 @@ infix fun BooleanArray?.shouldBe(other: BooleanArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun IntArray?.shouldBe(other: IntArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun ShortArray?.shouldBe(other: ShortArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun FloatArray?.shouldBe(other: FloatArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun DoubleArray?.shouldBe(other: DoubleArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun LongArray?.shouldBe(other: LongArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun ByteArray?.shouldBe(other: ByteArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun CharArray?.shouldBe(other: CharArray?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
   val expected = other?.asList()
   val actual = this?.asList()
   if (actual != expected)
-    throw equalsError(expected, actual)
+    ErrorCollector.collectOrThrow(equalsError(expected, actual))
 }
 
 private fun equalsError(expected: Any?, actual: Any?): Throwable {
