@@ -41,7 +41,7 @@ class EitherMatchersTest : WordSpec() {
 
     "Either should beLeft()" should {
       "test that the either is of type left" {
-        Either.right("boo").shouldBeLeft()
+        Either.left("boo").shouldBeLeft()
       }
     }
 
