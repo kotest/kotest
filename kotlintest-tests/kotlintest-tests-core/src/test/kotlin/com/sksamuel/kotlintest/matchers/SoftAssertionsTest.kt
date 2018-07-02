@@ -18,14 +18,14 @@ import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.verifyAll
+import io.kotlintest.assertSoftly
 
 class SoftAssertionsTest : FreeSpec({
 
-  "verifyAll" - {
+  "assertSoftly" - {
 
     "passes when all assertions pass" {
-      verifyAll {
+      assertSoftly {
         1 shouldBe 1
         "foo" shouldBe "foo"
       }
@@ -33,7 +33,7 @@ class SoftAssertionsTest : FreeSpec({
 
     "rethrows single failures" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           1 shouldBe 2
         }
       }.message shouldBe "expected: 2 but was: 1"
@@ -41,7 +41,7 @@ class SoftAssertionsTest : FreeSpec({
 
     "groups multiple failures" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           1 shouldBe 2
           1 shouldBe 1 // should pass
           "foo" shouldNotBe "foo"
@@ -54,7 +54,7 @@ class SoftAssertionsTest : FreeSpec({
 
     "works with all array types" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           booleanArrayOf(true) shouldBe booleanArrayOf(false)
           intArrayOf(1) shouldBe intArrayOf(2)
           shortArrayOf(1) shouldBe shortArrayOf(2)
@@ -73,7 +73,7 @@ class SoftAssertionsTest : FreeSpec({
 
     "works with any matcher" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           1 should beLessThan(0)
           "foobar" shouldNot endWith("bar")
           1 shouldBe positive() // should pass
@@ -89,7 +89,7 @@ class SoftAssertionsTest : FreeSpec({
 
     "works with extension functions" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           1.shouldBeLessThan(0)
           "foobar".shouldNotEndWith("bar")
           1.shouldBePositive() // should pass
@@ -104,9 +104,9 @@ class SoftAssertionsTest : FreeSpec({
 
     "can be nested" {
       shouldThrow<AssertionError> {
-        verifyAll {
+        assertSoftly {
           1 shouldBe 2
-          verifyAll {
+          assertSoftly {
             2 shouldBe 3
           }
         }

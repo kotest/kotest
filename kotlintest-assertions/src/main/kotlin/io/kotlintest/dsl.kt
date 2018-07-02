@@ -13,7 +13,7 @@ import io.kotlintest.matchers.ToleranceMatcher
  * }
  * ```
  */
-inline fun <T> verifyAll(assertions: () -> T): T {
+inline fun <T> assertSoftly(assertions: () -> T): T {
   // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
   // outermost verifyAll block
   if (ErrorCollector.shouldCollectErrors.get()) return assertions()

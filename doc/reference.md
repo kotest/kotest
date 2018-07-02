@@ -178,10 +178,10 @@ Soft Assertions
 Normally, assertions like `shouldBe` throw an exception when they fail.
 But sometimes you want to perform multiple assertions in a test, and
 would like to see all of the assertions that failed. KotlinTest provides
-the `verifyAll` function for this purpose.
+the `assertSoftly` function for this purpose.
 
 ```kotlin
-verifyAll {
+assertSoftly {
   foo shouldBe bar
   foo should contain(baz)
 }
