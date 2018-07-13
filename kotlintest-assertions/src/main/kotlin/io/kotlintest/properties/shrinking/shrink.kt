@@ -29,7 +29,6 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
       val next = candidates.firstOrNull {
         tested.add(it)
         count++
-        fun whitespace(str: String) = str.isBlank()
         try {
           test(it)
           sb.append("Shrink #$count: ${convertValueToString(it)} pass\n")
