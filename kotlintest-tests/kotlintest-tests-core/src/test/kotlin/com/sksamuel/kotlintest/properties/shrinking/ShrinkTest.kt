@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest.properties.shrinking
 import io.kotlintest.matchers.doubles.lt
 import io.kotlintest.matchers.lte
 import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
@@ -33,7 +34,7 @@ class ShrinkTest : StringSpec({
       }
     }.message shouldBe "Property failed for\n" +
         "Arg 0: <empty string>\n" +
-        "Arg 1: aaaa (shrunk from \n" +
+        "Arg 1: aaaaa (shrunk from \n" +
         "abc\n" +
         "123\n" +
         ")\n" +
@@ -100,6 +101,6 @@ class ShrinkTest : StringSpec({
       assertAll(gen) { a ->
         a.padEnd(10, '*').shouldHaveLength(10)
       }
-    }.message shouldBe "Property failed for\nArg 0: aaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
+    }.message shouldBe "Property failed for\nArg 0: aaaaaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
   }
 })
