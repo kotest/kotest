@@ -81,8 +81,8 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: List<T>): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
       ts.all { value.contains(it) },
-      "NonEmptyList should contain all of ${ts.take(10).joinToString(",")}",
-      "NonEmptyList should not contain all of ${ts.take(10).joinToString(",")}"
+      "NonEmptyList should contain all of ${ts.joinToString(",", limit=10)}",
+      "NonEmptyList should not contain all of ${ts.joinToString(",", limit=10)}"
   )
 }
 
@@ -112,7 +112,7 @@ fun <T : Comparable<T>> NonEmptyList<T>.shouldNotBeSorted() = this shouldNot beS
 fun <T : Comparable<T>> beSorted(): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>): Result {
     val passed = value.all.sorted() == value.all
-    val snippet = if (value.size <= 10) value.all.joinToString(",") else value.all.take(10).joinToString(",") + "..."
+    val snippet = value.all.joinToString(",", limit=10)
     return Result(
         passed,
         "NonEmptyList $snippet should be sorted",
