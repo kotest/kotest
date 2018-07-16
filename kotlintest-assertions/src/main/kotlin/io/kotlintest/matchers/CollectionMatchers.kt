@@ -33,8 +33,8 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(
       ts.all { value.contains(it) },
-      "Collection should contain all of ${ts.take(10).joinToString(",")}",
-      "Collection should not contain all of ${ts.take(10).joinToString(",")}"
+      "Collection should contain all of ${ts.joinToString(",", limit=10)}",
+      "Collection should not contain all of ${ts.joinToString(",", limit=10)}"
   )
 }
 
@@ -74,7 +74,7 @@ fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): Result {
     val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i+1] }
-    val snippet = if (value.size <= 10) value.joinToString(",") else value.take(10).joinToString(",", postfix =  "...")
+    val snippet = value.joinToString(",", limit = 10)
     val elementMessage = when (failure) {
         null -> ""
         else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index+1]}"
