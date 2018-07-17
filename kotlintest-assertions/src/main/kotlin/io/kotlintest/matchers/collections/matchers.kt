@@ -8,6 +8,7 @@ import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
+import io.kotlintest.matchers.beSortedWith
 import io.kotlintest.neverNullMatcher
 import io.kotlintest.should
 import io.kotlintest.shouldHave
@@ -145,6 +146,10 @@ fun <T> containDuplicates() = object : Matcher<Collection<T>> {
 
 fun <T : Comparable<T>> List<T>.shouldBeSorted() = this should beSorted<T>()
 fun <T : Comparable<T>> List<T>.shouldNotBeSorted() = this shouldNot beSorted<T>()
+fun <T : Comparable<T>> List<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith<T>(comparator)
+fun <T : Comparable<T>> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith<T>(comparator)
+fun <T : Comparable<T>> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSortedWith<T>(cmp)
+fun <T : Comparable<T>> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith<T>(cmp)
 
 fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
