@@ -6,26 +6,28 @@ import io.kotlintest.matchers.collections.*
 
 class CollectionMatchersTests : WordSpec() {
 	val countdown = (10 downTo 0).toList()
+	val asc = { a:Int, b:Int -> a - b }
+	val desc = { a:Int, b:Int -> b - a }
 	
 	init {
 		"a descending non-empty list" should {
 			"fail to ascend" {
 				shouldFail {
-					countdown.shouldBeSortedWith { a, b -> a - b }
+					countdown.shouldBeSortedWith(asc)
 				}
 			}
 			
 			"descend" {
-				countdown.shouldBeSortedWith { a, b -> b - a }
+				countdown.shouldBeSortedWith(desc)
 			}
 			
 			"not ascend" {
-				countdown.shouldNotBeSortedWith { a, b -> a - b }
+				countdown.shouldNotBeSortedWith(asc)
 			}
 
 			"fail not to descend" {
 				shouldFail {
-					countdown.shouldNotBeSortedWith { a, b -> b - a }
+					countdown.shouldNotBeSortedWith(desc)
 				}
 			}
 		}
