@@ -10,8 +10,6 @@ import kotlin.reflect.KClass
 
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-  data class ExecutionContext(val spec: Spec, val target: Description)
-
   private val executed = HashSet<Description>()
 
   override fun execute(spec: Spec) {
@@ -36,8 +34,13 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
         is Success -> {
           val spec = it.value
           spec.testCases().forEach {
-            if (it.description == target) interceptSpec(spec, { io.kotlintest.runner.jvm.TestCaseExecutor(listener, it, targetContext(spec, target)).execute() })
-            else if (it.description.isAncestorOf(target)) interceptSpec(spec, { execute(spec, it, target) })
+            if (it.description == target) interceptSpec(spec) {
+              io.kotlintest.runner.jvm.TestCaseExecutor(listener, it, targetContext(spec, target)).execute()
+            } else if (it.description.isAncestorOf(target)) {
+              interceptSpec(spec) {
+                execute(spec, it, target)
+              }
+            }
           }
         }
       }
