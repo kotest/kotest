@@ -143,8 +143,32 @@ fun <T> containDuplicates() = object : Matcher<Collection<T>> {
   )
 }
 
+
+fun <T : Comparable<T>> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)
+fun <T : Comparable<T>> beSortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = sortedWith(cmp)
+fun <T : Comparable<T>> sortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith { a, b -> comparator.compare(a, b) }
+fun <T : Comparable<T>> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List<T>> {
+  override fun test(value: List<T>): Result {
+    val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && cmp(it, value[i+1]) > 0 }
+    val snippet = value.joinToString(",", limit = 10)
+    val elementMessage = when (failure) {
+        null -> ""
+        else -> ". Element ${failure.value} at index ${failure.index} shouldn't precede element ${value[failure.index+1]}"
+    }
+    return Result(
+        failure == null,
+        "List [$snippet] should be sorted$elementMessage",
+        "List [$snippet] should not be sorted"
+    )
+  }
+}
+
 fun <T : Comparable<T>> List<T>.shouldBeSorted() = this should beSorted<T>()
 fun <T : Comparable<T>> List<T>.shouldNotBeSorted() = this shouldNot beSorted<T>()
+fun <T : Comparable<T>> List<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith<T>(comparator)
+fun <T : Comparable<T>> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith<T>(comparator)
+fun <T : Comparable<T>> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSortedWith<T>(cmp)
+fun <T : Comparable<T>> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith<T>(cmp)
 
 fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
