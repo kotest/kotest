@@ -31,7 +31,9 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun submitAll() = Try {
     logger.debug("Submitting ${classes.size} specs")
 
-    classes.forEach { submitSpec(it) }
+    // the classes are ordered using an instance of SpecExecutionOrder before
+    // being submitted in the order returned
+    Project.specExecutionOrder().sort(classes).forEach { submitSpec(it) }
     executor.shutdown()
 
     logger.debug("Waiting for spec execution service to terminate")

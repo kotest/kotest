@@ -35,6 +35,18 @@ abstract class AbstractProjectConfig {
   open fun filters(): List<ProjectLevelFilter> = emptyList()
 
   /**
+   * Override this function and return an instance of [SpecExecutionOrder] which will
+   * be used to sort specs before execution. By default, will return specs in
+   * lexicographic order.
+   *
+   * Implementations are currently:
+   *  - [LexicographicSpecExecutionOrder]
+   *  - [FailureFirstSpecExecutionOrder]
+   *  - [RandomSpecExecutionOrder]
+   */
+  open fun specExecutionOrder(): SpecExecutionOrder = RandomSpecExecutionOrder
+
+  /**
    * Override this function and return a number greater than 1 if you wish to
    * enable parallel execution of tests. The number returned is the number of
    * concurrently executing specs.

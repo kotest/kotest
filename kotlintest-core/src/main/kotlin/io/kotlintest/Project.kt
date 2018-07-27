@@ -53,6 +53,8 @@ object Project {
   private val _extensions = mutableListOf<ProjectLevelExtension>().apply { add(SystemPropertyTagExtension) }
   private val _listeners = mutableListOf<TestListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
+  private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
+
   private var parallelism: Int = 1
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
@@ -75,8 +77,11 @@ object Project {
     _extensions.addAll(this.extensions())
     _listeners.addAll(this.listeners())
     _filters.addAll(this.filters())
+    _specExecutionOrder = this.specExecutionOrder()
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
   }
+
+  fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
   fun beforeAll() {
     projectExtensions().forEach { extension -> extension.beforeAll() }
