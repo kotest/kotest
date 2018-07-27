@@ -88,7 +88,7 @@ object TestDiscovery {
 
     val extensions = Project.discoveryExtensions()
     val filtered = extensions
-        .fold(specs, { cl, ext -> ext.afterScan(cl) })
+        .fold(specs) { cl, ext -> ext.afterScan(cl) }
         .sortedBy { it.simpleName }
 
     logger.debug("${filtered.size} classes after applying discovery extensions")
@@ -96,8 +96,8 @@ object TestDiscovery {
   }
 
   fun discover(request: DiscoveryRequest): DiscoveryResult =
-      requests.getOrPut(request, {
+      requests.getOrPut(request) {
         val classes = scan(request)
         DiscoveryResult(classes)
-      })
+      }
 }
