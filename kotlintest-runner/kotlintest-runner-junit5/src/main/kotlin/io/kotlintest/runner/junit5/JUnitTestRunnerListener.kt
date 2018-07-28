@@ -1,5 +1,6 @@
 package io.kotlintest.runner.junit5
 
+import com.google.common.io.Files
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -16,6 +17,8 @@ import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.slf4j.LoggerFactory
+import java.nio.charset.Charset
+import java.nio.file.Paths
 import kotlin.reflect.KClass
 
 /**
@@ -87,6 +90,15 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
 
   override fun engineFinished(t: Throwable?) {
     logger.debug("Engine finished; throwable=[$t]")
+
+    val failures = results.filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
+
+    val dir = Paths.get(".kotlintest")
+    dir.toFile().mkdirs()
+    val path = dir.resolve("spec_failures").toAbsolutePath()
+    logger.debug("Writing report to $path")
+    Files.write(failures, path.toFile(), Charset.forName("UTF-8"))
+
     val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
     listener.executionFinished(root, result)
   }
@@ -170,10 +182,10 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   private fun getOrCreateDescriptor(description: Description, type: TestType): TestDescriptor =
-      descriptors.getOrPut(description, { createTestCaseDescriptor(description, type) })
+      descriptors.getOrPut(description) { createTestCaseDescriptor(description, type) }
 
   // returns the most important result for a given description
-// by searching all the results stored for that description and child descriptions
+  // by searching all the results stored for that description and child descriptions
   private fun findResultFor(description: Description): TestResult? {
 
     fun findByStatus(status: TestStatus): TestResult? = results
@@ -242,4 +254,4 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 }
 
-fun UniqueId.appendSpec(description: Description) = this.append("spec", description.name)
+fun UniqueId.appendSpec(description: Description) = this.append("spec", description.name)!!

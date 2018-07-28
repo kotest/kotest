@@ -36,7 +36,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     Project.specExecutionOrder().sort(classes).forEach { submitSpec(it) }
     executor.shutdown()
 
-    logger.debug("Waiting for spec execution service to terminate")
+    logger.debug("Waiting for spec execution to terminate")
     try {
       executor.awaitTermination(1, TimeUnit.DAYS)
     } catch (t: InterruptedException) {
@@ -45,7 +45,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
 
     // the executor may have terminated early because it was shutdown immediately
     // by an error in a submission. This will be reflected in the error reference
-    // being set to non null
+    // being set to a non null value
     val t = error.get()
     if (t != null)
       throw t

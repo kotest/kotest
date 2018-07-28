@@ -44,7 +44,7 @@ abstract class AbstractProjectConfig {
    *  - [FailureFirstSpecExecutionOrder]
    *  - [RandomSpecExecutionOrder]
    */
-  open fun specExecutionOrder(): SpecExecutionOrder = RandomSpecExecutionOrder
+  open fun specExecutionOrder(): SpecExecutionOrder = LexicographicSpecExecutionOrder
 
   /**
    * Override this function and return a number greater than 1 if you wish to
