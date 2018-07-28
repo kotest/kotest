@@ -39,7 +39,10 @@ interface Spec : TestListener {
    * per test. This is due to implementation trickery required
    * with nested closures and junit test discovery.
    */
+  @Deprecated("Instead of this function, override specIsolationMode() which should return a SpecIsolationMode value indicating how the isolation level should be set for this spec")
   fun isInstancePerTest(): Boolean
+
+  fun specIsolationMode(): SpecIsolationMode? = null
 
   /**
    * Override this function to register extensions

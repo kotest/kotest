@@ -31,3 +31,4 @@ kotlintest-tests-junit-report.log
 kotlintest-tests-core.log
 
 local.properties
+.kotlintest

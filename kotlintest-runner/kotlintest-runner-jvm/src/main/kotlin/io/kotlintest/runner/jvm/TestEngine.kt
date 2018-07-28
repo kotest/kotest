@@ -4,6 +4,7 @@ import arrow.core.Try
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.SpecIsolationMode
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -108,7 +109,9 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun executeSpec(spec: Spec) = Try {
     listener.prepareSpec(spec.description(), spec::class)
     Try {
+      spec.beforeSpecStarted(spec.description(), spec)
       runner(spec).execute(spec)
+      spec.afterSpecCompleted(spec.description(), spec)
     }.fold(
         { listener.completeSpec(spec.description(), spec.javaClass.kotlin, it) },
         { listener.completeSpec(spec.description(), spec.javaClass.kotlin, null) }
@@ -116,9 +119,15 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     spec.closeResources()
   }
 
-  private fun runner(spec: Spec): SpecRunner =
-      when {
-        spec.isInstancePerTest() -> InstancePerTestSpecRunner(listener)
+  private fun runner(spec: Spec): SpecRunner {
+    return when (spec.specIsolationMode()) {
+      SpecIsolationMode.SharedInstance -> SharedInstanceSpecRunner(listener)
+      SpecIsolationMode.InstancePerLeaf -> InstancePerTestSpecRunner2(listener)
+      SpecIsolationMode.InstancePerNode -> InstancePerTestSpecRunner2(listener)
+      null -> when {
+        spec.isInstancePerTest() -> InstancePerTestSpecRunner2(listener)
         else -> SharedInstanceSpecRunner(listener)
       }
+    }
+  }
 }

@@ -8,6 +8,10 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import kotlin.reflect.KClass
 
+object InstancePerTestSpecRunnerFactory : SpecRunnerFactory {
+  override fun specRunner(listener: TestEngineListener) = InstancePerTestSpecRunner(listener)
+}
+
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
   private val executed = HashSet<Description>()
