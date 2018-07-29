@@ -24,26 +24,19 @@ class InstancePerTestSpecRunner2(listener: TestEngineListener) : SpecRunner(list
    */
   override fun execute(spec: Spec) {
     topLevelTests(spec).forEach { enqueue(it) }
-    logger.debug("queue=$queue")
     while (queue.isNotEmpty()) {
       val element = queue.removeFirst()
-      logger.debug("Retrieving element from queue: ${element.name}")
       execute(element)
     }
-    logger.debug("Final queue=$queue")
   }
 
   private fun enqueue(testCase: TestCase) {
-    if (!discovered.contains(testCase.description)) {
-      discovered.add(testCase.description)
-      queue.add(testCase)
-    }
-    logger.debug("new queue=$queue")
+    if (discovered.contains(testCase.description))
+      throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
+    discovered.add(testCase.description)
+    logger.debug("Enqueuing test ${testCase.description.fullName()}")
+    queue.add(testCase)
   }
-
-  // todo add checks for duplicate test names at runtime
-  //if (executed.contains(testCase.description))
-  //throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
 
   /**
    * The intention of this runner is that each [TestCase] executes in it's own instance
@@ -54,7 +47,7 @@ class InstancePerTestSpecRunner2(listener: TestEngineListener) : SpecRunner(list
    * if they are not an ancestor of the target. If they are then we can step into them, and
    * continue recursively until we find the target.
    *
-   * One the target is found it can be executed as normal, and any test lambdas it contains
+   * Once the target is found it can be executed as normal, and any test lambdas it contains
    * can be registered back with the stack for execution later.
    */
   private fun execute(testCase: TestCase) {
@@ -77,10 +70,11 @@ class InstancePerTestSpecRunner2(listener: TestEngineListener) : SpecRunner(list
     if (target == current.description) {
       val context = object : TestContext() {
         override fun description(): Description = target
-        override fun registerTestCase(testCase: TestCase) {
-          enqueue(testCase)
-        }
+        override fun registerTestCase(testCase: TestCase) = enqueue(testCase)
       }
+      if (executed.contains(target))
+        throw  IllegalStateException("Attempting to execute duplicate test")
+      executed.add(target)
       io.kotlintest.runner.jvm.TestCaseExecutor(listener, current, context).execute()
       // otherwise if it's an ancestor then we want to search it recursively
     } else if (current.description.isAncestorOf(target)) {
