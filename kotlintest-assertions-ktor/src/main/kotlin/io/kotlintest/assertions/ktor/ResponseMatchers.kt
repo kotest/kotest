@@ -4,6 +4,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import io.ktor.http.Cookie
 import io.ktor.response.ApplicationResponse
 import io.ktor.server.testing.TestApplicationResponse
 
@@ -39,6 +40,24 @@ fun haveHeader(headerName: String, headerValue: String) = object : Matcher<TestA
         value.headers[headerName] == headerValue,
         "Response should have header $headerName=$value but $headerName=${value.headers[headerName]}",
         "Response should not have header $headerName=$value"
+    )
+  }
+}
+
+fun TestApplicationResponse.shouldHaveCookie(name: String, cookieValue: String? = null) = this should haveCookie(name, cookieValue)
+fun TestApplicationResponse.shouldNotHaveCookie(name: String, cookieValue: String? = null) = this shouldNot haveCookie(name, cookieValue)
+fun haveCookie(name: String, cookieValue: String? = null) = object : Matcher<ApplicationResponse> {
+  override fun test(value: ApplicationResponse): Result {
+
+    val passed = when (cookieValue) {
+      null -> value.cookies[name] != null
+      else -> value.cookies[name]?.value == cookieValue
+    }
+
+    return Result(
+        passed,
+        "Response should have cookie with name $name",
+        "Response should have cookie with name $name"
     )
   }
 }

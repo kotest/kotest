@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.tests.ktor
 
 import io.kotlintest.assertions.ktor.shouldHaveContent
+import io.kotlintest.assertions.ktor.shouldHaveCookie
 import io.kotlintest.assertions.ktor.shouldHaveHeader
 import io.kotlintest.assertions.ktor.shouldHaveStatus
 import io.kotlintest.specs.StringSpec
@@ -18,6 +19,7 @@ fun Application.testableModule() {
   intercept(ApplicationCallPipeline.Call) {
     if (call.request.uri == "/") {
       call.response.header("wibble", "wobble")
+      call.response.cookies.append("mycookie", "myvalue", maxAge = 10, domain = "foo.com", path = "/bar")
       call.respondText("ok")
     }
   }
@@ -45,6 +47,14 @@ class KtorAssertionsTest : StringSpec({
     withTestApplication({ testableModule() }) {
       handleRequest(HttpMethod.Get, "/").apply {
         response.shouldHaveContent("ok")
+      }
+    }
+  }
+
+  "test cookie values" {
+    withTestApplication({ testableModule() }) {
+      handleRequest(HttpMethod.Get, "/").apply {
+        response.shouldHaveCookie("mycookie", "myvalue")
       }
     }
   }
