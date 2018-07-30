@@ -6,87 +6,82 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
-import kotlin.reflect.KClass
-
-object InstancePerTestSpecRunnerFactory : SpecRunnerFactory {
-  override fun specRunner(listener: TestEngineListener) = InstancePerTestSpecRunner(listener)
-}
+import org.slf4j.LoggerFactory
+import java.util.*
 
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-  private val executed = HashSet<Description>()
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
+  private val executed = HashSet<Description>()
+  private val discovered = HashSet<Description>()
+  private val queue = ArrayDeque<TestCase>()
+
+  /**
+   * When executing a [TestCase], any child test cases that are found, are placed onto
+   * a stack. When the test case has completed, we take the next test case from the
+   * stack, and begin executing that.
+   */
   override fun execute(spec: Spec) {
-    // we start by executing each top level test in the spec, which in turn will lead
-    // to further test discoveries
-    topLevelTests(spec).forEach { locateAndExecute(spec::class, it.description) }
+    topLevelTests(spec).forEach { enqueue(it) }
+    while (queue.isNotEmpty()) {
+      val element = queue.removeFirst()
+      execute(element)
+    }
+  }
+
+  private fun enqueue(testCase: TestCase) {
+    if (discovered.contains(testCase.description))
+      throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
+    discovered.add(testCase.description)
+    logger.debug("Enqueuing test ${testCase.description.fullName()}")
+    queue.add(testCase)
   }
 
   /**
-   * When a new [TestCase] is registered, we require a new instance of the [Spec] class.
+   * The intention of this runner is that each [TestCase] executes in it's own instance
+   * of the containing [Spec] class. Therefore, when we begin executing a test case from
+   * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
    *
-   * A new instance is created, and then the root test that matches the required test scope
-   * is located. This may be the test itself, or a parent of the test.
+   * As test lambdas are executed, nested test cases will be registered, these should be ignored
+   * if they are not an ancestor of the target. If they are then we can step into them, and
+   * continue recursively until we find the target.
    *
-   * If it is the test itself then we simply execute it with another context that will
-   * call this method.
-   *
-   * If it's a parent, then we invoke the scope with a context that will keep executing
-   * the correct child scope until the actual test is found.
-   *
-   * @param target the test we are looking to execute
+   * Once the target is found it can be executed as normal, and any test lambdas it contains
+   * can be registered back with the stack for execution later.
    */
-  private fun locateAndExecute(klass: KClass<out Spec>, target: Description) {
-    instantiateSpec(klass).let {
+  private fun execute(testCase: TestCase) {
+    logger.debug("Executing $testCase")
+    instantiateSpec(testCase.spec::class).let {
       when (it) {
         is Failure -> throw it.exception
         is Success -> {
           val spec = it.value
-          // for each of the top level tests we check if it is the one we are
-          // looking to execute. If it is then we execute it immediately using a context
-          // which will invoke any nested tests in turn.
-          // If the test is not the one we are looking for, but is infact an ancestor
-          // then we need to execute the closure to ensure state is correct. We do this
-          // with a context that will perform the same logic as this code, but on the
-          // nested test itself.
-          spec.testCases().forEach {
-
-            if (it.description == target) interceptSpec(spec) {
-              TestCaseExecutor(listener, it, targetContext(spec, target)).execute()
-            } else if (it.description.isAncestorOf(target)) {
-              interceptSpec(spec) {
-                execute(spec, it, target)
-              }
-            }
+          interceptSpec(spec) {
+            spec.testCases().forEach { locate(testCase.description, it) }
           }
         }
       }
     }
   }
 
-  private fun execute(spec: Spec, current: TestCase, target: Description) {
-
-    val nestedContext = object : TestContext() {
-      override fun description(): Description = current.description
-      override fun registerTestCase(testCase: TestCase) {
-        if (testCase.description == target) {
-
-          if (executed.contains(testCase.description))
-            throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
-          executed.add(testCase.description)
-
-          TestCaseExecutor(listener, testCase, targetContext(spec, target)).execute()
-        } else if (testCase.description.isAncestorOf(target)) {
-          execute(spec, testCase, target)
-        }
+  private fun locate(target: Description, current: TestCase) {
+    // if equals then we've found the test we want to invoke
+    if (target == current.description) {
+      val context = object : TestContext() {
+        override fun description(): Description = target
+        override fun registerTestCase(testCase: TestCase) = enqueue(testCase)
       }
+      if (executed.contains(target))
+        throw  IllegalStateException("Attempting to execute duplicate test")
+      executed.add(target)
+      io.kotlintest.runner.jvm.TestCaseExecutor(listener, current, context).execute()
+      // otherwise if it's an ancestor then we want to search it recursively
+    } else if (current.description.isAncestorOf(target)) {
+      current.test.invoke(object : TestContext() {
+        override fun description(): Description = current.description
+        override fun registerTestCase(testCase: TestCase) = locate(target, testCase)
+      })
     }
-
-    current.test.invoke(nestedContext)
-  }
-
-  private fun targetContext(spec: Spec, target: Description) = object : TestContext() {
-    override fun description(): Description = target
-    override fun registerTestCase(testCase: TestCase) = locateAndExecute(spec::class, testCase.description)
   }
 }

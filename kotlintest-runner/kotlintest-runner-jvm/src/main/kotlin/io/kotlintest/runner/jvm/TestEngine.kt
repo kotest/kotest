@@ -122,10 +122,10 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun runner(spec: Spec): SpecRunner {
     return when (spec.specIsolationMode()) {
       SpecIsolationMode.SharedInstance -> SharedInstanceSpecRunner(listener)
-      SpecIsolationMode.InstancePerLeaf -> InstancePerTestSpecRunner2(listener)
-      SpecIsolationMode.InstancePerNode -> InstancePerTestSpecRunner2(listener)
+      SpecIsolationMode.InstancePerLeaf -> InstancePerTestSpecRunner(listener)
+      SpecIsolationMode.InstancePerNode -> InstancePerTestSpecRunner(listener)
       null -> when {
-        spec.isInstancePerTest() -> InstancePerTestSpecRunner2(listener)
+        spec.isInstancePerTest() -> InstancePerTestSpecRunner(listener)
         else -> SharedInstanceSpecRunner(listener)
       }
     }
