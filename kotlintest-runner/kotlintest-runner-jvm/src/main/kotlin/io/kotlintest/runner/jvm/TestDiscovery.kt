@@ -1,5 +1,6 @@
 package io.kotlintest.runner.jvm
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.extensions.DiscoveryExtension
@@ -44,7 +45,7 @@ object TestDiscovery {
     val classOnly = { name: String? -> name?.endsWith(".class") ?: false }
     val excludeJDKPackages = FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun")
 
-    val executor = Executors.newSingleThreadExecutor()
+    val executor = Executors.newSingleThreadExecutor(ThreadFactoryBuilder().setNameFormat("kotlintest-discovery-%d").build())
     val classes = Reflections(ConfigurationBuilder()
         .addUrls(uris.map { it.toURL() })
         .setExpandSuperTypes(true)

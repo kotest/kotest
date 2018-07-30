@@ -1,5 +1,8 @@
 package io.kotlintest.runner.jvm
 
+import arrow.core.Try
+import arrow.core.recover
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
@@ -9,14 +12,19 @@ import io.kotlintest.TestFilterResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
+import org.slf4j.LoggerFactory
 import java.time.Duration
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 class TestCaseExecutor(val listener: TestEngineListener,
                        val testCase: TestCase,
                        val context: TestContext) {
+
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   fun execute() {
     try {
@@ -84,30 +92,33 @@ class TestCaseExecutor(val listener: TestEngineListener,
   private fun executeTestSet(set: TestSet): TestResult {
 
     // each test set runs inside its own execution service, so we can easily support multiple threads
-    val executor = Executors.newFixedThreadPool(set.threads)
+    val executor = Executors.newFixedThreadPool(set.threads, ThreadFactoryBuilder().setNameFormat("kotlintest-test-executor-%d").build())
 
     // captures an error from the test closures
     val error = AtomicReference<Throwable?>(null)
 
-    for (j in 0 until set.invocations) {
-      executor.execute {
-        try {
+    val tasks = (0 until set.invocations).map { j ->
+      Callable<Unit> {
+        Try {
           listener.testRun(set, j)
           set.testCase.test(context)
-        } catch (t: Throwable) {
-          error.set(t)
+        }.recover {
           // if an error is detected we'll abort any further invocations
           executor.shutdownNow()
+          error.compareAndSet(null, it)
         }
       }
     }
-
+    executor.invokeAll(tasks)
     executor.shutdown()
+
     val cleanExit = try {
       executor.awaitTermination(set.timeout.seconds, TimeUnit.SECONDS)
     } catch (e: InterruptedException) {
+      logger.error("Interrupted waiting for executor to complete", e.message)
       false
     }
+
     val result = buildTestResult(cleanExit, set.timeout, error.get(), context.metaData())
     listener.completeTestSet(set, result)
     return result
