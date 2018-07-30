@@ -1,6 +1,7 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
@@ -16,7 +17,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = Executors.newFixedThreadPool(parallelism)
+  private val executor = Executors.newFixedThreadPool(parallelism, ThreadFactoryBuilder().setNameFormat("kotlintest-engine-%d").build())
   private val error = AtomicReference<Throwable?>(null)
 
   private fun afterAll() = Try {
