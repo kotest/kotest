@@ -23,6 +23,8 @@ interface TestListener {
    */
   fun afterTest(description: Description, result: TestResult): Unit = Unit
 
+  fun beforeSpecStarted(description: Description, spec: Spec): Unit = Unit
+
   /**
    * Is invoked each time a [Spec] is started.
    *
@@ -44,6 +46,8 @@ interface TestListener {
    * @param spec the actual [Spec] instance.
    */
   fun afterSpec(description: Description, spec: Spec): Unit = Unit
+
+  fun afterSpecCompleted(description: Description, spec: Spec): Unit = Unit
 
   /**
    * Is invoked as soon as the Test Engine is started.

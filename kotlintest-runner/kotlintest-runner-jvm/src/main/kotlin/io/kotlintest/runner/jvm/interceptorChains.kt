@@ -7,9 +7,9 @@ fun createSpecInterceptorChain(
     context: SpecInterceptContext,
     extensions: Iterable<SpecExtension>,
     initial: () -> Unit): () -> Unit {
-  return extensions.fold(initial, { fn, extension ->
+  return extensions.fold(initial) { fn, extension ->
     {
       extension.intercept(context, fn)
     }
-  })
+  }
 }

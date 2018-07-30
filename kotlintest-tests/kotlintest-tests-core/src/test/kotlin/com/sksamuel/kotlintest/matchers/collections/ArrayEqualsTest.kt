@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.matchers
+package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe

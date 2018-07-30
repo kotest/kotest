@@ -1,0 +1,15 @@
+buildscript {
+    ext.jackson_version = '2.9.6'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile project(':kotlintest-assertions')
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+    compile 'com.jayway.jsonpath:json-path:2.4.0'
+    testCompile project(':kotlintest-core')
+    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+}

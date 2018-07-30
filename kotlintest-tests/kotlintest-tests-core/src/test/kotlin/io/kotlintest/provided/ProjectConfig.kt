@@ -3,7 +3,9 @@ package io.kotlintest.provided
 import com.sksamuel.kotlintest.AutoCloseListener
 import com.sksamuel.kotlintest.TestCaseFilterTestFilter
 import io.kotlintest.AbstractProjectConfig
+import io.kotlintest.FailureFirstSpecExecutionOrder
 import io.kotlintest.ProjectLevelFilter
+import io.kotlintest.SpecExecutionOrder
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.TestListener
 
@@ -19,6 +21,8 @@ object ProjectConfig : AbstractProjectConfig() {
   override fun listeners(): List<TestListener> = listOf(AutoCloseListener)
 
   override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
+
+  override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
 
   override fun beforeAll() {
     intercepterLog.append("B1.")

@@ -8,6 +8,10 @@ import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
 
+interface SpecRunnerFactory {
+  fun specRunner(listener: TestEngineListener): SpecRunner
+}
+
 abstract class SpecRunner(val listener: TestEngineListener) {
 
   abstract fun execute(spec: Spec)

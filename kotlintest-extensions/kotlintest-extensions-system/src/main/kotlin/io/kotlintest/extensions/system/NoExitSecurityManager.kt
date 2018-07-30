@@ -20,10 +20,6 @@ class NoExitSecurityManager(private val originalSecurityManager: SecurityManager
 
   override fun checkExit(status: Int) = throw SystemExitException(status)
 
-  override fun getInCheck(): Boolean {
-    return originalSecurityManager != null && originalSecurityManager.inCheck
-  }
-
   override fun getSecurityContext(): Any {
     return if (originalSecurityManager == null)
       super.getSecurityContext()

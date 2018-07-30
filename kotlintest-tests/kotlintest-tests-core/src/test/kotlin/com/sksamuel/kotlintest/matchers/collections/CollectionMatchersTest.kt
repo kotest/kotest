@@ -9,6 +9,7 @@ import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
 import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldFail
 import io.kotlintest.shouldHave
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotHave
@@ -18,7 +19,33 @@ import java.util.*
 
 class CollectionMatchersTest : WordSpec() {
 
+  val countdown = (10 downTo 0).toList()
+  val asc = { a:Int, b:Int -> a - b }
+  val desc = { a:Int, b:Int -> b - a }
+
   init {
+
+    "a descending non-empty list" should {
+      "fail to ascend" {
+        shouldFail {
+          countdown.shouldBeSortedWith(asc)
+        }
+      }
+
+      "descend" {
+        countdown.shouldBeSortedWith(desc)
+      }
+
+      "not ascend" {
+        countdown.shouldNotBeSortedWith(asc)
+      }
+
+      "fail not to descend" {
+        shouldFail {
+          countdown.shouldNotBeSortedWith(desc)
+        }
+      }
+    }
 
     "haveElementAt" should {
       "test that a collection contains the specified element at the given index" {
