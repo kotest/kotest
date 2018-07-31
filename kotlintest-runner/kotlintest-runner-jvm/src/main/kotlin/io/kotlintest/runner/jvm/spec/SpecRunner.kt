@@ -1,4 +1,4 @@
-package io.kotlintest.runner.jvm
+package io.kotlintest.runner.jvm.spec
 
 import createSpecInterceptorChain
 import io.kotlintest.Project
@@ -7,10 +7,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.SpecInterceptContext
-
-interface SpecRunnerFactory {
-  fun specRunner(listener: TestEngineListener): SpecRunner
-}
+import io.kotlintest.runner.jvm.TestEngineListener
 
 abstract class SpecRunner(val listener: TestEngineListener) {
 

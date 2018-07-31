@@ -6,6 +6,10 @@ import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.SpecIsolationMode
+import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
+import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
+import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
+import io.kotlintest.runner.jvm.spec.SpecRunner
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -122,11 +126,11 @@ class TestEngine(val classes: List<KClass<out Spec>>,
 
   private fun runner(spec: Spec): SpecRunner {
     return when (spec.specIsolationMode()) {
-      SpecIsolationMode.SharedInstance -> SharedInstanceSpecRunner(listener)
-      SpecIsolationMode.InstancePerLeaf -> InstancePerTestSpecRunner(listener)
-      SpecIsolationMode.InstancePerNode -> InstancePerTestSpecRunner(listener)
+      SpecIsolationMode.SharedInstanceInOrder -> SharedInstanceSpecRunner(listener)
+      SpecIsolationMode.InstancePerNode -> InstancePerNodeSpecRunner(listener)
+      SpecIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
       null -> when {
-        spec.isInstancePerTest() -> InstancePerTestSpecRunner(listener)
+        spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
         else -> SharedInstanceSpecRunner(listener)
       }
     }

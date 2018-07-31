@@ -1,4 +1,4 @@
-package io.kotlintest.runner.jvm
+package io.kotlintest.runner.jvm.spec
 
 import arrow.core.Failure
 import arrow.core.Success
@@ -6,10 +6,13 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
+import io.kotlintest.runner.jvm.TestCaseExecutor
+import io.kotlintest.runner.jvm.TestEngineListener
+import io.kotlintest.runner.jvm.instantiateSpec
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+class InstancePerNodeSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -75,7 +78,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       if (executed.contains(target))
         throw  IllegalStateException("Attempting to execute duplicate test")
       executed.add(target)
-      io.kotlintest.runner.jvm.TestCaseExecutor(listener, current, context).execute()
+      TestCaseExecutor(listener, current, context).execute()
       // otherwise if it's an ancestor then we want to search it recursively
     } else if (current.description.isAncestorOf(target)) {
       current.test.invoke(object : TestContext() {

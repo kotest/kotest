@@ -1,9 +1,11 @@
-package io.kotlintest.runner.jvm
+package io.kotlintest.runner.jvm.spec
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestContext
 import io.kotlintest.TestCase
+import io.kotlintest.runner.jvm.TestCaseExecutor
+import io.kotlintest.runner.jvm.TestEngineListener
 
 class SharedInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 

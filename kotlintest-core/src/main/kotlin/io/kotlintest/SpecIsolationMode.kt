@@ -1,7 +1,7 @@
 package io.kotlintest
 
 enum class SpecIsolationMode {
-  SharedInstance,
+  SharedInstanceInOrder,
   InstancePerNode,
   InstancePerLeaf
 }
