@@ -9,8 +9,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <kotlin.version>1.2.31</kotlin.version>
-        <kotlintest.version>3.0.3</kotlintest.version>
+        <kotlin.version>1.2.50</kotlin.version>
+        <kotlintest.version>3.1.8</kotlintest.version>
     </properties>
 
     <dependencies>

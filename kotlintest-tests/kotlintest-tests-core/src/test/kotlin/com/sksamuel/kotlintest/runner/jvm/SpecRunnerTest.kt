@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.runner.jvm
 
 import com.nhaarman.mockito_kotlin.mock
 import io.kotlintest.TestCaseOrder
-import io.kotlintest.runner.jvm.SharedInstanceSpecRunner
+import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe

@@ -1,18 +1,20 @@
-package io.kotlintest.runner.jvm
+package io.kotlintest.runner.jvm.spec
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestContext
 import io.kotlintest.TestCase
+import io.kotlintest.runner.jvm.TestCaseExecutor
+import io.kotlintest.runner.jvm.TestEngineListener
 
 class SharedInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
   override fun execute(spec: Spec) {
-    interceptSpec(spec, {
+    interceptSpec(spec) {
       // creating the spec instance will have invoked the init block, resulting
       // in the top level test cases being available on the spec class
       topLevelTests(spec).forEach { TestCaseExecutor(listener, it, callingThreadContext(it.description)).execute() }
-    })
+    }
   }
 
   private fun callingThreadContext(description: Description): TestContext = object : TestContext() {

@@ -1,6 +1,8 @@
 include 'kotlintest-core',
         'kotlintest-assertions',
         'kotlintest-assertions-arrow',
+        'kotlintest-assertions-json',
+        'kotlintest-assertions-ktor',
         'kotlintest-runner:kotlintest-runner-jvm',
         'kotlintest-runner:kotlintest-runner-junit4',
         'kotlintest-runner:kotlintest-runner-junit5',
