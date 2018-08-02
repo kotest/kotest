@@ -43,6 +43,10 @@ allprojects {
 
     release {
         failOnPublishNeeded = false
+        git {
+            requireBranch = ''
+            pushToRemote = 'origin'
+        }
     }
 
     task javadocJar(type: Jar) {
