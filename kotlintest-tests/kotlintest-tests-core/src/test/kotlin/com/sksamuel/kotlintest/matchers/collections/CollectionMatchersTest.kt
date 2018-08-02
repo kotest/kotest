@@ -47,6 +47,28 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+	"sortedWith" should {
+		val items = listOf(
+			1 to "I",
+			2 to "II",
+			4 to "IV",
+			5 to "V",
+			6 to "VI",
+			9 to "IX",
+			10 to "X"
+		)
+	
+		"work on non-Comparable given a Comparator" {
+			items.shouldBeSortedWith(object : Comparator<Pair<Int, String>> {
+				override fun compare(a:Pair<Int, String>, b:Pair<Int, String>): Int = asc(a.first, b.first)
+			})
+		}
+
+		"work on non-Comparable given a compare function" {
+			items.shouldBeSortedWith { a, b -> asc(a.first, b.first) }
+		}
+	}
+	
     "haveElementAt" should {
       "test that a collection contains the specified element at the given index" {
         listOf("a", "b", "c") should haveElementAt(1, "b")
