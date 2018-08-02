@@ -9,7 +9,7 @@ import io.kotlintest.shouldNotBe
 
 fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
 fun Double.shouldNotBeExactly(other: Double) = this shouldBe exactly(other)
-fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shouldNotBe between(a, b, tolerance)
+fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shouldBe between(a, b, tolerance)
 fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double) = this shouldNotBe between(a, b, tolerance)
 
 fun Double.shouldBeLessThan(x: Double) = this shouldBe lt(x)
