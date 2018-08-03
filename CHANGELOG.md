@@ -1,6 +1,42 @@
 Changelog
 =========
 
+#### 3.1.9
+
+* Feature: Add soft assertions (#373)
+* Feature: `sortedWith` (and related) matchers. (#383)
+* Improvement: Removed unnecessary `Comparable<T>` upper-bound from `sortedWith` matchers. (#389)
+* Improvement: Improve StringShrinker algorithm (#377)
+* Bugfix: shouldBeBetween should be shouldBe instead of shouldNotBe (#390)
+* Bugfix: Fix beLeft is comparing against Either.Right instead of Either.Left (#374)
+* Internal: Naming executor services for jmx monitoring
+
+#### 3.1.8
+
+* Bugfix: Skip tests when MethodSelector is set #367 (means can run a single test in intellij)
+* Bugfix: Fix error when running single test in kotlintest-tests (#371)
+* Bugfix Fix table testing forNone and Double between matcher (#372)
+* Improvement: Remove matcher frames from stacktraces (#369)
+* Improvement: Use less ambiguous string representations in equality errors (#368)
+* Improvement: Improve String equality error messages (#366)
+* Internal: Update kotlin to 1.2.50 (#365)
+
+#### 3.1.7
+
+* Feature: Added Int/Long.shouldBeNegative and Int/Long.shouldBePositive matchers #325
+* Feature: Added Double.shouldBeNegative and Double.shouldBePositive matchers #325
+* Feature: Added collection.shouldBeLargerThan(c), collection.shouldBeSmallerThan(c), collection.shouldBeSameSizeAs(c) #325
+* Feature: Added collection.shouldHaveAtLeastSize(n) and collection.shouldHaveAtMostSize(n) matchers.
+* Feature: Added matcher for uri.opaque
+* Feature: Add matchers containsExactly and containsExactlyInAnyOrder (#360)
+* Feature: Added test case filters
+* Bugfix: Running single tests with Gradle command line #356
+* Change: Removed coroutine support until it is no longer experimental
+* Improvement: Optimize sorted matcher (#359)
+* Improvement: Allow type matchers to match nullable values. (#358)
+* Improvement: Allow nullable receivers for string matchers. (#352)
+* Improvement: Run tests for all rows in a table, even after errors. (#351)
+
 #### 3.1.6
 
 * Specs now support co-routines #332
