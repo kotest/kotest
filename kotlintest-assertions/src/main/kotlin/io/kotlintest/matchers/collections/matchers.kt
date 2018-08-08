@@ -1,17 +1,12 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.*
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.beSorted
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
-import io.kotlintest.neverNullMatcher
-import io.kotlintest.should
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
@@ -49,8 +44,8 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
   override fun test(value: L) =
       Result(
           value[index] == element,
-          "Collection should contain $element at index $index",
-          "Collection should not contain $element at index $index"
+          "Collection should contain ${stringRepr(element)} at index $index",
+          "Collection should not contain ${stringRepr(element)} at index $index"
       )
 }
 
@@ -70,8 +65,8 @@ fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
   override fun test(value: C) = Result(
       value.contains(t),
-      "Collection should contain element $t",
-      "Collection should not contain element $t"
+      "Collection should contain element ${stringRepr(t)}",
+      "Collection should not contain element ${stringRepr(t)}"
   )
 }
 
@@ -85,8 +80,8 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
   val passed = value.size == expected.size && value.zip(expected) { a, b -> a == b }.all { it }
   Result(
       passed,
-      "Collection should be exactly $expected but was $value",
-      "Collection should not be exactly $expected"
+      "Collection should be exactly ${stringRepr(expected)} but was ${stringRepr(value)}",
+      "Collection should not be exactly ${stringRepr(expected)}"
   )
 }
 
@@ -100,8 +95,8 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = 
   val passed = value.size == expected.size && expected.all { value.contains(it) }
   Result(
       passed,
-      "Collection should contain $expected in any order, but was $value",
-      "Collection should not contain exactly $expected in any order"
+      "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
+      "Collection should not contain exactly ${stringRepr(expected)} in any order"
   )
 }
 
