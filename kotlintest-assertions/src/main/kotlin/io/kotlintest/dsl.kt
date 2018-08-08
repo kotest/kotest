@@ -209,7 +209,7 @@ private fun callPublicConstructor(className: String, parameterTypes: Array<Class
 }
 
 /** Return a string representation of [obj] that is less ambiguous than `toString` */
-private fun stringRepr(obj: Any?): String = when (obj) {
+internal fun stringRepr(obj: Any?): String = when (obj) {
   is Float -> "${obj}f"
   is Long -> "${obj}L"
   is Char -> "'$obj'"

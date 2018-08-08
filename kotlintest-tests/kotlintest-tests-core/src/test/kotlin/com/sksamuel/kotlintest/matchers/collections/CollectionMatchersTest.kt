@@ -7,6 +7,7 @@ import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
+import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
@@ -20,8 +21,8 @@ import java.util.*
 class CollectionMatchersTest : WordSpec() {
 
   val countdown = (10 downTo 0).toList()
-  val asc = { a:Int, b:Int -> a - b }
-  val desc = { a:Int, b:Int -> b - a }
+  val asc = { a: Int, b: Int -> a - b }
+  val desc = { a: Int, b: Int -> b - a }
 
   init {
 
@@ -47,28 +48,28 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
-	"sortedWith" should {
-		val items = listOf(
-			1 to "I",
-			2 to "II",
-			4 to "IV",
-			5 to "V",
-			6 to "VI",
-			9 to "IX",
-			10 to "X"
-		)
-	
-		"work on non-Comparable given a Comparator" {
-			items.shouldBeSortedWith(object : Comparator<Pair<Int, String>> {
-				override fun compare(a:Pair<Int, String>, b:Pair<Int, String>): Int = asc(a.first, b.first)
-			})
-		}
+    "sortedWith" should {
+      val items = listOf(
+          1 to "I",
+          2 to "II",
+          4 to "IV",
+          5 to "V",
+          6 to "VI",
+          9 to "IX",
+          10 to "X"
+      )
 
-		"work on non-Comparable given a compare function" {
-			items.shouldBeSortedWith { a, b -> asc(a.first, b.first) }
-		}
-	}
-	
+      "work on non-Comparable given a Comparator" {
+        items.shouldBeSortedWith(object : Comparator<Pair<Int, String>> {
+          override fun compare(a: Pair<Int, String>, b: Pair<Int, String>): Int = asc(a.first, b.first)
+        })
+      }
+
+      "work on non-Comparable given a compare function" {
+        items.shouldBeSortedWith { a, b -> asc(a.first, b.first) }
+      }
+    }
+
     "haveElementAt" should {
       "test that a collection contains the specified element at the given index" {
         listOf("a", "b", "c") should haveElementAt(1, "b")
@@ -293,6 +294,7 @@ class CollectionMatchersTest : WordSpec() {
         }
         col should contain(2)
       }
+
       "support type inference for subtypes of collection" {
         val tests = listOf(
             TestSealed.Test1("test1"),
@@ -300,6 +302,12 @@ class CollectionMatchersTest : WordSpec() {
         )
         tests should contain(TestSealed.Test1("test1"))
         tests.shouldContain(TestSealed.Test2(2))
+      }
+
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf<Any>(1, 2).shouldContain(listOf<Any>(1L, 2L))
+        }.message shouldBe "Collection should contain element [1L, 2L]"
       }
     }
 
@@ -324,6 +332,12 @@ class CollectionMatchersTest : WordSpec() {
           actual.shouldContainExactly(3, 2, 1)
         }
       }
+
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
+        }.message shouldBe "Collection should be exactly [1, 2] but was [1L, 2L]"
+      }
     }
 
     "containExactlyInAnyOrder" should {
@@ -342,6 +356,12 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           actual should containExactlyInAnyOrder(1, 2, 3, 4)
         }
+      }
+
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
+        }.message shouldBe "Collection should contain [1, 2] in any order, but was [1L, 2L]"
       }
     }
 
@@ -429,6 +449,11 @@ class CollectionMatchersTest : WordSpec() {
         val actual = listOf(5, 3, 1, 2, 4, 2)
         actual should containsInOrder(3, 2, 2)
       }
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf<Number>(1L, 2L) should containsInOrder(listOf<Number>(1, 2))
+        }.message shouldBe "[1L, 2L] did not contain the elements [1, 2] in order"
+      }
     }
 
     "containsAll" should {
@@ -465,6 +490,11 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           col should containAll(3, 2, 0)
         }
+      }
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
+        }.message shouldBe "Collection should contain all of 1L, 2L"
       }
     }
   }
