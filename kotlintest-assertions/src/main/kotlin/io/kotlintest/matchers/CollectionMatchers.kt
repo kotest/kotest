@@ -3,6 +3,7 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.neverNullMatcher
+import io.kotlintest.stringRepr
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
@@ -33,8 +34,8 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(
       ts.all { value.contains(it) },
-      "Collection should contain all of ${ts.joinToString(",", limit=10)}",
-      "Collection should not contain all of ${ts.joinToString(",", limit=10)}"
+      "Collection should contain all of ${ts.joinToString(", ", limit = 10) { stringRepr(it) }}",
+      "Collection should not contain all of ${ts.joinToString(", ", limit = 10) { stringRepr(it) }}"
   )
 }
 
@@ -52,8 +53,8 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
 
   Result(
       subsequenceIndex == subsequence.size,
-      "[$actual] did not contain the elements [$subsequence] in order",
-      "[$actual] should not contain the elements [$subsequence] in order"
+      "${stringRepr(actual)} did not contain the elements ${stringRepr(subsequence)} in order",
+      "${stringRepr(actual)} should not contain the elements ${stringRepr(subsequence)} in order"
   )
 }
 
