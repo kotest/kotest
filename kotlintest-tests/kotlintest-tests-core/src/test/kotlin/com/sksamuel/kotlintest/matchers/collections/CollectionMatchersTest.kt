@@ -7,7 +7,6 @@ import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
-import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
@@ -60,9 +59,7 @@ class CollectionMatchersTest : WordSpec() {
       )
 
       "work on non-Comparable given a Comparator" {
-        items.shouldBeSortedWith(object : Comparator<Pair<Int, String>> {
-          override fun compare(a: Pair<Int, String>, b: Pair<Int, String>): Int = asc(a.first, b.first)
-        })
+        items.shouldBeSortedWith(Comparator { a, b -> asc(a.first, b.first) })
       }
 
       "work on non-Comparable given a compare function" {
@@ -495,6 +492,38 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
         }.message shouldBe "Collection should contain all of 1L, 2L"
+      }
+    }
+
+    "startWith" should {
+      "test that a list starts with the given collection" {
+        val col = listOf(1, 2, 3, 4, 5)
+        col.shouldStartWith(listOf(1))
+        col.shouldStartWith(listOf(1, 2))
+        col.shouldNotStartWith(listOf(2, 3))
+        col.shouldNotStartWith(listOf(4, 5))
+        col.shouldNotStartWith(listOf(1, 3))
+      }
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf(1L, 2L) should startWith(listOf(1L, 3L))
+        }.message shouldBe "List should start with [1L, 3L]"
+      }
+    }
+
+    "endWith" should {
+      "test that a list ends with the given collection" {
+        val col = listOf(1, 2, 3, 4, 5)
+        col.shouldEndWith(listOf(5))
+        col.shouldEndWith(listOf(4, 5))
+        col.shouldNotEndWith(listOf(2, 3))
+        col.shouldNotEndWith(listOf(3, 5))
+        col.shouldNotEndWith(listOf(1, 2))
+      }
+      "print errors unambiguously"  {
+        shouldThrow<AssertionError> {
+          listOf(1L, 2L) should endWith(listOf(1L, 3L))
+        }.message shouldBe "List should end with [1L, 3L]"
       }
     }
   }
