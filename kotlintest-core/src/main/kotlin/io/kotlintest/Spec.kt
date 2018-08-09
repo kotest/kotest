@@ -42,7 +42,7 @@ interface Spec : TestListener {
   @Deprecated("Instead of this function, override specIsolationMode() which should return a SpecIsolationMode value indicating how the isolation level should be set for this spec")
   fun isInstancePerTest(): Boolean
 
-  fun specIsolationMode(): SpecIsolationMode? = null
+  fun testIsolationMode(): TestIsolationMode? = null
 
   /**
    * Override this function to register extensions

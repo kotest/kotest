@@ -11,7 +11,7 @@ data class TestCaseConfig(
     val tags: Set<Tag> = emptySet(),
     val extensions: List<TestCaseExtension> = emptyList()) {
   init {
-    require(threads > 0, { "Theads must be > 0" })
-    require(invocations > 0, { "Invocations must be > 0" })
+    require(threads > 0) { "Theads must be > 0" }
+    require(invocations > 0) { "Invocations must be > 0" }
   }
 }

@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import io.kotlintest.SpecIsolationMode
+import io.kotlintest.TestIsolationMode
 import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
 import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
 import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
@@ -125,10 +125,10 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   }
 
   private fun runner(spec: Spec): SpecRunner {
-    return when (spec.specIsolationMode()) {
-      SpecIsolationMode.SharedInstanceInOrder -> SharedInstanceSpecRunner(listener)
-      SpecIsolationMode.InstancePerNode -> InstancePerNodeSpecRunner(listener)
-      SpecIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
+    return when (spec.testIsolationMode()) {
+      TestIsolationMode.SingleInstance -> SharedInstanceSpecRunner(listener)
+      TestIsolationMode.InstancePerNode -> InstancePerNodeSpecRunner(listener)
+      TestIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
       null -> when {
         spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
         else -> SharedInstanceSpecRunner(listener)
