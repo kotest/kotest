@@ -1,12 +1,18 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.*
+import io.kotlintest.Matcher
+import io.kotlintest.Result
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.beSorted
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
+import io.kotlintest.neverNullMatcher
+import io.kotlintest.should
+import io.kotlintest.shouldHave
+import io.kotlintest.shouldNot
+import io.kotlintest.stringRepr
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
@@ -27,6 +33,28 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
           value.any { it == null },
           "Collection should contain at least one null",
           "Collection should not contain any nulls"
+      )
+}
+
+fun <T> List<T>.shouldStartWith(slice: Collection<T>) = this should startWith(slice)
+fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(slice)
+fun <T> startWith(slice: Collection<T>) = object : Matcher<List<T>> {
+  override fun test(value: List<T>) =
+      Result(
+          value.subList(0, slice.size) == slice,
+          "List should start with ${stringRepr(slice)}",
+          "List should not start with ${stringRepr(slice)}"
+      )
+}
+
+fun <T> List<T>.shouldEndWith(slice: Collection<T>) = this should endWith(slice)
+fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(slice)
+fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
+  override fun test(value: List<T>) =
+      Result(
+          value.subList(value.size - slice.size, value.size) == slice,
+          "List should end with ${stringRepr(slice)}",
+          "List should not end with ${stringRepr(slice)}"
       )
 }
 
@@ -160,10 +188,10 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List
 
 fun <T : Comparable<T>> List<T>.shouldBeSorted() = this should beSorted<T>()
 fun <T : Comparable<T>> List<T>.shouldNotBeSorted() = this shouldNot beSorted<T>()
-fun <T> List<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith<T>(comparator)
-fun <T> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith<T>(comparator)
-fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSortedWith<T>(cmp)
-fun <T> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith<T>(cmp)
+fun <T> List<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith(comparator)
+fun <T> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
+fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSortedWith(cmp)
+fun <T> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith(cmp)
 
 fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
