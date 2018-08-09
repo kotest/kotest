@@ -39,7 +39,7 @@ class JUnitXMLReportTest : WordSpec() {
 
       "include top level information" {
         val root = root()
-        root.getAttributeValue("name").shouldBe("com.sksamuel.kotlintest.specs.WordSpecTest")
+        root.getAttributeValue("name").shouldBe("com.sksamuel.kotlintest.specs.wordspec.WordSpecTest")
         root.getAttributeValue("tests").shouldBe("3")
         root.getAttributeValue("skipped").shouldBe("0")
         root.getAttributeValue("errors").shouldBe("0")
@@ -49,7 +49,7 @@ class JUnitXMLReportTest : WordSpec() {
       "include test names" {
         val root = root()
         root.getChildren("testcase").map { it.getAttributeValue("name") }.toSet().shouldBe(setOf("have another test", "have a test with config", "have a test"))
-        root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet().shouldBe(setOf("com.sksamuel.kotlintest.specs.WordSpecTest"))
+        root.getChildren("testcase").map { it.getAttributeValue("classname") }.toSet().shouldBe(setOf("com.sksamuel.kotlintest.specs.wordspec.WordSpecTest"))
       }
     }
   }
