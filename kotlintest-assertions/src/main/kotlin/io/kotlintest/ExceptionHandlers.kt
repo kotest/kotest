@@ -25,6 +25,20 @@ inline fun <reified T : Throwable> shouldThrow(thunk: () -> Any?): T {
   }
 }
 
+inline fun <reified T : Throwable> shouldThrowUnit(thunk: () -> Unit): T {
+  val exceptionClass = T::class.java
+  try {
+    thunk()
+    throw Failures.failure("Expected exception ${T::class.qualifiedName} but no exception was thrown")
+  } catch (e: Throwable) {
+    return when {
+      exceptionClass.isAssignableFrom(e.javaClass) -> e as T
+      e is AssertionError -> throw e
+      else -> throw Failures.failure("Expected exception ${T::class.qualifiedName} but ${e.javaClass.name} was thrown", e)
+    }
+  }
+}
+
 fun shouldFail(thunk: () -> Any?) {
   val passed = try {
     thunk()

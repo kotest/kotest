@@ -5,6 +5,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.shouldThrowExactly
+import io.kotlintest.shouldThrowUnit
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -12,7 +13,7 @@ class ExceptionMatchersTest : FreeSpec() {
 
   init {
     "shouldThrow" - {
-      "error if no exception throw" {
+      "should error if no exception throw" {
         try {
           shouldThrow<IllegalAccessException> {
             listOf(1, 2, 3)
@@ -50,6 +51,13 @@ class ExceptionMatchersTest : FreeSpec() {
       "should not force non-null when the call is nullable" {
         shouldThrow<Exception> {
           FakeObjectWithMethodWithNullableSignature.method()
+        }
+      }
+      "support unit thunks" {
+        shouldThrowUnit<Exception> {
+          if (System.currentTimeMillis() > 0)
+            throw UnsupportedOperationException()
+          var bar = "bar"
         }
       }
     }
