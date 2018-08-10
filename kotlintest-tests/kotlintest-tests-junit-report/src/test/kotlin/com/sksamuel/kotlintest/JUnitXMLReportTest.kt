@@ -13,7 +13,7 @@ class JUnitXMLReportTest : WordSpec() {
 
   fun root(): Element {
 
-    val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.specs.WordSpecTest.xml"
+    val ReportPath = "kotlintest-tests/kotlintest-tests-core/build/test-results/test/TEST-com.sksamuel.kotlintest.specs.wordspec.WordSpecTest.xml"
     val file = when {
       System.getenv("TRAVIS") == "true" -> {
         println("XML: " + File(System.getenv("TRAVIS_BUILD_DIR") + "/kotlintest-tests/kotlintest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
