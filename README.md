@@ -152,6 +152,18 @@ dependencies {
 }
 ```
 
+or with Gradle Kotlin DSL
+
+```kotlin
+val test by tasks.getting(Test::class) {
+    useJUnitPlatform { }
+}
+
+dependencies {
+    testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.9")
+}
+```
+
 #### Maven
 
 For maven you must configure the surefire plugin for junit tests.
