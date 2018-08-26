@@ -55,7 +55,22 @@ private fun compare(a: Any?, b: Any?): Boolean {
       is Int -> a == b.toLong()
       else -> a == b
     }
-    else -> a == b
+    else -> makeComparable(a) == makeComparable(b)
+  }
+}
+
+private fun makeComparable(any: Any?): Any? {
+  return when (any) {
+    is BooleanArray -> any.asList()
+    is IntArray -> any.asList()
+    is ShortArray -> any.asList()
+    is FloatArray -> any.asList()
+    is DoubleArray -> any.asList()
+    is LongArray -> any.asList()
+    is ByteArray -> any.asList()
+    is CharArray -> any.asList()
+    is Array<*> -> any.asList()
+    else -> any
   }
 }
 
@@ -64,10 +79,11 @@ infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
     is Matcher<*> -> should(any as Matcher<T>)
     else -> {
-      if (this == null && any != null)
+      if (this == null && any != null) {
         ErrorCollector.collectOrThrow(equalsError(any, this))
-      if (!compare(this, any))
+      } else if (!compare(this, any)) {
         ErrorCollector.collectOrThrow(equalsError(any, this))
+      }
     }
   }
 }
@@ -96,71 +112,6 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 
 // -- specialized overrides of shouldBe --
-
-infix fun Double?.shouldBe(other: Double?) = should(ToleranceMatcher(other, 0.0))
-
-infix fun BooleanArray?.shouldBe(other: BooleanArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun IntArray?.shouldBe(other: IntArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun ShortArray?.shouldBe(other: ShortArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun FloatArray?.shouldBe(other: FloatArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun DoubleArray?.shouldBe(other: DoubleArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun LongArray?.shouldBe(other: LongArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun ByteArray?.shouldBe(other: ByteArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun CharArray?.shouldBe(other: CharArray?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
-
-infix fun <T> Array<T>?.shouldBe(other: Array<T>?) {
-  val expected = other?.asList()
-  val actual = this?.asList()
-  if (actual != expected)
-    ErrorCollector.collectOrThrow(equalsError(expected, actual))
-}
 
 private fun equalsError(expected: Any?, actual: Any?): Throwable {
   val expectedRepr = stringRepr(expected)
