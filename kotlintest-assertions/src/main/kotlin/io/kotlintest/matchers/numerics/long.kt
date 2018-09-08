@@ -35,14 +35,14 @@ fun lbeOdd() = object : Matcher<Long> {
       Result(value % 2 == 1L, "$value should be odd", "$value should be even")
 }
 
-fun Long.shouldBeLessThan(x: Long) = this shouldBe lt(x)
-fun Long.shouldNotBeLessThan(x: Long) = this shouldNotBe lt(x)
+infix fun Long.shouldBeLessThan(x: Long) = this shouldBe lt(x)
+infix fun Long.shouldNotBeLessThan(x: Long) = this shouldNotBe lt(x)
 
-fun Long.shouldBeLessThanOrEqual(x: Long) = this shouldBe lte(x)
-fun Long.shouldNotBeLessThanOrEqual(x: Long) = this shouldNotBe lte(x)
+infix fun Long.shouldBeLessThanOrEqual(x: Long) = this shouldBe lte(x)
+infix fun Long.shouldNotBeLessThanOrEqual(x: Long) = this shouldNotBe lte(x)
 
-fun Long.shouldBeGreaterThan(x: Long) = this shouldBe gt(x)
-fun Long.shouldNotBeGreaterThan(x: Long) = this shouldNotBe gt(x)
+infix fun Long.shouldBeGreaterThan(x: Long) = this shouldBe gt(x)
+infix fun Long.shouldNotBeGreaterThan(x: Long) = this shouldNotBe gt(x)
 
-fun Long.shouldBeGreaterThanOrEqual(x: Long) = this shouldBe gte(x)
-fun Long.shouldNotBeGreaterThanOrEqual(x: Long) = this shouldNotBe gte(x)
+infix fun Long.shouldBeGreaterThanOrEqual(x: Long) = this shouldBe gte(x)
+infix fun Long.shouldNotBeGreaterThanOrEqual(x: Long) = this shouldNotBe gte(x)

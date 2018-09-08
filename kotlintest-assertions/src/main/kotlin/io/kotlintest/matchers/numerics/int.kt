@@ -39,14 +39,14 @@ fun beOdd() = object : Matcher<Int> {
 fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
 fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
 
-fun Int.shouldBeLessThan(x: Int) = this shouldBe lt(x)
-fun Int.shouldNotBeLessThan(x: Int) = this shouldNotBe lt(x)
+infix fun Int.shouldBeLessThan(x: Int) = this shouldBe lt(x)
+infix fun Int.shouldNotBeLessThan(x: Int) = this shouldNotBe lt(x)
 
-fun Int.shouldBeLessThanOrEqual(x: Int) = this shouldBe lte(x)
-fun Int.shouldNotBeLessThanOrEqual(x: Int) = this shouldNotBe lte(x)
+infix fun Int.shouldBeLessThanOrEqual(x: Int) = this shouldBe lte(x)
+infix fun Int.shouldNotBeLessThanOrEqual(x: Int) = this shouldNotBe lte(x)
 
-fun Int.shouldBeGreaterThan(x: Int) = this shouldBe gt(x)
-fun Int.shouldNotBeGreaterThan(x: Int) = this shouldNotBe gt(x)
+infix fun Int.shouldBeGreaterThan(x: Int) = this shouldBe gt(x)
+infix fun Int.shouldNotBeGreaterThan(x: Int) = this shouldNotBe gt(x)
 
-fun Int.shouldBeGreaterThanOrEqual(x: Int) = this shouldBe gte(x)
-fun Int.shouldNotBeGreaterThanOrEqual(x: Int) = this shouldNotBe gte(x)
+infix fun Int.shouldBeGreaterThanOrEqual(x: Int) = this shouldBe gte(x)
+infix fun Int.shouldNotBeGreaterThanOrEqual(x: Int) = this shouldNotBe gte(x)
