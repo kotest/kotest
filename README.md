@@ -45,7 +45,7 @@ Use over 120 provided matchers to test assertions on many different types:
 
 user.email.shouldBeLowerCase()
 
-myImmgeFile.shouldHaveExtension(".jpg")
+myImageFile.shouldHaveExtension(".jpg")
 
 cityMap.shouldContainKey("London")
 ```
