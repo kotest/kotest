@@ -126,7 +126,32 @@ private fun equalsError(expected: Any?, actual: Any?): Throwable {
   return throwable
 }
 
-private fun equalsErrorMessage(expected: String, actual: String) = "expected: $expected but was: $actual"
+private fun equalsErrorMessage(expected: String, actual: String): String {
+  val multiLineThreshold = 50
+
+  val expectedLines = expected.lines()
+  val actualLines = actual.lines()
+
+  return if (expectedLines.count() > multiLineThreshold && actualLines.count() > multiLineThreshold) {
+    var commonLineCount = 0
+    val maxCommonLines = minOf(expectedLines.count(), actualLines.count())
+
+    while (commonLineCount < maxCommonLines && expectedLines[commonLineCount] == actualLines[commonLineCount]) {
+      ++commonLineCount
+    }
+
+    """
+    expected:
+    [...]
+    ${expectedLines.drop(commonLineCount).joinToString("\n")}
+    but was:
+    [...]
+    ${actualLines.drop(commonLineCount).joinToString("\n")}
+    """.trimIndent()
+  } else {
+    "expected: $expected but was: $actual"
+  }
+}
 
 /** If JUnit5 is present, return an AssertionFailedError */
 private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
