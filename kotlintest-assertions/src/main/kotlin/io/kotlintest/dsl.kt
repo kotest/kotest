@@ -126,7 +126,7 @@ private fun equalsError(expected: Any?, actual: Any?): Throwable {
   return throwable
 }
 
-private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
+private fun equalsErrorMessage(expected: String, actual: String) = "expected: $expected but was: $actual"
 
 /** If JUnit5 is present, return an AssertionFailedError */
 private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
