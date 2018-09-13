@@ -1,6 +1,16 @@
 Changelog
 =========
 
+#### 3.1.10
+
+* Feature: Infix version of some inline matchers, eg `date1 shouldHaveSameYearAs date2` (#404 #407 #409)
+* Feature: Infix support for int and long matchers (#400)
+* Feature: Added startsWith/endsWith matchers on collections (#393)
+* Improvement: Use unambiguous representations in collection matchers (#392)
+* Improvement: Collection matchers now work on `Sequence` too (#391)
+* Improvement: Added shouldThrowUnit variant of shouldThrow (#387)
+* Fix: shouldBe on arrays without static type (#397)
+
 #### 3.1.9
 
 * Feature: Add soft assertions (#373)
