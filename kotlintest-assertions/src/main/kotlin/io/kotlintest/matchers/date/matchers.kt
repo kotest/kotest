@@ -10,6 +10,17 @@ import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZonedDateTime
 
+/**
+ * Asserts that this year is the same as [date] year
+ *
+ * Verifies that this year is the same as [date] year, ignoring any other fields.
+ * For example, 09/02/1998 has the same year as 10/03/1998, and this assertion should be true for this comparison
+ *
+ * Opposite of [LocalDate.shouldNotHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameYearAsFailure]
+ */
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
 infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot haveSameYear(date)
 fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
