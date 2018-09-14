@@ -11,10 +11,10 @@ import java.time.Period
 import java.time.ZonedDateTime
 
 /**
- * Asserts that this year is the same as [date] year
+ * Asserts that this year is the same as [date]'s year
  *
- * Verifies that this year is the same as [date] year, ignoring any other fields.
- * For example, 09/02/1998 has the same year as 10/03/1998, and this assertion should be true for this comparison
+ * Verifies that this year is the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 has the same year as 10/03/1998, and this assertion should pass for this comparison
  *
  * Opposite of [LocalDate.shouldNotHaveSameYearAs]
  *
@@ -22,28 +22,167 @@ import java.time.ZonedDateTime
  * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameYearAsFailure]
  */
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
+
+/**
+ * Asserts that this year is NOT the same as [date]'s year
+ *
+ * Verifies that this year isn't the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 doesn't have the same year as 09/02/2018, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDate.shouldHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameYearAsFailure]
+ */
 infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot haveSameYear(date)
+
+/**
+ * Matcher that compares years of LocalDates
+ *
+ * Verifies that two dates have exactly the same year, ignoring any other fields.
+ * For example, 09/02/1998 has the same year as 10/03/1998, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameYear]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameYearNegation]
+ *
+ * @see [LocalDate.shouldHaveSameYearAs]
+ * @see [LocalDate.shouldNotHaveSameYearAs]
+ */
 fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
+/**
+ * Asserts that this year is the same as [date]'s year
+ *
+ * Verifies that this year is the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same year as 10/03/1998 11:30:30, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldNotHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameYearAsFailure]
+ */
 infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should haveSameYear(date)
+
+/**
+ * Asserts that this year is NOT the same as [date]'s year
+ *
+ * Verifies that this year isn't the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 doesn't have the same year as 09/02/2018 10:00:00, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameYearAsFailure]
+ */
 infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shouldNot haveSameYear(date)
+
+/**
+ * Matcher that compares years of LocalDateTimes
+ *
+ * Verifies that two DateTimes have exactly the same year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same year as 10/03/1998 11:30:30, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameYear]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameYearNegation]
+ *
+ * @see [LocalDateTime.shouldHaveSameYearAs]
+ * @see [LocalDateTime.shouldNotHaveSameYearAs]
+ */
 fun haveSameYear(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
       Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
+/**
+ * Asserts that this year is the same as [date]'s year
+ *
+ * Verifies that this year is the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same year as 10/03/1998 11:30:30 -05:00 America/Chicago,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldNotHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameYearAsFailure]
+ */
 infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should haveSameYear(date)
+
+/**
+ * Asserts that this year is NOT the same as [date]'s year
+ *
+ * Verifies that this year isn't the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo doesn't have the same year as 09/02/2018 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameYearAsFailure]
+ */
 infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shouldNot haveSameYear(date)
+
+/**
+ * Matcher that compares years of ZonedDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same year as 10/03/1998 11:30:30 -05:00 America/Chicago,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameYear]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameYearNegation]
+ *
+ * @see [ZonedDateTime.shouldHaveSameYearAs]
+ * @see [ZonedDateTime.shouldNotHaveSameYearAs]
+ */
 fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
       Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
+/**
+ * Asserts that this year is the same as [date]'s year
+ *
+ * Verifies that this year is the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the same year as 10/03/1998 11:30:30 -05:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldNotHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameYearAsFailure]
+ */
 infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this should haveSameYear(date)
+
+/**
+ * Asserts that this year is NOT the same as [date]'s year
+ *
+ * Verifies that this year isn't the same as [date]'s year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 doesn't have the same year as 09/02/2018 10:00:00 -03:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldHaveSameYearAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameYearAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameYearAsFailure]
+ */
 infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this shouldNot haveSameYear(date)
+
+/**
+ * Matcher that compares years of OffsetDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same year, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the same year as 10/03/1998 11:30:30 -05:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameYear]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameYearNegation]
+ *
+ * @see [OffsetDateTime.shouldHaveSameYearAs]
+ * @see [OffsetDateTime.shouldNotHaveSameYearAs]
+ */
 fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
