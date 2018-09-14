@@ -367,29 +367,180 @@ fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matc
       Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
+/**
+ * Asserts that this day is the same as [date]'s day
+ *
+ * Verifies that this day is the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 has the same day as 09/03/2018, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDate.shouldNotHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameDayAsFailure]
+ */
 infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameDay(date)
+
+/**
+ * Asserts that this day is NOT the same as [date]'s day
+ *
+ * Verifies that this day isn't the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 doesn't have the same day as 10/02/1998, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDate.shouldHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameDayAsFailure]
+ */
 infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot haveSameDay(date)
+
+/**
+ * Matcher that compares days of LocalDates
+ *
+ * Verifies that two dates have exactly the same day, ignoring any other fields.
+ * For example, 09/02/1998 has the same day as 09/03/2018, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameDay]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameDayNegation]
+ *
+ * @see [LocalDate.shouldHaveSameDayAs]
+ * @see [LocalDate.shouldNotHaveSameDayAs]
+ */
 fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
+
+/**
+ * Asserts that this day is the same as [date]'s day
+ *
+ * Verifies that this day is the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same day as 09/03/2018 11:30:30, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldNotHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameDayAsFailure]
+ */
 infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should haveSameDay(date)
+
+/**
+ * Asserts that this day is NOT the same as [date]'s day
+ *
+ * Verifies that this year isn't the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 doesn't have the same day as 10/02/1998 10:00:00, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameDayAsFailure]
+ */
 infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shouldNot haveSameDay(date)
+
+/**
+ * Matcher that compares days of LocalDateTimes
+ *
+ * Verifies that two DateTimes have exactly the same day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same day as 09/03/2018 11:30:30, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameDay]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameDayNegation]
+ *
+ * @see [LocalDateTime.shouldHaveSameDayAs]
+ * @see [LocalDateTime.shouldNotHaveSameDayAs]
+ */
 fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
+/**
+ * Asserts that this day is the same as [date]'s day
+ *
+ * Verifies that this day is the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same day as 09/03/2018 11:30:30 -05:00 America/Chicago,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldNotHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameDayAsFailure]
+ */
 infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should haveSameDay(date)
+
+/**
+ * Asserts that this day is NOT the same as [date]'s day
+ *
+ * Verifies that this day isn't the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo doesn't have the same day as 10/02/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameDayAsFailure]
+ */
 infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shouldNot haveSameDay(date)
+
+/**
+ * Matcher that compares days of ZonedDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same day as 09/03/2018 11:30:30 -05:00 America/Chicago,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameDay]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameDayNegation]
+ *
+ * @see [ZonedDateTime.shouldHaveSameDayAs]
+ * @see [ZonedDateTime.shouldNotHaveSameDayAs]
+ */
 fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
+/**
+ * Asserts that this day is the same as [date]'s day
+ *
+ * Verifies that this day is the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the day year as 09/02/1998 11:30:30 -05:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldNotHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameDayAsFailure]
+ */
 infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should haveSameDay(date)
+
+/**
+ * Asserts that this day is NOT the same as [date]'s day
+ *
+ * Verifies that this day isn't the same as [date]'s day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 doesn't have the same day as 10/02/1998 10:00:00 -03:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldHaveSameDayAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameDayAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameDayAsFailure]
+ */
 infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this shouldNot haveSameDay(date)
+
+/**
+ * Matcher that compares days of OffsetDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same day, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the same day as 09/03/2018 11:30:30 -05:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameDay]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameDayNegation]
+ *
+ * @see [OffsetDateTime.shouldHaveSameDayAs]
+ * @see [OffsetDateTime.shouldNotHaveSameDayAs]
+ */
 fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")

@@ -1,9 +1,12 @@
 package com.sksamuel.kotlintest.matchers.date
 
+import io.kotlintest.matchers.date.haveSameDay
 import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
+import io.kotlintest.matchers.date.shouldHaveSameDayAs
 import io.kotlintest.matchers.date.shouldHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldHaveSameYearAs
+import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
 import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
 import io.kotlintest.should
@@ -382,4 +385,185 @@ class DateMatchersSamples {
     
     
     
+    
+    
+    
+    fun localDateShouldHaveSameDayAs() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 3, 9)
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+    }
+    
+    fun localDateShouldHaveSameDayAsFailure() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+    }
+    
+    fun localDateShouldNotHaveSameDayAs() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+    }
+    
+    fun localDateShouldNotHaveSameDayAsFailure() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 3, 9)
+        
+        firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+    }
+    
+    fun localDateHaveSameDay() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 3, 9)
+        
+        firstDate should haveSameDay(secondDate)   //Assertion passes
+    }
+    
+    fun localDateHaveSameDayNegation() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    fun localDateTimeShouldHaveSameDayAs() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+    }
+    
+    fun localDateTimeShouldHaveSameDayAsFailure() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+    }
+    
+    fun localDateTimeShouldNotHaveSameDayAs() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+        
+        firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+    }
+    
+    fun localDateTimeShouldNotHaveSameDayAsFailure() {
+        val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
+        
+        firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+    }
+    
+    fun localDateTimeHaveSameDay() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(2018, 3, 9, 11, 30, 30)
+        
+        firstDate should haveSameDay(secondDate)   //Assertion passes
+    }
+    
+    fun localDateTimeHaveSameDayNegation() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+        
+        firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    
+    
+    fun zonedDateTimeShouldHaveSameDayAs() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldHaveSameDayAsFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+    }
+    
+    fun zonedDateTimeShouldNotHaveSameDayAs() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldNotHaveSameDayAsFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+    }
+    
+    fun zonedDateTimeHaveSameDay() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate should haveSameDay(secondDate)   //Assertion passes
+    }
+    
+    fun zonedDateTimeHaveSameDayNegation() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    fun offsetDateTimeShouldHaveSameDayAs() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldHaveSameDayAsFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 12
+    }
+    
+    fun offsetDateTimeShouldNotHaveSameDayAs() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 10, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldNotHaveSameDayAsFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 3, 9, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+    }
+    
+    fun offsetDateTimeHaveSameDay() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate should haveSameDay(secondDate)   //Assertion passes
+    }
+    
+    fun offsetDateTimeHaveSameDayNegation() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+    }
 }
