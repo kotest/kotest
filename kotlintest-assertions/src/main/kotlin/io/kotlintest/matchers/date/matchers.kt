@@ -188,29 +188,180 @@ fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Match
       Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
+/**
+ * Asserts that this month is the same as [date]'s month
+ *
+ * Verifies that month year is the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 has the same month as 10/02/2018, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDate.shouldNotHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameMonthAsFailure]
+ */
 infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSameMonth(date)
+
+/**
+ * Asserts that this month is NOT the same as [date]'s month
+ *
+ * Verifies that this month isn't the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 doesn't have the same month as 09/03/1998, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDate.shouldHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameMonthAsFailure]
+ */
 infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot haveSameMonth(date)
+
+/**
+ * Matcher that compares months of LocalDates
+ *
+ * Verifies that two dates have exactly the same month, ignoring any other fields.
+ * For example, 09/02/1998 has the same month as 10/02/2018, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameMonth]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameMonthNegation]
+ *
+ * @see [LocalDate.shouldHaveSameMonthAs]
+ * @see [LocalDate.shouldNotHaveSameMonthAs]
+ */
 fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
+/**
+ * Asserts that this month is the same as [date]'s month
+ *
+ * Verifies that this month is the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same month as 10/02/2018 11:30:30, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldNotHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameMonthAsFailure]
+ */
 infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should haveSameMonth(date)
+
+/**
+ * Asserts that this month is NOT the same as [date]'s month
+ *
+ * Verifies that this month isn't the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 doesn't have the same month as 09/03/1998 10:00:00, and this assertion should pass for this comparison
+ *
+ * Opposite of [LocalDateTime.shouldHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameMonthAsFailure]
+ */
 infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this shouldNot haveSameMonth(date)
+
+/**
+ * Matcher that compares months of LocalDateTimes
+ *
+ * Verifies that two DateTimes have exactly the same month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 has the same month as 10/02/2018 11:30:30, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameMonth]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameMonthNegation]
+ *
+ * @see [LocalDateTime.shouldHaveSameMonthAs]
+ * @see [LocalDateTime.shouldNotHaveSameMonthAs]
+ */
 fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
       Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
+/**
+ * Asserts that this month is the same as [date]'s month
+ *
+ * Verifies that this month is the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same month as 10/02/2018 11:30:30 -05:00 America/Chicago,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldNotHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameMonthAsFailure]
+ */
 infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should haveSameMonth(date)
+
+/**
+ * Asserts that this month is NOT the same as [date]'s month
+ *
+ * Verifies that this month isn't the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo doesn't have the same month as 09/03/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [ZonedDateTime.shouldHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameMonthAsFailure]
+ */
 infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this shouldNot haveSameMonth(date)
+
+/**
+ * Matcher that compares months of ZonedDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same month as 10/02/2018 11:30:30 -05:00 America/Chicago,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameMonth]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameMonthNegation]
+ *
+ * @see [ZonedDateTime.shouldHaveSameMonthAs]
+ * @see [ZonedDateTime.shouldNotHaveSameMonthAs]
+ */
 fun haveSameMonth(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
       Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
+/**
+ * Asserts that this month is the same as [date]'s month
+ *
+ * Verifies that this month is the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the same month as 10/02/2018 11:30:30 -05:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldNotHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameMonthAsFailure]
+ */
 infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this should haveSameMonth(date)
+
+/**
+ * Asserts that this month is NOT the same as [date]'s month
+ *
+ * Verifies that this month isn't the same as [date]'s month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 doesn't have the same month as 09/03/1998 10:00:00 -03:00,
+ * and this assertion should pass for this comparison
+ *
+ * Opposite of [OffsetDateTime.shouldHaveSameMonthAs]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameMonthAs]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameMonthAsFailure]
+ */
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
+
+
+/**
+ * Matcher that compares months of OffsetDateTimes
+ *
+ * Verifies that two ZonedDateTimes have exactly the same month, ignoring any other fields.
+ * For example, 09/02/1998 10:00:00 -03:00 has the same month as 10/02/1998 11:30:30 -05:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameMonth]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameMonthNegation]
+ *
+ * @see [OffsetDateTime.shouldHaveSameMonthAs]
+ * @see [OffsetDateTime.shouldNotHaveSameMonthAs]
+ */
 fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")

@@ -1,7 +1,10 @@
 package com.sksamuel.kotlintest.matchers.date
 
+import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
+import io.kotlintest.matchers.date.shouldHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldHaveSameYearAs
+import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
 import io.kotlintest.should
 import io.kotlintest.shouldNot
@@ -190,5 +193,193 @@ class DateMatchersSamples {
         
         firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
     }
+    
+    
+    
+    
+    
+    fun localDateShouldHaveSameMonthAs() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 2, 10)
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+    }
+    
+    fun localDateShouldHaveSameMonthAsFailure() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 3, 9)
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+    }
+    
+    fun localDateShouldNotHaveSameMonthAs() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 3, 9)
+        
+        firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+    }
+    
+    fun localDateShouldNotHaveSameMonthAsFailure() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 2, 10)
+        
+        firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+    }
+    
+    fun localDateHaveSameMonth() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(2018, 2, 10)
+        
+        firstDate should haveSameMonth(secondDate)   //Assertion passes
+    }
+    
+    fun localDateHaveSameMonthNegation() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 3, 9)
+        
+        firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    
+    fun localDateTimeShouldHaveSameMonthAs() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+    }
+    
+    fun localDateTimeShouldHaveSameMonthAsFailure() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+    }
+    
+    fun localDateTimeShouldNotHaveSameMonthAs() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
+        
+        firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+    }
+    
+    fun localDateTimeShouldNotHaveSameMonthAsFailure() {
+        val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 10, 1, 30, 30)
+        
+        firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+    }
+    
+    fun localDateTimeHaveSameMonth() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
+        
+        firstDate should haveSameMonth(secondDate)   //Assertion passes
+    }
+    
+    fun localDateTimeHaveSameMonthNegation() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
+        
+        firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    
+    fun zonedDateTimeShouldHaveSameMonthAs() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldHaveSameMonthAsFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+    }
+    
+    fun zonedDateTimeShouldNotHaveSameMonthAs() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldNotHaveSameMonthAsFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+    }
+    
+    fun zonedDateTimeHaveSameMonth() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+        
+        firstDate should haveSameMonth(secondDate)   //Assertion passes
+    }
+    
+    fun zonedDateTimeHaveSameMonthNegation() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    
+    
+    
+    fun offsetDateTimeShouldHaveSameMonthAs() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldHaveSameMonthAsFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+    }
+    
+    fun offsetDateTimeShouldNotHaveSameMonthAs() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldNotHaveSameMonthAsFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+    }
+    
+    fun offsetDateTimeHaveSameMonth() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+        
+        firstDate should haveSameMonth(secondDate)   //Assertion passes
+    }
+    
+    fun offsetDateTimeHaveSameMonthNegation() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+    }
+    
+    
     
 }
