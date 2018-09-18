@@ -546,29 +546,195 @@ fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matche
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
+/**
+ * Asserts that this is before [date]
+ *
+ * Verifies that this is before [date], comparing year, month and day.
+ * For example, 09/02/1998 is before 10/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldNotBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldBeBeforeFailure]
+ *
+ * @see LocalDate.shouldNotBeAfter
+ */
 infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
+
+/**
+ * Asserts that this is NOT before [date]
+ *
+ * Verifies that this is not before [date], comparing year, month and day.
+ * For example, 10/02/1998 is not before 09/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotBeBeforeFailure]
+ *
+ * @see LocalDate.shouldBeAfter
+ */
 infix fun LocalDate.shouldNotBeBefore(date: LocalDate) = this shouldNot before(date)
+
+/**
+ * Matcher that compares two LocalDates and checks whether one is before the other
+ *
+ * Verifies that two LocalDates occurs in a certain order, checking that one happened before the other.
+ * For example, 09/02/1998 is before 10/02/1998, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateBeforeNegation]
+ *
+ * @see LocalDate.shouldBeBefore
+ * @see LocalDate.shouldNotBeBefore
+ */
 fun before(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
+/**
+ * Asserts that this is before [date]
+ *
+ * Verifies that this is before [date], comparing every field in the LocalDateTime.
+ * For example, 09/02/1998 00:00:00 is before 09/02/1998 00:00:01, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldNotBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldBeBeforeFailure]
+ *
+ * @see LocalDateTime.shouldNotBeAfter
+ */
 infix fun LocalDateTime.shouldBeBefore(date: LocalDateTime) = this should before(date)
+
+/**
+ * Asserts that this is NOT before [date]
+ *
+ * Verifies that this is not before [date], comparing every field in the LocalDateTime.
+ * For example, 09/02/1998 00:00:01 is not before 09/02/1998 00:00:00, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotBeBeforeFailure]
+ *
+ * @see LocalDateTime.shouldBeAfter
+ */
 infix fun LocalDateTime.shouldNotBeBefore(date: LocalDateTime) = this shouldNot before(date)
+
+/**
+ * Matcher that compares two LocalDateTimes and checks whether one is before the other
+ *
+ * Verifies that two LocalDateTimes occurs in a certain order, checking that one happened before the other.
+ * For example, 09/02/1998 00:00:00 is before 09/02/1998 00:00:01, and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeBeforeNegation]
+ *
+ * @see LocalDateTime.shouldBeBefore
+ * @see LocalDateTime.shouldNotBeBefore
+ */
 fun before(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
       Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
+/**
+ * Asserts that this is before [date]
+ *
+ * Verifies that this is before [date], comparing every field in the ZonedDateTime.
+ * For example, 09/02/1998 00:00:00 -03:00 America/Sao_Paulo is before 09/02/1998 00:00:01 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldNotBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldBeBeforeFailure]
+ *
+ * @see ZonedDateTime.shouldNotBeAfter
+ */
 infix fun ZonedDateTime.shouldBeBefore(date: ZonedDateTime) = this should before(date)
+
+/**
+ * Asserts that this is NOT before [date]
+ *
+ * Verifies that this is not before [date], comparing every field in the ZonedDateTime.
+ * For example, 09/02/1998 00:00:01 -03:00 America/Sao_Paulo is not before 09/02/1998 00:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotBeBeforeFailure]
+ *
+ * @see ZonedDateTime.shouldBeAfter
+ */
 infix fun ZonedDateTime.shouldNotBeBefore(date: ZonedDateTime) = this shouldNot before(date)
+
+/**
+ * Matcher that compares two ZonedDateTimes and checks whether one is before the other
+ *
+ * Verifies that two ZonedDateTimes occurs in a certain order, checking that one happened before the other.
+ * For example, 09/02/1998 00:00:00 -03:00 America/Sao_Paulo is before 09/02/1998 00:00:01 -03:00 America/Sao_Paulo,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeBeforeNegation]
+ *
+ * @see ZonedDateTime.shouldBeBefore
+ * @see ZonedDateTime.shouldNotBeBefore
+ */
 fun before(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
       Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
+/**
+ * Asserts that this is before [date]
+ *
+ * Verifies that this is before [date], comparing every field in the OffsetDateTime.
+ * For example, 09/02/1998 00:00:00 -03:00 is before 09/02/1998 00:00:01 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldNotBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldBeBeforeFailure]
+ *
+ * @see OffsetDateTime.shouldNotBeAfter
+ */
 infix fun OffsetDateTime.shouldBeBefore(date: OffsetDateTime) = this should before(date)
+
+/**
+ * Asserts that this is NOT before [date]
+ *
+ * Verifies that this is not before [date], comparing every field in the OffsetDateTime.
+ * For example, 09/02/1998 00:00:01 -03:00 is not before 09/02/1998 00:00:00 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldBeBefore]
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotBeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotBeBeforeFailure]
+ *
+ * @see OffsetDateTime.shouldBeAfter
+ */
 infix fun OffsetDateTime.shouldNotBeBefore(date: OffsetDateTime) = this shouldNot before(date)
+
+/**
+ * Matcher that compares two OffsetDateTimes and checks whether one is before the other
+ *
+ * Verifies that two OffsetDateTimes occurs in a certain order, checking that one happened before the other.
+ * For example, 09/02/1998 00:00:00 -03:00 is before 09/02/1998 00:00:01 -03:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeBefore]
+ * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeBeforeNegation]
+ *
+ * @see OffsetDateTime.shouldBeBefore
+ * @see OffsetDateTime.shouldNotBeBefore
+ */
 fun before(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")

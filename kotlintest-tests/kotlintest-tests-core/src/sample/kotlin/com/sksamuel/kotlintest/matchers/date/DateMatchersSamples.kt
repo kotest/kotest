@@ -1,11 +1,14 @@
 package com.sksamuel.kotlintest.matchers.date
 
+import io.kotlintest.matchers.date.before
 import io.kotlintest.matchers.date.haveSameDay
 import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
+import io.kotlintest.matchers.date.shouldBeBefore
 import io.kotlintest.matchers.date.shouldHaveSameDayAs
 import io.kotlintest.matchers.date.shouldHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldHaveSameYearAs
+import io.kotlintest.matchers.date.shouldNotBeBefore
 import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
 import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
@@ -565,5 +568,192 @@ class DateMatchersSamples {
         val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
         
         firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+    }
+    
+    
+    
+    
+    
+    
+    fun localDateShouldBeBefore() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate shouldBeBefore secondDate    //Assertion passes
+    }
+    
+    fun localDateShouldBeBeforeFailure() {
+        val firstDate = LocalDate.of(1998, 2, 10)
+        val secondDate = LocalDate.of(1998, 2, 9)
+        
+        firstDate shouldBeBefore secondDate     //Assertion fails, 10/02/1998 is not before 09/02/1998 as expected.
+    }
+    
+    fun localDateShouldNotBeBefore() {
+        val firstDate = LocalDate.of(1998, 2, 10)
+        val secondDate = LocalDate.of(1998, 2, 9)
+        
+        firstDate shouldNotBeBefore secondDate    //Assertion passes
+    }
+    
+    fun localDateShouldNotBeBeforeFailure() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate shouldNotBeBefore secondDate     //Assertion fails, 09/02/1998 is before 10/02/1998, and we expected the opposite.
+    }
+    
+    fun localDateBefore() {
+        val firstDate = LocalDate.of(1998, 2, 9)
+        val secondDate = LocalDate.of(1998, 2, 10)
+        
+        firstDate should before(secondDate)     //Assertion passes
+    }
+    
+    fun localDateBeforeNegation() {
+        val firstDate = LocalDate.of(1998, 2, 10)
+        val secondDate = LocalDate.of(1998, 2, 9)
+        
+        firstDate shouldNot before(secondDate)  //Assertion passes
+    }
+    
+    
+    
+    
+    fun localDateTimeShouldBeBefore() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        
+        firstDate shouldBeBefore secondDate    //Assertion passes
+    }
+    
+    fun localDateTimeShouldBeBeforeFailure() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        
+        firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+    }
+    
+    fun localDateTimeShouldNotBeBefore() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        
+        firstDate shouldNotBeBefore secondDate    //Assertion passes
+    }
+    
+    fun localDateTimeShouldNotBeBeforeFailure() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        
+        firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+    }
+    
+    fun localDateTimeBefore() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        
+        firstDate should before(secondDate)     //Assertion passes
+    }
+    
+    fun localDateTimeBeforeNegation() {
+        val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+        val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+        
+        firstDate shouldNot before(secondDate)  //Assertion passes
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    fun zonedDateTimeShouldBeBefore() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldBeBefore secondDate    //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldBeBeforeFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+    }
+    
+    fun zonedDateTimeShouldNotBeBefore() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNotBeBefore secondDate    //Assertion passes
+    }
+    
+    fun zonedDateTimeShouldNotBeBeforeFailure() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+    }
+    
+    fun zonedDateTimeBefore() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate should before(secondDate)     //Assertion passes
+    }
+    
+    fun zonedDateTimeBeforeNegation() {
+        val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+        val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+        
+        firstDate shouldNot before(secondDate)  //Assertion passes
+    }
+    
+    
+    
+    
+    fun offsetDateTimeShouldBeBefore() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldBeBefore secondDate    //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldBeBeforeFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+    }
+    
+    fun offsetDateTimeShouldNotBeBefore() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNotBeBefore secondDate    //Assertion passes
+    }
+    
+    fun offsetDateTimeShouldNotBeBeforeFailure() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+    }
+    
+    fun offsetDateTimeBefore() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate should before(secondDate)     //Assertion passes
+    }
+    
+    fun offsetDateTimeBeforeNegation() {
+        val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+        val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+        
+        firstDate shouldNot before(secondDate)  //Assertion passes
     }
 }
