@@ -319,14 +319,14 @@ fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Match
  * Opposite of [LocalDate.shouldNotHaveSameMonthAs]
  *
  * ```
- *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- *    val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 10)
  *
  *    firstDate should haveSameYear(secondDate)   //  Assertion passes
  *
  *
- *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- *    val secondDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 2, 9)
  *
  *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
