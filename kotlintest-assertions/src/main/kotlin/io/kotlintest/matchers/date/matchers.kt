@@ -455,14 +455,14 @@ fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matche
  * Opposite of [ZonedDateTime.shouldNotHaveSameMonthAs]
  *
  * ```
- *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
- *    val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 2, 10, 11, 30, 30, 0, ZoneId.of("America/Sao_Paulo"))
  *
  *    firstDate should haveSameMonth(secondDate)   //  Assertion passes
  *
  *
- *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
- *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
  *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
