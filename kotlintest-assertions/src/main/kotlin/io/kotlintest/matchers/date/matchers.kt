@@ -1527,8 +1527,74 @@ fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Offs
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
+/**
+ * Asserts that this is within [period] of [date]
+ *
+ * Verifies that this is within [period] of [date].
+ * For example, 09/02/1998 is within 3 days of 10/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldNotBeWithin]
+ *
+ * ```
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 25)
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ * ```
+ */
 fun LocalDate.shouldBeWithin(period: Period, date: LocalDate) = this should within(period, date)
+
+/**
+ * Asserts that this is NOT within [period] of [date]
+ *
+ * Verifies that this is not within [period] of [date].
+ * For example, 09/02/1998 is not within 3 days of 25/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldBeWithin]
+ *
+ * ```
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 25)
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ * ```
+ */
 fun LocalDate.shouldNotBeWithin(period: Period, date: LocalDate) = this shouldNot within(period, date)
+
+/**
+ * Matcher that compares two LocalDates and checks whether one is within [period] of the other
+ *
+ * Verifies that two LocalDates are within a certain period.
+ * For example, 09/02/1998 is within 3 days of 10/02/1998, and the matcher will have a positive result for this comparison.
+ *
+ *
+ * ```
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 25)
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ * ```
+ *
+ * @see [LocalDate.shouldBeWithin]
+ * @see [LocalDate.shouldNotBeWithin]
+ */
 fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result {
     val start = date.minus(period)
@@ -1538,8 +1604,75 @@ fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Match
   }
 }
 
+/**
+ * Asserts that this is within [period] of [date]
+ *
+ * Verifies that this is within [period] of [date].
+ * For example, 09/02/1998 10:00:00 is within 3 days of 10/02/1998 10:00:00, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldNotBeWithin]
+ *
+ * ```
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ * ```
+ */
 fun LocalDateTime.shouldBeWithin(period: Period, date: LocalDateTime) = this should within(period, date)
+
+/**
+ * Asserts that this is NOT within [period] of [date]
+ *
+ * Verifies that this is not within [period] of [date].
+ * For example, 09/02/1998 10:00:00 is not within 3 days of 25/02/1998 10:00:00, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldBeWithin]
+ *
+ * ```
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ * ```
+ */
 fun LocalDateTime.shouldNotBeWithin(period: Period, date: LocalDateTime) = this shouldNot within(period, date)
+
+/**
+ * Matcher that compares two LocalDateTimes and checks whether one is within [period] of the other
+ *
+ * Verifies that two LocalDateTimes are within a certain period.
+ * For example, 09/02/1998 10:00:00 is within 3 days of 10/02/1998 10:00:00,
+ * and the matcher will have a positive result for this comparison.
+ *
+ *
+ * ```
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ * ```
+ *
+ * @see [LocalDateTime.shouldBeWithin]
+ * @see [LocalDateTime.shouldNotBeWithin]
+ */
 fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result {
     val start = date.minus(period)
@@ -1549,8 +1682,77 @@ fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object
   }
 }
 
+/**
+ * Asserts that this is within [period] of [date]
+ *
+ * Verifies that this is within [period] of [date].
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is within 3 days of 10/02/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldNotBeWithin]
+ *
+ * ```
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ * ```
+ */
 fun ZonedDateTime.shouldBeWithin(period: Period, date: ZonedDateTime) = this should within(period, date)
+
+/**
+ * Asserts that this is NOT within [period] of [date]
+ *
+ * Verifies that this is not within [period] of [date].
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is not within 3 days of 25/02/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldBeWithin]
+ *
+ * ```
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ * ```
+ */
 fun ZonedDateTime.shouldNotBeWithin(period: Period, date: ZonedDateTime) = this shouldNot within(period, date)
+
+/**
+ * Matcher that compares two ZonedDateTimes and checks whether one is within [period] of the other
+ *
+ * Verifies that two ZonedDateTimes are within a certain period.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is within 3 days of 10/02/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and the matcher will have a positive result for this comparison.
+ *
+ *
+ * ```
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *
+ *
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ * ```
+ *
+ * @see [ZonedDateTime.shouldBeWithin]
+ * @see [ZonedDateTime.shouldNotBeWithin]
+ */
 fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result {
     val start = date.minus(period)
@@ -1560,8 +1762,77 @@ fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object
   }
 }
 
+/**
+ * Asserts that this is within [period] of [date]
+ *
+ * Verifies that this is within [period] of [date].
+ * For example, 09/02/1998 10:00:00 -03:00 is within 3 days of 10/02/1998 10:00:00 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldNotBeWithin]
+ *
+ * ```
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3)
+ *     val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ * ```
+ */
 fun OffsetDateTime.shouldBeWithin(period: Period, date: OffsetDateTime) = this should within(period, date)
+
+/**
+ * Asserts that this is NOT within [period] of [date]
+ *
+ * Verifies that this is not within [period] of [date].
+ * For example, 09/02/1998 10:00:00 -03:00 is not within 3 days of 25/02/1998 10:00:00 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldBeWithin]
+ *
+ * ```
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *
+ *
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ * ```
+ */
 fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = this shouldNot within(period, date)
+
+/**
+ * Matcher that compares two OffsetDateTimes and checks whether one is within [period] of the other
+ *
+ * Verifies that two OffsetDateTimes are within a certain period.
+ * For example, 09/02/1998 10:00:00 -03:00 is within 3 days of 10/02/1998 10:00:00 -03:00,
+ * and the matcher will have a positive result for this comparison.
+ *
+ *
+ * ```
+ *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTimes.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *
+ *
+ *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTimes.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ * ```
+ *
+ * @see [OffsetDateTime.shouldBeWithin]
+ * @see [OffsetDateTime.shouldNotBeWithin]
+ */
 fun within(period: Period, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result {
     val start = date.minus(period)
