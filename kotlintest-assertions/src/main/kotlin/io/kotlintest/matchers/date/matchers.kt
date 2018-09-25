@@ -266,8 +266,19 @@ infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this shoul
  *
  * Opposite of [OffsetDateTime.shouldHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameYearAsFailure]
+ * ```
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1999, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ 
+ *     firstDate shouldNotHaveSameYearAs secondDate    // Assertion passes
+ *
+ *
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 0, ZoneOffset.ofHours(-3))
+ *
+ *     firstDate shouldNotHaveSameYearAs secondDate    // Assertion fails, 1998 == 1998 and we expected a difference
+ *
+ * ```
  */
 infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this shouldNot haveSameYear(date)
 
