@@ -1212,29 +1212,316 @@ fun before(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Off
       Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
+/**
+ * Asserts that this is after [date]
+ *
+ * Verifies that this is after [date], comparing year, month and day.
+ * For example, 09/02/1998 is after 08/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldNotBeAfter]
+ *
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 8)
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ * ```
+ *
+ * @see LocalDate.shouldNotBeBefore
+ */
 infix fun LocalDate.shouldBeAfter(date: LocalDate) = this should after(date)
+
+/**
+ * Asserts that this is NOT after [date]
+ *
+ * Verifies that this is not after [date], comparing year, month and day.
+ * For example, 09/02/1998 is not after 10/02/1998, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDate.shouldBeAfter]
+ *
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 10)
+ *    val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ * ```
+ *
+ * @see LocalDate.shouldBeBefore
+ */
 infix fun LocalDate.shouldNotBeAfter(date: LocalDate) = this shouldNot after(date)
+
+/**
+ * Matcher that compares two LocalDates and checks whether one is after the other
+ *
+ * Verifies that two LocalDates occurs in a certain order, checking that one happened after the other.
+ * For example, 10/02/1998 is after 09/02/1998, and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 8)
+ *
+ *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ * ```
+ *
+ * @see LocalDate.shouldBeAfter
+ * @see LocalDate.shouldNotBeAfter
+ */
 fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
+
+/**
+ * Asserts that this is after [date]
+ *
+ * Verifies that this is after [date], comparing all fields in LocalDateTime.
+ * For example, 09/02/1998 10:00:00 is after 09/02/1998 09:00:00, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldNotBeAfter]
+ *
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 8, 10, 0, 0)
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ * ```
+ *
+ * @see LocalDateTime.shouldNotBeBefore
+ */
 infix fun LocalDateTime.shouldBeAfter(date: LocalDateTime) = this should after(date)
+
+/**
+ * Asserts that this is NOT after [date]
+ *
+ * Verifies that this is not after [date], comparing all fields in LocalDateTime.
+ * For example, 09/02/1998 09:00:00 is not after 09/02/1998 10:00:00, and this assertion should pass for this comparison.
+ *
+ * Opposite of [LocalDateTime.shouldBeAfter]
+ *
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ * ```
+ *
+ * @see LocalDateTime.shouldBeBefore
+ */
 infix fun LocalDateTime.shouldNotBeAfter(date: LocalDateTime) = this shouldNot after(date)
+
+/**
+ * Matcher that compares two LocalDateTimes and checks whether one is after the other
+ *
+ * Verifies that two LocalDateTimes occurs in a certain order, checking that one happened after the other.
+ * For example, 09/02/1998 10:00:00 is after 09/02/1998 09:00:00, and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 8, 10, 0, 0)
+ *
+ *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ * ```
+ *
+ * @see LocalDateTime.shouldBeAfter
+ * @see LocalDateTime.shouldNotBeAfter
+ */
 fun after(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
+/**
+ * Asserts that this is after [date]
+ *
+ * Verifies that this is after [date], comparing all fields in ZonedDateTime.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is after 09/02/1998 09:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldNotBeAfter]
+ *
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ * ```
+ *
+ * @see ZonedDateTime.shouldNotBeBefore
+ */
 infix fun ZonedDateTime.shouldBeAfter(date: ZonedDateTime) = this should after(date)
+
+/**
+ * Asserts that this is NOT after [date]
+ *
+ * Verifies that this is not after [date], comparing all fields in ZonedDateTime.
+ * For example, 09/02/1998 09:00:00 -03:00 America/Sao_Paulo is not after 09/02/1998 10:00:00 -03:00 America/Sao_Paulo,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [ZonedDateTime.shouldBeAfter]
+ *
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeBefore
+ */
 infix fun ZonedDateTime.shouldNotBeAfter(date: ZonedDateTime) = this shouldNot after(date)
+
+/**
+ * Matcher that compares two ZonedDateTimes and checks whether one is after the other
+ *
+ * Verifies that two ZonedDateTimes occurs in a certain order, checking that one happened after the other.
+ * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is after 09/02/1998 09:00:00 -03:00 America/Sao_Paulo,
+ * and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeAfter
+ * @see ZonedDateTime.shouldNotBeAfter
+ */
 fun after(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
+/**
+ * Asserts that this is after [date]
+ *
+ * Verifies that this is after [date], comparing all fields in OffsetDateTime.
+ * For example, 09/02/1998 10:00:00 -03:00 is after 09/02/1998 09:00:00 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldNotBeAfter]
+ *
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ * ```
+ *
+ * @see OffsetDateTime.shouldNotBeBefore
+ */
 infix fun OffsetDateTime.shouldBeAfter(date: OffsetDateTime) = this should after(date)
+
+/**
+ * Asserts that this is NOT after [date]
+ *
+ * Verifies that this is not after [date], comparing all fields in OffsetDateTime.
+ * For example, 09/02/1998 09:00:00 -03:00 is not after 09/02/1998 10:00:00 -03:00,
+ * and this assertion should pass for this comparison.
+ *
+ * Opposite of [OffsetDateTime.shouldBeAfter]
+ *
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ * ```
+ *
+ * @see OffsetDateTime.shouldBeBefore
+ */
 infix fun OffsetDateTime.shouldNotBeAfter(date: OffsetDateTime) = this shouldNot after(date)
+
+/**
+ * Matcher that compares two OffsetDateTimes and checks whether one is after the other
+ *
+ * Verifies that two OffsetDateTimes occurs in a certain order, checking that one happened after the other.
+ * For example, 09/02/1998 10:00:00 -03:00 is after 09/02/1998 09:00:00 -03:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ * ```
+ *
+ * @see OffsetDateTime.shouldBeAfter
+ * @see OffsetDateTime.shouldNotBeAfter
+ */
 fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
