@@ -22,13 +22,13 @@ import java.time.ZonedDateTime
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 3, 10)
  *
- *     firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *     firstDate shouldHaveSameYearAs secondDate   //  Assertion passes
  *
  *
  *     val firstDate = LocalDate.of(2018, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 9)
  *
- *     firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ *     firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  ```
  */
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
@@ -45,13 +45,13 @@ infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSame
  *    val firstDate = LocalDate.of(2018, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
- *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameYearAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 3, 10)
  *
- *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
 infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot haveSameYear(date)
@@ -66,13 +66,13 @@ infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot ha
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 3, 10)
  *
- *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *    firstDate should haveSameYear(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 2, 9)
  *
- *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
  *
  * @see [LocalDate.shouldHaveSameYearAs]
@@ -95,13 +95,13 @@ fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDa
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  * ```
  */
 infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should haveSameYear(date)
@@ -118,13 +118,13 @@ infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should 
  *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
  *
- *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameYearAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 10, 1, 30, 30)
  *
- *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shouldNot haveSameYear(date)
@@ -139,13 +139,13 @@ infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shou
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
  *
- *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *    firstDate should haveSameYear(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
  *
- *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
  *
  * @see [LocalDateTime.shouldHaveSameYearAs]
@@ -169,13 +169,13 @@ fun haveSameYear(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  * ```
  */
 infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should haveSameYear(date)
@@ -193,13 +193,13 @@ infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should 
  *     val firstDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *     val secondDate = ZonedDateTime.of(1998, 2, 9, 19, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *     firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *     firstDate shouldNotHaveSameYearAs secondDate    //  Assertion passes
  *
  *
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *     val secondDate = ZonedDateTime.of(1998, 3, 10, 1, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *     firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ *     firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shouldNot haveSameYear(date)
@@ -215,13 +215,13 @@ infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shou
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *    firstDate should haveSameYear(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
  *
  * @see [ZonedDateTime.shouldHaveSameYearAs]
@@ -245,13 +245,13 @@ fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  
  * ```
  */
@@ -282,13 +282,13 @@ infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this sh
  *    val firstDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameYearAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 10, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  *
  * @see [OffsetDateTime.shouldHaveSameYearAs]
@@ -311,13 +311,13 @@ fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Match
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *    firstDate should haveSameYear(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
  */
 infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSameMonth(date)
@@ -334,13 +334,13 @@ infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSam
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 2, 10)
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 3, 9)
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
 infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot haveSameMonth(date)
@@ -355,13 +355,13 @@ infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot h
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 3, 9)
  *
- *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 2, 10)
  *
- *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //  Assertion fails, 2 == 2, and we expected a difference
  * ```
  *
  * @see [LocalDate.shouldHaveSameMonthAs]
@@ -384,13 +384,13 @@ fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalD
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 2, 10)
  *
- *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *    firstDate should haveSameMonth(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 3, 9)
  *
- *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
  */
 infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should haveSameMonth(date)
@@ -407,13 +407,13 @@ infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this shouldNot haveSameMonth(date)
@@ -428,13 +428,13 @@ infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this sho
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
  *
- *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 1, 30, 30)
  *
- *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //  Assertion fails, 2 == 2, and we expected a difference
  * ```
  *
  * @see [LocalDateTime.shouldHaveSameMonthAs]
@@ -458,13 +458,13 @@ fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matche
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
  *
- *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *    firstDate should haveSameMonth(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
  *
- *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
  */
 infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should haveSameMonth(date)
@@ -482,13 +482,13 @@ infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this shouldNot haveSameMonth(date)
@@ -504,13 +504,13 @@ infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this sho
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //  Assertion fails, 2 == 2, and we expected a difference
  * ```
  *
  * @see [ZonedDateTime.shouldHaveSameMonthAs]
@@ -534,13 +534,13 @@ fun haveSameMonth(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matche
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
 infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this should haveSameMonth(date)
@@ -558,13 +558,13 @@ infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this shou
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //  Assertion fails, 2 == 2, and we expected a difference
  * ```
  */
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
@@ -581,13 +581,13 @@ infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this s
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *    firstDate should haveSameMonth(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
  *
  * @see [OffsetDateTime.shouldHaveSameMonthAs]
@@ -610,13 +610,13 @@ fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matc
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 3, 9)
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameDayAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ *    firstDate shouldHaveSameDayAs secondDate   //  Assertion fails, 9 != 10
  * ```
  */
 infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameDay(date)
@@ -633,13 +633,13 @@ infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameD
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameDayAs secondDate    //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 3, 9)
  *
- *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ *    firstDate shouldNotHaveSameDayAs  secondDate   //  Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
 infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot haveSameDay(date)
@@ -654,13 +654,13 @@ infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot hav
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(2018, 3, 9)
  *
- *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *    firstDate should haveSameDay(secondDate)   //  Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameDay(secondDate)    //  Assertion passes
  * ```
  *
  * @see [LocalDate.shouldHaveSameDayAs]
@@ -684,13 +684,13 @@ fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDat
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameDayAs secondDate   //  Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ *    firstDate shouldHaveSameDayAs secondDate   //  Assertion fails, 9 != 10
  * ```
  */
 infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should haveSameDay(date)
@@ -707,13 +707,13 @@ infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should h
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameDayAs secondDate    // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
  *
- *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shouldNot haveSameDay(date)
@@ -728,13 +728,13 @@ infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shoul
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(2018, 3, 9, 11, 30, 30)
  *
- *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *    firstDate should haveSameDay(secondDate)   // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameDay(secondDate)    // Assertion passes
  * ```
  *
  * @see [LocalDateTime.shouldHaveSameDayAs]
@@ -758,13 +758,13 @@ fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameDayAs secondDate   // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ *    firstDate shouldHaveSameDayAs secondDate   // Assertion fails, 9 != 10
  * ```
  */
 infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should haveSameDay(date)
@@ -782,13 +782,13 @@ infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should h
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameDayAs secondDate    // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shouldNot haveSameDay(date)
@@ -804,13 +804,13 @@ infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shoul
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
  *
- *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *    firstDate should haveSameDay(secondDate)   // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameDay(secondDate)    // Assertion passes
  * ```
  *
  * @see [ZonedDateTime.shouldHaveSameDayAs]
@@ -834,13 +834,13 @@ fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *    firstDate shouldHaveSameDayAs secondDate   // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 12
+ *    firstDate shouldHaveSameDayAs secondDate   // Assertion fails, 9 != 12
  * ```
  */
 infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should haveSameDay(date)
@@ -858,13 +858,13 @@ infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *    firstDate shouldNotHaveSameDayAs secondDate    // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 3, 9, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
 infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this shouldNot haveSameDay(date)
@@ -880,13 +880,13 @@ infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this sho
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
  *
- *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *    firstDate should haveSameDay(secondDate)   // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ *    firstDate shouldNot haveSameDay(secondDate)    // Assertion passes
  * ```
  *
  * @see [OffsetDateTime.shouldHaveSameDayAs]
@@ -909,13 +909,13 @@ fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matche
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *    firstDate shouldBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 10)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
- *    firstDate shouldBeBefore secondDate     //Assertion fails, 10/02/1998 is not before 09/02/1998 as expected.
+ *    firstDate shouldBeBefore secondDate     // Assertion fails, 10/02/1998 is not before 09/02/1998 as expected.
  * ```
  *
  * @see LocalDate.shouldNotBeAfter
@@ -934,14 +934,14 @@ infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
  *    val firstDate = LocalDate.of(1998, 2, 10)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
- *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *    firstDate shouldNotBeBefore secondDate    // Assertion passes
  
  
  
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldNotBeBefore secondDate     //Assertion fails, 09/02/1998 is before 10/02/1998, and we expected the opposite.
+ *    firstDate shouldNotBeBefore secondDate     // Assertion fails, 09/02/1998 is before 10/02/1998, and we expected the opposite.
  * ```
  *
  * @see LocalDate.shouldBeAfter
@@ -958,13 +958,13 @@ infix fun LocalDate.shouldNotBeBefore(date: LocalDate) = this shouldNot before(d
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *    firstDate shouldBe before(secondDate)     // Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 10)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
- *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ *    firstDate shouldNotBe before(secondDate)  // Assertion passes
  * ```
  *
  * @see LocalDate.shouldBeBefore
@@ -987,13 +987,13 @@ fun before(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *
- *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *    firstDate shouldBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *
- *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ *    firstDate shouldBeBefore secondDate     // Assertion fails, firstDate is one second after secondDate
  * ```
  *
  * @see LocalDateTime.shouldNotBeAfter
@@ -1012,13 +1012,13 @@ infix fun LocalDateTime.shouldBeBefore(date: LocalDateTime) = this should before
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *
- *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *    firstDate shouldNotBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *
- *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ *    firstDate shouldNotBeBefore secondDate     // Assertion fails, firstDate is one second before secondDate and we didn't expect it
  * ```
  *
  * @see LocalDateTime.shouldBeAfter
@@ -1035,13 +1035,13 @@ infix fun LocalDateTime.shouldNotBeBefore(date: LocalDateTime) = this shouldNot 
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *
- *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *    firstDate shouldBe before(secondDate)     // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
  *
- *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ *    firstDate shouldNotBe before(secondDate)  // Assertion passes
  * ```
  *
  * @see LocalDateTime.shouldBeBefore
@@ -1065,13 +1065,13 @@ fun before(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<Local
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *    firstDate shouldBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ *    firstDate shouldBeBefore secondDate     // Assertion fails, firstDate is one second after secondDate
  * ```
  *
  * @see ZonedDateTime.shouldNotBeAfter
@@ -1091,13 +1091,13 @@ infix fun ZonedDateTime.shouldBeBefore(date: ZonedDateTime) = this should before
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *    firstDate shouldNotBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ *    firstDate shouldNotBeBefore secondDate     // Assertion fails, firstDate is one second before secondDate and we didn't expect it
  * ```
  *
  * @see ZonedDateTime.shouldBeAfter
@@ -1115,13 +1115,13 @@ infix fun ZonedDateTime.shouldNotBeBefore(date: ZonedDateTime) = this shouldNot 
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *    firstDate shouldBe before(secondDate)     // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ *    firstDate shouldNotBe before(secondDate)  // Assertion passes
  * ```
  *
  * @see ZonedDateTime.shouldBeBefore
@@ -1145,13 +1145,13 @@ fun before(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<Zoned
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *    firstDate shouldBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ *    firstDate shouldBeBefore secondDate     // Assertion fails, firstDate is one second after secondDate
  * ```
  *
  * @see OffsetDateTime.shouldNotBeAfter
@@ -1171,13 +1171,13 @@ infix fun OffsetDateTime.shouldBeBefore(date: OffsetDateTime) = this should befo
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *    firstDate shouldNotBeBefore secondDate    // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ *    firstDate shouldNotBeBefore secondDate     // Assertion fails, firstDate is one second before secondDate and we didn't expect it
  * ```
  *
  * @see OffsetDateTime.shouldBeAfter
@@ -1195,13 +1195,13 @@ infix fun OffsetDateTime.shouldNotBeBefore(date: OffsetDateTime) = this shouldNo
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *    firstDate shouldBe before(secondDate)     // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ *    firstDate shouldNotBe before(secondDate)  // Assertion passes
  * ```
  *
  * @see OffsetDateTime.shouldBeBefore
@@ -1224,13 +1224,13 @@ fun before(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Off
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 8)
  *
- *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *    firstDate shouldBeAfter secondDate  // Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ *    firstDate shouldBeAfter secondDate  // Assertion fails, firstDate is NOT after secondDate
  * ```
  *
  * @see LocalDate.shouldNotBeBefore
@@ -1249,13 +1249,13 @@ infix fun LocalDate.shouldBeAfter(date: LocalDate) = this should after(date)
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *    firstDate shouldNotBeAfter secondDate   // Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 10)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ *    firstDate shouldNotBeAfter secondDate   // Assertion fails, first date IS after secondDate
  * ```
  *
  * @see LocalDate.shouldBeBefore
@@ -1272,13 +1272,13 @@ infix fun LocalDate.shouldNotBeAfter(date: LocalDate) = this shouldNot after(dat
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 8)
  *
- *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *    firstDate shouldBe after(secondDate ) // Assertion passes
  *
  *
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
- *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ *    firstDate shouldNotBe after(secondDate)   // Assertion passes
  * ```
  *
  * @see LocalDate.shouldBeAfter
@@ -1302,13 +1302,13 @@ fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 8, 10, 0, 0)
  *
- *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *    firstDate shouldBeAfter secondDate  // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ *    firstDate shouldBeAfter secondDate  // Assertion fails, firstDate is NOT after secondDate
  * ```
  *
  * @see LocalDateTime.shouldNotBeBefore
@@ -1327,13 +1327,13 @@ infix fun LocalDateTime.shouldBeAfter(date: LocalDateTime) = this should after(d
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *    firstDate shouldNotBeAfter secondDate   // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ *    firstDate shouldNotBeAfter secondDate   // Assertion fails, first date IS after secondDate
  * ```
  *
  * @see LocalDateTime.shouldBeBefore
@@ -1350,13 +1350,13 @@ infix fun LocalDateTime.shouldNotBeAfter(date: LocalDateTime) = this shouldNot a
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 8, 10, 0, 0)
  *
- *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *    firstDate shouldBe after(secondDate ) // Assertion passes
  *
  *
  *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ *    firstDate shouldNotBe after(secondDate)   // Assertion passes
  * ```
  *
  * @see LocalDateTime.shouldBeAfter
@@ -1380,13 +1380,13 @@ fun after(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalD
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *    firstDate shouldBeAfter secondDate  // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ *    firstDate shouldBeAfter secondDate  // Assertion fails, firstDate is NOT after secondDate
  * ```
  *
  * @see ZonedDateTime.shouldNotBeBefore
@@ -1406,13 +1406,13 @@ infix fun ZonedDateTime.shouldBeAfter(date: ZonedDateTime) = this should after(d
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *    firstDate shouldNotBeAfter secondDate   // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ *    firstDate shouldNotBeAfter secondDate   // Assertion fails, first date IS after secondDate
  * ```
  *
  * @see ZonedDateTime.shouldBeBefore
@@ -1430,13 +1430,13 @@ infix fun ZonedDateTime.shouldNotBeAfter(date: ZonedDateTime) = this shouldNot a
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *    firstDate shouldBe after(secondDate ) // Assertion passes
  *
  *
  *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
  *
- *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ *    firstDate shouldNotBe after(secondDate)   // Assertion passes
  * ```
  *
  * @see ZonedDateTime.shouldBeAfter
@@ -1460,13 +1460,13 @@ fun after(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedD
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBeAfter secondDate  //Assertion passes
+ *    firstDate shouldBeAfter secondDate  // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBeAfter secondDate  //Assertion fails, firstDate is NOT after secondDate
+ *    firstDate shouldBeAfter secondDate  // Assertion fails, firstDate is NOT after secondDate
  * ```
  *
  * @see OffsetDateTime.shouldNotBeBefore
@@ -1486,13 +1486,13 @@ infix fun OffsetDateTime.shouldBeAfter(date: OffsetDateTime) = this should after
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion passes
+ *    firstDate shouldNotBeAfter secondDate   // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBeAfter secondDate   //Assertion fails, first date IS after secondDate
+ *    firstDate shouldNotBeAfter secondDate   // Assertion fails, first date IS after secondDate
  * ```
  *
  * @see OffsetDateTime.shouldBeBefore
@@ -1510,13 +1510,13 @@ infix fun OffsetDateTime.shouldNotBeAfter(date: OffsetDateTime) = this shouldNot
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 8, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldBe after(secondDate ) //Assertion passes
+ *    firstDate shouldBe after(secondDate ) // Assertion passes
  *
  *
  *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    firstDate shouldNotBe after(secondDate)   //Assertion passes
+ *    firstDate shouldNotBe after(secondDate)   // Assertion passes
  * ```
  *
  * @see OffsetDateTime.shouldBeAfter
@@ -1539,13 +1539,13 @@ fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Offs
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 10)
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 25)
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
 fun LocalDate.shouldBeWithin(period: Period, date: LocalDate) = this should within(period, date)
@@ -1562,13 +1562,13 @@ fun LocalDate.shouldBeWithin(period: Period, date: LocalDate) = this should with
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 25)
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 10)
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
 fun LocalDate.shouldNotBeWithin(period: Period, date: LocalDate) = this shouldNot within(period, date)
@@ -1584,12 +1584,12 @@ fun LocalDate.shouldNotBeWithin(period: Period, date: LocalDate) = this shouldNo
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 10)
  *
- *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    // Assertion passes
  *
  *
  *     val firstDate = LocalDate.of(1998, 2, 9)
  *     val secondDate = LocalDate.of(1998, 2, 25)
- *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     // Assertion passes
  * ```
  *
  * @see [LocalDate.shouldBeWithin]
@@ -1616,13 +1616,13 @@ fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Match
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
 fun LocalDateTime.shouldBeWithin(period: Period, date: LocalDateTime) = this should within(period, date)
@@ -1639,13 +1639,13 @@ fun LocalDateTime.shouldBeWithin(period: Period, date: LocalDateTime) = this sho
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
 fun LocalDateTime.shouldNotBeWithin(period: Period, date: LocalDateTime) = this shouldNot within(period, date)
@@ -1662,12 +1662,12 @@ fun LocalDateTime.shouldNotBeWithin(period: Period, date: LocalDateTime) = this 
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
  *
- *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    // Assertion passes
  *
  *
  *     val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
  *     val secondDate = LocalDateTime.of(1998, 2, 25, 10, 0, 0)
- *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     // Assertion passes
  * ```
  *
  * @see [LocalDateTime.shouldBeWithin]
@@ -1695,13 +1695,13 @@ fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
 fun ZonedDateTime.shouldBeWithin(period: Period, date: ZonedDateTime) = this should within(period, date)
@@ -1719,13 +1719,13 @@ fun ZonedDateTime.shouldBeWithin(period: Period, date: ZonedDateTime) = this sho
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
 fun ZonedDateTime.shouldNotBeWithin(period: Period, date: ZonedDateTime) = this shouldNot within(period, date)
@@ -1742,12 +1742,12 @@ fun ZonedDateTime.shouldNotBeWithin(period: Period, date: ZonedDateTime) = this 
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *
- *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    // Assertion passes
  *
  *
  *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
  *     val secondDate = ZonedDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo))
- *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     // Assertion passes
  * ```
  *
  * @see [ZonedDateTime.shouldBeWithin]
@@ -1775,13 +1775,13 @@ fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3)
  *     val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is not within 3 days of secondDate
+ *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
 fun OffsetDateTime.shouldBeWithin(period: Period, date: OffsetDateTime) = this should within(period, date)
@@ -1799,13 +1799,13 @@ fun OffsetDateTime.shouldBeWithin(period: Period, date: OffsetDateTime) = this s
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) //Assertion passes
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate) // Assertion passes
  *
  *
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   //Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
+ *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
 fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = this shouldNot within(period, date)
@@ -1822,12 +1822,12 @@ fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = thi
  *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTimes.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *     firstDate shouldBe within(Period.ofDays(3), secondDate)    //Assertion passes
+ *     firstDate shouldBe within(Period.ofDays(3), secondDate)    // Assertion passes
  *
  *
  *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTimes.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     //Assertion passes
+ *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     // Assertion passes
  * ```
  *
  * @see [OffsetDateTime.shouldBeWithin]
