@@ -392,14 +392,14 @@ fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalD
  * Opposite of [LocalDateTime.shouldNotHaveSameMonthAs]
  *
  * ```
- *    val firstDate = LocalDate.of(1998, 2, 9)
- *    val secondDate = LocalDate.of(2018, 2, 10)
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(2018, 2, 10, 10, 0, 0)
  *
  *    firstDate should haveSameMonth(secondDate)   //  Assertion passes
  *
  *
- *    val firstDate = LocalDate.of(1998, 2, 9)
- *    val secondDate = LocalDate.of(1998, 3, 9)
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
  *
  *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
