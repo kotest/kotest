@@ -1830,14 +1830,14 @@ fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = thi
  *
  *
  * ```
- *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- *     val secondDate = OffsetDateTimes.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
  *     firstDate shouldBe within(Period.ofDays(3), secondDate)    // Assertion passes
  *
  *
- *     val firstDate = OffsetDateTimes.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- *     val secondDate = OffsetDateTimes.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *     val secondDate = OffsetDateTime.of(1998, 2, 25, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     firstDate shouldNotBe within(Period.ofDays(3), secondDate)     // Assertion passes
  * ```
  *
