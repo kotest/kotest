@@ -11,10 +11,6 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
 }
 
-sourceSets {
-    test.kotlin.srcDirs += "src/sample/kotlin"
-}
-
 test {
     useJUnitPlatform()
 

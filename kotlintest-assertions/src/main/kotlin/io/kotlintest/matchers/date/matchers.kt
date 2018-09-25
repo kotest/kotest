@@ -18,8 +18,18 @@ import java.time.ZonedDateTime
  *
  * Opposite of [LocalDate.shouldNotHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameYearAsFailure]
+ * ```
+ *     val firstDate = LocalDate.of(1998, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 3, 10)
+ *
+ *     firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *
+ *
+ *     val firstDate = LocalDate.of(2018, 2, 9)
+ *     val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *     firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ ```
  */
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
 
@@ -31,8 +41,18 @@ infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSame
  *
  * Opposite of [LocalDate.shouldHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameYearAsFailure]
+ * ```
+ *    val firstDate = LocalDate.of(2018, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 10)
+ *
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ * ```
  */
 infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot haveSameYear(date)
 
@@ -42,8 +62,18 @@ infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot ha
  * Verifies that two dates have exactly the same year, ignoring any other fields.
  * For example, 09/02/1998 has the same year as 10/03/1998, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameYear]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameYearNegation]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 10)
+ *
+ *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 2, 9)
+ *
+ *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ * ```
  *
  * @see [LocalDate.shouldHaveSameYearAs]
  * @see [LocalDate.shouldNotHaveSameYearAs]
@@ -61,8 +91,18 @@ fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDa
  *
  * Opposite of [LocalDateTime.shouldNotHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameYearAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ * ```
  */
 infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should haveSameYear(date)
 
@@ -74,8 +114,18 @@ infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should 
  *
  * Opposite of [LocalDateTime.shouldHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameYearAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
+ *
+ *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 10, 1, 30, 30)
+ *
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shouldNot haveSameYear(date)
 
@@ -85,8 +135,18 @@ infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shou
  * Verifies that two DateTimes have exactly the same year, ignoring any other fields.
  * For example, 09/02/1998 10:00:00 has the same year as 10/03/1998 11:30:30, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameYear]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameYearNegation]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
+ *
+ *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+ *
+ *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ * ```
  *
  * @see [LocalDateTime.shouldHaveSameYearAs]
  * @see [LocalDateTime.shouldNotHaveSameYearAs]
@@ -105,8 +165,18 @@ fun haveSameYear(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher
  *
  * Opposite of [ZonedDateTime.shouldNotHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameYearAsFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ * ```
  */
 infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should haveSameYear(date)
 
@@ -119,8 +189,18 @@ infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should 
  *
  * Opposite of [ZonedDateTime.shouldHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameYearAsFailure]
+ * ```
+ *     val firstDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *     val secondDate = ZonedDateTime.of(1998, 2, 9, 19, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *     firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *
+ *
+ *     val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *     val secondDate = ZonedDateTime.of(1998, 3, 10, 1, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *     firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shouldNot haveSameYear(date)
 
@@ -131,8 +211,18 @@ infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shou
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same year as 10/03/1998 11:30:30 -05:00 America/Chicago,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameYear]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameYearNegation]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ * ```
  *
  * @see [ZonedDateTime.shouldHaveSameYearAs]
  * @see [ZonedDateTime.shouldNotHaveSameYearAs]
@@ -151,8 +241,19 @@ fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher
  *
  * Opposite of [OffsetDateTime.shouldNotHaveSameYearAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameYearAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameYearAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldHaveSameYearAs secondDate   //Assertion fails, 2018 != 1998
+ 
+ * ```
  */
 infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this should haveSameYear(date)
 
@@ -177,8 +278,18 @@ infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this sh
  * For example, 09/02/1998 10:00:00 -03:00 has the same year as 10/03/1998 11:30:30 -05:00,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameYear]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameYearNegation]
+ * ```
+ *    val firstDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotHaveSameYearAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 10, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldNotHaveSameYearAs  secondDate   //Assertion fails, 1998 == 1998, and we expected a difference
+ * ```
  *
  * @see [OffsetDateTime.shouldHaveSameYearAs]
  * @see [OffsetDateTime.shouldNotHaveSameYearAs]
@@ -196,8 +307,18 @@ fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Match
  *
  * Opposite of [LocalDate.shouldNotHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate should haveSameYear(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNot haveSameYear(secondDate)    //Assertion passes
+ * ```
  */
 infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSameMonth(date)
 
@@ -209,8 +330,18 @@ infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSam
  *
  * Opposite of [LocalDate.shouldHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 2, 10)
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 9)
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ * ```
  */
 infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot haveSameMonth(date)
 
@@ -220,8 +351,18 @@ infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot h
  * Verifies that two dates have exactly the same month, ignoring any other fields.
  * For example, 09/02/1998 has the same month as 10/02/2018, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameMonth]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameMonthNegation]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 9)
+ *
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 2, 10)
+ *
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ * ```
  *
  * @see [LocalDate.shouldHaveSameMonthAs]
  * @see [LocalDate.shouldNotHaveSameMonthAs]
@@ -239,8 +380,18 @@ fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalD
  *
  * Opposite of [LocalDateTime.shouldNotHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 2, 10)
+ *
+ *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 3, 9)
+ *
+ *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ * ```
  */
 infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should haveSameMonth(date)
 
@@ -252,8 +403,18 @@ infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should
  *
  * Opposite of [LocalDateTime.shouldHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this shouldNot haveSameMonth(date)
 
@@ -263,8 +424,18 @@ infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this sho
  * Verifies that two DateTimes have exactly the same month, ignoring any other fields.
  * For example, 09/02/1998 10:00:00 has the same month as 10/02/2018 11:30:30, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameMonth]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameMonthNegation]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 10, 11, 30, 30)
+ *
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 1, 30, 30)
+ *
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ * ```
  *
  * @see [LocalDateTime.shouldHaveSameMonthAs]
  * @see [LocalDateTime.shouldNotHaveSameMonthAs]
@@ -283,8 +454,18 @@ fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matche
  *
  * Opposite of [ZonedDateTime.shouldNotHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(2018, 2, 10, 11, 30, 30)
+ *
+ *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 9, 10, 0, 0)
+ *
+ *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ * ```
  */
 infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should haveSameMonth(date)
 
@@ -297,8 +478,18 @@ infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should
  *
  * Opposite of [ZonedDateTime.shouldHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this shouldNot haveSameMonth(date)
 
@@ -309,8 +500,18 @@ infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this sho
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same month as 10/02/2018 11:30:30 -05:00 America/Chicago,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameMonth]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameMonthNegation]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ * ```
  *
  * @see [ZonedDateTime.shouldHaveSameMonthAs]
  * @see [ZonedDateTime.shouldNotHaveSameMonthAs]
@@ -329,8 +530,18 @@ fun haveSameMonth(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matche
  *
  * Opposite of [OffsetDateTime.shouldNotHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldHaveSameMonthAs secondDate   //Assertion fails, 2 != 3
+ * ```
  */
 infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this should haveSameMonth(date)
 
@@ -343,8 +554,18 @@ infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this shou
  *
  * Opposite of [OffsetDateTime.shouldHaveSameMonthAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameMonthAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameMonthAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 9, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotHaveSameMonthAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 2, 10, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldNotHaveSameMonthAs  secondDate   //Assertion fails, 2 == 2, and we expected a difference
+ * ```
  */
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
 
@@ -356,8 +577,18 @@ infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this s
  * For example, 09/02/1998 10:00:00 -03:00 has the same month as 10/02/1998 11:30:30 -05:00,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameMonth]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameMonthNegation]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 2, 10, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate should haveSameMonth(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 3, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNot haveSameMonth(secondDate)    //Assertion passes
+ * ```
  *
  * @see [OffsetDateTime.shouldHaveSameMonthAs]
  * @see [OffsetDateTime.shouldNotHaveSameMonthAs]
@@ -375,8 +606,18 @@ fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matc
  *
  * Opposite of [LocalDate.shouldNotHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 3, 9)
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ * ```
  */
 infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameDay(date)
 
@@ -388,8 +629,18 @@ infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameD
  *
  * Opposite of [LocalDate.shouldHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 3, 9)
+ *
+ *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ * ```
  */
 infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot haveSameDay(date)
 
@@ -399,8 +650,18 @@ infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot hav
  * Verifies that two dates have exactly the same day, ignoring any other fields.
  * For example, 09/02/1998 has the same day as 09/03/2018, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameDay]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateHaveSameDayNegation]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(2018, 3, 9)
+ *
+ *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ * ```
  *
  * @see [LocalDate.shouldHaveSameDayAs]
  * @see [LocalDate.shouldNotHaveSameDayAs]
@@ -419,8 +680,18 @@ fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDat
  *
  * Opposite of [LocalDateTime.shouldNotHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ * ```
  */
 infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should haveSameDay(date)
 
@@ -432,8 +703,18 @@ infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should h
  *
  * Opposite of [LocalDateTime.shouldHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(2018, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 3, 9, 11, 30, 30)
+ *
+ *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ * ```
  */
 infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shouldNot haveSameDay(date)
 
@@ -443,8 +724,18 @@ infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shoul
  * Verifies that two DateTimes have exactly the same day, ignoring any other fields.
  * For example, 09/02/1998 10:00:00 has the same day as 09/03/2018 11:30:30, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameDay]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeHaveSameDayNegation]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(2018, 3, 9, 11, 30, 30)
+ *
+ *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 10, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 10, 10, 0, 0)
+ *
+ *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ * ```
  *
  * @see [LocalDateTime.shouldHaveSameDayAs]
  * @see [LocalDateTime.shouldNotHaveSameDayAs]
@@ -463,8 +754,18 @@ fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<
  *
  * Opposite of [ZonedDateTime.shouldNotHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 10
+ * ```
  */
 infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should haveSameDay(date)
 
@@ -477,8 +778,18 @@ infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should h
  *
  * Opposite of [ZonedDateTime.shouldHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ * ```
  */
 infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shouldNot haveSameDay(date)
 
@@ -489,8 +800,18 @@ infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shoul
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo has the same day as 09/03/2018 11:30:30 -05:00 America/Chicago,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameDay]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeHaveSameDayNegation]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneId.of("America/Chicago"))
+ *
+ *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ * ```
  *
  * @see [ZonedDateTime.shouldHaveSameDayAs]
  * @see [ZonedDateTime.shouldNotHaveSameDayAs]
@@ -509,8 +830,18 @@ fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<
  *
  * Opposite of [OffsetDateTime.shouldNotHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldHaveSameDayAs secondDate   //Assertion fails, 9 != 12
+ * ```
  */
 infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should haveSameDay(date)
 
@@ -523,8 +854,18 @@ infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should
  *
  * Opposite of [OffsetDateTime.shouldHaveSameDayAs]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameDayAs]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotHaveSameDayAsFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 19, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotHaveSameDayAs secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 3, 9, 1, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate shouldNotHaveSameDayAs  secondDate   //Assertion fails, 9 == 9, and we expected a difference
+ * ```
  */
 infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this shouldNot haveSameDay(date)
 
@@ -535,8 +876,18 @@ infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this sho
  * For example, 09/02/1998 10:00:00 -03:00 has the same day as 09/03/2018 11:30:30 -05:00,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameDay]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeHaveSameDayNegation]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2018, 3, 9, 11, 30, 30, 30, ZoneOffset.ofHours(-5))
+ *
+ *    firstDate should haveSameDay(secondDate)   //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 10, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNot haveSameDay(secondDate)    //Assertion passes
+ * ```
  *
  * @see [OffsetDateTime.shouldHaveSameDayAs]
  * @see [OffsetDateTime.shouldNotHaveSameDayAs]
@@ -554,8 +905,18 @@ fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matche
  *
  * Opposite of [LocalDate.shouldNotBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldBeBeforeFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 10)
+ *    val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *    firstDate shouldBeBefore secondDate     //Assertion fails, 10/02/1998 is not before 09/02/1998 as expected.
+ * ```
  *
  * @see LocalDate.shouldNotBeAfter
  */
@@ -569,8 +930,19 @@ infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
  *
  * Opposite of [LocalDate.shouldBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateShouldNotBeBeforeFailure]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 10)
+ *    val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ 
+ 
+ 
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldNotBeBefore secondDate     //Assertion fails, 09/02/1998 is before 10/02/1998, and we expected the opposite.
+ * ```
  *
  * @see LocalDate.shouldBeAfter
  */
@@ -582,8 +954,18 @@ infix fun LocalDate.shouldNotBeBefore(date: LocalDate) = this shouldNot before(d
  * Verifies that two LocalDates occurs in a certain order, checking that one happened before the other.
  * For example, 09/02/1998 is before 10/02/1998, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateBeforeNegation]
+ * ```
+ *    val firstDate = LocalDate.of(1998, 2, 9)
+ *    val secondDate = LocalDate.of(1998, 2, 10)
+ *
+ *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDate.of(1998, 2, 10)
+ *    val secondDate = LocalDate.of(1998, 2, 9)
+ *
+ *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ * ```
  *
  * @see LocalDate.shouldBeBefore
  * @see LocalDate.shouldNotBeBefore
@@ -601,8 +983,18 @@ fun before(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
  *
  * Opposite of [LocalDateTime.shouldNotBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldBeBeforeFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *
+ *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *
+ *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ * ```
  *
  * @see LocalDateTime.shouldNotBeAfter
  */
@@ -616,8 +1008,18 @@ infix fun LocalDateTime.shouldBeBefore(date: LocalDateTime) = this should before
  *
  * Opposite of [LocalDateTime.shouldBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeShouldNotBeBeforeFailure]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *
+ *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *
+ *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ * ```
  *
  * @see LocalDateTime.shouldBeAfter
  */
@@ -629,8 +1031,18 @@ infix fun LocalDateTime.shouldNotBeBefore(date: LocalDateTime) = this shouldNot 
  * Verifies that two LocalDateTimes occurs in a certain order, checking that one happened before the other.
  * For example, 09/02/1998 00:00:00 is before 09/02/1998 00:00:01, and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.localDateTimeBeforeNegation]
+ * ```
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *
+ *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *
+ *
+ *    val firstDate = LocalDateTime.of(1998, 2, 9, 0, 0, 1)
+ *    val secondDate = LocalDateTime.of(1998, 2, 9, 0, 0, 0)
+ *
+ *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ * ```
  *
  * @see LocalDateTime.shouldBeBefore
  * @see LocalDateTime.shouldNotBeBefore
@@ -649,8 +1061,18 @@ fun before(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<Local
  *
  * Opposite of [ZonedDateTime.shouldNotBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldBeBeforeFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ * ```
  *
  * @see ZonedDateTime.shouldNotBeAfter
  */
@@ -665,8 +1087,18 @@ infix fun ZonedDateTime.shouldBeBefore(date: ZonedDateTime) = this should before
  *
  * Opposite of [ZonedDateTime.shouldBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeShouldNotBeBeforeFailure]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ * ```
  *
  * @see ZonedDateTime.shouldBeAfter
  */
@@ -679,8 +1111,18 @@ infix fun ZonedDateTime.shouldNotBeBefore(date: ZonedDateTime) = this shouldNot 
  * For example, 09/02/1998 00:00:00 -03:00 America/Sao_Paulo is before 09/02/1998 00:00:01 -03:00 America/Sao_Paulo,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.zonedDateTimeBeforeNegation]
+ * ```
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *
+ *
+ *    val firstDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ * ```
  *
  * @see ZonedDateTime.shouldBeBefore
  * @see ZonedDateTime.shouldNotBeBefore
@@ -699,8 +1141,18 @@ fun before(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<Zoned
  *
  * Opposite of [OffsetDateTime.shouldNotBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldBeBeforeFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBeBefore secondDate     //Assertion fails, firstDate is one second after secondDate
+ * ```
  *
  * @see OffsetDateTime.shouldNotBeAfter
  */
@@ -715,8 +1167,18 @@ infix fun OffsetDateTime.shouldBeBefore(date: OffsetDateTime) = this should befo
  *
  * Opposite of [OffsetDateTime.shouldBeBefore]
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotBeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeShouldNotBeBeforeFailure]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBeBefore secondDate    //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBeBefore secondDate     //Assertion fails, firstDate is one second before secondDate and we didn't expect it
+ * ```
  *
  * @see OffsetDateTime.shouldBeAfter
  */
@@ -729,8 +1191,18 @@ infix fun OffsetDateTime.shouldNotBeBefore(date: OffsetDateTime) = this shouldNo
  * For example, 09/02/1998 00:00:00 -03:00 is before 09/02/1998 00:00:01 -03:00,
  * and the matcher will have a positive result for this comparison
  *
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeBefore]
- * @sample [com.sksamuel.kotlintest.matchers.date.DateMatchersSamples.offsetDateTimeBeforeNegation]
+ * ```
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldBe before(secondDate)     //Assertion passes
+ *
+ *
+ *    val firstDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 1, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(1998, 2, 9, 0, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    firstDate shouldNotBe before(secondDate)  //Assertion passes
+ * ```
  *
  * @see OffsetDateTime.shouldBeBefore
  * @see OffsetDateTime.shouldNotBeBefore
