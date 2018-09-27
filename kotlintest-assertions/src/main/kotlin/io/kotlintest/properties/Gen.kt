@@ -299,7 +299,7 @@ interface Gen<T> {
     /**
      * Returns a stream of values where each value is a randomly
      * chosen [Int]. The values always returned include
-     * the following edge cases: [-1, 0, 1, Int.MIN_VALUE, Int.MAX_VALUE]
+     * the following edge cases: [Int.MIN_VALUE, Int.MAX_VALUE, 0]
      */
     fun int() = object : Gen<Int> {
       val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
