@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZonedDateTime
+import java.time.temporal.TemporalAmount
 
 /**
  * Asserts that this year is the same as [date]'s year
@@ -1616,9 +1617,9 @@ fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Match
 }
 
 /**
- * Asserts that this is within [period] of [date]
+ * Asserts that this is within [temporalAmount] of [date]
  *
- * Verifies that this is within [period] of [date].
+ * Verifies that this is within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 is within 3 days of 10/02/1998 10:00:00, and this assertion should pass for this comparison.
  *
  * Opposite of [LocalDateTime.shouldNotBeWithin]
@@ -1636,12 +1637,12 @@ fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Match
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
-fun LocalDateTime.shouldBeWithin(period: Period, date: LocalDateTime) = this should within(period, date)
+fun LocalDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: LocalDateTime) = this should within(temporalAmount, date)
 
 /**
- * Asserts that this is NOT within [period] of [date]
+ * Asserts that this is NOT within [temporalAmount] of [date]
  *
- * Verifies that this is not within [period] of [date].
+ * Verifies that this is not within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 is not within 3 days of 25/02/1998 10:00:00, and this assertion should pass for this comparison.
  *
  * Opposite of [LocalDateTime.shouldBeWithin]
@@ -1659,10 +1660,10 @@ fun LocalDateTime.shouldBeWithin(period: Period, date: LocalDateTime) = this sho
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
-fun LocalDateTime.shouldNotBeWithin(period: Period, date: LocalDateTime) = this shouldNot within(period, date)
+fun LocalDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: LocalDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
- * Matcher that compares two LocalDateTimes and checks whether one is within [period] of the other
+ * Matcher that compares two LocalDateTimes and checks whether one is within [temporalAmount] of the other
  *
  * Verifies that two LocalDateTimes are within a certain period.
  * For example, 09/02/1998 10:00:00 is within 3 days of 10/02/1998 10:00:00,
@@ -1684,19 +1685,19 @@ fun LocalDateTime.shouldNotBeWithin(period: Period, date: LocalDateTime) = this 
  * @see [LocalDateTime.shouldBeWithin]
  * @see [LocalDateTime.shouldNotBeWithin]
  */
-fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
+fun within(temporalAmount: TemporalAmount, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
   override fun test(value: LocalDateTime): Result {
-    val start = date.minus(period)
-    val end = date.plus(period)
+    val start = date.minus(temporalAmount)
+    val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
 
 /**
- * Asserts that this is within [period] of [date]
+ * Asserts that this is within [temporalAmount] of [date]
  *
- * Verifies that this is within [period] of [date].
+ * Verifies that this is within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is within 3 days of 10/02/1998 10:00:00 -03:00 America/Sao_Paulo,
  * and this assertion should pass for this comparison.
  *
@@ -1715,12 +1716,12 @@ fun within(period: Period, date: LocalDateTime): Matcher<LocalDateTime> = object
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
-fun ZonedDateTime.shouldBeWithin(period: Period, date: ZonedDateTime) = this should within(period, date)
+fun ZonedDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: ZonedDateTime) = this should within(temporalAmount, date)
 
 /**
- * Asserts that this is NOT within [period] of [date]
+ * Asserts that this is NOT within [temporalAmount] of [date]
  *
- * Verifies that this is not within [period] of [date].
+ * Verifies that this is not within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is not within 3 days of 25/02/1998 10:00:00 -03:00 America/Sao_Paulo,
  * and this assertion should pass for this comparison.
  *
@@ -1739,10 +1740,10 @@ fun ZonedDateTime.shouldBeWithin(period: Period, date: ZonedDateTime) = this sho
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
-fun ZonedDateTime.shouldNotBeWithin(period: Period, date: ZonedDateTime) = this shouldNot within(period, date)
+fun ZonedDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: ZonedDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
- * Matcher that compares two ZonedDateTimes and checks whether one is within [period] of the other
+ * Matcher that compares two ZonedDateTimes and checks whether one is within [temporalAmount] of the other
  *
  * Verifies that two ZonedDateTimes are within a certain period.
  * For example, 09/02/1998 10:00:00 -03:00 America/Sao_Paulo is within 3 days of 10/02/1998 10:00:00 -03:00 America/Sao_Paulo,
@@ -1764,19 +1765,19 @@ fun ZonedDateTime.shouldNotBeWithin(period: Period, date: ZonedDateTime) = this 
  * @see [ZonedDateTime.shouldBeWithin]
  * @see [ZonedDateTime.shouldNotBeWithin]
  */
-fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
+fun within(temporalAmount: TemporalAmount, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
   override fun test(value: ZonedDateTime): Result {
-    val start = date.minus(period)
-    val end = date.plus(period)
+    val start = date.minus(temporalAmount)
+    val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
 
 /**
- * Asserts that this is within [period] of [date]
+ * Asserts that this is within [temporalAmount] of [date]
  *
- * Verifies that this is within [period] of [date].
+ * Verifies that this is within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 -03:00 is within 3 days of 10/02/1998 10:00:00 -03:00,
  * and this assertion should pass for this comparison.
  *
@@ -1795,12 +1796,12 @@ fun within(period: Period, date: ZonedDateTime): Matcher<ZonedDateTime> = object
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
-fun OffsetDateTime.shouldBeWithin(period: Period, date: OffsetDateTime) = this should within(period, date)
+fun OffsetDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: OffsetDateTime) = this should within(temporalAmount, date)
 
 /**
- * Asserts that this is NOT within [period] of [date]
+ * Asserts that this is NOT within [temporalAmount] of [date]
  *
- * Verifies that this is not within [period] of [date].
+ * Verifies that this is not within [temporalAmount] of [date].
  * For example, 09/02/1998 10:00:00 -03:00 is not within 3 days of 25/02/1998 10:00:00 -03:00,
  * and this assertion should pass for this comparison.
  *
@@ -1819,10 +1820,10 @@ fun OffsetDateTime.shouldBeWithin(period: Period, date: OffsetDateTime) = this s
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
-fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = this shouldNot within(period, date)
+fun OffsetDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: OffsetDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
- * Matcher that compares two OffsetDateTimes and checks whether one is within [period] of the other
+ * Matcher that compares two OffsetDateTimes and checks whether one is within [temporalAmount] of the other
  *
  * Verifies that two OffsetDateTimes are within a certain period.
  * For example, 09/02/1998 10:00:00 -03:00 is within 3 days of 10/02/1998 10:00:00 -03:00,
@@ -1844,11 +1845,11 @@ fun OffsetDateTime.shouldNotBeWithin(period: Period, date: OffsetDateTime) = thi
  * @see [OffsetDateTime.shouldBeWithin]
  * @see [OffsetDateTime.shouldNotBeWithin]
  */
-fun within(period: Period, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
+fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
   override fun test(value: OffsetDateTime): Result {
-    val start = date.minus(period)
-    val end = date.plus(period)
+    val start = date.minus(temporalAmount)
+    val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
