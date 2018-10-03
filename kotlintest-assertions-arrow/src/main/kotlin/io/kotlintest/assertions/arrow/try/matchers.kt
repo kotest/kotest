@@ -38,3 +38,19 @@ fun beFailure() = object : Matcher<Try<Any>> {
     }
   }
 }
+
+inline fun <reified A : Throwable> Try<Any>.shouldBeFailureOfType() = this should beFailureOfType<A>()
+inline fun <reified A : Throwable> Try<Any>.shouldNotBeFailureOfType() = this shouldNot beFailureOfType<A>()
+inline fun <reified A : Throwable> beFailureOfType() = object : Matcher<Try<Any>> {
+  override fun test(value: Try<Any>): Result {
+    return when (value) {
+      is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")
+      is Try.Failure<*> -> {
+        if (value.exception is A)
+          Result(true, "Try should be a Failure(${A::class})", "Try should not be Failure")
+        else
+          Result(false, "Try should be a Failure(${A::class}), but was Failure(${value.exception::class})", "Try should not be Failure")
+      }
+    }
+  }
+}

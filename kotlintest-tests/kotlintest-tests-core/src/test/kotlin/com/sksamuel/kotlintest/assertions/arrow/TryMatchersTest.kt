@@ -2,11 +2,14 @@ package com.sksamuel.kotlintest.assertions.arrow
 
 import arrow.core.Try
 import io.kotlintest.assertions.arrow.`try`.beFailure
+import io.kotlintest.assertions.arrow.`try`.beFailureOfType
 import io.kotlintest.assertions.arrow.`try`.beSuccess
 import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
+import java.io.IOException
 
 class TryMatchersTest : WordSpec() {
 
@@ -34,6 +37,20 @@ class TryMatchersTest : WordSpec() {
         }.message shouldBe "Try should be a Failure but was Success(foo)"
 
         Try.Failure<Nothing>(RuntimeException()) should beFailure()
+      }
+
+      "test that a try is a Failure with a given throwable" {
+        shouldThrow<AssertionError> {
+          Try.Success("foo") should beFailureOfType<RuntimeException>()
+        }.message shouldBe "Try should be a Failure but was Success(foo)"
+
+        shouldThrow<AssertionError> {
+          Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<IOException>()
+        }.message shouldBe "Try should be a Failure(${IOException::class}), but was Failure(${RuntimeException::class})"
+
+        Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<RuntimeException>()
+        Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<Exception>()
+        Try.Failure<Nothing>(Exception()) shouldNot beFailureOfType<RuntimeException>()
       }
     }
   }
