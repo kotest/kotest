@@ -159,6 +159,7 @@ For the extension function style, each function has an equivalent negated versio
 | `date.shouldBeBefore(otherDate)` | Asserts that the date is before the given date. |
 | `date.shouldBeAfter(otherDate)` | Asserts that the date is after the given date. |
 | `date.shouldBeWithin(period, otherDate)` | Asserts that the date is within the period of the given date. |
+| `date.shouldBeWithin(duration, otherDate)` | Asserts that the date is within the duration of the given date. |
 
 | Concurrent ||
 | -------- | ---- |
