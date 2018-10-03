@@ -32,7 +32,7 @@ This page lists all current matchers in the KotlinTest arrow matchers extension 
 | `try.shouldBeSuccess()` | Asserts that the try is of type Success |
 | `try.shouldBeSuccess(v)` | Asserts that the try is of type Success with specified value v |
 | `try.shouldBeFailure()` | Asserts that the try is of type Failure |
-| `try.shouldBeFailureWithThrowable<A : Throwable>()` | Asserts that the try is of type Failure with a specified Exception type A |
+| `try.shouldBeFailureOfType<A : Throwable>()` | Asserts that the try is of type Failure with a specified exception type A |
 
 | Validated | |
 | -------- | ---- |
