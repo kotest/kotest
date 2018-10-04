@@ -7,13 +7,13 @@ import io.kotlintest.matchers.exactly
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 
-fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
-fun Double.shouldNotBeExactly(other: Double) = this shouldBe exactly(other)
+infix fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
+infix fun Double.shouldNotBeExactly(other: Double) = this shouldBe exactly(other)
 fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shouldBe between(a, b, tolerance)
 fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double) = this shouldNotBe between(a, b, tolerance)
 
-fun Double.shouldBeLessThan(x: Double) = this shouldBe lt(x)
-fun Double.shouldNotBeLessThan(x: Double) = this shouldNotBe lt(x)
+infix fun Double.shouldBeLessThan(x: Double) = this shouldBe lt(x)
+infix fun Double.shouldNotBeLessThan(x: Double) = this shouldNotBe lt(x)
 fun lt(x: Double) = beLessThan(x)
 fun beLessThan(x: Double) = object : Matcher<Double> {
   override fun test(value: Double) = Result(value < x, "$value should be < $x", "$value should not be < $x")
@@ -30,22 +30,22 @@ fun negative() = object : Matcher<Double> {
 }
 
 
-fun Double.shouldBeLessThanOrEqual(x: Double) = this shouldBe lte(x)
-fun Double.shouldNotBeLessThanOrEqual(x: Double) = this shouldNotBe lte(x)
+infix fun Double.shouldBeLessThanOrEqual(x: Double) = this shouldBe lte(x)
+infix fun Double.shouldNotBeLessThanOrEqual(x: Double) = this shouldNotBe lte(x)
 fun lte(x: Double) = beLessThanOrEqualTo(x)
 fun beLessThanOrEqualTo(x: Double) = object : Matcher<Double> {
   override fun test(value: Double) = Result(value <= x, "$value should be <= $x", "$value should not be <= $x")
 }
 
-fun Double.shouldBeGreaterThan(x: Double) = this shouldBe gt(x)
-fun Double.shouldNotBeGreaterThan(x: Double) = this shouldNotBe gt(x)
+infix fun Double.shouldBeGreaterThan(x: Double) = this shouldBe gt(x)
+infix fun Double.shouldNotBeGreaterThan(x: Double) = this shouldNotBe gt(x)
 fun gt(x: Double) = beGreaterThan(x)
 fun beGreaterThan(x: Double) = object : Matcher<Double> {
   override fun test(value: Double) = Result(value > x, "$value should be > $x", "$value should not be > $x")
 }
 
-fun Double.shouldBeGreaterThanOrEqual(x: Double) = this shouldBe gte(x)
-fun Double.shouldNotBeGreaterThanOrEqual(x: Double) = this shouldNotBe gte(x)
+infix fun Double.shouldBeGreaterThanOrEqual(x: Double) = this shouldBe gte(x)
+infix fun Double.shouldNotBeGreaterThanOrEqual(x: Double) = this shouldNotBe gte(x)
 fun gte(x: Double) = beGreaterThanOrEqualTo(x)
 fun beGreaterThanOrEqualTo(x: Double) = object : Matcher<Double> {
   override fun test(value: Double) = Result(value >= x, "$value should be >= $x", "$value should not be >= $x")
