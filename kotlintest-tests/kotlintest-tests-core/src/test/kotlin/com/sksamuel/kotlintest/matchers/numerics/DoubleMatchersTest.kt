@@ -3,11 +3,13 @@ package com.sksamuel.kotlintest.matchers.numerics
 import io.kotlintest.matchers.between
 import io.kotlintest.matchers.doubles.shouldBeNegative
 import io.kotlintest.matchers.doubles.shouldBePositive
+import io.kotlintest.matchers.doubles.shouldNotBeExactly
 import io.kotlintest.matchers.exactly
 import io.kotlintest.matchers.plusOrMinus
-import io.kotlintest.specs.ShouldSpec
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.ShouldSpec
 import io.kotlintest.tables.forAll
 import io.kotlintest.tables.forNone
 import io.kotlintest.tables.headers
@@ -42,6 +44,11 @@ class DoubleMatchersTest : ShouldSpec() {
       shouldThrow<AssertionError> {
         1.0 shouldBe exactly(1.1)
       }
+    }
+    
+    should("not match exactly") {
+      1.0 shouldNotBe exactly(1.1)
+      1.0 shouldNotBeExactly 1.1
     }
 
     should("never match NaN == Nan as per the spec") {
