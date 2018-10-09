@@ -1,11 +1,11 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
-import io.kotlintest.matchers.between
+import io.kotlintest.matchers.doubles.between
+import io.kotlintest.matchers.doubles.exactly
+import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.matchers.doubles.shouldBeNegative
 import io.kotlintest.matchers.doubles.shouldBePositive
 import io.kotlintest.matchers.doubles.shouldNotBeExactly
-import io.kotlintest.matchers.exactly
-import io.kotlintest.matchers.plusOrMinus
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow

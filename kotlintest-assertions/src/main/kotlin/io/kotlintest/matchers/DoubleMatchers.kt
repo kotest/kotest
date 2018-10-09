@@ -1,47 +1,19 @@
 package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
-import kotlin.math.abs
+import io.kotlintest.matchers.doubles.ToleranceMatcher
+import io.kotlintest.matchers.doubles.between
+import io.kotlintest.matchers.doubles.exactly
+import io.kotlintest.matchers.doubles.plusOrMinus
 
-infix fun Double.plusOrMinus(tolerance: Double): ToleranceMatcher = ToleranceMatcher(this, tolerance)
+@Deprecated("This method was moved to another package, and will be removed in a future update", ReplaceWith("plusOrMinus(tolerance)", "io.kotlintest.matchers.doubles.plusOrMinus"))
+infix fun Double.plusOrMinus(tolerance: Double) = plusOrMinus(tolerance)
 
-fun exactly(d: Double): Matcher<Double> = object : Matcher<Double> {
-  override fun test(value: Double) = Result(value == d, "$value is not equal to expected value $d", "$value should not equal $d")
-}
+@Deprecated("This method was moved to another package, and will be removed in a future update", ReplaceWith("exactly(d)", "io.kotlintest.matchers.doubles.exactly"))
+fun exactly(d: Double) = exactly(d)
 
-fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object : Matcher<Double> {
-  override fun test(value: Double): Result {
-    val differenceToMinimum = value - a
-    val differenceToMaximum = b - value
+@Deprecated("This method was moved to another package, and will be removed in a future update", ReplaceWith("between(a, b, tolerance)", "io.kotlintest.matchers.doubles.between"))
+fun between(a: Double, b: Double, tolerance: Double) = between(a, b, tolerance)
 
-    if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
-      return Result(false, "$value should be bigger than $a", "$value should not be bigger than $a")
-    }
-
-    if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
-      return Result(false, "$value should be smaller than $b", "$value should not be smaller than $b")
-    }
-
-    return Result(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller and $b and bigger than $a")
-  }
-}
-
-class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> {
-  override fun test(value: Double?): Result {
-    return if(value == null || expected == null) {
-      Result(value == expected, "$value should be equal to $expected", "$value should not be equal to $expected")
-    } else if (Double.NaN == expected && Double.NaN == value) {
-      println("[WARN] By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776")
-      Result(false,
-          "By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776",
-          "By design, Double.Nan != Double.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776"
-      )
-    } else {
-      if (tolerance == 0.0)
-        println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe (b plusOrMinus c)")
-      val diff = Math.abs(value - expected)
-      Result(diff <= tolerance, "$value should be equal to $expected", "$value should not be equal to $expected")
-    }
-  }
-}
+@Deprecated("This class was moved to another package, and will be removed in a future update", ReplaceWith("ToleranceMatcher(expected, tolerance)", "io.kotlintest.matchers.doubles.ToleranceMatcher"))
+class ToleranceMatcher(private val expected: Double?, private val tolerance: Double) : Matcher<Double?> by ToleranceMatcher(expected, tolerance)
