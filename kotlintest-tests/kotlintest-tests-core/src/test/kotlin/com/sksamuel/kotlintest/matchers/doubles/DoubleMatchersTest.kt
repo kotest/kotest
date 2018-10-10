@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.matchers.double
+package com.sksamuel.kotlintest.matchers.doubles
 
 import io.kotlintest.matchers.doubles.*
 import io.kotlintest.shouldBe
