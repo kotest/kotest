@@ -36,20 +36,20 @@ class DoubleMatchersTest : ShouldSpec() {
                 1.0 shouldNotBe positive()
 
                 // NAN shouldn't be not positive
-                Double.NaN shouldBe positive()
                 Double.NaN.shouldBePositive()
+                Double.NaN shouldBe positive()
 
                 // MAX_VALUE shouldn't be not positive
-                Double.MAX_VALUE shouldBe positive()
                 Double.MAX_VALUE.shouldBePositive()
+                Double.MAX_VALUE shouldBe positive()
 
                 // MIN_VALUE shouldn't be not positive
-                Double.MIN_VALUE shouldBe positive()
                 Double.MIN_VALUE.shouldBePositive()
+                Double.MIN_VALUE shouldBe positive()
 
                 // Positive Infinity shouldn't be not positive
-                Double.POSITIVE_INFINITY shouldBe positive()
                 Double.POSITIVE_INFINITY.shouldBePositive()
+                Double.POSITIVE_INFINITY shouldBe positive()
             }
         }
 
@@ -77,8 +77,8 @@ class DoubleMatchersTest : ShouldSpec() {
                 -1.0 shouldNotBe negative()
 
                 // NaN shouldn't be not negative
-                Double.NaN shouldNotBe negative()
                 Double.NaN.shouldNotBeNegative()
+                Double.NaN shouldNotBe negative()
 
                 // Positive Infinity shouldn't be not negative
                 Double.NEGATIVE_INFINITY.shouldBeNegative()
