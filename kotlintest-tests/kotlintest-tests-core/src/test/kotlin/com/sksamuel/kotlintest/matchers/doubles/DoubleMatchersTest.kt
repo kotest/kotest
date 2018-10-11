@@ -1,88 +1,71 @@
 package com.sksamuel.kotlintest.matchers.doubles
 
 import io.kotlintest.matchers.doubles.*
-import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.ShouldSpec
-import io.kotlintest.tables.forAll
-import io.kotlintest.tables.headers
-import io.kotlintest.tables.row
-import io.kotlintest.tables.table
+import io.kotlintest.tables.*
 
 class DoubleMatchersTest : ShouldSpec() {
     init {
 
         should("Not be positive") {
-            val table = table(
+            val acceptedValues = table(
                     headers("a"),
                     row(-1.0),
                     row(-0.00001),
                     row(-42.0),
                     row(0.0),
+                    row(Double.NaN),
                     row(Double.NEGATIVE_INFINITY)
             )
 
-            forAll(table) {
+            forAll(acceptedValues) {
                 it.shouldNotBePositive()
                 it shouldNotBe positive()
             }
 
-            shouldThrow<AssertionError> {
-                0.1.shouldNotBePositive()
-                0.1 shouldNotBe positive()
+            val notAcceptedValues = table(
+                    headers("a"),
+                    row(0.1),
+                    row(1.0),
+                    row(Double.MAX_VALUE),
+                    row(Double.MIN_VALUE),
+                    row(Double.POSITIVE_INFINITY)
+            )
 
-                1.0.shouldNotBePositive()
-                1.0 shouldNotBe positive()
-
-                // NAN shouldn't be not positive
-                Double.NaN.shouldBePositive()
-                Double.NaN shouldBe positive()
-
-                // MAX_VALUE shouldn't be not positive
-                Double.MAX_VALUE.shouldBePositive()
-                Double.MAX_VALUE shouldBe positive()
-
-                // MIN_VALUE shouldn't be not positive
-                Double.MIN_VALUE.shouldBePositive()
-                Double.MIN_VALUE shouldBe positive()
-
-                // Positive Infinity shouldn't be not positive
-                Double.POSITIVE_INFINITY.shouldBePositive()
-                Double.POSITIVE_INFINITY shouldBe positive()
+            forNone(notAcceptedValues) {
+                it.shouldNotBePositive()
+                it shouldNotBe positive()
             }
         }
 
         should("Not be negative") {
-            val table = table(
+            val acceptedValues = table(
                     headers("a"),
                     row(1.0),
                     row(Double.MIN_VALUE),
                     row(Double.MAX_VALUE),
                     row(0.001),
                     row(0.0),
+                    row(Double.NaN),
                     row(Double.POSITIVE_INFINITY)
             )
 
-            forAll(table) {
+            forAll(acceptedValues) {
                 it.shouldNotBeNegative()
                 it shouldNotBe negative()
             }
 
-            shouldThrow<AssertionError> {
-                (-0.1).shouldNotBeNegative()
-                -0.1 shouldNotBe negative()
+            val notAcceptedValues = table(
+                    headers("a"),
+                    row(-0.1),
+                    row(-1.0),
+                    row(Double.NEGATIVE_INFINITY)
+            )
 
-                (-1.0).shouldNotBeNegative()
-                -1.0 shouldNotBe negative()
-
-                // NaN shouldn't be not negative
-                Double.NaN.shouldNotBeNegative()
-                Double.NaN shouldNotBe negative()
-
-                // Positive Infinity shouldn't be not negative
-                Double.NEGATIVE_INFINITY.shouldBeNegative()
-                Double.NEGATIVE_INFINITY shouldBe negative()
+            forNone(notAcceptedValues) {
+                it.shouldNotBeNegative()
+                it shouldNotBe negative()
             }
         }
     }
