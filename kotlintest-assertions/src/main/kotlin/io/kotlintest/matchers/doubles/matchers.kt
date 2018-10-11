@@ -39,11 +39,13 @@ fun beLessThan(x: Double) = object : Matcher<Double> {
 }
 
 fun Double.shouldBePositive() = this shouldBe positive()
+fun Double.shouldNotBePositive() = this shouldNotBe positive()
 fun positive() = object : Matcher<Double> {
   override fun test(value: Double) = Result(value > 0.0, "$value should be > 0.0", "$value should not be > 0.0")
 }
 
 fun Double.shouldBeNegative() = this shouldBe negative()
+fun Double.shouldNotBeNegative() = this shouldNotBe negative()
 fun negative() = object : Matcher<Double> {
   override fun test(value: Double) = Result(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
 }

@@ -90,6 +90,10 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeLessThanOrEqual(n)` | Asserts that the double is less or equal to than the given value n |
 | `double.shouldBeGreaterThan(n)` | Asserts that the double is greater than the given value n |
 | `double.shouldBeGreaterThanOrEqual(n)` | Asserts that the double is greater than or equal to the given value n |
+| `double.shouldBePositive()` | Asserts that the double is positive |
+| `double.shouldNotBePositive()` | Asserts that the double is not positive|
+| `double.shouldBeNegative()` | Asserts that the double is negative |
+| `double.shouldNotBeNegative()` | Asserts that the double is not negative |
 
 | Collections ||
 | -------- | ---- |
