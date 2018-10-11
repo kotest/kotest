@@ -368,11 +368,11 @@ class CollectionMatchersTest : WordSpec() {
 
         shouldThrow<AssertionError> {
           col should beEmpty()
-        }.message.shouldBe("Collection should be empty")
+        }.message.shouldBe("Collection should be empty but contained [1, 2, 3]")
 
         shouldThrow<AssertionError> {
           col.shouldBeEmpty()
-        }.message.shouldBe("Collection should be empty")
+        }.message.shouldBe("Collection should be empty but contained [1, 2, 3]")
 
         listOf(1, 2, 3).shouldNotBeEmpty()
 

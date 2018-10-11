@@ -18,7 +18,7 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
 fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>): Result = Result(
       value.isEmpty(),
-      "Collection should be empty",
+      "Collection should be empty but contained ${stringRepr(value)}",
       "Collection should not be empty"
   )
 }
