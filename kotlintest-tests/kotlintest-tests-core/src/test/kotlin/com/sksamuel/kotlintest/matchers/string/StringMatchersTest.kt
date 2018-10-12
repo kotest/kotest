@@ -36,14 +36,14 @@ class StringMatchersTest : FreeSpec() {
     "contain only once" {
       "la tour" should containOnlyOnce("tour")
       "la tour tour" shouldNot containOnlyOnce("tour")
-      "la tour tour".shouldNotContainOnlyOnce("tour")
+      "la tour tour" shouldNotContainOnlyOnce "tour"
 
       shouldThrow<AssertionError> {
         null shouldNot containOnlyOnce("tour")
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
-        null.shouldNotContainOnlyOnce("tour")
+        null shouldNotContainOnlyOnce "tour"
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
@@ -51,7 +51,7 @@ class StringMatchersTest : FreeSpec() {
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
-        null.shouldContainOnlyOnce("tour")
+        null shouldContainOnlyOnce "tour"
       }.message shouldBe "Expecting actual not to be null"
     }
 
@@ -59,15 +59,15 @@ class StringMatchersTest : FreeSpec() {
       "la tour" should contain("^.*?tour$".toRegex())
       "la tour" shouldNot contain(".*?abc.*?".toRegex())
 
-      "la tour".shouldContain("^.*?tour$".toRegex())
-      "la tour".shouldNotContain(".*?abc.*?".toRegex())
+      "la tour" shouldContain "^.*?tour$".toRegex()
+      "la tour" shouldNotContain ".*?abc.*?".toRegex()
 
       shouldThrow<AssertionError> {
-        "la tour".shouldContain(".*?abc.*?".toRegex())
+        "la tour" shouldContain ".*?abc.*?".toRegex()
       }.message shouldBe "la tour should contain regex .*?abc.*?"
 
       shouldThrow<AssertionError> {
-        "la tour".shouldNotContain("^.*?tour$".toRegex())
+        "la tour" shouldNotContain "^.*?tour$".toRegex()
       }.message shouldBe "la tour should not contain regex ^.*?tour\$"
 
       shouldThrow<AssertionError> {
@@ -75,7 +75,7 @@ class StringMatchersTest : FreeSpec() {
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
-        null.shouldNotContain("^.*?tour$".toRegex())
+        null shouldNotContain "^.*?tour$".toRegex()
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
@@ -83,21 +83,21 @@ class StringMatchersTest : FreeSpec() {
       }.message shouldBe "Expecting actual not to be null"
 
       shouldThrow<AssertionError> {
-        null.shouldContain("^.*?tour$".toRegex())
+        null shouldContain "^.*?tour$".toRegex()
       }.message shouldBe "Expecting actual not to be null"
     }
 
     "string should contain" - {
       "should test that a string contains substring" {
         "hello" should include("h")
-        "hello".shouldInclude("o")
+        "hello" shouldInclude "o"
         "hello" should include("ell")
         "hello" should include("hello")
         "hello" should include("")
-        "la tour".shouldContain("tour")
+        "la tour" shouldContain "tour"
 
         shouldThrow<AssertionError> {
-          "la tour".shouldContain("wibble")
+          "la tour" shouldContain "wibble"
         }.message shouldBe "la tour should include substring wibble"
 
         shouldThrow<AssertionError> {
@@ -105,7 +105,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "hello should include substring allo"
 
         shouldThrow<AssertionError> {
-          "hello".shouldInclude("qwe")
+          "hello" shouldInclude "qwe"
         }.message shouldBe "hello should include substring qwe"
       }
 
@@ -115,7 +115,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotInclude("qwe")
+          null shouldNotInclude "qwe"
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -123,7 +123,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotContain("qwe")
+          null shouldNotContain "qwe"
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -135,7 +135,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldInclude("qwe")
+          null shouldInclude "qwe"
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -308,11 +308,11 @@ class StringMatchersTest : FreeSpec() {
         "" shouldNot haveSameLengthAs("o")
         "5" shouldNot haveSameLengthAs("")
 
-        "".shouldHaveSameLengthAs("")
-        "qwe".shouldHaveSameLengthAs("sdf")
-        "".shouldNotHaveSameLengthAs("qweqweqe")
-        "qe".shouldNotHaveSameLengthAs("")
-        "qe".shouldNotHaveSameLengthAs("fffff")
+        "" shouldHaveSameLengthAs ""
+        "qwe" shouldHaveSameLengthAs "sdf"
+        "" shouldNotHaveSameLengthAs "qweqweqe"
+        "qe" shouldNotHaveSameLengthAs ""
+        "qe" shouldNotHaveSameLengthAs "fffff"
       }
 
       "should fail if value is null" {
@@ -321,7 +321,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotHaveSameLengthAs("")
+          null shouldNotHaveSameLengthAs ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -329,7 +329,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldHaveSameLengthAs("o")
+          null shouldHaveSameLengthAs "o"
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -339,8 +339,8 @@ class StringMatchersTest : FreeSpec() {
         "hello" should containIgnoringCase("HELLO")
         "hello" shouldNot containIgnoringCase("hella")
 
-        "hello".shouldContainIgnoringCase("HEllO")
-        "hello".shouldNotContainIgnoringCase("hella")
+        "hello" shouldContainIgnoringCase "HEllO"
+        "hello" shouldNotContainIgnoringCase "hella"
       }
 
       "should fail if value is null" {
@@ -349,7 +349,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotContainIgnoringCase("")
+          null shouldNotContainIgnoringCase ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -357,7 +357,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldContainIgnoringCase("o")
+          null shouldContainIgnoringCase "o"
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -380,10 +380,10 @@ class StringMatchersTest : FreeSpec() {
       "should test strings" {
         "hello" should endWith("o")
         "hello" should endWith("")
-        "hello".shouldEndWith("")
-        "hello".shouldEndWith("lo")
-        "hello".shouldEndWith("o")
-        "hello".shouldNotEndWith("w")
+        "hello" shouldEndWith ""
+        "hello" shouldEndWith "lo"
+        "hello" shouldEndWith "o"
+        "hello" shouldNotEndWith "w"
         "" should endWith("")
         shouldThrow<AssertionError> {
           "" should endWith("h")
@@ -399,7 +399,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotEndWith("")
+          null shouldNotEndWith ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -407,7 +407,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldEndWith("o")
+          null shouldEndWith "o"
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -416,11 +416,11 @@ class StringMatchersTest : FreeSpec() {
       "should test strings" {
         "hello" should startWith("h")
         "hello" should startWith("")
-        "hello".shouldStartWith("")
-        "hello".shouldStartWith("h")
-        "hello".shouldStartWith("he")
-        "hello".shouldNotStartWith("w")
-        "hello".shouldNotStartWith("wo")
+        "hello" shouldStartWith ""
+        "hello" shouldStartWith "h"
+        "hello" shouldStartWith "he"
+        "hello" shouldNotStartWith "w"
+        "hello" shouldNotStartWith "wo"
         "" should startWith("")
         shouldThrow<AssertionError> {
           "" should startWith("h")
@@ -440,7 +440,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldStartWith("")
+          null shouldStartWith ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
@@ -448,7 +448,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotStartWith("w")
+          null shouldNotStartWith "w"
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -457,20 +457,20 @@ class StringMatchersTest : FreeSpec() {
       "should compare length of string" {
         "bibble" should haveLength(6)
         "" should haveLength(0)
-        "".shouldHaveLength(0)
-        "hello".shouldNotHaveLength(3)
-        "hello".shouldHaveLength(5)
+        "" shouldHaveLength 0
+        "hello" shouldNotHaveLength 3
+        "hello" shouldHaveLength 5
         shouldThrow<AssertionError> {
           "" should haveLength(3)
         }.message shouldBe "<empty string> should have length 3"
         shouldThrow<AssertionError> {
-          "".shouldHaveLength(3)
+          "" shouldHaveLength 3
         }.message shouldBe "<empty string> should have length 3"
         shouldThrow<AssertionError> {
-          "hello".shouldHaveLength(3)
+          "hello" shouldHaveLength 3
         }.message shouldBe "hello should have length 3"
         shouldThrow<AssertionError> {
-          "hello".shouldNotHaveLength(5)
+          "hello" shouldNotHaveLength 5
         }.message shouldBe "hello should not have length 5"
       }
       "should fail if value is null" {
@@ -487,7 +487,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotHaveLength(0)
+          null shouldNotHaveLength 0
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -510,11 +510,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldEndWith("")
+          null shouldEndWith ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotEndWith("")
+          null shouldNotEndWith ""
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -539,11 +539,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldInclude("")
+          null shouldInclude ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotInclude("")
+          null shouldNotInclude ""
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -552,11 +552,11 @@ class StringMatchersTest : FreeSpec() {
         "sam" should match("sam")
         "bibble" should match("bibb..")
         "foo" should match(".*")
-        "foo".shouldMatch(".*")
-        "foo".shouldMatch("foo")
-        "foo".shouldMatch("f..")
-        "boo".shouldNotMatch("foo")
-        "boo".shouldNotMatch("f..")
+        "foo" shouldMatch ".*"
+        "foo" shouldMatch "foo"
+        "foo" shouldMatch "f.."
+        "boo" shouldNotMatch "foo"
+        "boo" shouldNotMatch "f.."
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -568,11 +568,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldMatch("")
+          null shouldMatch ""
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotMatch("")
+          null shouldNotMatch ""
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -582,7 +582,7 @@ class StringMatchersTest : FreeSpec() {
         "\n" should haveLineCount(1)
         "\r\n" should haveLineCount(1)
         "a\nb\nc" should haveLineCount(2)
-        "\r\n".shouldNotHaveLineCount(2)
+        "\r\n" shouldNotHaveLineCount 2
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -594,11 +594,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldHaveLineCount(0)
+          null shouldHaveLineCount 0
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotHaveLineCount(0)
+          null shouldNotHaveLineCount 0
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -606,8 +606,8 @@ class StringMatchersTest : FreeSpec() {
       "should check min length" {
         "" should haveMinLength(0)
         "1" should haveMinLength(1)
-        "123".shouldHaveMinLength(1)
-        "".shouldNotHaveMinLength(1)
+        "123" shouldHaveMinLength 1
+        "" shouldNotHaveMinLength 1
 
         shouldThrow<AssertionError> {
           "1" should haveMinLength(2)
@@ -623,11 +623,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldHaveMinLength(0)
+          null shouldHaveMinLength 0
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotHaveMinLength(0)
+          null shouldNotHaveMinLength 0
         }.message shouldBe "Expecting actual not to be null"
       }
     }
@@ -635,8 +635,8 @@ class StringMatchersTest : FreeSpec() {
       "should check max length" {
         "" should haveMaxLength(0)
         "1" should haveMaxLength(1)
-        "123".shouldHaveMaxLength(10)
-        "123".shouldNotHaveMaxLength(1)
+        "123" shouldHaveMaxLength 10
+        "123" shouldNotHaveMaxLength 1
 
         shouldThrow<AssertionError> {
           "12" should haveMaxLength(1)
@@ -652,11 +652,11 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldHaveMaxLength(0)
+          null shouldHaveMaxLength 0
         }.message shouldBe "Expecting actual not to be null"
 
         shouldThrow<AssertionError> {
-          null.shouldNotHaveMaxLength(0)
+          null shouldNotHaveMaxLength 0
         }.message shouldBe "Expecting actual not to be null"
       }
     }
