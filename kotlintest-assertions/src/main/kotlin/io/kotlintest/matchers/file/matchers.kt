@@ -17,10 +17,10 @@ fun beNonEmptyDirectory(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isDirectory && value.list().isNotEmpty(), "$value should be a non empty directory", "$value should not be a non empty directory")
 }
 
-fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
-fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
-fun File.shouldNotContainNFiles(n: Int) = this shouldNotBe containNFiles(n)
-fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
+infix fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
+infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
+infix fun File.shouldNotContainNFiles(n: Int) = this shouldNotBe containNFiles(n)
+infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 fun containNFiles(n: Int): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isDirectory && value.list().size == n, "$value should be a directory and contain $n files", "$value should not be a directory containing $n files")
 }
@@ -43,23 +43,23 @@ fun haveExtension(vararg exts: String) = object : Matcher<File> {
   override fun test(value: File) = Result(exts.any { value.name.endsWith(it) }, "File $value should end with one of ${exts.joinToString(",")}", "File $value should not end with one of ${exts.joinToString(",")}")
 }
 
-fun File.shouldHavePath(name: String) = this should havePath(name)
-fun File.shouldNotHavePath(name: String) = this shouldNot havePath(name)
+infix fun File.shouldHavePath(name: String) = this should havePath(name)
+infix fun File.shouldNotHavePath(name: String) = this shouldNot havePath(name)
 fun havePath(name: String) = object : Matcher<File> {
   override fun test(value: File) = Result(value.path == name, "File $value should have path $name", "File $value should not have path $name")
 }
 
-fun File.shouldHaveName(name: String) = this should haveName(name)
-fun File.shouldNotHaveName(name: String) = this shouldNot haveName(name)
+infix fun File.shouldHaveName(name: String) = this should haveName(name)
+infix fun File.shouldNotHaveName(name: String) = this shouldNot haveName(name)
 fun haveName(name: String) = object : Matcher<File> {
   override fun test(value: File) = Result(value.name == name, "File $value should have name $name", "File $value should not have name $name")
 }
 
-fun Path.shouldContainFile(name: String) = this.toFile() should containFile(name)
-fun Path.shouldNotContainFile(name: String) = this.toFile() shouldNot containFile(name)
+infix fun Path.shouldContainFile(name: String) = this.toFile() should containFile(name)
+infix fun Path.shouldNotContainFile(name: String) = this.toFile() shouldNot containFile(name)
 
-fun File.shouldContainFile(name: String) = this should containFile(name)
-fun File.shouldNotContainFile(name: String) = this shouldNot containFile(name)
+infix fun File.shouldContainFile(name: String) = this should containFile(name)
+infix fun File.shouldNotContainFile(name: String) = this shouldNot containFile(name)
 fun containFile(name: String) = object : Matcher<File> {
   override fun test(value: File): Result {
     val contents = value.list()
@@ -83,14 +83,14 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.isFile, "File $value should be a file", "File $value should not be a file")
 }
 
-fun Path.shouldBeSmaller(other: Path) = this.toFile() should beSmaller(other.toFile())
-fun File.shouldBeSmaller(other: Path) = this should beSmaller(other.toFile())
-fun Path.shouldBeSmaller(other: File) = this.toFile() should beSmaller(other)
-fun File.shouldBeSmaller(other: File) = this should beSmaller(other)
-fun Path.shouldNotBeSmaller(other: Path) = this.toFile() shouldNot beSmaller(other.toFile())
-fun File.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other.toFile())
-fun Path.shouldNotBeSmaller(other: File) = this.toFile() shouldNot beSmaller(other)
-fun File.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other)
+infix fun Path.shouldBeSmaller(other: Path) = this.toFile() should beSmaller(other.toFile())
+infix fun File.shouldBeSmaller(other: Path) = this should beSmaller(other.toFile())
+infix fun Path.shouldBeSmaller(other: File) = this.toFile() should beSmaller(other)
+infix fun File.shouldBeSmaller(other: File) = this should beSmaller(other)
+infix fun Path.shouldNotBeSmaller(other: Path) = this.toFile() shouldNot beSmaller(other.toFile())
+infix fun File.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other.toFile())
+infix fun Path.shouldNotBeSmaller(other: File) = this.toFile() shouldNot beSmaller(other)
+infix fun File.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other)
 
 fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result {
@@ -100,14 +100,14 @@ fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
   }
 }
 
-fun Path.shouldBeLarger(other: Path) = this.toFile() should beLarger(other.toFile())
-fun File.shouldBeLarger(other: Path) = this should beLarger(other.toFile())
-fun Path.shouldBeLarger(other: File) = this.toFile() should beLarger(other)
-fun File.shouldBeLarger(other: File) = this should beLarger(other)
-fun Path.shouldNotBeLarger(other: Path) = this.toFile() shouldNot beLarger(other.toFile())
-fun File.shouldNotBeLarger(other: Path) = this shouldNot beLarger(other.toFile())
-fun Path.shouldNotBeLarger(other: File) = this.toFile() shouldNot beLarger(other)
-fun File.shouldNotBeLarger(other: File) = this shouldNot beLarger(other)
+infix fun Path.shouldBeLarger(other: Path) = this.toFile() should beLarger(other.toFile())
+infix fun File.shouldBeLarger(other: Path) = this should beLarger(other.toFile())
+infix fun Path.shouldBeLarger(other: File) = this.toFile() should beLarger(other)
+infix fun File.shouldBeLarger(other: File) = this should beLarger(other)
+infix fun Path.shouldNotBeLarger(other: Path) = this.toFile() shouldNot beLarger(other.toFile())
+infix fun File.shouldNotBeLarger(other: Path) = this shouldNot beLarger(other.toFile())
+infix fun Path.shouldNotBeLarger(other: File) = this.toFile() shouldNot beLarger(other)
+infix fun File.shouldNotBeLarger(other: File) = this shouldNot beLarger(other)
 
 fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result {
@@ -137,10 +137,10 @@ fun beRelative(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(!value.isAbsolute, "File $value should be relative", "File $value should not be relative")
 }
 
-fun Path.shouldHaveFileSize(size: Long) = this.toFile() should haveFileSize(size)
-fun Path.shouldNotHaveFileSize(size: Long) = this.toFile() shouldNot haveFileSize(size)
-fun File.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
-fun File.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
+infix fun Path.shouldHaveFileSize(size: Long) = this.toFile() should haveFileSize(size)
+infix fun Path.shouldNotHaveFileSize(size: Long) = this.toFile() shouldNot haveFileSize(size)
+infix fun File.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
+infix fun File.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
 fun haveFileSize(size: Long): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.length() == size, "File $value should have size $size", "File $value should not have size $size")
 }
@@ -169,17 +169,17 @@ fun beReadable(): Matcher<File> = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.canRead(), "File $value should be readable", "File $value should not be readable")
 }
 
-fun File.shouldStartWithPath(path: Path) = this should startWithPath(path)
-fun File.shouldNotStartWithPath(path: Path) = this shouldNot startWithPath(path)
+infix fun File.shouldStartWithPath(path: Path) = this should startWithPath(path)
+infix fun File.shouldNotStartWithPath(path: Path) = this shouldNot startWithPath(path)
 
-fun File.shouldStartWithPath(prefix: String) = this should startWithPath(prefix)
-fun File.shouldNotStartWithPath(prefix: String) = this shouldNot startWithPath(prefix)
+infix fun File.shouldStartWithPath(prefix: String) = this should startWithPath(prefix)
+infix fun File.shouldNotStartWithPath(prefix: String) = this shouldNot startWithPath(prefix)
 
-fun File.shouldStartWithPath(file: File) = this should startWithPath(file)
-fun File.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)
+infix fun File.shouldStartWithPath(file: File) = this should startWithPath(file)
+infix fun File.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)
 
-fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
-fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)
+infix fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
+infix fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)
 
 fun startWithPath(path: Path) = startWithPath(path.toFile())
 fun startWithPath(file: File) = startWithPath(file.toString())
@@ -217,9 +217,9 @@ fun Path.shouldNotBeExecutable() = this.toFile() shouldNot beExecutable()
 fun Path.shouldBeHidden() = this.toFile() should beHidden()
 fun Path.shouldNotBeHidden() = this.toFile() shouldNot beHidden()
 
-fun Path.shouldStartWithPath(file: File) = this.toFile() should startWithPath(file)
-fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot startWithPath(file)
+infix fun Path.shouldStartWithPath(file: File) = this.toFile() should startWithPath(file)
+infix fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot startWithPath(file)
 
-fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
-fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
+infix fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
+infix fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
 

@@ -63,8 +63,8 @@ fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
       )
 }
 
-fun <T, C : Sequence<T>> C.shouldContain(t: T) = this should contain(t)
-fun <T, C : Sequence<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
+infix fun <T, C : Sequence<T>> C.shouldContain(t: T) = this should contain(t)
+infix fun <T, C : Sequence<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
   override fun test(value: C) = Result(
       value.contains(t),
@@ -73,9 +73,9 @@ fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
   )
 }
 
-fun <T, C : Sequence<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
+infix fun <T, C : Sequence<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
 fun <T, C : Sequence<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
-fun <T, C : Sequence<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
+infix fun <T, C : Sequence<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
 fun <T, C : Sequence<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 fun <T> containExactly(vararg expected: T): Matcher<Sequence<T>?> = containExactly(expected.asSequence())
 /** Assert that a sequence contains exactly the given values and nothing else, in order. */
@@ -98,9 +98,9 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
 	)
 }
 
-fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) = this shouldNot containExactlyInAnyOrder(expected)
+infix fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) = this shouldNot containExactlyInAnyOrder(expected)
 fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) = this shouldNot containExactlyInAnyOrder(*expected)
-fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) = this should containExactlyInAnyOrder(expected)
+infix fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) = this should containExactlyInAnyOrder(expected)
 fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) = this should containExactlyInAnyOrder(*expected)
 fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> = containExactlyInAnyOrder(expected.asSequence())
 /** Assert that a sequence contains exactly the given values and nothing else, in any order. */
@@ -113,7 +113,7 @@ fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = ne
   )
 }
 
-fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
+infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
   override fun test(value: C) = Result(
       (value.max() ?: t) <= t ,
@@ -122,7 +122,7 @@ fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher
   )
 }
 
-fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
+infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
   override fun test(value: C) = Result(
       (value.min() ?: t) >= t,
@@ -172,8 +172,8 @@ fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequen
   }
 }
 
-fun <T> Sequence<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith(comparator)
-fun <T> Sequence<T>.shouldBeSortedWith(cmp: (T,T) -> Int) = this should beSortedWith(cmp)
+infix fun <T> Sequence<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith(comparator)
+infix fun <T> Sequence<T>.shouldBeSortedWith(cmp: (T,T) -> Int) = this should beSortedWith(cmp)
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<Sequence<T>> = sortedWith(comparator)
 fun <T> beSortedWith(cmp: (T,T) -> Int): Matcher<Sequence<T>> = sortedWith(cmp)
 fun <T> sortedWith(comparator: Comparator<in T>): Matcher<Sequence<T>> = sortedWith { a, b -> comparator.compare(a, b) }
@@ -194,12 +194,12 @@ fun <T> sortedWith(cmp: (T,T) -> Int): Matcher<Sequence<T>> = object : Matcher<S
   }
 }
 
-fun <T> Sequence<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
-fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T,T) -> Int) = this shouldNot beSortedWith(cmp)
+infix fun <T> Sequence<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
+infix fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T,T) -> Int) = this shouldNot beSortedWith(cmp)
 
 
-fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
-fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
+infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
+infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() == 1 && value.first() == t,
@@ -209,10 +209,10 @@ fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
 }
 
 
-fun <T> Sequence<T>.shouldHaveCount(count: Int) = this should haveCount(count)
-fun <T> Sequence<T>.shouldNotHaveCount(count: Int) = this shouldNot haveCount(count)
-fun <T> Sequence<T>.shouldHaveSize(size: Int) = this should haveCount(size)
-fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCount(size)
+infix fun <T> Sequence<T>.shouldHaveCount(count: Int) = this should haveCount(count)
+infix fun <T> Sequence<T>.shouldNotHaveCount(count: Int) = this shouldNot haveCount(count)
+infix fun <T> Sequence<T>.shouldHaveSize(size: Int) = this should haveCount(size)
+infix fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCount(size)
 //fun <T> haveSize(size: Int) = haveCount(size)
 fun <T> haveSize(size: Int): Matcher<Sequence<T>> = haveCount(size)
 fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
@@ -226,7 +226,7 @@ fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<
 
 
 
-fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
+infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
 fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() > other.count(),
@@ -235,7 +235,7 @@ fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   )
 }
 
-fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
+infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
 fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() < other.count(),
@@ -244,7 +244,7 @@ fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   )
 }
 
-fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this should beSameCountAs(other)
+infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this should beSameCountAs(other)
 fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() == other.count(),
@@ -253,9 +253,9 @@ fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
   )
 }
 
-fun <T, U> Sequence<T>.shouldBeSameSizeAs(other: Sequence<U>) = this.shouldBeSameCountAs(other)
+infix fun <T, U> Sequence<T>.shouldBeSameSizeAs(other: Sequence<U>) = this.shouldBeSameCountAs(other)
 
-fun <T> Sequence<T>.shouldHaveAtLeastCount(n: Int) = this shouldHave atLeastCount(n)
+infix fun <T> Sequence<T>.shouldHaveAtLeastCount(n: Int) = this shouldHave atLeastCount(n)
 fun <T> atLeastCount(n: Int) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() >= n,
@@ -264,9 +264,9 @@ fun <T> atLeastCount(n: Int) = object : Matcher<Sequence<T>> {
   )
 }
 
-fun <T> Sequence<T>.shouldHaveAtLeastSize(n: Int) = this.shouldHaveAtLeastCount(n)
+infix fun <T> Sequence<T>.shouldHaveAtLeastSize(n: Int) = this.shouldHaveAtLeastCount(n)
 
-fun <T> Sequence<T>.shouldHaveAtMostCount(n: Int) = this shouldHave atMostCount(n)
+infix fun <T> Sequence<T>.shouldHaveAtMostCount(n: Int) = this shouldHave atMostCount(n)
 fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.count() <= n,
@@ -275,10 +275,10 @@ fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
   )
 }
 
-fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostCount(n)
+infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostCount(n)
 
 
-fun <T> Sequence<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
+infix fun <T> Sequence<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>) = Result(
       value.any { p(it) },
@@ -288,7 +288,7 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Sequence<T>> {
 }
 
 fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(vararg ts: T) = this should containsInOrder(ts.asSequence())
-fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(expected: Sequence<T>) = this should containsInOrder(expected)
+infix fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(expected: Sequence<T>) = this should containsInOrder(expected)
 fun <T : Comparable<T>> Sequence<T>.shouldNotContainInOrder(expected: Sequence<T>) = this shouldNot containsInOrder(expected)
 
 /** Assert that a sequence contains a given subsequence, possibly with values in between. */
@@ -322,11 +322,11 @@ fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
 
 
 fun <T> Sequence<T>.shouldContainAll(vararg ts: T) = this should containAll(ts.asSequence())
-fun <T> Sequence<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts.asSequence())
-fun <T> Sequence<T>.shouldContainAll(ts: Sequence<T>) = this should containAll(ts)
+infix fun <T> Sequence<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts.asSequence())
+infix fun <T> Sequence<T>.shouldContainAll(ts: Sequence<T>) = this should containAll(ts)
 fun <T> Sequence<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(ts.asSequence())
-fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.asSequence())
-fun <T> Sequence<T>.shouldNotContainAll(ts: Sequence<T>) = this shouldNot containAll(ts)
+infix fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.asSequence())
+infix fun <T> Sequence<T>.shouldNotContainAll(ts: Sequence<T>) = this shouldNot containAll(ts)
 fun <T, C : Sequence<T>> containAll(ts: C): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
   override fun test(value: Sequence<T>):Result = Result(
       ts.all { value.contains(it) },

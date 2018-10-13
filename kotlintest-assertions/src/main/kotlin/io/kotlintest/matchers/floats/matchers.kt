@@ -25,14 +25,14 @@ fun beGreaterThanOrEqualTo(x: Float) = object : Matcher<Float> {
   override fun test(value: Float) = Result(value >= x, "$value should be >= $x", "$value should not be >= $x")
 }
 
-fun Float.shouldBeLessThan(x: Float) = this shouldBe io.kotlintest.matchers.lt(x)
-fun Float.shouldNotBeLessThan(x: Float) = this shouldNotBe io.kotlintest.matchers.lt(x)
+infix fun Float.shouldBeLessThan(x: Float) = this shouldBe io.kotlintest.matchers.lt(x)
+infix fun Float.shouldNotBeLessThan(x: Float) = this shouldNotBe io.kotlintest.matchers.lt(x)
 
-fun Float.shouldBeLessThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.lte(x)
-fun Float.shouldNotBeLessThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.lte(x)
+infix fun Float.shouldBeLessThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.lte(x)
+infix fun Float.shouldNotBeLessThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.lte(x)
 
-fun Float.shouldBeGreaterThan(x: Float) = this shouldBe io.kotlintest.matchers.gt(x)
-fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe io.kotlintest.matchers.gt(x)
+infix fun Float.shouldBeGreaterThan(x: Float) = this shouldBe io.kotlintest.matchers.gt(x)
+infix fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe io.kotlintest.matchers.gt(x)
 
-fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.gte(x)
-fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.gte(x)
+infix fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.gte(x)
+infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.gte(x)
