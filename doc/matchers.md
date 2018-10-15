@@ -119,6 +119,8 @@ For the extension function style, each function has an equivalent negated versio
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
+| `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
+| `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
 
 | URIs ||
 | -------- | ---- |
