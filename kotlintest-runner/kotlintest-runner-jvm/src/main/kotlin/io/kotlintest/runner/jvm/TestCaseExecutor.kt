@@ -1,23 +1,15 @@
 package io.kotlintest.runner.jvm
 
-import arrow.core.Try
-import arrow.core.recover
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
-import io.kotlintest.TestResult
 import io.kotlintest.TestFilterResult
-import io.kotlintest.TestStatus
+import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
 import org.slf4j.LoggerFactory
 import java.time.Duration
-import java.util.concurrent.Callable
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReference
 
 class TestCaseExecutor(val listener: TestEngineListener,
                        val testCase: TestCase,
@@ -74,81 +66,9 @@ class TestCaseExecutor(val listener: TestEngineListener,
     val enabled = config.enabled && Project.tags().isActive(tags) && !bang && !excluded
 
     return if (enabled) {
-      executeTestSet(TestSet(testCase, config.timeout, config.invocations, config.threads))
+      TestSetExecutor(listener, context).execute(TestSet(testCase, config.timeout, config.invocations, config.threads))
     } else {
       TestResult.Ignored
-    }
-  }
-
-  /**
-   * Executes a [TestSet] using the given values for invocations, threads and timeout.
-   * This function will block until all runs have completed.
-   *
-   * The [TestResult] returned will be calculated from the result of each run, with
-   * errors taking precedence over failures, and success being returned only if no
-   * errors of failure are detected.
-   */
-  private fun executeTestSet(set: TestSet): TestResult {
-
-    // if we have more than one requested thread, we run the tests inside an executor,
-    // otherwise we run on the main thread to avoid issues where before/after listeners
-    // require the same thread as the test case. https://github.com/kotlintest/kotlintest/issues/447
-
-    // captures an error from the test closures
-    val error = AtomicReference<Throwable?>(null)
-
-    when (set.threads) {
-      1 -> {
-        Try {
-          listener.testRun(set, 1)
-          set.testCase.test(context)
-        }.recover {
-          error.compareAndSet(null, it)
-        }
-      }
-      else -> {
-        val executor = Executors.newFixedThreadPool(set.threads, ThreadFactoryBuilder().setNameFormat("kotlintest-test-executor-%d").build())
-        val tasks = (0 until set.invocations).map { j ->
-          Callable<Unit> {
-            Try {
-              listener.testRun(set, j)
-              set.testCase.test(context)
-            }.recover {
-              // if an error is detected we'll abort any further invocations
-              executor.shutdownNow()
-              error.compareAndSet(null, it)
-            }
-          }
-        }
-        executor.invokeAll(tasks)
-        executor.shutdown()
-
-        try {
-          executor.awaitTermination(set.timeout.seconds, TimeUnit.SECONDS)
-        } catch (e: InterruptedException) {
-          logger.error("Interrupted waiting for executor to complete", e.message)
-          error.compareAndSet(null, e)
-        }
-      }
-    }
-
-    val result = buildTestResult(error.get() == null, set.timeout, error.get(), context.metaData())
-    listener.completeTestSet(set, result)
-    return result
-  }
-
-  /**
-   * Creates the correct [TestResult] given the state of the test invocations.
-   */
-  private fun buildTestResult(cleanExit: Boolean, timeout: Duration, error: Throwable?, metadata: Map<String, Any?>): TestResult {
-    return if (!cleanExit) {
-      TestResult(TestStatus.Error, TestTimedOutException(timeout.seconds, TimeUnit.SECONDS), null, metadata)
-    } else {
-      when (error) {
-        null -> TestResult(TestStatus.Success, null, null, metadata)
-        is AssertionError -> TestResult(TestStatus.Failure, error, null, metadata)
-        else -> TestResult(TestStatus.Error, error, null, metadata)
-      }
     }
   }
 }
