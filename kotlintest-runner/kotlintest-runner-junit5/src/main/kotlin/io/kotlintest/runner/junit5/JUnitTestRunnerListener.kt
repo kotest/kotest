@@ -1,6 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import com.google.common.io.Files
+import com.sun.xml.internal.bind.v2.schemagen.episode.Klass
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -149,7 +150,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
         .sortedBy { it.first.depth() }
         .reversed()
         .forEach {
-          val descriptor = descriptors[it.first] ?: getOrCreateDescriptor(it.first, it.second)
+          val descriptor = descriptors[it.first] ?: getOrCreateDescriptor(it.first, it.second, klass)
           // find an error by priority
           val result = findResultFor(it.first)
           if (result == null) {
@@ -181,8 +182,13 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     }
   }
 
-  private fun getOrCreateDescriptor(description: Description, type: TestType): TestDescriptor =
-      descriptors.getOrPut(description) { createTestCaseDescriptor(description, type) }
+  private fun getOrCreateDescriptor(description: Description, type: TestType, klazz: KClass<out Spec>? = null): TestDescriptor {
+    if (klazz == null){
+      return descriptors.getOrPut(description) { createTestCaseDescriptor(description, type) }
+    } else {
+      return descriptors.getOrPut(description) { createTestCaseDescriptor(description, type, klazz) }
+    }
+  }
 
   // returns the most important result for a given description
   // by searching all the results stored for that description and child descriptions
@@ -204,26 +210,46 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     return result
   }
 
-  private fun createTestCaseDescriptor(description: Description, type: TestType): TestDescriptor {
+  private fun createTestCaseDescriptor(description: Description, type: TestType, klazz: KClass<out Spec>? = null): TestDescriptor {
     logger.debug("Creating test case descriptor $description/$type")
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
     val parent = descriptors[parentDescription]!!
     val id = parent.uniqueId.append("test", description.name)
 
-    val descriptor = object : AbstractTestDescriptor(id, description.name) {
-      override fun getType(): TestDescriptor.Type {
-        // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
-        // see https://github.com/gradle/gradle/issues/4912
-        // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-        return when (type) {
-          TestType.Container -> TestDescriptor.Type.CONTAINER
-          TestType.Test -> TestDescriptor.Type.TEST
+    var descriptor: AbstractTestDescriptor
+    if (klazz != null){
+      val source = ClassSource.from(klazz?.java) ?: null
+      descriptor = object : AbstractTestDescriptor(id, description.name, source) {
+        override fun getType(): TestDescriptor.Type {
+          // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
+          // see https://github.com/gradle/gradle/issues/4912
+          // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+          return when (type) {
+            TestType.Container -> TestDescriptor.Type.CONTAINER
+            TestType.Test -> TestDescriptor.Type.TEST
+          }
         }
-      }
 
-      override fun mayRegisterTests(): Boolean = type == TestType.Container
+        override fun mayRegisterTests(): Boolean = type == TestType.Container
+      }
+    } else {
+      descriptor = object : AbstractTestDescriptor(id, description.name) {
+        override fun getType(): TestDescriptor.Type {
+          // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
+          // see https://github.com/gradle/gradle/issues/4912
+          // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+          return when (type) {
+            TestType.Container -> TestDescriptor.Type.CONTAINER
+            TestType.Test -> TestDescriptor.Type.TEST
+          }
+        }
+
+        override fun mayRegisterTests(): Boolean = type == TestType.Container
+      }
     }
+
+
 
     descriptors[description] = descriptor
 
