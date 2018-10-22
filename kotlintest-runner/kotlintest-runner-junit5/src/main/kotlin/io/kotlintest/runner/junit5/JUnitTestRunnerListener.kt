@@ -1,7 +1,6 @@
 package io.kotlintest.runner.junit5
 
 import com.google.common.io.Files
-import com.sun.xml.internal.bind.v2.schemagen.episode.Klass
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
