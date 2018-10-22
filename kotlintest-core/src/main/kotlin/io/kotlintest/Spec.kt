@@ -71,6 +71,8 @@ interface Spec : TestListener {
    */
   fun name(): String = javaClass.displayName()
 
+  fun canonicalName(): String = javaClass.canonicalName
+
   fun description() = javaClass.description()
 
   /**
