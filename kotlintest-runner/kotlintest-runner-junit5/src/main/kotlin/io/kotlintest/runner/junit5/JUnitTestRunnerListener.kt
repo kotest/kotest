@@ -124,7 +124,8 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     // that we do not "start" a test that is later marked as skipped.
     if (!started.contains(set.testCase.description)) {
       started.add(set.testCase.description)
-      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
+      val clazz: KClass<out Spec> = Class.forName(set.testCase.spec.canonicalName()).kotlin as KClass<out Spec>
+      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type, clazz)
       logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
       listener.executionStarted(descriptor)
     }
@@ -218,35 +219,19 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     val id = parent.uniqueId.append("test", description.name)
 
     var descriptor: AbstractTestDescriptor
-    if (klazz != null){
-      val source = ClassSource.from(klazz?.java) ?: null
-      descriptor = object : AbstractTestDescriptor(id, description.name, source) {
-        override fun getType(): TestDescriptor.Type {
-          // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
-          // see https://github.com/gradle/gradle/issues/4912
-          // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-          return when (type) {
-            TestType.Container -> TestDescriptor.Type.CONTAINER
-            TestType.Test -> TestDescriptor.Type.TEST
-          }
+    val source = ClassSource.from(klazz?.java) ?: null
+    descriptor = object : AbstractTestDescriptor(id, description.name, source) {
+      override fun getType(): TestDescriptor.Type {
+        // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
+        // see https://github.com/gradle/gradle/issues/4912
+        // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+        return when (type) {
+          TestType.Container -> TestDescriptor.Type.CONTAINER
+          TestType.Test -> TestDescriptor.Type.TEST
         }
-
-        override fun mayRegisterTests(): Boolean = type == TestType.Container
       }
-    } else {
-      descriptor = object : AbstractTestDescriptor(id, description.name) {
-        override fun getType(): TestDescriptor.Type {
-          // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
-          // see https://github.com/gradle/gradle/issues/4912
-          // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-          return when (type) {
-            TestType.Container -> TestDescriptor.Type.CONTAINER
-            TestType.Test -> TestDescriptor.Type.TEST
-          }
-        }
 
-        override fun mayRegisterTests(): Boolean = type == TestType.Container
-      }
+      override fun mayRegisterTests(): Boolean = type == TestType.Container
     }
 
 
