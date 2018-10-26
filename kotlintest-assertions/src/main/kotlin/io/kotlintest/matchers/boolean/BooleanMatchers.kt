@@ -16,8 +16,8 @@ import io.kotlintest.shouldNotBe
  * (3 + 3 == 6).shouldBeTrue    // Assertion passes
  * (3 + 3 == 42).shouldBeTrue   // Assertion fails
  * ```
- * @see [Boolean.shouldBeFalse]
  * @see [Boolean.shouldNotBeFalse]
+ * @see [Boolean.shouldBeFalse]
  */
 fun Boolean.shouldBeTrue() = this shouldBe true
 
@@ -34,8 +34,8 @@ fun Boolean.shouldBeTrue() = this shouldBe true
  * (3 + 3 == 42).shouldNotBeTrue   // Assertion passes
  * (3 + 3 == 6).shouldNotBeTrue    // Assertion fails
  * ```
- * @see [Boolean.shouldNotBeFalse]
  * @see [Boolean.shouldBeFalse]
+ * @see [Boolean.shouldNotBeFalse]
  */
 fun Boolean.shouldNotBeTrue() = this shouldNotBe true
 
@@ -52,8 +52,8 @@ fun Boolean.shouldNotBeTrue() = this shouldNotBe true
  * (3 + 3 == 42).shouldBeFalse  // Assertion passes
  * (3 + 3 == 6).shouldBeFalse   // Assertion fails
  * ```
- * @see [Boolean.shouldBeTrue]
  * @see [Boolean.shouldNotBeTrue]
+ * @see [Boolean.shouldBeTrue]
  */
 fun Boolean.shouldBeFalse() = this shouldBe false
 
@@ -70,7 +70,7 @@ fun Boolean.shouldBeFalse() = this shouldBe false
  * (3 + 3 == 6).shouldNotBeFalse   // Assertion passes
  * (3 + 3 == 42).shouldNotBeFalse  // Assertion fails
  * ```
- * @see [Boolean.shouldNotBeTrue]
  * @see [Boolean.shouldBeTrue]
+ * @see [Boolean.shouldNotBeTrue]
  */
 fun Boolean.shouldNotBeFalse() = this shouldNotBe false
