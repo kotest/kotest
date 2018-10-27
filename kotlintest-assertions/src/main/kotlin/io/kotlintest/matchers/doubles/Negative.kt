@@ -15,6 +15,9 @@ import io.kotlintest.shouldNotBe
  * 0.1.shouldBeNegative()      // Assertion fails
  * (-0.1).shouldBeNegative()   // Assertion passes
  * ```
+ *
+ * @see [Double.shouldBePositive]
+ * @see [Double.shouldNotBePositive]
  */
 fun Double.shouldBeNegative() = this shouldBe negative()
 
@@ -28,6 +31,9 @@ fun Double.shouldBeNegative() = this shouldBe negative()
  * 0.1.shouldNotBeNegative()      // Assertion passes
  * (-0.1).shouldNotBeNegative()   // Assertion fails
  * ```
+ *
+ * @see [Double.shouldBePositive]
+ * @see [Double.shouldNotBePositive]
  */
 fun Double.shouldNotBeNegative() = this shouldNotBe negative()
 
