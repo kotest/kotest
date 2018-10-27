@@ -12,7 +12,7 @@ import io.kotlintest.shouldNotBe
  * Opposite of [Double.shouldNotBeGreaterThan]
  *
  * ```
- * 0.2.shouldBeGreaterThan(0.1)    // Assertion passes
+ * 0.2.shouldBeGreaterThan(0.1)   // Assertion passes
  * 0.2.shouldBeGreaterThan(0.2)   // Assertion fails
  * 0.2.shouldBeGreaterThan(0.3)   // Assertion fails
  * ```
@@ -26,7 +26,7 @@ infix fun Double.shouldBeGreaterThan(x: Double) = this shouldBe gt(x)
  * Opposite of [Double.shouldBeGreaterThan]
  *
  * ```
- * 0.2.shouldNotBeGreaterThan(0.1)    // Assertion fails
+ * 0.2.shouldNotBeGreaterThan(0.1)   // Assertion fails
  * 0.2.shouldNotBeGreaterThan(0.2)   // Assertion passes
  * 0.2.shouldNotBeGreaterThan(0.3)   // Assertion passes
  * ```
@@ -45,7 +45,7 @@ fun beGreaterThan(x: Double) = object : Matcher<Double> {
  * Opposite of [Double.shouldNotBeGreaterThanOrEqual]
  *
  * ```
- * 0.2.shouldBeGreaterThanOrEqual(0.1)    // Assertion passes
+ * 0.2.shouldBeGreaterThanOrEqual(0.1)   // Assertion passes
  * 0.2.shouldBeGreaterThanOrEqual(0.2)   // Assertion passes
  * 0.2.shouldBeGreaterThanOrEqual(0.3)   // Assertion fails
  * ```
@@ -59,7 +59,7 @@ infix fun Double.shouldBeGreaterThanOrEqual(x: Double) = this shouldBe gte(x)
  * Opposite of [Double.shouldBeGreaterThanOrEqual]
  *
  * ```
- * 0.2.shouldNotBeGreaterThanOrEqual(0.1)    // Assertion fails
+ * 0.2.shouldNotBeGreaterThanOrEqual(0.1)   // Assertion fails
  * 0.2.shouldNotBeGreaterThanOrEqual(0.2)   // Assertion fails
  * 0.2.shouldNotBeGreaterThanOrEqual(0.3)   // Assertion passes
  * ```
