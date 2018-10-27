@@ -12,7 +12,7 @@ import io.kotlintest.shouldNotBe
  * Opposite of [Double.shouldNotBeExactly]
  *
  * ```
- * 0.1.shouldBeExactly(0.1)    // Assertion passes
+ * 0.1.shouldBeExactly(0.1)   // Assertion passes
  * 0.1.shouldBeExactly(0.2)   // Assertion fails
  * ```
  */
@@ -25,7 +25,7 @@ infix fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
  * Opposite of [Double.shouldBeExactly]
  *
  * ```
- * 0.1.shouldNotBeExactly(0.2)    // Assertion passes
+ * 0.1.shouldNotBeExactly(0.2)   // Assertion passes
  * 0.1.shouldNotBeExactly(0.1)   // Assertion fails
  * ```
  */
