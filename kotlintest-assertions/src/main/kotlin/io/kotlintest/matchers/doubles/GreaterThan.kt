@@ -55,7 +55,7 @@ infix fun Double.shouldBeGreaterThanOrEqual(x: Double) = this shouldBe gte(x)
 /**
  * Asserts that this [Double] is not greater or equals than [x]
  *
- * Verifies that this [Double] does not have a higher or equals value than [x].
+ * Verifies that this [Double] does not have a higher or equal value than [x].
  * Opposite of [Double.shouldBeGreaterThanOrEqual]
  *
  * ```
