@@ -28,8 +28,8 @@ fun containADigit() = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not contain any digits")
 }
 
-fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(substr)
-fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
+infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(substr)
+infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   Result(
       value.indexOf(substring) == value.lastIndexOf(substring),
@@ -65,8 +65,8 @@ fun beEmpty() = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not be empty")
 }
 
-fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(other)
-fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(other)
+infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(other)
+infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(other)
 fun haveSameLengthAs(other: String) = neverNullMatcher<String> { value ->
   Result(
       value.length == other.length,
@@ -74,8 +74,8 @@ fun haveSameLengthAs(other: String) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not have the same length as ${convertValueToString(other)}")
 }
 
-fun String?.shouldHaveLineCount(count: Int) = this should haveLineCount(count)
-fun String?.shouldNotHaveLineCount(count: Int) = this shouldNot haveLineCount(count)
+infix fun String?.shouldHaveLineCount(count: Int) = this should haveLineCount(count)
+infix fun String?.shouldNotHaveLineCount(count: Int) = this shouldNot haveLineCount(count)
 /**
  * Match on the number of newlines in a string.
  *
@@ -98,8 +98,8 @@ fun beBlank() = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not contain only whitespace")
 }
 
-fun String?.shouldContainIgnoringCase(substr: String) = this should containIgnoringCase(substr)
-fun String?.shouldNotContainIgnoringCase(substr: String) = this shouldNot containIgnoringCase(substr)
+infix fun String?.shouldContainIgnoringCase(substr: String) = this should containIgnoringCase(substr)
+infix fun String?.shouldNotContainIgnoringCase(substr: String) = this shouldNot containIgnoringCase(substr)
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
   Result(
       value.toLowerCase().indexOf(substr.toLowerCase()) >= 0,
@@ -107,8 +107,8 @@ fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not contain the substring ${convertValueToString(substr)} (case insensitive)")
 }
 
-fun String?.shouldContain(regex: Regex) = this should contain(regex)
-fun String?.shouldNotContain(regex: Regex) = this shouldNot contain(regex)
+infix fun String?.shouldContain(regex: Regex) = this should contain(regex)
+infix fun String?.shouldNotContain(regex: Regex) = this shouldNot contain(regex)
 fun contain(regex: Regex) = neverNullMatcher<String> { value ->
   Result(
       value.contains(regex),
@@ -116,12 +116,12 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not contain regex $regex")
 }
 
-fun String?.shouldContain(substr: String) = this should contain(substr)
-fun String?.shouldNotContain(substr: String) = this shouldNot contain(substr)
+infix fun String?.shouldContain(substr: String) = this should contain(substr)
+infix fun String?.shouldNotContain(substr: String) = this shouldNot contain(substr)
 fun contain(substr: String) = include(substr)
 
-fun String?.shouldInclude(substr: String) = this should include(substr)
-fun String?.shouldNotInclude(substr: String) = this shouldNot include(substr)
+infix fun String?.shouldInclude(substr: String) = this should include(substr)
+infix fun String?.shouldNotInclude(substr: String) = this shouldNot include(substr)
 fun include(substr: String) = neverNullMatcher<String> { value ->
   Result(
       value.contains(substr),
@@ -129,8 +129,8 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
       "$value should not include substring ${convertValueToString(substr)}")
 }
 
-fun String?.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
-fun String?.shouldNotHaveMaxLength(length: Int) = this shouldNot haveMaxLength(length)
+infix fun String?.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
+infix fun String?.shouldNotHaveMaxLength(length: Int) = this shouldNot haveMaxLength(length)
 
 fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
   Result(
@@ -139,8 +139,8 @@ fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should have minimum length of ${length - 1}")
 }
 
-fun String?.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
-fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
+infix fun String?.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
+infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
 
 fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
   Result(
@@ -149,12 +149,12 @@ fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should have maximum length of ${length - 1}")
 }
 
-fun String?.shouldHaveLength(length: Int) = this should haveLength(length)
-fun String?.shouldNotHaveLength(length: Int) = this shouldNot haveLength(length)
-fun String?.shouldMatch(regex: String) = this should match(regex)
-fun String?.shouldMatch(regex: Regex) = this should match(regex)
-fun String?.shouldNotMatch(regex: String) = this shouldNot match(regex)
-fun String?.shouldEndWith(suffix: String) = this should endWith(suffix)
-fun String?.shouldNotEndWith(suffix: String) = this shouldNot endWith(suffix)
-fun String?.shouldStartWith(suffix: String) = this should startWith(suffix)
-fun String?.shouldNotStartWith(suffix: String) = this shouldNot startWith(suffix)
+infix fun String?.shouldHaveLength(length: Int) = this should haveLength(length)
+infix fun String?.shouldNotHaveLength(length: Int) = this shouldNot haveLength(length)
+infix fun String?.shouldMatch(regex: String) = this should match(regex)
+infix fun String?.shouldMatch(regex: Regex) = this should match(regex)
+infix fun String?.shouldNotMatch(regex: String) = this shouldNot match(regex)
+infix fun String?.shouldEndWith(suffix: String) = this should endWith(suffix)
+infix fun String?.shouldNotEndWith(suffix: String) = this shouldNot endWith(suffix)
+infix fun String?.shouldStartWith(suffix: String) = this should startWith(suffix)
+infix fun String?.shouldNotStartWith(suffix: String) = this shouldNot startWith(suffix)

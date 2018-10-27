@@ -16,8 +16,8 @@ fun beOpaque() = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveScheme(scheme: String) = this should io.kotlintest.matchers.uri.haveScheme(scheme)
-fun URI.shouldNotHaveScheme(scheme: String) = this shouldNot io.kotlintest.matchers.uri.haveScheme(scheme)
+infix fun URI.shouldHaveScheme(scheme: String) = this should io.kotlintest.matchers.uri.haveScheme(scheme)
+infix fun URI.shouldNotHaveScheme(scheme: String) = this shouldNot io.kotlintest.matchers.uri.haveScheme(scheme)
 fun haveScheme(scheme: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.scheme == scheme,
@@ -26,8 +26,8 @@ fun haveScheme(scheme: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHavePort(port: Int) = this should io.kotlintest.matchers.uri.havePort(port)
-fun URI.shouldNotHavePort(port: Int) = this shouldNot io.kotlintest.matchers.uri.havePort(port)
+infix fun URI.shouldHavePort(port: Int) = this should io.kotlintest.matchers.uri.havePort(port)
+infix fun URI.shouldNotHavePort(port: Int) = this shouldNot io.kotlintest.matchers.uri.havePort(port)
 fun havePort(port: Int) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.port == port,
@@ -36,8 +36,8 @@ fun havePort(port: Int) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveHost(host: String) = this should io.kotlintest.matchers.uri.haveHost(host)
-fun URI.shouldNotHaveHost(host: String) = this shouldNot io.kotlintest.matchers.uri.haveHost(host)
+infix fun URI.shouldHaveHost(host: String) = this should io.kotlintest.matchers.uri.haveHost(host)
+infix fun URI.shouldNotHaveHost(host: String) = this shouldNot io.kotlintest.matchers.uri.haveHost(host)
 fun haveHost(host: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.host == host,
@@ -46,8 +46,8 @@ fun haveHost(host: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveQuery(q: String) = this should io.kotlintest.matchers.uri.haveQuery(q)
-fun URI.shouldNotHaveQuery(q: String) = this shouldNot io.kotlintest.matchers.uri.haveQuery(q)
+infix fun URI.shouldHaveQuery(q: String) = this should io.kotlintest.matchers.uri.haveQuery(q)
+infix fun URI.shouldNotHaveQuery(q: String) = this shouldNot io.kotlintest.matchers.uri.haveQuery(q)
 fun haveQuery(q: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.query == q,
@@ -56,8 +56,8 @@ fun haveQuery(q: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveAuthority(authority: String) = this should io.kotlintest.matchers.uri.haveAuthority(authority)
-fun URI.shouldNotHaveAuthority(authority: String) = this shouldNot io.kotlintest.matchers.uri.haveAuthority(authority)
+infix fun URI.shouldHaveAuthority(authority: String) = this should io.kotlintest.matchers.uri.haveAuthority(authority)
+infix fun URI.shouldNotHaveAuthority(authority: String) = this shouldNot io.kotlintest.matchers.uri.haveAuthority(authority)
 fun haveAuthority(authority: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.authority == authority,
@@ -66,8 +66,8 @@ fun haveAuthority(authority: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHavePath(path: String) = this should io.kotlintest.matchers.uri.havePath(path)
-fun URI.shouldNotHavePath(path: String) = this shouldNot io.kotlintest.matchers.uri.havePath(path)
+infix fun URI.shouldHavePath(path: String) = this should io.kotlintest.matchers.uri.havePath(path)
+infix fun URI.shouldNotHavePath(path: String) = this shouldNot io.kotlintest.matchers.uri.havePath(path)
 fun havePath(path: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.path == path,
@@ -76,8 +76,8 @@ fun havePath(path: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveParameter(key: String) = this should io.kotlintest.matchers.uri.haveParameter(key)
-fun URI.shouldNotHaveParameter(key: String) = this shouldNot io.kotlintest.matchers.uri.haveParameter(key)
+infix fun URI.shouldHaveParameter(key: String) = this should io.kotlintest.matchers.uri.haveParameter(key)
+infix fun URI.shouldNotHaveParameter(key: String) = this shouldNot io.kotlintest.matchers.uri.haveParameter(key)
 fun haveParameter(key: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.query.split("&").any { it.split("=").first() == key },
@@ -86,8 +86,8 @@ fun haveParameter(key: String) = object : Matcher<URI> {
   )
 }
 
-fun URI.shouldHaveFragment(fragment: String) = this should io.kotlintest.matchers.uri.haveFragment(fragment)
-fun URI.shouldNotHaveFragment(fragment: String) = this shouldNot io.kotlintest.matchers.uri.haveFragment(fragment)
+infix fun URI.shouldHaveFragment(fragment: String) = this should io.kotlintest.matchers.uri.haveFragment(fragment)
+infix fun URI.shouldNotHaveFragment(fragment: String) = this shouldNot io.kotlintest.matchers.uri.haveFragment(fragment)
 fun haveFragment(fragment: String) = object : Matcher<URI> {
   override fun test(value: URI) = Result(
       value.fragment == fragment,
