@@ -148,7 +148,7 @@ test {
 }
 
 dependencies {
-  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.7'
+  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.10'
 }
 ```
 
@@ -160,7 +160,7 @@ val test by tasks.getting(Test::class) {
 }
 
 dependencies {
-    testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.9")
+    testCompile("io.kotlintest:kotlintest-runner-junit5:3.1.10")
 }
 ```
 
@@ -172,12 +172,12 @@ For maven you must configure the surefire plugin for junit tests.
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.19.1</version>
+    <version>2.22.1</version>
     <dependencies>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -189,7 +189,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.1.7</version>
+    <version>3.1.10</version>
     <scope>test</scope>
 </dependency>
 ```
