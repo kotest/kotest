@@ -37,9 +37,11 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import kotlin.Double.Companion.MAX_VALUE
+import kotlin.Double.Companion.MIN_VALUE
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
 import kotlin.Double.Companion.POSITIVE_INFINITY
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 class DoubleMatchersTest : FreeSpec() {
@@ -47,9 +49,7 @@ class DoubleMatchersTest : FreeSpec() {
   private val nonNumericDoubles = listOf(NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY)
   
   private val numericDoubles = Gen.double().filterNot { it in nonNumericDoubles }
-  private val nonMaxValueDoubles = numericDoubles.filter { it != MAX_VALUE }
-  
-  private val delta = 0.0001
+  private val nonMinNorMaxValueDoubles = numericDoubles.filterNot { it in listOf(MAX_VALUE, MIN_VALUE) }
   
   init {
     "Exactly Matcher" - {
@@ -69,14 +69,14 @@ class DoubleMatchersTest : FreeSpec() {
         "Should not be exactly" - {
           
           "Any number smaller than itself" {
-            assertAll(nonMaxValueDoubles) {
-              it shouldNotMatchExactly it - delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchExactly it.slightlySmaller()
             }
           }
           
           "Any number bigger than itself" {
-            assertAll(nonMaxValueDoubles) {
-              it shouldNotMatchExactly it + delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchExactly it.slightlyGreater()
             }
           }
           
@@ -172,14 +172,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's equal to the first number of the range" - {
             
             "With tolerance" {
-              assertAll(nonMaxValueDoubles) {
-                it.shouldMatchBetween(it, it + delta, delta)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it, it.slightlyGreater(), it.smallDelta())
               }
             }
             
             "Without tolerance" {
-              assertAll(nonMaxValueDoubles) {
-                it.shouldMatchBetween(it, it + delta, 0.0)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it, it.slightlyGreater(), 0.0)
   
               }
             }
@@ -188,15 +188,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's between the first number of the range and the last one" - {
             
             "With tolerance" {
-              onDoubleRange { double, plusMinusValue ->
-                double.shouldMatchBetween(double - plusMinusValue, double + plusMinusValue, delta)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it.slightlySmaller(), it.slightlyGreater(), it.smallDelta())
               }
             }
             
             "Without tolerance" {
-              onDoubleRange { double, plusMinusValue ->
-                double.shouldMatchBetween(double - plusMinusValue, double + plusMinusValue, 0.0)
-                
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it.slightlySmaller(), it.slightlyGreater(), 0.0)
               }
             }
           }
@@ -204,14 +203,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's equal to the last number of the range" - {
             
             "With tolerance" {
-              assertAll(nonMaxValueDoubles) {
-                it.shouldMatchBetween(it - delta, it, delta)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it.slightlySmaller(), it, it.smallDelta())
               }
             }
             
             "Without tolerance" {
-              assertAll(nonMaxValueDoubles) {
-                it.shouldMatchBetween(it - delta, it, 0.0)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldMatchBetween(it.slightlySmaller(), it, 0.0)
               }
             }
           }
@@ -222,14 +221,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's smaller than the first number of the range" - {
             
             "With tolerance" {
-              onDoubleRange { double, valueToVariate ->
-                double.shouldNotMatchBetween(double + valueToVariate, double + 2 * valueToVariate, delta)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldNotMatchBetween(it.slightlyGreater(), it.muchGreater(), it.smallDelta())
               }
             }
             
             "Without tolerance" {
-              onDoubleRange { double, valueToVariate ->
-                double.shouldNotMatchBetween(double + valueToVariate, double + 2 * valueToVariate, 0.0)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldNotMatchBetween(it.slightlyGreater(), it.muchGreater(), 0.0)
               }
             }
           }
@@ -237,14 +236,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's bigger than the last number of the range" - {
             
             "With tolerance" {
-              onDoubleRange { double, valueToVariate ->
-                double.shouldNotMatchBetween(double - 2 * valueToVariate, double - valueToVariate, delta)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldNotMatchBetween(it.muchSmaller(), it.slightlySmaller(), it.smallDelta())
               }
             }
             
             "Without tolerance" {
-              onDoubleRange { double, valueToVariate ->
-                double.shouldNotMatchBetween(double - 2 * valueToVariate, double - valueToVariate, 0.0)
+              assertAll(nonMinNorMaxValueDoubles) {
+                it.shouldNotMatchBetween(it.muchSmaller(), it.slightlySmaller(), 0.0)
               }
             }
           }
@@ -261,14 +260,14 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be less than" - {
           
           "Numbers bigger than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldMatchLessThan double + delta
-              double shouldMatchLessThan double + valueToVariate
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldMatchLessThan it.slightlyGreater()
+              it shouldMatchLessThan it.muchGreater()
             }
           }
           
           "Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchLessThan POSITIVE_INFINITY
             }
           }
@@ -278,26 +277,26 @@ class DoubleMatchersTest : FreeSpec() {
         "Should not be less than" - {
           
           "Itself" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchLessThan it
             }
           }
           
           "Numbers smaller than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldNotMatchLessThan double - delta
-              double shouldNotMatchLessThan double - valueToVariate
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchLessThan it.slightlySmaller()
+              it shouldNotMatchLessThan it.muchSmaller()
             }
           }
           
           "Negative Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchLessThan it
             }
           }
           
           "NaN" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchLessThan NaN
             }
           }
@@ -311,7 +310,7 @@ class DoubleMatchersTest : FreeSpec() {
           "Should not be less than" - {
             
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 NaN shouldNotMatchLessThan it
               }
             }
@@ -329,7 +328,7 @@ class DoubleMatchersTest : FreeSpec() {
           "Should not be less than" - {
             
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 POSITIVE_INFINITY shouldNotMatchLessThan it
               }
             }
@@ -348,7 +347,7 @@ class DoubleMatchersTest : FreeSpec() {
           "Should be less than" - {
             
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 NEGATIVE_INFINITY shouldMatchLessThan it
               }
             }
@@ -466,20 +465,20 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be less than or equal" - {
           
           "Itself" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchLessThanOrEqual it
             }
           }
           
           "Numbers bigger than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldMatchLessThanOrEqual double + valueToVariate
-              double shouldMatchLessThanOrEqual double + delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldMatchLessThanOrEqual it.muchGreater()
+              it shouldMatchLessThanOrEqual it.slightlyGreater()
             }
           }
           
           "Positive Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchLessThanOrEqual POSITIVE_INFINITY
             }
           }
@@ -487,20 +486,20 @@ class DoubleMatchersTest : FreeSpec() {
         
         "Should not be less than or equal" - {
           "Any number smaller than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldNotMatchLessThanOrEqual double - valueToVariate
-              double shouldNotMatchLessThanOrEqual double - delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchLessThanOrEqual it.slightlySmaller()
+              it shouldNotMatchLessThanOrEqual it.muchSmaller()
             }
           }
           
           "Negative Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchLessThanOrEqual NEGATIVE_INFINITY
             }
           }
           
           "NaN" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchLessThanOrEqual NaN
             }
           }
@@ -511,7 +510,7 @@ class DoubleMatchersTest : FreeSpec() {
         "NaN" {
           "Should not be less than or equal" - {
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 NaN shouldNotMatchLessThanOrEqual it
               }
             }
@@ -539,7 +538,7 @@ class DoubleMatchersTest : FreeSpec() {
           }
           "Should not be less than or equal" - {
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 POSITIVE_INFINITY shouldNotMatchLessThanOrEqual it
               }
             }
@@ -557,7 +556,7 @@ class DoubleMatchersTest : FreeSpec() {
         "Negative Infinity" - {
           "Should be less than or equal" - {
             "Any numeric double" {
-              assertAll(nonMaxValueDoubles) {
+              assertAll(nonMinNorMaxValueDoubles) {
                 NEGATIVE_INFINITY shouldMatchLessThanOrEqual it
               }
             }
@@ -585,14 +584,14 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be greater than" - {
           
           "Numbers smaller than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldMatchGreaterThan double - valueToVariate
-              double shouldMatchGreaterThan double - delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldMatchGreaterThan it.slightlySmaller()
+              it shouldMatchGreaterThan it.muchSmaller()
             }
           }
           
           "Negative infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchGreaterThan NEGATIVE_INFINITY
             }
           }
@@ -601,26 +600,26 @@ class DoubleMatchersTest : FreeSpec() {
         "Should not be greater than" - {
           
           "Itself" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchGreaterThan it
             }
           }
           
           "Numbers greater than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldNotMatchGreaterThan double + valueToVariate
-              double shouldNotMatchGreaterThan double + delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchGreaterThan it.slightlyGreater()
+              it shouldNotMatchGreaterThan it.muchGreater()
             }
           }
           
           "NaN" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchGreaterThan NaN
             }
           }
           
           "Positive Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchGreaterThan POSITIVE_INFINITY
             }
           }
@@ -658,20 +657,20 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be greater than or equal to" - {
           
           "Itself" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchGreaterThanOrEqual it
             }
           }
           
           "Numbers smaller than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldMatchGreaterThanOrEqual double - valueToVariate
-              double shouldMatchGreaterThanOrEqual double - delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldMatchGreaterThanOrEqual it.slightlySmaller()
+              it shouldMatchGreaterThanOrEqual it.muchSmaller()
             }
           }
           
           "Negative Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldMatchGreaterThanOrEqual NEGATIVE_INFINITY
             }
           }
@@ -679,20 +678,21 @@ class DoubleMatchersTest : FreeSpec() {
         
         "Should not be greater than or equal to" - {
           "Numbers bigger than itself" {
-            onDoubleRange { double, valueToVariate ->
-              double shouldNotMatchGreaterThanOrEqual double + valueToVariate
-              double shouldNotMatchGreaterThanOrEqual double + delta
+            assertAll(nonMinNorMaxValueDoubles) {
+              it shouldNotMatchGreaterThanOrEqual it.slightlyGreater()
+              it shouldNotMatchGreaterThanOrEqual it.muchGreater()
+              
             }
           }
           
           "Positive Infinity" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchGreaterThanOrEqual POSITIVE_INFINITY
             }
           }
           
           "NaN" {
-            assertAll(nonMaxValueDoubles) {
+            assertAll(nonMinNorMaxValueDoubles) {
               it shouldNotMatchGreaterThanOrEqual NaN
             }
           }
@@ -776,6 +776,47 @@ class DoubleMatchersTest : FreeSpec() {
     
   }
   
+  private fun Double.smallDelta(): Double {
+    return if (this == 0.0) {
+      0.001
+    } else {
+      abs(this * 0.01)
+    }
+  }
+  
+  private fun Double.slightlyGreater(): Double {
+    return when {
+        this == 0.0 -> 0.01
+        this == 0.0 -> 0.01
+        this < 0    -> (this + smallDelta()) * 0.99
+        else        -> (this + smallDelta()) * 1.01
+    }
+  }
+  
+  private fun Double.muchGreater(): Double {
+    return when {
+        this == 0.0 -> 0.50
+        this < 0    -> (this + smallDelta()) * 0.75
+        else        -> (this + smallDelta()) * 1.25
+    }
+  }
+  
+  private fun Double.slightlySmaller(): Double {
+    return when {
+        this == 0.0 -> -0.99
+        this < 0    -> (this - smallDelta()) * 1.01
+        else        -> (this - smallDelta()) * 0.99
+    }
+  }
+  
+  private fun Double.muchSmaller(): Double {
+    return when {
+        this == 0.0 -> -0.75
+        this < 0    -> (this - smallDelta()) * 1.25
+        else        -> (this - smallDelta()) * 0.75
+    }
+  }
+  
   private fun shouldThrowAssertionError(message: String, vararg expression: () -> Any?) {
     expression.forEach {
       val exception = shouldThrow<AssertionError>(it)
@@ -823,7 +864,7 @@ class DoubleMatchersTest : FreeSpec() {
     this.shouldThrowExceptionOnBetween(a, b, tolerance)
   }
   
-  fun Double.shouldThrowExceptionOnBetween(a: Double, b: Double, tolerance: Double) {
+  private fun Double.shouldThrowExceptionOnBetween(a: Double, b: Double, tolerance: Double) {
     when {
       this < a -> this.shouldThrowMinimumExceptionOnBetween(a, b, tolerance)
       this > b -> this.shouldThrowMaximumExceptionOnBetween(a, b, tolerance)
@@ -861,23 +902,6 @@ class DoubleMatchersTest : FreeSpec() {
     shouldThrowAssertionError(message,
                               { this.shouldNotBeBetween(a, b, tolerance) },
                               { this shouldNotBe between(a, b, tolerance) })
-  }
-  
-  private fun onDoubleRange(block: (double: Double, valueToVariate: Double) -> Unit) {
-    (0.1..1.0 step 0.2).forEach { valueToVariate ->
-      assertAll(300, nonMaxValueDoubles) {
-        block(it, valueToVariate)
-      }
-    }
-  }
-  
-  private infix fun ClosedRange<Double>.step(step: Double): Iterable<Double> {
-    val sequence = generateSequence(start) { previous ->
-      if (previous == Double.POSITIVE_INFINITY) return@generateSequence null
-      val next = previous + step
-      if (next > endInclusive) null else next
-    }
-    return sequence.asIterable()
   }
   
   private infix fun Double.shouldMatchLessThan(x: Double) {

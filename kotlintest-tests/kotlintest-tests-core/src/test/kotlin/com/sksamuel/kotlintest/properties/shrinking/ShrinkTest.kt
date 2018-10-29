@@ -3,7 +3,6 @@ package com.sksamuel.kotlintest.properties.shrinking
 import io.kotlintest.matchers.doubles.lt
 import io.kotlintest.matchers.lte
 import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
@@ -63,7 +62,7 @@ class ShrinkTest : StringSpec({
       assertAll(Gen.double()) { a ->
         a shouldBe lt(3.0)
       }
-    }.message shouldBe "Property failed for\nArg 0: 3.0 (shrunk from 1.7976931348623157E308)\nafter 3 attempts\nCaused by: 1.7976931348623157E308 should be < 3.0"
+    }.message shouldBe "Property failed for\nArg 0: 3.0 (shrunk from 1.0E300)\nafter 4 attempts\nCaused by: 1.0E300 should be < 3.0"
   }
 
   "should shrink Gen.choose" {
