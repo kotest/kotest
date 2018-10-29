@@ -172,15 +172,15 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's equal to the first number of the range" - {
             
             "With tolerance" {
-              onDoubleRange { double, _ ->
-                double.shouldMatchBetween(double, double + delta, delta)
+              assertAll(nonMaxValueDoubles) {
+                it.shouldMatchBetween(it, it + delta, delta)
               }
             }
             
             "Without tolerance" {
-              onDoubleRange { double, _ ->
-                double.shouldMatchBetween(double, double + delta, 0.0)
-                
+              assertAll(nonMaxValueDoubles) {
+                it.shouldMatchBetween(it, it + delta, 0.0)
+  
               }
             }
           }
@@ -204,14 +204,14 @@ class DoubleMatchersTest : FreeSpec() {
           "When it's equal to the last number of the range" - {
             
             "With tolerance" {
-              onDoubleRange { double, _ ->
-                double.shouldMatchBetween(double - delta, double, delta)
+              assertAll(nonMaxValueDoubles) {
+                it.shouldMatchBetween(it - delta, it, delta)
               }
             }
             
             "Without tolerance" {
-              onDoubleRange { double, _ ->
-                double.shouldMatchBetween(double - delta, double, 0.0)
+              assertAll(nonMaxValueDoubles) {
+                it.shouldMatchBetween(it - delta, it, 0.0)
               }
             }
           }
@@ -268,8 +268,8 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldMatchLessThan POSITIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchLessThan POSITIVE_INFINITY
             }
           }
         }
@@ -278,8 +278,8 @@ class DoubleMatchersTest : FreeSpec() {
         "Should not be less than" - {
           
           "Itself" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchLessThan double
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchLessThan it
             }
           }
           
@@ -291,14 +291,14 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Negative Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchLessThan double
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchLessThan it
             }
           }
           
           "NaN" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchLessThan NaN
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchLessThan NaN
             }
           }
         }
@@ -311,8 +311,8 @@ class DoubleMatchersTest : FreeSpec() {
           "Should not be less than" - {
             
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                NaN shouldNotMatchLessThan double
+              assertAll(nonMaxValueDoubles) {
+                NaN shouldNotMatchLessThan it
               }
             }
             
@@ -329,8 +329,8 @@ class DoubleMatchersTest : FreeSpec() {
           "Should not be less than" - {
             
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                POSITIVE_INFINITY shouldNotMatchLessThan double
+              assertAll(nonMaxValueDoubles) {
+                POSITIVE_INFINITY shouldNotMatchLessThan it
               }
             }
             
@@ -348,8 +348,8 @@ class DoubleMatchersTest : FreeSpec() {
           "Should be less than" - {
             
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                NEGATIVE_INFINITY shouldMatchLessThan double
+              assertAll(nonMaxValueDoubles) {
+                NEGATIVE_INFINITY shouldMatchLessThan it
               }
             }
             
@@ -466,8 +466,8 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be less than or equal" - {
           
           "Itself" {
-            onDoubleRange { double, _ ->
-              double shouldMatchLessThanOrEqual double
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchLessThanOrEqual it
             }
           }
           
@@ -479,8 +479,8 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Positive Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldMatchLessThanOrEqual POSITIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchLessThanOrEqual POSITIVE_INFINITY
             }
           }
         }
@@ -494,14 +494,14 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Negative Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchLessThanOrEqual NEGATIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchLessThanOrEqual NEGATIVE_INFINITY
             }
           }
           
           "NaN" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchLessThanOrEqual NaN
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchLessThanOrEqual NaN
             }
           }
         }
@@ -511,8 +511,8 @@ class DoubleMatchersTest : FreeSpec() {
         "NaN" {
           "Should not be less than or equal" - {
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                NaN shouldNotMatchLessThanOrEqual double
+              assertAll(nonMaxValueDoubles) {
+                NaN shouldNotMatchLessThanOrEqual it
               }
             }
             
@@ -539,8 +539,8 @@ class DoubleMatchersTest : FreeSpec() {
           }
           "Should not be less than or equal" - {
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                POSITIVE_INFINITY shouldNotMatchLessThanOrEqual double
+              assertAll(nonMaxValueDoubles) {
+                POSITIVE_INFINITY shouldNotMatchLessThanOrEqual it
               }
             }
             
@@ -557,8 +557,8 @@ class DoubleMatchersTest : FreeSpec() {
         "Negative Infinity" - {
           "Should be less than or equal" - {
             "Any numeric double" {
-              onDoubleRange { double, _ ->
-                NEGATIVE_INFINITY shouldMatchLessThanOrEqual double
+              assertAll(nonMaxValueDoubles) {
+                NEGATIVE_INFINITY shouldMatchLessThanOrEqual it
               }
             }
             
@@ -592,8 +592,8 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Negative infinity" {
-            onDoubleRange { double, _ ->
-              double shouldMatchGreaterThan NEGATIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchGreaterThan NEGATIVE_INFINITY
             }
           }
         }
@@ -601,8 +601,8 @@ class DoubleMatchersTest : FreeSpec() {
         "Should not be greater than" - {
           
           "Itself" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchGreaterThan double
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchGreaterThan it
             }
           }
           
@@ -614,14 +614,14 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "NaN" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchGreaterThan NaN
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchGreaterThan NaN
             }
           }
           
           "Positive Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchGreaterThan POSITIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchGreaterThan POSITIVE_INFINITY
             }
           }
         }
@@ -658,8 +658,8 @@ class DoubleMatchersTest : FreeSpec() {
         "Should be greater than or equal to" - {
           
           "Itself" {
-            onDoubleRange { double, _ ->
-              double shouldMatchGreaterThanOrEqual double
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchGreaterThanOrEqual it
             }
           }
           
@@ -671,8 +671,8 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Negative Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldMatchGreaterThanOrEqual NEGATIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldMatchGreaterThanOrEqual NEGATIVE_INFINITY
             }
           }
         }
@@ -686,14 +686,14 @@ class DoubleMatchersTest : FreeSpec() {
           }
           
           "Positive Infinity" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchGreaterThanOrEqual POSITIVE_INFINITY
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchGreaterThanOrEqual POSITIVE_INFINITY
             }
           }
           
           "NaN" {
-            onDoubleRange { double, _ ->
-              double shouldNotMatchGreaterThanOrEqual NaN
+            assertAll(nonMaxValueDoubles) {
+              it shouldNotMatchGreaterThanOrEqual NaN
             }
           }
         }
