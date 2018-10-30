@@ -41,8 +41,8 @@ import kotlin.Double.Companion.MIN_VALUE
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 import kotlin.Double.Companion.NaN
 import kotlin.Double.Companion.POSITIVE_INFINITY
-import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.ulp
 
 class DoubleMatchersTest : FreeSpec() {
   
@@ -173,7 +173,7 @@ class DoubleMatchersTest : FreeSpec() {
             
             "With tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
-                it.shouldMatchBetween(it, it.slightlyGreater(), it.smallDelta())
+                it.shouldMatchBetween(it, it.slightlyGreater(), it.toleranceValue())
               }
             }
             
@@ -189,7 +189,7 @@ class DoubleMatchersTest : FreeSpec() {
             
             "With tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
-                it.shouldMatchBetween(it.slightlySmaller(), it.slightlyGreater(), it.smallDelta())
+                it.shouldMatchBetween(it.slightlySmaller(), it.slightlyGreater(), it.toleranceValue())
               }
             }
             
@@ -204,7 +204,7 @@ class DoubleMatchersTest : FreeSpec() {
             
             "With tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
-                it.shouldMatchBetween(it.slightlySmaller(), it, it.smallDelta())
+                it.shouldMatchBetween(it.slightlySmaller(), it, it.toleranceValue())
               }
             }
             
@@ -222,7 +222,7 @@ class DoubleMatchersTest : FreeSpec() {
             
             "With tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
-                it.shouldNotMatchBetween(it.slightlyGreater(), it.muchGreater(), it.smallDelta())
+                it.shouldNotMatchBetween(it.slightlyGreater(), it.muchGreater(), it.toleranceValue())
               }
             }
             
@@ -237,7 +237,7 @@ class DoubleMatchersTest : FreeSpec() {
             
             "With tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
-                it.shouldNotMatchBetween(it.muchSmaller(), it.slightlySmaller(), it.smallDelta())
+                it.shouldNotMatchBetween(it.muchSmaller(), it.slightlySmaller(), it.toleranceValue())
               }
             }
             
@@ -776,45 +776,25 @@ class DoubleMatchersTest : FreeSpec() {
     
   }
   
-  private fun Double.smallDelta(): Double {
-    return if (this == 0.0) {
-      0.001
-    } else {
-      abs(this * 0.01)
-    }
+  
+  private fun Double.toleranceValue(): Double {
+    return 5 * ulp
   }
   
   private fun Double.slightlyGreater(): Double {
-    return when {
-        this == 0.0 -> 0.01
-        this == 0.0 -> 0.01
-        this < 0    -> (this + smallDelta()) * 0.99
-        else        -> (this + smallDelta()) * 1.01
-    }
+    return this + (10 *ulp)
   }
   
   private fun Double.muchGreater(): Double {
-    return when {
-        this == 0.0 -> 0.50
-        this < 0    -> (this + smallDelta()) * 0.75
-        else        -> (this + smallDelta()) * 1.25
-    }
+    return this + (100 * ulp)
   }
   
   private fun Double.slightlySmaller(): Double {
-    return when {
-        this == 0.0 -> -0.99
-        this < 0    -> (this - smallDelta()) * 1.01
-        else        -> (this - smallDelta()) * 0.99
-    }
+    return this - (10 * ulp)
   }
   
   private fun Double.muchSmaller(): Double {
-    return when {
-        this == 0.0 -> -0.75
-        this < 0    -> (this - smallDelta()) * 1.25
-        else        -> (this - smallDelta()) * 0.75
-    }
+    return this - (100 * ulp)
   }
   
   private fun shouldThrowAssertionError(message: String, vararg expression: () -> Any?) {
