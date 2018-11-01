@@ -180,7 +180,7 @@ class DoubleMatchersTest : FreeSpec() {
             "Without tolerance" {
               assertAll(nonMinNorMaxValueDoubles) {
                 it.shouldMatchBetween(it, it.slightlyGreater(), 0.0)
-  
+                
               }
             }
           }
@@ -778,23 +778,23 @@ class DoubleMatchersTest : FreeSpec() {
   
   
   private fun Double.toleranceValue(): Double {
-    return 5 * ulp
+    return ulp
   }
   
   private fun Double.slightlyGreater(): Double {
-    return this + (10 *ulp)
+    return this + (2 * ulp)
   }
   
   private fun Double.muchGreater(): Double {
-    return this + (100 * ulp)
+    return this + (3 * ulp)
   }
   
   private fun Double.slightlySmaller(): Double {
-    return this - (10 * ulp)
+    return this - (2 * ulp)
   }
   
   private fun Double.muchSmaller(): Double {
-    return this - (100 * ulp)
+    return this - (3 * ulp)
   }
   
   private fun shouldThrowAssertionError(message: String, vararg expression: () -> Any?) {
@@ -863,20 +863,22 @@ class DoubleMatchersTest : FreeSpec() {
   }
   
   
-  private fun Double.shouldThrowExceptionOnBetween(a: Double,
-                                                   b: Double,
-                                                   tolerance: Double,
-                                                   message: String = "$this should be smaller than $b and bigger than $a"
+  private fun Double.shouldThrowExceptionOnBetween(
+    a: Double,
+    b: Double,
+    tolerance: Double,
+    message: String = "$this should be smaller than $b and bigger than $a"
   ) {
     shouldThrowAssertionError(message,
                               { this.shouldBeBetween(a, b, tolerance) },
                               { this shouldBe between(a, b, tolerance) })
   }
   
-  private fun Double.shouldThrowExceptionOnNotBetween(a: Double,
-                                                      b: Double,
-                                                      tolerance: Double,
-                                                      message: String = "$this should not be smaller than $b and should not be bigger than $a"
+  private fun Double.shouldThrowExceptionOnNotBetween(
+    a: Double,
+    b: Double,
+    tolerance: Double,
+    message: String = "$this should not be smaller than $b and should not be bigger than $a"
   ) {
     
     shouldThrowAssertionError(message,
