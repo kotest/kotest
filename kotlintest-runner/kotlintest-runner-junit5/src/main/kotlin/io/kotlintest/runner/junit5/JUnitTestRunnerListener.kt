@@ -123,8 +123,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     // that we do not "start" a test that is later marked as skipped.
     if (!started.contains(set.testCase.description)) {
       started.add(set.testCase.description)
-      val clazz: KClass<out Spec> = Class.forName(set.testCase.spec.canonicalName()).kotlin as KClass<out Spec>
-      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type, clazz)
+      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
       logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
       listener.executionStarted(descriptor)
     }
@@ -150,7 +149,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
         .sortedBy { it.first.depth() }
         .reversed()
         .forEach {
-          val descriptor = descriptors[it.first] ?: getOrCreateDescriptor(it.first, it.second, klass)
+          val descriptor = descriptors[it.first] ?: descriptors.getOrPut(description) { createTestCaseDescriptor(description, it.second) }
           // find an error by priority
           val result = findResultFor(it.first)
           if (result == null) {
@@ -182,14 +181,6 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     }
   }
 
-  private fun getOrCreateDescriptor(description: Description, type: TestType, klazz: KClass<out Spec>? = null): TestDescriptor {
-    if (klazz == null){
-      return descriptors.getOrPut(description) { createTestCaseDescriptor(description, type) }
-    } else {
-      return descriptors.getOrPut(description) { createTestCaseDescriptor(description, type, klazz) }
-    }
-  }
-
   // returns the most important result for a given description
   // by searching all the results stored for that description and child descriptions
   private fun findResultFor(description: Description): TestResult? {
@@ -210,16 +201,14 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     return result
   }
 
-  private fun createTestCaseDescriptor(description: Description, type: TestType, klazz: KClass<out Spec>? = null): TestDescriptor {
+  private fun createTestCaseDescriptor(description: Description, type: TestType): TestDescriptor {
     logger.debug("Creating test case descriptor $description/$type")
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
     val parent = descriptors[parentDescription]!!
     val id = parent.uniqueId.append("test", description.name)
 
-    var descriptor: AbstractTestDescriptor
-    val source = ClassSource.from(klazz?.java) ?: null
-    descriptor = object : AbstractTestDescriptor(id, description.name, source) {
+    val descriptor = object : AbstractTestDescriptor(id, description.name) {
       override fun getType(): TestDescriptor.Type {
         // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
         // see https://github.com/gradle/gradle/issues/4912
