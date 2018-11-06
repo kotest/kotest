@@ -149,7 +149,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
         .sortedBy { it.first.depth() }
         .reversed()
         .forEach {
-          val descriptor = descriptors[it.first] ?: descriptors.getOrPut(description) { createTestCaseDescriptor(description, it.second) }
+          val descriptor = descriptors.getOrPut(it.first) { createTestCaseDescriptor(it.first, it.second) }
           // find an error by priority
           val result = findResultFor(it.first)
           if (result == null) {
