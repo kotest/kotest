@@ -19,7 +19,7 @@ class TryMatchersTest : WordSpec() {
       "test that a try is a Success with the given value" {
 
         shouldThrow<AssertionError> {
-          Try.Failure<Nothing>(RuntimeException()) should beSuccess("foo")
+          Try.Failure(RuntimeException()) should beSuccess("foo")
         }.message shouldBe "Try should be a Success(foo) but was Failure(null)"
 
         shouldThrow<AssertionError> {
@@ -36,7 +36,7 @@ class TryMatchersTest : WordSpec() {
           Try.Success("foo") should beFailure()
         }.message shouldBe "Try should be a Failure but was Success(foo)"
 
-        Try.Failure<Nothing>(RuntimeException()) should beFailure()
+        Try.Failure(RuntimeException()) should beFailure()
       }
 
       "test that a try is a Failure with a given throwable" {
@@ -45,12 +45,12 @@ class TryMatchersTest : WordSpec() {
         }.message shouldBe "Try should be a Failure but was Success(foo)"
 
         shouldThrow<AssertionError> {
-          Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<IOException>()
+          Try.Failure(RuntimeException()) should beFailureOfType<IOException>()
         }.message shouldBe "Try should be a Failure(${IOException::class}), but was Failure(${RuntimeException::class})"
 
-        Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<RuntimeException>()
-        Try.Failure<Nothing>(RuntimeException()) should beFailureOfType<Exception>()
-        Try.Failure<Nothing>(Exception()) shouldNot beFailureOfType<RuntimeException>()
+        Try.Failure(RuntimeException()) should beFailureOfType<RuntimeException>()
+        Try.Failure(RuntimeException()) should beFailureOfType<Exception>()
+        Try.Failure(Exception()) shouldNot beFailureOfType<RuntimeException>()
       }
     }
   }
