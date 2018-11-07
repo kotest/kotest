@@ -19,7 +19,7 @@ test {
 }
 
 dependencies {
-  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.8'
+  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.10'
 }
 ```
 
@@ -31,7 +31,7 @@ For maven you must configure the surefire plugin for junit tests.
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.19.1</version>
+    <version>2.22.1</version>
     <dependencies>
         <dependency>
             <groupId>org.junit.platform</groupId>
