@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class FreeSpecMultipleInvocationTest : FreeSpec() {
 
-  val counter = AtomicInteger(0)
+  private val counter = AtomicInteger(0)
 
   init {
 
