@@ -8,8 +8,8 @@ import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
-fun <T> Try<T>.shouldBeSuccess() = this should beSuccess<T>()
-fun <T> Try<T>.shouldNotBeSuccess() = this shouldNot beSuccess<T>()
+fun <T> Try<T>.shouldBeSuccess() = this should beSuccess()
+fun <T> Try<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 fun <T> beSuccess() = beInstanceOf2<Try<T>, Success<T>>()
 
 fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
@@ -17,7 +17,7 @@ fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)
 fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   override fun test(value: Try<A>): Result {
     return when (value) {
-      is Try.Failure<*> -> Result(false, "Try should be a Success($a) but was Failure(${value.exception.message})", "")
+      is Try.Failure -> Result(false, "Try should be a Success($a) but was Failure(${value.exception.message})", "")
       is Try.Success<*> -> {
         if (value.value == a)
           Result(true, "Try should be Success($a)", "Try should not be Success($a)")
@@ -34,7 +34,7 @@ fun beFailure() = object : Matcher<Try<Any>> {
   override fun test(value: Try<Any>): Result {
     return when (value) {
       is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")
-      is Try.Failure<*> -> Result(true, "Try should be a Failure", "Try should not be Failure")
+      is Try.Failure -> Result(true, "Try should be a Failure", "Try should not be Failure")
     }
   }
 }
@@ -45,7 +45,7 @@ inline fun <reified A : Throwable> beFailureOfType() = object : Matcher<Try<Any>
   override fun test(value: Try<Any>): Result {
     return when (value) {
       is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")
-      is Try.Failure<*> -> {
+      is Try.Failure -> {
         if (value.exception is A)
           Result(true, "Try should be a Failure(${A::class})", "Try should not be Failure")
         else

@@ -9,11 +9,11 @@ import io.kotlintest.shouldNot
 
 fun <T> Either<Any, T>.shouldBeRight() = this should beRight()
 fun <T> Either<Any, T>.shouldNotBeRight() = this shouldNot beRight()
-fun <T> beRight() = beInstanceOf2<Either<Any, T>, Either.Right<Any, T>>()
+fun <T> beRight() = beInstanceOf2<Either<Any, T>, Either.Right<T>>()
 
 fun <T> Either<T, Any>.shouldBeLeft() = this should beLeft()
 fun <T> Either<T, Any>.shouldNotBeLeft() = this shouldNot beLeft()
-fun <T> beLeft() = beInstanceOf2<Either<T, Any>, Either.Left<T, Any>>()
+fun <T> beLeft() = beInstanceOf2<Either<T, Any>, Either.Left<T>>()
 
 fun <B> Either<Any, B>.shouldBeRight(b: B) = this should beRight(b)
 fun <B> Either<Any, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
