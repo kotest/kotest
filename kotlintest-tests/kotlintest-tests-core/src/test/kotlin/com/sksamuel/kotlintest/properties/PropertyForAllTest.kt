@@ -388,7 +388,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 2592
+      attempts shouldBe 3888
     }
 
     "sets" {

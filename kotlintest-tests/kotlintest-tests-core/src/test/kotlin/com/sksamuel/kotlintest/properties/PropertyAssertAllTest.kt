@@ -10,9 +10,9 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll
 import io.kotlintest.should
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.StringSpec
 
 class PropertyAssertAllTest : StringSpec({
 
@@ -413,7 +413,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 2592
+    attempts shouldBe 3888
   }
 
   "sets" {

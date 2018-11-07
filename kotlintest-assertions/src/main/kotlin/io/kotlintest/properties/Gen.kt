@@ -368,7 +368,7 @@ interface Gen<T> {
      * chosen Double.
      */
     fun double(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(0.0, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
+      val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
       override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
