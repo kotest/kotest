@@ -1,7 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.matchers.ToleranceMatcher
-
 /**
  * Run multiple assertions, collecting any failures into a single exception that is thrown at the end of the
  * block.

@@ -8,7 +8,8 @@ import io.kotlintest.shouldNotBe
 /**
  * Asserts that this [Double] is negative
  *
- * Verifies that this [Double] has a value lower than 0.0.
+ * Verifies that this [Double] is strictly less than 0.0
+ *
  * Opposite of [Double.shouldNotBeNegative]
  *
  * ```
@@ -16,7 +17,6 @@ import io.kotlintest.shouldNotBe
  * (-0.1).shouldBeNegative()   // Assertion passes
  * ```
  *
- * @see [Double.shouldBePositive]
  * @see [Double.shouldNotBePositive]
  */
 fun Double.shouldBeNegative() = this shouldBe negative()
@@ -24,7 +24,8 @@ fun Double.shouldBeNegative() = this shouldBe negative()
 /**
  * Asserts that this [Double] is not negative
  *
- * Verifies that this [Double] does not have a value lower than 0.0.
+ * Verifies that this [Double] is not strictly less than 0.0
+ *
  * Opposite of [Double.shouldBeNegative]
  *
  * ```
@@ -33,10 +34,9 @@ fun Double.shouldBeNegative() = this shouldBe negative()
  * ```
  *
  * @see [Double.shouldBePositive]
- * @see [Double.shouldNotBePositive]
  */
 fun Double.shouldNotBeNegative() = this shouldNotBe negative()
 
 fun negative() = object : Matcher<Double> {
-    override fun test(value: Double) = Result(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
+  override fun test(value: Double) = Result(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
 }
