@@ -485,7 +485,7 @@ class PropertyExample: StringSpec() {
   init {
 
     "String size" {
-      assertAll(2300) { a: String, b: String ->
+      forAll(2300) { a: String, b: String ->
         (a + b).length == a.length + b.length
       }
     }
@@ -503,7 +503,7 @@ class PropertyExample: StringSpec() {
   init {
 
     "String size" {
-      assertAll(Gen.string(), Gen.string(), { a: String, b: String ->
+      forAll(Gen.string(), Gen.string(), { a: String, b: String ->
         (a + b).length == a.length + b.length
       })
     }
