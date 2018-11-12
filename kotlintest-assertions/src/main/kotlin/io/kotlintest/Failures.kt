@@ -5,15 +5,22 @@ object Failures {
   /**
    * Whether KotlinTest-related frames will be removed from the stack traces of thrown [AssertionError]s.
    *
-   * This defaults to `true`. You can change it by setting the system property `kotlintest.failures.stacktrace.clean`.
+   * This defaults to `true`. You can change it by setting the system property `kotlintest.failures.stacktrace.clean`
+   * or at runtime, by reassigning this var.
    *
    * E.g.:
    *
    * ```
-   * -Dkotlintest.failures.stacktrace.clean=false
+   *     -Dkotlintest.failures.stacktrace.clean=false
+   * ```
+   *
+   * or
+   *
+   * ```
+   *     Failures.shouldRemoveKotlintestElementsFromStacktrace = false
    * ```
    */
-  val shouldRemoveKotlintestElementsFromStacktrace by lazy { readSystemProperty() }
+  var shouldRemoveKotlintestElementsFromStacktrace = readSystemProperty()
   
   private fun readSystemProperty(): Boolean {
     return System.getProperty("kotlintest.failures.stacktrace.clean")?.toBoolean() ?: true
