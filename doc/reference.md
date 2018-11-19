@@ -857,6 +857,20 @@ all tests but the tests tagged with the given tags are are run.
 
 
 
+**A special attention is needed in your gradle configuration**
+
+To use System Properties (-Dx=y), your gradle must be configured to propagate them to the test executors, and an extra configuration must be added to your tests:
+
+```
+test {
+    //... Other configurations ...
+    systemProperties = System.properties
+}
+```
+
+This will guarantee that the system property is correctly read by the JVM
+
+
 
 
 
