@@ -13,6 +13,10 @@ internal object ErrorCollector {
     override fun initialValue() = false
   }
 
+  internal val clueContext = object: ThreadLocal<String>() {
+    override fun initialValue(): String = ""
+  }
+
   @PublishedApi
   internal fun collectOrThrow(error: Throwable) {
     if (shouldCollectErrors.get()) {

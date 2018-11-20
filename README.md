@@ -50,6 +50,12 @@ myImageFile.shouldHaveExtension(".jpg")
 cityMap.shouldContainKey("London")
 ```
 
+The `withClue` helper can add extra context to assertions so failures are self explanatory:
+
+```kotlin
+withClue("Name should be present") { user.name shouldNotBe null }
+```
+
 Matchers are extension methods and so your IDE will auto complete. See the [full list of matchers](doc/matchers.md) or write your own.
 
 Let the Computer Generate Your Test Data

@@ -2,15 +2,17 @@
 
 package io.kotlintest.matchers
 
-import io.kotlintest.Failures
+import io.kotlintest.ErrorCollector
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 
 fun withClue(clue: String, thunk: () -> Any) {
+  val currentClue = ErrorCollector.clueContext.get()
   try {
+    ErrorCollector.clueContext.set("$clue ")
     thunk()
-  } catch (e: AssertionError) {
-    throw Failures.failure("$clue $e")
+  } finally {
+    ErrorCollector.clueContext.set(currentClue)
   }
 }
 
