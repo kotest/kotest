@@ -99,8 +99,9 @@ infix fun <T> T.shouldNotBe(any: Any?) {
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
-  if (!result.passed)
-    ErrorCollector.collectOrThrow(Failures.failure(result.failureMessage))
+  if (!result.passed) {
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get()+result.failureMessage))
+  }
 }
 
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
@@ -114,7 +115,7 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 private fun equalsError(expected: Any?, actual: Any?): Throwable {
   val expectedRepr = stringRepr(expected)
   val actualRepr = stringRepr(actual)
-  val message = equalsErrorMessage(expectedRepr, actualRepr)
+  val message = ErrorCollector.clueContext.get()+equalsErrorMessage(expectedRepr, actualRepr)
   val throwable = junit5assertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)
       ?: AssertionError(message)
