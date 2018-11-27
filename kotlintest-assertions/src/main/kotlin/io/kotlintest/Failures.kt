@@ -1,5 +1,23 @@
 package io.kotlintest
 
+/**
+ * Verifies that [block] throws an [AssertionError]
+ *
+ * If [block] throws an [AssertionError], this method will pass. Otherwise, it will throw an error, as a failure was
+ * expected
+ */
+fun shouldFail(block: () -> Any?) {
+  val passed = try {
+    block()
+    true
+  } catch (_: Throwable) {
+    false
+  }
+  if (passed) {
+    throw Failures.failure("This block should fail by throwing a throwable, but not nothing was thrown.")
+  }
+}
+
 object Failures {
 
   /**

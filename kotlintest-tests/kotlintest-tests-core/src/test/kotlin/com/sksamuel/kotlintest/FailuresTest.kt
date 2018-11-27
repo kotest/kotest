@@ -1,12 +1,28 @@
 package com.sksamuel.kotlintest
 
+import com.sksamuel.kotlintest.throwablehandling.catchThrowable
 import io.kotlintest.Failures
 import io.kotlintest.matchers.string.shouldStartWith
+import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrowAny
+import io.kotlintest.shouldFail
 import io.kotlintest.specs.FreeSpec
+import io.kotlintest.throwablehandling.shouldThrowAny
 
 class FailuresTest : FreeSpec({
+
+  "Failures.shouldFail" - {
+    "Should throw an exception when code succeeds" {
+      val thrown = catchThrowable { shouldFail { /* Code succeeds */ } }
+      thrown.shouldBeInstanceOf<AssertionError>()
+      thrown!!.message shouldBe "This block should fail by throwing a throwable, but not nothing was thrown."
+    }
+
+    "Should not thrown an exception when code fails" {
+      val thrown = catchThrowable { shouldFail { throw Exception() } }
+      thrown shouldBe null
+    }
+  }
 
   "Failures.failure" - {
 
