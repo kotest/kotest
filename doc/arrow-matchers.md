@@ -15,6 +15,7 @@ This page lists all current matchers in the KotlinTest arrow matchers extension 
 | `either.shouldBeRight(v)` | Asserts that the either is of type Right with specified value v |
 | `either.shouldBeLeft()` | Asserts that the either is of type Left |
 | `either.shouldBeLeft(v)` | Asserts that the either is of type Left with specific value v |
+| `either.shouldBeLeftOfType<A>()` | Asserts that the either is of type Left with a specified type A |
 
 | NonEmptyList | |
 | -------- | ---- |

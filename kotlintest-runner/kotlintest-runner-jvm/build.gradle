@@ -2,5 +2,5 @@ dependencies {
     compile project(':kotlintest-core')
     compile 'org.reflections:reflections:0.9.11'
     compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'io.arrow-kt:arrow-core:0.7.1'
+    compile 'io.arrow-kt:arrow-core:0.8.1'
 }

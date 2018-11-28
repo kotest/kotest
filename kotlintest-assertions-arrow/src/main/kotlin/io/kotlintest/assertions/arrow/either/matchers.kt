@@ -50,3 +50,21 @@ fun <A> beLeft(a: A) = object : Matcher<Either<A, Any>> {
     }
   }
 }
+
+inline fun <reified A> Either<Any, Any>.shouldBeLeftOfType() = this should beLeftOfType<A>()
+inline fun <reified A> Either<Any, Any>.shouldNotBeLeftOfType() = this shouldNot beLeftOfType<A>()
+inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any, Any>> {
+  override fun test(value: Either<Any, Any>): Result {
+    return when (value) {
+      is Either.Right -> {
+        Result(false, "Either should be Left<${A::class.qualifiedName}> but was Right(${value.b})", "")
+      }
+      is Either.Left -> {
+        if (value.a is A)
+          Result(true, "Either should be Left<${A::class.qualifiedName}>", "Either should not be Left")
+        else
+          Result(false, "Either should be Left<${A::class.qualifiedName}> but was Left<${value.a::class.qualifiedName}>", "Either should not be Left")
+      }
+    }
+  }
+}
