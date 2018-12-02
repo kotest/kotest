@@ -131,10 +131,10 @@ class GenTest : WordSpec() {
     }
     "Gen.create" should {
       "create a Generator with the given function" {
-        Gen.create { 5 }.random().take(10).toList() shouldBe List(10, { 5 })
+        Gen.create { 5 }.random().take(10).toList() shouldBe List(10) { 5 }
         var i = 0
         val gen = Gen.create { i++ }
-        gen.random().take(150).toList() shouldBe List(150, { it })
+        gen.random().take(150).toList() shouldBe List(150) { it }
       }
     }
     "Gen.default" should {
@@ -263,7 +263,21 @@ class GenTest : WordSpec() {
         positiveNumbers shouldBe beGreaterThan(1)
         negativeNumbers shouldBe beGreaterThan(1)
       }
+      "support covariance" {
+        Gen.oneOf(
+            Gen.bind(Gen.int(), X::A),
+            Gen.bind(Gen.int(), X::B),
+            Gen.bind(Gen.int(), X::C)
+        )
+      }
     }
 
   }
 }
+
+sealed class X {
+  data class A(val a: Int) : X()
+  data class B(val b: Int) : X()
+  data class C(val c: Int) : X()
+}
+

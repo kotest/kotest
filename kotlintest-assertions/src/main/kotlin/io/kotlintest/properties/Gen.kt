@@ -213,11 +213,11 @@ interface Gen<T> {
               }
     }
 
-    fun <A> oneOf(vararg gens: Gen<A>): Gen<A> = object : Gen<A> {
+    fun <A> oneOf(vararg gens: Gen<out A>): Gen<A> = object : Gen<A> {
       override fun constants(): Iterable<A> = gens.flatMap { it.constants() }
 
       override fun random(): Sequence<A> {
-        assert(gens.isNotEmpty(), { "List of generators cannot be empty" })
+        assert(gens.isNotEmpty()) { "List of generators cannot be empty" }
 
         val iterators = gens.map { it.random().iterator() }
 
@@ -238,7 +238,7 @@ interface Gen<T> {
      * a random Int between the given min and max.
      */
     fun choose(min: Int, max: Int): Gen<Int> {
-      assert(min < max, { "min must be < max" })
+      assert(min < max) { "min must be < max" }
       return object : Gen<Int> {
         override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
@@ -253,7 +253,7 @@ interface Gen<T> {
      * Long between the given min and max.
      */
     fun choose(min: Long, max: Long): Gen<Long> {
-      assert(min < max, { "min must be < max" })
+      assert(min < max) { "min must be < max" }
       return object : Gen<Long> {
         override fun constants(): Iterable<Long> = emptyList()
         override fun random(): Sequence<Long> = generateSequence { JavaRandoms.internalNextLong(RANDOM, min, max) }
@@ -564,11 +564,9 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
 }
 
 inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequence<T> =
-    Sequence({
+    Sequence {
       object : Iterator<T> {
         override fun hasNext() = true
-
         override fun next() = generator()
-
       }
-    })
+    }
