@@ -3,20 +3,18 @@ package com.sksamuel.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.assertSoftly
-import io.kotlintest.fail
 import io.kotlintest.matchers.beInstanceOf
-import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.haveSameHashCodeAs
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.withClue
-import io.kotlintest.specs.FreeSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 import java.util.*
 import kotlin.collections.HashMap
 

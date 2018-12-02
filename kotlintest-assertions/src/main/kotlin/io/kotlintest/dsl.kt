@@ -1,5 +1,9 @@
 package io.kotlintest
 
+import com.github.difflib.DiffUtils
+import com.github.difflib.patch.Delta
+import com.github.difflib.patch.DeltaType
+
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
  *
@@ -105,7 +109,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get()+result.failureMessage))
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get() + result.failureMessage))
   }
 }
 
@@ -118,28 +122,63 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 // -- specialized overrides of shouldBe --
 
 private fun equalsError(expected: Any?, actual: Any?): Throwable {
+
   val expectedRepr = stringRepr(expected)
   val actualRepr = stringRepr(actual)
-  val message = ErrorCollector.clueContext.get()+equalsErrorMessage(expectedRepr, actualRepr)
-  val throwable = junit5assertionFailedError(message, expectedRepr, actualRepr)
+  val message = ErrorCollector.clueContext.get() + equalsErrorMessage(expectedRepr, actualRepr)
+  val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)
+      ?: multiLineError(expectedRepr, actualRepr)
       ?: AssertionError(message)
+
   if (Failures.shouldRemoveKotlintestElementsFromStacktrace) {
     Failures.removeKotlintestElementsFromStacktrace(throwable)
   }
   return throwable
 }
 
+/**
+ * Returns a diff-error of the lines that did not match and throws that as an [AssertionError].
+ * The generated error message must be parsable by intellij, see:
+ * https://github.com/JetBrains/intellij-community/blob/99614a63425774df58eea3ac92e2b20af1633663/plugins/junit_rt/src/com/intellij/junit4/ExpectedPatterns.java#L27
+ * for regexes supported by intellij.
+ */
+fun multiLineError(expected: String, actual: String): Throwable? {
+
+  fun typeString(deltaType: DeltaType): String = when (deltaType) {
+    DeltaType.CHANGE -> "Change"
+    DeltaType.INSERT -> "Addition"
+    DeltaType.DELETE -> "Deletion"
+    DeltaType.EQUAL -> ""
+  }
+
+  data class Change(val original: String, val originalLine: Int, val revised: String, val revisedLine: Int, val type: String)
+
+  fun changes(delta: Delta<String>): Change {
+    // include a line before and after to give some context on deletes
+    val a = actual.lines().drop(Math.max(delta.original.position - 2, 0)).take(delta.original.size() + 1).joinToString("\n").trim()
+    val b = expected.lines().drop(Math.max(delta.revised.position - 2, 0)).take(delta.revised.size() + 1).joinToString("\n").trim()
+    return Change(a, delta.original.position, b, delta.revised.position, typeString(delta.type))
+  }
+
+  val patch = DiffUtils.diff(actual, expected)
+  return if (patch.deltas.isEmpty()) null else {
+    val expected2 = patch.deltas.map(::changes).joinToString("\n\n") { "[${it.type} at line ${it.originalLine}] ${it.original}" }
+    val actual2 = patch.deltas.map(::changes).joinToString("\n\n") { "[${it.type} at line ${it.revisedLine}] ${it.revised}" }
+    AssertionError("\nexpected: \"$expected2\"\n but: was \"$actual2\"")
+  }
+}
+
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
 
-/** If JUnit5 is present, return an AssertionFailedError */
-private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
+/** If JUnit5 is present, return an org.opentest4j.AssertionFailedError */
+private fun junit5AssertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
   return callPublicConstructor("org.opentest4j.AssertionFailedError",
       arrayOf(String::class.java, Object::class.java, Object::class.java),
       arrayOf(message, expected, actual)) as? Throwable
 }
 
-/** If JUnit4 is present, return a ComparisonFailure */
+/** If JUnit4 is present, return a org.junit.ComparisonFailure */
 private fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
   return callPublicConstructor("org.junit.ComparisonFailure",
       arrayOf(String::class.java, String::class.java, String::class.java),
