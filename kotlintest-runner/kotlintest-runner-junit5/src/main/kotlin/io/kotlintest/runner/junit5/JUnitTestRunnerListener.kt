@@ -1,6 +1,5 @@
 package io.kotlintest.runner.junit5
 
-import com.google.common.io.Files
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -17,7 +16,7 @@ import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.slf4j.LoggerFactory
-import java.nio.charset.Charset
+import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
@@ -97,7 +96,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     dir.toFile().mkdirs()
     val path = dir.resolve("spec_failures").toAbsolutePath()
     logger.debug("Writing report to $path")
-    Files.write(failures, path.toFile(), Charset.forName("UTF-8"))
+    Files.write(path, failures.toByteArray())
 
     val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
     listener.executionFinished(root, result)
