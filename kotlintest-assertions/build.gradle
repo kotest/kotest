@@ -1,4 +1,4 @@
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile 'com.univocity:univocity-parsers:2.6.1'
+    compile 'com.univocity:univocity-parsers:2.7.6'
 }
