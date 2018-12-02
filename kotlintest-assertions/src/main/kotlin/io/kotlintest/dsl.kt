@@ -1,6 +1,7 @@
 package io.kotlintest
 
 import com.github.difflib.DiffUtils
+import com.github.difflib.patch.Chunk
 import com.github.difflib.patch.Delta
 import com.github.difflib.patch.DeltaType
 
@@ -121,14 +122,13 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 // -- specialized overrides of shouldBe --
 
-private fun equalsError(expected: Any?, actual: Any?): Throwable {
+internal fun equalsError(expected: Any?, actual: Any?): Throwable {
 
-  val expectedRepr = stringRepr(expected)
-  val actualRepr = stringRepr(actual)
+  val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual))
   val message = ErrorCollector.clueContext.get() + equalsErrorMessage(expectedRepr, actualRepr)
+
   val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)
-      ?: multiLineError(expectedRepr, actualRepr)
       ?: AssertionError(message)
 
   if (Failures.shouldRemoveKotlintestElementsFromStacktrace) {
@@ -138,12 +138,11 @@ private fun equalsError(expected: Any?, actual: Any?): Throwable {
 }
 
 /**
- * Returns a diff-error of the lines that did not match and throws that as an [AssertionError].
- * The generated error message must be parsable by intellij, see:
- * https://github.com/JetBrains/intellij-community/blob/99614a63425774df58eea3ac92e2b20af1633663/plugins/junit_rt/src/com/intellij/junit4/ExpectedPatterns.java#L27
- * for regexes supported by intellij.
+ * Returns a formatted diff of the expected and actual input, unless there are no differences,
+ * or the input is too small to bother with diffing, return it returns the input as is.
  */
-fun multiLineError(expected: String, actual: String): Throwable? {
+@Suppress("MoveLambdaOutsideParentheses")
+fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50): Pair<String, String> {
 
   fun typeString(deltaType: DeltaType): String = when (deltaType) {
     DeltaType.CHANGE -> "Change"
@@ -152,20 +151,20 @@ fun multiLineError(expected: String, actual: String): Throwable? {
     DeltaType.EQUAL -> ""
   }
 
-  data class Change(val original: String, val originalLine: Int, val revised: String, val revisedLine: Int, val type: String)
-
-  fun changes(delta: Delta<String>): Change {
-    // include a line before and after to give some context on deletes
-    val a = actual.lines().drop(Math.max(delta.original.position - 2, 0)).take(delta.original.size() + 1).joinToString("\n").trim()
-    val b = expected.lines().drop(Math.max(delta.revised.position - 2, 0)).take(delta.revised.size() + 1).joinToString("\n").trim()
-    return Change(a, delta.original.position, b, delta.revised.position, typeString(delta.type))
+  fun diffs(lines: List<String>, deltas: List<Delta<String>>, chunker: (Delta<String>) -> Chunk<String>): String {
+    return deltas.joinToString("\n\n") { delta ->
+      val chunk = chunker(delta)
+      // include a line before and after to give some context on deletes
+      val snippet = lines.drop(Math.max(chunk.position - 1, 0)).take(chunk.position + chunk.size()).joinToString("\n")
+      "[${typeString(delta.type)} at line ${chunk.position}] $snippet"
+    }
   }
 
-  val patch = DiffUtils.diff(actual, expected)
-  return if (patch.deltas.isEmpty()) null else {
-    val expected2 = patch.deltas.map(::changes).joinToString("\n\n") { "[${it.type} at line ${it.originalLine}] ${it.original}" }
-    val actual2 = patch.deltas.map(::changes).joinToString("\n\n") { "[${it.type} at line ${it.revisedLine}] ${it.revised}" }
-    AssertionError("\nexpected: \"$expected2\"\n but: was \"$actual2\"")
+  return if (expected.lines().size < minSizeForDiff && actual.lines().size < minSizeForDiff) Pair(expected, actual) else {
+    val patch = DiffUtils.diff(actual, expected)
+    return if (patch.deltas.isEmpty()) Pair(expected, actual) else {
+      Pair(diffs(expected.lines(), patch.deltas, { it.original }), diffs(actual.lines(), patch.deltas, { it.revised }))
+    }
   }
 }
 
