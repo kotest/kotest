@@ -5,7 +5,8 @@ package io.kotlintest
  * Verifies that a block of code throws a Throwable of type [T], not including subclasses of [T]
  *
  * Use this function to wrap a block of code to verify if it throws a specific throwable [T], when [shouldThrowExactly]
- * can't be used for whatever reason, such as assignment operations.
+ * can't be used for whatever reason, such as assignment operations (assignments are statements therefore has no return
+ * value).
  *
  * This function will exclude subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
  * throws [java.io.FileNotFoundException], the test will fail, as [java.io.FileNotFoundException] is a subclass of

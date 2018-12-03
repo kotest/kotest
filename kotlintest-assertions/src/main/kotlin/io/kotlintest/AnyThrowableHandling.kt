@@ -4,7 +4,8 @@ package io.kotlintest
  * Verifies that a block of code throws any [Throwable]
  *
  * Use function to wrap a block of code that you want to verify that throws any kind of [Throwable], where using
- * [shouldThrowAny] can't be used for any reason, such as an assignment of a variable.
+ * [shouldThrowAny] can't be used for any reason, such as an assignment of a variable (assignments are statements,
+ * therefore has no return value).
  *
  * If you want to verify a specific [Throwable], use [shouldThrowExactlyUnit].
  *

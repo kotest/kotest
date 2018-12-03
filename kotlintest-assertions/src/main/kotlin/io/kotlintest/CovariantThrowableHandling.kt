@@ -6,7 +6,8 @@ package io.kotlintest
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
  *
- * This should be used when [shouldThrow] can't be used, such as when doing assignments that should result in an exception.
+ * This should be used when [shouldThrow] can't be used, such as when doing assignments (assignments are statements,
+ * therefore has no return value).
  *
  * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and
  * the code block throws [java.io.FileNotFoundException], the test will pass.
