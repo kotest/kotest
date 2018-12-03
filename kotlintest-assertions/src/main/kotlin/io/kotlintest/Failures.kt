@@ -18,17 +18,7 @@ package io.kotlintest
  * @see shouldThrow
  * @see shouldThrowExactly
  */
-fun shouldFail(block: () -> Any?) {
-  val passed = try {
-    block()
-    true
-  } catch (_: AssertionError) {
-    false
-  }
-  if (passed) {
-    throw Failures.failure("This block should fail by throwing a throwable, but not nothing was thrown.")
-  }
-}
+fun shouldFail(block: () -> Any?) = shouldThrow<AssertionError>(block)
 
 object Failures {
 
