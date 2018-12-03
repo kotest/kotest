@@ -4,19 +4,13 @@ import arrow.core.Try
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import io.kotlintest.TestIsolationMode
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
-import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
-import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
-import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
-import io.kotlintest.runner.jvm.spec.SpecRunner
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
-
 
 
 class TestEngine(val classes: List<KClass<out Spec>>,
@@ -75,7 +69,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
         },
         {
           afterAll().fold(
-              { end(it) },
+              { t -> end(t) },
               { end(null) }
           )
         }
@@ -105,20 +99,17 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     }
   }
 
-  private fun createSpec(klass: KClass<out Spec>) =
-      instantiateSpec(klass).flatMap {
-        Try {
-          listener.specCreated(it)
-          it
-        }
-      }
+  private fun createSpec(klass: KClass<out Spec>) = instantiateSpec(klass).flatMap {
+    Try {
+      listener.specCreated(it)
+      it
+    }
+  }
 
   private fun executeSpec(spec: Spec) = Try {
     listener.prepareSpec(spec.description(), spec::class)
     Try {
-      spec.beforeSpecStarted(spec.description(), spec)
-      runner(spec).execute(spec)
-      spec.afterSpecCompleted(spec.description(), spec)
+      SpecExecutor(listener).execute(spec)
     }.fold(
         { listener.completeSpec(spec.description(), spec.javaClass.kotlin, it) },
         { listener.completeSpec(spec.description(), spec.javaClass.kotlin, null) }
@@ -126,15 +117,5 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     spec.closeResources()
   }
 
-  private fun runner(spec: Spec): SpecRunner {
-    return when (spec.testIsolationMode()) {
-      TestIsolationMode.SingleInstance -> SharedInstanceSpecRunner(listener)
-      TestIsolationMode.InstancePerTest -> InstancePerNodeSpecRunner(listener)
-      TestIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
-      null -> when {
-        spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
-        else -> SharedInstanceSpecRunner(listener)
-      }
-    }
-  }
+
 }

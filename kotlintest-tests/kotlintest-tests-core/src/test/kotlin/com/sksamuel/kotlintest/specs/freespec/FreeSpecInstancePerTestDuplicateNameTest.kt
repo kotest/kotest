@@ -6,7 +6,7 @@ import io.kotlintest.specs.FreeSpec
 
 class FreeSpecInstancePerTestDuplicateNameTest : FreeSpec() {
 
-  override fun testIsolationMode() = TestIsolationMode.InstancePerTest
+  override fun isolationMode() = TestIsolationMode.InstancePerTest
 
   init {
 

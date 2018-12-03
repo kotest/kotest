@@ -28,10 +28,16 @@ class TestCaseExecutor(val listener: TestEngineListener,
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      listeners.forEach { it.beforeTest(testCase.description) }
+      listeners.forEach {
+        it.beforeTest(testCase.description)
+        it.beforeTest(testCase)
+      }
 
       fun onComplete(result: TestResult) {
-        listeners.reversed().forEach { it.afterTest(testCase.description, result) }
+        listeners.reversed().forEach {
+          it.afterTest(testCase.description, result)
+          it.afterTest(testCase, result)
+        }
         listener.completeTestCase(testCase, result)
       }
 

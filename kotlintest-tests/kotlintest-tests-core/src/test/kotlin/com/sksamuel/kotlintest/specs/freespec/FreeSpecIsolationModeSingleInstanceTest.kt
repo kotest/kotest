@@ -1,8 +1,9 @@
 package com.sksamuel.kotlintest.specs.freespec
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.TestIsolationMode
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -12,9 +13,9 @@ class FreeSpecIsolationModeSingleInstanceTest : FreeSpec() {
     var string = ""
   }
 
-  override fun testIsolationMode() = TestIsolationMode.SingleInstance
+  override fun isolationMode() = TestIsolationMode.SingleInstance
 
-  override fun afterSpecCompleted(description: Description, spec: Spec) {
+  override fun cleanupSpec(spec: Spec, results: Map<TestCase, TestResult>) {
     string shouldBe "abcccde_"
   }
 

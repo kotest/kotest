@@ -6,7 +6,7 @@ import io.kotlintest.specs.StringSpec
 
 class StringSpecSingleInstanceDuplicateNameTest : StringSpec() {
 
-  override fun testIsolationMode() = TestIsolationMode.SingleInstance
+  override fun isolationMode() = TestIsolationMode.SingleInstance
 
   override val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig(invocations = 2)
 

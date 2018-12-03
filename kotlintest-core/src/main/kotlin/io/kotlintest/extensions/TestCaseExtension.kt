@@ -63,7 +63,7 @@ interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
    */
   fun intercept(context: TestCaseInterceptContext,
                 test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                complete: (TestResult) -> Unit) = test(context.config, { complete(it) })
+                complete: (TestResult) -> Unit) = test(context.config) { complete(it) }
 }
 
 data class TestCaseInterceptContext(val description: Description,

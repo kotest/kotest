@@ -6,6 +6,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
+import io.kotlintest.TestResult
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -17,6 +18,7 @@ class InstancePerNodeSpecRunner(listener: TestEngineListener) : SpecRunner(liste
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
   private val executed = HashSet<Description>()
+  private val results = HashMap<TestCase, TestResult>()
   private val discovered = HashSet<Description>()
   private val queue = ArrayDeque<TestCase>()
 
@@ -25,12 +27,13 @@ class InstancePerNodeSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    * a stack. When the test case has completed, we take the next test case from the
    * stack, and begin executing that.
    */
-  override fun execute(spec: Spec) {
-    topLevelTests(spec).forEach { enqueue(it) }
+  override fun execute(spec: Spec, active: List<TestCase>, inactive: List<TestCase>): Map<TestCase, TestResult> {
+    active.forEach { enqueue(it) }
     while (queue.isNotEmpty()) {
       val element = queue.removeFirst()
       execute(element)
     }
+    return results
   }
 
   private fun enqueue(testCase: TestCase) {

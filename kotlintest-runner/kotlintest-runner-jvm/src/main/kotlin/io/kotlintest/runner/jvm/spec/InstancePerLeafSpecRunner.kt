@@ -6,6 +6,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
+import io.kotlintest.TestResult
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestCaseExecutor
@@ -27,13 +28,15 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val queue = ArrayDeque<TestCase>()
+  private val results = HashMap<TestCase, TestResult>()
 
-  override fun execute(spec: Spec) {
-    topLevelTests(spec).forEach { enqueue(it) }
+  override fun execute(spec: Spec, active: List<TestCase>, inactive: List<TestCase>): Map<TestCase, TestResult> {
+    active.forEach { enqueue(it) }
     while (queue.isNotEmpty()) {
       val element = queue.removeFirst()
       execute(element)
     }
+    return results
   }
 
   private fun enqueue(testCase: TestCase) {
