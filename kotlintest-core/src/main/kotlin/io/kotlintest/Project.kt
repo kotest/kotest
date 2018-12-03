@@ -33,10 +33,11 @@ object Project {
     }
   }
 
-  private const val projectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
+  private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
+      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config") ?: defaultProjectConfigFullyQualifiedName
       val clas = Class.forName(projectConfigFullyQualifiedName)
       val field = clas.declaredFields.find { it.name == "INSTANCE" }
       when (field) {
