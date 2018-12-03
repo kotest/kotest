@@ -1,18 +1,12 @@
 package io.kotlintest.runner.jvm
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder
+import io.github.classgraph.ClassGraph
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.extensions.DiscoveryExtension
-import org.reflections.Reflections
-import org.reflections.scanners.SubTypesScanner
-import org.reflections.util.ConfigurationBuilder
-import org.reflections.util.FilterBuilder
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 /**
@@ -36,32 +30,17 @@ object TestDiscovery {
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
-  init {
-    ReflectionsHelper.registerUrlTypes()
-  }
-
-  private fun reflections(uris: List<URI>): Reflections {
-
-    val classOnly = { name: String? -> name?.endsWith(".class") ?: false }
-    val excludeJDKPackages = FilterBuilder.parsePackages("-java, -javax, -sun, -com.sun")
-
-    val executor = Executors.newSingleThreadExecutor(ThreadFactoryBuilder().setNameFormat("kotlintest-discovery-%d").build())
-    val classes = Reflections(ConfigurationBuilder()
-        .addUrls(uris.map { it.toURL() })
-        .setExpandSuperTypes(true)
-        .setExecutorService(executor)
-        .filterInputsBy(excludeJDKPackages.add(classOnly))
-        .setScanners(SubTypesScanner()))
-    executor.shutdown()
-    executor.awaitTermination(1, TimeUnit.HOURS)
-    return classes
-  }
-
   // returns all the locatable specs for the given uris
-  private fun scan(uris: List<URI>): List<KClass<out Spec>> =
-      reflections(uris)
-          .getSubTypesOf(Spec::class.java)
-          .map(Class<out Spec>::kotlin)
+  private fun scan(uris: List<URI>): List<KClass<out Spec>> {
+    val scanResult = ClassGraph()
+        .verbose()                   // Log to stderr
+        .enableClassInfo()
+        .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+        .whitelistPaths(* uris.map { it.path }.toTypedArray())
+        .scan()
+    return scanResult.getClassesImplementing(Spec::class.java.canonicalName)
+        .map { Class.forName(it.name).kotlin as KClass<out Spec> }
+  }
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
       classes.map { Class.forName(it).kotlin }

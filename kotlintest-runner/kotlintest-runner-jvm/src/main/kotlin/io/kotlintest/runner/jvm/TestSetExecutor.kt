@@ -2,7 +2,6 @@ package io.kotlintest.runner.jvm
 
 import arrow.core.Try
 import arrow.core.recover
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
@@ -44,7 +43,7 @@ class TestSetExecutor(val listener: TestEngineListener, val context: TestContext
         }
       }
       else -> {
-        val executor = Executors.newFixedThreadPool(set.threads, ThreadFactoryBuilder().setNameFormat("kotlintest-test-executor-%d").build())
+        val executor = Executors.newFixedThreadPool(set.threads, NamedThreadFactory("kotlintest-test-executor-%d"))
         // submitting a task might fail if the executor has already been stopped so we just Try {} here
         Try {
           for (k in 0 until set.invocations) {

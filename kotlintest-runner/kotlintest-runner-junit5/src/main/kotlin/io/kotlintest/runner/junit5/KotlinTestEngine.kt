@@ -5,9 +5,9 @@ import io.kotlintest.Spec
 import io.kotlintest.description
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.IsolationTestEngineListener
+import io.kotlintest.runner.jvm.SpecFilter
 import io.kotlintest.runner.jvm.SynchronizedTestEngineListener
 import io.kotlintest.runner.jvm.TestDiscovery
-import io.kotlintest.runner.jvm.SpecFilter
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
@@ -23,7 +23,6 @@ import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import org.junit.platform.launcher.PostDiscoveryFilter
-import org.reflections.util.ClasspathHelper
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.reflect.KClass
@@ -74,8 +73,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
       val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
           request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-          request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
-          ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+          request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
       val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors, emptyList()))
 

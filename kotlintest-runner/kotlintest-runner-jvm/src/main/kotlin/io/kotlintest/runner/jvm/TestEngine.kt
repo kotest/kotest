@@ -1,7 +1,6 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
@@ -12,17 +11,21 @@ import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
 import io.kotlintest.runner.jvm.spec.SpecRunner
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
+
+
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  parallelism: Int,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = Executors.newFixedThreadPool(parallelism, ThreadFactoryBuilder().setNameFormat("kotlintest-engine-%d").build())
+  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
   private val error = AtomicReference<Throwable?>(null)
 
   private fun afterAll() = Try {

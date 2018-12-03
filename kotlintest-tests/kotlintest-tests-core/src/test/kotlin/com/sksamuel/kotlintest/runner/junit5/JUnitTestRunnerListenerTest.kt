@@ -6,7 +6,6 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.then
 import com.nhaarman.mockito_kotlin.times
-import com.sksamuel.kotlintest.runner.jvm.ReflectionsHelperTest
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
@@ -262,7 +261,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec1 = JUnitTestRunnerListenerTest()
-      val spec2 = ReflectionsHelperTest()
+      val spec2 = KotlinTestEngineTest()
       val tc1 = TestCase(spec1.description().append("test1"), spec1, { }, 1, TestType.Container, TestCaseConfig())
       val tc2 = TestCase(spec2.description().append("test2"), spec2, { }, 1, TestType.Container, TestCaseConfig())
       val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
@@ -289,7 +288,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:ReflectionsHelperTest]/[test:test2]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:KotlinTestEngineTest]/[test:test2]" },
           argThat { status == TestExecutionResult.Status.SUCCESSFUL }
       )
     }
