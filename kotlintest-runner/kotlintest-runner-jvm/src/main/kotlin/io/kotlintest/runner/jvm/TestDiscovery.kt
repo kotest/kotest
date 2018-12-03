@@ -13,10 +13,14 @@ import kotlin.reflect.KClass
  * [DiscoveryRequest] describes how to discover test classes.
  *
  * @param uris a list of uris to act as a classpath roots to search
- * @param classNames if specified then these classes will be used instead of searching
+ * @param classNames if specified then these classnames will be used instead of searching
+ * @param packages if specified then only classes in the given packages will be considered
  * @param classNameFilters list of class name filters
  */
-data class DiscoveryRequest(val uris: List<URI>, val classNames: List<String>, val classNameFilters: List<((String) -> Boolean)>)
+data class DiscoveryRequest(val uris: List<URI>,
+                            val classNames: List<String>,
+                            val packages: List<String>,
+                            val classNameFilters: List<((String) -> Boolean)>)
 
 data class DiscoveryResult(val classes: List<KClass<out Spec>>)
 
@@ -31,7 +35,7 @@ object TestDiscovery {
   private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
   // returns all the locatable specs for the given uris
-  private fun scan(uris: List<URI>): List<KClass<out Spec>> {
+  private fun scan(uris: List<URI>, packages: List<String>): List<KClass<out Spec>> {
     val scanResult = ClassGraph()
         .verbose()                   // Log to stderr
         .enableClassInfo()
@@ -39,7 +43,9 @@ object TestDiscovery {
         .whitelistPaths(* uris.map { it.path }.toTypedArray())
         .scan()
     return scanResult.getClassesImplementing(Spec::class.java.canonicalName)
-        .map { Class.forName(it.name).kotlin as KClass<out Spec> }
+        .map { Class.forName(it.name).kotlin  }
+        .filterIsInstance<KClass<out Spec>>()
+        .filter { klass -> packages.isEmpty() || packages.any { klass.java.canonicalName.startsWith("$it.") } }
   }
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
@@ -52,7 +58,7 @@ object TestDiscovery {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames).apply {
         logger.debug("Loaded ${this.size} classes from classnames...")
       }
-      else -> scan(request.uris).apply {
+      else -> scan(request.uris, request.packages).apply {
         logger.debug("Scan discovered ${this.size} classes...")
       }
     }
@@ -61,7 +67,7 @@ object TestDiscovery {
         .filter { Spec::class.java.isAssignableFrom(it.java) }
         // must filter out abstract classes to avoid the spec parent classes themselves
         .filter { !it.isAbstract }
-        // keep only class instances
+        // keep only class instances and not objects
         .filter { it.objectInstance == null }
 
     logger.debug("...which has filtered to ${specs.size} non abstract classes")
@@ -75,9 +81,8 @@ object TestDiscovery {
     return filtered
   }
 
-  fun discover(request: DiscoveryRequest): DiscoveryResult =
-      requests.getOrPut(request) {
-        val classes = scan(request)
-        DiscoveryResult(classes)
-      }
+  fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
+    val classes = scan(request)
+    DiscoveryResult(classes)
+  }
 }
