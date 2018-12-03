@@ -7,6 +7,7 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
+import io.kotlintest.internal.isActive
 import org.slf4j.LoggerFactory
 import java.time.Duration
 

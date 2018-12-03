@@ -8,7 +8,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TagExtension
-import io.kotlintest.runner.jvm.isActive
+import io.kotlintest.internal.isActive
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

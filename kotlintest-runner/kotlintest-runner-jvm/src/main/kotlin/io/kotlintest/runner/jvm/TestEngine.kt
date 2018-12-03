@@ -5,6 +5,7 @@ import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestIsolationMode
+import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
 import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
 import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner

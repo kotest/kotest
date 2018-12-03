@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.runner.jvm
 
-import io.kotlintest.runner.jvm.NamedThreadFactory
+import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

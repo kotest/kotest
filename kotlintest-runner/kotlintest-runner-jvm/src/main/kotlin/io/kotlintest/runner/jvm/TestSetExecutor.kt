@@ -5,6 +5,7 @@ import arrow.core.recover
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
+import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
