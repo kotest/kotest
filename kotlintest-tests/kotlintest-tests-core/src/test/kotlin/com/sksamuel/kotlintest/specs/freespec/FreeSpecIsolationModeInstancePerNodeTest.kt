@@ -12,7 +12,7 @@ class FreeSpecIsolationModeInstancePerNodeTest : FreeSpec() {
     var string = ""
   }
 
-  override fun testIsolationMode() = TestIsolationMode.InstancePerNode
+  override fun testIsolationMode() = TestIsolationMode.InstancePerTest
 
   override fun afterSpecCompleted(description: Description, spec: Spec) {
     string shouldBe "a_ab_ad_abccc_ade_"

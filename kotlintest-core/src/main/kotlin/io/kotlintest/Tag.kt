@@ -6,7 +6,7 @@ package io.kotlintest
  * class will be used as name. Two tag object with the same simple name (same object names in
  * different packages) are treated as a single tag.
  *
- * For example, if you create a Tag com.sksamuel.kotlintest.SuperTag then the tag name will
+ * For example, if you create a Tag `com.sksamuel.kotlintest.SuperTag` then the tag name will
  * simply be SuperTag.
  *
  * Therefore, the tags `com.sksamuel.kotlintest.SuperTag` and `io.kotlintest.SuperTag` are

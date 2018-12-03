@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class FreeSpecInstancePerNodeTest : FreeSpec() {
 
-  override fun testIsolationMode(): TestIsolationMode = TestIsolationMode.InstancePerNode
+  override fun testIsolationMode(): TestIsolationMode = TestIsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

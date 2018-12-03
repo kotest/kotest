@@ -4,7 +4,6 @@ import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
-import io.kotlintest.TestFilterResult
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
@@ -59,13 +58,7 @@ class TestCaseExecutor(val listener: TestEngineListener,
   }
 
   private fun executeTestIfActive(testCase: TestCase, config: TestCaseConfig): TestResult {
-
-    val bang = testCase.name.startsWith("!") && System.getProperty("kotlintest.bang.disable") == null
-    val tags = config.tags + testCase.spec.tags()
-    val excluded = Project.testCaseFilters().map { it.filter(testCase.description) }.any { it == TestFilterResult.Ignore }
-    val enabled = config.enabled && Project.tags().isActive(tags) && !bang && !excluded
-
-    return if (enabled) {
+    return if (isActive(testCase.copy(config = config))) {
       TestSetExecutor(listener, context).execute(TestSet(testCase, config.timeout, config.invocations, config.threads))
     } else {
       TestResult.Ignored

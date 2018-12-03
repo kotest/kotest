@@ -8,7 +8,6 @@ import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UriSelector
-import org.reflections.util.ClasspathHelper
 
 /**
  * Returns a [DiscoveryRequest] built from all selectors present
@@ -34,8 +33,7 @@ internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest
 
   val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
       request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-      request.getSelectorsByType(UriSelector::class.java).map { it.uri } +
-      ClasspathHelper.forClassLoader().toList().map { it.toURI() }
+      request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
   return DiscoveryRequest(uris, classnames, packages, emptyList())
 }

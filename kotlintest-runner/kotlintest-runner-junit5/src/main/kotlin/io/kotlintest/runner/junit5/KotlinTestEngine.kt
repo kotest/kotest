@@ -17,6 +17,7 @@ import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.MethodSelector
+import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
@@ -63,7 +64,8 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
     // inside intellij when running a single test, we might be passed a class selector
     // and gradle will sometimes pass a class selector for each class it has detected
-    val classSelectors = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+    val classNames = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+    val packageNames = request.getSelectorsByType(PackageSelector::class.java).map { it.packageName }
 
     // a method selector is passed by intellij to run just a single method inside a test file
     // this happens for example, when trying to run a junit test alongside kotlintest tests,
@@ -75,7 +77,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
           request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
           request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-      val result = TestDiscovery.discover(DiscoveryRequest(uris, classSelectors, emptyList()))
+      val result = TestDiscovery.discover(DiscoveryRequest(uris, classNames, packageNames, emptyList()))
 
       // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
       // internal gradle class called ClassMethodNameFilter. That class makes all kinds of

@@ -16,6 +16,7 @@ interface TestCaseFilter : ProjectLevelFilter {
     }
   }
 }
+
 interface ProjectLevelFilter
 
 enum class TestFilterResult {

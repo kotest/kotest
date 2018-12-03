@@ -16,7 +16,7 @@ import io.kotlintest.Tags
  *
  * The default [SystemPropertyTagExtension] is automatically registered
  * which includes and excludes tags using the system properties
- * '' and ''
+ * 'kotlintest.tags.include' and 'kotlintest.tags.exclude'
  */
 interface TagExtension : ProjectLevelExtension {
   fun tags(): Tags = Tags.Empty

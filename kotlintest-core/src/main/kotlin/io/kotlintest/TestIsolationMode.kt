@@ -35,7 +35,7 @@ enum class TestIsolationMode {
    * c
    *
    */
-  InstancePerNode,
+  InstancePerTest,
 
   /**
    * A new instance of the [Spec] class is instantiated for every

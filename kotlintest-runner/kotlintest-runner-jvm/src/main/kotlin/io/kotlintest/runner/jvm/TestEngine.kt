@@ -11,9 +11,7 @@ import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
 import io.kotlintest.runner.jvm.spec.SpecRunner
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
-import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
@@ -130,7 +128,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun runner(spec: Spec): SpecRunner {
     return when (spec.testIsolationMode()) {
       TestIsolationMode.SingleInstance -> SharedInstanceSpecRunner(listener)
-      TestIsolationMode.InstancePerNode -> InstancePerNodeSpecRunner(listener)
+      TestIsolationMode.InstancePerTest -> InstancePerNodeSpecRunner(listener)
       TestIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
       null -> when {
         spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
