@@ -18,12 +18,12 @@ import io.kotlintest.matchers.maps.shouldNotContainAll
 import io.kotlintest.matchers.maps.shouldNotContainKey
 import io.kotlintest.matchers.maps.shouldNotContainValue
 import io.kotlintest.matchers.maps.shouldNotContainValues
-import io.kotlintest.specs.WordSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
-import java.util.*
+import io.kotlintest.specs.WordSpec
+import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {
 
@@ -118,9 +118,7 @@ class MapMatchersTest : WordSpec() {
       "test that a map contains all given pairs" {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"), Pair(3, "c"))
         map should containAll(mapOf(1 to "a", 3 to "c"))
-        shouldThrow<AssertionError> {
-          map should containAll(mapOf(3 to "c"))
-        }
+        map should containAll(mapOf(3 to "c"))
         map.shouldContainAll(mapOf(1 to "a", 3 to "c"))
         map.shouldNotContainAll(mapOf(1 to "a", 3 to "h"))
       }
