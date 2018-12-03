@@ -1,5 +1,10 @@
 package io.kotlintest
 
+import com.github.difflib.DiffUtils
+import com.github.difflib.patch.Chunk
+import com.github.difflib.patch.Delta
+import com.github.difflib.patch.DeltaType
+
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
  *
@@ -105,7 +110,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get()+result.failureMessage))
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get() + result.failureMessage))
   }
 }
 
@@ -117,29 +122,62 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 // -- specialized overrides of shouldBe --
 
-private fun equalsError(expected: Any?, actual: Any?): Throwable {
-  val expectedRepr = stringRepr(expected)
-  val actualRepr = stringRepr(actual)
-  val message = ErrorCollector.clueContext.get()+equalsErrorMessage(expectedRepr, actualRepr)
-  val throwable = junit5assertionFailedError(message, expectedRepr, actualRepr)
+internal fun equalsError(expected: Any?, actual: Any?): Throwable {
+
+  val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual))
+  val message = ErrorCollector.clueContext.get() + equalsErrorMessage(expectedRepr, actualRepr)
+
+  val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)
       ?: AssertionError(message)
+
   if (Failures.shouldRemoveKotlintestElementsFromStacktrace) {
     Failures.removeKotlintestElementsFromStacktrace(throwable)
   }
   return throwable
 }
 
+/**
+ * Returns a formatted diff of the expected and actual input, unless there are no differences,
+ * or the input is too small to bother with diffing, return it returns the input as is.
+ */
+@Suppress("MoveLambdaOutsideParentheses")
+fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50): Pair<String, String> {
+
+  fun typeString(deltaType: DeltaType): String = when (deltaType) {
+    DeltaType.CHANGE -> "Change"
+    DeltaType.INSERT -> "Addition"
+    DeltaType.DELETE -> "Deletion"
+    DeltaType.EQUAL -> ""
+  }
+
+  fun diffs(lines: List<String>, deltas: List<Delta<String>>, chunker: (Delta<String>) -> Chunk<String>): String {
+    return deltas.joinToString("\n\n") { delta ->
+      val chunk = chunker(delta)
+      // include a line before and after to give some context on deletes
+      val snippet = lines.drop(Math.max(chunk.position - 1, 0)).take(chunk.position + chunk.size()).joinToString("\n")
+      "[${typeString(delta.type)} at line ${chunk.position}] $snippet"
+    }
+  }
+
+  return if (expected.lines().size < minSizeForDiff && actual.lines().size < minSizeForDiff) Pair(expected, actual) else {
+    val patch = DiffUtils.diff(actual, expected)
+    return if (patch.deltas.isEmpty()) Pair(expected, actual) else {
+      Pair(diffs(expected.lines(), patch.deltas, { it.original }), diffs(actual.lines(), patch.deltas, { it.revised }))
+    }
+  }
+}
+
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
 
-/** If JUnit5 is present, return an AssertionFailedError */
-private fun junit5assertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
+/** If JUnit5 is present, return an org.opentest4j.AssertionFailedError */
+private fun junit5AssertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
   return callPublicConstructor("org.opentest4j.AssertionFailedError",
       arrayOf(String::class.java, Object::class.java, Object::class.java),
       arrayOf(message, expected, actual)) as? Throwable
 }
 
-/** If JUnit4 is present, return a ComparisonFailure */
+/** If JUnit4 is present, return a org.junit.ComparisonFailure */
 private fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
   return callPublicConstructor("org.junit.ComparisonFailure",
       arrayOf(String::class.java, String::class.java, String::class.java),
