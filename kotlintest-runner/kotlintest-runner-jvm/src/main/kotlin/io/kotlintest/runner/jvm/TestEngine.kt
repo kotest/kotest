@@ -18,12 +18,7 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
-internal class NamedThreadFactory(val name: String) : ThreadFactory {
-  private val counter = AtomicInteger(0)
-  override fun newThread(r: Runnable): Thread {
-    return Thread(r, String.format(name, counter.getAndIncrement()))
-  }
-}
+
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  parallelism: Int,
