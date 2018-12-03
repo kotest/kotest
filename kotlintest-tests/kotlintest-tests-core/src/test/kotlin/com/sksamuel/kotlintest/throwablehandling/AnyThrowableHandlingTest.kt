@@ -3,9 +3,9 @@ package com.sksamuel.kotlintest.throwablehandling
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrowAny
+import io.kotlintest.shouldThrowAnyUnit
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.throwablehandling.shouldThrowAny
-import io.kotlintest.throwablehandling.shouldThrowAnyUnit
 
 class AnyThrowableHandlingTest : FreeSpec() {
 

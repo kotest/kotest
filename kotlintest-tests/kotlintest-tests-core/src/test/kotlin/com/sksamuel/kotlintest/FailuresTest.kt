@@ -6,8 +6,8 @@ import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
+import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.throwablehandling.shouldThrowAny
 
 class FailuresTest : FreeSpec({
 

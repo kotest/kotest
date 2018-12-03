@@ -3,8 +3,8 @@ package com.sksamuel.kotlintest.throwablehandling
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrowUnit
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.throwablehandling.shouldThrowUnit
 import kotlin.reflect.KClass
 
 class CovariantThrowableHandlingTest : FreeSpec() {

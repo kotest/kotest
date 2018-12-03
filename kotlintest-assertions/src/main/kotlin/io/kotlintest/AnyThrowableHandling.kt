@@ -1,6 +1,4 @@
-package io.kotlintest.throwablehandling
-
-import io.kotlintest.Failures
+package io.kotlintest
 
 /**
  * Verifies that a block of code throws any [Throwable]
