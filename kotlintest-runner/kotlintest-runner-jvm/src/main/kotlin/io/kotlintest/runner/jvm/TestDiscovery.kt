@@ -1,5 +1,6 @@
 package io.kotlintest.runner.jvm
 
+import io.github.classgraph.ClassGraph
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.extensions.DiscoveryExtension
@@ -43,8 +44,8 @@ object TestDiscovery {
         .scan()
     return scanResult.getClassesImplementing(Spec::class.java.canonicalName)
         .map { Class.forName(it.name).kotlin  }
-        .filter
-        .filter { spec -> packages.isEmpty() || packages.any { spec.canonicalName.startsWith("$it.") } }
+        .filterIsInstance<KClass<out Spec>>()
+        .filter { klass -> packages.isEmpty() || packages.any { klass.java.canonicalName.startsWith("$it.") } }
   }
 
   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
