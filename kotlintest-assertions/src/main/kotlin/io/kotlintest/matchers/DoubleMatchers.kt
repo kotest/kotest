@@ -23,7 +23,7 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
       return Result(false, "$value should be smaller than $b", "$value should not be smaller than $b")
     }
 
-    return Result(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller and $b and bigger than $a")
+    return Result(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller than $b and bigger than $a")
   }
 }
 
