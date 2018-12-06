@@ -1,6 +1,5 @@
 package io.kotlintest.properties
 
-import io.kotlintest.JavaRandoms
 import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.properties.shrinking.DoubleShrinker
 import io.kotlintest.properties.shrinking.FloatShrinker
@@ -13,10 +12,8 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.math.BigInteger
-import java.util.*
-
-/** A shared random number generator. */
-private val RANDOM = Random()
+import java.util.UUID
+import kotlin.random.Random
 
 class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
 
@@ -117,7 +114,7 @@ interface Gen<T> {
     val outer = this
     return object : Gen<T?> {
       override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
-      override fun random(): Sequence<T?> = outer.random().map { if (RANDOM.nextBoolean()) null else it }
+      override fun random(): Sequence<T?> = outer.random().map { if (Random.nextBoolean()) null else it }
       override fun shrinker(): Shrinker<T?>? {
         val s = outer.shrinker()
         return if (s == null) null else object : Shrinker<T?> {
@@ -222,7 +219,7 @@ interface Gen<T> {
         val iterators = gens.map { it.random().iterator() }
 
         return generateInfiniteSequence {
-          val iteratorLocation = JavaRandoms.internalNextInt(RANDOM, 0, iterators.size)
+          val iteratorLocation = Random.nextInt(0, iterators.size)
           val iterator = iterators[iteratorLocation]
           iterator.next()
         }
@@ -242,7 +239,7 @@ interface Gen<T> {
       return object : Gen<Int> {
         override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
-            generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
+            generateSequence { Random.nextInt(min, max) }
 
         override fun shrinker() = ChooseShrinker(min, max)
       }
@@ -256,7 +253,7 @@ interface Gen<T> {
       assert(min < max) { "min must be < max" }
       return object : Gen<Long> {
         override fun constants(): Iterable<Long> = emptyList()
-        override fun random(): Sequence<Long> = generateSequence { JavaRandoms.internalNextLong(RANDOM, min, max) }
+        override fun random(): Sequence<Long> = generateSequence { Random.nextLong(min, max) }
       }
     }
 
@@ -268,7 +265,7 @@ interface Gen<T> {
      */
     fun <T> from(values: List<T>): Gen<T> = object : Gen<T> {
       override fun constants(): Iterable<T> = emptyList()
-      override fun random(): Sequence<T> = generateInfiniteSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
+      override fun random(): Sequence<T> = generateInfiniteSequence { values[Random.nextInt(0, values.size)] }
     }
 
     fun <T> from(values: Array<T>): Gen<T> = from(values.toList())
@@ -292,7 +289,7 @@ interface Gen<T> {
     fun string(): Gen<String> = object : Gen<String> {
       val literals = listOf("", "\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
       override fun constants(): Iterable<String> = literals
-      override fun random(): Sequence<String> = generateSequence { nextPrintableString(RANDOM.nextInt(100)) }
+      override fun random(): Sequence<String> = generateSequence { nextPrintableString(Random.nextInt(100)) }
       override fun shrinker(): Shrinker<String>? = StringShrinker
     }
 
@@ -304,7 +301,7 @@ interface Gen<T> {
     fun int() = object : Gen<Int> {
       val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
       override fun constants(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
+      override fun random(): Sequence<Int> = generateSequence { Random.nextInt() }
       override fun shrinker() = IntShrinker
     }
 
@@ -336,7 +333,7 @@ interface Gen<T> {
      */
     fun file(): Gen<File> = object : Gen<File> {
       override fun constants(): Iterable<File> = emptyList()
-      override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(RANDOM.nextInt(100))) }
+      override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(Random.nextInt(100))) }
     }
 
     /**
@@ -347,7 +344,7 @@ interface Gen<T> {
     fun long(): Gen<Long> = object : Gen<Long> {
       val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
       override fun constants(): Iterable<Long> = literals
-      override fun random(): Sequence<Long> = generateSequence { Math.abs(RANDOM.nextLong()) }
+      override fun random(): Sequence<Long> = generateSequence { Math.abs(Random.nextLong()) }
     }
 
     /**
@@ -355,7 +352,7 @@ interface Gen<T> {
      */
     fun bool(): Gen<Boolean> = object : Gen<Boolean> {
       override fun constants(): Iterable<Boolean> = listOf(true, false)
-      override fun random(): Sequence<Boolean> = generateSequence { RANDOM.nextBoolean() }
+      override fun random(): Sequence<Boolean> = generateSequence { Random.nextBoolean() }
     }
 
     fun uuid(): Gen<UUID> = object : Gen<UUID> {
@@ -370,7 +367,7 @@ interface Gen<T> {
     fun double(): Gen<Double> = object : Gen<Double> {
       val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
-      override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun random(): Sequence<Double> = generateSequence { Random.nextDouble() }
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
     }
 
@@ -384,7 +381,7 @@ interface Gen<T> {
     fun float(): Gen<Float> = object : Gen<Float> {
       val literals = listOf(0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun constants(): Iterable<Float> = literals
-      override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
+      override fun random(): Sequence<Float> = generateSequence { Random.nextFloat() }
       override fun shrinker() = FloatShrinker
     }
 
@@ -404,7 +401,7 @@ interface Gen<T> {
     fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
       override fun constants(): Iterable<Set<T>> = listOf(gen.constants().toSet())
       override fun random(): Sequence<Set<T>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         gen.random().take(size).toSet()
       }
     }
@@ -416,7 +413,7 @@ interface Gen<T> {
     fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
       override fun constants(): Iterable<List<T>> = listOf(gen.constants().toList())
       override fun random(): Sequence<List<T>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         gen.random().take(size).toList()
       }
 
@@ -446,7 +443,7 @@ interface Gen<T> {
     fun <K, V> map(genK: Gen<K>, genV: Gen<V>): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
       override fun constants(): Iterable<Map<K, V>> = emptyList()
       override fun random(): Sequence<Map<K, V>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         genK.random().take(size).zip(genV.random().take(size)).toMap()
       }
     }
@@ -524,7 +521,7 @@ interface Gen<T> {
   }
 
   fun nextPrintableString(length: Int): String {
-    return (0 until length).map { RANDOM.nextPrintableChar() }.joinToString("")
+    return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
   }
 }
 
