@@ -2,4 +2,22 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile 'com.univocity:univocity-parsers:2.7.6'
     compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
+
+    testImplementation project(':kotlintest-core')
+    testImplementation project(':kotlintest-assertions')
+    testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
+}
+
+test {
+    useJUnitPlatform()
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
 }
