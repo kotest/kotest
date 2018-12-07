@@ -23,8 +23,8 @@ class NullTests : WordSpec() {
         getNull() shouldBe null
       }
       "match null variable when equal operation is override" {
-        val g: com.sksamuel.kt.A? = null
-        com.sksamuel.kt.A(0) shouldBe g
+        val g: A? = null
+        A(0) shouldBe g
       }
     }
     "not null" should {

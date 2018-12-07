@@ -7,11 +7,11 @@ class ShouldBeNumericTests : WordSpec({
   "should be" should {
     "support combinations of numerics" {
 
-      val v1: Int = com.sksamuel.kt.matchers.Foo.JavaLong.toInt()
-      val v2 = java.lang.Integer.valueOf(42)
-      val v3 = com.sksamuel.kt.matchers.Foo.JavaLong
+      val v1: Int = Foo.JavaLong.toInt()
+      val v2 = Integer.valueOf(42)
+      val v3 = Foo.JavaLong
       val v4 = java.lang.Long.valueOf(42)
-      val v5 = com.sksamuel.kt.matchers.Foo.JavaLong
+      val v5 = Foo.JavaLong
       val v6 = 42.0
       val v7 = com.sksamuel.kt.matchers.Foo.JavaDouble
 

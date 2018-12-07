@@ -19,8 +19,8 @@ import io.kotlintest.specs.FreeSpec
 
 class ComparableMatchersTest : FreeSpec() {
 
-  class ComparableExample(private val underlying: Int) : Comparable<com.sksamuel.kt.matchers.ComparableMatchersTest.ComparableExample> {
-    override fun compareTo(other: com.sksamuel.kt.matchers.ComparableMatchersTest.ComparableExample): Int {
+  class ComparableExample(private val underlying: Int) : Comparable<ComparableExample> {
+    override fun compareTo(other: ComparableExample): Int {
       return when {
         underlying == other.underlying -> 0
         underlying > other.underlying -> 1
@@ -31,9 +31,9 @@ class ComparableMatchersTest : FreeSpec() {
 
   init {
 
-    val cn = com.sksamuel.kt.matchers.ComparableMatchersTest.ComparableExample(-100)
-    val cz = com.sksamuel.kt.matchers.ComparableMatchersTest.ComparableExample(0)
-    val cp = com.sksamuel.kt.matchers.ComparableMatchersTest.ComparableExample(100)
+    val cn = ComparableExample(-100)
+    val cz = ComparableExample(0)
+    val cp = ComparableExample(100)
 
     "Comparable matchers" - {
 
