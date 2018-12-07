@@ -36,12 +36,12 @@ class FailuresTest : FreeSpec() {
         val failure = Failures.failure("msg", cause)
         failure.message shouldBe "msg"
         failure.cause shouldBe cause
-        failure.stackTrace[0].className.shouldStartWith("assertions.io.kotlintest.FailuresTest")
+        failure.stackTrace[0].className.shouldStartWith("com.sksamuel.kt.FailuresTest")
       }
 
       "filters stacktrace when called by shouldBe" {
         val t = shouldThrowAny { 1 shouldBe 2 }
-        t.stackTrace[0].className.shouldStartWith("assertions.io.kotlintest.FailuresTest")
+        t.stackTrace[0].className.shouldStartWith("com.sksamuel.kt.FailuresTest")
       }
     }
   }
