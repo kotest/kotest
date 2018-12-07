@@ -38,7 +38,6 @@ class JUnitHTMLReportTest : WordSpec() {
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.AutoCloseTest.html">com.sksamuel.kotlintest.AutoCloseTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.feature.FeatureSpecTest.html">com.sksamuel.kotlintest.specs.feature.FeatureSpecTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.TagTest.html">com.sksamuel.kotlintest.TagTest</a>""")
-        html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.matchers.string.StringMatchersTest.html">com.sksamuel.kotlintest.matchers.string.StringMatchersTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.specs.behavior.BehaviorSpecLambdaTest.html">com.sksamuel.kotlintest.specs.behavior.BehaviorSpecLambdaTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.listeners.TestListenerTest.html">com.sksamuel.kotlintest.listeners.TestListenerTest</a>""")
         html.shouldContain("""<a href="classes/com.sksamuel.kotlintest.assertions.arrow.ValidatedMatchersTest.html">com.sksamuel.kotlintest.assertions.arrow.ValidatedMatchersTest</a>""")
