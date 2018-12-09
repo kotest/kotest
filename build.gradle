@@ -120,3 +120,8 @@ allprojects {
 project(":") {
     uploadArchives.enabled = false
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10.3'
+    distributionType = Wrapper.DistributionType.ALL
+}
