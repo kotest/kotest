@@ -169,22 +169,6 @@ dependencies {
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.1.11")
 }
 ```
-Kotlintest may dirty some configurations, such as `testCompileClasspath`, with kotlin-related old dependencies (`gradle -q dependencyInsight --dependency kotlin-stdlib --configuration testCompileClasspath` to find out more).
-
-You can force the latest versions in this way:
-```groovy
-ext{
-    kotlin_version = '1.3.11'
-}
-dependencies {
-    ...
-    constraints {
-        testImplementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-        testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
-        testImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    }
-}
-```
 
 #### Maven
 
