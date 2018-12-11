@@ -8,6 +8,11 @@ inline fun <reified A> verifyAll(iterations: Int, noinline fn: PropertyContext.(
 }
 
 fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = verifyAll(1000, gena, fn)
+fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyAll(1000, gena, gena, fn)
+fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyAll(1000, gena, gena, gena, fn)
+fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyAll(1000, gena, gena, gena, gena, fn)
+fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = verifyAll(1000, gena, gena, gena, gena, gena, fn)
+fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = verifyAll(1000, gena, gena, gena, gena, gena, gena, fn)
 fun <A> verifyAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) {
   assertAll(iterations, gena, { a ->
     fn(a) shouldBe true

@@ -9,6 +9,11 @@ inline fun <reified A> assertNone(iterations: Int, noinline fn: PropertyContext.
 }
 
 fun <A> assertNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) = assertNone(1000, gena, fn)
+fun <A> assertNone(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertNone(1000, gena, gena, fn)
+fun <A> assertNone(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertNone(1000, gena, gena, gena, fn)
+fun <A> assertNone(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertNone(1000, gena, gena, gena, gena, fn)
+fun <A> assertNone(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertNone(1000, gena, gena, gena, gena, gena, fn)
+fun <A> assertNone(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertNone(1000, gena, gena, gena, gena, gena, gena, fn)
 fun <A> assertNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
