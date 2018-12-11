@@ -1,11 +1,6 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.endWith
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.gte
-import io.kotlintest.matchers.haveLength
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.startWith
+import io.kotlintest.matchers.*
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll
@@ -140,6 +135,25 @@ class PropertyAssertAllTest : StringSpec({
     })
     attempts shouldBe 200
   }
+
+  "assertAll: one explicit generator with two values and default attempts" {
+    // 30 should be ignored as we have many always cases
+    var attempts = 0
+    Gen.int().assertAll { a, b ->
+      attempts++
+      (a + b) shouldBe (b + a)
+    }
+    attempts shouldBe 1000
+  }
+
+  "assertAll: one explicit generator with two values and 100 attempts" {
+      var attempts = 0
+      Gen.int().assertAll (100) { a, b ->
+        attempts++
+        (a + b) shouldBe (b + a)
+      }
+      attempts shouldBe 100
+    }
 
   "assertAll: two implicit generators 30 attempts" {
     var attempts = 0
