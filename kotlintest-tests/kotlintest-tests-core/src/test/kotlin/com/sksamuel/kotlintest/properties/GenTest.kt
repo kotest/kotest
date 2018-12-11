@@ -192,7 +192,7 @@ class GenTest : WordSpec() {
 
     "ConstGen " should {
       "always generate the same thing" {
-        io.kotlintest.properties.forAll(Gen.constant(5)) {
+        io.kotlintest.properties.forAll(Gen.constant(5)) { it ->
           it == 5
         }
       }
@@ -215,7 +215,7 @@ class GenTest : WordSpec() {
 
     "Gen.filter " should {
       "prevent values from being generated" {
-        io.kotlintest.properties.forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
+        io.kotlintest.properties.forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) { it ->
           it != 2
         }
       }
@@ -223,7 +223,7 @@ class GenTest : WordSpec() {
 
     "Gen.map " should {
       "correctly transform the values" {
-        io.kotlintest.properties.forAll(Gen.constant(5).map { it + 7 }) {
+        io.kotlintest.properties.forAll(Gen.constant(5).map { it + 7 }) { it ->
           it == 12
         }
       }
@@ -251,7 +251,7 @@ class GenTest : WordSpec() {
         val gen = Gen.oneOf(Gen.positiveIntegers(), Gen.negativeIntegers())
         var positiveNumbers = 0
         var negativeNumbers = 0
-        forAll(gen) {
+        forAll(gen) { it ->
           if (it > 0) {
             positiveNumbers++
           } else if (it < 0) {
