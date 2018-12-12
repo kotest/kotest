@@ -4,9 +4,9 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.beInstanceOf
+import io.kotlintest.matchers.collections.haveSize
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.haveSameHashCodeAs
-import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.withClue
 import io.kotlintest.should

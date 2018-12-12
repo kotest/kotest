@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
 import com.sksamuel.kotlintest.runner.junit4.samples.SomeBehaviourSpec
 import io.kotlintest.matchers.beInstanceOf
-import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.collections.haveSize
 import io.kotlintest.runner.junit4.KotlinTestRunner
 import io.kotlintest.should
 import io.kotlintest.shouldBe

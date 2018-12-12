@@ -2,7 +2,7 @@ package com.sksamuel.kt
 
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.singleElement
+import io.kotlintest.matchers.collections.singleElement
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave

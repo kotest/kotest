@@ -1,20 +1,23 @@
 package com.sksamuel.kt.matchers.collections
 
-import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.collections.atLeastSize
 import io.kotlintest.matchers.collections.atMostSize
+import io.kotlintest.matchers.collections.beEmpty
 import io.kotlintest.matchers.collections.beLargerThan
 import io.kotlintest.matchers.collections.beSameSizeAs
 import io.kotlintest.matchers.collections.beSmallerThan
 import io.kotlintest.matchers.collections.contain
+import io.kotlintest.matchers.collections.containAll
 import io.kotlintest.matchers.collections.containDuplicates
 import io.kotlintest.matchers.collections.containExactly
 import io.kotlintest.matchers.collections.containExactlyInAnyOrder
 import io.kotlintest.matchers.collections.containNoNulls
 import io.kotlintest.matchers.collections.containNull
 import io.kotlintest.matchers.collections.containOnlyNulls
+import io.kotlintest.matchers.collections.containsInOrder
 import io.kotlintest.matchers.collections.endWith
 import io.kotlintest.matchers.collections.haveElementAt
+import io.kotlintest.matchers.collections.haveSize
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeLargerThan
 import io.kotlintest.matchers.collections.shouldBeSameSizeAs
@@ -24,7 +27,6 @@ import io.kotlintest.matchers.collections.shouldBeSortedWith
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldContainDuplicates
-import io.kotlintest.matchers.collections.shouldContainElementAt
 import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldContainNoNulls
@@ -34,6 +36,7 @@ import io.kotlintest.matchers.collections.shouldEndWith
 import io.kotlintest.matchers.collections.shouldExist
 import io.kotlintest.matchers.collections.shouldHaveAtLeastSize
 import io.kotlintest.matchers.collections.shouldHaveAtMostSize
+import io.kotlintest.matchers.collections.shouldHaveElementAt
 import io.kotlintest.matchers.collections.shouldHaveSingleElement
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
@@ -41,22 +44,19 @@ import io.kotlintest.matchers.collections.shouldNotBeSorted
 import io.kotlintest.matchers.collections.shouldNotBeSortedWith
 import io.kotlintest.matchers.collections.shouldNotContainAll
 import io.kotlintest.matchers.collections.shouldNotContainDuplicates
-import io.kotlintest.matchers.collections.shouldNotContainElementAt
 import io.kotlintest.matchers.collections.shouldNotContainExactly
 import io.kotlintest.matchers.collections.shouldNotContainExactlyInAnyOrder
 import io.kotlintest.matchers.collections.shouldNotContainNoNulls
 import io.kotlintest.matchers.collections.shouldNotContainNull
 import io.kotlintest.matchers.collections.shouldNotContainOnlyNulls
 import io.kotlintest.matchers.collections.shouldNotEndWith
+import io.kotlintest.matchers.collections.shouldNotHaveElementAt
 import io.kotlintest.matchers.collections.shouldNotHaveSize
 import io.kotlintest.matchers.collections.shouldNotStartWith
 import io.kotlintest.matchers.collections.shouldStartWith
+import io.kotlintest.matchers.collections.singleElement
+import io.kotlintest.matchers.collections.sorted
 import io.kotlintest.matchers.collections.startWith
-import io.kotlintest.matchers.containAll
-import io.kotlintest.matchers.containsInOrder
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.singleElement
-import io.kotlintest.matchers.sorted
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
@@ -124,9 +124,9 @@ class CollectionMatchersTest : WordSpec() {
         listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
         listOf("a", "b", null) should haveElementAt(2, null)
 
-        listOf("a", "b", "c").shouldContainElementAt(1, "b")
-        listOf("a", "b", "c").shouldNotContainElementAt(1, "c")
-        listOf("a", "b", null).shouldContainElementAt(2, null)
+        listOf("a", "b", "c").shouldHaveElementAt(1, "b")
+        listOf("a", "b", "c").shouldNotHaveElementAt(1, "c")
+        listOf("a", "b", null).shouldHaveElementAt(2, null)
       }
       "support type inference for subtypes of collection" {
         val tests = listOf(
@@ -134,7 +134,7 @@ class CollectionMatchersTest : WordSpec() {
                 TestSealed.Test2(2)
         )
         tests should haveElementAt(0, TestSealed.Test1("test1"))
-        tests.shouldContainElementAt(1, TestSealed.Test2(2))
+        tests.shouldHaveElementAt(1, TestSealed.Test2(2))
       }
     }
 
