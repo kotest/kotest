@@ -23,7 +23,7 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
     times++
   }
   val underlyingCause = if (lastError == null) "" else "; underlying cause was ${lastError.localizedMessage}"
-  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times$underlyingCause")
+  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times$underlyingCause", lastError)
 }
 
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T {
