@@ -74,7 +74,7 @@ class EventuallyTest : WordSpec() {
       }
       "display the underlying assertion failure" {
         shouldThrow<AssertionError> {
-          eventually(Duration.ofSeconds(2), AssertionError::class.java) {
+          eventually(Duration.ofMillis(10), AssertionError::class.java) {
             1 shouldBe 2
           }
         }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")
