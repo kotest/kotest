@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.eventually
+import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
@@ -70,6 +71,13 @@ class EventuallyTest : WordSpec() {
           1
         }
         result shouldBe 1
+      }
+      "display the underlying assertion failure" {
+        shouldThrow<AssertionError> {
+          eventually(Duration.ofMillis(10), AssertionError::class.java) {
+            1 shouldBe 2
+          }
+        }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")
       }
     }
   }
