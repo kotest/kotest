@@ -8,6 +8,7 @@ fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exc
 fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, f: () -> T): T {
   val end = System.nanoTime() + duration.toNanos()
   var times = 0
+  var lastError: Throwable? = null
   while (System.nanoTime() < end) {
     try {
       return f()
@@ -16,11 +17,13 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
         // Not the kind of exception we were prepared to tolerate
         throw e
       }
+      lastError = e
       // else ignore and continue
     }
     times++
   }
-  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times")
+  val underlyingCause = if (lastError == null) "" else "; underlying cause was ${lastError.localizedMessage}"
+  throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $times times$underlyingCause")
 }
 
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T {
