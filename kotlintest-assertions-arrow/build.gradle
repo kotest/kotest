@@ -2,4 +2,8 @@ dependencies {
     compile project(":kotlintest-assertions")
     compile 'io.arrow-kt:arrow-typeclasses:0.8.1'
     compile 'io.arrow-kt:arrow-data:0.8.1'
+    testCompile 'io.arrow-kt:arrow-test:0.8.1'
+    kapt    'io.arrow-kt:arrow-annotations-processor:0.8.1'
 }
+
+apply plugin: 'kotlin-kapt'
