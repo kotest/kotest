@@ -1,20 +1,13 @@
 package io.kotlintest.assertions.arrow
 
-import arrow.Kind
-import arrow.core.toT
-import arrow.instances.monoid
+import arrow.data.Validated
+import arrow.instances.order
 import arrow.test.UnitSpec
-import arrow.test.laws.MonadLaws
-import arrow.test.laws.MonoidLaws
-import arrow.typeclasses.Eq
-import arrow.typeclasses.binding
+import arrow.validation.refinedTypes.numeric.validated.negative.negative
 import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.assertions.arrow.gen.gen.monad.monad
-import io.kotlintest.assertions.arrow.gen.gen.monoid.monoid
-import io.kotlintest.properties.ForGen
-import io.kotlintest.properties.Gen
+import io.kotlintest.assertions.arrow.eq.shouldRefineAs
+import io.kotlintest.shouldBe
 import org.junit.runner.RunWith
-
 
 
 @RunWith(KTestJUnitRunner::class)
@@ -28,6 +21,10 @@ class GenInstancesTests : UnitSpec() {
 //      MonoidLaws.laws(Gen.monoid(Int.monoid()), Gen.constant(1), Eq.any()),
 //      MonadLaws.laws(Gen.monad(), Eq.any())
     )
+
+    "shouldRefine" {
+      1 shouldRefineAs Validated.negative(Int.order())
+    }
 
   }
 }

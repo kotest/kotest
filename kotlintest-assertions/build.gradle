@@ -1,8 +1,8 @@
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile 'com.univocity:univocity-parsers:2.7.6'
-    compile 'io.arrow-kt:arrow-core:0.8.1'
-    kapt    'io.arrow-kt:arrow-annotations-processor:0.8.1'
+    compile "io.arrow-kt:arrow-core:$arrow_version"
+    kapt "io.arrow-kt:arrow-annotations-processor:$arrow_version"
     compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
 }
 

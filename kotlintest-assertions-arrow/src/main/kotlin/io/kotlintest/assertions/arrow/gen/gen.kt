@@ -73,4 +73,3 @@ interface GenMonad : Monad<ForGen> {
   override fun <A> just(a: A): Gen<A> =
     Gen.constant(a)
 }
-
