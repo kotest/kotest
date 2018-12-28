@@ -5,8 +5,7 @@ import arrow.instances.order
 import arrow.test.UnitSpec
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
 import io.kotlintest.KTestJUnitRunner
-import io.kotlintest.assertions.arrow.eq.shouldRefineAs
-import io.kotlintest.shouldBe
+import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
 import org.junit.runner.RunWith
 
 
@@ -23,7 +22,7 @@ class GenInstancesTests : UnitSpec() {
     )
 
     "shouldRefine" {
-      1 shouldRefineAs Validated.negative(Int.order())
+      1 shouldBeRefinedBy Validated.negative(Int.order())
     }
 
   }

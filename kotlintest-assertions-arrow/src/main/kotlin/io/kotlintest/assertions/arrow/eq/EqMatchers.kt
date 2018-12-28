@@ -20,11 +20,17 @@ interface EqMatchers<A> {
 
   fun EQA(): Eq<A>
 
-  fun A.shouldBe(b: A): Matcher<A> =
-    EQA().run { matcher(eqv(b), "value ${this@shouldBe} != expected $b") }
+  infix fun A.shouldBeEqvTo(b: A): Unit =
+    this should eqv(b)
 
-  fun A.shouldNotBe(b: A): Matcher<A> =
-    EQA().run { matcher(neqv(b), "value ${this@shouldNotBe} == expected not equal to $b") }
+  infix fun A.shouldNotBeEqvTo(b: A): Unit =
+    this should neqv(b)
+
+  private fun A.eqv(b: A): Matcher<A> =
+    EQA().run { matcher(eqv(b), "value ${this@eqv} != expected $b") }
+
+  private fun A.neqv(b: A): Matcher<A> =
+    EQA().run { matcher(neqv(b), "value ${this@neqv} == expected not equal to $b") }
 
   companion object {
     fun <A> any(): EqMatchers<A> = object : EqMatchers<A> {
@@ -40,27 +46,39 @@ interface OrderMatchers<A>: EqMatchers<A> {
 
   override fun EQA(): Eq<A> = OA()
 
-  infix fun A.beGreatherThan(b: A): Matcher<A> =
+  infix fun A.shouldBeGreatherThan(b: A): Unit =
+    this should beGreatherThan(b)
+
+  infix fun A.shouldBeGreatherThanOrEqual(b: A): Unit =
+    this should beGreatherThanOrEqual(b)
+
+  infix fun A.shouldBeSmallerThan(b: A): Unit =
+    this should beSmallerThan(b)
+
+  infix fun A.shouldBeSmallerThanOrEqual(b: A): Unit =
+    this should beSmallerThanOrEqual(b)
+
+  private fun A.beGreatherThan(b: A): Matcher<A> =
     OA().run { matcher(gt(b), "value ${this@beGreatherThan} not greather than $b") }
 
-  infix fun A.beGreatherThanOrEqual(b: A): Matcher<A> =
+  private fun A.beGreatherThanOrEqual(b: A): Matcher<A> =
     OA().run { matcher(gte(b), "value ${this@beGreatherThanOrEqual} not greather or equal than $b") }
 
-  infix fun A.beSmallerThan(b: A): Matcher<A> =
+  private fun A.beSmallerThan(b: A): Matcher<A> =
     OA().run { matcher(lt(b), "value ${this@beSmallerThan} not smaller than $b") }
 
-  infix fun A.beSmallerThanOrEqual(b: A): Matcher<A> =
+  private fun A.beSmallerThanOrEqual(b: A): Matcher<A> =
     OA().run { matcher(lte(b), "value ${this@beSmallerThanOrEqual} not smaller or equal than $b") }
 
 }
 
-infix fun <F, A> A.shouldRefineAs(refinement: Refinement<F, A>): Unit =
-  this should refineAs(refinement)
+infix fun <F, A> A.shouldBeRefinedBy(refinement: Refinement<F, A>): Unit =
+  this should beRefinedBy(refinement)
 
-fun <F, A> A.refineAs(refinement: Refinement<F, A>): Matcher<A> =
+fun <F, A> A.beRefinedBy(refinement: Refinement<F, A>): Matcher<A> =
   refinement.run {
     matcher(
-      passed = this@refineAs.refinement(),
-      msg = invalidValueMsg(this@refineAs)
+      passed = this@beRefinedBy.refinement(),
+      msg = invalidValueMsg(this@beRefinedBy)
     )
   }
