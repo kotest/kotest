@@ -1,15 +1,27 @@
 package io.kotlintest.assertions.arrow
 
 import arrow.core.Tuple2
+import arrow.data.Nel
+import arrow.data.NonEmptyList
 import arrow.data.Validated
+import arrow.data.ValidatedPartialOf
+import arrow.extension
+import arrow.instances.nonemptylist.semigroup.semigroup
 import arrow.instances.order
+import arrow.instances.validated.applicativeError.applicativeError
 import arrow.product
+import arrow.validation.RefinedPredicateException
+import arrow.validation.Refinement
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
+import io.kotlintest.assertions.arrow.eq.forAll
 import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
 import io.kotlintest.assertions.arrow.gen.gen.applicative.map
+import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
+import java.lang.AssertionError
 
 
 @product
@@ -17,10 +29,25 @@ data class Person(val id: Long, val name: String) {
   companion object
 }
 
+interface NonEmptyPerson<F> : Refinement<F, Person> {
+  override fun invalidValueMsg(a: Person): String =
+    "$a should have a name"
+
+  override fun Person.refinement(): Boolean =
+    name.isNotEmpty()
+}
+
+@extension
+interface ValidatedNonEmptyPerson :
+  NonEmptyPerson<ValidatedPartialOf<Nel<RefinedPredicateException>>> {
+  override fun applicativeError() =
+    Validated.applicativeError(NonEmptyList.semigroup<RefinedPredicateException>())
+}
+
 fun Person.Companion.gen(): Gen<Person> =
   map(
     Gen.long(),
-    Gen.string().filter { it.isNotEmpty() },
+    Gen.string(),
     Tuple2<Long, String>::toPerson
   )
 
@@ -31,7 +58,13 @@ class GenInstancesTests : StringSpec({
   }
 
   "Allow semi automatic derivation of Gen encoders for arbitrary product types" {
-    forAll(Person.gen()) { it.name.isNotEmpty() }
+    shouldThrow<AssertionError> {
+      forAll(Person.gen()) { it.name.isNotEmpty() }
+    }
+  }
+
+  "Allow semi automatic derivation and refined predicates in `forAll` universal quantifiers" {
+    forAll(Person.gen(), Validated.nonEmptyPerson()) { it.name.isNotEmpty() }
   }
 
 })

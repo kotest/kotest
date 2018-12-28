@@ -1,11 +1,12 @@
 package io.kotlintest.assertions.arrow.eq
 
-import arrow.core.Option
 import arrow.typeclasses.Eq
 import arrow.typeclasses.Order
 import arrow.validation.Refinement
 import io.kotlintest.Matcher
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.PropertyContext
+import io.kotlintest.properties.forAll
 import io.kotlintest.should
 import io.kotlintest.Result as KTResult
 
@@ -85,4 +86,9 @@ fun <F, A> A.beRefinedBy(refinement: Refinement<F, A>): Matcher<A> =
     )
   }
 
-
+fun <F, A> forAll(GA: Gen<A>, refinement: Refinement<F, A>, f: (A) -> Boolean): Unit =
+  refinement.applicativeError().run {
+    val genA: Gen<A> = GA.filter { it.beRefinedBy(refinement).test(it).passed }
+    val property: PropertyContext.(A) -> Boolean = { f(it) }
+    forAll(genA, property)
+  }
