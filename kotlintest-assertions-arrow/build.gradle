@@ -2,9 +2,11 @@ dependencies {
     compile project(":kotlintest-assertions")
     compile "io.arrow-kt:arrow-typeclasses:$arrow_version"
     compile "io.arrow-kt:arrow-data:$arrow_version"
+    compile "io.arrow-kt:arrow-generic:$arrow_version"
     compile "io.arrow-kt:arrow-validation:$arrow_version"
-    testCompile "io.arrow-kt:arrow-test:$arrow_version"
     kapt "io.arrow-kt:arrow-annotations-processor:$arrow_version"
+    testCompile project(":kotlintest-runner:kotlintest-runner-junit4")
+    kaptTest "io.arrow-kt:arrow-annotations-processor:$arrow_version"
 }
 
 apply plugin: 'kotlin-kapt'

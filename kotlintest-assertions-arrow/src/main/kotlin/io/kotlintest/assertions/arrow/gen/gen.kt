@@ -2,6 +2,7 @@ package io.kotlintest.assertions.arrow.gen
 
 import arrow.Kind
 import arrow.core.Either
+import arrow.core.fix
 import arrow.extension
 import arrow.typeclasses.*
 import io.kotlintest.properties.ForGen
@@ -41,7 +42,7 @@ interface GenFunctor : Functor<ForGen> {
 @extension
 interface GenApplicative : Applicative<ForGen> {
   override fun <A, B> GenOf<A>.ap(ff: Kind<ForGen, (A) -> B>): Gen<B> =
-    fix().ap(ff)
+    ff.fix().flatMap { this.fix().map(it) }
 
   override fun <A, B> GenOf<A>.map(f: (A) -> B): Gen<B> =
     fix().map(f)

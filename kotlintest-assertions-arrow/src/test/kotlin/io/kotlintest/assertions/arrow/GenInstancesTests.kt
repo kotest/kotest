@@ -1,29 +1,37 @@
 package io.kotlintest.assertions.arrow
 
+import arrow.core.Tuple2
 import arrow.data.Validated
 import arrow.instances.order
-import arrow.test.UnitSpec
+import arrow.product
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
-import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
-import org.junit.runner.RunWith
+import io.kotlintest.assertions.arrow.gen.gen.applicative.map
+import io.kotlintest.properties.Gen
+import io.kotlintest.properties.forAll
+import io.kotlintest.specs.StringSpec
 
 
-@RunWith(KTestJUnitRunner::class)
-class GenInstancesTests : UnitSpec() {
-  init {
-    /**
-     * can't make this work until Arrow is updated to the latest kotlintest as there are bin compat issues with the
-     * transitive deps in arrow-test
-     */
-    testLaws(
-//      MonoidLaws.laws(Gen.monoid(Int.monoid()), Gen.constant(1), Eq.any()),
-//      MonadLaws.laws(Gen.monad(), Eq.any())
-    )
-
-    "shouldRefine" {
-      1 shouldBeRefinedBy Validated.negative(Int.order())
-    }
-
-  }
+@product
+data class Person(val id: Long, val name: String) {
+  companion object
 }
+
+fun Person.Companion.gen(): Gen<Person> =
+  map(
+    Gen.long(),
+    Gen.string().filter { it.isNotEmpty() },
+    Tuple2<Long, String>::toPerson
+  )
+
+class GenInstancesTests : StringSpec({
+
+  "Provide a `shouldBeRefinedBy` matcher application for reified types" {
+    -1 shouldBeRefinedBy Validated.negative(Int.order())
+  }
+
+  "Allow semi automatic derivation of Gen encoders for arbitrary product types" {
+    forAll(Person.gen()) { it.name.isNotEmpty() }
+  }
+
+})

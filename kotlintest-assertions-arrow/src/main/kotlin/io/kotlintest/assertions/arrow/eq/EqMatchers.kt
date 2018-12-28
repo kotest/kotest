@@ -1,9 +1,11 @@
 package io.kotlintest.assertions.arrow.eq
 
+import arrow.core.Option
 import arrow.typeclasses.Eq
 import arrow.typeclasses.Order
 import arrow.validation.Refinement
 import io.kotlintest.Matcher
+import io.kotlintest.properties.Gen
 import io.kotlintest.should
 import io.kotlintest.Result as KTResult
 
@@ -82,3 +84,5 @@ fun <F, A> A.beRefinedBy(refinement: Refinement<F, A>): Matcher<A> =
       msg = invalidValueMsg(this@beRefinedBy)
     )
   }
+
+
