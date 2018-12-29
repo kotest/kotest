@@ -1,7 +1,6 @@
 package io.kotlintest.assertions.arrow
 
 import arrow.Kind
-import arrow.core.Either
 import arrow.core.Tuple2
 import arrow.data.Nel
 import arrow.data.NonEmptyList
@@ -27,6 +26,7 @@ import io.kotlintest.assertions.arrow.eq.io.effectMatchers.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
 import io.kotlintest.assertions.arrow.gen.gen.applicative.map
 import io.kotlintest.assertions.arrow.nel.nel
+import io.kotlintest.assertions.arrow.option.option
 import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
@@ -97,10 +97,13 @@ class GenInstancesTests : StringSpec({
 
   "Gen<Either<A, B>>" {
     forAll(Gen.either(Gen.constant(1), Gen.constant(0))) {
-      when (it) {
-        is Either.Left -> it.a == 1
-        is Either.Right -> it.b == 0
-      }
+      it.fold({ l -> l == 1 }, { r -> r == 0 })
+    }
+  }
+
+  "Gen<Option<A>>" {
+    forAll(Gen.option(Gen.constant(1))) {
+      it.fold({ true }, { n -> n == 1 })
     }
   }
 
