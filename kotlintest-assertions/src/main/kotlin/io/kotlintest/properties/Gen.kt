@@ -17,7 +17,7 @@ import java.math.BigInteger
 import java.util.*
 
 /** A shared random number generator. */
-private val RANDOM = Random()
+val RANDOM = Random()
 
 class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
 

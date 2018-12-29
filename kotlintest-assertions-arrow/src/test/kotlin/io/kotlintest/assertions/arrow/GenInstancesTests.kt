@@ -24,6 +24,7 @@ import io.kotlintest.assertions.arrow.eq.forAll
 import io.kotlintest.assertions.arrow.eq.io.effectMatchers.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
 import io.kotlintest.assertions.arrow.gen.gen.applicative.map
+import io.kotlintest.assertions.arrow.nel.nel
 import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
@@ -89,6 +90,10 @@ class GenInstancesTests : StringSpec({
     DeferredK.applicative().run {
       helloWorldPoly() shouldBeInterpretedTo "Hello World"
     }
+  }
+
+  "Gen<NonEmptyList<A>>" {
+    forAll(Gen.nel(Gen.int(), 0)) { it.contains(0) }
   }
 
 })
