@@ -1,6 +1,7 @@
 package io.kotlintest.assertions.arrow
 
 import arrow.Kind
+import arrow.core.Either
 import arrow.core.Tuple2
 import arrow.data.Nel
 import arrow.data.NonEmptyList
@@ -19,6 +20,7 @@ import arrow.typeclasses.Applicative
 import arrow.validation.RefinedPredicateException
 import arrow.validation.Refinement
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
+import io.kotlintest.assertions.arrow.either.either
 import io.kotlintest.assertions.arrow.eq.deferredk.effectMatchers.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.eq.forAll
 import io.kotlintest.assertions.arrow.eq.io.effectMatchers.shouldBeInterpretedTo
@@ -44,9 +46,6 @@ interface NonEmptyPerson<F> : Refinement<F, Person> {
   override fun Person.refinement(): Boolean =
     name.isNotEmpty()
 }
-
-@Target(AnnotationTarget.TYPE)
-annotation class refined
 
 @extension
 interface ValidatedNonEmptyPerson :
@@ -95,5 +94,15 @@ class GenInstancesTests : StringSpec({
   "Gen<NonEmptyList<A>>" {
     forAll(Gen.nel(Gen.int(), 0)) { it.contains(0) }
   }
+
+  "Gen<Either<A, B>>" {
+    forAll(Gen.either(Gen.constant(1), Gen.constant(0))) {
+      when (it) {
+        is Either.Left -> it.a == 1
+        is Either.Right -> it.b == 0
+      }
+    }
+  }
+
 
 })
