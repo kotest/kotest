@@ -19,6 +19,8 @@ import arrow.typeclasses.Applicative
 import arrow.validation.RefinedPredicateException
 import arrow.validation.Refinement
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
+import io.kotlintest.assertions.arrow.`try`.Ex
+import io.kotlintest.assertions.arrow.`try`.`try`
 import io.kotlintest.assertions.arrow.either.either
 import io.kotlintest.assertions.arrow.eq.deferredk.effectMatchers.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.eq.forAll
@@ -104,6 +106,12 @@ class GenInstancesTests : StringSpec({
   "Gen<Option<A>>" {
     forAll(Gen.option(Gen.constant(1))) {
       it.fold({ true }, { n -> n == 1 })
+    }
+  }
+
+  "Gen<Try<A>>" {
+    forAll(Gen.`try`(Gen.constant(1))) {
+      it.fold({ ex -> ex == Ex }, { n -> n == 1 })
     }
   }
 
