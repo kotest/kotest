@@ -3,6 +3,10 @@ dependencies {
     compile "io.arrow-kt:arrow-typeclasses:$arrow_version"
     compile "io.arrow-kt:arrow-data:$arrow_version"
     compile "io.arrow-kt:arrow-generic:$arrow_version"
+    compile "io.arrow-kt:arrow-effects-instances:$arrow_version"
+    compile "io.arrow-kt:arrow-effects-instances:$arrow_version"
+    compile "io.arrow-kt:arrow-effects-reactor-instances:$arrow_version"
+    compile "io.arrow-kt:arrow-effects-kotlinx-coroutines-instances:$arrow_version"
     compile "io.arrow-kt:arrow-validation:$arrow_version"
     kapt "io.arrow-kt:arrow-annotations-processor:$arrow_version"
     testCompile project(":kotlintest-runner:kotlintest-runner-junit4")

@@ -1,5 +1,11 @@
 package io.kotlintest.assertions.arrow.eq
 
+import arrow.Kind
+import arrow.effects.*
+import arrow.effects.deferredk.applicative.applicative
+import arrow.effects.instances.io.applicative.applicative
+import arrow.extension
+import arrow.typeclasses.Applicative
 import arrow.typeclasses.Eq
 import arrow.typeclasses.Order
 import arrow.validation.Refinement
@@ -73,6 +79,40 @@ interface OrderMatchers<A>: EqMatchers<A> {
   private fun A.beSmallerThanOrEqual(b: A): Matcher<A> =
     OA().run { matcher(lte(b), "value ${this@beSmallerThanOrEqual} not smaller or equal than $b") }
 
+}
+
+interface EffectMatchers<F> {
+
+  fun AF(): Applicative<F>
+
+  fun <A> Kind<F, A>.be(a: A): Kind<F, Matcher<A>> =
+    AF().run {
+      map { x -> matcher<A>(x == a, "$x is not equal to $a") }
+    }
+
+  infix fun <A> Kind<F, A>.shouldBeInterpretedTo(a: A): Unit =
+    AF().run {
+      map(this@shouldBeInterpretedTo, be(a)) { (a, matcher) ->
+        a should matcher
+      }.blockingValue()
+    }
+
+  fun <A> Kind<F, A>.blockingValue(): A
+
+}
+
+@extension
+interface IOEffectMatchers : EffectMatchers<ForIO> {
+  override fun AF(): Applicative<ForIO> = IO.applicative()
+
+  override fun <A> Kind<ForIO, A>.blockingValue(): A = fix().unsafeRunSync()
+}
+
+@extension
+interface DefferedEffectMatchers : EffectMatchers<ForDeferredK> {
+  override fun AF(): Applicative<ForDeferredK> = DeferredK.applicative()
+
+  override fun <A> Kind<ForDeferredK, A>.blockingValue(): A = fix().unsafeRunSync()
 }
 
 infix fun <F, A> A.shouldBeRefinedBy(refinement: Refinement<F, A>): Unit =
