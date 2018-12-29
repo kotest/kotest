@@ -30,6 +30,7 @@ import io.kotlintest.assertions.arrow.gen.gen.applicative.map
 import io.kotlintest.assertions.arrow.nel.nel
 import io.kotlintest.assertions.arrow.option.option
 import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
+import io.kotlintest.assertions.arrow.validation.validated
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldThrow
@@ -112,6 +113,12 @@ class GenInstancesTests : StringSpec({
   "Gen<Try<A>>" {
     forAll(Gen.`try`(Gen.constant(1))) {
       it.fold({ ex -> ex == Ex }, { n -> n == 1 })
+    }
+  }
+
+  "Gen<Validated<A, B>>" {
+    forAll(Gen.validated(Gen.constant(1), Gen.constant(0))) {
+      it.fold({ l -> l == 1 }, { r -> r == 0 })
     }
   }
 
