@@ -40,42 +40,7 @@ import io.kotlintest.properties.forAll
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
-
-/**
- * Marker [Throwable] used to generate random [arrow.core.Failure] cases
- */
-object Ex : RuntimeException("BOOM")
-
-@product
-data class Person(val id: Long, val name: String) {
-  companion object
-}
-
-interface NonEmptyPerson<F> : Refinement<F, Person> {
-  override fun invalidValueMsg(a: Person): String =
-    "$a should have a name"
-
-  override fun Person.refinement(): Boolean =
-    name.isNotEmpty()
-}
-
-@extension
-interface ValidatedNonEmptyPerson :
-  NonEmptyPerson<ValidatedPartialOf<Nel<RefinedPredicateException>>> {
-  override fun applicativeError() =
-    Validated.applicativeError(NonEmptyList.semigroup<RefinedPredicateException>())
-}
-
-fun Person.Companion.gen(): Gen<Person> =
-  map(
-    Gen.long(),
-    Gen.string(),
-    Tuple2<Long, String>::toPerson
-  )
-
-fun <F> Applicative<F>.helloWorldPoly(): Kind<F, String> = just("Hello World")
-
-class GenInstancesTests : StringSpec({
+class ArrowAssertionsTests : StringSpec({
 
   "Provide assertions and matchers for reified types" {
     -1 shouldBeRefinedBy Validated.negative(Int.order())

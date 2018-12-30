@@ -15,5 +15,10 @@ internal fun <A> matcher(
     override fun test(value: A): Result = Result(passed, msg, negatedFailureMsg)
   }
 
+/**
+ * Polymorphic chooser that distributes generation of arbitrary higher kinded values
+ * where [F] provides extensions for the [ApplicativeError] interface.
+ * The chooser dispatches returns an error or value in the context of [F]
+ */
 fun <F, E, A> ApplicativeError<F, E>.choose(fe: () -> E, fa: () -> A): Kind<F, A> =
   if (RANDOM.nextBoolean()) raiseError(fe()) else just(fa())
