@@ -11,24 +11,28 @@ import arrow.effects.IO
 import arrow.effects.deferredk.applicative.applicative
 import arrow.effects.instances.io.applicative.applicative
 import arrow.extension
+import arrow.instances.eq
 import arrow.instances.nonemptylist.semigroup.semigroup
 import arrow.instances.order
+import arrow.instances.semigroup
 import arrow.instances.validated.applicativeError.applicativeError
 import arrow.product
 import arrow.typeclasses.Applicative
 import arrow.validation.RefinedPredicateException
 import arrow.validation.Refinement
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
-import io.kotlintest.assertions.arrow.`try`.Ex
 import io.kotlintest.assertions.arrow.`try`.`try`
 import io.kotlintest.assertions.arrow.either.either
-import io.kotlintest.assertions.arrow.eq.deferredk.effectMatchers.shouldBeInterpretedTo
-import io.kotlintest.assertions.arrow.eq.forAll
-import io.kotlintest.assertions.arrow.eq.io.effectMatchers.shouldBeInterpretedTo
-import io.kotlintest.assertions.arrow.eq.shouldBeRefinedBy
+import io.kotlintest.assertions.arrow.eq.EqAssertions
 import io.kotlintest.assertions.arrow.gen.gen.applicative.map
+import io.kotlintest.assertions.arrow.gen.gen.monad.binding
 import io.kotlintest.assertions.arrow.nel.nel
 import io.kotlintest.assertions.arrow.option.option
+import io.kotlintest.assertions.arrow.order.OrderAssertions
+import io.kotlintest.assertions.arrow.refinements.forAll
+import io.kotlintest.assertions.arrow.refinements.shouldBeRefinedBy
+import io.kotlintest.assertions.arrow.tagless.deferredk.taglessAssertions.shouldBeInterpretedTo
+import io.kotlintest.assertions.arrow.tagless.io.taglessAssertions.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
 import io.kotlintest.assertions.arrow.validation.validated
 import io.kotlintest.properties.Gen
@@ -36,6 +40,11 @@ import io.kotlintest.properties.forAll
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
+
+/**
+ * Marker [Throwable] used to generate random [arrow.core.Failure] cases
+ */
+object Ex : RuntimeException("BOOM")
 
 @product
 data class Person(val id: Long, val name: String) {
@@ -68,7 +77,7 @@ fun <F> Applicative<F>.helloWorldPoly(): Kind<F, String> = just("Hello World")
 
 class GenInstancesTests : StringSpec({
 
-  "Provide a `shouldBeRefinedBy` matcher application for reified types" {
+  "Provide assertions and matchers for reified types" {
     -1 shouldBeRefinedBy Validated.negative(Int.order())
   }
 
@@ -78,19 +87,37 @@ class GenInstancesTests : StringSpec({
     }
   }
 
-  "Allow semi automatic derivation and refined predicates in `forAll` universal quantifiers" {
+  "Provide semi automatic derivation and refined predicates in `forAll` universal quantifiers" {
     forAll(Person.gen(), Validated.nonEmptyPerson()) { it.name.isNotEmpty() }
   }
 
-  "Allow matchers for ad-hoc polymorphic programs and higher kinded values [IO]" {
+  "Provide assertions for ad-hoc polymorphic programs and higher kinded values [IO]" {
     IO.applicative().run {
       helloWorldPoly() shouldBeInterpretedTo "Hello World"
     }
   }
 
-  "Allow matchers for ad-hoc polymorphic programs and higher kinded values [Deferred]" {
+  "Provide assertions for ad-hoc polymorphic programs and higher kinded values [Deferred]" {
     DeferredK.applicative().run {
       helloWorldPoly() shouldBeInterpretedTo "Hello World"
+    }
+  }
+
+  "Provide assertions for ad-hoc `Eq`" {
+    EqAssertions(Int.eq()).run {
+      0 shouldBeEqvTo 0
+      0 shouldNotBeEqvTo -1
+    }
+  }
+
+  "Provide assertions for ad-hoc `Order`" {
+    OrderAssertions(Int.order()).run {
+      0 shouldBeEqvTo 0
+      0 shouldNotBeEqvTo -1
+      0 shouldBeGreatherThan -1
+      0 shouldBeGreatherThanOrEqual 0
+      0 shouldBeSmallerThan 1
+      0 shouldBeSmallerThanOrEqual 0
     }
   }
 
@@ -111,16 +138,25 @@ class GenInstancesTests : StringSpec({
   }
 
   "Gen<Try<A>>" {
-    forAll(Gen.`try`(Gen.constant(1))) {
+    forAll(Gen.`try`(Gen.constant(Ex), Gen.constant(1))) {
       it.fold({ ex -> ex == Ex }, { n -> n == 1 })
     }
   }
 
   "Gen<Validated<A, B>>" {
-    forAll(Gen.validated(Gen.constant(1), Gen.constant(0))) {
+    forAll(Gen.validated(Gen.constant(1), Gen.constant(0), Int.semigroup())) {
       it.fold({ l -> l == 1 }, { r -> r == 0 })
     }
   }
 
+  "Gen binding" {
+    val prefix = "_"
+    val personGen: Gen<Person> = binding {
+      val id = Gen.long().bind()
+      val name = Gen.string().bind()
+      Person(id, prefix + name)
+    }
+    forAll(personGen) { it.name.startsWith(prefix) }
+  }
 
 })

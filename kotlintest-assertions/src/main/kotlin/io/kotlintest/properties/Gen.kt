@@ -92,11 +92,11 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
   /**
    * Create a new [Gen] by mapping the output of this gen.
    */
-  fun <U> flatMap(f: (T) -> Gen<U>): Gen<U> {
+  fun <U> flatMap(f: (T) -> GenOf<U>): Gen<U> {
     val outer = this
     return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
-      override fun random(): Sequence<U> = outer.random().flatMap { f(it).random() }
+      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).fix().constants() }
+      override fun random(): Sequence<U> = outer.random().flatMap { f(it).fix().random() }
     }
   }
 

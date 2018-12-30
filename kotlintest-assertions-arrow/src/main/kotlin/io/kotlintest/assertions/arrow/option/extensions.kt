@@ -1,19 +1,37 @@
 package io.kotlintest.assertions.arrow.option
 
-import arrow.core.*
+import arrow.core.Option
+import arrow.core.Some
+import arrow.core.fix
+import arrow.data.NonEmptyList
+import arrow.instances.option.applicativeError.applicativeError
+import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
-import io.kotlintest.properties.RANDOM
 
-fun <A> choose(fa:() -> A): Option<A> =
-  if (RANDOM.nextBoolean()) None else Some(fa())
-
+/**
+ * [Gen] extension instance for [Option].
+ *
+ * Generates random [Option] of [A] as provided by the [GA] generators.
+ *
+ * ```kotlin
+ * import io.kotlintest.assertions.arrow.option.option
+ * import io.kotlintest.properties.forAll
+ * import io.kotlintest.properties.Gen
+ *
+ * forAll(Gen.option(Gen.constant(1))) {
+ *   it.fold({ true }, { n -> n == 1 })
+ * }
+ * ```
+ */
 fun <A> Gen.Companion.option(GA: Gen<A>): Gen<Option<A>> =
   object : Gen<Option<A>> {
     override fun constants(): Iterable<Option<A>> =
       GA.constants().map(::Some)
 
     override fun random(): Sequence<Option<A>> =
-      generateSequence {
-        choose { GA.random().iterator().next() }
+      Option.applicativeError().run {
+        generateSequence {
+          choose({ Unit }) { GA.random().iterator().next() }.fix()
+        }
       }
   }
