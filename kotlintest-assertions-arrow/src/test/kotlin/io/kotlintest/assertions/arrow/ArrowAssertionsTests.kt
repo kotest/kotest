@@ -29,7 +29,7 @@ import io.kotlintest.specs.StringSpec
 
 class ArrowAssertionsTests : StringSpec({
 
-  "Provide assertions and matchers for reified types" {
+  "Provide assertions and matchers for refined types" {
     -1 shouldBeRefinedBy Validated.negative(Int.order())
   }
 
@@ -55,14 +55,14 @@ class ArrowAssertionsTests : StringSpec({
     }
   }
 
-  "Provide assertions for ad-hoc `Eq`" {
+  "Provide assertions for values bound by the `Eq` type class" {
     EqAssertions(Int.eq()) {
       0 shouldBeEqvTo 0
       0 shouldNotBeEqvTo -1
     }
   }
 
-  "Provide assertions for ad-hoc `Order`" {
+  "Provide assertions for values bound by the `Order` type class" {
     OrderAssertions(Int.order()) {
       0 shouldBeEqvTo 0
       0 shouldNotBeEqvTo -1
