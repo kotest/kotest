@@ -6,6 +6,16 @@ import io.kotlintest.assertions.arrow.matcher
 import io.kotlintest.should
 import io.kotlintest.Result as KTResult
 
+/**
+ * Provides assertions for [Eq]
+ *
+ * ```kotlin
+ * EqAssertions(Int.eq()).run {
+ *   0 shouldBeEqvTo 0
+ *   0 shouldNotBeEqvTo -1
+ * }
+ * ```
+ */
 interface EqAssertions<A> {
 
   fun EQA(): Eq<A>
@@ -23,9 +33,9 @@ interface EqAssertions<A> {
     EQA().run { matcher(neqv(b), "value ${this@neqv} == expected not equal to $b") }
 
   companion object {
-    operator fun <A> invoke(EQA: Eq<A>): EqAssertions<A> = object : EqAssertions<A> {
+    operator fun <A> invoke(EQA: Eq<A>, f: (EqAssertions<A>).() -> Unit): Unit = f(object : EqAssertions<A> {
       override fun EQA(): Eq<A> = EQA
-    }
+    })
   }
 
 }

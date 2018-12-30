@@ -1,30 +1,17 @@
 package io.kotlintest.assertions.arrow
 
-import arrow.Kind
-import arrow.core.Tuple2
-import arrow.data.Nel
-import arrow.data.NonEmptyList
 import arrow.data.Validated
-import arrow.data.ValidatedPartialOf
 import arrow.effects.DeferredK
 import arrow.effects.IO
 import arrow.effects.deferredk.applicative.applicative
 import arrow.effects.instances.io.applicative.applicative
-import arrow.extension
 import arrow.instances.eq
-import arrow.instances.nonemptylist.semigroup.semigroup
 import arrow.instances.order
 import arrow.instances.semigroup
-import arrow.instances.validated.applicativeError.applicativeError
-import arrow.product
-import arrow.typeclasses.Applicative
-import arrow.validation.RefinedPredicateException
-import arrow.validation.Refinement
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
 import io.kotlintest.assertions.arrow.`try`.`try`
 import io.kotlintest.assertions.arrow.either.either
 import io.kotlintest.assertions.arrow.eq.EqAssertions
-import io.kotlintest.assertions.arrow.gen.gen.applicative.map
 import io.kotlintest.assertions.arrow.gen.gen.monad.binding
 import io.kotlintest.assertions.arrow.nel.nel
 import io.kotlintest.assertions.arrow.option.option
@@ -69,14 +56,14 @@ class ArrowAssertionsTests : StringSpec({
   }
 
   "Provide assertions for ad-hoc `Eq`" {
-    EqAssertions(Int.eq()).run {
+    EqAssertions(Int.eq()) {
       0 shouldBeEqvTo 0
       0 shouldNotBeEqvTo -1
     }
   }
 
   "Provide assertions for ad-hoc `Order`" {
-    OrderAssertions(Int.order()).run {
+    OrderAssertions(Int.order()) {
       0 shouldBeEqvTo 0
       0 shouldNotBeEqvTo -1
       0 shouldBeGreatherThan -1
