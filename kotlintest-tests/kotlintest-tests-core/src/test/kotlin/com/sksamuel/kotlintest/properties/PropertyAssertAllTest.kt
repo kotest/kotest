@@ -18,10 +18,10 @@ class PropertyAssertAllTest : StringSpec({
 
   "startsWith" {
     var actualAttempts = 0
-    assertAll(30, Gen.string(), Gen.string(), { a, b ->
+    assertAll(30, Gen.string(), Gen.string()) { a, b ->
       actualAttempts++
       (a + b) should startWith(a)
-    })
+    }
     actualAttempts shouldBe 30
   }
 
@@ -53,9 +53,9 @@ class PropertyAssertAllTest : StringSpec({
   }
 
   "explicitGenerators" {
-    assertAll(Gen.string(), Gen.string(), Gen.string(), { a, b, c ->
+    assertAll(Gen.string(), Gen.string(), Gen.string()) { a, b, c ->
       (a + b + c).contains(b)
-    })
+    }
   }
 
   "inferredGenerators" {
@@ -97,7 +97,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll one explicit generator: test fails after second attempt" {
     var attempts = 0
     shouldThrow<AssertionError> {
-      assertAll(Gen.double()) { _ ->
+      assertAll(Gen.double()) {
         attempts++
         attempts shouldBe lt(2)
       }
@@ -134,19 +134,19 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll: one generator explicit 200 attempts" {
     var attempts = 0
-    assertAll(200, { a: Int ->
+    assertAll(200) { a: Int ->
       attempts++
       2 * a % 2 shouldBe 0
-    })
+    }
     attempts shouldBe 200
   }
 
   "assertAll: two implicit generators 30 attempts" {
     var attempts = 0
-    assertAll(25, { a: String, b: String ->
+    assertAll(25) { a: String, b: String ->
       attempts++
       (a + b) should startWith(a)
-    })
+    }
     attempts shouldBe 25
   }
 
@@ -206,10 +206,10 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll : Three implicit generators 1000 attempts" {
     var attempts = 0
-    assertAll(1000, { a: Int, b: Int, c: Int ->
+    assertAll(1000) { a: Int, b: Int, c: Int ->
       attempts++
       a + b + c shouldBe (a + b) + c
-    })
+    }
     attempts shouldBe 1000
   }
 
@@ -318,9 +318,9 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll five implicit generators with 7000 attempts" {
     var attempts = 0
-    assertAll(7000, { _: Int, _: Int, _: Int, _: Int, _: Int ->
+    assertAll(7000) { _: Int, _: Int, _: Int, _: Int, _: Int ->
       attempts++
-    })
+    }
     attempts shouldBe 7000
   }
 

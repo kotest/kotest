@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class PropertyContext {
 
+  private var values = mutableListOf<Any?>()
   private var attempts = 0
   private val counts = ConcurrentHashMap<String, Int>()
 
@@ -17,11 +18,15 @@ class PropertyContext {
 
   fun attempts(): Int = attempts
 
+  fun addValue(any: Any?) = values.add(any)
+
+  fun values() = values.toList()
+
   fun classificationCounts(): Map<String, Int> = counts.toMap()
 
   fun classify(condition: Boolean, trueLabel: String) {
     if (condition) {
-      val current = counts.getOrElse(trueLabel, { 0 })
+      val current = counts.getOrElse(trueLabel) { 0 }
       counts[trueLabel] = current + 1
     }
   }
