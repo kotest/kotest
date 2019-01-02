@@ -14,13 +14,13 @@ class SpecRunnerTest : WordSpec({
   "SpecRunner" should {
     "support sequential order to order tests" {
       val listener = mock<TestEngineListener> {}
-      val runner = SingleInstanceSpecRunner(listener, Executors.newSingleThreadExecutor())
+      val runner = SingleInstanceSpecRunner(listener, Executors.newSingleThreadExecutor(), Executors.newSingleThreadScheduledExecutor())
       val tests = runner.topLevelTests(SequentialSpec())
       tests.map { it.name } shouldBe listOf("a", "b", "c", "d", "e")
     }
     "support randomized order to order tests" {
       val listener = mock<TestEngineListener> {}
-      val runner = SingleInstanceSpecRunner(listener, Executors.newSingleThreadExecutor())
+      val runner = SingleInstanceSpecRunner(listener, Executors.newSingleThreadExecutor(), Executors.newSingleThreadScheduledExecutor())
       val tests1 = runner.topLevelTests(RandomSpec())
       val tests2 = runner.topLevelTests(RandomSpec())
       tests1.map { it.name } shouldNotBe tests2.map { it.name }

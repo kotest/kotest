@@ -13,8 +13,11 @@ import io.kotlintest.internal.isActive
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -36,16 +39,16 @@ import java.util.concurrent.atomic.AtomicReference
  * The executor can be shared between multiple tests as it is thread safe.
  */
 class TestCaseExecutor(private val listener: TestEngineListener,
-                       listenerExecutor: Executor) {
+                       private val listenerExecutor: ExecutorService,
+                       private val scheduler: ScheduledExecutorService) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val listenerDispatcher = listenerExecutor.asCoroutineDispatcher()
 
   suspend fun execute(testCase: TestCase, context: TestContext) {
 
     try {
 
-      context.launch(listenerDispatcher) {
+      context.launch(listenerExecutor.asCoroutineDispatcher()) {
         before(testCase)
       }.join()
 
@@ -54,9 +57,19 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           Project.testCaseExtensions()
 
       runExtensions(testCase, context, extensions, testCase.config) { result ->
-        context.launch(listenerDispatcher) {
-          after(testCase, result)
-        }.join()
+
+        // it's possible the listenerExecutor has been shut down here.
+        // If it has, we can only run them on another thread, better than a slap in the face
+        // but will run foul of https://github.com/kotlintest/kotlintest/issues/447
+        if (listenerExecutor.isShutdown) {
+          context.launch {
+            after(testCase, result)
+          }.join()
+        } else {
+          context.launch(listenerExecutor.asCoroutineDispatcher()) {
+            after(testCase, result)
+          }.join()
+        }
       }
 
     } catch (t: Throwable) {
@@ -84,18 +97,20 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
 
-    // if we have more than one requested thread, we run the tests inside an executor,
-    // otherwise we run on the main thread to avoid issues where before/after listeners
-    // require the same thread as the test case. https://github.com/kotlintest/kotlintest/issues/447
-
     return if (isActive(testCase)) {
 
       listener.beforeTestCaseExecution(testCase)
 
-      val dispatcher = when (testCase.config.threads) {
-        1 -> listenerDispatcher
-        else -> Executors.newFixedThreadPool(testCase.config.threads).asCoroutineDispatcher()
+      // if we have more than one requested thread, we run the tests inside an executor,
+      // otherwise we run on the same thread as the listeners to avoid issues where before/after listeners
+      // require the same thread as the test case.
+      // @see https://github.com/kotlintest/kotlintest/issues/447
+      val executor = when (testCase.config.threads) {
+        1 -> listenerExecutor
+        else -> Executors.newFixedThreadPool(testCase.config.threads)!!
       }
+
+      val dispatcher = executor.asCoroutineDispatcher()
 
       // captures an error from the test case closures
       val error = AtomicReference<Throwable?>(null)
@@ -116,9 +131,18 @@ class TestCaseExecutor(private val listener: TestEngineListener,
         }
       }
 
+      // we need to interrupt the threads in the executor in order to effect the timeout
+      scheduler.schedule({
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
+        // this will ruin the listener executor so after() won't run if the test times out but I don't
+        // know how else to interupt the coroutine context effectively. job.cancel() won't cut the mustard here.
+        executor.shutdownNow()
+      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+
       job.invokeOnCompletion { e ->
         error.compareAndSet(null, e)
       }
+
       job.join()
       val result = buildTestResult(error.get(), context.metaData())
 

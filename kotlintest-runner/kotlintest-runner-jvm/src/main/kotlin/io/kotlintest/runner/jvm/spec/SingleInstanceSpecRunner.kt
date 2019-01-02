@@ -10,17 +10,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
-class SingleInstanceSpecRunner(listener: TestEngineListener, mainExecutor: Executor) : SpecRunner(listener) {
+class SingleInstanceSpecRunner(listener: TestEngineListener,
+                               listenerExecutor: ExecutorService,
+                               scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = TestCaseExecutor(listener, mainExecutor)
+  private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
   override fun execute(spec: Spec) {
 

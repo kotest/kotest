@@ -14,7 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.*
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * Implementation of [SpecRunner] that executes each leaf test (that is a [TestCase] which
@@ -47,11 +48,13 @@ import java.util.concurrent.Executor
  *
  * A failure in a branch test will prevent nested tests from executing.
  */
-class InstancePerLeafSpecRunner(listener: TestEngineListener, listenerExecutor: Executor) : SpecRunner(listener) {
+class InstancePerLeafSpecRunner(listener: TestEngineListener,
+                                listenerExecutor: ExecutorService,
+                                scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val queue = ArrayDeque<TestCase>()
-  private val executor = TestCaseExecutor(listener, listenerExecutor)
+  private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
   override fun execute(spec: Spec) {
     topLevelTests(spec).forEach { enqueue(it) }

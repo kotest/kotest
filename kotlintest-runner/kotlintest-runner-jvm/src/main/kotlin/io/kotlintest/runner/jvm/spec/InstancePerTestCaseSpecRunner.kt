@@ -13,7 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.*
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -46,7 +47,9 @@ import java.util.concurrent.Executor
  * spec3.outerTest
  * spec3.innerTestB
  */
-class InstancePerTestCaseSpecRunner(listener: TestEngineListener, listenerExecutor: Executor) : SpecRunner(listener) {
+class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
+                                    listenerExecutor: ExecutorService,
+                                    scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -54,7 +57,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener, listenerExecut
   private val discovered = HashSet<Description>()
   private val queue = ArrayDeque<TestCase>()
 
-  private val executor = TestCaseExecutor(listener, listenerExecutor)
+  private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
   /**
    * When executing a [TestCase], any child test cases that are found, are placed onto
