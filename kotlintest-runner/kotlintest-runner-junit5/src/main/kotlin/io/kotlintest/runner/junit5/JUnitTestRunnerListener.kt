@@ -153,7 +153,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
             logger.error("Could not find result for $it")
             throw RuntimeException("Every description must have a result but could not find one for $it")
           } else {
-            logger.debug("Notifying junit of test case completion ${descriptor.uniqueId}=$result")
+            logger.trace("Notifying junit of test case completion ${descriptor.uniqueId}=$result")
             try {
               when (result.status) {
                 TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
