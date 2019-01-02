@@ -69,7 +69,7 @@ class StringSpecCoroutineInstancePerLeafIsolationModeTest : StringSpec() {
     }
 
     // we need enough invocations to ensure all the threads get used up
-    "mutliple threads should use a thread pool for the coroutines".config(invocations = 1000, threads = 6) {
+    "mutliple threads should use a thread pool for the coroutines".config(invocations = 100000, threads = 6) {
       logThreadName()
     }
 

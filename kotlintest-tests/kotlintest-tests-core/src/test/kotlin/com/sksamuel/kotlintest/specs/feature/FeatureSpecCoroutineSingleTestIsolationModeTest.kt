@@ -62,7 +62,7 @@ class FeatureSpecCoroutineSingleTestIsolationModeTest : FeatureSpec() {
         count.get() shouldBe 200
       }
       // we need enough invocation to ensure all the threads get used up
-      scenario("mutliple threads should use a thread pool for the coroutines").config(invocations = 1000, threads = 6) {
+      scenario("mutliple threads should use a thread pool for the coroutines").config(invocations = 100000, threads = 6) {
         logThreadName()
       }
       scenario("previous test result 3") {
