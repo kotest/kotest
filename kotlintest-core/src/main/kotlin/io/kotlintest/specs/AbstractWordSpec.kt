@@ -61,8 +61,6 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
   @KotlinTestDsl
   inner class FinalTestContext(val context: TestContext, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
-    override val coroutineContext: CoroutineContext
-      get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     override fun description(): Description = context.description()
     override suspend fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)

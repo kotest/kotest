@@ -13,7 +13,7 @@ data class TestCaseConfig(
     val tags: Set<Tag> = emptySet(),
     val extensions: List<TestCaseExtension> = emptyList()) {
   init {
-    require(threads > 0) { "Parallelism must be > 0" }
+    require(threads > 0) { "Threads must be > 0" }
     require(invocations > 0) { "Invocations must be > 0" }
   }
 }

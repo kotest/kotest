@@ -115,15 +115,16 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       // captures an error from the test case closures
       val error = AtomicReference<Throwable?>(null)
 
-      val job = context.launch {
+      val supervisorJob = context.launch {
 
-        val jobs = (0 until testCase.config.invocations).map {
+        val testCaseJobs = (0 until testCase.config.invocations).map {
           launch(dispatcher) {
             listener.invokingTestCase(testCase, 1)
             testCase.test(context)
           }
         }
-        jobs.forEach {
+
+        testCaseJobs.forEach {
           it.invokeOnCompletion { e ->
             error.compareAndSet(null, e)
           }
@@ -139,11 +140,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
         executor.shutdownNow()
       }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
 
-      job.invokeOnCompletion { e ->
+      supervisorJob.invokeOnCompletion { e ->
         error.compareAndSet(null, e)
       }
 
-      job.join()
+      supervisorJob.join()
       val result = buildTestResult(error.get(), context.metaData())
 
       listener.afterTestCaseExecution(testCase, result)
