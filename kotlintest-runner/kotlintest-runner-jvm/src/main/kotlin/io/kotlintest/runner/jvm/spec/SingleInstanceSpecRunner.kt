@@ -33,7 +33,6 @@ class SingleInstanceSpecRunner(listener: TestEngineListener, mainExecutor: Execu
       override fun description(): Description = description
 
       override suspend fun registerTestCase(testCase: TestCase) {
-        logger.debug("Single instance registering test $testCase")
         // if we have a test with this name already, but the line number is different
         // then it's a duplicate test name, so boom
         if (seen.containsKey(testCase.name) && seen[testCase.name] != testCase.line)

@@ -42,7 +42,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private val listenerDispatcher = listenerExecutor.asCoroutineDispatcher()
 
   suspend fun execute(testCase: TestCase, context: TestContext) {
-    logger.debug("Executing $testCase")
 
     try {
 
@@ -54,7 +53,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      logger.debug("Running extensions $extensions")
       runExtensions(testCase, context, extensions, testCase.config) { result ->
         context.launch(listenerDispatcher) {
           after(testCase, result)
@@ -91,7 +89,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     // require the same thread as the test case. https://github.com/kotlintest/kotlintest/issues/447
 
     return if (isActive(testCase)) {
-      logger.debug("Test is active $testCase")
 
       listener.beforeTestCaseExecution(testCase)
 
@@ -105,7 +102,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
       val job = context.launch {
 
-        logger.debug("runBlocking on testCase ${testCase.description}")
         val jobs = (0 until testCase.config.invocations).map {
           launch(dispatcher) {
             listener.invokingTestCase(testCase, 1)
@@ -126,7 +122,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       job.join()
       val result = buildTestResult(error.get(), context.metaData())
 
-      logger.debug("runBlocking completed $result")
       listener.afterTestCaseExecution(testCase, result)
       return result
 
