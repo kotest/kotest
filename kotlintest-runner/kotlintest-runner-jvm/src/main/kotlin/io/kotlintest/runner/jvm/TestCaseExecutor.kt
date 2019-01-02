@@ -159,7 +159,6 @@ class TestCaseExecutor(private val listener: TestEngineListener,
    * Handles all "before" listeners.
    */
   private fun before(testCase: TestCase) {
-    logger.debug("Before $testCase")
     listener.enterTestCase(testCase)
     val userListeners = listOf(testCase.spec) + testCase.spec.listeners() + Project.listeners()
     userListeners.forEach { it.beforeTest(testCase.description) }

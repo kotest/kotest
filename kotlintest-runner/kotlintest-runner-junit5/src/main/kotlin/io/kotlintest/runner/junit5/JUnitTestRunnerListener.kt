@@ -102,7 +102,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
-    logger.debug("prepareSpec [$description]")
+    logger.trace("prepareSpec [$description]")
     try {
       val descriptor = createSpecDescriptor(description, klass)
       listener.executionStarted(descriptor)
@@ -122,7 +122,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     if (!started.contains(testCase.description)) {
       started.add(testCase.description)
       val descriptor = createTestCaseDescriptor(testCase.description, testCase.type)
-      logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
+      logger.trace("Notifying junit of start event ${descriptor.uniqueId}")
       listener.executionStarted(descriptor)
     }
   }
@@ -135,7 +135,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
-    logger.debug("completeSpec [$description]")
+    logger.trace("completeSpec [$description]")
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
@@ -173,7 +173,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
       throw RuntimeException("Spec descriptor cannot be null")
     } else {
       val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-      logger.debug("Notifying junit that spec finished ${descriptor.uniqueId} $result")
+      logger.trace("Notifying junit that spec finished ${descriptor.uniqueId} $result")
       listener.executionFinished(descriptor, result)
     }
   }
@@ -199,7 +199,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   private fun createTestCaseDescriptor(description: Description, type: TestType): TestDescriptor {
-    logger.debug("Creating test case descriptor $description/$type")
+    logger.trace("Creating test case descriptor $description/$type")
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
     val parent = descriptors[parentDescription]!!
