@@ -32,27 +32,27 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     synchronized(listener) {
-      listener.prepareTestCase(testCase)
+      listener.enterTestCase(testCase)
     }
   }
 
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
     synchronized(listener) {
-      listener.completeTestCase(testCase, result)
+      listener.exitTestCase(testCase, result)
     }
   }
 
-  override fun testRun(set: TestSet, k: Int) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     synchronized(listener) {
-      listener.testRun(set, k)
+      listener.invokingTestCase(testCase, k)
     }
   }
 
-  override fun completeTestSet(set: TestSet, result: TestResult) {
+  override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
     synchronized(listener) {
-      listener.completeTestSet(set, result)
+      listener.afterTestCaseExecution(testCase, result)
     }
   }
 

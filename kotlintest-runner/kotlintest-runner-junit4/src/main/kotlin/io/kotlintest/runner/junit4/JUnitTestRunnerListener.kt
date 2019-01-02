@@ -10,11 +10,11 @@ import org.junit.runner.Description as JDescription
 
 class JUnitTestRunnerListener(private val notifier: RunNotifier) : TestEngineListener {
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     notifier.fireTestStarted(describeTestCase(testCase))
   }
 
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
     val desc = describeTestCase(testCase)
     when (result.status) {
       TestStatus.Success -> notifier.fireTestFinished(desc)

@@ -1,12 +1,12 @@
 package com.sksamuel.kotlintest.specs.stringspec
 
 import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.IsolationMode
 import io.kotlintest.specs.StringSpec
 
 class StringSpecSingleInstanceDuplicateNameTest : StringSpec() {
 
-  override fun testIsolationMode() = TestIsolationMode.SingleInstance
+  override fun isolationMode() = IsolationMode.SingleInstance
 
   override val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig(invocations = 2)
 

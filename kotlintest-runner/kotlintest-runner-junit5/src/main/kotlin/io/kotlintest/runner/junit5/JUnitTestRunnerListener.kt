@@ -7,7 +7,6 @@ import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestEngineListener
-import io.kotlintest.runner.jvm.TestSet
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -112,23 +111,23 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     discovered.add(Pair(testCase.description, testCase.type))
   }
 
-  override fun testRun(set: TestSet, k: Int) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
-    if (!started.contains(set.testCase.description)) {
-      started.add(set.testCase.description)
-      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
+    if (!started.contains(testCase.description)) {
+      started.add(testCase.description)
+      val descriptor = createTestCaseDescriptor(testCase.description, testCase.type)
       logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
       listener.executionStarted(descriptor)
     }
   }
 
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
     logger.debug("completeTestCase ${testCase.description} with result $result")
     // we don't immediately finish a test, we just store the result until we have completed the spec
     // this allows us to handle multiple invocations of the same test case, deferring the notification
@@ -220,8 +219,6 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
 
       override fun mayRegisterTests(): Boolean = type == TestType.Container
     }
-
-
 
     descriptors[description] = descriptor
 

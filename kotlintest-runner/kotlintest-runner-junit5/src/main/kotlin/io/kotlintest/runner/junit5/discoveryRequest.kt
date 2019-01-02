@@ -2,10 +2,12 @@ package io.kotlintest.runner.junit5
 
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import org.junit.platform.engine.EngineDiscoveryRequest
+import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.MethodSelector
+import org.junit.platform.engine.discovery.PackageNameFilter
 import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UriSelector
 
@@ -35,5 +37,8 @@ internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest
       request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
       request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-  return DiscoveryRequest(uris, classnames, packages, emptyList())
+  val classNameFilters = request.getFiltersByType(ClassNameFilter::class.java).map { it.toPredicate() }
+  val packageFilters = request.getFiltersByType(PackageNameFilter::class.java).map { it.toPredicate() }
+
+  return DiscoveryRequest(uris, classnames, packages, classNameFilters, packageFilters)
 }

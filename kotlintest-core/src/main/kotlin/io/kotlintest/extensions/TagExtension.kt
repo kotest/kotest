@@ -19,7 +19,7 @@ import io.kotlintest.Tags
  * 'kotlintest.tags.include' and 'kotlintest.tags.exclude'
  */
 interface TagExtension : ProjectLevelExtension {
-  fun tags(): Tags = Tags.Empty
+  fun tags(): Tags
 }
 
 object SystemPropertyTagExtension : TagExtension {

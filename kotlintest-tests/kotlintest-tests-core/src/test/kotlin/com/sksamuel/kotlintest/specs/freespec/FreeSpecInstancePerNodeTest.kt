@@ -1,13 +1,13 @@
 package com.sksamuel.kotlintest.specs.freespec
 
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class FreeSpecInstancePerNodeTest : FreeSpec() {
 
-  override fun testIsolationMode(): TestIsolationMode = TestIsolationMode.InstancePerTest
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

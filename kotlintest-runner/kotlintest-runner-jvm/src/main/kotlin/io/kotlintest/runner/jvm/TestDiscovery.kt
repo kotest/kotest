@@ -7,6 +7,7 @@ import io.kotlintest.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Predicate
 import kotlin.reflect.KClass
 
 /**
@@ -20,7 +21,8 @@ import kotlin.reflect.KClass
 data class DiscoveryRequest(val uris: List<URI>,
                             val classNames: List<String>,
                             val packages: List<String>,
-                            val classNameFilters: List<((String) -> Boolean)>)
+                            val classNameFilters: List<Predicate<String>>,
+                            val packageFilters: List<Predicate<String>>)
 
 data class DiscoveryResult(val classes: List<KClass<out Spec>>)
 
@@ -35,16 +37,21 @@ object TestDiscovery {
   private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
   // returns all the locatable specs for the given uris
-  private fun scan(uris: List<URI>, packages: List<String>): List<KClass<out Spec>> {
+  private fun scan(uris: List<URI>, packages: List<String>, classNameFilters: List<Predicate<String>>, packageFilters: List<Predicate<String>>): List<KClass<out Spec>> {
+
     val scanResult = ClassGraph()
-        .verbose()                   // Log to stderr
         .enableClassInfo()
+        .enableExternalClasses()
+        .ignoreClassVisibility()
         .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
-        .whitelistPaths(* uris.map { it.path }.toTypedArray())
         .scan()
-    return scanResult.getClassesImplementing(Spec::class.java.canonicalName)
-        .map { Class.forName(it.name).kotlin  }
+
+    return scanResult
+        .getClassesImplementing(Spec::class.java.canonicalName)
+        .map { Class.forName(it.name).kotlin }
         .filterIsInstance<KClass<out Spec>>()
+        .filter { klass -> classNameFilters.isEmpty() || classNameFilters.all { it.test(klass.java.canonicalName) } }
+        .filter { klass -> packageFilters.isEmpty() || packageFilters.all { it.test(klass.java.`package`.name) } }
         .filter { klass -> packages.isEmpty() || packages.any { klass.java.canonicalName.startsWith("$it.") } }
   }
 
@@ -58,7 +65,7 @@ object TestDiscovery {
       request.classNames.isNotEmpty() -> loadClasses(request.classNames).apply {
         logger.debug("Loaded ${this.size} classes from classnames...")
       }
-      else -> scan(request.uris, request.packages).apply {
+      else -> scan(request.uris, request.packages, request.classNameFilters, request.packageFilters).apply {
         logger.debug("Scan discovered ${this.size} classes...")
       }
     }

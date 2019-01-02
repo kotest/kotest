@@ -6,27 +6,52 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
-import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestCaseExecutor
+import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.*
+import java.util.concurrent.Executor
 
 /**
- * Implementation of [SpecRunner] that executes each leaf test (that is a test case
- * of type [TestType.Test]) in a separate instance of the [Spec] class (that is, isolated
+ * Implementation of [SpecRunner] that executes each leaf test (that is a [TestCase] which
+ * has type [TestType.Test]) in a fresh instance of the [Spec] class (that is, isolated
  * from other leaf executions).
  *
- * A failure in a parent test will prevent nested tests from running.
+ * Each branch test (that is a [TestCase] of type [TestType.Container]) is only
+ * executed as part of the execution "path" to the leaf test. In other words, the branch
+ * tests are not executed "stand alone".
  *
- * Each branch test case (that is a test case of type [TestType.Container]) is only
- * executed as part of the execution "path" to the leaf node.
+ * So, given the following structure:
+ *
+ *  outerTest {
+ *    innerTestA {
+ *      // test
+ *    }
+ *    innerTestB {
+ *      // test
+ *    }
+ *  }
+ *
+ * Two spec instances will be created. The execution process will be:
+ *
+ * spec1 = instantiate spec
+ * spec1.outerTest
+ * spec1.innerTestA
+ * spec2 = instantiate spec
+ * spec2.outerTest
+ * spec2.innerTestB
+ *
+ * A failure in a branch test will prevent nested tests from executing.
  */
-class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+class InstancePerLeafSpecRunner(listener: TestEngineListener, listenerExecutor: Executor) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val queue = ArrayDeque<TestCase>()
+  private val executor = TestCaseExecutor(listener, listenerExecutor)
 
   override fun execute(spec: Spec) {
     topLevelTests(spec).forEach { enqueue(it) }
@@ -41,23 +66,22 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     queue.add(testCase)
   }
 
-  // starts executing a test case, but we don't know if this test case will be a leaf or a branch.
-  // If it turns out to be a leaf, then we're done, lovely.
-  // if it's a branch then we should execute the first child it finds immediately, but then subsequent
-  // nested tests must be queued
+  // starts executing an enqueued test case
   private fun execute(testCase: TestCase) {
     logger.debug("Executing $testCase")
     // we need to execute on a separate instance of the spec class
-    // so we must instantiate a new space, locate the test we're trying to run, and then run it
+    // so we must instantiate a new spec, locate the test we're trying to run, and then run it
     instantiateSpec(testCase.spec::class).let { specOrFailure ->
       when (specOrFailure) {
         is Failure -> throw specOrFailure.exception
         is Success -> {
           val spec = specOrFailure.value
-          interceptSpec(spec) {
-            spec.testCases().forEach { topLevel ->
-              locate(topLevel, testCase.description) {
-                TestCaseExecutor(listener, it, context(it)).execute()
+          // each spec is allocated it's own thread so we can block here safely
+          // allowing us to enter the coroutine world
+          runBlocking {
+            interceptSpec(spec) {
+              spec.testCases().forEach { topLevel ->
+                locate(topLevel, testCase.description, this)
               }
             }
           }
@@ -66,28 +90,61 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     }
   }
 
-  private fun context(current: TestCase): TestContext = object : TestContext() {
-    private var found = false
+  /**
+   * Takes a target test case description, and a given test case, and attempts
+   * to locate the target. There are three possibilities.
+   *
+   * The given test is the target. In this situation we can execute the given test with
+   * a context that will register all nested children for later execution (since this will
+   * be the first time each of them has been discovered).
+   *
+   * The given test is not the target, but is an ancestor of the target. In this situation,
+   * we can execute the given test with a context that will perform this lookup logic for
+   * it's nested classes (since we don't want to execute other nested children as they will
+   * have been seen before).
+   *
+   * The given test case is neither the target nor an ancestor and then we ignore.
+   */
+  private suspend fun locate(given: TestCase, target: Description, scope: CoroutineScope) {
+    when {
+      given.description == target -> executeTarget(given, scope)
+      given.description.isAncestorOf(target) -> executeAncestor(given, target, scope)
+    }
+  }
+
+  private suspend fun executeTarget(testCase: TestCase, scope: CoroutineScope) {
+    executor.execute(testCase, context(testCase, scope))
+  }
+
+  private suspend fun executeAncestor(testCase: TestCase, target: Description, scope: CoroutineScope) {
+    // todo I think this should probably go via the executor but with config.threads always = 1
+    testCase.test.invoke(locatingContext(testCase, target, scope))
+  }
+
+  /**
+   * Creates a [TestContext] which will enqueue nested tests, except the first.
+   * The first is executed on the same spec instance because we only want a fresh
+   * spec when we next execute a leaf.
+   */
+  private fun context(current: TestCase, scope: CoroutineScope): TestContext = object : TestContext(scope.coroutineContext) {
+    private var first = false
     override fun description(): Description = current.description
-    override fun registerTestCase(testCase: TestCase) {
-      if (found) enqueue(testCase) else {
-        found = true
-        TestCaseExecutor(listener, testCase, context(testCase)).execute()
+    override suspend fun registerTestCase(testCase: TestCase) {
+      if (first) enqueue(testCase) else {
+        first = true
+        executor.execute(testCase, context(testCase, scope))
       }
     }
   }
 
-  // takes a current test case and a target test case and attempts to locate the target
-  // by executing the current and it's nested tests recursively until we find the target
-  private fun locate(current: TestCase, target: Description, callback: (TestCase) -> Unit) {
-    // If the current test is the same as the target, we've found what we want, and can invoke
-    // the callback. Otherwise we must execute the closure and check any registered tests to
-    // see if they are on the desired path. If they are, we recurse into it.
-    if (current.description == target) callback(current) else if (current.description.isAncestorOf(target)) {
-      current.test.invoke(object : TestContext() {
-        override fun description(): Description = current.description
-        override fun registerTestCase(testCase: TestCase) = locate(testCase, target, callback)
-      })
-    }
+  /**
+   * Creates a [TestContext] for a given [TestCase] which will delegate registered
+   * tests back to the locate method.
+   *
+   * Executing a registered test should suspend the current test until it completes.
+   */
+  private fun locatingContext(given: TestCase, target: Description, scope: CoroutineScope) = object : TestContext(scope.coroutineContext) {
+    override fun description(): Description = given.description
+    override suspend fun registerTestCase(testCase: TestCase) = locate(testCase, target, scope)
   }
 }

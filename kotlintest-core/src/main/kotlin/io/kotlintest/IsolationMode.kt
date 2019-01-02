@@ -1,6 +1,6 @@
 package io.kotlintest
 
-enum class TestIsolationMode {
+enum class IsolationMode {
 
   /**
    * A single instance of the [Spec] class is instantiated,

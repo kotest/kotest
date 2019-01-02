@@ -12,24 +12,20 @@ class TestCaseExtensionChainTest : StringSpec() {
   class WibbleException : RuntimeException()
 
   object MyExt1 : TestCaseExtension {
-    override fun intercept(context: TestCaseInterceptContext,
-                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                           complete: (TestResult) -> Unit) {
+    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       if (context.description.name == "test1")
         complete(TestResult.Ignored)
       else
-        test(context.config, { complete(it) })
+        test(context.config) { complete(it) }
     }
   }
 
   object MyExt2 : TestCaseExtension {
-    override fun intercept(context: TestCaseInterceptContext,
-                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                           complete: (TestResult) -> Unit) {
+    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       if (context.description.name == "test2")
         complete(TestResult.Ignored)
       else
-        test(context.config, { complete(it) })
+        test(context.config) { complete(it) }
     }
   }
 

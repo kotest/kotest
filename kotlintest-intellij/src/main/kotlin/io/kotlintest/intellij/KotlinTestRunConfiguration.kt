@@ -20,13 +20,12 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
-import org.jetbrains.kotlin.name.FqName
 
 class KotlinTestRunConfiguration(name: String,
                                  module: JavaRunConfigurationModule,
                                  factory: ConfigurationFactory) : ModuleBasedConfiguration<JavaRunConfigurationModule>(name, module, factory), CommonJavaRunConfigurationParameters {
 
-  var specFQN: FqName? = null
+  var specFQN: String? = null
 
   private var alternativeJrePathEnabled = false
   private var alternativeJrePath: String? = ""
@@ -79,7 +78,7 @@ class KotlinTestRunConfiguration(name: String,
   override fun suggestedName(): String? {
     val fq = specFQN
     return if (fq == null) "Run test"
-    else "Run ${fq.shortNameOrSpecial()}"
+    else "Run $fq"
   }
 
   override fun checkConfiguration() {

@@ -19,15 +19,15 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
         invocations: Int? = null,
         enabled: Boolean? = null,
         timeout: Duration? = null,
-        threads: Int? = null,
+        parallelism: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test:  TestContext.() -> Unit) {
+        test: suspend TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: defaultTestCaseConfig.enabled,
           invocations ?: defaultTestCaseConfig.invocations,
           timeout ?: defaultTestCaseConfig.timeout,
-          threads ?: defaultTestCaseConfig.threads,
+          parallelism ?: defaultTestCaseConfig.threads,
           tags ?: defaultTestCaseConfig.tags,
           extensions ?: defaultTestCaseConfig.extensions)
       addTestCase(name, test, config, TestType.Test)
@@ -36,6 +36,6 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
 
   fun test(name: String) = TestBuilder(name)
 
-  fun test(name: String, test:  TestContext.() -> Unit) =
+  fun test(name: String, test: suspend TestContext.() -> Unit) =
       addTestCase(name, test, defaultTestCaseConfig, TestType.Test)
 }
