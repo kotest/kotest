@@ -7,7 +7,6 @@ import io.kotlintest.TestContext
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
@@ -48,11 +47,11 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
     // creating the spec instance will have invoked the init block, resulting
     // in the top level test cases being available on the spec class
     runBlocking {
-    interceptSpec(spec) {
+      interceptSpec(spec) {
         topLevelTests(spec).forEach {
           // each spec is allocated it's own thread so we can block here safely
           // allowing us to enter the coroutine world
-          executor.execute(it, context(it.description, GlobalScope))
+          executor.execute(it, context(it.description, this))
         }
       }
     }
