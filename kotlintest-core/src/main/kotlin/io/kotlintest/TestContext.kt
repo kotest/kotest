@@ -12,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
  * during a test, reporting that an error was raised, or notifying the discovery
  * of a nested scope.
  *
- * [TestContext] extends [CoroutineScope], which allows test closures to launch coroutines
+  * [TestContext] implements [CoroutineScope], which allows test closures to launch coroutines
  * with the [CoroutineContext] provided by the test engine.
  */
 @KotlinTestDsl
