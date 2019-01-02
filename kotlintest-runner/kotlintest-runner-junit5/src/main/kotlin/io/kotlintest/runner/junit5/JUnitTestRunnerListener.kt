@@ -128,7 +128,6 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   override fun exitTestCase(testCase: TestCase, result: TestResult) {
-    logger.debug("completeTestCase ${testCase.description} with result $result")
     // we don't immediately finish a test, we just store the result until we have completed the spec
     // this allows us to handle multiple invocations of the same test case, deferring the notification
     // to junit until all invocations have completed
