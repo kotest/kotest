@@ -186,7 +186,7 @@ If you want to ignore a test, use `@Ignore`
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {
 
-  @BeforeTest
+  @BeforeEach
   fun beforeTest() {
     println("Before each test")
   }
