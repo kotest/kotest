@@ -7,7 +7,11 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestCaseInterceptContext
+import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
+import io.kotlintest.specs.AbstractAnnotationSpec
+import io.kotlintest.specs.findAfterTestFunctions
+import io.kotlintest.specs.findBeforeTestFunctions
 import org.slf4j.LoggerFactory
 import java.time.Duration
 
@@ -28,10 +32,10 @@ class TestCaseExecutor(val listener: TestEngineListener,
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      listeners.forEach { it.beforeTest(testCase.description) }
+      executeBefores(listeners)
 
       fun onComplete(result: TestResult) {
-        listeners.reversed().forEach { it.afterTest(testCase.description, result) }
+        executeAfters(listeners, result)
         listener.completeTestCase(testCase, result)
       }
 
@@ -56,6 +60,16 @@ class TestCaseExecutor(val listener: TestEngineListener,
       t.printStackTrace()
       listener.completeTestCase(testCase, TestResult.error(t))
     }
+  }
+
+  private fun executeBefores(listeners: List<TestListener>) {
+    if(!testCase.config.enabled) return
+    listeners.forEach { it.beforeTest(testCase.description) }
+  }
+
+  private fun executeAfters(listeners: List<TestListener>, result: TestResult) {
+    if(!testCase.config.enabled) return
+    listeners.reversed().forEach { it.afterTest(testCase.description, result) }
   }
 
   private fun executeTestIfActive(testCase: TestCase, config: TestCaseConfig): TestResult {
