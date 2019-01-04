@@ -62,11 +62,11 @@ class FeatureSpecCoroutineSingleTestIsolationModeTest : FeatureSpec() {
         count.get() shouldBe 200
       }
       // we need enough invocation to ensure all the threads get used up
-      scenario("mutliple threads should use a thread pool for the coroutines").config(invocations = 100000, threads = 6) {
+      scenario("mutliple threads should use a thread pool for the coroutines").config(invocations = 50, threads = 6) {
         logThreadName()
       }
       scenario("previous test result 3") {
-        threadnames.size shouldBe 6
+        threadnames.size shouldBe  6
       }
       scenario("a single threaded test should run listeners on the same thread as the test") {
         Thread.currentThread().name.shouldStartWith(listenerThread)
@@ -81,6 +81,7 @@ class FeatureSpecCoroutineSingleTestIsolationModeTest : FeatureSpec() {
 
   private suspend fun logThreadName() {
     delay(10)
+    Thread.sleep(10)
     // strip off the coroutine suffix
     threadnames.add(currentThreadWithoutCoroutine())
   }
