@@ -170,11 +170,26 @@ class MyTests : ExpectSpec({
 
 ### Annotation Spec
 
-If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4.
+If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4/5.
 Just add the `@Test` annotation to any function defined in the spec class.
+
+You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
+```
+@BeforeAll / @BeforeClass
+@BeforeEach / @Before
+@AfterAll / @AfterClass
+@AfterEach / @After
+```
+
+If you want to ignore a test, use `@Ignore`
 
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {
+
+  @BeforeEach
+  fun beforeTest() {
+    println("Before each test")
+  }
 
   @Test
   fun test1() {
