@@ -11,6 +11,7 @@ import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
@@ -118,17 +119,18 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       val supervisorJob = context.launch {
 
         val testCaseJobs = (0 until testCase.config.invocations).map {
-          launch(dispatcher) {
+          async(dispatcher) {
             listener.invokingTestCase(testCase, 1)
-            testCase.test(context)
+            try {
+              testCase.test(context)
+              null
+            } catch(t: Throwable) { t }
           }
         }
 
         testCaseJobs.forEach {
-          it.invokeOnCompletion { e ->
-            error.compareAndSet(null, e)
-          }
-          it.join()
+          val testError = it.await()
+          error.compareAndSet(null, testError)
         }
       }
 
@@ -160,16 +162,27 @@ class TestCaseExecutor(private val listener: TestEngineListener,
    */
   private fun before(testCase: TestCase) {
     listener.enterTestCase(testCase)
-    val userListeners = listOf(testCase.spec) + testCase.spec.listeners() + Project.listeners()
+
+    val userListeners = testCase.spec.listeners() + Project.listeners()
     userListeners.forEach { it.beforeTest(testCase.description) }
+
+    if (testCase.config.enabled) {
+      // Only execute before test from the spec if the test is enabled
+      testCase.spec.beforeTest(testCase.description)
+    }
   }
 
   /**
    * Handles all "after" listeners.
    */
   private fun after(testCase: TestCase, result: TestResult) {
-    val userListeners = listOf(testCase.spec) + testCase.spec.listeners() + Project.listeners()
+    val userListeners = testCase.spec.listeners() + Project.listeners()
     userListeners.reversed().forEach { it.afterTest(testCase.description, result) }
+
+    if(testCase.config.enabled) {
+      // Only execute after test from spec if the test is enabled
+      testCase.spec.afterTest(testCase.description, result)
+    }
     listener.exitTestCase(testCase, result)
   }
 

@@ -1,10 +1,12 @@
 package io.kotlintest.runner.jvm.spec
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.SpecExtension
+import io.kotlintest.extensions.TestListener
 import io.kotlintest.runner.jvm.TestEngineListener
 
 /**
@@ -37,18 +39,28 @@ abstract class SpecRunner(val listener: TestEngineListener) {
   private suspend fun interceptSpec(spec: Spec, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
 
     val listeners = listOf(spec) + spec.listeners() + Project.listeners()
-    listeners.forEach { it.beforeSpec(spec.description(), spec) }
+    executeBeforeSpec(spec, listeners)
 
     when {
       remaining.isEmpty() -> {
         afterInterception()
-        listeners.reversed().forEach { it.afterSpec(spec.description(), spec) }
       }
       else -> {
         val rest = remaining.drop(1)
         remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
       }
     }
+    executeAfterSpec(spec, listeners)
+  }
+
+  private fun executeBeforeSpec(spec: Spec, listeners: List<TestListener>) {
+    listeners.forEach {
+      it.beforeSpec(spec.description(), spec)
+    }
+  }
+
+  private fun executeAfterSpec(spec: Spec, listeners: List<TestListener>) {
+    listeners.reversed().forEach { it.afterSpec(spec.description(), spec) }
   }
 
   suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit) {
