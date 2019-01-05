@@ -1,10 +1,6 @@
 package io.kotlintest.properties
 
 object PropertyTesting {
-
-  var shouldLogGeneratedValues = readSystemProperty()
-
-  private fun readSystemProperty(): Boolean {
-    return System.getProperty("kotlintest.property.testing.genlog")?.toBoolean() ?: false
-  }
+  var shouldPrintGeneratedValues = System.getProperty("kotlintest.propertytest.output.generator")?.toBoolean() ?: false
+  var shouldPrintShrinkSteps = System.getProperty("kotlintest.propertytest.output.shrinker")?.toBoolean() ?: true
 }

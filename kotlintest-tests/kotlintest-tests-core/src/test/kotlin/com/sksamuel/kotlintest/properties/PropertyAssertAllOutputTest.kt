@@ -14,11 +14,11 @@ import java.io.PrintStream
 class PropertyAssertAllOutputTest : FunSpec() {
 
   override fun beforeSpec(description: Description, spec: Spec) {
-    PropertyTesting.shouldLogGeneratedValues = true
+    PropertyTesting.shouldPrintGeneratedValues = true
   }
 
   override fun afterSpec(description: Description, spec: Spec) {
-    PropertyTesting.shouldLogGeneratedValues = false
+    PropertyTesting.shouldPrintGeneratedValues = false
   }
 
   init {
