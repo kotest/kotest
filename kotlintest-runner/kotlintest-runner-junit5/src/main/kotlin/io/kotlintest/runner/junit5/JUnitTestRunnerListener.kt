@@ -101,7 +101,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     listener.executionFinished(root, result)
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
+  override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
     logger.trace("prepareSpec [$description]")
     try {
       val descriptor = createSpecDescriptor(description, klass)
@@ -135,7 +135,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     results.add(ResultState(testCase, result))
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {
     logger.trace("completeSpec [$description]")
 
     // we should have a result for at least every test that was discovered

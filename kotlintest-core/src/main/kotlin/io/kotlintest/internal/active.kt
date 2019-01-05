@@ -23,6 +23,8 @@ import io.kotlintest.TestCaseConfig
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] itself.
  *
+ * Note2: Focused tests will override any settings here.
+ *
  */
 fun isActive(test: TestCase): Boolean {
   val enabledInConfig = test.config.enabled

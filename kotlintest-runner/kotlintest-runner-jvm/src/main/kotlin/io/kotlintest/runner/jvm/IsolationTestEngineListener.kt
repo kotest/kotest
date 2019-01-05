@@ -40,12 +40,12 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
+  override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
     if (runningSpec.get() == description) {
-      listener.prepareSpec(description, klass)
+      listener.beforeSpecClass(description, klass)
     } else {
       queue {
-        prepareSpec(description, klass)
+        beforeSpecClass(description, klass)
       }
     }
   }
@@ -90,14 +90,14 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {
     if (runningSpec.get() == description) {
-      listener.completeSpec(description, klass, t)
+      listener.afterSpecClass(description, klass, t)
       runningSpec.set(null)
       replay()
     } else {
       queue {
-        completeSpec(description, klass, t)
+        afterSpecClass(description, klass, t)
       }
     }
   }

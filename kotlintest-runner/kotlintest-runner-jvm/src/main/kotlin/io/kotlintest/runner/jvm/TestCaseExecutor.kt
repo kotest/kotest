@@ -45,7 +45,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  suspend fun execute(testCase: TestCase, context: TestContext) {
+  suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
 
     try {
 
@@ -57,6 +57,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
+      // get active status here in case calling this function is expensive (eg
       runExtensions(testCase, context, extensions, testCase.config) { result ->
 
         // it's possible the listenerExecutor has been shut down here.
@@ -71,6 +72,8 @@ class TestCaseExecutor(private val listener: TestEngineListener,
             after(testCase, result)
           }.join()
         }
+
+        onResult(result)
       }
 
     } catch (t: Throwable) {
@@ -96,6 +99,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     }
   }
 
+  // exectues the test case or if the test is not active then returns a ignored test result
   private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
 
     return if (isActive(testCase)) {
@@ -163,12 +167,12 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private fun before(testCase: TestCase) {
     listener.enterTestCase(testCase)
 
-    val userListeners = testCase.spec.listeners() + Project.listeners()
-    userListeners.forEach { it.beforeTest(testCase.description) }
-
-    if (testCase.config.enabled) {
-      // Only execute before test from the spec if the test is enabled
-      testCase.spec.beforeTest(testCase.description)
+    val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
+    userListeners.forEach {
+      it.beforeTest(testCase.description)
+      if (isActive(testCase)) {
+        it.beforeTest(testCase)
+      }
     }
   }
 
@@ -176,12 +180,12 @@ class TestCaseExecutor(private val listener: TestEngineListener,
    * Handles all "after" listeners.
    */
   private fun after(testCase: TestCase, result: TestResult) {
-    val userListeners = testCase.spec.listeners() + Project.listeners()
-    userListeners.reversed().forEach { it.afterTest(testCase.description, result) }
-
-    if(testCase.config.enabled) {
-      // Only execute after test from spec if the test is enabled
-      testCase.spec.afterTest(testCase.description, result)
+    val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
+    userListeners.reversed().forEach {
+      it.afterTest(testCase.description, result)
+      if (isActive(testCase)) {
+        it.afterTest(testCase, result)
+      }
     }
     listener.exitTestCase(testCase, result)
   }
