@@ -20,5 +20,5 @@ interface ConstructorExtension : ProjectLevelExtension {
    * the way classes are created, to support things like constructors
    * with parameters, or classes that require special initization logic.
    */
-  fun <T : Spec> instantiate(clazz: KClass<T>): Spec? = null
+  fun <T : Spec> instantiate(clazz: KClass<T>): Spec?
 }

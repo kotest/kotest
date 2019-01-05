@@ -3,9 +3,9 @@ package io.kotlintest.extensions
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.Description
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
-import io.kotlintest.TestCase
 import io.kotlintest.TestStatus
 
 /**
@@ -61,9 +61,9 @@ interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
    *
    * @return a [TestResult] for the desired outcome of this test case.
    */
-  fun intercept(context: TestCaseInterceptContext,
-                test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                complete: (TestResult) -> Unit) = test(context.config, { complete(it) })
+  suspend fun intercept(context: TestCaseInterceptContext,
+                        test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit,
+                        complete: suspend (TestResult) -> Unit)
 }
 
 data class TestCaseInterceptContext(val description: Description,

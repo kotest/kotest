@@ -15,18 +15,16 @@ object Numbers {
 }
 
 class TestCaseExtensionAdder(val n: Int) : TestCaseExtension {
-  override fun intercept(context: TestCaseInterceptContext,
-                         test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                         complete: (TestResult) -> Unit) {
+  override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
     when (context.description.name) {
       "be activated by registration with ProjectExtensions", "use around advice", "use extensions registered on config" -> {
         Numbers.a.addAndGet(n)
-        test(context.config, {
+        test(context.config) {
           Numbers.b.addAndGet(n)
           complete(it)
-        })
+        }
       }
-      else -> test(context.config, { complete(it) })
+      else -> test(context.config) { complete(it) }
     }
   }
 }

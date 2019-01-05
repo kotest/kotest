@@ -1,0 +1,59 @@
+package com.sksamuel.kotlintest
+
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.then
+import io.kotlintest.Description
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestContext
+import io.kotlintest.TestResult
+import io.kotlintest.TestStatus
+import io.kotlintest.TestType
+import io.kotlintest.milliseconds
+import io.kotlintest.runner.jvm.TestCaseExecutor
+import io.kotlintest.runner.jvm.TestEngineListener
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FunSpec
+import kotlinx.coroutines.GlobalScope
+import java.util.concurrent.Executors
+
+class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
+
+  private val scheduler = Executors.newScheduledThreadPool(1)
+
+  private var listenerRan = false
+
+  override fun afterTest(description: Description, result: TestResult) {
+    listenerRan = true
+  }
+
+  override fun afterSpec(description: Description, spec: Spec) {
+    listenerRan shouldBe true
+  }
+
+  init {
+
+    test("tests which block should timeout but still run after listeners").config {
+      val listenerExecutor = Executors.newSingleThreadExecutor()
+      val listener = mock<TestEngineListener> {}
+      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+
+      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest, {
+        Thread.sleep(100000000L)
+      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
+
+      val context = object : TestContext(GlobalScope.coroutineContext) {
+        override suspend fun registerTestCase(testCase: TestCase) {}
+        override fun description(): Description = Description.root("wibble")
+      }
+      executor.execute(testCase, context)
+
+      then(listener).should().exitTestCase(
+          argThat { description == Description.root("wibble") },
+          argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.1S" }
+      )
+    }
+  }
+}

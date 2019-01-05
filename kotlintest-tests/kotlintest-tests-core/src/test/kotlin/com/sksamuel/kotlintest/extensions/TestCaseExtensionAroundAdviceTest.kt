@@ -13,20 +13,18 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
   class WibbleException : RuntimeException()
 
   object MyExt : TestCaseExtension {
-    override fun intercept(context: TestCaseInterceptContext,
-                           test: (TestCaseConfig, (TestResult) -> Unit) -> Unit,
-                           complete: (TestResult) -> Unit) {
+    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       when {
         context.description.name == "test1" -> complete(TestResult.Ignored)
-        context.description.name == "test2" -> test(context.config, {
+        context.description.name == "test2" -> test(context.config) {
           when (it.error) {
             is WibbleException -> complete(TestResult.Success)
             else -> complete(it)
           }
-        })
-        context.description.name == "test3" -> if (context.config.enabled) throw RuntimeException() else test(context.config, { complete(it) })
-        context.description.name == "test4" -> test(context.config.copy(enabled = false), { complete(it) })
-        else -> test(context.config, { complete(it) })
+        }
+        context.description.name == "test3" -> if (context.config.enabled) throw RuntimeException() else test(context.config) { complete(it) }
+        context.description.name == "test4" -> test(context.config.copy(enabled = false)) { complete(it) }
+        else -> test(context.config) { complete(it) }
       }
     }
   }

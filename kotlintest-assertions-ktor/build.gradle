@@ -1,5 +1,5 @@
 buildscript {
-    ext.ktor_version = '0.9.3'
+    ext.ktor_version = '1.1.1'
 }
 
 repositories {
@@ -13,12 +13,6 @@ dependencies {
     compile "io.ktor:ktor-server-test-host:$ktor_version"
     testCompile project(':kotlintest-core')
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }
 
 compileKotlin {

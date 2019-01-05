@@ -2,30 +2,38 @@ package io.kotlintest.runner.jvm
 
 import arrow.core.Try
 import io.kotlintest.Description
+import io.kotlintest.IsolationMode
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import io.kotlintest.TestIsolationMode
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
-import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
-import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
+import io.kotlintest.runner.jvm.spec.InstancePerTestCaseSpecRunner
+import io.kotlintest.runner.jvm.spec.SingleInstanceSpecRunner
 import io.kotlintest.runner.jvm.spec.SpecRunner
 import org.slf4j.LoggerFactory
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
-
-
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  parallelism: Int,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
   private val error = AtomicReference<Throwable?>(null)
+
+  // the main executor is used to parallelize the execution of specs
+  // inside a spec, tests themselves are executed as coroutines
+  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
+
+  private val scheduler = Executors.newSingleThreadScheduledExecutor()
+
+  private val listenerExecutors = ConcurrentLinkedQueue<ExecutorService>()
 
   private fun afterAll() = Try {
     Project.afterAll()
@@ -75,7 +83,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
         },
         {
           afterAll().fold(
-              { end(it) },
+              { t -> end(t) },
               { end(null) }
           )
         }
@@ -115,25 +123,39 @@ class TestEngine(val classes: List<KClass<out Spec>>,
 
   private fun executeSpec(spec: Spec) = Try {
     listener.prepareSpec(spec.description(), spec::class)
+    val listenerExecutor = listenerExecutors.poll() ?: Executors.newSingleThreadExecutor()
     Try {
       spec.beforeSpecStarted(spec.description(), spec)
-      runner(spec).execute(spec)
+      val runner = runner(spec, listenerExecutor, scheduler)
+      runner.execute(spec)
+      listenerExecutors.add(listenerExecutor)
       spec.afterSpecCompleted(spec.description(), spec)
     }.fold(
-        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, it) },
-        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, null) }
+        {
+          logger.debug("Completing spec ${spec.description()} with error $it")
+          listener.completeSpec(spec.description(), spec.javaClass.kotlin, it)
+        },
+        {
+          logger.debug("Completing spec ${spec.description()} with success")
+          listener.completeSpec(spec.description(), spec.javaClass.kotlin, null)
+        }
     )
     spec.closeResources()
   }
 
-  private fun runner(spec: Spec): SpecRunner {
-    return when (spec.testIsolationMode()) {
-      TestIsolationMode.SingleInstance -> SharedInstanceSpecRunner(listener)
-      TestIsolationMode.InstancePerTest -> InstancePerNodeSpecRunner(listener)
-      TestIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
+  // each runner must get a single-threaded executor, which is used to invoke
+  // listeners/extensions and the test itself when testcase.config.threads=1
+  // otherwise, the listeners and the tests can be run on seperate threads,
+  // which is undesirable in some situations, see
+  // https://github.com/kotlintest/kotlintest/issues/447
+  private fun runner(spec: Spec, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
+    return when (spec.isolationMode()) {
+      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerTest -> InstancePerTestCaseSpecRunner(listener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener, listenerExecutor, scheduler)
       null -> when {
-        spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
-        else -> SharedInstanceSpecRunner(listener)
+        spec.isInstancePerTest() -> InstancePerTestCaseSpecRunner(listener, listenerExecutor, scheduler)
+        else -> SingleInstanceSpecRunner(listener, listenerExecutor, scheduler)
       }
     }
   }

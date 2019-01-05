@@ -107,7 +107,7 @@ exception.message should startWith("Something went wrong")
 Fine Tune Test Execution
 ------------------------
 
-You can specify the number of threads, invocations, and a timeout for each test or for all tests.
+You can specify the number of invocations, parallelism, and a timeout for each test or for all tests.
 And you can group tests by tags or disable them conditionally.
 All you need is [`config`](doc/reference.md#config):
 

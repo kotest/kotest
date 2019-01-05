@@ -13,10 +13,10 @@ abstract class AbstractSpec : Spec {
 
   override fun testCases(): List<TestCase> = rootTestCases.toList()
 
-  protected fun createTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
+  protected fun createTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
       TestCase(description().append(name), this, test, lineNumber(), type, config)
 
-  protected fun addTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+  protected fun addTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     if (rootTestCases.any { it.name == name })
       throw IllegalArgumentException("Cannot add test with duplicate name $name")
     rootTestCases.add(createTestCase(name, test, config, type))

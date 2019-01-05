@@ -1,29 +1,29 @@
-package com.sksamuel.kotlintest.matchers
+package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.matchers.sequences.*
 import io.kotlintest.specs.WordSpec
-import io.kotlintest.fail
 import io.kotlintest.shouldFail
 import io.kotlintest.shouldThrow
 
 class SequenceMatchersTest : WordSpec() {
+
 	/* PassFail */
-	fun WordScope.pass(name: String, test: FinalTestContext.() -> Unit) {
-	  ("succeed " + name)(test)
-    }
-	
-	fun WordScope.succeed(name: String, test: FinalTestContext.() -> Unit) = pass(name, test)
-	
-	fun WordScope.fail(msg: String):Nothing = io.kotlintest.fail(msg)
-	fun WordScope.fail(name: String, test: () -> Any?) {
-	  ("fail " + name) { shouldFail(test) }
-    }
-	
-    inline fun <reified E : Throwable> WordScope.abort(name: String, crossinline test: () -> Any?) {
-      ("abort " + name) { shouldThrow<E>(test) }
+	private suspend fun WordScope.pass(name: String, test: FinalTestContext.() -> Unit) {
+		("succeed $name")(test)
     }
 
-    inline fun <reified E : Throwable> WordScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(name, test)
+	private suspend fun WordScope.succeed(name: String, test: FinalTestContext.() -> Unit) = pass(name, test)
+	
+	fun WordScope.fail(msg: String):Nothing = io.kotlintest.fail(msg)
+	suspend fun WordScope.fail(name: String, test: () -> Any?) {
+		("fail $name") { shouldFail(test) }
+    }
+
+	suspend inline fun <reified E : Throwable> WordScope.abort(name: String, crossinline test: () -> Any?) {
+		("abort $name") { shouldThrow<E>(test) }
+    }
+
+	suspend inline fun <reified E : Throwable> WordScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(name, test)
 
 	/* sample data */
 	val empty = emptySequence<Int>()

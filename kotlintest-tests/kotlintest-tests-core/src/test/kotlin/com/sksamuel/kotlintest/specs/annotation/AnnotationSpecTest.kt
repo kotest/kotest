@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.specs.annotation
 
 import io.kotlintest.Description
+import io.kotlintest.IsolationMode
 import io.kotlintest.Spec
 import io.kotlintest.TestCaseOrder
-import io.kotlintest.TestIsolationMode
 import io.kotlintest.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
@@ -31,30 +31,30 @@ class AnnotationSpecTest : AnnotationSpec() {
 
 class AnnotationSpecAnnotationsTest : AnnotationSpec() {
 
-  private var counterBeforeSpec = AtomicInteger(0)
-  private var counterBeforeTest = AtomicInteger(0)
+  private var counterBeforeAll = AtomicInteger(0)
+  private var counterBeforeEach = AtomicInteger(0)
 
   private var counterAfterAll = AtomicInteger(0)
-  private var counterAfterTest = AtomicInteger(0)
+  private var counterAfterEach = AtomicInteger(0)
 
 
   // All annotations are repeated sometimes, to validate that all annotations are correctly read by the engine
 
   @BeforeAll
-  fun beforeSpec1() = counterBeforeSpec.incrementAndGet()
+  fun beforeSpec1() = counterBeforeAll.incrementAndGet()
   @BeforeClass
-  fun beforeSpec2() = counterBeforeSpec.incrementAndGet()
+  fun beforeSpec2() = counterBeforeAll.incrementAndGet()
 
 
   @BeforeEach
-  fun beforeTest1() = counterBeforeTest.incrementAndGet()
+  fun beforeTest1() = counterBeforeEach.incrementAndGet()
   @Before
-  fun beforeTest2() = counterBeforeTest.incrementAndGet()
+  fun beforeTest2() = counterBeforeEach.incrementAndGet()
 
   @AfterEach
-  fun afterTest1() = counterAfterTest.incrementAndGet()
+  fun afterTest1() = counterAfterEach.incrementAndGet()
   @After
-  fun afterTest2() = counterAfterTest.incrementAndGet()
+  fun afterTest2() = counterAfterEach.incrementAndGet()
 
   @AfterAll // You're my wonderwall
   fun afterSpec1() = counterAfterAll.incrementAndGet()
@@ -65,31 +65,31 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
   // Testing depends on method discovery happening in this order, verifying the assertions in the order tests are declared
   @Test
   fun test1() {
-    counterBeforeSpec.get() shouldBe 2 // Both BeforeSpec should be executed once
-    counterBeforeTest.get() shouldBe 2 // Both BeforeTest should be executed once
+    counterBeforeAll.get() shouldBe 2 // Both BeforeSpec should be executed once
+    counterBeforeEach.get() shouldBe 2 // Both BeforeTest should be executed once
 
 
     // No tests finished executing yet, both should be 0
     counterAfterAll.get() shouldBe 0
-    counterAfterTest.get() shouldBe 0
+    counterAfterEach.get() shouldBe 0
   }
 
   @Test
   fun test2() {
-    counterBeforeSpec.get() shouldBe 2 // BeforeSpecs should not be executed again
-    counterBeforeTest.get() shouldBe 4 // Before tests should be executed twice (test1 + test2)
+    counterBeforeAll.get() shouldBe 2 // BeforeSpecs should not be executed again
+    counterBeforeEach.get() shouldBe 4 // Before tests should be executed twice (test1 + test2)
 
     counterAfterAll.get() shouldBe 0  // Not all tests finished yet, it shouldn't have executed
-    counterAfterTest.get() shouldBe 2 // AfterTest should be executed (after test1)
+    counterAfterEach.get() shouldBe 2 // AfterTest should be executed (after test1)
   }
 
   @Test
   fun test3() {
-    counterBeforeSpec.get() shouldBe 2
-    counterBeforeTest.get() shouldBe 6
+    counterBeforeAll.get() shouldBe 2
+    counterBeforeEach.get() shouldBe 6
 
     counterAfterAll.get() shouldBe 0
-    counterAfterTest.get() shouldBe 4
+    counterAfterEach.get() shouldBe 4
   }
 
   @Ignore
@@ -101,11 +101,15 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
   // A default after spec verification is necessary, as we cannot test @AfterAll with itself
   override fun afterSpec(description: Description, spec: Spec) {
     super.afterSpec(description, spec)
+
     counterAfterAll.get() shouldBe 2
-    counterAfterTest.get() shouldBe 6
+    counterAfterEach.get() shouldBe 6
+
+    counterBeforeAll.get() shouldBe 2
+    counterBeforeEach.get() shouldBe 6
   }
 
-  override fun testIsolationMode() = TestIsolationMode.SingleInstance
+  override fun isolationMode() = IsolationMode.SingleInstance
 
   override fun testCaseOrder() = TestCaseOrder.Sequential
 }

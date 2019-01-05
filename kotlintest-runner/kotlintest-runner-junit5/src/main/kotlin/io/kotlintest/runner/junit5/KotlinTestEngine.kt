@@ -3,7 +3,6 @@ package io.kotlintest.runner.junit5
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.description
-import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.IsolationTestEngineListener
 import io.kotlintest.runner.jvm.SpecFilter
 import io.kotlintest.runner.jvm.SynchronizedTestEngineListener
@@ -13,12 +12,7 @@ import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
-import org.junit.platform.engine.discovery.ClassSelector
-import org.junit.platform.engine.discovery.ClasspathRootSelector
-import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.MethodSelector
-import org.junit.platform.engine.discovery.PackageSelector
-import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
@@ -62,22 +56,13 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
       }
     }
 
-    // inside intellij when running a single test, we might be passed a class selector
-    // and gradle will sometimes pass a class selector for each class it has detected
-    val classNames = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
-    val packageNames = request.getSelectorsByType(PackageSelector::class.java).map { it.packageName }
-
     // a method selector is passed by intellij to run just a single method inside a test file
     // this happens for example, when trying to run a junit test alongside kotlintest tests,
     // and kotlintest will then run all other tests.
     // therefore, the presence of a MethodSelector means we must run no tests in KT.
     if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
 
-      val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
-          request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-          request.getSelectorsByType(UriSelector::class.java).map { it.uri }
-
-      val result = TestDiscovery.discover(DiscoveryRequest(uris, classNames, packageNames, emptyList()))
+      val result = TestDiscovery.discover(discoveryRequest(request))
 
       // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
       // internal gradle class called ClassMethodNameFilter. That class makes all kinds of

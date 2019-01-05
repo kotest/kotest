@@ -1,16 +1,24 @@
 package io.kotlintest
 
 import io.kotlintest.specs.KotlinTestDsl
+import kotlinx.coroutines.CoroutineScope
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [TestContext] is used as the receiver of a closure that is associated with a [TestCase].
  * This allows the scope body to interact with the test engine, for instance, adding metadata
  * during a test, reporting that an error was raised, or notifying the discovery
  * of a nested scope.
+ *
+  * [TestContext] implements [CoroutineScope], which allows test closures to launch coroutines
+ * with the [CoroutineContext] provided by the test engine.
  */
 @KotlinTestDsl
-abstract class TestContext {
+abstract class TestContext(override val coroutineContext: CoroutineContext) : CoroutineScope {
+
+  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   // needs to be thread safe as a context can be shared amongst many executing instances of the same scope
   private val metadata = ConcurrentHashMap<String, Any?>()
@@ -28,15 +36,14 @@ abstract class TestContext {
   fun metaData() = metadata.toMap()
 
   /**
-   * Returns the [Description] of the current [TestCase].
+   * Returns the [Description] of the [TestCase] that is attached to this [TestContext].
    */
   abstract fun description(): Description
 
   /**
-   * Creates a new [TestCase] as a child of the currently executing test
-   * and then notifies the test runner with the new instance.
+   * Creates a new [TestCase] and then notifies the test runner of this nested test.
    */
-  fun registerTestCase(name: String, spec: Spec, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+  suspend fun registerTestCase(name: String, spec: Spec, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     val tc = TestCase(description().append(name), spec, test, lineNumber(), type, config)
     registerTestCase(tc)
   }
@@ -44,5 +51,5 @@ abstract class TestContext {
   /**
    * Notifies the test runner about a nested [TestCase].
    */
-  abstract fun registerTestCase(testCase: TestCase)
+  abstract suspend fun registerTestCase(testCase: TestCase)
 }

@@ -17,18 +17,18 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
 
   @KotlinTestDsl
   inner class GivenContext(val context: TestContext) {
-    fun And(name: String, test: WhenContext.() -> Unit) = and(name, test)
-    fun and(name: String, test: WhenContext.() -> Unit) = add("Add: $name", test)
-    fun When(name: String, test: WhenContext.() -> Unit) = `when`(name, test)
-    fun `when`(name: String, test: WhenContext.() -> Unit) = add("When: $name", test)
-    private fun add(name: String, test: WhenContext.() -> Unit) =
+    suspend fun And(name: String, test: suspend WhenContext.() -> Unit) = and(name, test)
+    suspend fun and(name: String, test: suspend WhenContext.() -> Unit) = add("Add: $name", test)
+    suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = `when`(name, test)
+    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = add("When: $name", test)
+    private suspend fun add(name: String, test: suspend WhenContext.() -> Unit) =
         context.registerTestCase(name, this@AbstractBehaviorSpec, { this@AbstractBehaviorSpec.WhenContext(this).test() }, this@AbstractBehaviorSpec.defaultTestCaseConfig, TestType.Container)
   }
 
   @KotlinTestDsl
   inner class WhenContext(val context: TestContext) {
-    fun Then(name: String, test: TestContext.() -> Unit) = then(name, test)
-    fun then(name: String, test: TestContext.() -> Unit) =
+    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = then(name, test)
+    suspend fun then(name: String, test: suspend TestContext.() -> Unit) =
         context.registerTestCase("Then: $name", this@AbstractBehaviorSpec, test, this@AbstractBehaviorSpec.defaultTestCaseConfig, TestType.Test)
 
     fun then(name: String): ThenScope = ThenScope(name, context)
@@ -37,7 +37,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
   @KotlinTestDsl
   inner class ThenScope(val name: String, val context: TestContext) {
 
-    fun config(
+    suspend fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
         timeout: Duration? = null,
@@ -56,7 +56,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     }
   }
 
-  fun Given(name: String, test: GivenContext.() -> Unit) = given(name, test)
-  fun given(name: String, test: GivenContext.() -> Unit) =
+  fun Given(name: String, test: suspend GivenContext.() -> Unit) = given(name, test)
+  fun given(name: String, test: suspend GivenContext.() -> Unit) =
       addTestCase("Given: $name", { this@AbstractBehaviorSpec.GivenContext(this).test() }, defaultTestCaseConfig, TestType.Container)
 }

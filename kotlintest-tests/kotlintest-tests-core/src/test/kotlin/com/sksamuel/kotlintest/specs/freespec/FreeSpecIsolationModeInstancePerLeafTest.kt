@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.specs.freespec
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -12,7 +12,7 @@ class FreeSpecIsolationModeInstancePerLeafTest : FreeSpec() {
     var string = ""
   }
 
-  override fun testIsolationMode() = TestIsolationMode.InstancePerLeaf
+  override fun isolationMode() = IsolationMode.InstancePerLeaf
 
   override fun afterSpecCompleted(description: Description, spec: Spec) {
     string shouldBe "abccc_ade_"

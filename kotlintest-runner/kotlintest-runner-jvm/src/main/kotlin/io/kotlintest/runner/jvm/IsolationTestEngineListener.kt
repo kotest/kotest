@@ -13,7 +13,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   private val callbacks = mutableListOf<() -> Unit>()
 
   private fun queue(fn: () -> Unit) {
-    callbacks.add({ fn() })
+    callbacks.add { fn() }
   }
 
   private fun replay() {
@@ -50,42 +50,42 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     if (runningSpec.get() == testCase.spec.description()) {
-      listener.prepareTestCase(testCase)
+      listener.enterTestCase(testCase)
     } else {
       queue {
-        prepareTestCase(testCase)
+        enterTestCase(testCase)
       }
     }
   }
 
-  override fun testRun(set: TestSet, k: Int) {
-    if (runningSpec.get() == set.testCase.spec.description()) {
-      listener.testRun(set, k)
-    } else {
-      queue {
-        testRun(set, k)
-      }
-    }
-  }
-
-  override fun completeTestSet(set: TestSet, result: TestResult) {
-    if (runningSpec.get() == set.testCase.spec.description()) {
-      listener.completeTestSet(set, result)
-    } else {
-      queue {
-        completeTestSet(set, result)
-      }
-    }
-  }
-
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     if (runningSpec.get() == testCase.spec.description()) {
-      listener.completeTestCase(testCase, result)
+      listener.invokingTestCase(testCase, k)
     } else {
       queue {
-        completeTestCase(testCase, result)
+        invokingTestCase(testCase, k)
+      }
+    }
+  }
+
+  override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
+    if (runningSpec.get() == testCase.spec.description()) {
+      listener.afterTestCaseExecution(testCase, result)
+    } else {
+      queue {
+        afterTestCaseExecution(testCase, result)
+      }
+    }
+  }
+
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    if (runningSpec.get() == testCase.spec.description()) {
+      listener.exitTestCase(testCase, result)
+    } else {
+      queue {
+        exitTestCase(testCase, result)
       }
     }
   }
