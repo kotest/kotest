@@ -24,20 +24,18 @@ abstract class SpecRunner(val listener: TestEngineListener) {
   abstract fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult>
 
   private suspend fun interceptSpec(spec: Spec, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
-
     val listeners = listOf(spec) + spec.listeners() + Project.listeners()
-    executeBeforeSpec(spec, listeners)
-
     when {
       remaining.isEmpty() -> {
+        executeBeforeSpec(spec, listeners)
         afterInterception()
+        executeAfterSpec(spec, listeners)
       }
       else -> {
         val rest = remaining.drop(1)
         remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
       }
     }
-    executeAfterSpec(spec, listeners)
   }
 
   private fun executeBeforeSpec(spec: Spec, listeners: List<TestListener>) {
