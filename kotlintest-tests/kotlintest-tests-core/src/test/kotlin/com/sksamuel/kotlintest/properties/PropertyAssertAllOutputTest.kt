@@ -17,6 +17,10 @@ class PropertyAssertAllOutputTest : FunSpec() {
     PropertyTesting.shouldLogGeneratedValues = true
   }
 
+  override fun afterSpec(description: Description, spec: Spec) {
+    PropertyTesting.shouldLogGeneratedValues = false
+  }
+
   init {
 
     fun captureStdout(thunk: () -> Unit): String {
