@@ -2,6 +2,7 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.propertyAssertionError
 import io.kotlintest.properties.PropertyContext
 import io.kotlintest.properties.PropertyFailureInput
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.shrinking.Shrinker
 
 fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T = shrink2(t, gen.shrinker(), test)
@@ -23,7 +24,9 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
     val candidates = shrinker.shrink(candidate).filterNot { tested.contains(it) }
     if (candidates.isEmpty()) {
       sb.append("Shrink result => ${convertValueToString(candidate)}\n")
-      println(sb)
+      if (PropertyTesting.shouldPrintShrinkSteps) {
+        println(sb)
+      }
       return candidate
     } else {
       val next = candidates.firstOrNull {
@@ -40,7 +43,9 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
       }
       if (next == null) {
         sb.append("Shrink result => ${convertValueToString(candidate)}\n")
-        println(sb)
+        if (PropertyTesting.shouldPrintShrinkSteps) {
+          println(sb)
+        }
         return candidate
       } else {
         candidate = next
@@ -61,10 +66,10 @@ fun <A, B, C, D> shrinkInputs(a: A,
                               context: PropertyContext,
                               fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Unit,
                               e: AssertionError) {
-  val smallestA = shrink(a, gena, { context.fn(it, b, c, d) })
-  val smallestB = shrink(b, genb, { context.fn(smallestA, it, c, d) })
-  val smallestC = shrink(c, genc, { context.fn(smallestA, smallestB, it, d) })
-  val smallestD = shrink(d, gend, { context.fn(smallestA, smallestB, smallestC, it) })
+  val smallestA = shrink(a, gena) { context.fn(it, b, c, d) }
+  val smallestB = shrink(b, genb) { context.fn(smallestA, it, c, d) }
+  val smallestC = shrink(c, genc) { context.fn(smallestA, smallestB, it, d) }
+  val smallestD = shrink(d, gend) { context.fn(smallestA, smallestB, smallestC, it) }
   val inputs = listOf(
       PropertyFailureInput<A>(a, smallestA),
       PropertyFailureInput<B>(b, smallestB),

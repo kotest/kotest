@@ -8,6 +8,7 @@ import io.kotlintest.ProjectLevelFilter
 import io.kotlintest.SpecExecutionOrder
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.TestListener
+import io.kotlintest.properties.PropertyTesting
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -26,6 +27,10 @@ object ProjectConfig : AbstractProjectConfig() {
 
   override fun beforeAll() {
     intercepterLog.append("B1.")
+  }
+
+  init {
+    PropertyTesting.shouldPrintShrinkSteps = false
   }
 }
 
