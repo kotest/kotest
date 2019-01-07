@@ -1,10 +1,9 @@
 package com.sksamuel.kotlintest.extensions
 
-import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.specs.StringSpec
 
 // this tests that we can manipulate the result of a test case from an extension
@@ -13,18 +12,18 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
   class WibbleException : RuntimeException()
 
   object MyExt : TestCaseExtension {
-    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       when {
-        context.description.name == "test1" -> complete(TestResult.Ignored)
-        context.description.name == "test2" -> test(context.config) {
+        testCase.description.name == "test1" -> complete(TestResult.Ignored)
+        testCase.description.name == "test2" -> execute(testCase) {
           when (it.error) {
             is WibbleException -> complete(TestResult.Success)
             else -> complete(it)
           }
         }
-        context.description.name == "test3" -> if (context.config.enabled) throw RuntimeException() else test(context.config) { complete(it) }
-        context.description.name == "test4" -> test(context.config.copy(enabled = false)) { complete(it) }
-        else -> test(context.config) { complete(it) }
+        testCase.description.name == "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase) { complete(it) }
+        testCase.description.name == "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false))) { complete(it) }
+        else -> execute(testCase) { complete(it) }
       }
     }
   }

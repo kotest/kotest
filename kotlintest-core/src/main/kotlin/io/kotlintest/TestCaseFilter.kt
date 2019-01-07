@@ -1,14 +1,13 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
 
 interface TestCaseFilter : ProjectLevelFilter {
   fun filter(description: Description): TestFilterResult
   fun toExtension() = object : TestCaseExtension {
-    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      when (filter(context.description)) {
-        TestFilterResult.Include -> test(context.config, complete)
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+      when (filter(testCase.description)) {
+        TestFilterResult.Include -> execute(testCase, complete)
         TestFilterResult.Ignore -> complete(TestResult.Ignored)
       }
     }

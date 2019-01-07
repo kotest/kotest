@@ -2,12 +2,10 @@ package io.kotlintest.runner.jvm
 
 import io.kotlintest.Project
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -58,7 +56,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           Project.testCaseExtensions()
 
       // get active status here in case calling this function is expensive (eg
-      runExtensions(testCase, context, extensions, testCase.config) { result ->
+      runExtensions(testCase, context, extensions) { result ->
 
         // it's possible the listenerExecutor has been shut down here.
         // If it has, we can only run them on another thread, better than a slap in the face
@@ -85,16 +83,14 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private suspend fun runExtensions(testCase: TestCase,
                                     context: TestContext,
                                     remaining: List<TestCaseExtension>,
-                                    config: TestCaseConfig,
                                     onComplete: suspend (TestResult) -> Unit) {
     when {
       remaining.isEmpty() -> {
-        val result = executeTestIfActive(testCase.copy(config = config), context)
+        val result = executeTestIfActive(testCase, context)
         onComplete(result)
       }
       else -> {
-        val ctx = TestCaseInterceptContext(testCase.description, testCase.spec, config)
-        remaining.first().intercept(ctx, { conf, callback -> runExtensions(testCase, context, remaining.drop(1), conf, callback) }, { onComplete(it) })
+        remaining.first().intercept(testCase, { test, callback -> runExtensions(test, context, remaining.drop(1), callback) }, { onComplete(it) })
       }
     }
   }

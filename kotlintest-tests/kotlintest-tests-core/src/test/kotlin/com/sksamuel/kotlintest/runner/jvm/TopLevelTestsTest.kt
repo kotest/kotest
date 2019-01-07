@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.runner.jvm
 
 import io.kotlintest.TestCaseOrder
-import io.kotlintest.runner.jvm.internal.topLevelTests
+import io.kotlintest.internal.topLevelTests
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FunSpec

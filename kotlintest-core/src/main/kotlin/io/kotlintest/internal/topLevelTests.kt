@@ -1,11 +1,10 @@
-package io.kotlintest.runner.jvm.internal
+package io.kotlintest.internal
 
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.internal.isActive
 
 /**
  * Returns the top level [TestCase]s to run, in the order they

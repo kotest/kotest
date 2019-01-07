@@ -5,7 +5,7 @@ import io.kotlintest.IsolationMode
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.TestEngineListener
-import io.kotlintest.runner.jvm.internal.topLevelTests
+import io.kotlintest.internal.topLevelTests
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService

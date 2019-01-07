@@ -1,10 +1,9 @@
 package com.sksamuel.kotlintest.extensions
 
-import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
@@ -14,17 +13,17 @@ object Numbers {
   val b = AtomicInteger(1)
 }
 
-class TestCaseExtensionAdder(val n: Int) : TestCaseExtension {
-  override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-    when (context.description.name) {
+class TestCaseExtensionAdder(private val n: Int) : TestCaseExtension {
+  override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+    when (testCase.description.name) {
       "be activated by registration with ProjectExtensions", "use around advice", "use extensions registered on config" -> {
         Numbers.a.addAndGet(n)
-        test(context.config) {
+        execute(testCase) {
           Numbers.b.addAndGet(n)
           complete(it)
         }
       }
-      else -> test(context.config) { complete(it) }
+      else -> execute(testCase) { complete(it) }
     }
   }
 }
