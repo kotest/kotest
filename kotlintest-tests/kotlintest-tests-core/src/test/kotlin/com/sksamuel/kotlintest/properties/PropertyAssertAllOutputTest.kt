@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.PropertyTesting
@@ -13,11 +12,11 @@ import java.io.PrintStream
 
 class PropertyAssertAllOutputTest : FunSpec() {
 
-  override fun beforeSpec(description: Description, spec: Spec) {
+  override fun beforeSpec(spec: Spec) {
     PropertyTesting.shouldPrintGeneratedValues = true
   }
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(spec: Spec) {
     PropertyTesting.shouldPrintGeneratedValues = false
   }
 
@@ -45,7 +44,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           it shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [x, y, a, b, c, d, e]\n"
+      }.trim() shouldBe "Property test completed; values = [x, y, a, b, c, d, e]"
     }
 
     test("property test logging for fn 2") {
@@ -67,7 +66,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           b shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [(x, -1), (x, -2), (y, -1), (y, -2), (a, 1), (b, 2), (c, 3), (d, 4), (e, 5)]\n"
+      }.trim() shouldBe "Property test completed; values = [(x, -1), (x, -2), (y, -1), (y, -2), (a, 1), (b, 2), (c, 3), (d, 4), (e, 5)]"
     }
 
     test("property test logging for fn 3") {
@@ -90,7 +89,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           c shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [(x, -1, x), (x, -1, y), (x, -2, x), (x, -2, y), (y, -1, x), (y, -1, y), (y, -2, x), (y, -2, y), (a, 1, a), (b, 2, b)]\n"
+      }.trim() shouldBe "Property test completed; values = [(x, -1, x), (x, -1, y), (x, -2, x), (x, -2, y), (y, -1, x), (y, -1, y), (y, -2, x), (y, -2, y), (a, 1, a), (b, 2, b)]"
     }
 
     test("property test logging for fn 4") {
@@ -114,7 +113,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           d shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [(x, -1, x, -1), (x, -1, x, -2), (x, -1, y, -1), (x, -1, y, -2), (x, -2, x, -1), (x, -2, x, -2), (x, -2, y, -1), (x, -2, y, -2), (y, -1, x, -1), (y, -1, x, -2), (y, -1, y, -1), (y, -1, y, -2), (y, -2, x, -1), (y, -2, x, -2), (y, -2, y, -1), (y, -2, y, -2)]\n"
+      }.trim() shouldBe "Property test completed; values = [(x, -1, x, -1), (x, -1, x, -2), (x, -1, y, -1), (x, -1, y, -2), (x, -2, x, -1), (x, -2, x, -2), (x, -2, y, -1), (x, -2, y, -2), (y, -1, x, -1), (y, -1, x, -2), (y, -1, y, -1), (y, -1, y, -2), (y, -2, x, -1), (y, -2, x, -2), (y, -2, y, -1), (y, -2, y, -2)]"
     }
 
     test("property test logging for fn 5") {
@@ -139,7 +138,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           e shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [(x, -1, x, -1, x), (x, -1, x, -1, y), (x, -1, x, -2, x), (x, -1, x, -2, y), (x, -1, y, -1, x), (x, -1, y, -1, y), (x, -1, y, -2, x), (x, -1, y, -2, y), (x, -2, x, -1, x), (x, -2, x, -1, y), (x, -2, x, -2, x), (x, -2, x, -2, y), (x, -2, y, -1, x), (x, -2, y, -1, y), (x, -2, y, -2, x), (x, -2, y, -2, y), (y, -1, x, -1, x), (y, -1, x, -1, y), (y, -1, x, -2, x), (y, -1, x, -2, y), (y, -1, y, -1, x), (y, -1, y, -1, y), (y, -1, y, -2, x), (y, -1, y, -2, y), (y, -2, x, -1, x), (y, -2, x, -1, y), (y, -2, x, -2, x), (y, -2, x, -2, y), (y, -2, y, -1, x), (y, -2, y, -1, y), (y, -2, y, -2, x), (y, -2, y, -2, y)]\n"
+      }.trim() shouldBe "Property test completed; values = [(x, -1, x, -1, x), (x, -1, x, -1, y), (x, -1, x, -2, x), (x, -1, x, -2, y), (x, -1, y, -1, x), (x, -1, y, -1, y), (x, -1, y, -2, x), (x, -1, y, -2, y), (x, -2, x, -1, x), (x, -2, x, -1, y), (x, -2, x, -2, x), (x, -2, x, -2, y), (x, -2, y, -1, x), (x, -2, y, -1, y), (x, -2, y, -2, x), (x, -2, y, -2, y), (y, -1, x, -1, x), (y, -1, x, -1, y), (y, -1, x, -2, x), (y, -1, x, -2, y), (y, -1, y, -1, x), (y, -1, y, -1, y), (y, -1, y, -2, x), (y, -1, y, -2, y), (y, -2, x, -1, x), (y, -2, x, -1, y), (y, -2, x, -2, x), (y, -2, x, -2, y), (y, -2, y, -1, x), (y, -2, y, -1, y), (y, -2, y, -2, x), (y, -2, y, -2, y)]"
     }
 
     test("property test logging for fn 6") {
@@ -165,7 +164,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           f shouldNotBe null
         }
 
-      } shouldBe "Property test completed; values = [(x, -1, x, -1, x, -1), (x, -1, x, -1, x, -2), (x, -1, x, -1, y, -1), (x, -1, x, -1, y, -2), (x, -1, x, -2, x, -1), (x, -1, x, -2, x, -2), (x, -1, x, -2, y, -1), (x, -1, x, -2, y, -2), (x, -1, y, -1, x, -1), (x, -1, y, -1, x, -2), (x, -1, y, -1, y, -1), (x, -1, y, -1, y, -2), (x, -1, y, -2, x, -1), (x, -1, y, -2, x, -2), (x, -1, y, -2, y, -1), (x, -1, y, -2, y, -2), (x, -2, x, -1, x, -1), (x, -2, x, -1, x, -2), (x, -2, x, -1, y, -1), (x, -2, x, -1, y, -2), (x, -2, x, -2, x, -1), (x, -2, x, -2, x, -2), (x, -2, x, -2, y, -1), (x, -2, x, -2, y, -2), (x, -2, y, -1, x, -1), (x, -2, y, -1, x, -2), (x, -2, y, -1, y, -1), (x, -2, y, -1, y, -2), (x, -2, y, -2, x, -1), (x, -2, y, -2, x, -2), (x, -2, y, -2, y, -1), (x, -2, y, -2, y, -2), (y, -1, x, -1, x, -1), (y, -1, x, -1, x, -2), (y, -1, x, -1, y, -1), (y, -1, x, -1, y, -2), (y, -1, x, -2, x, -1), (y, -1, x, -2, x, -2), (y, -1, x, -2, y, -1), (y, -1, x, -2, y, -2), (y, -1, y, -1, x, -1), (y, -1, y, -1, x, -2), (y, -1, y, -1, y, -1), (y, -1, y, -1, y, -2), (y, -1, y, -2, x, -1), (y, -1, y, -2, x, -2), (y, -1, y, -2, y, -1), (y, -1, y, -2, y, -2), (y, -2, x, -1, x, -1), (y, -2, x, -1, x, -2), (y, -2, x, -1, y, -1), (y, -2, x, -1, y, -2), (y, -2, x, -2, x, -1), (y, -2, x, -2, x, -2), (y, -2, x, -2, y, -1), (y, -2, x, -2, y, -2), (y, -2, y, -1, x, -1), (y, -2, y, -1, x, -2), (y, -2, y, -1, y, -1), (y, -2, y, -1, y, -2), (y, -2, y, -2, x, -1), (y, -2, y, -2, x, -2), (y, -2, y, -2, y, -1), (y, -2, y, -2, y, -2)]\n"
+      }.trim() shouldBe "Property test completed; values = [(x, -1, x, -1, x, -1), (x, -1, x, -1, x, -2), (x, -1, x, -1, y, -1), (x, -1, x, -1, y, -2), (x, -1, x, -2, x, -1), (x, -1, x, -2, x, -2), (x, -1, x, -2, y, -1), (x, -1, x, -2, y, -2), (x, -1, y, -1, x, -1), (x, -1, y, -1, x, -2), (x, -1, y, -1, y, -1), (x, -1, y, -1, y, -2), (x, -1, y, -2, x, -1), (x, -1, y, -2, x, -2), (x, -1, y, -2, y, -1), (x, -1, y, -2, y, -2), (x, -2, x, -1, x, -1), (x, -2, x, -1, x, -2), (x, -2, x, -1, y, -1), (x, -2, x, -1, y, -2), (x, -2, x, -2, x, -1), (x, -2, x, -2, x, -2), (x, -2, x, -2, y, -1), (x, -2, x, -2, y, -2), (x, -2, y, -1, x, -1), (x, -2, y, -1, x, -2), (x, -2, y, -1, y, -1), (x, -2, y, -1, y, -2), (x, -2, y, -2, x, -1), (x, -2, y, -2, x, -2), (x, -2, y, -2, y, -1), (x, -2, y, -2, y, -2), (y, -1, x, -1, x, -1), (y, -1, x, -1, x, -2), (y, -1, x, -1, y, -1), (y, -1, x, -1, y, -2), (y, -1, x, -2, x, -1), (y, -1, x, -2, x, -2), (y, -1, x, -2, y, -1), (y, -1, x, -2, y, -2), (y, -1, y, -1, x, -1), (y, -1, y, -1, x, -2), (y, -1, y, -1, y, -1), (y, -1, y, -1, y, -2), (y, -1, y, -2, x, -1), (y, -1, y, -2, x, -2), (y, -1, y, -2, y, -1), (y, -1, y, -2, y, -2), (y, -2, x, -1, x, -1), (y, -2, x, -1, x, -2), (y, -2, x, -1, y, -1), (y, -2, x, -1, y, -2), (y, -2, x, -2, x, -1), (y, -2, x, -2, x, -2), (y, -2, x, -2, y, -1), (y, -2, x, -2, y, -2), (y, -2, y, -1, x, -1), (y, -2, y, -1, x, -2), (y, -2, y, -1, y, -1), (y, -2, y, -1, y, -2), (y, -2, y, -2, x, -1), (y, -2, y, -2, x, -2), (y, -2, y, -2, y, -1), (y, -2, y, -2, y, -2)]"
     }
   }
 }

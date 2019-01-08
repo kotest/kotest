@@ -34,13 +34,13 @@ interface TestEngineListener {
    * Is invoked once per [Spec] when the [TestEngine] is preparing
    * to submit the spec for execution to a [SpecRunner].
    */
-  fun prepareSpec(description: Description, klass: KClass<out Spec>) {}
+  fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {}
 
   /**
    * Is invoked once per [Spec] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {}
+  fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {}
 
   /**
    * Invoked each time a [TestCase] has been entered from a parent test.

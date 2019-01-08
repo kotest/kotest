@@ -6,6 +6,8 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
+import io.kotlintest.TestResult
+import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
+import io.kotlintest.TestType
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -56,7 +59,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
   private val executed = HashSet<Description>()
   private val discovered = HashSet<Description>()
   private val queue = ArrayDeque<TestCase>()
-
+  private val results = java.util.HashMap<TestCase, TestResult>()
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
   /**
@@ -64,12 +67,13 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
    * a stack. When the test case has completed, we take the next test case from the
    * stack, and begin executing that.
    */
-  override fun execute(spec: Spec) {
-    topLevelTests(spec).forEach { enqueue(it) }
+  override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
+    topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
       val element = queue.removeFirst()
       execute(element)
     }
+    return results
   }
 
   private fun enqueue(testCase: TestCase) {
@@ -103,8 +107,8 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
           // allowing us to enter the coroutine world
           runBlocking {
             interceptSpec(spec) {
-              spec.testCases().forEach { topLevelTestCase ->
-                locate(testCase.description, topLevelTestCase, this)
+              spec.testCases().forEach { topLevel ->
+                locate(testCase.description, topLevel, this)
               }
             }
           }
@@ -123,7 +127,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
       if (executed.contains(target))
         throw  IllegalStateException("Attempting to execute duplicate test")
       executed.add(target)
-      executor.execute(current, context)
+      executor.execute(current, context) { results[current] = it }
       // otherwise if it's an ancestor then we want to search it recursively
     } else if (current.description.isAncestorOf(target)) {
       current.test.invoke(object : TestContext(scope.coroutineContext) {

@@ -40,13 +40,13 @@ class IsolationTestEngineListenerTest : WordSpec({
 
       listener.specCreated(spec1)
       listener.specCreated(spec2)
-      listener.prepareSpec(spec2.description(), spec2::class)
+      listener.beforeSpecClass(spec2.description(), spec2::class)
       listener.specCreated(spec3)
       then(mock).should().specCreated(argThat { this.description().fullName() == "IsolationTestSpec1" })
 
-      listener.completeSpec(spec1.description(), spec1::class, null)
+      listener.afterSpecClass(spec1.description(), spec1::class, null)
       then(mock).should().specCreated(argThat { this.description().fullName() == "IsolationTestSpec2" })
-      then(mock).should().prepareSpec(argThat { this.fullName() == "IsolationTestSpec2" }, any())
+      then(mock).should().beforeSpecClass(argThat { this.fullName() == "IsolationTestSpec2" }, any())
 
       then(mock).should(never()).specCreated(argThat { this.description().fullName() == "IsolationTestSpec3" })
     }

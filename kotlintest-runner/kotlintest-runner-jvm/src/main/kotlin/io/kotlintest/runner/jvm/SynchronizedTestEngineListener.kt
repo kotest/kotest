@@ -20,15 +20,15 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
+  override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
     synchronized(listener) {
-      listener.prepareSpec(description, klass)
+      listener.beforeSpecClass(description, klass)
     }
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {
     synchronized(listener) {
-      listener.completeSpec(description, klass, t)
+      listener.afterSpecClass(description, klass, t)
     }
   }
 

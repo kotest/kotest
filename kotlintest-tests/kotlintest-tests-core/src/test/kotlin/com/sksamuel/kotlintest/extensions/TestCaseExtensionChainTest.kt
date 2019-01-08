@@ -1,10 +1,9 @@
 package com.sksamuel.kotlintest.extensions
 
-import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
 import io.kotlintest.specs.StringSpec
 
 class TestCaseExtensionChainTest : StringSpec() {
@@ -12,20 +11,20 @@ class TestCaseExtensionChainTest : StringSpec() {
   class WibbleException : RuntimeException()
 
   object MyExt1 : TestCaseExtension {
-    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      if (context.description.name == "test1")
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+      if (testCase.description.name == "test1")
         complete(TestResult.Ignored)
       else
-        test(context.config) { complete(it) }
+        execute(testCase) { complete(it) }
     }
   }
 
   object MyExt2 : TestCaseExtension {
-    override suspend fun intercept(context: TestCaseInterceptContext, test: suspend (TestCaseConfig, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      if (context.description.name == "test2")
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+      if (testCase.description.name == "test2")
         complete(TestResult.Ignored)
       else
-        test(context.config) { complete(it) }
+        execute(testCase) { complete(it) }
     }
   }
 

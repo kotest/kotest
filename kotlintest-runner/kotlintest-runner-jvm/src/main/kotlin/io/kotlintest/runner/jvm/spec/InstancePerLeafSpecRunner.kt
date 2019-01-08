@@ -6,7 +6,9 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
+import io.kotlintest.TestResult
 import io.kotlintest.TestType
+import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -55,13 +57,15 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val queue = ArrayDeque<TestCase>()
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+  private val results = mutableMapOf<TestCase, TestResult>()
 
-  override fun execute(spec: Spec) {
-    topLevelTests(spec).forEach { enqueue(it) }
+  override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
+    topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
       val element = queue.removeFirst()
       execute(element)
     }
+    return results
   }
 
   private fun enqueue(testCase: TestCase) {
@@ -116,7 +120,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   }
 
   private suspend fun executeTarget(testCase: TestCase, scope: CoroutineScope) {
-    executor.execute(testCase, context(testCase, scope))
+    executor.execute(testCase, context(testCase, scope)) { result -> results[testCase] = result }
   }
 
   private suspend fun executeAncestor(testCase: TestCase, target: Description, scope: CoroutineScope) {
@@ -135,7 +139,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
     override suspend fun registerTestCase(testCase: TestCase) {
       if (first) enqueue(testCase) else {
         first = true
-        executor.execute(testCase, context(testCase, scope))
+        executor.execute(testCase, context(testCase, scope)) { result -> results[testCase] = result }
       }
     }
   }
