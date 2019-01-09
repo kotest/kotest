@@ -38,6 +38,9 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
   @KotlinTestDsl
   inner class ExpectScope(val context: TestContext) {
 
+    suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) =
+        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, { this@AbstractExpectSpec.ExpectScope(this).test() }, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Container)
+
     suspend fun expect(name: String, test: suspend TestContext.() -> Unit) =
         context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
 
