@@ -95,7 +95,7 @@ Using the lambda expression avoids another level of indentation and looks neater
 
 [See an example](styles.md) of each testing style.
 
-
+Note: Test cases inside each spec will always run in a certain order (either in definition order, or in a random order, see [documentation](/doc/test_ordering.md#test-ordering) on test ordering).
 
 
 
@@ -418,8 +418,6 @@ object ProjectConfig : AbstractProjectConfig() {
 ```
 
 By default the value is 1, which will run each spec serially.
-
-Note: Test cases inside each spec will always run in a certain order (either in definition order, or in a random order, see [documentation](/doc/test_ordering.md#test-ordering) on test ordering).
 
 ### Discovery Extension
 
