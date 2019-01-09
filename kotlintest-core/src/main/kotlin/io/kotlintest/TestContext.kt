@@ -20,6 +20,10 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
+  infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
+    throw java.lang.RuntimeException("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
+  }
+
   // needs to be thread safe as a context can be shared amongst many executing instances of the same scope
   private val metadata = ConcurrentHashMap<String, Any?>()
 

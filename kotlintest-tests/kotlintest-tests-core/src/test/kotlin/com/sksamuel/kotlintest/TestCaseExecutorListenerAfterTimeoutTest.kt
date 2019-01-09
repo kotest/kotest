@@ -25,11 +25,11 @@ class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
 
   private var listenerRan = false
 
-  override fun afterTest(description: Description, result: TestResult) {
+  override fun afterTest(testCase: TestCase, result: TestResult) {
     listenerRan = true
   }
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(spec: Spec) {
     listenerRan shouldBe true
   }
 
