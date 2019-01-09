@@ -3,7 +3,7 @@ KotlinTest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
-This version of the document is for version 3.2.
+This version of the document is for version 3.2+.
 For docs for earlier versions see [here](reference_3.1.md)
 
 How to use
