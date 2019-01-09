@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
     id 'net.researchgate.release' version '2.7.0'
+    id 'signing'
 }
 
 allprojects {
@@ -69,6 +70,7 @@ allprojects {
     }
 
     signing {
+        useGpgCmd()
         sign configurations.archives
     }
 
