@@ -614,13 +614,13 @@ Isolation Modes
 
 Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
 
-All specs allow you to control how the test engine creates instances of Specs for test cases.
 By default, one instance of the Spec class is created and then each test case is executed until they all complete.
+This is different to the default in JUnit where a new class is instantiated for every test.
 
 However sometimes it may be desirable for each test - or each outer test - to be executed in a different
-instance of the Spec class. In this case, you will want to change the isolation mode. Full instructions can be found [here](isolation_mode.md)
+instance of the Spec class, much like JUnit. In this case, you will want to change the isolation mode.
 
-
+All specs allow you to control the isolation mode. Full instructions can be found [here](isolation_mode.md)
 
 
 
