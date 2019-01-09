@@ -6,7 +6,7 @@ Note: Isolation modes replace _One Instance Per Test_ which was a setting in ver
 All specs allow you to control how the test engine creates new instances of Specs for test cases. By default, one instance of the Spec
 class is created and then each test _lambda_ is exected in turn until all tests have completed.
 
-For example, in the following spec, the output would be "Hello From Sam", as each test is executed in turn instance the same class.
+For example, in the following spec, the output would be "Hello From Sam", as each test is executed in turn in the same instance.
 
 ```kotlin
 class SingleInstanceExample : WordSpec({
