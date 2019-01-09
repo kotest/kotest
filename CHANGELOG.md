@@ -1,6 +1,27 @@
 Changelog
 =========
 
+
+#### 3.2.0
+
+* Feature: Support for coroutines directly from tests #386
+* Feature: Isolation mode added to more finely control the instances in which tests execute #379
+* Feature: When re-running tests, execute previously failing specs first #388
+* Feature: Support for @Before and @After in AnnotationSpec for easier migration from JUnit #513
+* Feature: Support package selectors in discovery #461
+* Improvement: The test listeners have been reworked to make them more powerful and clearer #494
+* Improvement: Better support for multi-line string comparisions #402
+* Improvement: Gen.oneOf should be covariant #471
+* Improvement: Double should have oppostive matchers for shouldBePositive and shouldBeNegative #435
+* Improvement: New matchers #393 #325
+* Bugfix: BehaviorSpec doesn't allow config bug #495
+* Bugfix: Error when throwing AssertionError from inside a shouldThrow{} block #479
+* Bugfix: Fix test timeouts #476
+* Internal: Build now uses Kotlin 1.3 #379
+* Internal: Upgraded class scanning to use ClassGraph instead of Reflections #459
+
+#### 3.1.11
+
 #### 3.1.10
 
 * Feature: Infix version of some inline matchers, eg `date1 shouldHaveSameYearAs date2` (#404 #407 #409)
