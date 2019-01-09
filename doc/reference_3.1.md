@@ -3,8 +3,7 @@ KotlinTest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
-This version of the document is for version 3.2+.
-For docs for earlier versions see [here](reference_3.1.md)
+This version of the document is aimed at version 3.1
 
 How to use
 ----------
@@ -609,18 +608,31 @@ class StringSpecExample : StringSpec({
 
 
 
-Isolation Modes
----------------
+One Instance Per Test
+---------------------
 
-Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
+All specs allow you to instruct the test engine to create a new instance of the Spec for every test case.
 
-By default, one instance of the Spec class is created and then each test case is executed until they all complete.
-This is different to the default in JUnit where a new class is instantiated for every test.
+To do this simply override the `isInstancePerTest()` function returning true:
 
-However sometimes it may be desirable for each test - or each outer test - to be executed in a different
-instance of the Spec class, much like JUnit. In this case, you will want to change the isolation mode.
+```kotlin
+class MyTests : FunSpec() {
+  override fun isInstancePerTest() = true
+  init {
+    // tests here
+  }
+}
+```
 
-All specs allow you to control the isolation mode. Full instructions can be found [here](isolation_mode.md)
+This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` returns false.
+
+
+
+
+
+
+
+
 
 
 
