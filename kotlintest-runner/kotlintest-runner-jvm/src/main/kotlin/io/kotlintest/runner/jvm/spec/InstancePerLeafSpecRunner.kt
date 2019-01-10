@@ -55,14 +55,17 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
                                 scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val queue = ArrayDeque<TestCase>()
+
+  // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
+  private val queue = PriorityQueue<TestCase>(Comparator<TestCase> { o1, o2 -> o2.description.names().size.compareTo(o1.description.names().size) })
+
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
   private val results = mutableMapOf<TestCase, TestResult>()
 
   override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
     topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
-      val element = queue.removeFirst()
+      val element = queue.remove()
       execute(element)
     }
     return results

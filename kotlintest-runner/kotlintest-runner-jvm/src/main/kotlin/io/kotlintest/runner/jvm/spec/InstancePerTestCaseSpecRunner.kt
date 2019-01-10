@@ -18,6 +18,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
 import io.kotlintest.TestType
+import kotlin.Comparator
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -58,7 +59,10 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
 
   private val executed = HashSet<Description>()
   private val discovered = HashSet<Description>()
-  private val queue = ArrayDeque<TestCase>()
+
+  // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
+  private val queue = PriorityQueue<TestCase>(Comparator<TestCase> { o1, o2 -> o2.description.names().size.compareTo(o1.description.names().size) })
+
   private val results = java.util.HashMap<TestCase, TestResult>()
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
@@ -70,7 +74,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
   override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
     topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
-      val element = queue.removeFirst()
+      val element = queue.remove()
       execute(element)
     }
     return results
