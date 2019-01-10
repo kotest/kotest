@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest.specs.stringspec
 
 import currentThreadWithoutCoroutine
-import io.kotlintest.Description
 import io.kotlintest.IsolationMode
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.shouldBe
@@ -12,15 +12,15 @@ import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
-class StringSpecCoroutineInstancePerLeafIsolationModeTest : StringSpec() {
+class StringSpecCoroutineInstancePerLeafTest : StringSpec() {
 
   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
 
-  override fun beforeTest(description: Description) {
+  override fun beforeTest(testCase: TestCase) {
     listenerThread = currentThreadWithoutCoroutine()
   }
 
-  override fun afterTest(description: Description, result: TestResult) {
+  override fun afterTest(testCase: TestCase, result: TestResult) {
     listenerThread shouldBe currentThreadWithoutCoroutine()
   }
 
@@ -88,6 +88,7 @@ class StringSpecCoroutineInstancePerLeafIsolationModeTest : StringSpec() {
   }
 
   private fun logThreadName() {
+    Thread.sleep(10)
     threadnames.add(currentThreadWithoutCoroutine())
   }
 

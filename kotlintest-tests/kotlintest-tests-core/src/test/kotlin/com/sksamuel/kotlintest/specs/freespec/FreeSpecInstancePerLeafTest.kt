@@ -1,8 +1,9 @@
 package com.sksamuel.kotlintest.specs.freespec
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.IsolationMode
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -14,8 +15,8 @@ class FreeSpecInstancePerLeafTest : FreeSpec() {
 
   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
-  override fun afterSpecCompleted(description: Description, spec: Spec) {
-    string shouldBe "abz_hijwv_acdyz_hikwv_acefxyz_acegxyz_"
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    string shouldBe "ab_acd_acef_aceg_hij_hik_"
   }
 
   init {
@@ -37,11 +38,9 @@ class FreeSpecInstancePerLeafTest : FreeSpec() {
           "1.2.2.2" {
             string += "g"
           }
-          string += "x"
         }
-        string += "y"
       }
-      string += "z_"
+      string += "_"
     }
     "2" - {
       string += "h"
@@ -53,9 +52,8 @@ class FreeSpecInstancePerLeafTest : FreeSpec() {
         "2.1.2" {
           string += "k"
         }
-        string += "w"
       }
-      string += "v_"
+      string += "_"
     }
   }
 }

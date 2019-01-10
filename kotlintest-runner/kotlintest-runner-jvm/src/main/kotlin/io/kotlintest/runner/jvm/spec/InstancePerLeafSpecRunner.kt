@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Implementation of [SpecRunner] that executes each leaf test (that is a [TestCase] which
@@ -55,9 +56,16 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
                                 scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
+  private val counter = AtomicInteger(0)
+
+  data class Enqueued(val testCase: TestCase, val count: Int)
 
   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-  private val queue = PriorityQueue<TestCase>(Comparator<TestCase> { o1, o2 -> o2.description.names().size.compareTo(o1.description.names().size) })
+  private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
+    val o1s = o1.testCase.description.names().size
+    val o2s = o2.testCase.description.names().size
+    if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
+  })
 
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
   private val results = mutableMapOf<TestCase, TestResult>()
@@ -66,14 +74,14 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
     topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
-      execute(element)
+      execute(element.testCase)
     }
     return results
   }
 
   private fun enqueue(testCase: TestCase) {
     logger.debug("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(testCase)
+    queue.add(Enqueued(testCase, counter.getAndIncrement()))
   }
 
   // starts executing an enqueued test case

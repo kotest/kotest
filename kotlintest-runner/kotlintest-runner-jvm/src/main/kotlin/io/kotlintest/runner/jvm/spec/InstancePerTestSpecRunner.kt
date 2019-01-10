@@ -7,6 +7,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
+import io.kotlintest.TestType
 import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
-import io.kotlintest.TestType
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.Comparator
 
 /**
@@ -51,17 +52,26 @@ import kotlin.Comparator
  * spec3.outerTest
  * spec3.innerTestB
  */
-class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
-                                    listenerExecutor: ExecutorService,
-                                    scheduler: ScheduledExecutorService) : SpecRunner(listener) {
+class InstancePerTestSpecRunner(listener: TestEngineListener,
+                                listenerExecutor: ExecutorService,
+                                scheduler: ScheduledExecutorService) : SpecRunner(listener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
   private val executed = HashSet<Description>()
   private val discovered = HashSet<Description>()
 
+  // the counter is used to break ties so that tests in the same scope are executed in discovery order
+  private val counter = AtomicInteger(0)
+
+  data class Enqueued(val testCase: TestCase, val count: Int)
+
   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-  private val queue = PriorityQueue<TestCase>(Comparator<TestCase> { o1, o2 -> o2.description.names().size.compareTo(o1.description.names().size) })
+  private val queue = PriorityQueue<InstancePerLeafSpecRunner.Enqueued>(Comparator<InstancePerLeafSpecRunner.Enqueued> { o1, o2 ->
+    val o1s = o1.testCase.description.names().size
+    val o2s = o2.testCase.description.names().size
+    if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
+  })
 
   private val results = java.util.HashMap<TestCase, TestResult>()
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
@@ -75,7 +85,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
     topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
-      execute(element)
+      execute(element.testCase)
     }
     return results
   }
@@ -85,7 +95,7 @@ class InstancePerTestCaseSpecRunner(listener: TestEngineListener,
       throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
     discovered.add(testCase.description)
     logger.debug("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(testCase)
+    queue.add(InstancePerLeafSpecRunner.Enqueued(testCase, counter.getAndIncrement()))
   }
 
   /**

@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.freespec
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.IsolationMode
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class FreeSpecIsolationModeInstancePerNodeTest : FreeSpec() {
+class FreeSpecInstancePerTestTest : FreeSpec() {
 
   companion object {
     var string = ""
@@ -14,8 +15,8 @@ class FreeSpecIsolationModeInstancePerNodeTest : FreeSpec() {
 
   override fun isolationMode() = IsolationMode.InstancePerTest
 
-  override fun afterSpecCompleted(description: Description, spec: Spec) {
-    string shouldBe "a_ab_ad_abccc_ade_"
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    string shouldBe "a_ab_abccc_ad_ade_"
   }
 
   init {
@@ -23,7 +24,7 @@ class FreeSpecIsolationModeInstancePerNodeTest : FreeSpec() {
       string += "a"
       "b" - {
         string += "b"
-        // since we execute this test 3 times, and we are in instance per nod,
+        // since we execute this test 3 times, and we are in instance per test,
         // the whole test should be re-executed 3 times
         "c".config(invocations = 3) {
           string += "c"

@@ -76,10 +76,10 @@ class SpecExecutor(private val engineListener: TestEngineListener,
   private fun runner(spec: Spec, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
     return when (spec.isolationMode()) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
-      IsolationMode.InstancePerTest -> InstancePerTestCaseSpecRunner(engineListener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
       IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
       null -> when {
-        spec.isInstancePerTest() -> InstancePerTestCaseSpecRunner(engineListener, listenerExecutor, scheduler)
+        spec.isInstancePerTest() -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
         else -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
       }
     }
