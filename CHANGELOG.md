@@ -22,6 +22,25 @@ Changelog
 
 #### 3.1.11
 
+* Feature: Infix support to String matchers #443
+* Feature: Infix support to files, floats, sequences, types and uri matchers #445
+* Feature: Infix support to Double matchers #429
+* Feature: Infix suport to Map matchers #417
+* Feature: `shouldNotBePositive` and `shouldNotBeNegative` for Double matchers #435
+* Feature: Support for Duration in time matchers #423
+* Feature: arrow-assertion Failure matcher that checks underlying throwable equality #427 
+* Feature: `shouldNotBeTrue` and `shouldNotBeFalse` for Boolean matchers #452
+* Improvement: Documentation for `Gen.int()` #419
+* Improvement: Javadocs for Date matchers #420
+* Improvement: Better error message for empty collection in matchers #438
+* Improvement: Better stacktrace filtering from Failures class #465
+* Bugfix: Double matcher `shouldNotBeExactly` had the wrong implementation #432
+* Bugfix: Single-thread test had `before` and `after` running in separate thread from the test #447
+* Bugfix: Test with invocations > 1 wouldn't complete if test failed #413
+* Bugfix: Wrong assertion on `shouldThrow` #479 #484
+
+
+
 #### 3.1.10
 
 * Feature: Infix version of some inline matchers, eg `date1 shouldHaveSameYearAs date2` (#404 #407 #409)
