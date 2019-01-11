@@ -12,6 +12,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -124,7 +125,9 @@ class TestCaseExecutor(private val listener: TestEngineListener,
             try {
               testCase.test(context)
               null
-            } catch(t: Throwable) { t }
+            } catch(t: Throwable) {
+              t.unwrapIfReflectionCall()
+            }
           }
         }
 
@@ -190,5 +193,18 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     null -> TestResult(TestStatus.Success, null, null, metadata)
     is AssertionError -> TestResult(TestStatus.Failure, error, null, metadata)
     else -> TestResult(TestStatus.Error, error, null, metadata)
+  }
+
+  /**
+   * In some particular cases, such as AnnotationSpec, a call will be made using Reflection.
+   * When using reflection, any error will be wrapped around a InvocationTargetException, as explained
+   * in https://stackoverflow.com/questions/6020719/what-could-cause-java-lang-reflect-invocationtargetexception
+   * By verifying if this is an InvocationTargetException, we can unwrap it and throw the cause instead
+   */
+  private fun Throwable.unwrapIfReflectionCall(): Throwable {
+    return when (this) {
+      is InvocationTargetException -> cause ?: this
+      else -> this
+    }
   }
 }

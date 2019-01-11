@@ -3,7 +3,10 @@ package com.sksamuel.kotlintest.specs.annotation
 import io.kotlintest.Description
 import io.kotlintest.IsolationMode
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
+import io.kotlintest.TestResult
+import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
@@ -112,4 +115,28 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
   override fun isolationMode() = IsolationMode.SingleInstance
 
   override fun testCaseOrder() = TestCaseOrder.Sequential
+}
+
+class AnnotationSpecFailureTest : AnnotationSpec() {
+  class FooException: Exception()
+
+  private val thrownException = FooException()
+
+  @Test
+  fun foo() {
+    throw thrownException
+  }
+
+  override fun extensions() = listOf(ExceptionCaptureExtension())
+
+  inner class ExceptionCaptureExtension : TestCaseExtension {
+
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+      execute(testCase) {
+        it.error shouldBe thrownException
+        complete(TestResult.Success)
+      }
+    }
+
+  }
 }
