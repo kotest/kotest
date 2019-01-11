@@ -17,6 +17,7 @@ Changelog
 * Bugfix: BehaviorSpec doesn't allow config bug #495
 * Bugfix: Error when throwing AssertionError from inside a shouldThrow{} block #479
 * Bugfix: Fix test timeouts #476
+* Bugfix: Fix annotation spec failure message #539
 * Internal: Build now uses Kotlin 1.3 #379
 * Internal: Upgraded class scanning to use ClassGraph instead of Reflections #459
 
