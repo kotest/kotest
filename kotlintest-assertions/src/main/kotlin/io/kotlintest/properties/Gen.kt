@@ -13,6 +13,10 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.math.BigInteger
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 /** A shared random number generator. */
@@ -376,6 +380,33 @@ interface Gen<T> {
       override fun random(): Sequence<UUID> = generateSequence { UUID.randomUUID() }
     }
 
+    fun localDate(minYear: Int = 1, maxYear: Int = 2030): Gen<LocalDate> = object : Gen<LocalDate> {
+      override fun constants(): Iterable<LocalDate> = emptyList()
+      override fun random(): Sequence<LocalDate> = generateSequence { LocalDate.of(RANDOM.nextInt(maxYear - minYear) + minYear, RANDOM.nextInt(12) + 1, RANDOM.nextInt(31) + 1) }
+    }
+
+    fun localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
+      override fun constants(): Iterable<LocalTime> = emptyList()
+      override fun random(): Sequence<LocalTime> = generateSequence { LocalTime.of(RANDOM.nextInt(24), RANDOM.nextInt(60), RANDOM.nextInt(60)) }
+    }
+
+    fun localDateTime(minYear: Int = 1, maxYear: Int = 2030): Gen<LocalDateTime> = object : Gen<LocalDateTime> {
+      override fun constants(): Iterable<LocalDateTime> = emptyList()
+      override fun random(): Sequence<LocalDateTime> = generateSequence { LocalDateTime.of(RANDOM.nextInt(maxYear - minYear) + minYear, RANDOM.nextInt(12) + 1, RANDOM.nextInt(31) + 1, RANDOM.nextInt(24), RANDOM.nextInt(60), RANDOM.nextInt(60)) }
+    }
+
+    fun duration(): Gen<Duration> = object : Gen<Duration> {
+      private fun randomDuration(): Duration = when (RANDOM.nextInt(5)) {
+        0 -> Duration.ofSeconds(RANDOM.nextLong())
+        1 -> Duration.ofHours(RANDOM.nextLong())
+        2 -> Duration.ofMillis(RANDOM.nextLong())
+        3 -> Duration.ofNanos(RANDOM.nextLong())
+        else -> Duration.ofDays(RANDOM.nextLong())
+      }
+      override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
+      override fun random(): Sequence<Duration> = generateSequence { randomDuration() }
+    }
+
     /**
      * Returns a stream of values where each value is a randomly
      * chosen Double.
@@ -469,7 +500,17 @@ interface Gen<T> {
       override fun random(): Sequence<Pair<K, V>> = genK.random().zip(genV.random())
     }
 
-    // list(pair(genK, genV)).generate().toMap()
+    /**
+     * Returns a [[Gen]] where each value is a [[Triple]] generated
+     * by a value from each of three supplied generators.
+     */
+    fun <A, B, C> triple(genA: Gen<A>, genB: Gen<B>, genC: Gen<C>): Gen<Triple<A, B, C>> = object : Gen<Triple<A, B, C>> {
+      override fun constants(): Iterable<Triple<A, B, C>> {
+        return genA.constants().zip(genB.constants()).zip(genC.constants()).map { Triple(it.first.first, it.first.second, it.second) }
+      }
+
+      override fun random(): Sequence<Triple<A, B, C>> = genA.random().zip(genB.random()).zip(genC.random()).map { Triple(it.first.first, it.first.second, it.second) }
+    }
 
     /**
      * Returns a stream of values, where each value is
