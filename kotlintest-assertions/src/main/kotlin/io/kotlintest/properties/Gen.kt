@@ -127,6 +127,19 @@ interface Gen<T> {
     }
   }
 
+  /**
+   * Returns a new [[Gen]] which will return the values from this gen and the values of
+   * the supplied gen together. The supplied gen must be a subtype of the
+   * type of this gen.
+   */
+  fun <U : T> merge(gen: Gen<U>): Gen<T> {
+    val outer = this
+    return object : Gen<T> {
+      override fun constants(): Iterable<T> = outer.constants() + gen.constants()
+      override fun random(): Sequence<T> = outer.random().zip(gen.random()).flatMap { sequenceOf(it.first, it.second) }
+    }
+  }
+
   companion object {
 
     fun <A, T> bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
@@ -374,6 +387,26 @@ interface Gen<T> {
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
     }
 
+    /**
+     * Returns a [[Gen]] which is the same as [[Gen.double]]] but does not include infinity or NaN.
+     */
+    fun numericDoubles(): Gen<Double> = object : Gen<Double> {
+      val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE)
+      override fun constants(): Iterable<Double> = literals
+      override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun shrinker(): Shrinker<Double>? = DoubleShrinker
+    }
+
+    /**
+     * Returns a [[Gen]] which is the same as [[Gen.float]]] but does not include infinity or NaN.
+     */
+    fun numericFloats(): Gen<Float> = object : Gen<Float> {
+      val literals = listOf(0.0F, 1.0F, -1.0F, Float.MIN_VALUE, Float.MAX_VALUE)
+      override fun constants(): Iterable<Float> = literals
+      override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
+      override fun shrinker(): Shrinker<Float>? = FloatShrinker
+    }
+
     fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
     fun negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
 
@@ -451,6 +484,9 @@ interface Gen<T> {
       }
     }
 
+    /**
+     * Returns a [[Gen]] which always returns the same value.
+     */
     fun <T> constant(value: T): Gen<T> = object : Gen<T> {
       override fun constants(): Iterable<T> = listOf(value)
       override fun random(): Sequence<T> = generateInfiniteSequence { value }
