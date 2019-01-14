@@ -18,7 +18,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
   @KotlinTestDsl
   inner class GivenContext(val context: TestContext) {
     suspend fun And(name: String, test: suspend WhenContext.() -> Unit) = and(name, test)
-    suspend fun and(name: String, test: suspend WhenContext.() -> Unit) = add("Add: $name", test)
+    suspend fun and(name: String, test: suspend WhenContext.() -> Unit) = add("And: $name", test)
     suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = `when`(name, test)
     suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = add("When: $name", test)
     private suspend fun add(name: String, test: suspend WhenContext.() -> Unit) =
