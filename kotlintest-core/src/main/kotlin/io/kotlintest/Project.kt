@@ -38,13 +38,14 @@ object Project {
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
-      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config") ?: defaultProjectConfigFullyQualifiedName
+      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config")
+          ?: defaultProjectConfigFullyQualifiedName
       val clas = Class.forName(projectConfigFullyQualifiedName)
       val field = clas.declaredFields.find { it.name == "INSTANCE" }
       when (field) {
-      // if the static field for an object cannot be found, then instantiate
+        // if the static field for an object cannot be found, then instantiate
         null -> clas.newInstance() as AbstractProjectConfig
-      // if the static field can be found then use it
+        // if the static field can be found then use it
         else -> field.get(null) as AbstractProjectConfig
       }
     } catch (cnf: ClassNotFoundException) {
@@ -56,6 +57,7 @@ object Project {
   private val _listeners = mutableListOf<TestListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
+  private var writeSpecFailureFile: Boolean = true
 
   private var parallelism: Int = 1
 
@@ -82,8 +84,10 @@ object Project {
     _filters.addAll(this.filters())
     _specExecutionOrder = this.specExecutionOrder()
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
+    writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || this.writeSpecFailureFile()
   }
 
+  fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
   fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
   fun beforeAll() {

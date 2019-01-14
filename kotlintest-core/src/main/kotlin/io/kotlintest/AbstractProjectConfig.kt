@@ -57,6 +57,14 @@ abstract class AbstractProjectConfig {
   open fun parallelism(): Int = 1
 
   /**
+   * When set to true, failed specs are written to a file called spec_failures.
+   * This file is used on subsequent test runs to run the failed specs first.
+   * To disable this feature, set this to false, or set the system property
+   * 'kotlintest.write.specfailures=false'
+   */
+  open fun writeSpecFailureFile(): Boolean = true
+
+  /**
    * Sets the order of top level tests in a spec.
    * The value set here will be used unless overriden in a [Spec].
    * The value in a [Spec] is always taken in preference to the value here.

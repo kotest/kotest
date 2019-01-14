@@ -1,6 +1,8 @@
 package io.kotlintest.runner.junit5
 
+import arrow.core.Try
 import io.kotlintest.Description
+import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
@@ -89,16 +91,23 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   override fun engineFinished(t: Throwable?) {
     logger.debug("Engine finished; throwable=[$t]")
 
-    val failures = results.filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
+    val failures = results
+        .filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }
 
+    if (Project.writeSpecFailureFile())
+      writeSpecFailures(failures)
+
+    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
+    listener.executionFinished(root, result)
+  }
+
+  private fun writeSpecFailures(failures: List<ResultState>): Try<Any> = Try {
     val dir = Paths.get(".kotlintest")
     dir.toFile().mkdirs()
     val path = dir.resolve("spec_failures").toAbsolutePath()
     logger.debug("Writing report to $path")
-    Files.write(path, failures.toByteArray())
-
-    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-    listener.executionFinished(root, result)
+    val content = failures.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
+    Files.write(path, content.toByteArray())
   }
 
   override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
