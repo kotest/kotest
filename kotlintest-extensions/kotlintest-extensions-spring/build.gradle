@@ -1,4 +1,4 @@
-dependencies {
+updated
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile 'org.springframework:spring-test:4.3.14.RELEASE'
