@@ -1,4 +1,4 @@
-dependencies {
+updated
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile 'io.qameta.allure:allure-java-commons:2.6.0'
