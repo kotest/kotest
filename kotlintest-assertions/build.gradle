@@ -1,1 +1,5 @@
-new content
+updated
+    compile "org.jetbrains.kotlin:kotlin-reflect"
+    compile 'com.univocity:univocity-parsers:2.7.6'
+    compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
+}
