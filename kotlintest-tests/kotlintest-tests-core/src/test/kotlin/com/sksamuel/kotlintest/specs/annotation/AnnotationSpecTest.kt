@@ -6,6 +6,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.TestResult
+import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.fail
 import io.kotlintest.shouldBe
@@ -14,7 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class AnnotationSpecTest : AnnotationSpec() {
 
-  var count = 0
+  private class FooException : RuntimeException()
+  private class BarException : RuntimeException()
+
+  private var count = 0
 
   @Test
   fun test1() {
@@ -26,8 +30,55 @@ class AnnotationSpecTest : AnnotationSpec() {
     count += 1
   }
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  @Test(expected = FooException::class)
+  fun test3() {
+    throw FooException()  // This test should pass!
+  }
+
+  @Test(expected = FooException::class)
+  fun test4() {
+    throw BarException()
+  }
+
+  @Test(expected = FooException::class)
+  fun test5() {
+    // Throw nothing
+  }
+
+  override fun afterSpec(spec: Spec) {
     count shouldBe 2
+  }
+
+  override fun extensions(): List<SpecLevelExtension> = listOf(IgnoreFailedTestExtension)
+
+  private object IgnoreFailedTestExtension : TestCaseExtension {
+
+    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
+      if (testCase.name !in listOf("test4", "test5")) return execute(testCase, complete)
+
+      execute(testCase) {
+        if (it.error !is AssertionError) {
+          complete(TestResult.failure(AssertionError("Expecting an assertion error!")))
+        }
+
+        val errorMessage = it.error!!.message
+        val wrongExceptionMessage = "Expected exception of class FooException, but BarException was thrown instead."
+        val noExceptionMessage = "Expected exception of class FooException, but no exception was thrown."
+
+        when (testCase.name) {
+          "test4" -> if (errorMessage == wrongExceptionMessage) {
+            complete(TestResult.Success)
+          } else {
+            complete(TestResult.failure(AssertionError("Wrong message.")))
+          }
+          "test5" -> if (errorMessage == noExceptionMessage) {
+            complete(TestResult.Success)
+          } else {
+            complete(TestResult.failure(AssertionError("Wrong message.")))
+          }
+        }
+      }
+    }
   }
 }
 

@@ -5,8 +5,10 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
+import io.kotlintest.internal.unwrapIfReflectionCall
 import io.kotlintest.specs.AbstractAnnotationSpec.After
 import io.kotlintest.specs.AbstractAnnotationSpec.AfterAll
 import io.kotlintest.specs.AbstractAnnotationSpec.AfterClass
@@ -18,6 +20,7 @@ import io.kotlintest.specs.AbstractAnnotationSpec.BeforeEach
 import io.kotlintest.specs.AbstractAnnotationSpec.Ignore
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.memberFunctions
 
 typealias Test = AbstractAnnotationSpec.Test
@@ -72,9 +75,39 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
   }
 
   private fun KFunction<*>.createTestCase(config: TestCaseConfig): TestCase {
-    return this.let {
-      createTestCase(it.name, { it.call(this@AbstractAnnotationSpec) }, config, TestType.Test)
+    return if (this.isExpectingException()) {
+      val expected = this.getExpectedException()
+      createTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
+    } else {
+      createTestCase(name, { callSuspend(this@AbstractAnnotationSpec) }, config, TestType.Test)
     }
+  }
+
+  private fun KFunction<*>.isExpectingException(): Boolean {
+    return annotations.filterIsInstance<Test>().first().expected != Test.None::class
+  }
+
+  private fun KFunction<*>.getExpectedException(): KClass<out Throwable> {
+    return annotations.filterIsInstance<Test>().first().expected
+  }
+
+  private fun KFunction<*>.callWhileExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
+    return {
+      val thrown = try {
+        callSuspend(this@AbstractAnnotationSpec)
+        null
+      } catch (t: Throwable) { t.unwrapIfReflectionCall() } ?: failNoExceptionThrown(expected)
+
+      if(thrown::class != expected) failWrongExceptionThrown(expected, thrown)
+    }
+  }
+
+  private fun failNoExceptionThrown(expected: KClass<out Throwable>): Nothing {
+    throw Failures.failure("Expected exception of class ${expected.simpleName}, but no exception was thrown.")
+  }
+
+  private fun failWrongExceptionThrown(expected: KClass<out Throwable>, thrown: Throwable): Nothing {
+    throw Failures.failure("Expected exception of class ${expected.simpleName}, but ${thrown::class.simpleName} was thrown instead.")
   }
 
 
@@ -158,8 +191,27 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
    * Marks a function to be executed as a Test
    *
    * This can be used in AnnotationSpec to mark a function to be executed as a test by KotlinTest Engine.
+   *
+   *
+   * [expected] can be used to mark a test to expect a specific exception.
+   *
+   * This is useful when moving from JUnit, in which you use expected to verify for an exception.
+   *
+   * ```
+   *  @Test(expected = FooException::class)
+   *  fun foo() {
+   *    throw FooException()  // Pass
+   *  }
+   *
+   *  @Test(expected = FooException::class
+   *  fun bar() {
+   *    throw BarException() // Fails, FooException was expected
+   *  }
+   * ```
    */
-  annotation class Test
+  annotation class Test(val expected: KClass<out Throwable> = None::class) {
+    object None : Throwable()
+  }
 
   /**
    * Marks a Test to be ignored
@@ -196,3 +248,50 @@ private fun KClass<out AbstractAnnotationSpec>.findFunctionAnnotatedWithAnyOf(va
 
 private fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
         annotations.any { it.annotationClass in annotation }
+
+
+@Deprecated("To be removed soon")
+private object Failures {
+
+  fun failure(message: String, cause: Throwable? = null): AssertionError = AssertionError(message).apply {
+    removeKotlintestElementsFromStacktrace(this)
+    initCause(cause)
+  }
+
+  fun removeKotlintestElementsFromStacktrace(throwable: Throwable) {
+    throwable.stackTrace = UserStackTraceConverter.getUserStacktrace(throwable.stackTrace)
+  }
+
+}
+
+private object UserStackTraceConverter {
+
+  fun getUserStacktrace(kotlintestStacktraces: Array<StackTraceElement>): Array<StackTraceElement> {
+    return kotlintestStacktraces.dropUntilUserClass()
+  }
+
+  private fun Array<StackTraceElement>.dropUntilUserClass(): Array<StackTraceElement> {
+    return toList().dropUntilFirstKotlintestClass().dropUntilFirstNonKotlintestClass().toTypedArray()
+  }
+
+  private fun List<StackTraceElement>.dropUntilFirstKotlintestClass(): List<StackTraceElement> {
+    return dropWhile {
+      it.isNotKotlintestClass()
+    }
+  }
+
+  private fun List<StackTraceElement>.dropUntilFirstNonKotlintestClass(): List<StackTraceElement> {
+    return dropWhile {
+      it.isKotlintestClass()
+    }
+  }
+
+  private fun StackTraceElement.isKotlintestClass(): Boolean {
+    return className.startsWith("io.kotlintest")
+  }
+
+  private fun StackTraceElement.isNotKotlintestClass(): Boolean {
+    return !isKotlintestClass()
+  }
+
+}
