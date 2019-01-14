@@ -1,4 +1,4 @@
-dependencies {
+updated
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
