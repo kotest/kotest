@@ -72,7 +72,7 @@ KotlinTest is permissive in the way you can lay out tests, which it calls a test
 There are [several styles](styles.md) to pick from. There is no functional difference between these -
  it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
 
-You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, or ExpectSpec in your test class,
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, ExpectSpec  or AnnotationSpec in your test class,
  and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 For example, using a lambda expression in the constructor, with the StringSpec gives us:
@@ -95,6 +95,8 @@ class MyTests : StringSpec() {
 
 Using the lambda expression avoids another level of indentation and looks neater,
  but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
+ 
+ All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
 
 [See an example](styles.md) of each testing style.
 
@@ -299,12 +301,12 @@ object TimerListener : TestListener {
 
   var started = 0L
 
-  override fun beforeTest(description: Description): Unit {
+  override fun beforeTest(testCase: TestCase): Unit {
     started = System.currentTimeMillis()
   }
 
-  override fun afterTest(description: Description, result: TestResult): Unit {
-    println("Duration of $description = " + (System.currentTimeMillis() - started))
+  override fun afterTest(testCase: TestCase, result: TestResult): Unit {
+    println("Duration of ${testCase.description} = " + (System.currentTimeMillis() - started))
   }
 }
 ```
@@ -321,6 +323,19 @@ class MyTestClass : WordSpec() {
 }
 ```
 
+It's also important to notice that every `Spec` is also a `TestListener`, therefore you may override these functions directly in `Spec`.
+
+```kotlin
+class MyTestClass : WordSpec() {
+
+    override fun beforeTest(testCase: TestCase) {
+      // BeforeTest here
+    }
+
+}
+
+```
+
 These functions will now be invoked for every test case inside the `MyTestClass` test class. Maybe you want
  this listener to run for every test in the entire project. To do that, you would register the listener with
  the project config singleton. For more information on this see [ProjectConfig](#project-config).
@@ -329,10 +344,12 @@ The full list of the functions in the `TestListener` interface is as follows:
 
 |Function|Purpose|
 |--------|-------|
-|beforeTest|This function will be invoked each time a new Test Case is executed.|
-|afterTest|Is invoked when a Test Case has finished. This includes when a test case is ignored (skipped), passes (is successful), or fails (errors).|
+|beforeTest|Is invoked each time before a Test Case is executed. If the test is marked as Ignored, this won't execute.|
+|afterTest|Is invoked each time after a Test Case is executed. If the test is marked as Ignored, this won't execute. This will execute even if the test fails |
 |beforeSpec|Is invoked each time a Spec is started, before any `beforeTest` functions are invoked. |
 |afterSpec|Is invoked each time a Spec completes, after all `afterTest` functions are invoked. |
+|beforeSpecClass|Is invoked when the engine is preparing the spec to be executed. It will be executed only once, regardless of how many times the [Spec is instantiated](isolation_mode.md)
+|afterSpecClass|Is invoked once all tests for a `Spec` have completed, regardless of how many times the [Spec is instantiated](isolation_mode.md)
 |beforeProject|Is invoked as soon as the Test Engine is started.|
 |afterProject|Is invoked as soon as the Test Engine has finished.|
 |afterDiscovery|Is invoked after all the Spec classes have been discovered, but before any `beforeSpec` functions are called, and before any specs are instantiated by the Test Engine. |
