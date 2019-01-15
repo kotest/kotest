@@ -3,7 +3,7 @@ dependencies {
     compile project(':kotlintest-assertions')
     compile 'io.qameta.allure:allure-java-commons:2.6.0'
     compile 'javax.xml.bind:jaxb-api:2.3.1'
-    compile 'com.sun.xml.bind:jaxb-core:2.2.11'
+    compile 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     compile 'com.sun.xml.bind:jaxb-impl:2.3.2'
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
     testRuntime 'log4j:log4j:1.2.17'
