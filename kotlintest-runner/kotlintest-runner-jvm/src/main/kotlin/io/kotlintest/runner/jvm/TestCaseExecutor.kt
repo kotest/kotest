@@ -8,11 +8,11 @@ import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
+import io.kotlintest.internal.unwrapIfReflectionCall
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -195,16 +195,4 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     else -> TestResult(TestStatus.Error, error, null, metadata)
   }
 
-  /**
-   * In some particular cases, such as AnnotationSpec, a call will be made using Reflection.
-   * When using reflection, any error will be wrapped around a InvocationTargetException, as explained
-   * in https://stackoverflow.com/questions/6020719/what-could-cause-java-lang-reflect-invocationtargetexception
-   * By verifying if this is an InvocationTargetException, we can unwrap it and throw the cause instead
-   */
-  private fun Throwable.unwrapIfReflectionCall(): Throwable {
-    return when (this) {
-      is InvocationTargetException -> cause ?: this
-      else -> this
-    }
-  }
 }
