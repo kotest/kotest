@@ -2,7 +2,7 @@ dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile 'org.springframework:spring-test:4.3.14.RELEASE'
-    compile 'org.springframework:spring-context:4.3.14.RELEASE'
+    compile 'org.springframework:spring-context:5.1.4-RELEASE'
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
 }
 
