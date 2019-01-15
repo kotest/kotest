@@ -1,6 +1,6 @@
 dependencies {
     compile project(':kotlintest-core')
-    compile 'io.github.classgraph:classgraph:4.4.12'
+    compile 'io.github.classgraph:classgraph:4.6.16'
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'io.arrow-kt:arrow-core:0.8.1'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
