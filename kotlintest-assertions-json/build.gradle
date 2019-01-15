@@ -1,5 +1,5 @@
 buildscript {
-    ext.jackson_version = '2.9.6'
+    ext.jackson_version = '2.9.8'
 }
 
 repositories {
