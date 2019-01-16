@@ -11,5 +11,5 @@ buildscript {
 }
 
 dependencies {
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.11'
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.2.0'
 }
