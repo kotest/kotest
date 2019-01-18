@@ -138,7 +138,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       }
 
       // we need to interrupt the threads in the executor in order to effect the timeout
-      scheduler.schedule({
+      val scheduledInterrupt = scheduler.schedule({
         error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
         // this will ruin the listener executor so after() won't run if the test times out but I don't
         // know how else to interupt the coroutine context effectively. job.cancel() won't cut the mustard here.
@@ -150,6 +150,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       }
 
       supervisorJob.join()
+
+      // This cancel is necessary, or else the scheduler is reutilized by another test, and the shutdown will happen
+      // in the other test. This leads to tests "sharing" a timeout, and another test being timed out due to this task.
+      scheduledInterrupt.cancel(false)
       val result = buildTestResult(error.get(), context.metaData())
 
       listener.afterTestCaseExecution(testCase, result)
