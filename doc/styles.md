@@ -114,6 +114,26 @@ class MyTests : BehaviorSpec({
 Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
+You can also use the `And` keyword in `Given` and `When` to add an extra depth to it:
+
+```kotlin
+class MyTests : BehaviorSpec({
+    given("a broomstick") {
+        and("a witch") {
+            `when`("The witch sits on it") {
+                and("she laughs hysterically") {
+                     then("She should be able to fly") {
+                     }
+                 }
+            }
+        }
+    }
+})
+
+```
+
+Note: `Then` scope doesn't have an `and` scope due to a gradle bug. For more information, see #594
+
 ### Free Spec
 
 `FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:

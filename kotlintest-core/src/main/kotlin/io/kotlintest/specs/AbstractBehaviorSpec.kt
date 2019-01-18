@@ -15,48 +15,129 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     body()
   }
 
+  fun Given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
+  fun given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
+
+  private fun addGivenContext(name: String, test: suspend GivenContext.() -> Unit) {
+    addTestCase("Given: $name", { thisSpec.GivenContext(this).test() }, defaultTestCaseConfig, TestType.Container)
+  }
+
   @KotlinTestDsl
   inner class GivenContext(val context: TestContext) {
-    suspend fun And(name: String, test: suspend WhenContext.() -> Unit) = and(name, test)
-    suspend fun and(name: String, test: suspend WhenContext.() -> Unit) = add("And: $name", test)
-    suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = `when`(name, test)
-    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = add("When: $name", test)
-    private suspend fun add(name: String, test: suspend WhenContext.() -> Unit) =
-        context.registerTestCase(name, this@AbstractBehaviorSpec, { this@AbstractBehaviorSpec.WhenContext(this).test() }, this@AbstractBehaviorSpec.defaultTestCaseConfig, TestType.Container)
+    suspend fun And(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
+    suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
+
+    private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
+      context.registerTestCase("And: $name", thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+
+    private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+      context.registerTestCase("When: $name", thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+    suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+
+    private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    fun then(name: String) = TestScope(name, context)
+  }
+
+  @KotlinTestDsl
+  inner class GivenAndContext(val context: TestContext) {
+    suspend fun And(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
+    suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
+
+    private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
+      context.registerTestCase("And: $name", thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+
+    private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+      context.registerTestCase("When: $name", thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+    suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+
+    private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    fun then(name: String) = TestScope(name, context)
   }
 
   @KotlinTestDsl
   inner class WhenContext(val context: TestContext) {
-    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = then(name, test)
-    suspend fun then(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("Then: $name", this@AbstractBehaviorSpec, test, this@AbstractBehaviorSpec.defaultTestCaseConfig, TestType.Test)
+    suspend fun And(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
+    suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
-    fun then(name: String): ThenScope = ThenScope(name, context)
+    private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
+      context.registerTestCase("And: $name", thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+    suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+
+    private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+    }
+
+    fun then(name: String) = TestScope(name, context)
   }
 
   @KotlinTestDsl
-  inner class ThenScope(val name: String, val context: TestContext) {
+  inner class WhenAndContext(val context: TestContext) {
+    suspend fun And(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
+    suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
+    private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
+      context.registerTestCase("And: $name", thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+    }
+
+    suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+    suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+
+    private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+    }
+
+    fun then(name: String) = TestScope(name, context)
+  }
+
+  @KotlinTestDsl
+  inner class ThenContext(val context: TestContext)
+
+  @KotlinTestDsl
+  inner class TestScope(val name: String, val context: TestContext) {
     suspend fun config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Duration? = null,
-        threads: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: TestContext.() -> Unit) {
+            invocations: Int? = null,
+            enabled: Boolean? = null,
+            timeout: Duration? = null,
+            threads: Int? = null,
+            tags: Set<Tag>? = null,
+            extensions: List<TestCaseExtension>? = null,
+            test: TestContext.() -> Unit) {
       val config = TestCaseConfig(
-          enabled ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.enabled,
-          invocations ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.invocations,
-          timeout ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.timeout,
-          threads ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.threads,
-          tags ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.tags,
-          extensions ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.extensions)
+              enabled ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.enabled,
+              invocations ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.invocations,
+              timeout ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.timeout,
+              threads ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.threads,
+              tags ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.tags,
+              extensions ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.extensions)
+
       context.registerTestCase(name, this@AbstractBehaviorSpec, { test.invoke(this) }, config, TestType.Test)
     }
   }
 
-  fun Given(name: String, test: suspend GivenContext.() -> Unit) = given(name, test)
-  fun given(name: String, test: suspend GivenContext.() -> Unit) =
-      addTestCase("Given: $name", { this@AbstractBehaviorSpec.GivenContext(this).test() }, defaultTestCaseConfig, TestType.Container)
+  private val thisSpec: AbstractBehaviorSpec
+    get() = this@AbstractBehaviorSpec
+
 }
