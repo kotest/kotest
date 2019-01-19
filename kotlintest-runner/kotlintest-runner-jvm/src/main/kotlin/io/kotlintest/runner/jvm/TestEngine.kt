@@ -7,8 +7,6 @@ import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -25,9 +23,11 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   // the main executor is used to parallelize the execution of specs
   // inside a spec, tests themselves are executed as coroutines
   private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
-  private val listenerExecutors = ConcurrentLinkedQueue<ExecutorService>()
+
+  // the scheduler executor is used for notifications on when a test case timeout has been reached
   private val scheduler = Executors.newSingleThreadScheduledExecutor()
-  private val specExecutor = SpecExecutor(listener, listenerExecutors, scheduler)
+
+  private val specExecutor = SpecExecutor(listener, scheduler)
 
 
   private fun afterAll() = Try {

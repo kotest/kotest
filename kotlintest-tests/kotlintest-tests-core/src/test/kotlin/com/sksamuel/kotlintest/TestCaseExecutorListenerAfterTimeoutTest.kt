@@ -35,13 +35,13 @@ class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
 
   init {
 
-    test("tests which block should timeout but still run after listeners").config {
+    test("tests which timeout should still run the 'after test' listeners").config {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest, {
-        Thread.sleep(100000000L)
+        Thread.sleep(500)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {

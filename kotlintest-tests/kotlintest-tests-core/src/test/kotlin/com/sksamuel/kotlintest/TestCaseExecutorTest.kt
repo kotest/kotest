@@ -221,13 +221,13 @@ class TestCaseExecutorTest : FunSpec() {
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
     }
 
-    test("tests which block should timeout should error").config {
+    test("tests which timeout should error").config {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
-        Thread.sleep(100000000L)
+        Thread.sleep(10000)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
@@ -267,7 +267,7 @@ class TestCaseExecutorTest : FunSpec() {
       )
     }
 
-    test("test with infinite loop but failure should complete with TestStatus.Failure") {
+    test("test with infinite loop but invocations = 1 should complete with TestStatus.Failure") {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
@@ -287,5 +287,27 @@ class TestCaseExecutorTest : FunSpec() {
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
+
+    test("test with infinite loop but invocations > 1 should complete with TestStatus.Failure") {
+
+      val listenerExecutor = Executors.newSingleThreadExecutor()
+      val listener = mock<TestEngineListener> {}
+      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+
+      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+        while (true) {
+          "this" shouldBe "that"
+        }
+      }, 0, TestType.Test, TestCaseConfig(true, invocations = 2, threads = 1))
+
+      val context = object : TestContext(GlobalScope.coroutineContext) {
+        override suspend fun registerTestCase(testCase: TestCase) {}
+        override fun description(): Description = Description.root("wibble")
+      }
+      executor.execute(testCase, context)
+
+      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+    }
   }
 }
+

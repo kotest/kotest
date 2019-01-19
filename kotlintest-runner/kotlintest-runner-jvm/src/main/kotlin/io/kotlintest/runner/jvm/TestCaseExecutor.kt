@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference
  * The executor can be shared between multiple tests as it is thread safe.
  */
 class TestCaseExecutor(private val listener: TestEngineListener,
-                       private val listenerExecutor: ExecutorService,
+                       private val executor: ExecutorService,
                        private val scheduler: ScheduledExecutorService) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -48,7 +48,8 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     try {
 
-      context.launch(listenerExecutor.asCoroutineDispatcher()) {
+      // invoke the "before" callbacks here on the main executor
+      context.launch(executor.asCoroutineDispatcher()) {
         before(testCase)
       }.join()
 
@@ -58,20 +59,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
       // get active status here in case calling this function is expensive (eg
       runExtensions(testCase, context, extensions) { result ->
-
-        // it's possible the listenerExecutor has been shut down here.
-        // If it has, we can only run them on another thread, better than a slap in the face
-        // but will run foul of https://github.com/kotlintest/kotlintest/issues/447
-        if (listenerExecutor.isShutdown) {
-          context.launch {
-            after(testCase, result)
-          }.join()
-        } else {
-          context.launch(listenerExecutor.asCoroutineDispatcher()) {
-            after(testCase, result)
-          }.join()
-        }
-
+        // invoke the "after" callbacks here on the main executor
+        context.launch(executor.asCoroutineDispatcher()) {
+          after(testCase, result)
+        }.join()
         onResult(result)
       }
 
@@ -103,12 +94,12 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
       listener.beforeTestCaseExecution(testCase)
 
-      // if we have more than one requested thread, we run the tests inside an executor,
-      // otherwise we run on the same thread as the listeners to avoid issues where before/after listeners
-      // require the same thread as the test case.
+      // if we have more than one requested thread, we run the tests inside a clean executor;
+      // otherwise we run on the same thread as the listeners to avoid issues where the before and
+      // after listeners  require the same thread as the test case.
       // @see https://github.com/kotlintest/kotlintest/issues/447
       val executor = when (testCase.config.threads) {
-        1 -> listenerExecutor
+        1 -> executor
         else -> Executors.newFixedThreadPool(testCase.config.threads)!!
       }
 
@@ -137,19 +128,24 @@ class TestCaseExecutor(private val listener: TestEngineListener,
         }
       }
 
-      // we need to interrupt the threads in the executor in order to effect the timeout
-      scheduler.schedule({
-        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
-        // this will ruin the listener executor so after() won't run if the test times out but I don't
-        // know how else to interupt the coroutine context effectively. job.cancel() won't cut the mustard here.
-        executor.shutdownNow()
-      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+      // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
+      if (testCase.config.timeout.nano > 0) {
+        scheduler.schedule({
+          error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
+        }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+      }
 
       supervisorJob.invokeOnCompletion { e ->
         error.compareAndSet(null, e)
       }
 
       supervisorJob.join()
+
+      // if the tests had their own special executor (ie threads > 1) then we need to shut it down
+      if (testCase.config.threads > 1) {
+        executor.shutdown()
+      }
+
       val result = buildTestResult(error.get(), context.metaData())
 
       listener.afterTestCaseExecution(testCase, result)

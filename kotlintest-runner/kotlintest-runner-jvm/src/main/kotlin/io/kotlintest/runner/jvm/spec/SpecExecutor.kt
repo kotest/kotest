@@ -7,7 +7,6 @@ import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.internal.topLevelTests
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -18,19 +17,23 @@ import java.util.concurrent.ScheduledExecutorService
  * to instantiate fresh specs based on the [IsolationMode] of the spec.
  */
 class SpecExecutor(private val engineListener: TestEngineListener,
-                   private val listenerExecutors: ConcurrentLinkedQueue<ExecutorService>,
                    private val scheduler: ScheduledExecutorService) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  private fun withListenerExecutor(thunk: (ExecutorService) -> Unit) {
-    val listenerExecutor = listenerExecutors.poll() ?: Executors.newSingleThreadExecutor()
+  // each spec has it's own "main thread" (courtesy of an executor)
+  // this main thread is always used to execute the before and after callbacks, and also tests
+  // where config has threads = 1 (the default). In tests where threads > 1, then a seperate executor is required.
+
+  private fun withExecutor(thunk: (ExecutorService) -> Unit) {
+    val listenerExecutor = Executors.newSingleThreadExecutor()
     thunk(listenerExecutor)
-    listenerExecutors.add(listenerExecutor)
+    // only on exiting the spec can the listener executor can be shutdown
+    listenerExecutor.shutdown()
   }
 
   fun execute(spec: Spec) = Try {
-    withListenerExecutor { listenerExecutor ->
+    withExecutor { listenerExecutor ->
 
       engineListener.beforeSpecClass(spec.description(), spec::class)
 
