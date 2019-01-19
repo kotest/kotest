@@ -93,7 +93,7 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll one explicit generator: test fails after 300 attempts" {
       shouldThrow<AssertionError> {
-        forAll(Gen.string()) { a ->
+        forAll(Gen.string()) {
           attempts() < 300
         }
       }

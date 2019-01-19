@@ -22,14 +22,14 @@ class GenBindTest : StringSpec({
 
   "Gen.bindA" {
     val gen = Gen.bind(Gen.string(), ::FooA)
-    assertAll(gen) { it ->
+    assertAll(gen) {
       it.a shouldNotBe null
     }
   }
 
   "Gen.bindB" {
     val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), ::User)
-    assertAll(gen) { it ->
+    assertAll(gen) {
       it.email shouldNotBe null
       it.id should beGreaterThan(0)
     }
@@ -37,7 +37,7 @@ class GenBindTest : StringSpec({
 
   "Gen.bindC" {
     val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), Gen.double().filter { it > 0 }, ::FooC)
-    assertAll(gen) { it ->
+    assertAll(gen) {
       it.a shouldNotBe null
       it.b should beGreaterThan(0)
       it.c should gtd(0.0)
@@ -46,7 +46,7 @@ class GenBindTest : StringSpec({
 
   "Gen.bindD" {
     val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), Gen.double().filter { it > 0 }, Gen.negativeIntegers(), ::FooD)
-    assertAll(gen) { it ->
+    assertAll(gen) {
       it.a shouldNotBe null
       it.b should beGreaterThan(0)
       it.c should gtd(0.0)
@@ -56,7 +56,7 @@ class GenBindTest : StringSpec({
 
   "Gen.bindE" {
     val gen = Gen.bind(Gen.string(), Gen.positiveIntegers(), Gen.double().filter { it > 0 }, Gen.negativeIntegers(), Gen.bool(), ::FooE)
-    assertAll(gen) { it ->
+    assertAll(gen) {
       it.a shouldNotBe null
       it.b should beGreaterThan(0)
       it.c should gtd(0.0)

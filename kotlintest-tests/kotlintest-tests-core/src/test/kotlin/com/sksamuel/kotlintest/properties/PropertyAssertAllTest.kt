@@ -107,7 +107,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll one explicit generator: test fails after 300 attempts" {
     var attempts = 0
     shouldThrow<AssertionError> {
-      assertAll(Gen.string()) { _ ->
+      assertAll(Gen.string()) {
         attempts++
         attempts shouldBe lt(300)
       }

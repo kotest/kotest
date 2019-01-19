@@ -17,7 +17,7 @@ class ShrinkTest : StringSpec({
 
   "should report shrinked values for arity 1 ints" {
     shouldThrowAny {
-      assertAll(Gen.int()) { it ->
+      assertAll(Gen.int()) {
         it.shouldBeLessThan(5)
       }
     }.message shouldBe "Property failed for\n" +
