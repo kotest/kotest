@@ -9,11 +9,11 @@ inline fun <reified A> forNone(iterations: Int, noinline fn: PropertyContext.(a:
 }
 
 fun <A> forNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = forNone(1000, gena, fn)
-fun <A> Gen<A>.forNone(fn: PropertyContext.(a0: A, a1: A) -> Boolean) = forNone(1000, this, this, fn)
-fun <A> Gen<A>.forNone(fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = forNone(1000, this, this, this, fn)
-fun <A> Gen<A>.forNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = forNone(1000, this, this, this, this, fn)
-fun <A> Gen<A>.forNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = forNone(1000, this, this, this, this, this, fn)
-fun <A> Gen<A>.forNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = forNone(1000, this, this, this, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = forNone(iterations, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = forNone(iterations, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = forNone(iterations, this, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = forNone(iterations, this, this, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = forNone(iterations, this, this, this, this, this, this, fn)
 fun <A> forNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
