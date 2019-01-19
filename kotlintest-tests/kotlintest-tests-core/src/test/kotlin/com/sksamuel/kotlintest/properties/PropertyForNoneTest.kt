@@ -118,7 +118,7 @@ class PropertyForNoneTest : StringSpec() {
           attempts++
           a + b == b + a
         }
-        attempts shouldBe 30
+        attempts shouldBe 1000
       }
 
     "forNone: two explicit arguments with 1000 attempts" {

@@ -143,7 +143,7 @@ class PropertyAssertAllTest : StringSpec({
       attempts++
       a + b == b + a
     }
-    attempts shouldBe 30
+    attempts shouldBe 1000
   }
 
   "assertAll: two implicit generators 30 attempts" {
