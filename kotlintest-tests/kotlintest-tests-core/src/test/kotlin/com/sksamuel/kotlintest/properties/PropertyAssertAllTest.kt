@@ -141,7 +141,7 @@ class PropertyAssertAllTest : StringSpec({
     var attempts = 0
     Gen.int().assertAll { a, b ->
       attempts++
-      a + b == b + a
+      (a + b) shouldBe (b + a)
     }
     attempts shouldBe 1000
   }
@@ -150,7 +150,7 @@ class PropertyAssertAllTest : StringSpec({
       var attempts = 0
       Gen.int().forAll(100) { a, b ->
         attempts++
-        a + b == b + a
+        (a + b) shouldBe (b + a)
       }
       attempts shouldBe 100
     }

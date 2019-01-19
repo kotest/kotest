@@ -116,7 +116,7 @@ class PropertyForNoneTest : StringSpec() {
         var attempts = 0
         Gen.int().forNone { a, b ->
           attempts++
-          a + b == b + a
+          a + b != b + a
         }
         attempts shouldBe 1000
       }
@@ -126,7 +126,7 @@ class PropertyForNoneTest : StringSpec() {
         var attempts = 0
         Gen.int().forNone(100) { a, b ->
           attempts++
-          a + b == b + a
+          a + b != b + a
         }
         attempts shouldBe 100
       }
