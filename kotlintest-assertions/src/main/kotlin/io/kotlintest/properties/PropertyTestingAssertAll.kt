@@ -11,11 +11,11 @@ inline fun <reified A> assertAll(iterations: Int, noinline fn: PropertyContext.(
 }
 
 fun <A> assertAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, gena, fn)
-fun <A> assertAll(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(1000, gena, gena, fn)
-fun <A> assertAll(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(1000, gena, gena, gena, fn)
-fun <A> assertAll(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(1000, gena, gena, gena, gena, fn)
-fun <A> assertAll(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(1000, gena, gena, gena, gena, gena, fn)
-fun <A> assertAll(gena: Gen<A>,  fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(1000, gena, gena, gena, gena, gena, gena, fn)
+fun <A> Gen<A>.assertAll(fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(1000, this, this, fn)
+fun <A> Gen<A>.assertAll(fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(1000, this, this, this, fn)
+fun <A> Gen<A>.assertAll(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(1000, this, this, this, this, fn)
+fun <A> Gen<A>.assertAll(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(1000, this, this, this, this, this, fn)
+fun <A> Gen<A>.assertAll(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(1000, this, this, this, this, this, this, fn)
 fun <A> assertAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()

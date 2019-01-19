@@ -9,11 +9,11 @@ inline fun <reified A> verifyNone(iterations: Int, noinline fn: PropertyContext.
 }
 
 fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, gena, fn)
-fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyNone(1000, gena, gena, fn)
-fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyNone(1000, gena, gena, gena, fn)
-fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyNone(1000, gena, gena, gena, gena, fn)
-fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = verifyNone(1000, gena, gena, gena, gena, gena, fn)
-fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = verifyNone(1000, gena, gena, gena, gena, gena, gena, fn)
+fun <A> Gen<A>.verifyNone(fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyNone(1000, this, this, fn)
+fun <A> Gen<A>.verifyNone(fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyNone(1000, this, this, this, fn)
+fun <A> Gen<A>.verifyNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyNone(1000, this, this, this, this, fn)
+fun <A> Gen<A>.verifyNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = verifyNone(1000, this, this, this, this, this, fn)
+fun <A> Gen<A>.verifyNone(fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = verifyNone(1000, this, this, this, this, this, this, fn)
 fun <A> verifyNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
