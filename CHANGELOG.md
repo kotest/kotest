@@ -1,6 +1,13 @@
 Changelog
 =========
 
+#### 3.2.1
+
+* Feature: AnnotationSpec now has a `expected` exception configuration #527 #559
+* Feature: BehaviorSpec gained extra nesting possibilities, with `And` between any other keywords #562 #593
+* Bugfix: Independent tests were sharing a thread, and one test could timeout a different one for apparently no reason #588 #590
+* Improvement: Documentation on TestConfig.invocations clarified #591 #592
+
 
 #### 3.2.0
 
