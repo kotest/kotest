@@ -14,7 +14,6 @@ import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
 import java.lang.System.currentTimeMillis
@@ -222,13 +221,13 @@ class TestCaseExecutorTest : FunSpec() {
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
     }
 
-    test("tests which block should timeout should error").config {
+    test("tests which timeout should error").config {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
-        Thread.sleep(100000000L)
+        Thread.sleep(10000)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
@@ -268,7 +267,7 @@ class TestCaseExecutorTest : FunSpec() {
       )
     }
 
-    test("test with infinite loop but failure should complete with TestStatus.Failure") {
+    test("test with infinite loop but invocations = 1 should complete with TestStatus.Failure") {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
@@ -288,46 +287,27 @@ class TestCaseExecutorTest : FunSpec() {
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
-  }
-}
 
-class MultipleTestTimeoutTest : FreeSpec() {
+    test("test with infinite loop but invocations > 1 should complete with TestStatus.Failure") {
 
-  // The test executor was failing because as it reutilizes some threads from a thread pool.
-  // When using that thread pool, a task to cancel the thread is created, so that the engine can interrupt
-  // a test that is going forever.
-  // However, if the task is not cancelled, it will eventually interrupt the thread when it's running another task
-  // in the thread pool, interrupting a test that hasn't timed out yet, which is undesired.
+      val listenerExecutor = Executors.newSingleThreadExecutor()
+      val listener = mock<TestEngineListener> {}
+      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-  init {
-    // 100 millis sleep will "accumulate" between tests. If the context is still shared, one of them will fail
-    // due to timeout.
-    "Test 1".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
+      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+        while (true) {
+          "this" shouldBe "that"
+        }
+      }, 0, TestType.Test, TestCaseConfig(true, invocations = 2, threads = 1))
 
-    "Test 2".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
+      val context = object : TestContext(GlobalScope.coroutineContext) {
+        override suspend fun registerTestCase(testCase: TestCase) {}
+        override fun description(): Description = Description.root("wibble")
+      }
+      executor.execute(testCase, context)
 
-    "Test 3".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
-
-    "Test 4".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
-
-    "Test 5".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
-
-    "Test 6".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
-    }
-
-    "Test 7".config(timeout = 300.milliseconds) {
-      Thread.sleep(100)
+      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
   }
 }
+
