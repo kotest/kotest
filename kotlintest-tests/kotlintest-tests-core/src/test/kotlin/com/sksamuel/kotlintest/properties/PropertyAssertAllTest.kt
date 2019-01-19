@@ -148,7 +148,7 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll: one explicit generator with two values and 100 attempts" {
       var attempts = 0
-      Gen.int().forAll(100) { a, b ->
+      Gen.int().assertAll (100) { a, b ->
         attempts++
         (a + b) shouldBe (b + a)
       }
