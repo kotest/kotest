@@ -27,15 +27,14 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
   private var workingDirectory: String? = null
   private var testName: String? = null
 
-  override fun suggestedName(): String? = "wibble wobble"
+  override fun suggestedName(): String? = testName
+  fun getTestName(): String? = testName
 
   override fun isPassParentEnvs(): Boolean = passParentEnvs
   override fun isAlternativeJrePathEnabled() = alternativeJrePathEnabled
-
   override fun getEnvs(): MutableMap<String, String> = envs
   override fun getPackage(): String? = null
   override fun getRunClass(): String? = null
-  fun getTestName(): String? = testName
   override fun getVMParameters(): String? = vmParameters
   override fun getAlternativeJrePath() = alternativeJrePath
   override fun getProgramParameters(): String? = programParameters

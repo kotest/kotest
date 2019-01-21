@@ -17,7 +17,8 @@ class KotlinTestRunConfigurationProducer :
     val element = sourceElement.get()!!
     return if (element.isBehaviorSpecElement()) {
       configuration.setTestName(element.behaviorSpecTestName()!!)
-      configuration.name = configuration.getTestName()!!
+      configuration.setModule(context.module)
+      configuration.setGeneratedName()
       true
     } else {
       false
