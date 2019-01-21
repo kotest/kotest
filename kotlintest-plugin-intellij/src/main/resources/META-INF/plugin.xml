@@ -1,0 +1,31 @@
+<idea-plugin>
+
+    <id>kotlintest-plugin-intellij</id>
+    <name>kotlintest</name>
+
+    <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
+    <idea-version since-build="162.0"/>
+
+    <description><![CDATA[
+      Official IntelliJ IDEA plugin for <a href="https://github.com/kotlintest/kotlintest">KotlinTest</a>.
+    ]]></description>
+
+    <version>3.3.0</version>
+
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>JUnit</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="io.kotlintest.plugin.intellij.KotlinTestConfigurationType"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.WordSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.StringSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.BehaviourSpecRunLineMarkerContributor"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.KotlinTestRunConfigurationProducer"/>
+    </extensions>
+
+</idea-plugin>

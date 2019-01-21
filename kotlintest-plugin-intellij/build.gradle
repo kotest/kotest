@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.jvm"
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.4.1"
+}
+
+apply plugin: 'idea'
+apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.intellij'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+}
+
+intellij {
+    version = 'IC-2018.3'
+    pluginName = "kotlintest-plugin-intellij"
+    plugins = ['org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1', 'junit']
+    downloadSources = true
+    updateSinceUntilBuild = false
+    sandboxDirectory = "/home/sam/.IdeaIC2018.3/system/plugins-sandbox"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/kotlin`'
+        }
+    }
+}
+
+uploadArchives.enabled = false
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+publishPlugin {
+    username System.env.JB_USERNAME ?: ""
+    password System.env.JB_PASSWORD ?: ""
+    channels 'Stable'
+}
