@@ -1,9 +1,9 @@
-package io.kotlintest.samples.maven
+package io.kotlintest.samples.gradle
 
 import io.kotlintest.matchers.haveLength
 import io.kotlintest.specs.WordSpec
 
-class StringTest : WordSpec() {
+class WordSpecExampleTest : WordSpec() {
   init {
     "A String" should {
       "Report correct length" {
