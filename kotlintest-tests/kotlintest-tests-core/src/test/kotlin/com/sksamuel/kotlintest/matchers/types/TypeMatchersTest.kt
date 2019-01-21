@@ -3,12 +3,23 @@ package com.sksamuel.kotlintest.matchers.types
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.matchers.types.*
+import io.kotlintest.matchers.types.beNull
+import io.kotlintest.matchers.types.haveAnnotation
+import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldBeNull
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
+import io.kotlintest.matchers.types.shouldBeTypeOf
+import io.kotlintest.matchers.types.shouldHaveAnnotation
+import io.kotlintest.matchers.types.shouldNotBeInstanceOf
+import io.kotlintest.matchers.types.shouldNotBeNull
+import io.kotlintest.matchers.types.shouldNotBeTypeOf
 import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
-import java.util.*
+import java.util.ArrayList
+import java.util.LinkedList
 
 @Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
@@ -120,5 +131,43 @@ class TypeMatchersTest : WordSpec() {
         }
       }
     }
+
+    "beNull" should {
+      val nullString: String? = null
+      val nonNullString: String? = "Foo"
+      "Pass for a null value" {
+        nullString.shouldBeNull()
+        nullString should beNull()
+      }
+
+      "Fail for a non-null value" {
+        shouldThrow<AssertionError> { nonNullString.shouldBeNull() }
+        shouldThrow<AssertionError> { nonNullString should beNull() }
+      }
+    }
+
+    "notBeNull" should {
+      val nullString: String? = null
+      val nonNullString: String? = "Foo"
+
+      "Pass for a non-null value" {
+        nonNullString.shouldNotBeNull()
+        nonNullString shouldNot beNull()
+      }
+
+      "Fail for a null value" {
+        shouldThrow<AssertionError> { nullString.shouldNotBeNull() }
+        shouldThrow<AssertionError> { nullString shouldNot beNull() }
+      }
+
+      "Allow automatic type cast" {
+        fun useString(string: String) {  }
+
+        nonNullString.shouldNotBeNull()
+        useString(nonNullString)
+        nonNullString shouldBe "Foo"
+      }
+    }
   }
+
 }
