@@ -79,7 +79,3 @@ object KotlinTestSMTestLocator : SMTestLocator {
     return mutableListOf()
   }
 }
-
-fun main() {
-  println(Class.forName("io.kotlintest.runner.console.LauncherKt"))
-}
