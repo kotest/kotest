@@ -2,7 +2,10 @@ package com.sksamuel.kotlintest.throwablehandling
 
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotThrowAny
+import io.kotlintest.shouldNotThrowAnyUnit
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.shouldThrowAnyUnit
 import io.kotlintest.specs.FreeSpec
@@ -14,7 +17,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
       "Should throw any ($shouldThrowAnyMatcher)" - {
         "Should throw an exception" - {
           "When no exception is thrown in the code" {
-            verifyCorrectErrorIsThrown {
+            verifyThrowsNoExceptionError {
               shouldThrowAnyMatcher { /* No exception being thrown */ }
             }
           }
@@ -31,6 +34,28 @@ class AnyThrowableHandlingTest : FreeSpec() {
         }
       }
     }
+
+    onShouldNotThrowAnyMatcher { shouldNotThrowAnyMatcher ->
+      "Should not throw any($shouldNotThrowAnyMatcher)" - {
+        "Should throw an exception" - {
+          "When any exception is thrown in the code" {
+            val exception = FooRuntimeException()
+
+            verifyThrowsAssertionWrapping(exception) {
+              shouldNotThrowAnyMatcher { throw exception }
+            }
+          }
+        }
+
+        "Should not throw an exception" - {
+          "When no exception is thrown in the code" {
+            verifyNoErrorIsThrown {
+              shouldNotThrowAnyMatcher { /* Nothing thrown */ }
+            }
+          }
+        }
+      }
+    }
   }
 
   private inline fun onShouldThrowAnyMatcher(func: (ShouldThrowAnyMatcher) -> Unit) {
@@ -38,7 +63,7 @@ class AnyThrowableHandlingTest : FreeSpec() {
     func(::shouldThrowAnyUnit)
   }
 
-  private fun verifyCorrectErrorIsThrown(block: () -> Unit) {
+  private fun verifyThrowsNoExceptionError(block: () -> Unit) {
     val thrown = catchThrowable(block)
 
     thrown.shouldBeInstanceOf<AssertionError>()
@@ -50,6 +75,24 @@ class AnyThrowableHandlingTest : FreeSpec() {
 
     (actualReturn === thrownInstance).shouldBeTrue()
   }
+
+  private inline fun onShouldNotThrowAnyMatcher(func: (ShouldNotThrowAnyMatcher) -> Unit) {
+    func(::shouldNotThrowAny)
+    func(::shouldNotThrowAnyUnit)
+  }
+
+  private fun verifyThrowsAssertionWrapping(throwable: Throwable, block: () -> Any?) {
+    val thrownException = catchThrowable(block)
+
+    thrownException.shouldBeInstanceOf<AssertionError>()
+    thrownException!!.message shouldBe "No exception expected, but a ${throwable::class.simpleName} was thrown."
+    thrownException.cause shouldBeSameInstanceAs throwable
+  }
+
+  private fun verifyNoErrorIsThrown(block: () -> Unit) {
+    catchThrowable(block) shouldBe null
+  }
 }
 
 private typealias ShouldThrowAnyMatcher = (() -> Unit) -> Throwable
+private typealias ShouldNotThrowAnyMatcher = (() -> Unit) -> Unit
