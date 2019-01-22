@@ -57,7 +57,7 @@ compileTestKotlin {
 }
 
 publishPlugin {
-    username System.env.JB_USERNAME ?: ""
-    password System.env.JB_PASSWORD ?: ""
-    channels 'Stable'
+    username intellijPublishUsername
+    password intellijPublishPassword
+    channels 'alpha'
 }
