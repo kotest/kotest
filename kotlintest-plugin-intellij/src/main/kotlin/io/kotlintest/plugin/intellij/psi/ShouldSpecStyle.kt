@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
 object ShouldSpecStyle : SpecStyle {
@@ -20,7 +19,7 @@ object ShouldSpecStyle : SpecStyle {
           && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
           && children[2] is KtLambdaArgument
           && element.isInSpecStyle("ShouldSpec")) {
-        return ((children[1] as KtValueArgumentList).children[0] as KtValueArgument).text
+        return children[1].children[0].children[0].text
       }
     }
     return null

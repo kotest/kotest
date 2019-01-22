@@ -17,6 +17,7 @@ class ConsoleTestEngineListener : TestEngineListener {
    * Or can look at the implementation in [ServiceMessageBuilder] which isn't quite fully featured.
    */
   private fun log(msg: String, params: Map<String, String>) {
+    println()
     if (params.isEmpty()) {
       println("##teamcity[$msg]")
     } else {
@@ -24,10 +25,11 @@ class ConsoleTestEngineListener : TestEngineListener {
     }
   }
 
-  override fun enterTestCase(testCase: TestCase) {
+  override fun beforeTestCaseExecution(testCase: TestCase) {
     if (testCase.type == TestType.Container)
       log("testSuiteStarted", mapOf("name" to testCase.description.name))
-    log("testStarted", mapOf("name" to testCase.description.name))
+    else
+      log("testStarted", mapOf("name" to testCase.description.name))
   }
 
   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
@@ -44,13 +46,20 @@ class ConsoleTestEngineListener : TestEngineListener {
           "testIgnored",
           mapOf("name" to testCase.description.name, "ignoreComment" to (result.error?.message ?: "no reason"))
       )
-      TestStatus.Success -> log(
-          "testFinished",
-          mapOf("name" to testCase.description.name)
-      )
+      TestStatus.Success -> when (testCase.type) {
+        TestType.Container -> log(
+            "testSuiteFinished",
+            mapOf("name" to testCase.description.name)
+        )
+        TestType.Test -> log(
+            "testFinished",
+            mapOf("name" to testCase.description.name)
+        )
+      }
+
     }
-    if (testCase.type == TestType.Container) {
-      log("testSuiteFinished", mapOf("name" to testCase.description.name))
-    }
+//    if (testCase.type == TestType.Container) {
+//      log("testSuiteFinished", mapOf("name" to testCase.description.name))
+//    }
   }
 }

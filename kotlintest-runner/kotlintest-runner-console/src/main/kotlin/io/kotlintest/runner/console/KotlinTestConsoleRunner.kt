@@ -10,7 +10,7 @@ import io.kotlintest.TestFilterResult
 
 class PrefixTestFilter(private val test: String) : TestCaseFilter {
   override fun filter(description: Description): TestFilterResult {
-    return if (description.tail().fullName().startsWith(test)) TestFilterResult.Include else TestFilterResult.Exclude
+    return if (test.startsWith(description.tail().fullName())) TestFilterResult.Include else TestFilterResult.Exclude
   }
 }
 

@@ -17,7 +17,7 @@ class KotlinTestConfigurationType : ConfigurationTypeBase(
     "io.kotlintest.jvm",
     "KotlinTest",
     "Run tests with KotlinTest",
-    Icons.KotlinTest32) {
+    Icons.KotlinTest16) {
 
   init {
     addFactory(KotlinTestConfigurationFactory(this))
