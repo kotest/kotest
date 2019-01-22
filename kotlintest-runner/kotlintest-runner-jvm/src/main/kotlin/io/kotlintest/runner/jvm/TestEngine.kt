@@ -29,7 +29,6 @@ class TestEngine(val classes: List<KClass<out Spec>>,
 
   private val specExecutor = SpecExecutor(listener, scheduler)
 
-
   private fun afterAll() = Try {
     Project.afterAll()
   }

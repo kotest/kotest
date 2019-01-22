@@ -6,10 +6,12 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.util.Function
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 private fun PsiElement.isBehaviorSpecKeyword(): Boolean = when (text) {
   "given", "Given", "`given`", "`Given`", "then", "Then", "`then`", "`Then`", "when", "When", "`when`", "`When" -> true
@@ -19,6 +21,11 @@ private fun PsiElement.isBehaviorSpecKeyword(): Boolean = when (text) {
 fun PsiElement.isSingleStringArgList(): Boolean = when (this) {
   is KtValueArgumentList -> children.size == 1 && children[0] is KtValueArgument
   else -> false
+}
+
+fun PsiElement.enclosingClassName(): String? {
+  val ktclass = getParentOfType<KtClass>(true)
+  return ktclass?.fqName?.asString()
 }
 
 fun PsiElement.behaviorSpecTestName(): String? {

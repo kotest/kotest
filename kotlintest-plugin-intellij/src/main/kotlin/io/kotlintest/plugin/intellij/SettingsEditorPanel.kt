@@ -26,6 +26,8 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotlinTestRunConfig
 
   private lateinit var testName: LabeledComponent<TextFieldWithHistory>
 
+  private lateinit var specName: LabeledComponent<TextFieldWithHistory>
+
   private var moduleSelector: ConfigurationModuleSelector
 
   private var selectedModule: Module?
@@ -52,6 +54,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotlinTestRunConfig
     moduleSelector.reset(configuration)
     commonJavaParameters.reset(configuration)
     testName.component.text = configuration.getTestName()
+    specName.component.text = configuration.getSpecName()
   }
 
   override fun applyEditorTo(configuration: KotlinTestRunConfiguration) {
@@ -59,6 +62,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotlinTestRunConfig
     moduleSelector.applyTo(configuration)
     commonJavaParameters.applyTo(configuration)
     configuration.setTestName(testName.component.text)
+    configuration.setSpecName(specName.component.text)
   }
 
   override fun createEditor() = panel
@@ -68,6 +72,11 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotlinTestRunConfig
         TextFieldWithHistory(),
         "Scope", "West"
     )
+    specName = LabeledComponent.create(
+        TextFieldWithHistory(),
+        "Scope", "West"
+    )
     testName.component.isEditable = true
+    specName.component.isEditable = true
   }
 }

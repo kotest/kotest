@@ -26,9 +26,11 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
   private var vmParameters: String? = ""
   private var workingDirectory: String? = null
   private var testName: String? = null
+  private var specName: String? = null
 
   override fun suggestedName(): String? = testName
   fun getTestName(): String? = testName
+  fun getSpecName(): String? = specName
 
   override fun isPassParentEnvs(): Boolean = passParentEnvs
   override fun isAlternativeJrePathEnabled() = alternativeJrePathEnabled
@@ -73,6 +75,10 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
 
   fun setTestName(testName: String) {
     this.testName = testName
+  }
+
+  fun setSpecName(specName: String) {
+    this.specName = specName
   }
 
   override fun setPassParentEnvs(passParentEnvs: Boolean) {

@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+    compile project(':kotlintest-runner:kotlintest-runner-console')
 }
 
 intellij {

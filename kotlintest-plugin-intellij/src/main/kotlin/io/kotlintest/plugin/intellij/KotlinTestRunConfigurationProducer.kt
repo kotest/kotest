@@ -6,6 +6,7 @@ import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotlintest.plugin.intellij.runmarker.behaviorSpecTestName
+import io.kotlintest.plugin.intellij.runmarker.enclosingClassName
 import io.kotlintest.plugin.intellij.runmarker.isBehaviorSpecElement
 
 class KotlinTestRunConfigurationProducer :
@@ -17,6 +18,7 @@ class KotlinTestRunConfigurationProducer :
     val element = sourceElement.get()!!
     return if (element.isBehaviorSpecElement()) {
       configuration.setTestName(element.behaviorSpecTestName()!!)
+      configuration.setSpecName(element.enclosingClassName()!!)
       configuration.setModule(context.module)
       configuration.setGeneratedName()
       true
