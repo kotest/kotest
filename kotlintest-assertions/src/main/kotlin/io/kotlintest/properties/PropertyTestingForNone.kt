@@ -9,6 +9,7 @@ inline fun <reified A> forNone(iterations: Int, noinline fn: PropertyContext.(a:
 }
 
 fun <A> forNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = forNone(1000, gena, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = forNone(iterations, this, fn)
 fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = forNone(iterations, this, this, fn)
 fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = forNone(iterations, this, this, this, fn)
 fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = forNone(iterations, this, this, this, this, fn)

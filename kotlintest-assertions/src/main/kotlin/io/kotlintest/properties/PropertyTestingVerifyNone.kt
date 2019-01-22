@@ -9,6 +9,7 @@ inline fun <reified A> verifyNone(iterations: Int, noinline fn: PropertyContext.
 }
 
 fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, gena, fn)
+fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = verifyNone(iterations, this, fn)
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyNone(iterations, this, this, fn)
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyNone(iterations, this, this, this, fn)
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyNone(iterations, this, this, this, this, fn)

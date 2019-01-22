@@ -136,6 +136,16 @@ class PropertyAssertAllTest : StringSpec({
     attempts shouldBe 200
   }
 
+ "assertAll: one explicit generator with one value and default attempts" {
+    // 30 should be ignored as we have many always cases
+    var attempts = 0
+    Gen.int().assertAll { a ->
+      attempts++
+      2 * a % 2 shouldBe 0
+    }
+    attempts shouldBe 1000
+  }
+
   "assertAll: one explicit generator with two values and default attempts" {
     // 30 should be ignored as we have many always cases
     var attempts = 0

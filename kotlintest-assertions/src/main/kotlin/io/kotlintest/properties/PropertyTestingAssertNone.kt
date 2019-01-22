@@ -9,6 +9,7 @@ inline fun <reified A> assertNone(iterations: Int, noinline fn: PropertyContext.
 }
 
 fun <A> assertNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) = assertNone(1000, gena, fn)
+fun <A> Gen<A>.assertNone(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Unit) = assertNone(iterations, this, fn)
 fun <A> Gen<A>.assertNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertNone(iterations, this, this, fn)
 fun <A> Gen<A>.assertNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertNone(iterations, this, this, this, fn)
 fun <A> Gen<A>.assertNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertNone(iterations, this, this, this, this, fn)

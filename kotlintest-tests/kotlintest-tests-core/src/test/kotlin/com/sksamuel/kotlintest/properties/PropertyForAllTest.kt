@@ -126,6 +126,15 @@ class PropertyForAllTest : StringSpec() {
       attempts shouldBe 200
     }
 
+    "forAll: one explicit generator with one value and default attempts" {
+      var attempts = 0
+      Gen.int().forAll { a ->
+        attempts++
+        2 * a % 2 == 0
+      }
+      attempts shouldBe 1000
+    }
+
     "forAll: one explicit generator with two values and default attempts" {
       var attempts = 0
       Gen.int().forAll { a, b ->

@@ -8,7 +8,7 @@ inline fun <reified A> verifyAll(iterations: Int, noinline fn: PropertyContext.(
 }
 
 fun <A> verifyAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = verifyAll(1000, gena, fn)
-fun <A> Gen<A>.verifyAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyAll(iterations, this, this, fn)
+fun <A> Gen<A>.verifyAll(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = verifyAll(iterations, this, fn)
 fun <A> Gen<A>.verifyAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyAll(iterations, this, this, this, fn)
 fun <A> Gen<A>.verifyAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyAll(iterations, this, this, this, this, fn)
 fun <A> Gen<A>.verifyAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = verifyAll(iterations, this, this, this, this, this, fn)

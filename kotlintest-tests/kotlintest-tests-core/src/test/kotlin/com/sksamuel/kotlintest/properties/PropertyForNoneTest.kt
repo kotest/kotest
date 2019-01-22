@@ -111,6 +111,16 @@ class PropertyForNoneTest : StringSpec() {
       attempts shouldBe 100
     }
 
+    "forNone: one explicit generator with one value and default attempts" {
+        // 30 should be ignored as we have many always cases
+        var attempts = 0
+        Gen.int().forNone { a ->
+          attempts++
+          false
+        }
+        attempts shouldBe 1000
+      }
+
     "forNone: one explicit generator with two values and default attempts" {
         // 30 should be ignored as we have many always cases
         var attempts = 0
