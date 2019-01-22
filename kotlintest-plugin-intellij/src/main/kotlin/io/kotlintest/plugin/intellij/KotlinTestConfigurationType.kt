@@ -6,13 +6,18 @@ import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.execution.configurations.JavaRunConfigurationModule
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.idea.KotlinIcons
+import com.intellij.openapi.util.IconLoader
+
+object Icons {
+  val KotlinTest16 = IconLoader.getIcon("/icon16.png")
+  val KotlinTest32 = IconLoader.getIcon("/icon32.png")
+}
 
 class KotlinTestConfigurationType : ConfigurationTypeBase(
     "io.kotlintest.jvm",
     "KotlinTest",
     "Run tests with KotlinTest",
-    KotlinIcons.LAUNCH) {
+    Icons.KotlinTest32) {
 
   init {
     addFactory(KotlinTestConfigurationFactory(this))
@@ -20,7 +25,7 @@ class KotlinTestConfigurationType : ConfigurationTypeBase(
 
   private class KotlinTestConfigurationFactory(configurationType: ConfigurationType) : ConfigurationFactory(configurationType) {
     override fun createTemplateConfiguration(project: Project): RunConfiguration {
-      return KotlinTestRunConfiguration("some name here", JavaRunConfigurationModule(project, true), this)
+      return KotlinTestRunConfiguration("KotlinTest", JavaRunConfigurationModule(project, true), this)
     }
   }
 }

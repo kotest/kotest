@@ -102,6 +102,8 @@ object Project {
     projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
 
+  fun registerTestCaseFilter(filters: List<TestCaseFilter>) = _filters.addAll(filters)
+
   fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
   private fun registerListener(listener: TestListener) {
     _listeners.add(listener)

@@ -10,5 +10,8 @@ class StringSpecExampleTest : StringSpec() {
     "A string should report correct length" {
       "wibble" should haveLength(6)
     }
+    "A string should part 2" {
+      "wibble" should haveLength(6)
+    }
   }
 }

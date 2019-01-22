@@ -36,7 +36,7 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
     logger.debug("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
     val listener = SynchronizedTestEngineListener(IsolationTestEngineListener(JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)))
-    val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, Project.parallelism(), listener)
+    val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, emptyList(), Project.parallelism(), listener)
     runner.execute()
   }
 

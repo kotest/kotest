@@ -19,13 +19,25 @@
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="io.kotlintest.plugin.intellij.KotlinTestConfigurationType"/>
         <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.WordSpecRunLineMarkerContributor"/>
+                                  implementationClass="io.kotlintest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
         <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.StringSpecRunLineMarkerContributor"/>
+                                  implementationClass="io.kotlintest.plugin.intellij.FunSpecRunLineMarkerContributor"/>
         <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotlintest.plugin.intellij.runmarker.BehaviourSpecRunLineMarkerContributor"/>
+                                  implementationClass="io.kotlintest.plugin.intellij.ShouldSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.StringSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.WordSpecRunLineMarkerContributor"/>
         <runConfigurationProducer
-                implementation="io.kotlintest.plugin.intellij.KotlinTestRunConfigurationProducer"/>
+                implementation="io.kotlintest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.FunSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.ShouldSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.StringSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.WordSpecRunConfigurationProducer"/>
     </extensions>
 
 </idea-plugin>

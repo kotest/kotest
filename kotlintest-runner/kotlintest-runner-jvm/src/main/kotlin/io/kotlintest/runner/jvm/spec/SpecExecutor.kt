@@ -4,8 +4,8 @@ import arrow.core.Try
 import io.kotlintest.IsolationMode
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.internal.topLevelTests
+import io.kotlintest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors

@@ -4,6 +4,7 @@ import arrow.core.Try
 import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.TestCaseFilter
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
@@ -14,6 +15,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
 class TestEngine(val classes: List<KClass<out Spec>>,
+                 filters: List<TestCaseFilter>,
                  parallelism: Int,
                  val listener: TestEngineListener) {
 
@@ -28,6 +30,10 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private val scheduler = Executors.newSingleThreadScheduledExecutor()
 
   private val specExecutor = SpecExecutor(listener, scheduler)
+
+  init {
+    Project.registerTestCaseFilter(filters)
+  }
 
   private fun afterAll() = Try {
     Project.afterAll()

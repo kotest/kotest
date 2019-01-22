@@ -28,7 +28,14 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
   private var testName: String? = null
   private var specName: String? = null
 
-  override fun suggestedName(): String? = testName
+  override fun suggestedName(): String? {
+    val fqn = specName
+    return if (fqn == null) testName else {
+      val simpleName = fqn.split('.').last()
+      "$simpleName: $testName"
+    }
+  }
+
   fun getTestName(): String? = testName
   fun getSpecName(): String? = specName
 

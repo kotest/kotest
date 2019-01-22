@@ -31,6 +31,6 @@ fun isActive(test: TestCase): Boolean {
   val disabledViaBang = test.name.startsWith("!") && System.getProperty("kotlintest.bang.disable") == null
   val allTags = test.config.tags + test.spec.tags()
   val activeViaTags = Project.tags().isActive(allTags)
-  val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Ignore }
+  val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Exclude }
   return enabledInConfig && activeViaTags && !disabledViaBang && !filtered
 }

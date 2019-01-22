@@ -25,15 +25,12 @@ class ConsoleTestEngineListener : TestEngineListener {
   }
 
   override fun enterTestCase(testCase: TestCase) {
-    if (testCase.type == TestType.Container) {
+    if (testCase.type == TestType.Container)
       log("testSuiteStarted", mapOf("name" to testCase.description.name))
-    } else {
-      log("testStarted", mapOf("name" to testCase.description.name))
-    }
+    log("testStarted", mapOf("name" to testCase.description.name))
   }
 
   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
-    println()
     when (result.status) {
       TestStatus.Error -> log(
           "testFailed",
