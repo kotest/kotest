@@ -2,7 +2,11 @@ package com.sksamuel.kotlintest.throwablehandling
 
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotThrow
+import io.kotlintest.shouldNotThrowUnit
+import io.kotlintest.shouldThrow
 import io.kotlintest.shouldThrowUnit
 import io.kotlintest.specs.FreeSpec
 import kotlin.reflect.KClass
@@ -95,11 +99,71 @@ class CovariantThrowableHandlingTest : FreeSpec() {
         }
       }
     }
+
+    "Should not throw" - {
+      "Should throw an assertion error wrapping the thrown exception" - {
+        "When it's an instance of the right class" {
+          val thrownException = FooRuntimeException()
+
+          onShouldNotThrowMatcher<FooRuntimeException> { shouldNotThrowMatcher ->
+            verifyThrowsAssertionWrapping(thrownException) {
+              shouldNotThrowMatcher { throw thrownException }
+            }
+          }
+        }
+
+        "When it's a subclass of the right class" {
+          val thrownException = SubException()
+
+          onShouldNotThrowMatcher<ParentException> { shouldNotThrowMatcher ->
+
+            verifyThrowsAssertionWrapping(thrownException) {
+              shouldNotThrowMatcher { throw thrownException }
+            }
+          }
+        }
+      }
+
+      "Should throw the thrown exception" - {
+        "When it's not an instance nor subclass of the right class" {
+          val thrownException = FooRuntimeException()
+
+          onShouldNotThrowMatcher<ParentException> { shouldNotThrowMatcher ->
+            verifyThrowsExactly(thrownException) {
+              shouldNotThrowMatcher { throw thrownException }
+            }
+          }
+        }
+
+        "When it's an instance of the parent class of the right class" {
+          val thrownException = ParentException()
+
+          onShouldNotThrowMatcher<SubException> { shouldNotThrowMatcher ->
+            verifyThrowsExactly(thrownException) {
+              shouldNotThrowMatcher { throw thrownException }
+            }
+          }
+        }
+      }
+
+
+      "Should not throw an exception" - {
+        "When no exception is thrown" {
+          onShouldNotThrowMatcher<ParentException> { shouldNotThrowMatcher ->
+            val thrown = catchThrowable {
+              shouldNotThrowMatcher { /* Nothing thrown */ }
+            }
+
+            thrown shouldBe null
+          }
+        }
+      }
+    }
   }
 
   private inline fun <reified T : Throwable> onShouldThrowMatcher(func: (ShouldThrowMatcher<T>) -> Unit) {
     func(::shouldThrowUnit)
-    func { shouldThrowUnit(it) }
+    func { shouldThrow(it) }
   }
 
   private fun verifyNoExceptionThrownError(expectedClass: KClass<*>, block: () -> Unit) {
@@ -127,6 +191,25 @@ class CovariantThrowableHandlingTest : FreeSpec() {
 
     (thrownException === actualReturn).shouldBeTrue()
   }
+
+  private inline fun <reified T : Throwable> onShouldNotThrowMatcher(func: (ShouldNotThrowMatcher<T>) -> Unit) {
+    func { shouldNotThrowUnit<T> { it() } }
+    func { shouldNotThrow<T>(it) }
+  }
+
+  private fun verifyThrowsAssertionWrapping(exception: Throwable, block: () -> Unit) {
+    val thrown = catchThrowable(block)
+
+    thrown.shouldBeInstanceOf<AssertionError>()
+    thrown!!.message shouldBe "No exception expected, but a ${exception::class.simpleName} was thrown."
+    thrown.cause shouldBeSameInstanceAs exception
+  }
+
+  private fun verifyThrowsExactly(exception: Throwable, block: () -> Unit) {
+    val thrown = catchThrowable(block)
+    thrown shouldBeSameInstanceAs exception
+  }
 }
 
 private typealias ShouldThrowMatcher<T> = (() -> Unit) -> T
+private typealias ShouldNotThrowMatcher<T> = (() -> Unit) -> Unit
