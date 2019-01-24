@@ -1,6 +1,5 @@
 package io.kotlintest.properties
 
-import io.kotlintest.JavaRandoms
 import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.properties.shrinking.DoubleShrinker
 import io.kotlintest.properties.shrinking.FloatShrinker
@@ -17,10 +16,11 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.*
-
-/** A shared random number generator. */
-private val RANDOM = Random()
+import java.time.Period
+import java.time.Year
+import java.time.temporal.ChronoUnit
+import java.util.UUID
+import kotlin.random.Random
 
 class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
 
@@ -121,7 +121,7 @@ interface Gen<T> {
     val outer = this
     return object : Gen<T?> {
       override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
-      override fun random(): Sequence<T?> = outer.random().map { if (RANDOM.nextBoolean()) null else it }
+      override fun random(): Sequence<T?> = outer.random().map { if (Random.nextBoolean()) null else it }
       override fun shrinker(): Shrinker<T?>? {
         val s = outer.shrinker()
         return if (s == null) null else object : Shrinker<T?> {
@@ -239,7 +239,7 @@ interface Gen<T> {
         val iterators = gens.map { it.random().iterator() }
 
         return generateInfiniteSequence {
-          val iteratorLocation = JavaRandoms.internalNextInt(RANDOM, 0, iterators.size)
+          val iteratorLocation = Random.nextInt(0, iterators.size)
           val iterator = iterators[iteratorLocation]
           iterator.next()
         }
@@ -259,7 +259,7 @@ interface Gen<T> {
       return object : Gen<Int> {
         override fun constants(): Iterable<Int> = emptyList()
         override fun random(): Sequence<Int> =
-            generateSequence { JavaRandoms.internalNextInt(RANDOM, min, max) }
+            generateSequence { Random.nextInt(min, max) }
 
         override fun shrinker() = ChooseShrinker(min, max)
       }
@@ -273,7 +273,7 @@ interface Gen<T> {
       assert(min < max) { "min must be < max" }
       return object : Gen<Long> {
         override fun constants(): Iterable<Long> = emptyList()
-        override fun random(): Sequence<Long> = generateSequence { JavaRandoms.internalNextLong(RANDOM, min, max) }
+        override fun random(): Sequence<Long> = generateSequence { Random.nextLong(min, max) }
       }
     }
 
@@ -285,7 +285,7 @@ interface Gen<T> {
      */
     fun <T> from(values: List<T>): Gen<T> = object : Gen<T> {
       override fun constants(): Iterable<T> = emptyList()
-      override fun random(): Sequence<T> = generateInfiniteSequence { values[JavaRandoms.internalNextInt(RANDOM, 0, values.size)] }
+      override fun random(): Sequence<T> = generateInfiniteSequence { values[Random.nextInt(0, values.size)] }
     }
 
     fun <T> from(values: Array<T>): Gen<T> = from(values.toList())
@@ -309,7 +309,7 @@ interface Gen<T> {
     fun string(): Gen<String> = object : Gen<String> {
       val literals = listOf("", "\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
       override fun constants(): Iterable<String> = literals
-      override fun random(): Sequence<String> = generateSequence { nextPrintableString(RANDOM.nextInt(100)) }
+      override fun random(): Sequence<String> = generateSequence { nextPrintableString(Random.nextInt(100)) }
       override fun shrinker(): Shrinker<String>? = StringShrinker
     }
 
@@ -321,7 +321,7 @@ interface Gen<T> {
     fun int() = object : Gen<Int> {
       val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
       override fun constants(): Iterable<Int> = literals
-      override fun random(): Sequence<Int> = generateSequence { RANDOM.nextInt() }
+      override fun random(): Sequence<Int> = generateSequence { Random.nextInt() }
       override fun shrinker() = IntShrinker
     }
 
@@ -353,7 +353,7 @@ interface Gen<T> {
      */
     fun file(): Gen<File> = object : Gen<File> {
       override fun constants(): Iterable<File> = emptyList()
-      override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(RANDOM.nextInt(100))) }
+      override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(Random.nextInt(100))) }
     }
 
     /**
@@ -364,7 +364,7 @@ interface Gen<T> {
     fun long(): Gen<Long> = object : Gen<Long> {
       val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
       override fun constants(): Iterable<Long> = literals
-      override fun random(): Sequence<Long> = generateSequence { Math.abs(RANDOM.nextLong()) }
+      override fun random(): Sequence<Long> = generateSequence { Math.abs(Random.nextLong()) }
     }
 
     /**
@@ -372,39 +372,115 @@ interface Gen<T> {
      */
     fun bool(): Gen<Boolean> = object : Gen<Boolean> {
       override fun constants(): Iterable<Boolean> = listOf(true, false)
-      override fun random(): Sequence<Boolean> = generateSequence { RANDOM.nextBoolean() }
+      override fun random(): Sequence<Boolean> = generateSequence { Random.nextBoolean() }
     }
 
     fun uuid(): Gen<UUID> = object : Gen<UUID> {
       override fun constants(): Iterable<UUID> = emptyList()
       override fun random(): Sequence<UUID> = generateSequence { UUID.randomUUID() }
     }
+  
+    /**
+     * Generates a stream of random LocalDates
+     *
+     * This generator creates randomly generated LocalDates, in the range [[minYear, maxYear]].
+     *
+     * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+     * generator.
+     *
+     * @see [localDateTime]
+     * @see [localTime]
+     */
+    fun localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<LocalDate> = object : Gen<LocalDate> {
+      override fun constants(): Iterable<LocalDate> {
+        val yearRange = (minYear..maxYear)
+        val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
 
-    fun localDate(minYear: Int = 1, maxYear: Int = 2030): Gen<LocalDate> = object : Gen<LocalDate> {
-      override fun constants(): Iterable<LocalDate> = emptyList()
-      override fun random(): Sequence<LocalDate> = generateSequence { LocalDate.of(RANDOM.nextInt(maxYear - minYear) + minYear, RANDOM.nextInt(12) + 1, RANDOM.nextInt(31) + 1) }
-    }
+        val feb29Year = yearRange.firstOrNull { Year.of(it).isLeap }
+        val feb29Date = feb29Year?.let { LocalDate.of(it, 2, 29) }
 
-    fun localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
-      override fun constants(): Iterable<LocalTime> = emptyList()
-      override fun random(): Sequence<LocalTime> = generateSequence { LocalTime.of(RANDOM.nextInt(24), RANDOM.nextInt(60), RANDOM.nextInt(60)) }
-    }
-
-    fun localDateTime(minYear: Int = 1, maxYear: Int = 2030): Gen<LocalDateTime> = object : Gen<LocalDateTime> {
-      override fun constants(): Iterable<LocalDateTime> = emptyList()
-      override fun random(): Sequence<LocalDateTime> = generateSequence { LocalDateTime.of(RANDOM.nextInt(maxYear - minYear) + minYear, RANDOM.nextInt(12) + 1, RANDOM.nextInt(31) + 1, RANDOM.nextInt(24), RANDOM.nextInt(60), RANDOM.nextInt(60)) }
-    }
-
-    fun duration(): Gen<Duration> = object : Gen<Duration> {
-      private fun randomDuration(): Duration = when (RANDOM.nextInt(5)) {
-        0 -> Duration.ofSeconds(RANDOM.nextLong())
-        1 -> Duration.ofHours(RANDOM.nextLong())
-        2 -> Duration.ofMillis(RANDOM.nextLong())
-        3 -> Duration.ofNanos(RANDOM.nextLong())
-        else -> Duration.ofDays(RANDOM.nextLong())
+        return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
       }
+      override fun random(): Sequence<LocalDate> = generateSequence {
+        val minDate = LocalDate.of(minYear, 1, 1)
+        val maxDate = LocalDate.of(maxYear, 12, 31)
+
+        val days = ChronoUnit.DAYS.between(minDate, maxDate)
+
+        minDate.plusDays(Random.nextLong(days + 1))
+      }
+    }
+  
+    /**
+     * Generates a stream of random LocalTimes
+     *
+     * This generator creates randomly generated LocalTimes.
+     *
+     * @see [localDateTime]
+     * @see [localDate]
+     */
+    fun localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
+      override fun constants(): Iterable<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
+      override fun random(): Sequence<LocalTime> = generateSequence {
+        LocalTime.of(Random.nextInt(24), Random.nextInt(60), Random.nextInt(60))
+      }
+    }
+  
+    /**
+     * Generates a stream of random LocalDateTimes
+     *
+     * This generator creates randomly generated LocalDates, in the range [[minYear, maxYear]].
+     *
+     * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+     * generator.
+     *
+     * @see [localDateTime]
+     * @see [localTime]
+     */
+    fun localDateTime(minYear: Int = 1970, maxYear: Int = 2030): Gen<LocalDateTime> = object : Gen<LocalDateTime> {
+      override fun constants(): Iterable<LocalDateTime> {
+        val localDates = localDate(minYear, maxYear).constants()
+        val times = localTime().constants()
+
+        return localDates.flatMap { date -> times.map { date.atTime(it) } }
+      }
+
+      override fun random(): Sequence<LocalDateTime> {
+        val dateSequence = localDate(minYear, maxYear).random().iterator()
+        val timeSequence = localTime().random().iterator()
+
+        return generateSequence { dateSequence.next().atTime(timeSequence.next()) }
+      }
+    }
+  
+    /**
+     * Generates a stream of random Durations
+     *
+     * This generator creates randomly generated Duration, of at most [maxDuration].
+     */
+    fun duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Duration> = object : Gen<Duration> {
+      private val maxDurationInSeconds = maxDuration.seconds
+      
       override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
-      override fun random(): Sequence<Duration> = generateSequence { randomDuration() }
+      override fun random(): Sequence<Duration> = generateSequence { Duration.ofSeconds(Random.nextLong(maxDurationInSeconds)) }
+    }
+  
+    /**
+     * Generates a stream of random Periods
+     *
+     * This generator creates randomly generated Periods, with years less than or equal to [maxYear].
+     *
+     * If [maxYear] is 0, only random months and days will be generated.
+     *
+     * Months will always be in range [0..11]
+     * Days will always be in range [0..31]
+     */
+    fun period(maxYear: Int = 10): Gen<Period> = object : Gen<Period> {
+
+      override fun constants(): Iterable<Period> = listOf(Period.ZERO)
+      override fun random(): Sequence<Period> = generateSequence {
+        Period.of((0..maxYear).random(), (0..11).random(), (0..31).random())
+      }
     }
 
     /**
@@ -414,32 +490,27 @@ interface Gen<T> {
     fun double(): Gen<Double> = object : Gen<Double> {
       val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE, Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
       override fun constants(): Iterable<Double> = literals
-      override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun random(): Sequence<Double> = generateSequence { Random.nextDouble() }
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
     }
 
     /**
-     * Returns a [[Gen]] which is the same as [[Gen.double]]] but does not include infinity or NaN.
+     * Returns a [Gen] which is the same as [Gen.double] but does not include +INFINITY, -INFINITY or NaN.
+     *
+     * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
      */
-    fun numericDoubles(): Gen<Double> = object : Gen<Double> {
-      val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE)
+    fun numericDoubles(from: Double = Double.MIN_VALUE,
+                       to: Double = Double.MAX_VALUE
+    ): Gen<Double> = object : Gen<Double> {
+      val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
       override fun constants(): Iterable<Double> = literals
-      override fun random(): Sequence<Double> = generateSequence { RANDOM.nextDouble() }
+      override fun random(): Sequence<Double> = generateSequence { Random.nextDouble(from, to) }
       override fun shrinker(): Shrinker<Double>? = DoubleShrinker
-    }
-
-    /**
-     * Returns a [[Gen]] which is the same as [[Gen.float]]] but does not include infinity or NaN.
-     */
-    fun numericFloats(): Gen<Float> = object : Gen<Float> {
-      val literals = listOf(0.0F, 1.0F, -1.0F, Float.MIN_VALUE, Float.MAX_VALUE)
-      override fun constants(): Iterable<Float> = literals
-      override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
-      override fun shrinker(): Shrinker<Float>? = FloatShrinker
     }
 
     fun positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
     fun negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
+
 
     /**
      * Returns a stream of values where each value is a randomly
@@ -448,8 +519,25 @@ interface Gen<T> {
     fun float(): Gen<Float> = object : Gen<Float> {
       val literals = listOf(0F, Float.MIN_VALUE, Float.MAX_VALUE, Float.NEGATIVE_INFINITY, Float.NaN, Float.POSITIVE_INFINITY)
       override fun constants(): Iterable<Float> = literals
-      override fun random(): Sequence<Float> = generateSequence { RANDOM.nextFloat() }
+      override fun random(): Sequence<Float> = generateSequence { Random.nextFloat() }
       override fun shrinker() = FloatShrinker
+    }
+
+    /**
+     * Returns a [Gen] which is the same as [Gen.float] but does not include +INFINITY, -INFINITY or NaN.
+     *
+     * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
+     */
+    fun numericFloats(
+            from: Float = Float.MIN_VALUE,
+            to: Float = Float.MAX_VALUE
+    ): Gen<Float> = object : Gen<Float> {
+      val literals = listOf(0.0F, 1.0F, -1.0F, Float.MIN_VALUE, Float.MAX_VALUE).filter { it in (from..to) }
+      override fun constants(): Iterable<Float> = literals
+
+      // There's no nextFloat(from, to) method, so borrowing it from Double
+      override fun random(): Sequence<Float> = generateSequence { Random.nextDouble(from.toDouble(), to.toDouble()).toFloat() }
+      override fun shrinker(): Shrinker<Float>? = FloatShrinker
     }
 
     /**
@@ -468,7 +556,7 @@ interface Gen<T> {
     fun <T> set(gen: Gen<T>): Gen<Set<T>> = object : Gen<Set<T>> {
       override fun constants(): Iterable<Set<T>> = listOf(gen.constants().toSet())
       override fun random(): Sequence<Set<T>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         gen.random().take(size).toSet()
       }
     }
@@ -480,7 +568,7 @@ interface Gen<T> {
     fun <T> list(gen: Gen<T>): Gen<List<T>> = object : Gen<List<T>> {
       override fun constants(): Iterable<List<T>> = listOf(gen.constants().toList())
       override fun random(): Sequence<List<T>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         gen.random().take(size).toList()
       }
 
@@ -520,7 +608,7 @@ interface Gen<T> {
     fun <K, V> map(genK: Gen<K>, genV: Gen<V>): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
       override fun constants(): Iterable<Map<K, V>> = emptyList()
       override fun random(): Sequence<Map<K, V>> = generateSequence {
-        val size = RANDOM.nextInt(100)
+        val size = Random.nextInt(100)
         genK.random().take(size).zip(genV.random().take(size)).toMap()
       }
     }
@@ -549,6 +637,11 @@ interface Gen<T> {
         "kotlin.Double" -> double()
         "java.util.UUID" -> uuid()
         "java.io.File" -> file()
+        "java.time.LocalDate" -> localDate()
+        "java.time.LocalDateTime" -> localDateTime()
+        "java.time.LocalTime" -> localTime()
+        "java.time.Duration" -> duration()
+        "java.time.Period" -> period()
         else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
       }
     }
@@ -601,7 +694,7 @@ interface Gen<T> {
   }
 
   fun nextPrintableString(length: Int): String {
-    return (0 until length).map { RANDOM.nextPrintableChar() }.joinToString("")
+    return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
   }
 }
 
