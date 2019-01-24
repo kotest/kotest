@@ -41,13 +41,13 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
 
     fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "Scenario: $name")
     suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(createTestName("Scenario: ", name), this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
 
     suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) =
-        context.registerTestCase("Context: $name", this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
+        context.registerTestCase(createTestName("Context: ", name), this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
   }
 
   fun describe(name: String, test: suspend DescribeScope.() -> Unit) =
-      addTestCase("Describe: $name", { this@AbstractDescribeSpec.DescribeScope(this).test() }, defaultTestCaseConfig, TestType.Container)
+      addTestCase(createTestName("Describe: ", name), { this@AbstractDescribeSpec.DescribeScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
 }

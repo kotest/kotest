@@ -19,7 +19,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
   fun given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
 
   private fun addGivenContext(name: String, test: suspend GivenContext.() -> Unit) {
-    addTestCase("Given: $name", { thisSpec.GivenContext(this).test() }, defaultTestCaseConfig, TestType.Container)
+    addTestCase(createTestName("Given: ", name), { thisSpec.GivenContext(this).test() }, defaultTestCaseConfig, TestType.Container)
   }
 
   @KotlinTestDsl
@@ -28,21 +28,21 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
 
     private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
-      context.registerTestCase("And: $name", thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("And: ", name), thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
     suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
 
     private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
-      context.registerTestCase("When: $name", thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
     suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
 
     private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
-      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("Then: ", name), thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     fun then(name: String) = TestScope(name, context)
@@ -54,21 +54,21 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
 
     private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
-      context.registerTestCase("And: $name", thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("And: ", name), thisSpec, { thisSpec.GivenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
     suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
 
     private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
-      context.registerTestCase("When: $name", thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.WhenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
     suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
 
     private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
-      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("Then: ", name), thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     fun then(name: String) = TestScope(name, context)
@@ -80,14 +80,14 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
     private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
-      context.registerTestCase("And: $name", thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("And: ", name), thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
     suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
 
     private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
-      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+      context.registerTestCase(createTestName("Then: ", name), thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
     }
 
     fun then(name: String) = TestScope(name, context)
@@ -99,14 +99,14 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
     private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
-      context.registerTestCase("And: $name", thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
+      context.registerTestCase(createTestName("And: ", name), thisSpec, { thisSpec.WhenAndContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
     suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
     suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
 
     private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
-      context.registerTestCase("Then: $name", thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+      context.registerTestCase(createTestName("Then: ", name), thisSpec, { thisSpec.ThenContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
     }
 
     fun then(name: String) = TestScope(name, context)

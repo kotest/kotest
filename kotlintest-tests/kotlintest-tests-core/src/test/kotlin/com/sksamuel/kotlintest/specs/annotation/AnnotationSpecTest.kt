@@ -30,6 +30,11 @@ class AnnotationSpecTest : AnnotationSpec() {
     count += 1
   }
 
+  @Test
+  fun `!bangedTest`() {
+    throw FooException()  // Test should pass as this should be banged
+  }
+
   @Test(expected = FooException::class)
   fun test3() {
     throw FooException()  // This test should pass!
