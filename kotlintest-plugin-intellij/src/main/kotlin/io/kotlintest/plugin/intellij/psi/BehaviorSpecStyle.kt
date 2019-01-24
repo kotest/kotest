@@ -40,5 +40,9 @@ object BehaviorSpecStyle : SpecStyle {
     return if (given == null) null else "Given: $given"
   }
 
-  override fun testPath(element: PsiElement): String? = element.tryThen() ?: element.tryWhen() ?: element.tryGiven()
+  override fun testPath(element: PsiElement): String? {
+    if (!element.isInSpecClass())
+      return null
+    return element.tryThen() ?: element.tryWhen() ?: element.tryGiven()
+  }
 }

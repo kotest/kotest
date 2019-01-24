@@ -1,12 +1,15 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
-import io.kotlintest.plugin.intellij.psi.BehaviorSpecStyle.isInSpecClass
+import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
+import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
+import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.KtSuperTypeList
 import org.jetbrains.kotlin.psi.KtValueArgument
@@ -57,9 +60,31 @@ fun PsiElement.findParameterForFunctionWithLambdaArg(names: List<String>): Strin
   if (this is KtCallExpression) {
     if (children[0] is KtNameReferenceExpression && names.contains(children[0].text)
         && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
-        && children[2] is KtLambdaArgument
-        && isInSpecClass()) {
+        && children[2] is KtLambdaArgument) {
       return children[1].children[0].children[0].children[0].text
+    }
+  }
+  return null
+}
+
+
+fun PsiElement.findLeftOperandForInfixFunctionWithLambdaExpression(name: String): String? {
+  if (this is KtBinaryExpression) {
+    if (children[0] is KtStringTemplateExpression
+        && children[1] is KtOperationReferenceExpression && children[1].text == name
+        && children[2] is KtLambdaExpression) {
+      return children[0].children[0].text
+    }
+  }
+  return null
+}
+
+
+fun PsiElement.findReceiverForExtensionFunctionWithLambdaArgument(): String? {
+  if (this is KtCallExpression) {
+    if (children[0] is KtStringTemplateExpression
+        && children[1] is KtLambdaArgument) {
+      return children[0].children[0].text
     }
   }
   return null
