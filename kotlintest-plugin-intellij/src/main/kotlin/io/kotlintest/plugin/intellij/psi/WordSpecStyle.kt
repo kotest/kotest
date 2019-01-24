@@ -20,7 +20,7 @@ object WordSpecStyle : SpecStyle {
     val subject = findReceiverForExtensionFunctionWithLambdaArgument()
     return if (subject == null) null else {
       val should = locateParentTestName()
-      return "$should $subject"
+      return "$should should $subject"
     }
   }
 
