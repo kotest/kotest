@@ -35,17 +35,17 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   }
 
   fun feature(name: String, init: suspend FeatureScope.() -> Unit) =
-      addTestCase("Feature: $name", { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig, TestType.Container)
+      addTestCase(createTestName("Feature: ", name), { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   @KotlinTestDsl
   inner class FeatureScope(val context: TestContext) {
 
     suspend fun and(name: String, init: suspend FeatureScope.() -> Unit) =
-        context.registerTestCase("And: $name", this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Container)
+        context.registerTestCase(createTestName("And: ", name), this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Container)
 
     suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(createTestName("Scenario: ", name), this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Test)
 
-    fun scenario(name: String) = this@AbstractFeatureSpec.ScenarioBuilder("Scenario: $name", context)
+    fun scenario(name: String) = this@AbstractFeatureSpec.ScenarioBuilder(createTestName("Scenario: ", name), context)
   }
 }

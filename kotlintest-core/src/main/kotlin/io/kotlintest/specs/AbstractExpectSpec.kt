@@ -39,16 +39,16 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
   inner class ExpectScope(val context: TestContext) {
 
     suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) =
-        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, { this@AbstractExpectSpec.ExpectScope(this).test() }, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Container)
+        context.registerTestCase(createTestName("Context: ", name), this@AbstractExpectSpec, { this@AbstractExpectSpec.ExpectScope(this).test() }, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Container)
 
     suspend fun expect(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("Expect: $name", this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(createTestName("Expect: ", name), this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
 
-    fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, "Expect: $name")
+    fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, createTestName("Expect: ", name))
   }
 
   fun context(name: String, test: suspend ExpectScope.() -> Unit) =
-      addTestCase("Context: $name", { this@AbstractExpectSpec.ExpectScope(this).test() }, defaultTestCaseConfig, TestType.Container)
+      addTestCase(createTestName("Context: ", name), { this@AbstractExpectSpec.ExpectScope(this).test() }, defaultTestCaseConfig, TestType.Container)
 
 
 }

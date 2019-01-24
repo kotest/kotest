@@ -35,9 +35,9 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
       addTestCase(this, { this@AbstractShouldSpec.ShouldScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   fun should(name: String, test: suspend TestContext.() -> Unit) =
-      addTestCase("should $name", test, defaultTestCaseConfig, TestType.Test)
+      addTestCase(createTestName("should ", name), test, defaultTestCaseConfig, TestType.Test)
 
-  fun should(name: String) = Testbuilder { test, config -> addTestCase("should $name", test, config, TestType.Test) }
+  fun should(name: String) = Testbuilder { test, config -> addTestCase(createTestName("should ", name), test, config, TestType.Test) }
 
   inner class Testbuilder(val register: (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
     fun config(
@@ -66,7 +66,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
         context.registerTestCase(this, this@AbstractShouldSpec, { this@AbstractShouldSpec.ShouldScope(this).init() }, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Container)
 
     suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase("should $name", this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(createTestName("should ", name), this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Test)
 
     inner class Testbuilder(val register: suspend (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
       suspend fun config(
@@ -88,6 +88,6 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
       }
     }
 
-    suspend fun should(name: String) = Testbuilder { test, config -> context.registerTestCase("should $name", this@AbstractShouldSpec, test, config, TestType.Test) }
+    suspend fun should(name: String) = Testbuilder { test, config -> context.registerTestCase(createTestName("should ", name), this@AbstractShouldSpec, test, config, TestType.Test) }
   }
 }
