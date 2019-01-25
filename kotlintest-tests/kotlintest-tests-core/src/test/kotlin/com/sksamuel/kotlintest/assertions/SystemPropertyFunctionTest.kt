@@ -7,7 +7,7 @@ import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.FunSpec
 import java.util.*
 
-class SysPropTest : FunSpec({
+class SystemPropertyFunctionTest : FunSpec({
 
   test("withSystemProperty should set and then restore sys property when null") {
     System.getProperty("wibblewobble") shouldBe null

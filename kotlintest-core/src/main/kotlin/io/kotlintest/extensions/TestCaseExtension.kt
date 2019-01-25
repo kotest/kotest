@@ -65,5 +65,5 @@ interface TestCaseExtension : ProjectLevelExtension, SpecLevelExtension {
    */
   suspend fun intercept(testCase: TestCase,
                         execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-                        complete: suspend (TestResult) -> Unit)
+                        complete: suspend (TestResult) -> Unit) = execute(testCase) { complete(it) }
 }

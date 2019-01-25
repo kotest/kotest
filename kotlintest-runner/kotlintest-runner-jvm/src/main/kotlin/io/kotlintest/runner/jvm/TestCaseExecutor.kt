@@ -82,7 +82,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
         onComplete(result)
       }
       else -> {
-        remaining.first().intercept(testCase, { test, callback -> runExtensions(test, context, remaining.drop(1), callback) }, { onComplete(it) })
+        remaining.first().intercept(
+            testCase,
+            { test, callback -> runExtensions(test, context, remaining.drop(1), callback) },
+            { onComplete(it) }
+        )
       }
     }
   }

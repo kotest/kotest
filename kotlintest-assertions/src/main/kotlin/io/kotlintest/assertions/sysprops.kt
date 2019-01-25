@@ -2,7 +2,7 @@ package io.kotlintest.assertions
 
 import java.util.*
 
-fun <T> withSystemProperty(key: String, value: String, thunk: () -> T): T {
+fun <T> withSystemProperty(key: String, value: String?, thunk: () -> T): T {
   val previous = System.setProperty(key, value)
   try {
     return thunk()
