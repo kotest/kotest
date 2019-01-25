@@ -18,3 +18,5 @@ cache:
 install: /bin/true
 
 script: ./gradlew test
+
+after_success: ./gradlew uploadArchives
