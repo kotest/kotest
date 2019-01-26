@@ -25,11 +25,6 @@ allprojects {
 
     group = "io.kotlintest"
 
-    if (System.getProperty("TRAVIS") == "true") {
-        ossrhUsername = System.getProperty("ossrhUsername")
-        ossrhPassword = System.getProperty("ossrhPassword")
-    }
-
     repositories {
         mavenCentral()
     }
