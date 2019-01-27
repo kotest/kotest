@@ -60,10 +60,11 @@ inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any?, Any?>> {
         Result(false, "Either should be Left<${A::class.qualifiedName}> but was Right(${value.b})", "")
       }
       is Either.Left -> {
-        if (value.a is A)
+        val valueA = value.a
+        if (valueA is A)
           Result(true, "Either should be Left<${A::class.qualifiedName}>", "Either should not be Left")
         else
-          Result(false, "Either should be Left<${A::class.qualifiedName}> but was Left<${value.a::class.qualifiedName}>", "Either should not be Left")
+          Result(false, "Either should be Left<${A::class.qualifiedName}> but was Left<${if (valueA == null) "Null" else valueA::class.qualifiedName}>", "Either should not be Left")
       }
     }
   }
