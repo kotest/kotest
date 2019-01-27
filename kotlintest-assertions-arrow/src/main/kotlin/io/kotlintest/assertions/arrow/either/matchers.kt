@@ -7,18 +7,18 @@ import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
-fun <T> Either<Any, T>.shouldBeRight() = this should beRight()
-fun <T> Either<Any, T>.shouldNotBeRight() = this shouldNot beRight()
-fun <T> beRight() = beInstanceOf2<Either<Any, T>, Either.Right<T>>()
+fun <T> Either<Any?, T>.shouldBeRight() = this should beRight()
+fun <T> Either<Any?, T>.shouldNotBeRight() = this shouldNot beRight()
+fun <T> beRight() = beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
 
-fun <T> Either<T, Any>.shouldBeLeft() = this should beLeft()
-fun <T> Either<T, Any>.shouldNotBeLeft() = this shouldNot beLeft()
-fun <T> beLeft() = beInstanceOf2<Either<T, Any>, Either.Left<T>>()
+fun <T> Either<T, Any?>.shouldBeLeft() = this should beLeft()
+fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
+fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
 
-fun <B> Either<Any, B>.shouldBeRight(b: B) = this should beRight(b)
-fun <B> Either<Any, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
-fun <B> beRight(b: B) = object : Matcher<Either<Any, B>> {
-  override fun test(value: Either<Any, B>): Result {
+fun <B> Either<Any?, B>.shouldBeRight(b: B) = this should beRight(b)
+fun <B> Either<Any?, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
+fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
+  override fun test(value: Either<Any?, B>): Result {
     return when (value) {
       is Either.Left -> {
         Result(false, "Either should be Right($b) but was Left(${value.a})", "Either should not be Right($b)")
@@ -33,10 +33,10 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any, B>> {
   }
 }
 
-fun <A> Either<A, Any>.shouldBeLeft(a: A) = this should beLeft(a)
-fun <A> Either<A, Any>.shouldNotBeLeft(a: A) = this shouldNot beLeft(a)
-fun <A> beLeft(a: A) = object : Matcher<Either<A, Any>> {
-  override fun test(value: Either<A, Any>): Result {
+fun <A> Either<A, Any?>.shouldBeLeft(a: A) = this should beLeft(a)
+fun <A> Either<A, Any?>.shouldNotBeLeft(a: A) = this shouldNot beLeft(a)
+fun <A> beLeft(a: A) = object : Matcher<Either<A, Any?>> {
+  override fun test(value: Either<A, Any?>): Result {
     return when (value) {
       is Either.Right -> {
         Result(false, "Either should be Left($a) but was Right(${value.b})", "Either should not be Right($a)")
@@ -51,10 +51,10 @@ fun <A> beLeft(a: A) = object : Matcher<Either<A, Any>> {
   }
 }
 
-inline fun <reified A> Either<Any, Any>.shouldBeLeftOfType() = this should beLeftOfType<A>()
-inline fun <reified A> Either<Any, Any>.shouldNotBeLeftOfType() = this shouldNot beLeftOfType<A>()
-inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any, Any>> {
-  override fun test(value: Either<Any, Any>): Result {
+inline fun <reified A> Either<Any?, Any?>.shouldBeLeftOfType() = this should beLeftOfType<A>()
+inline fun <reified A> Either<Any?, Any?>.shouldNotBeLeftOfType() = this shouldNot beLeftOfType<A>()
+inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any?, Any?>> {
+  override fun test(value: Either<Any?, Any?>): Result {
     return when (value) {
       is Either.Right -> {
         Result(false, "Either should be Left<${A::class.qualifiedName}> but was Right(${value.b})", "")
