@@ -28,6 +28,10 @@ allprojects {
 
     group = "io.kotlintest"
 
+    if (isTravis) {
+        version "3.3.0." + travisBuildNumber + "-SNAPSHOT"
+    }
+
     repositories {
         mavenCentral()
     }
@@ -35,69 +39,26 @@ allprojects {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                if (isTravis) {
-                    version "3.3.0." + travisBuildNumber + "-SNAPSHOT"
-                }
+
                 from components.java
-            }
-        }
-    }
 
-    dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib"
-    }
+                if (isReleaseVersion) {
+                    artifact sourcesJar
+                    artifact javadocJar
+                    url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                } else {
+                    url = "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    release {
-        failOnPublishNeeded = false
-    }
-
-    task javadocJar(type: Jar) {
-        classifier = 'javadoc'
-        from javadoc
-    }
-
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    artifacts {
-        archives javadocJar, sourcesJar
-    }
-
-    build {
-        afterReleaseBuild.dependsOn uploadArchives
-    }
-
-    signing {
-        useGpgCmd()
-        sign configurations.archives
-    }
-
-    tasks.withType(Sign) {
-        onlyIf { isReleaseVersion }
-    }
-
-    tasks.withType(Javadoc) {
-        onlyIf { isReleaseVersion }
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-//                beforeDeployment {
-//                    MavenDeployment deployment -> signing.signPom(deployment)
-//                }
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
 
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
                 }
 
-                pom.project {
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                pom {
                     name 'KotlinTest'
                     packaging 'jar'
                     description 'Kotlin Test Framework'
@@ -126,6 +87,45 @@ allprojects {
                 }
             }
         }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib"
+    }
+
+    release {
+        failOnPublishNeeded = false
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
+    build {
+        afterReleaseBuild.dependsOn publish
+    }
+
+    signing {
+        useGpgCmd()
+        sign configurations.archives
+    }
+
+    tasks.withType(Sign) {
+        onlyIf { isReleaseVersion }
+    }
+
+    tasks.withType(Javadoc) {
+        onlyIf { isReleaseVersion }
     }
 }
 
