@@ -43,8 +43,8 @@ allprojects {
                 def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
                 url = isReleaseVersion ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
-                    username = ossrhUsername
-                    password = ossrhPassword
+                    username = System.getProperty("OSSRH_USERNAME") ?: ossrhUsername
+                    password = System.getProperty("OSSRH_PASSWORD") ?: ossrhPassword
                 }
             }
         }
