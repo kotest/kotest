@@ -78,6 +78,10 @@ allprojects {
         onlyIf { isReleaseVersion }
     }
 
+    tasks.withName(Javadoc) {
+        onlyIf { isReleaseVersion }
+    }
+
     uploadArchives {
         repositories {
             mavenDeployer {
