@@ -46,8 +46,8 @@ allprojects {
                 name 'deploy'
                 url = isReleaseVersion ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
-                    username = System.getProperty("OSSRH_USERNAME", ossrhUsername)
-                    password = System.getProperty("OSSRH_PASSWORD", ossrhPassword)
+                    username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
+                    password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
                 }
             }
         }
