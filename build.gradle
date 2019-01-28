@@ -59,29 +59,28 @@ allprojects {
                 }
 
                 pom {
-                    name 'KotlinTest'
-                    packaging 'jar'
-                    description 'Kotlin Test Framework'
-                    url 'http://www.github.com/kotlintest/kotlintest'
+                    name = 'KotlinTest'
+                    description = 'Kotlin Test Framework'
+                    url = 'http://www.github.com/kotlintest/kotlintest'
 
                     scm {
-                        connection 'scm:git:http://www.github.com/kotlintest/kotlintest/'
-                        developerConnection 'scm:git:http://github.com/sksamuel/'
-                        url 'http://www.github.com/kotlintest/kotlintest/'
+                        connection = 'scm:git:http://www.github.com/kotlintest/kotlintest/'
+                        developerConnection = 'scm:git:http://github.com/sksamuel/'
+                        url = 'http://www.github.com/kotlintest/kotlintest/'
                     }
 
                     licenses {
                         license {
-                            name 'The Apache 2.0 License'
-                            url 'https://opensource.org/licenses/Apache-2.0'
+                            name = 'The Apache 2.0 License'
+                            url = 'https://opensource.org/licenses/Apache-2.0'
                         }
                     }
 
                     developers {
                         developer {
-                            id 'sksamuel'
-                            name 'Stephen Samuel'
-                            email 'sam@sksamuel.com'
+                            id = 'sksamuel'
+                            name = 'Stephen Samuel'
+                            email = 'sam@sksamuel.com'
                         }
                     }
                 }
