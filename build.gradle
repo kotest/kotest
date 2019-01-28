@@ -37,6 +37,17 @@ allprojects {
     }
 
     publishing {
+        repositories {
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = isReleaseVersion ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
+                }
+            }
+        }
         publications {
             mavenJava(MavenPublication) {
 
@@ -45,18 +56,7 @@ allprojects {
                 if (isReleaseVersion) {
                     artifact sourcesJar
                     artifact javadocJar
-                    url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                } else {
-                    url = "https://oss.sonatype.org/content/repositories/snapshots/"
-
                 }
-
-                credentials {
-                    username = ossrhUsername
-                    password = ossrhPassword
-                }
-
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
                 pom {
                     name 'KotlinTest'
