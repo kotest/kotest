@@ -2,6 +2,7 @@ buildscript {
     ext.kotlin_version = '1.3.20'
     ext.isTravis = System.getProperty("TRAVIS") == "true"
     ext.travisBuildNumber = System.getProperty("TRAVIS_BUILD_NUMBER")
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
     repositories {
         mavenCentral()
     }
@@ -35,7 +36,7 @@ allprojects {
         publications {
             mavenJava(MavenPublication) {
                 if (isTravis) {
-                    version "3.3.0." + travisBuildNumber + "SNAPSHOT"
+                    version "3.3.0." + travisBuildNumber + "-SNAPSHOT"
                 }
                 from components.java
             }
@@ -71,6 +72,10 @@ allprojects {
     signing {
         useGpgCmd()
         sign configurations.archives
+    }
+
+    tasks.withType(Sign) {
+        onlyIf { isReleaseVersion }
     }
 
     uploadArchives {
