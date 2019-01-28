@@ -78,7 +78,7 @@ allprojects {
         onlyIf { isReleaseVersion }
     }
 
-    tasks.withName(Javadoc) {
+    tasks.withType(Javadoc) {
         onlyIf { isReleaseVersion }
     }
 
