@@ -111,20 +111,8 @@ class NoExitSecurityManager(private val originalSecurityManager: SecurityManager
     originalSecurityManager?.checkPropertyAccess(key)
   }
 
-  override fun checkTopLevelWindow(window: Any): Boolean {
-    return originalSecurityManager?.checkTopLevelWindow(window) ?: super.checkTopLevelWindow(window)
-  }
-
   override fun checkPrintJobAccess() {
     originalSecurityManager?.checkPrintJobAccess()
-  }
-
-  override fun checkSystemClipboardAccess() {
-    originalSecurityManager?.checkSystemClipboardAccess()
-  }
-
-  override fun checkAwtEventQueueAccess() {
-    originalSecurityManager?.checkAwtEventQueueAccess()
   }
 
   override fun checkPackageAccess(pkg: String) {
@@ -137,10 +125,6 @@ class NoExitSecurityManager(private val originalSecurityManager: SecurityManager
 
   override fun checkSetFactory() {
     originalSecurityManager?.checkSetFactory()
-  }
-
-  override fun checkMemberAccess(clazz: Class<*>, which: Int) {
-    originalSecurityManager?.checkMemberAccess(clazz, which)
   }
 
   override fun checkSecurityAccess(target: String) {
