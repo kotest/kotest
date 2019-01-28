@@ -39,12 +39,15 @@ allprojects {
     publishing {
         repositories {
             maven {
+
                 def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                 def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+
+                name 'deploy'
                 url = isReleaseVersion ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
-                    username = System.getProperty("OSSRH_USERNAME") ?: ossrhUsername
-                    password = System.getProperty("OSSRH_PASSWORD") ?: ossrhPassword
+                    username = System.getProperty("OSSRH_USERNAME", ossrhUsername)
+                    password = System.getProperty("OSSRH_PASSWORD", ossrhPassword)
                 }
             }
         }
