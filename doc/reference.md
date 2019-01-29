@@ -22,7 +22,7 @@ test {
 }
 
 dependencies {
-  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.10'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
 }
 ```
 
