@@ -169,6 +169,23 @@ dependencies {
 }
 ```
 
+or with gradle and Android
+
+```groovy
+android {
+...
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+}
+
+dependencies {
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
+}
+```
+
 #### Maven
 
 For maven you must configure the surefire plugin for junit tests.
