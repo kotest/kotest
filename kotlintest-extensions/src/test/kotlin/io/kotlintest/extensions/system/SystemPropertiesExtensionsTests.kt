@@ -1,10 +1,10 @@
-package com.sksamuel.kotlintest.assertions
+package io.kotlintest.extensions.system
 
-import io.kotlintest.assertions.withSystemProperties
-import io.kotlintest.assertions.withSystemProperty
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrowAny
+import io.kotlintest.*
+import io.kotlintest.extensions.SpecLevelExtension
+import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.specs.FunSpec
+import io.kotlintest.specs.WordSpec
 import java.util.*
 
 class SystemPropertyFunctionTest : FunSpec({
@@ -67,3 +67,24 @@ class SystemPropertyFunctionTest : FunSpec({
     System.getProperty("wibblewobble") shouldBe "dobble"
   }
 })
+
+class SystemPropertyExtensionTest : WordSpec() {
+
+  override fun extensions(): List<SpecLevelExtension> = listOf(SystemPropertyExtension("wibble", "wobble"))
+
+  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+    System.getProperty("wibble") shouldBe null
+  }
+
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    System.getProperty("wibble") shouldBe null
+  }
+
+  init {
+    "sys prop extension" should {
+      "set sys prop" {
+        System.getProperty("wibble") shouldBe "wobble"
+      }
+    }
+  }
+}
