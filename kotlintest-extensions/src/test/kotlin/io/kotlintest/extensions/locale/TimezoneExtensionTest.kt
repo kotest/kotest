@@ -1,9 +1,8 @@
-package com.sksamuel.kotlintest.extensions
+package io.kotlintest.extensions.locale
 
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TimezoneExtension
 import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
