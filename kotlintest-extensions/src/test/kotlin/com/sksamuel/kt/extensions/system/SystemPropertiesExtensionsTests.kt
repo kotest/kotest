@@ -1,11 +1,51 @@
-package io.kotlintest.extensions.system
+package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.*
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.extensions.system.SystemPropertyExtension
+import io.kotlintest.extensions.system.withSystemProperties
+import io.kotlintest.extensions.system.withSystemProperty
+import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.WordSpec
 import java.util.*
+
+class SystemPropertiesSuspendTest : FreeSpec() {
+  
+  init {
+    "The system properties function" - {
+      "Must accept a suspend block" - {
+        
+        val suspendBlock: suspend () -> Unit = {  }
+        
+        "Key Value overload" {
+            withSystemProperty("Key", "Value") {
+              suspendBlock()
+          }
+        }
+  
+        "List of Pair value overload" {
+          withSystemProperties(listOf("Key" to "Value")){
+            suspendBlock()
+          }
+        }
+  
+        "Properties value overload" {
+          withSystemProperties(Properties()) {
+            suspendBlock()
+          }
+        }
+  
+        "Map value overload" {
+          withSystemProperties(mapOf("Key" to "Value")) {
+            suspendBlock()
+          }
+        }
+      }
+    }
+  }
+}
 
 class SystemPropertyFunctionTest : FunSpec({
 
@@ -46,7 +86,7 @@ class SystemPropertyFunctionTest : FunSpec({
     val props = Properties()
     props.setProperty("a", "m")
     props.setProperty("b", "n")
-
+  
     withSystemProperties(props) {
       System.getProperty("a") shouldBe "m"
       System.getProperty("b") shouldBe "n"

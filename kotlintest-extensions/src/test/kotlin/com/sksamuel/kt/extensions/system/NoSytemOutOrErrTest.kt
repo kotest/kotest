@@ -1,5 +1,9 @@
-package io.kotlintest.extensions.system
+package com.sksamuel.kt.extensions.system
 
+import io.kotlintest.extensions.system.NoSystemErrListener
+import io.kotlintest.extensions.system.NoSystemOutListener
+import io.kotlintest.extensions.system.SystemErrWriteException
+import io.kotlintest.extensions.system.SystemOutWriteException
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
