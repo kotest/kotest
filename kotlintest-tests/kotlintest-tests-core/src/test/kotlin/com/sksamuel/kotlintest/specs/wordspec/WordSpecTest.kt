@@ -20,15 +20,6 @@ class WordSpecTest : WordSpec() {
 
     "another context" When {
 
-      "using In" Should {
-        "have a test" In {
-          2.shouldBeGreaterThan(1)
-        }
-        "have a test with config".config(invocations = 2) In{
-          2.shouldBeGreaterThan(1)
-        }
-      }
-
       "not using In" Should {
         "have a test" {
           2.shouldBeGreaterThan(1)
