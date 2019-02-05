@@ -61,5 +61,5 @@ compileTestKotlin {
 publishPlugin {
     username intellijPublishUsername
     password intellijPublishPassword
-    channels 'alpha'
+    channels 'Stable'
 }
