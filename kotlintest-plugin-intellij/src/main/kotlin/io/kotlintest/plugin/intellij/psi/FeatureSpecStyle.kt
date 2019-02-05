@@ -13,7 +13,7 @@ object FeatureSpecStyle : SpecStyle {
     val test = tryAnd() ?: tryFeature()
     val result = if (test == null) emptyList() else listOf(test)
     // if parent is null then we have hit the end
-    return if (parent == null) result else result + parent.locateParentTests()
+    return if (parent == null) result else parent.locateParentTests() + result
   }
 
   private fun PsiElement.tryFeature(): String? {
@@ -34,6 +34,6 @@ object FeatureSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
     val test = element.tryScenario() ?: element.tryAnd() ?: element.tryFeature()
-    return if (test == null) null else test + element.locateParentTests().joinToString(" ", " ", "")
+    return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
   }
 }
