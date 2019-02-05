@@ -40,7 +40,7 @@ class JUnitXMLReportTest : WordSpec() {
       "include top level information" {
         val root = root()
         root.getAttributeValue("name").shouldBe("com.sksamuel.kotlintest.specs.wordspec.WordSpecTest")
-        root.getAttributeValue("tests").shouldBe("3")
+        root.getAttributeValue("tests").shouldBe("5")
         root.getAttributeValue("skipped").shouldBe("0")
         root.getAttributeValue("errors").shouldBe("0")
         root.getAttributeValue("failures").shouldBe("0")
