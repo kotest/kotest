@@ -30,6 +30,12 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   infix fun String.should(init: suspend WordScope.() -> Unit) =
       addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
+  infix fun String.When(init: suspend WhenContext.() -> Unit) = addWhenContext(this, init)
+
+  private fun addWhenContext(name: String, init: suspend WhenContext.() -> Unit) {
+    addTestCase(name, { thisSpec.WhenContext(this).init() }, defaultTestCaseConfig, TestType.Container)
+  }
+
   @KotlinTestDsl
   inner class WordScope(val context: TestContext) {
 
@@ -60,6 +66,32 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   }
 
   @KotlinTestDsl
+  inner class WhenContext(val context: TestContext) {
+
+    suspend infix fun String.Should(test: suspend ShouldContext.() -> Unit) = addShouldContext(this, test)
+    suspend infix fun String.should(test: suspend ShouldContext.() -> Unit) = addShouldContext(this, test)
+
+    private suspend fun addShouldContext(name: String, test: suspend ShouldContext.() -> Unit) {
+      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.ShouldContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+    }
+
+  }
+
+  @KotlinTestDsl
+  inner class ShouldContext(val context: TestContext) {
+
+    suspend infix fun String.In(test: suspend InContext.() -> Unit) = addInContext(this, test)
+
+    private suspend fun addInContext(name: String, test: suspend InContext.() -> Unit) {
+      context.registerTestCase(createTestName("Should: ", name), thisSpec, { thisSpec.InContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+    }
+
+  }
+
+  @KotlinTestDsl
+  inner class InContext(val context: TestContext)
+
+  @KotlinTestDsl
   inner class FinalTestContext(val context: TestContext, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
 
     override fun description(): Description = context.description()
@@ -69,4 +101,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
     infix fun String.should(init: () -> Unit) = { init() }
   }
+
+  private val thisSpec: AbstractWordSpec
+    get() = this@AbstractWordSpec
 }
