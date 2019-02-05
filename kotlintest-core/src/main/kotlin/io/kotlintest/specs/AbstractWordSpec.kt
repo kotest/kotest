@@ -67,7 +67,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     suspend infix fun String.should(test: suspend ShouldContext.() -> Unit) = addShouldContext(this, test)
 
     private suspend fun addShouldContext(name: String, test: suspend ShouldContext.() -> Unit) {
-      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.ShouldContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
+      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.ShouldContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
   }
