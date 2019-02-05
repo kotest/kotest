@@ -34,6 +34,6 @@ object FeatureSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
     val test = element.tryScenario() ?: element.tryAnd() ?: element.tryFeature()
-    return if (test == null) null else test + element.locateParentTests()
+    return if (test == null) null else test + element.locateParentTests().joinToString(" ", " ", "")
   }
 }

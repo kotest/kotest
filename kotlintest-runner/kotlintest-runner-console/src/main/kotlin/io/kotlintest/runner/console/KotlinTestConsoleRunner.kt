@@ -8,10 +8,14 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCaseFilter
 import io.kotlintest.TestFilterResult
 
+/**
+ * A [TestCaseFilter] that only accepts tests which are a prefix of the given test name
+ */
 class PrefixTestFilter(private val test: String) : TestCaseFilter {
   override fun filter(description: Description): TestFilterResult {
-    println("$test startsWith ${description.tail().fullName()}")
-    return if (test.startsWith(description.tail().fullName())) TestFilterResult.Include else TestFilterResult.Exclude
+    val prefix = description.tail().fullName()
+    println("$test startsWith $prefix")
+    return if (test.startsWith(prefix)) TestFilterResult.Include else TestFilterResult.Exclude
   }
 }
 
