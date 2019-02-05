@@ -11,5 +11,15 @@ class WordSpecExample : WordSpec() {
       "allow config".config(invocations = 2) {
       }
     }
+
+    "another test" When {
+      "using when" Should {
+        "test something"{
+          // test here
+        }
+        "allow config".config(invocations = 2) {
+        }
+      }
+    }
   }
 }

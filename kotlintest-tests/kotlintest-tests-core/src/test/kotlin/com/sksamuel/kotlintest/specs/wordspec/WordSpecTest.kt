@@ -20,7 +20,7 @@ class WordSpecTest : WordSpec() {
 
     "another context" When {
 
-      "not using In" Should {
+      "using when" Should {
         "have a test" {
           2.shouldBeGreaterThan(1)
         }
