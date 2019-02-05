@@ -28,7 +28,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   infix fun String.`when`(init: suspend WhenContext.() -> Unit) = addWhenContext(this, init)
 
   private fun addWhenContext(name: String, init: suspend WhenContext.() -> Unit) {
-    addTestCase(name, { thisSpec.WhenContext(this).init() }, defaultTestCaseConfig, TestType.Container)
+    addTestCase("$name when", { thisSpec.WhenContext(this).init() }, defaultTestCaseConfig, TestType.Container)
   }
 
   @KotlinTestDsl
@@ -63,45 +63,11 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   @KotlinTestDsl
   inner class WhenContext(val context: TestContext) {
 
-    suspend infix fun String.Should(test: suspend ShouldContext.() -> Unit) = addShouldContext(this, test)
-    suspend infix fun String.should(test: suspend ShouldContext.() -> Unit) = addShouldContext(this, test)
+    suspend infix fun String.Should(test: suspend WordScope.() -> Unit) = addShouldContext(this, test)
+    suspend infix fun String.should(test: suspend WordScope.() -> Unit) = addShouldContext(this, test)
 
-    private suspend fun addShouldContext(name: String, test: suspend ShouldContext.() -> Unit) {
-      context.registerTestCase(createTestName("When: ", name), thisSpec, { thisSpec.ShouldContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
-    }
-
-  }
-
-  @KotlinTestDsl
-  inner class ShouldContext(val context: TestContext) {
-
-    private suspend fun addInContext(name: String, test: suspend FinalTestContext.() -> Unit) {
-      context.registerTestCase(createTestName("Should: ", name), thisSpec, { thisSpec.FinalTestContext(this, coroutineContext).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
-    }
-
-    suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) = addInContext(this, test)
-
-    suspend fun String.config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Duration? = null,
-        threads: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: suspend FinalTestContext.() -> Unit) {
-      val config = Pair(this, TestCaseConfig(
-          enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
-          invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
-          timeout ?: this@AbstractWordSpec.defaultTestCaseConfig.timeout,
-          threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
-          tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
-          extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions))
-      addInContext(config, test)
-    }
-
-    private suspend fun addInContext(testConfig: Pair<String, TestCaseConfig>, test: suspend FinalTestContext.() -> Unit) {
-      context.registerTestCase(createTestName("Should: ", testConfig.first), thisSpec,
-          { thisSpec.FinalTestContext(this, coroutineContext).test() }, testConfig.second, TestType.Test)
+    private suspend fun addShouldContext(name: String, test: suspend WordScope.() -> Unit) {
+      context.registerTestCase("$name should", thisSpec, { thisSpec.WordScope(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Container)
     }
 
   }
