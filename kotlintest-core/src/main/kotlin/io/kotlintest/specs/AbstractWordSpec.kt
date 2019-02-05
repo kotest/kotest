@@ -84,6 +84,25 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
     suspend infix operator fun String.invoke(test: suspend InContext.() -> Unit) = addInContext(this, test)
 
+      //TODO: See if repeating so much code can be avoided
+      suspend fun String.config(
+              invocations: Int? = null,
+              enabled: Boolean? = null,
+              timeout: Duration? = null,
+              threads: Int? = null,
+              tags: Set<Tag>? = null,
+              extensions: List<TestCaseExtension>? = null,
+              test: suspend InContext.() -> Unit) {
+          val config = Pair(this,TestCaseConfig(
+                  enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
+                  invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
+                  timeout ?: this@AbstractWordSpec.defaultTestCaseConfig.timeout,
+                  threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
+                  tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
+                  extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions))
+          addInContext(config, test)
+      }
+
       fun String.config(
               invocations: Int? = null,
               enabled: Boolean? = null,
@@ -100,16 +119,13 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
                   extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions))
       }
 
+      suspend infix fun Pair<String, TestCaseConfig>.In(test: suspend InContext.() -> Unit) = addInContext(this, test)
 
-      //after a config it only seems to work with "in", and it can't use an invoke,
-      //since it wants to use the block as the extensions parameter of the config
-      suspend infix fun Pair<String, TestCaseConfig>.In(test: suspend InContext.() -> Unit) = addInContext(test)
-      suspend infix fun Pair<String, TestCaseConfig>.`in`(test: suspend InContext.() -> Unit) = addInContext(test)
+      suspend infix fun Pair<String, TestCaseConfig>.`in`(test: suspend InContext.() -> Unit) = addInContext(this, test)
 
-
-      private suspend fun Pair<String, TestCaseConfig>.addInContext(test: suspend InContext.() -> Unit) {
-          context.registerTestCase(createTestName("Should: ", this.first), thisSpec,
-                  { thisSpec.InContext(this).test() }, this.second, TestType.Test)
+      private suspend fun addInContext(testConfig: Pair<String, TestCaseConfig>, test: suspend InContext.() -> Unit) {
+          context.registerTestCase(createTestName("Should: ", testConfig.first), thisSpec,
+                  { thisSpec.InContext(this).test() }, testConfig.second, TestType.Test)
       }
 
 
