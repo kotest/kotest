@@ -58,13 +58,9 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
   }
 
   override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
-
     val processHandler = startProcess()
-
     val props = KotlinTestSMTConsoleProperties(configuration, executor)
     val console = SMTestRunnerConnectionUtil.createAndAttachConsole("kotlintest", processHandler, props)
-
-    console.attachToProcess(processHandler)
     return DefaultExecutionResult(console, processHandler, *createActions(console, processHandler, executor))
   }
 }
