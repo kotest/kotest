@@ -28,9 +28,10 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   }
 
   infix fun String.should(init: suspend WordScope.() -> Unit) =
-      addTestCase(this + " should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig, TestType.Container)
+      addTestCase("$this should", { this@AbstractWordSpec.WordScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   infix fun String.When(init: suspend WhenContext.() -> Unit) = addWhenContext(this, init)
+  infix fun String.`when`(init: suspend WhenContext.() -> Unit) = addWhenContext(this, init)
 
   private fun addWhenContext(name: String, init: suspend WhenContext.() -> Unit) {
     addTestCase(name, { thisSpec.WhenContext(this).init() }, defaultTestCaseConfig, TestType.Container)
@@ -81,10 +82,13 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   inner class ShouldContext(val context: TestContext) {
 
     suspend infix fun String.In(test: suspend InContext.() -> Unit) = addInContext(this, test)
+    suspend infix fun String.`in`(test: suspend InContext.() -> Unit) = addInContext(this, test)
 
     private suspend fun addInContext(name: String, test: suspend InContext.() -> Unit) {
       context.registerTestCase(createTestName("Should: ", name), thisSpec, { thisSpec.InContext(this).test() }, thisSpec.defaultTestCaseConfig, TestType.Test)
     }
+
+    suspend infix operator fun String.invoke(test: suspend InContext.() -> Unit) = addInContext(this, test)
 
   }
 
