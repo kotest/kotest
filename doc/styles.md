@@ -72,6 +72,26 @@ class MyTests : WordSpec({
 })
 ```
 
+It also supports the keyword `When` allowing to add another level of nesting.
+
+```
+class MyTests : WordSpec({
+    "Hello" When {
+        "asked for length" should {
+            "return 5" {
+                "Hello".length shouldBe 5
+            }
+        }
+        "appended to Bob" should {
+            "return Hello Bob" {
+                "Hello " + "Bob" shouldBe "Hello Bob"
+            }
+        }
+    }
+    
+})
+```
+
 ### Feature Spec
 
 `FeatureSpec` allows you to use `feature` and `scenario`, which will be familar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/)
