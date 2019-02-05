@@ -9,12 +9,12 @@ object WordSpecStyle : SpecStyle {
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
   private fun PsiElement.locateParentTestName(): String? {
-    val param = this.findLeftOperandForInfixFunctionWithLambdaExpression("should")
+    val param = this.matchInfixFunctionWithStringAndLambaArg(listOf("should"))
     return if (param == null && parent == null) null else param ?: parent.locateParentTestName()
   }
 
   private fun PsiElement.tryShould(): String? =
-      findLeftOperandForInfixFunctionWithLambdaExpression("should")
+      matchInfixFunctionWithStringAndLambaArg(listOf("should"))
 
   private fun PsiElement.trySubject(): String? {
     val subject = findReceiverForExtensionFunctionWithLambdaArgument()

@@ -14,12 +14,12 @@ object BehaviorSpecStyle : SpecStyle {
   private val thens = listOf("then", "Then", "`then`", "`Then`")
 
   private fun PsiElement.locateParentTestName(names: List<String>): String? {
-    val param = this.findParameterForFunctionWithLambdaArg(names)
+    val param = this.matchFunction2WithStringAndLambdaArgs(names)
     return if (param == null && parent == null) null else param ?: parent.locateParentTestName(names)
   }
 
   private fun PsiElement.tryThen(): String? {
-    val then = findParameterForFunctionWithLambdaArg(thens)
+    val then = matchFunction2WithStringAndLambdaArgs(thens)
     return if (then == null) null else {
       val `when` = locateParentTestName(whens)
       val given = locateParentTestName(givens)
@@ -28,7 +28,7 @@ object BehaviorSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryWhen(): String? {
-    val `when` = findParameterForFunctionWithLambdaArg(whens)
+    val `when` = matchFunction2WithStringAndLambdaArgs(whens)
     return if (`when` == null) null else {
       val given = locateParentTestName(givens)
       "Given: $given When: $`when`"
@@ -36,7 +36,7 @@ object BehaviorSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryGiven(): String? {
-    val given = findParameterForFunctionWithLambdaArg(givens)
+    val given = matchFunction2WithStringAndLambdaArgs(givens)
     return if (given == null) null else "Given: $given"
   }
 

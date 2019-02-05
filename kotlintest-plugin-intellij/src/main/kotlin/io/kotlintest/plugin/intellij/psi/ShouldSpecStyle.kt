@@ -11,6 +11,6 @@ object ShouldSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.findParameterForFunctionWithLambdaArg(listOf("should"))
+    return element.matchFunction2WithStringAndLambdaArgs(listOf("should"))
   }
 }

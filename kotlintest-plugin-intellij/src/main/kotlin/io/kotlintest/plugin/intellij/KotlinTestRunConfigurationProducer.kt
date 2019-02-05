@@ -6,6 +6,7 @@ import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotlintest.plugin.intellij.psi.BehaviorSpecStyle
+import io.kotlintest.plugin.intellij.psi.FeatureSpecStyle
 import io.kotlintest.plugin.intellij.psi.FunSpecStyle
 import io.kotlintest.plugin.intellij.psi.ShouldSpecStyle
 import io.kotlintest.plugin.intellij.psi.SpecStyle
@@ -51,3 +52,4 @@ class BehaviorSpecRunConfigurationProducer : KotlinTestRunConfigurationProducer(
 class ShouldSpecRunConfigurationProducer : KotlinTestRunConfigurationProducer(ShouldSpecStyle)
 class StringSpecRunConfigurationProducer : KotlinTestRunConfigurationProducer(StringSpecStyle)
 class WordSpecRunConfigurationProducer : KotlinTestRunConfigurationProducer(WordSpecStyle)
+class FeatureSpecRunConfigurationProducer : KotlinTestRunConfigurationProducer(FeatureSpecStyle)

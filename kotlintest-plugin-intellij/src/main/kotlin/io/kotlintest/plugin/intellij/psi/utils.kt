@@ -54,9 +54,11 @@ fun PsiElement.enclosingClassName(): String? {
  *
  * Eg, can be used to match: given("this is a test") { }
  *
- * @return the string parameter of the invoked function
+ * @return the string argument of the invoked function
+ *
+ * @param names one or more function names to search for
  */
-fun PsiElement.findParameterForFunctionWithLambdaArg(names: List<String>): String? {
+fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): String? {
   if (this is KtCallExpression) {
     if (children[0] is KtNameReferenceExpression && names.contains(children[0].text)
         && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
@@ -67,11 +69,21 @@ fun PsiElement.findParameterForFunctionWithLambdaArg(names: List<String>): Strin
   return null
 }
 
-
-fun PsiElement.findLeftOperandForInfixFunctionWithLambdaExpression(name: String): String? {
+/**
+ * Matches blocks of the form:
+ *
+ * "string" infixFunctionName { }
+ *
+ * Eg, can be used to match: "this test" should { }
+ *
+ * @return the LHS operand
+ *
+ * @param names one or more function names to search for
+ */
+fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? {
   if (this is KtBinaryExpression) {
     if (children[0] is KtStringTemplateExpression
-        && children[1] is KtOperationReferenceExpression && children[1].text == name
+        && children[1] is KtOperationReferenceExpression && names.contains(children[1].text)
         && children[2] is KtLambdaExpression) {
       return children[0].children[0].text
     }
