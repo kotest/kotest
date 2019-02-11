@@ -1,5 +1,6 @@
 package com.sksamuel.kotlintest.matchers.collections
 
+import io.kotlintest.*
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.collections.*
 import io.kotlintest.matchers.containAll
@@ -7,13 +8,6 @@ import io.kotlintest.matchers.containsInOrder
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotHave
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -526,8 +520,75 @@ class CollectionMatchersTest : WordSpec() {
         }.message shouldBe "List should end with [1L, 3L]"
       }
     }
+  
+    "Be one of" should {
+      "Pass when the element instance is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+  
+        foo shouldBeOneOf list
+      }
+      
+      "Fail when the element instance is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+        
+        val list = listOf(foo1)
+        shouldThrow<AssertionError> { foo2.shouldBeOneOf(list) }
+      }
+      
+      "Fail when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+        
+        val list = listOf(foo1)
+        shouldThrow<AssertionError> { foo2 shouldBeOneOf list }
+      }
+      
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+        
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldBeOneOf list }
+      }
+    }
+    
+    "Be one of (negative)" should {
+      "Fail when the element instance is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+        
+        shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
+      }
+  
+      "Pass when the element instance is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+    
+        val list = listOf(foo1)
+        foo2.shouldNotBeOneOf(list)
+      }
+  
+      "Pass when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+    
+        val list = listOf(foo1)
+        foo2 shouldNotBeOneOf list
+      }
+  
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+    
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
+      }
+    
+    }
   }
 }
+
+private data class Foo(val bar: String)
 
 sealed class TestSealed {
   data class Test1(val value: String) : TestSealed()
