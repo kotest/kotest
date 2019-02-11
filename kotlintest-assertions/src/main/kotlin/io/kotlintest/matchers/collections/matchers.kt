@@ -263,3 +263,83 @@ fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*t
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)
+
+
+/**
+ * Verifies that this instance is in [collection]
+ *
+ * Assertion to check that this instance is in [collection]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+infix fun <T> T.shouldBeOneOf(collection: Collection<T>) = this should beOneOf(collection)
+
+/**
+ * Verifies that this instance is NOT in [collection]
+ *
+ * Assertion to check that this instance is not in [collection]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must not be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldBeOneOf]
+ * @see [beOneOf]
+ */
+infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>) = this shouldNot beOneOf(collection)
+
+/**
+ * Verifies that this instance is any of [any]
+ *
+ * Assertion to check that this instance is any of [any]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must be in [any], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+fun <T> T.shouldBeOneOf(vararg any: T) = this should beOneOf(any.toList())
+
+/**
+ * Verifies that this instance is NOT any of [any]
+ *
+ * Assertion to check that this instance is not any of [any]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must not be in [any], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+fun <T> T.shouldNotBeOneOf(vararg any: T) = this shouldNot beOneOf(any.toList())
+
+/**
+ * Mather that verifies that this instance is in [collection]
+ *
+ * Assertion to check that this instance is in [collection]. This matcher checks by reference, and not by value,
+ * therefore the exact instance must be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldBeOneOf]
+ * @see [shouldNotBeOneOf]
+ */
+fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
+  override fun test(value: T): Result {
+    if(collection.isEmpty()) throwEmptyCollectionError()
+    
+    val match = collection.any { it === value }
+    return Result(match,
+            "Collection should contain the instance of value, but doesn't.",
+            "Collection should not contain the instance of value, but does.")
+  }
+}
+
+private fun throwEmptyCollectionError(): Nothing {
+  throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+}
+
