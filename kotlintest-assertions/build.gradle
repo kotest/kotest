@@ -3,3 +3,9 @@ dependencies {
     compile 'com.univocity:univocity-parsers:2.8.0'
     compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
 }
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
