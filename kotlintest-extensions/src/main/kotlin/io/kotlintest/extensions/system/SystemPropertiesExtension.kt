@@ -1,5 +1,6 @@
 package io.kotlintest.extensions.system
 
+import io.kotlintest.Project
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestCaseExtension
@@ -67,6 +68,8 @@ class SystemPropertyExtension(private val props: Properties) : TestCaseExtension
     override suspend fun intercept(testCase: TestCase,
                                    execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
                                    complete: suspend (TestResult) -> Unit) {
+        if (Project.parallelism() > 1)
+            throw RuntimeException("This extension can only be used when parallelism is 1")
         withSystemProperties(props) {
             execute(testCase) { complete(it) }
         }
