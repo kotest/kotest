@@ -5,10 +5,12 @@ import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
+import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.KtSuperTypeList
@@ -45,6 +47,33 @@ fun PsiElement.isSingleStringArgList(): Boolean = when (this) {
 fun PsiElement.enclosingClassName(): String? {
   val ktclass = getParentOfType<KtClass>(true)
   return ktclass?.fqName?.asString()
+}
+
+/**
+ * Matches blocks of the form:
+ *
+ * functionName("some string") { }
+ *
+ * Eg, can be used to match: given("this is a test") { }
+ *
+ * @return the string argument of the invoked function
+ *
+ * @param lefts one or more acceptable names for the left hand side reference
+ * @param rights one or more acceptable names for the right hand side reference
+ */
+fun PsiElement.matchDotExpressionWithReferenceOnBothSides(lefts: List<String>, rights: List<String>): String? {
+  when (this) {
+    is KtDotQualifiedExpression -> {
+      val left = children[0]
+      val right = children[1]
+      // both sides should be call expressions with a reference name
+      if (left is KtCallExpression && left.children[0] is KtReferenceExpression && lefts.contains(left.children[0].text) &&
+          right is KtCallExpression && right.children[0] is KtReferenceExpression && rights.contains(right.children[0].text)) {
+        return left.children[1].children[0].children[0].children[0].text
+      }
+    }
+  }
+  return null
 }
 
 /**
