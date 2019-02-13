@@ -59,6 +59,7 @@ object Project {
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
   private var writeSpecFailureFile: Boolean = true
 
+  private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
@@ -71,6 +72,7 @@ object Project {
   fun listeners(): List<TestListener> = _listeners
   fun testCaseFilters(): List<TestCaseFilter> = _filters.filterIsInstance<TestCaseFilter>()
 
+  fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
   fun tags(): Tags {
@@ -83,6 +85,7 @@ object Project {
     _listeners.addAll(this.listeners())
     _filters.addAll(this.filters())
     _specExecutionOrder = this.specExecutionOrder()
+    _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || this.globalAssertSoftly
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
     writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || this.writeSpecFailureFile()
   }

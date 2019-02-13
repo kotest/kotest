@@ -162,7 +162,7 @@ fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50):
 
   val useDiff = expected.lines().size >= minSizeForDiff
       && actual.lines().size >= minSizeForDiff &&
-      System.getProperty("kotlintest.assertions.multilinediff") != "simple"
+      System.getProperty("kotlintest.assertions.multi-line-diff") != "simple"
 
   return if (useDiff) {
     val patch = DiffUtils.diff(actual, expected)
