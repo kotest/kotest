@@ -11,7 +11,9 @@ data class TestCaseConfig(
     // only has an effect if invocations > 1
     val threads: Int = 1,
     val tags: Set<Tag> = emptySet(),
-    val extensions: List<TestCaseExtension> = emptyList()) {
+    val extensions: List<TestCaseExtension> = emptyList(),
+    // an issue number, or link to the issue, can be used by plugins
+    val issue: String? = null) {
   init {
     require(threads > 0) { "Threads must be > 0" }
     require(invocations > 0) { "Invocations must be > 0" }
