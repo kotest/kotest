@@ -160,12 +160,16 @@ fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50):
     }
   }
 
-  return if (expected.lines().size < minSizeForDiff && actual.lines().size < minSizeForDiff) Pair(expected, actual) else {
+  val useDiff = expected.lines().size >= minSizeForDiff
+      && actual.lines().size >= minSizeForDiff &&
+      System.getProperty("kotlintest.assertions.multilinediff") != "simple"
+
+  return if (useDiff) {
     val patch = DiffUtils.diff(actual, expected)
     return if (patch.deltas.isEmpty()) Pair(expected, actual) else {
       Pair(diffs(expected.lines(), patch.deltas, { it.original }), diffs(actual.lines(), patch.deltas, { it.revised }))
     }
-  }
+  } else Pair(expected, actual)
 }
 
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
