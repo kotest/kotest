@@ -1,0 +1,69 @@
+buildscript {
+    ext.kotlin_version = '1.3.20'
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.21"
+    id "org.jetbrains.intellij" version "0.4.1"
+}
+
+apply plugin: 'idea'
+apply plugin: 'kotlin'
+apply plugin: 'java'
+apply plugin: 'org.jetbrains.intellij'
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+    compile 'javax.xml.bind:jaxb-api:2.2.12'
+    compile 'javax.activation:activation:1.1.1'
+    compile 'kotlintest-runner:kotlintest-runner-console:3.3.0.1785-SNAPSHOT'
+}
+
+intellij {
+    sandboxDirectory = project.property("sandbox")
+    version = 'IC-2018.3'
+    pluginName = "kotlintest-plugin-intellij"
+    plugins = ['org.jetbrains.kotlin:1.3.11-release-IJ2018.3-1', 'junit']
+    downloadSources = true
+    updateSinceUntilBuild = false
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/kotlin`'
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+publishPlugin {
+    username intellijPublishUsername
+    password intellijPublishPassword
+    channels 'Stable'
+}

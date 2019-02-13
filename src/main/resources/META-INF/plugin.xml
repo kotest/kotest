@@ -1,0 +1,59 @@
+<idea-plugin>
+
+    <id>kotlintest-plugin-intellij</id>
+    <name>kotlintest</name>
+
+    <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
+    <idea-version since-build="162.0"/>
+
+    <description><![CDATA[
+      Official IntelliJ IDEA plugin for <a href="https://github.com/kotlintest/kotlintest">KotlinTest</a>.
+    ]]></description>
+
+    <version>3.3.0.2</version>
+
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>JUnit</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="io.kotlintest.plugin.intellij.KotlinTestConfigurationType"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.FunSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.ShouldSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.StringSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.WordSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.FeatureSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.DescribeSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.ExpectSpecRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="kotlin"
+                                  implementationClass="io.kotlintest.plugin.intellij.FreeSpecRunLineMarkerContributor"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.FunSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.ShouldSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.StringSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.WordSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.FeatureSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.DescribeSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
+        <runConfigurationProducer
+                implementation="io.kotlintest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
+    </extensions>
+
+</idea-plugin>
