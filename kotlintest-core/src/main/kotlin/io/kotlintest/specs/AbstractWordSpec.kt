@@ -15,6 +15,7 @@ import kotlin.coroutines.CoroutineContext
  * }
  *
  */
+@Suppress("FunctionName")
 abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractSpec() {
 
   init {

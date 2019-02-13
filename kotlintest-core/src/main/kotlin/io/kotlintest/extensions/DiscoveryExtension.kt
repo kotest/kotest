@@ -31,5 +31,5 @@ interface DiscoveryExtension : ProjectLevelExtension {
    *
    * @return  the list of filtered classes to use.
    */
-  fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> = classes
+  fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
 }

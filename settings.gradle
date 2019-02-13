@@ -13,4 +13,5 @@ include 'kotlintest-core',
         'kotlintest-tests:kotlintest-tests-core',
         'kotlintest-tests:kotlintest-tests-junit-report',
         'kotlintest-tests:kotlintest-tests-junit4-assertions',
+        'kotlintest-tests:kotlintest-tests-junit5',
         'kotlintest-tests:kotlintest-tests-parallelism'

@@ -1,19 +1,13 @@
 dependencies {
-    testImplementation project(':kotlintest-core')
     testImplementation project(':kotlintest-assertions')
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
-    testImplementation project(':kotlintest-assertions-arrow')
     testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.1'
     testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
     testImplementation 'org.mockito:mockito-core:2.24.0'
-    // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+    testImplementation 'org.junit.platform:junit-platform-testkit:1.4.0'
 }
 
 test {
-    useJUnitPlatform()
-
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
 
@@ -22,7 +16,6 @@ test {
 
     testLogging {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
-        exceptionFormat = 'full'
     }
 }
 
