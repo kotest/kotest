@@ -88,7 +88,7 @@ fun PsiElement.matchDotExpressionWithReferenceOnBothSides(lefts: List<String>, r
  * @param names one or more function names to search for
  */
 fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): String? {
-  if (this is KtCallExpression) {
+  if (this is KtCallExpression && children.size == 2) {
     if (children[0] is KtNameReferenceExpression && names.contains(children[0].text)
         && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
         && children[2] is KtLambdaArgument) {

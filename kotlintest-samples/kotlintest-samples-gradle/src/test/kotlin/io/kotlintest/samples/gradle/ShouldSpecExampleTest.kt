@@ -5,7 +5,18 @@ import io.kotlintest.specs.ShouldSpec
 class ShouldSpecExampleTest : ShouldSpec() {
 
   init {
-      should("qweqwe").config(enabled=true) {
+
+    "context parent" {
+      should("without config") {
       }
+      should("with config").config(enabled = true) {
+      }
+    }
+
+    should("without config") {
+    }
+    should("with config") {
+
+    }
   }
 }
