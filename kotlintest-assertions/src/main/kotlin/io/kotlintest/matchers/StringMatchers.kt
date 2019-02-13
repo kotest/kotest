@@ -23,8 +23,6 @@ fun startWith(prefix: String) = neverNullMatcher<String> { value ->
 }
 
 fun haveSubstring(substr: String) = include(substr)
-@Deprecated("use should include(substring)", ReplaceWith("include(substr)", "io.kotlintest.matchers.string.include"))
-fun substring(substr: String) = include(substr)
 
 fun endWith(suffix: String) = neverNullMatcher<String> { value ->
   Result(

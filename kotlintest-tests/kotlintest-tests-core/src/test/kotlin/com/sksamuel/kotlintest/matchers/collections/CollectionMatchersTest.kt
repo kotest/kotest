@@ -1,13 +1,8 @@
 package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.*
-import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.*
 import io.kotlintest.matchers.collections.*
-import io.kotlintest.matchers.containAll
-import io.kotlintest.matchers.containsInOrder
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.singleElement
-import io.kotlintest.matchers.sorted
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -67,9 +62,9 @@ class CollectionMatchersTest : WordSpec() {
         listOf("a", "b", "c") shouldNot haveElementAt(1, "c")
         listOf("a", "b", null) should haveElementAt(2, null)
 
-        listOf("a", "b", "c").shouldContainElementAt(1, "b")
-        listOf("a", "b", "c").shouldNotContainElementAt(1, "c")
-        listOf("a", "b", null).shouldContainElementAt(2, null)
+        listOf("a", "b", "c").shouldHaveElementAt(1, "b")
+        listOf("a", "b", "c").shouldNotHaveElementAt(1, "c")
+        listOf("a", "b", null).shouldHaveElementAt(2, null)
       }
       "support type inference for subtypes of collection" {
         val tests = listOf(
@@ -77,7 +72,7 @@ class CollectionMatchersTest : WordSpec() {
             TestSealed.Test2(2)
         )
         tests should haveElementAt(0, TestSealed.Test1("test1"))
-        tests.shouldContainElementAt(1, TestSealed.Test2(2))
+        tests.shouldHaveElementAt(1, TestSealed.Test2(2))
       }
     }
 

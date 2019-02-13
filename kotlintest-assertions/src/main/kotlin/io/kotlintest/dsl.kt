@@ -219,8 +219,3 @@ internal fun stringRepr(obj: Any?): String = when (obj) {
 private fun recursiveRepr(root: Any, node: Any?): String {
   return if (root == node) "(this ${root::class.java.simpleName})" else stringRepr(node)
 }
-
-// -- deprecated dsl
-
-@Deprecated("shouldEqual is deprecated in favour of shouldBe", ReplaceWith("shouldBe(any)"))
-infix fun <T> T.shouldEqual(any: Any?) = shouldBe(any)
