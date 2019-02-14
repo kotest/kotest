@@ -9,6 +9,7 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.internal.isActive
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -82,7 +83,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
    * stack, and begin executing that.
    */
   override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
-    topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
+    topLevelTests.forEach { enqueue(it.testCase, it.active) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
       execute(element.testCase)
@@ -90,12 +91,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
     return results
   }
 
-  private fun enqueue(testCase: TestCase) {
+  private fun enqueue(testCase: TestCase, active: Boolean) {
     if (discovered.contains(testCase.description))
       throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
     discovered.add(testCase.description)
     logger.debug("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(InstancePerLeafSpecRunner.Enqueued(testCase, counter.getAndIncrement()))
+    queue.add(InstancePerLeafSpecRunner.Enqueued(testCase, active, counter.getAndIncrement()))
   }
 
   /**
@@ -136,12 +137,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
     if (target == current.description) {
       val context = object : TestContext(scope.coroutineContext) {
         override fun description(): Description = target
-        override suspend fun registerTestCase(testCase: TestCase) = enqueue(testCase)
+        override suspend fun registerTestCase(testCase: TestCase) = enqueue(testCase, isActive(testCase))
       }
       if (executed.contains(target))
         throw  IllegalStateException("Attempting to execute duplicate test")
       executed.add(target)
-      executor.execute(current, context) { results[current] = it }
+      executor.execute(current, isActive(current), context) { results[current] = it }
       // otherwise if it's an ancestor then we want to search it recursively
     } else if (current.description.isAncestorOf(target)) {
       current.test.invoke(object : TestContext(scope.coroutineContext) {

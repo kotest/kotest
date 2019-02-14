@@ -9,6 +9,7 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.internal.isActive
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -58,7 +59,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val counter = AtomicInteger(0)
 
-  data class Enqueued(val testCase: TestCase, val count: Int)
+  data class Enqueued(val testCase: TestCase, val active: Boolean, val count: Int)
 
   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
   private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
@@ -71,7 +72,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   private val results = mutableMapOf<TestCase, TestResult>()
 
   override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
-    topLevelTests.filter { it.active }.forEach { enqueue(it.testCase) }
+    topLevelTests.filter { it.active }.forEach { enqueue(it.testCase, it.active) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
       execute(element.testCase)
@@ -79,9 +80,9 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
     return results
   }
 
-  private fun enqueue(testCase: TestCase) {
+  private fun enqueue(testCase: TestCase, active: Boolean) {
     logger.debug("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(Enqueued(testCase, counter.getAndIncrement()))
+    queue.add(Enqueued(testCase, active, counter.getAndIncrement()))
   }
 
   // starts executing an enqueued test case
@@ -131,7 +132,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   }
 
   private suspend fun executeTarget(testCase: TestCase, scope: CoroutineScope) {
-    executor.execute(testCase, context(testCase, scope)) { result -> results[testCase] = result }
+    executor.execute(testCase, isActive(testCase), context(testCase, scope)) { result -> results[testCase] = result }
   }
 
   private suspend fun executeAncestor(testCase: TestCase, target: Description, scope: CoroutineScope) {
@@ -148,9 +149,9 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
     private var first = false
     override fun description(): Description = current.description
     override suspend fun registerTestCase(testCase: TestCase) {
-      if (first) enqueue(testCase) else {
+      if (first) enqueue(testCase, isActive(testCase)) else {
         first = true
-        executor.execute(testCase, context(testCase, scope)) { result -> results[testCase] = result }
+        executor.execute(testCase, isActive(testCase), context(testCase, scope)) { result -> results[testCase] = result }
       }
     }
   }

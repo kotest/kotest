@@ -4,24 +4,24 @@ import io.kotlintest.specs.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 
-class WordSpecEngineKitTest : FunSpec({
+class FreeSpecEngineKitTest : FunSpec({
 
   test("verify container stats") {
     EngineTestKit
         .engine("kotlintest")
-        .selectors(selectClass(WordSpecTestCase::class.java))
+        .selectors(selectClass(FreeSpecTestCase::class.java))
         .execute()
         .containers()
-        .assertStatistics { it.started(12).succeeded(8) }
+        .assertStatistics { it.started(9).succeeded(6) }
   }
 
   test("verify test stats") {
     EngineTestKit
         .engine("kotlintest")
-        .selectors(selectClass(WordSpecTestCase::class.java))
+        .selectors(selectClass(FreeSpecTestCase::class.java))
         .execute()
         .tests()
-        .assertStatistics { it.skipped(2).started(6).succeeded(3).aborted(0).failed(3).finished(6) }
+        .assertStatistics { it.skipped(3).started(11).succeeded(5).aborted(0).failed(6).finished(11) }
   }
 
 })

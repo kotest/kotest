@@ -199,7 +199,7 @@ For maven you must configure the surefire plugin for junit tests.
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.2</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -211,7 +211,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.1.10</version>
+    <version>3.2.1</version>
     <scope>test</scope>
 </dependency>
 ```

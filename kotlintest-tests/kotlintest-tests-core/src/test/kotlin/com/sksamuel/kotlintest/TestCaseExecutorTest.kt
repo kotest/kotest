@@ -9,6 +9,7 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
+import io.kotlintest.internal.isActive
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -20,6 +21,7 @@ import java.lang.System.currentTimeMillis
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class TestCaseExecutorTest : FunSpec() {
 
   private val scheduler = Executors.newScheduledThreadPool(1)
@@ -39,7 +41,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
       counter.shouldBe(1)
     }
 
@@ -56,7 +58,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       counter.shouldBe(10)
     }
@@ -78,7 +80,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       counter.get() shouldBe 50
       threadLocal.get() shouldBe false
@@ -101,7 +103,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       counter.get() shouldBe 1
       threadLocal.get() shouldBe false
@@ -121,7 +123,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
@@ -140,7 +142,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
     }
@@ -159,7 +161,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
@@ -178,7 +180,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
     }
@@ -197,7 +199,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
@@ -216,7 +218,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
     }
@@ -234,7 +236,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(
           argThat { description == Description.root("wibble") },
@@ -259,7 +261,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(
           argThat { description == Description.root("wibble") },
@@ -283,7 +285,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }
@@ -304,7 +306,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
     }

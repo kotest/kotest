@@ -21,7 +21,7 @@ class StringSpecEngineKitTest : FunSpec({
         .selectors(selectClass(StringSpecTestCase::class.java))
         .execute()
         .tests()
-        .assertStatistics { it.skipped(0).started(3).succeeded(1).aborted(0).failed(2).finished(3) }
+        .assertStatistics { it.skipped(1).started(3).succeeded(1).aborted(0).failed(2).finished(3) }
   }
 
 })
