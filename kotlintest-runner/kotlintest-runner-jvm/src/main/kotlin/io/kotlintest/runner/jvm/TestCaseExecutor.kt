@@ -44,24 +44,24 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
+  suspend fun execute(testCase: TestCase, active: Boolean, context: TestContext, onResult: (TestResult) -> Unit = { }) {
 
     try {
 
       // invoke the "before" callbacks here on the main executor
       context.launch(executor.asCoroutineDispatcher()) {
-        before(testCase)
+        before(testCase, active)
       }.join()
 
       val extensions = testCase.config.extensions +
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      // get active status here in case calling this function is expensive (eg
-      runExtensions(testCase, context, extensions) { result ->
+      // get active status here in case calling this function is expensive
+      runExtensions(testCase, active, context, extensions) { result ->
         // invoke the "after" callbacks here on the main executor
         context.launch(executor.asCoroutineDispatcher()) {
-          after(testCase, result)
+          after(testCase, active, result)
         }.join()
         onResult(result)
       }
@@ -73,103 +73,101 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   }
 
   private suspend fun runExtensions(testCase: TestCase,
+                                    active: Boolean,
                                     context: TestContext,
                                     remaining: List<TestCaseExtension>,
                                     onComplete: suspend (TestResult) -> Unit) {
     when {
       remaining.isEmpty() -> {
-        val result = executeTestIfActive(testCase, context)
+        val result = executeTestIfActive(testCase, active, context)
         onComplete(result)
       }
       else -> {
         remaining.first().intercept(
             testCase,
-            { test, callback -> runExtensions(test, context, remaining.drop(1), callback) },
+            { test, callback -> runExtensions(test, active, context, remaining.drop(1), callback) },
             { onComplete(it) }
         )
       }
     }
   }
 
+  private suspend fun executeTestIfActive(testCase: TestCase, active: Boolean, context: TestContext): TestResult {
+    return if (active) executeTest(testCase, context) else TestResult.Ignored
+  }
+
   // exectues the test case or if the test is not active then returns a ignored test result
-  private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
+  private suspend fun executeTest(testCase: TestCase, context: TestContext): TestResult {
+    listener.beforeTestCaseExecution(testCase)
 
-    return if (isActive(testCase)) {
+    // if we have more than one requested thread, we run the tests inside a clean executor;
+    // otherwise we run on the same thread as the listeners to avoid issues where the before and
+    // after listeners  require the same thread as the test case.
+    // @see https://github.com/kotlintest/kotlintest/issues/447
+    val executor = when (testCase.config.threads) {
+      1 -> executor
+      else -> Executors.newFixedThreadPool(testCase.config.threads)!!
+    }
 
-      listener.beforeTestCaseExecution(testCase)
+    val dispatcher = executor.asCoroutineDispatcher()
 
-      // if we have more than one requested thread, we run the tests inside a clean executor;
-      // otherwise we run on the same thread as the listeners to avoid issues where the before and
-      // after listeners  require the same thread as the test case.
-      // @see https://github.com/kotlintest/kotlintest/issues/447
-      val executor = when (testCase.config.threads) {
-        1 -> executor
-        else -> Executors.newFixedThreadPool(testCase.config.threads)!!
-      }
+    // captures an error from the test case closures
+    val error = AtomicReference<Throwable?>(null)
 
-      val dispatcher = executor.asCoroutineDispatcher()
+    val supervisorJob = context.launch {
 
-      // captures an error from the test case closures
-      val error = AtomicReference<Throwable?>(null)
-
-      val supervisorJob = context.launch {
-
-        val testCaseJobs = (0 until testCase.config.invocations).map {
-          async(dispatcher) {
-            listener.invokingTestCase(testCase, 1)
-            try {
-              testCase.test(context)
-              null
-            } catch(t: Throwable) {
-              t.unwrapIfReflectionCall()
-            }
+      val testCaseJobs = (0 until testCase.config.invocations).map {
+        async(dispatcher) {
+          listener.invokingTestCase(testCase, 1)
+          try {
+            testCase.test(context)
+            null
+          } catch (t: Throwable) {
+            t.unwrapIfReflectionCall()
           }
         }
-
-        testCaseJobs.forEach {
-          val testError = it.await()
-          error.compareAndSet(null, testError)
-        }
       }
 
-      // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-      if (testCase.config.timeout.nano > 0) {
-        scheduler.schedule({
-          error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
-        }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+      testCaseJobs.forEach {
+        val testError = it.await()
+        error.compareAndSet(null, testError)
       }
-
-      supervisorJob.invokeOnCompletion { e ->
-        error.compareAndSet(null, e)
-      }
-
-      supervisorJob.join()
-
-      // if the tests had their own special executor (ie threads > 1) then we need to shut it down
-      if (testCase.config.threads > 1) {
-        executor.shutdown()
-      }
-
-      val result = buildTestResult(error.get(), context.metaData())
-
-      listener.afterTestCaseExecution(testCase, result)
-      return result
-
-    } else {
-      TestResult.Ignored
     }
+
+    // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
+    if (testCase.config.timeout.nano > 0) {
+      scheduler.schedule({
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
+      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+    }
+
+    supervisorJob.invokeOnCompletion { e ->
+      error.compareAndSet(null, e)
+    }
+
+    supervisorJob.join()
+
+    // if the tests had their own special executor (ie threads > 1) then we need to shut it down
+    if (testCase.config.threads > 1) {
+      executor.shutdown()
+    }
+
+    val result = buildTestResult(error.get(), context.metaData())
+
+    listener.afterTestCaseExecution(testCase, result)
+    return result
   }
 
   /**
    * Handles all "before" listeners.
    */
-  private fun before(testCase: TestCase) {
+  private fun before(testCase: TestCase, active: Boolean) {
     listener.enterTestCase(testCase)
 
     val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
     userListeners.forEach {
       it.beforeTest(testCase.description)
-      if (isActive(testCase)) {
+      if (active) {
         it.beforeTest(testCase)
       }
     }
@@ -178,11 +176,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   /**
    * Handles all "after" listeners.
    */
-  private fun after(testCase: TestCase, result: TestResult) {
+  private fun after(testCase: TestCase, active: Boolean, result: TestResult) {
     val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
     userListeners.reversed().forEach {
       it.afterTest(testCase.description, result)
-      if (isActive(testCase)) {
+      if (active) {
         it.afterTest(testCase, result)
       }
     }

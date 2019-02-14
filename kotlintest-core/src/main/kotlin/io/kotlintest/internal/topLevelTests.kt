@@ -24,6 +24,8 @@ fun topLevelTests(spec: Spec): List<TopLevelTest> {
 
   val focused = tests.find { it.name.startsWith("f:") }
 
+  // if we have no focused tests, then we default to the standard is active logic
+  // otherwise focused overrides
   return if (focused == null) {
     tests.map { TopLevelTest(it, isActive(it)) }
   } else {

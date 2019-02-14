@@ -11,6 +11,7 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
+import io.kotlintest.internal.isActive
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -19,6 +20,7 @@ import io.kotlintest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
 import java.util.concurrent.Executors
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
 
   private val scheduler = Executors.newScheduledThreadPool(1)
@@ -48,7 +50,7 @@ class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.root("wibble")
       }
-      executor.execute(testCase, context)
+      executor.execute(testCase, isActive(testCase), context)
 
       then(listener).should().exitTestCase(
           argThat { description == Description.root("wibble") },

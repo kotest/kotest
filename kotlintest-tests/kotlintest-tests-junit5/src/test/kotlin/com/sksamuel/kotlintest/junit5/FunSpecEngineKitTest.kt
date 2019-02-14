@@ -21,8 +21,7 @@ class FunSpecEngineKitTest : FunSpec({
         .selectors(selectClass(FunSpecTestCase::class.java))
         .execute()
         .tests()
-        // todo skipped should be 1 - we should mark top level inactive tests as ignored to junit
-        .assertStatistics { it.skipped(0).started(3).succeeded(1).aborted(0).failed(2).finished(3) }
+        .assertStatistics { it.skipped(1).started(3).succeeded(1).aborted(0).failed(2).finished(3) }
   }
 
 })

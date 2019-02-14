@@ -168,7 +168,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
               when (result.status) {
                 TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
                 TestStatus.Error, TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-                TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
+                TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "No reason given")
               }
             } catch (t: Throwable) {
               logger.error("Error in JUnit Platform listener", t)

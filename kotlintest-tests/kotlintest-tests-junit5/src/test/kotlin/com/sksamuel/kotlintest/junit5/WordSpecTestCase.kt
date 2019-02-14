@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest.junit5
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
+@Suppress("UNREACHABLE_CODE")
 class WordSpecTestCase : WordSpec({
 
   "a container" should {
@@ -12,8 +13,18 @@ class WordSpecTestCase : WordSpec({
     "error" { throw RuntimeException() }
   }
 
-  "an empty container" should {
+  "an empty when container" should {
 
+  }
+
+  "an empty should container" should {
+
+  }
+
+  "this when container" `when` {
+    "contain an empty should container" should {
+
+    }
   }
 
   "a when container with a failing test" `when` {
@@ -26,6 +37,7 @@ class WordSpecTestCase : WordSpec({
   "a when container" `when` {
     "with a should container" should {
       "pass a test" { 1 shouldBe 1 }
+      "skip a test".config(enabled = false) {}
     }
   }
 
