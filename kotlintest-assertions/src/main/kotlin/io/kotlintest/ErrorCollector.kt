@@ -5,9 +5,11 @@ import io.kotlintest.tables.MultiAssertionError
 
 @PublishedApi
 internal object ErrorCollector {
+
   private val failures = object : ThreadLocal<MutableList<Throwable>>() {
     override fun initialValue(): MutableList<Throwable> = mutableListOf()
   }
+
   @PublishedApi
   internal val shouldCollectErrors = object : ThreadLocal<Boolean>() {
     override fun initialValue() = false

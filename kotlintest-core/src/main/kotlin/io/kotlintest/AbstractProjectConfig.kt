@@ -76,6 +76,12 @@ abstract class AbstractProjectConfig {
   open fun testCaseOrder(): TestCaseOrder? = null
 
   /**
+   * Override this value and set it to true if you want all tests to behave as if they
+   * were operating in an [assertSoftly] block.
+   */
+  open val globalAssertSoftly: Boolean = false
+
+  /**
    * Executed before the first test of the project, but after the
    * [ProjectExtension.beforeAll] methods.
    */

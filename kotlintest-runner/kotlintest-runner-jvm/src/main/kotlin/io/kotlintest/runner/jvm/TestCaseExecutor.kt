@@ -5,6 +5,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
+import io.kotlintest.assertSoftly
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
@@ -116,14 +117,22 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     val supervisorJob = context.launch {
 
-      val testCaseJobs = (0 until testCase.config.invocations).map {
-        async(dispatcher) {
-          listener.invokingTestCase(testCase, 1)
-          try {
-            testCase.test(context)
-            null
-          } catch (t: Throwable) {
-            t.unwrapIfReflectionCall()
+        val testCaseJobs = (0 until testCase.config.invocations).map {
+          // asynchronously disaptch the job and return any error
+          async(dispatcher) {
+            listener.invokingTestCase(testCase, 1)
+            try {
+              if (Project.globalAssertSoftly()) {
+                assertSoftly {
+                  testCase.test(context)
+                }
+              } else {
+                testCase.test(context)
+              }
+              null
+            } catch (t: Throwable) {
+              t.unwrapIfReflectionCall()
+            }
           }
         }
       }
