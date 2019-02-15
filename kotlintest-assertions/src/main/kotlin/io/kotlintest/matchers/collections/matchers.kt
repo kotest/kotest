@@ -1,18 +1,7 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.matchers.beEmpty
-import io.kotlintest.matchers.beSorted
-import io.kotlintest.matchers.containAll
-import io.kotlintest.matchers.containsInOrder
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.singleElement
-import io.kotlintest.neverNullMatcher
-import io.kotlintest.should
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.stringRepr
+import io.kotlintest.*
+import io.kotlintest.matchers.*
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
@@ -62,11 +51,6 @@ fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveEl
 
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
-@Deprecated("Use shouldHaveElementAt", ReplaceWith("this.shouldHaveElementAt(index, element)", "io.kotlintest.should"))
-fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
-
-@Deprecated("Use shouldNotHaveElementAt", ReplaceWith("this.shouldNotHaveElementAt(index, element)", "io.kotlintest.should"))
-fun <T, L : List<T>> L.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
   override fun test(value: L) =

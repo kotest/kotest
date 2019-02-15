@@ -1,25 +1,14 @@
 package io.kotlintest.properties
 
-import io.kotlintest.properties.shrinking.ChooseShrinker
-import io.kotlintest.properties.shrinking.DoubleShrinker
-import io.kotlintest.properties.shrinking.FloatShrinker
-import io.kotlintest.properties.shrinking.IntShrinker
-import io.kotlintest.properties.shrinking.ListShrinker
-import io.kotlintest.properties.shrinking.Shrinker
-import io.kotlintest.properties.shrinking.StringShrinker
+import io.kotlintest.properties.shrinking.*
 import java.io.File
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.math.BigInteger
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
-import java.time.Year
+import java.time.*
 import java.time.temporal.ChronoUnit
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
 class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
@@ -697,22 +686,6 @@ interface Gen<T> {
     return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
   }
 }
-
-/**
- * A Generator which will return an iterable of a single given value.
- */
-@Deprecated("use Gen.constant")
-data class ConstGen<T : Any>(val value: T) : Gen<T> {
-  override fun constants(): Iterable<T> = listOf(value)
-  override fun random(): Sequence<T> = generateSequence { value }
-}
-
-/**
- * An extension function for [Gen] that filters values
- * from an underlying generator using a predicate function.
- */
-@Deprecated("use gen.filter(T -> Boolean)", ReplaceWith("generate().filter(isGood)"))
-internal fun <T> Gen<T>.generateGood(isGood: (T) -> Boolean) = filter(isGood)
 
 // need some supertype that types a type param so it gets baked into the class file
 abstract class TypeReference<T> : Comparable<TypeReference<T>> {

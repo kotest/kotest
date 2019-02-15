@@ -1,34 +1,10 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.beLessThanOrEqualTo
-import io.kotlintest.matchers.between
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.lte
-import io.kotlintest.matchers.numerics.beInRange
-import io.kotlintest.matchers.numerics.beEven
-import io.kotlintest.matchers.numerics.beOdd
-import io.kotlintest.matchers.numerics.shouldBeBetween
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
-import io.kotlintest.matchers.numerics.shouldBeGreaterThanOrEqual
-import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
-import io.kotlintest.matchers.numerics.shouldBeNegative
-import io.kotlintest.matchers.numerics.shouldBePositive
-import io.kotlintest.should
+import io.kotlintest.*
+import io.kotlintest.matchers.*
+import io.kotlintest.matchers.numerics.*
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.shouldBe
-import io.kotlintest.matchers.shouldBe as shouldBe2
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.tables.forAll
-import io.kotlintest.tables.forNone
-import io.kotlintest.tables.headers
-import io.kotlintest.tables.row
-import io.kotlintest.tables.table
+import io.kotlintest.tables.*
 
 class IntMatchersTest : StringSpec() {
   init {
@@ -66,7 +42,6 @@ class IntMatchersTest : StringSpec() {
 
     "shouldBe should support ints" {
       1 shouldBe 1
-      2 shouldBe2 2
     }
 
     "isEven" {
