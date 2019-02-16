@@ -76,6 +76,10 @@ fun PsiElement.matchDotExpressionWithReferenceOnBothSides(lefts: List<String>, r
   return null
 }
 
+fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
+
+fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationReferenceExpression && names.contains(text)
+
 /**
  * Matches blocks of the form:
  *
@@ -88,8 +92,8 @@ fun PsiElement.matchDotExpressionWithReferenceOnBothSides(lefts: List<String>, r
  * @param names one or more function names to search for
  */
 fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): String? {
-  if (this is KtCallExpression && children.size == 2) {
-    if (children[0] is KtNameReferenceExpression && names.contains(children[0].text)
+  if (this is KtCallExpression && children.size == 3) {
+    if (children[0].isNameReference(names)
         && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
         && children[2] is KtLambdaArgument) {
       return children[1].children[0].children[0].children[0].text
@@ -112,7 +116,7 @@ fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): Strin
 fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? {
   if (this is KtBinaryExpression) {
     if (children[0] is KtStringTemplateExpression
-        && children[1] is KtOperationReferenceExpression && names.contains(children[1].text)
+        && children[1].isOperation(names)
         && children[2] is KtLambdaExpression) {
       return children[0].children[0].text
     }
