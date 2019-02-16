@@ -14,7 +14,6 @@ import io.kotlintest.TestFilterResult
 class PrefixTestFilter(private val test: String) : TestCaseFilter {
   override fun filter(description: Description): TestFilterResult {
     val prefix = description.tail().fullName()
-    println("$test startsWith $prefix")
     return if (test.startsWith(prefix)) TestFilterResult.Include else TestFilterResult.Exclude
   }
 }
