@@ -93,7 +93,8 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   }
 
   private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
-    return if (isActive(testCase)) executeTest(testCase, context) else TestResult.Ignored
+    val active = isActive(testCase)
+    return if (active) executeTest(testCase, context) else TestResult.Ignored
   }
 
   // exectues the test case or if the test is not active then returns a ignored test result

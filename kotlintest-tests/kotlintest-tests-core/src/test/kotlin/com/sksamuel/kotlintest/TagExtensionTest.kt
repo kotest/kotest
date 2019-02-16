@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.Project
+import io.kotlintest.Spec
 import io.kotlintest.Tag
 import io.kotlintest.Tags
 import io.kotlintest.TestCase
@@ -19,26 +20,27 @@ class TagExtensionTest : StringSpec() {
     override fun tags(): Tags = Tags(setOf(TagA), setOf(TagB))
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
-    when (testCase.name) {
-      "should be tagged with tagA" -> result.status shouldBe TestStatus.Success
-      "should be untagged" -> result.status shouldBe TestStatus.Ignored
-      "should be tagged with tagB" -> result.status shouldBe TestStatus.Ignored
-    }
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
+        "should be tagged with tagA and therefore included" to TestStatus.Success,
+        "should be untagged and therefore excluded" to TestStatus.Ignored,
+        "should be tagged with tagB and therefore excluded" to TestStatus.Ignored
+    )
   }
 
+  override fun beforeSpec(spec: Spec) {
+    Project.registerExtension(ext)
+  }
+
+  override fun afterSpec(spec: Spec) {
+    Project.deregisterExtension(ext)
+  }
 
   init {
+    "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
 
-    Project.registerExtension(ext)
+    "should be untagged and therefore excluded" { }
 
-    "should be tagged with tagA".config(tags = setOf(TagA)) { }
-
-    "should be untagged" { }
-
-    "should be tagged with tagB".config(tags = setOf(TagB)) { }
-
-    Project.deregisterExtension(ext)
-
+    "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
   }
 }

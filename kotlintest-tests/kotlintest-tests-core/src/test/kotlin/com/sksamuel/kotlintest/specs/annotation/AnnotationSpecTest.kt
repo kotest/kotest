@@ -156,8 +156,7 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
     fail("This should never execute as the test is marked with @Ignore")
   }
 
-  // A default after spec verification is necessary, as we cannot test @AfterAll with itself
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
     counterAfterAll.get() shouldBe 2
     counterAfterEach.get() shouldBe 6
 

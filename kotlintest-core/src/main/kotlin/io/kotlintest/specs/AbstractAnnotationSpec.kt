@@ -1,7 +1,6 @@
 package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
@@ -31,26 +30,25 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
     body()
   }
 
-  override fun beforeSpec(description: Description, spec: Spec) {
-    super.beforeSpec(description, spec)
+  override fun beforeSpec(spec: Spec) {
     executeBeforeSpecFunctions()
   }
 
   private fun executeBeforeSpecFunctions() = this::class.findBeforeSpecFunctions().forEach { it.call(this) }
 
-  override fun beforeTest(description: Description) {
+  override fun beforeTest(testCase: TestCase) {
     executeBeforeTestFunctions()
   }
 
   private fun executeBeforeTestFunctions() = this::class.findBeforeTestFunctions().forEach { it.call(this) }
 
-  override fun afterTest(description: Description, result: TestResult) {
+  override fun afterTest(testCase: TestCase, result: TestResult) {
     executeAfterTestFunctions()
   }
 
   private fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach { it.call(this) }
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(spec: Spec) {
     executeAfterSpecFunctions()
   }
 
