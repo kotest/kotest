@@ -1,3 +1,5 @@
+@file:Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
+
 package io.kotlintest
 
 import io.kotlintest.extensions.ConstructorExtension
@@ -58,7 +60,6 @@ object Project {
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
   private var writeSpecFailureFile: Boolean = true
-
   private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
 
@@ -75,19 +76,24 @@ object Project {
   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
+  var failOnIgnoredTests: Boolean = System.getProperty("kotlintest.build.fail-on-ignore") == "true"
+
   fun tags(): Tags {
     val tags = tagExtensions().map { it.tags() }
     return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
   }
 
-  private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
-    _extensions.addAll(this.extensions())
-    _listeners.addAll(this.listeners())
-    _filters.addAll(this.filters())
-    _specExecutionOrder = this.specExecutionOrder()
-    _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || this.globalAssertSoftly
-    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
-    writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || this.writeSpecFailureFile()
+  private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.also {
+    _extensions.addAll(it.extensions())
+    _listeners.addAll(it.listeners())
+    _filters.addAll(it.filters())
+    _specExecutionOrder = it.specExecutionOrder()
+    _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
+    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
+    writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
+    if (it.failOnIgnoredTests) {
+      this.failOnIgnoredTests = true
+    }
   }
 
   fun writeSpecFailureFile(): Boolean = writeSpecFailureFile

@@ -82,6 +82,12 @@ abstract class AbstractProjectConfig {
   open val globalAssertSoftly: Boolean = false
 
   /**
+   * Override this value and set it to true if you want the build to be marked as failed
+   * if there was one or more tests that were disabled/ignored.
+   */
+  open val failOnIgnoredTests : Boolean = false
+
+  /**
    * Executed before the first test of the project, but after the
    * [ProjectExtension.beforeAll] methods.
    */

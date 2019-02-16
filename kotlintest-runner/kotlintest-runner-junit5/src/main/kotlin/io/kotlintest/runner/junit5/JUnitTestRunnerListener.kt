@@ -97,7 +97,14 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     if (Project.writeSpecFailureFile())
       writeSpecFailures(failures)
 
-    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
+    fun hasIgnored() = results.any { it.result.status == TestStatus.Ignored }
+
+    val result = when {
+      t != null -> TestExecutionResult.failed(t)
+      Project.failOnIgnoredTests && hasIgnored() -> TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+      else -> TestExecutionResult.successful()
+    }
+
     listener.executionFinished(root, result)
   }
 
@@ -182,7 +189,10 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
       logger.error("Spec descriptor cannot be null $description")
       throw RuntimeException("Spec descriptor cannot be null")
     } else {
-      val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
+      val result = when (t) {
+        null -> TestExecutionResult.successful()
+        else -> TestExecutionResult.failed(t)
+      }
       logger.trace("Notifying junit that spec finished ${descriptor.uniqueId} $result")
       listener.executionFinished(descriptor, result)
     }
