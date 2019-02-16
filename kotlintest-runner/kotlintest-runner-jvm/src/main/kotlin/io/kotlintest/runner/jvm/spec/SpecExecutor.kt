@@ -46,7 +46,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
 
         userListeners.forEach {
           it.beforeSpecStarted(spec.description(), spec)
-          it.beforeSpecClass(spec, tests)
+          it.beforeSpecClass(spec, tests.tests)
         }
 
         val runner = runner(spec, listenerExecutor, scheduler)

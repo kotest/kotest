@@ -5,15 +5,14 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.extensions.TopLevelTests
 
 /**
- * Returns the top level [TestCase]s to run, in the order they
- * should be run.
- *
- * Takes into account focused tests, which can override
- * the active/inactive behavior defined in [isActive].
+ * Returns the top level [TestCase] instances from a Spec, ordered according
+ * to the [TestCaseOrder] specified in the spec (or the project if not in the spec).
+ * Captures information on focused tests.
  */
-fun topLevelTests(spec: Spec): List<TopLevelTest> {
+fun topLevelTests(spec: Spec): TopLevelTests {
 
   val order = spec.testCaseOrder() ?: Project.testCaseOrder()
 
@@ -22,13 +21,5 @@ fun topLevelTests(spec: Spec): List<TopLevelTest> {
     TestCaseOrder.Random -> spec.testCases().shuffled()
   }
 
-  val focused = tests.find { it.name.startsWith("f:") }
-
-  // if we have no focused tests, then we default to the standard is active logic
-  // otherwise focused overrides
-  return if (focused == null) {
-    tests.map { TopLevelTest(it, isActive(it)) }
-  } else {
-    listOf(focused).map { TopLevelTest(it, true) } + tests.minus(focused).map { TopLevelTest(it, false) }
-  }
+  return TopLevelTests(tests.withIndex().map { TopLevelTest(it.value, it.index) })
 }

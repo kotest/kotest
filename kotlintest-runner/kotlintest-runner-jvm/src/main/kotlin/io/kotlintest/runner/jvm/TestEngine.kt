@@ -97,7 +97,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           // will add a placeholder spec so we can see the error in intellij/gradle
           // otherwise it won't appear
           { t ->
-            val desc = Description.root(klass.jvmName)
+            val desc = Description.spec(klass.jvmName)
             listener.beforeSpecClass(desc, klass)
             listener.afterSpecClass(desc, klass, t)
             error.compareAndSet(null, t)

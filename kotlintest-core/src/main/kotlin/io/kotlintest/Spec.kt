@@ -80,6 +80,13 @@ interface Spec : TestListener {
    */
   fun testCases(): List<TestCase>
 
+  /**
+   * Returns the focused tests for this Spec. Can be empty if no test is marked as focused.
+   */
+  fun focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }
+
+  fun hasFocusedTest(): Boolean = focused().isNotEmpty()
+
   fun closeResources()
 
   /**
@@ -105,4 +112,4 @@ fun Class<out Spec>.displayName(): String {
   }
 }
 
-fun Class<out Spec>.description() = Description.root(this.displayName())
+fun Class<out Spec>.description() = Description.spec(this.displayName())

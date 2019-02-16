@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.specs.annotation
 
-import io.kotlintest.Description
 import io.kotlintest.IsolationMode
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -158,9 +157,7 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
   }
 
   // A default after spec verification is necessary, as we cannot test @AfterAll with itself
-  override fun afterSpec(description: Description, spec: Spec) {
-    super.afterSpec(description, spec)
-
+  override fun afterSpec(spec: Spec) {
     counterAfterAll.get() shouldBe 2
     counterAfterEach.get() shouldBe 6
 

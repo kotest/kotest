@@ -40,6 +40,9 @@ data class TestCase(
     // invocations, threads, etc
     val config: TestCaseConfig) {
   val name = description.name
+  fun isFocused() = name.startsWith("f:")
+  fun isTopLevel(): Boolean = description.isTopLevel()
+  fun isBang(): Boolean = name.startsWith("!")
 }
 
 enum class TestType {

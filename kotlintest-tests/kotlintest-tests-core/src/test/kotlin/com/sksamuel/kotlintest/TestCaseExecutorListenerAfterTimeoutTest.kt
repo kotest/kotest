@@ -11,7 +11,6 @@ import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
-import io.kotlintest.internal.isActive
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -42,18 +41,18 @@ class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest, {
         Thread.sleep(500)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       then(listener).should().exitTestCase(
-          argThat { description == Description.root("wibble") },
+          argThat { description == Description.spec("wibble") },
           argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.1S" }
       )
     }

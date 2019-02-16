@@ -10,6 +10,7 @@ import io.kotlintest.TestType
 import io.kotlintest.extensions.TagExtension
 import io.kotlintest.internal.isActive
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec
 
 class IsActiveTest : StringSpec() {
@@ -18,7 +19,7 @@ class IsActiveTest : StringSpec() {
 
     "isActive should return false if the test is disabled in config" {
       val config = TestCaseConfig(enabled = false)
-      val test = TestCase(Description.root("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
+      val test = TestCase(Description.spec("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
       isActive(test) shouldBe false
     }
 
@@ -33,7 +34,7 @@ class IsActiveTest : StringSpec() {
       Project.registerExtension(ext)
 
       val config = TestCaseConfig(tags = setOf(mytag))
-      val test = TestCase(Description.root("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
+      val test = TestCase(Description.spec("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
       isActive(test) shouldBe false
 
       Project.deregisterExtension(ext)
@@ -51,7 +52,7 @@ class IsActiveTest : StringSpec() {
 
       val mytag = StringTag("mytag")
       val config = TestCaseConfig(tags = setOf(mytag))
-      val test = TestCase(Description.root("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
+      val test = TestCase(Description.spec("foo"), this@IsActiveTest, {}, 1, TestType.Test, config)
       isActive(test) shouldBe false
 
       Project.deregisterExtension(ext)
@@ -59,9 +60,25 @@ class IsActiveTest : StringSpec() {
 
     "isActive should return false if the test name begins with a !" {
       val config = TestCaseConfig()
-      val test = TestCase(Description.root("!my test"), this@IsActiveTest, {}, 1, TestType.Test, config)
+      val test = TestCase(Description.spec("spec").append("!my test"), this@IsActiveTest, {}, 1, TestType.Test, config)
       isActive(test) shouldBe false
     }
 
+    "isActive should return false if the test is not focused and the spec contains OTHER focused tests" {
+      val config = TestCaseConfig()
+      val test = TestCase(Description.spec("spec").append("my test"), IsActiveWithFocusTest(), {}, 1, TestType.Test, config)
+      isActive(test) shouldBe false
+    }
+
+    "isActive should return true if the test is focused" {
+      val config = TestCaseConfig()
+      val test = TestCase(Description.spec("spec").append("f:my test"), IsActiveWithFocusTest(), {}, 1, TestType.Test, config)
+      isActive(test) shouldBe true
+    }
   }
 }
+
+class IsActiveWithFocusTest : FunSpec({
+  test("f: focused") {}
+  test("not focused") {}
+})

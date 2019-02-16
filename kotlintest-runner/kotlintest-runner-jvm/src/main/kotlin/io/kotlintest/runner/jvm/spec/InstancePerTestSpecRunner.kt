@@ -8,8 +8,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
-import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.internal.isActive
+import io.kotlintest.extensions.TopLevelTests
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec
@@ -65,10 +64,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
   // the counter is used to break ties so that tests in the same scope are executed in discovery order
   private val counter = AtomicInteger(0)
 
-  data class Enqueued(val testCase: TestCase, val count: Int)
+  data class Enqueued(val testCase: TestCase,
+                      val topLevel: Boolean, // if true then this is the highest scope of test
+                      val count: Int)
 
   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-  private val queue = PriorityQueue<InstancePerLeafSpecRunner.Enqueued>(Comparator<InstancePerLeafSpecRunner.Enqueued> { o1, o2 ->
+  private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
     val o1s = o1.testCase.description.names().size
     val o2s = o2.testCase.description.names().size
     if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
@@ -82,8 +83,8 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
    * a stack. When the test case has completed, we take the next test case from the
    * stack, and begin executing that.
    */
-  override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
-    topLevelTests.forEach { enqueue(it.testCase, it.active) }
+  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+    topLevelTests.tests.forEach { enqueue(it.testCase, true) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
       execute(element.testCase)
@@ -91,12 +92,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
     return results
   }
 
-  private fun enqueue(testCase: TestCase, active: Boolean) {
+  private fun enqueue(testCase: TestCase, topLevel: Boolean) {
     if (discovered.contains(testCase.description))
       throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
     discovered.add(testCase.description)
     logger.debug("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(InstancePerLeafSpecRunner.Enqueued(testCase, active, counter.getAndIncrement()))
+    queue.add(Enqueued(testCase, topLevel, count = counter.getAndIncrement()))
   }
 
   /**
@@ -137,12 +138,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
     if (target == current.description) {
       val context = object : TestContext(scope.coroutineContext) {
         override fun description(): Description = target
-        override suspend fun registerTestCase(testCase: TestCase) = enqueue(testCase, isActive(testCase))
+        override suspend fun registerTestCase(testCase: TestCase) = enqueue(testCase, false)
       }
       if (executed.contains(target))
         throw  IllegalStateException("Attempting to execute duplicate test")
       executed.add(target)
-      executor.execute(current, isActive(current), context) { results[current] = it }
+      executor.execute(current, context) { results[current] = it }
       // otherwise if it's an ancestor then we want to search it recursively
     } else if (current.description.isAncestorOf(target)) {
       current.test.invoke(object : TestContext(scope.coroutineContext) {

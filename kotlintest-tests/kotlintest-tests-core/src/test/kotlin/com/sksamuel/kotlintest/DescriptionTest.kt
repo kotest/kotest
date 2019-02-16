@@ -19,38 +19,38 @@ class DescriptionTest : StringSpec() {
       Description(listOf(), "a").fullName() shouldBe "a"
     }
     "append" {
-      Description.root("a").append("b") shouldBe Description(listOf("a"), "b")
+      Description.spec("a").append("b") shouldBe Description(listOf("a"), "b")
       Description(listOf("a"), "b").append("c") shouldBe Description(listOf("a", "b"), "c")
       Description(listOf("a", "b"), "c").append("d") shouldBe Description(listOf("a", "b", "c"), "d")
     }
     "isParentOf" {
       Description(listOf("a", "b"), "c").isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b").isParentOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
-      Description.root("a").isParentOf(Description(listOf("a"), "b")).shouldBeTrue()
+      Description.spec("a").isParentOf(Description(listOf("a"), "b")).shouldBeTrue()
 
-      Description.root("a").isParentOf(Description.root("a")).shouldBeFalse()
-      Description.root("a").isParentOf(Description(listOf("b"), "a")).shouldBeFalse()
-      Description.root("a").isParentOf(Description(listOf("b", "a"), "c")).shouldBeFalse()
-      Description.root("a").isParentOf(Description(listOf("a", "b"), "c")).shouldBeFalse()
-      Description.root("a").isParentOf(Description.root("a")).shouldBeFalse()
+      Description.spec("a").isParentOf(Description.spec("a")).shouldBeFalse()
+      Description.spec("a").isParentOf(Description(listOf("b"), "a")).shouldBeFalse()
+      Description.spec("a").isParentOf(Description(listOf("b", "a"), "c")).shouldBeFalse()
+      Description.spec("a").isParentOf(Description(listOf("a", "b"), "c")).shouldBeFalse()
+      Description.spec("a").isParentOf(Description.spec("a")).shouldBeFalse()
       Description(listOf("a"), "b").isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d").isParentOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d").isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
-      Description(listOf("a", "b", "c"), "d").isParentOf(Description.root("a")).shouldBeFalse()
+      Description(listOf("a", "b", "c"), "d").isParentOf(Description.spec("a")).shouldBeFalse()
     }
     "isAncestorOf" {
       Description(listOf("a", "b"), "c").isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b").isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b").isAncestorOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
-      Description.root("a").isAncestorOf(Description(listOf("a"), "b")).shouldBeTrue()
-      Description.root("a").isAncestorOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
-      Description.root("a").isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
+      Description.spec("a").isAncestorOf(Description(listOf("a"), "b")).shouldBeTrue()
+      Description.spec("a").isAncestorOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
+      Description.spec("a").isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
 
       Description(listOf("a"), "b").isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a"), "b").isAncestorOf(Description(listOf("b", "a"), "c")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d").isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d").isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
-      Description(listOf("a", "b", "c"), "d").isAncestorOf(Description.root("a")).shouldBeFalse()
+      Description(listOf("a", "b", "c"), "d").isAncestorOf(Description.spec("a")).shouldBeFalse()
     }
   }
 }

@@ -45,13 +45,13 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  suspend fun execute(testCase: TestCase, active: Boolean, context: TestContext, onResult: (TestResult) -> Unit = { }) {
+  suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
 
     try {
 
       // invoke the "before" callbacks here on the main executor
       context.launch(executor.asCoroutineDispatcher()) {
-        before(testCase, active)
+        before(testCase)
       }.join()
 
       val extensions = testCase.config.extensions +
@@ -59,10 +59,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           Project.testCaseExtensions()
 
       // get active status here in case calling this function is expensive
-      runExtensions(testCase, active, context, extensions) { result ->
+      runExtensions(testCase, context, extensions) { result ->
         // invoke the "after" callbacks here on the main executor
         context.launch(executor.asCoroutineDispatcher()) {
-          after(testCase, active, result)
+          after(testCase, result)
         }.join()
         onResult(result)
       }
@@ -74,27 +74,26 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   }
 
   private suspend fun runExtensions(testCase: TestCase,
-                                    active: Boolean,
                                     context: TestContext,
                                     remaining: List<TestCaseExtension>,
                                     onComplete: suspend (TestResult) -> Unit) {
     when {
       remaining.isEmpty() -> {
-        val result = executeTestIfActive(testCase, active, context)
+        val result = executeTestIfActive(testCase, context)
         onComplete(result)
       }
       else -> {
         remaining.first().intercept(
             testCase,
-            { test, callback -> runExtensions(test, active, context, remaining.drop(1), callback) },
+            { test, callback -> runExtensions(test, context, remaining.drop(1), callback) },
             { onComplete(it) }
         )
       }
     }
   }
 
-  private suspend fun executeTestIfActive(testCase: TestCase, active: Boolean, context: TestContext): TestResult {
-    return if (active) executeTest(testCase, context) else TestResult.Ignored
+  private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
+    return if (isActive(testCase)) executeTest(testCase, context) else TestResult.Ignored
   }
 
   // exectues the test case or if the test is not active then returns a ignored test result
@@ -117,22 +116,21 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     val supervisorJob = context.launch {
 
-        val testCaseJobs = (0 until testCase.config.invocations).map {
-          // asynchronously disaptch the job and return any error
-          async(dispatcher) {
-            listener.invokingTestCase(testCase, 1)
-            try {
-              if (Project.globalAssertSoftly()) {
-                assertSoftly {
-                  testCase.test(context)
-                }
-              } else {
+      val testCaseJobs = (0 until testCase.config.invocations).map {
+        // asynchronously disaptch the job and return any error
+        async(dispatcher) {
+          listener.invokingTestCase(testCase, 1)
+          try {
+            if (Project.globalAssertSoftly()) {
+              assertSoftly {
                 testCase.test(context)
               }
-              null
-            } catch (t: Throwable) {
-              t.unwrapIfReflectionCall()
+            } else {
+              testCase.test(context)
             }
+            null
+          } catch (t: Throwable) {
+            t.unwrapIfReflectionCall()
           }
         }
       }
@@ -170,10 +168,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   /**
    * Handles all "before" listeners.
    */
-  private fun before(testCase: TestCase, active: Boolean) {
+  private fun before(testCase: TestCase) {
     listener.enterTestCase(testCase)
 
     val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
+    val active = isActive(testCase)
     userListeners.forEach {
       it.beforeTest(testCase.description)
       if (active) {
@@ -185,7 +184,8 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   /**
    * Handles all "after" listeners.
    */
-  private fun after(testCase: TestCase, active: Boolean, result: TestResult) {
+  private fun after(testCase: TestCase, result: TestResult) {
+    val active = isActive(testCase)
     val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
     userListeners.reversed().forEach {
       it.afterTest(testCase.description, result)

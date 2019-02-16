@@ -1,10 +1,11 @@
 package io.kotlintest.extensions
 
 import io.kotlintest.Description
+import io.kotlintest.IsolationMode.InstancePerLeaf
+import io.kotlintest.IsolationMode.InstancePerTest
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
-import io.kotlintest.IsolationMode.*
 
 interface TestListener {
 
@@ -174,4 +175,6 @@ interface TestListener {
   fun afterSpecCompleted(description: Description, spec: Spec): Unit = Unit
 }
 
-data class TopLevelTest(val testCase: TestCase, val active: Boolean)
+data class TopLevelTest(val testCase: TestCase, val order: Int)
+
+data class TopLevelTests(val tests: List<TopLevelTest>)

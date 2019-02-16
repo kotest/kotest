@@ -5,8 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.internal.isActive
+import io.kotlintest.extensions.TopLevelTests
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.runBlocking
@@ -42,20 +41,23 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
       if (seen.containsKey(testCase.name) && seen[testCase.name] != testCase.line)
         throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
       seen[testCase.name] = testCase.line
-      executor.execute(testCase, isActive(testCase), Context(testCase.description, coroutineContext)) { result -> results[testCase] = result }
+      executor.execute(testCase, Context(testCase.description, coroutineContext)) { result -> results[testCase] = result }
     }
   }
 
-  override fun execute(spec: Spec, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
+  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
 
     // creating the spec instance will have invoked the init block, resulting
     // in the top level test cases being available on the spec class
     runBlocking {
       interceptSpec(spec) {
-        topLevelTests.forEach { (testCase, active) ->
+        topLevelTests.tests.forEach { topLevelTest ->
           // each spec is allocated it's own thread so we can block here safely
           // allowing us to enter the coroutine world
-          executor.execute(testCase, active, Context(testCase.description, this.coroutineContext)) { result -> results[testCase] = result }
+          executor.execute(
+              topLevelTest.testCase,
+              Context(topLevelTest.testCase.description, this.coroutineContext)
+          ) { result -> results[topLevelTest.testCase] = result }
         }
       }
     }

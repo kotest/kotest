@@ -9,7 +9,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
-import io.kotlintest.internal.isActive
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -34,14 +33,14 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         counter++
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1))
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
       counter.shouldBe(1)
     }
 
@@ -51,14 +50,14 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         counter++
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       counter.shouldBe(10)
     }
@@ -71,16 +70,16 @@ class TestCaseExecutorTest : FunSpec() {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         counter.incrementAndGet()
         threadLocal.set(true)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 50, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       counter.get() shouldBe 50
       threadLocal.get() shouldBe false
@@ -94,16 +93,16 @@ class TestCaseExecutorTest : FunSpec() {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         counter.incrementAndGet()
         threadLocal.set(true)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       counter.get() shouldBe 1
       threadLocal.get() shouldBe false
@@ -115,17 +114,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         "a" shouldBe "b"
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
 
     test("many threads / single invocation with an error should complete") {
@@ -134,17 +133,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         throw RuntimeException()
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Error })
     }
 
     test("many threads / many threads with a failure should complete") {
@@ -153,17 +152,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         "a" shouldBe "b"
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
 
     test("many threads / many threads with an error should complete") {
@@ -172,17 +171,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         throw RuntimeException()
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Error })
     }
 
     test("single thread / many threads with a failure should complete") {
@@ -191,17 +190,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         "a" shouldBe "b"
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
 
     test("single thread / many threads with an error should complete") {
@@ -210,17 +209,17 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         throw RuntimeException()
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Error })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Error })
     }
 
     test("tests which timeout should error").config {
@@ -228,18 +227,18 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         Thread.sleep(10000)
       }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       then(listener).should().exitTestCase(
-          argThat { description == Description.root("wibble") },
+          argThat { description == Description.spec("wibble") },
           argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.1S" }
       )
     }
@@ -250,7 +249,7 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         val startTime = currentTimeMillis()
         while (currentTimeMillis() < startTime + 1000) {
           "this" shouldNotBe "that"
@@ -259,12 +258,12 @@ class TestCaseExecutorTest : FunSpec() {
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
       then(listener).should().exitTestCase(
-          argThat { description == Description.root("wibble") },
+          argThat { description == Description.spec("wibble") },
           argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.125S" }
       )
     }
@@ -275,7 +274,7 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         while (true) {
           "this" shouldBe "that"
         }
@@ -283,11 +282,11 @@ class TestCaseExecutorTest : FunSpec() {
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
 
     test("test with infinite loop but invocations > 1 should complete with TestStatus.Failure") {
@@ -296,7 +295,7 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.root("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
         while (true) {
           "this" shouldBe "that"
         }
@@ -304,11 +303,11 @@ class TestCaseExecutorTest : FunSpec() {
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
-        override fun description(): Description = Description.root("wibble")
+        override fun description(): Description = Description.spec("wibble")
       }
-      executor.execute(testCase, isActive(testCase), context)
+      executor.execute(testCase, context)
 
-      then(listener).should().exitTestCase(argThat { description == Description.root("wibble") }, argThat { status == TestStatus.Failure })
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
   }
 }

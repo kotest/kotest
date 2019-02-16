@@ -15,7 +15,7 @@ package io.kotlintest
 data class Description(val parents: List<String>, val name: String) {
 
   companion object {
-    fun root(name: String) = Description(emptyList(), name)
+    fun spec(name: String) = Description(emptyList(), name)
   }
 
   fun append(name: String) =
@@ -56,4 +56,10 @@ data class Description(val parents: List<String>, val name: String) {
     val p = description.parent() ?: return false
     return isAncestorOf(p)
   }
+
+  /**
+   * Returns true if this test is a top level test. In other words, if the
+   * test has no parents other than the spec itself.
+   */
+  fun isTopLevel(): Boolean = parents.size == 1
 }

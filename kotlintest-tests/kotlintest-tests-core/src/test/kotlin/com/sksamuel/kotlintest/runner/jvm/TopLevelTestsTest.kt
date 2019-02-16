@@ -11,13 +11,13 @@ class TopLevelTestsTest : FunSpec({
 
   test("spec sequential test ordering") {
     val tests = topLevelTests(SequentialSpec())
-    tests.map { it.testCase.name } shouldBe listOf("a", "b", "c", "d", "e")
+    tests.tests.map { it.testCase.name } shouldBe listOf("a", "b", "c", "d", "e")
   }
 
   test("spec randomized test ordering") {
     val tests1 = topLevelTests(RandomSpec())
     val tests2 = topLevelTests(RandomSpec())
-    tests1.map { it.testCase.name } shouldNotBe tests2.map { it.testCase.name }
+    tests1.tests.map { it.testCase.name } shouldNotBe tests2.tests.map { it.testCase.name }
   }
 
 })
@@ -47,5 +47,7 @@ class RandomSpec : StringSpec() {
     "g" {}
     "h" {}
     "i" {}
+    "j" {}
+    "k" {}
   }
 }
