@@ -39,6 +39,10 @@ class StringMatchersTest : FreeSpec() {
       "la tour tour" shouldNotContainOnlyOnce "tour"
 
       shouldThrow<AssertionError> {
+        "la" should containOnlyOnce("tour")
+      }.message shouldBe "la should contain the substring tour exactly once"
+
+      shouldThrow<AssertionError> {
         null shouldNot containOnlyOnce("tour")
       }.message shouldBe "Expecting actual not to be null"
 

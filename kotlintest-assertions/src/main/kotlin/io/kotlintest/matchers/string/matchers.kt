@@ -32,7 +32,7 @@ infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnl
 infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   Result(
-      value.indexOf(substring) == value.lastIndexOf(substring),
+      value.indexOf(substring)>=0 && value.indexOf(substring) == value.lastIndexOf(substring),
       "${convertValueToString(value)} should contain the substring ${convertValueToString(substring)} exactly once",
       "${convertValueToString(value)} should not contain the substring ${convertValueToString(substring)} exactly once"
   )
