@@ -44,7 +44,7 @@ allprojects {
                 def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 
                 name 'deploy'
-                url = isTravis ? releasesRepoUrl : snapshotsRepoUrl
+                url = isTravis ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
                     username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
                     password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
