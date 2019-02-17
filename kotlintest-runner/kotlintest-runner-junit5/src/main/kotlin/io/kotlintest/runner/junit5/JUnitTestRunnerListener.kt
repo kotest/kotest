@@ -124,6 +124,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
       listener.executionStarted(descriptor)
     } catch (t: Throwable) {
       logger.error("Error in JUnit Platform listener", t)
+      throw t
     }
   }
 
