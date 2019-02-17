@@ -1,3 +1,11 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     implementation project(':kotlintest-core')
     implementation project(':kotlintest-assertions')
@@ -13,3 +21,5 @@ test {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
     }
 }
+
+publish.enabled = false

@@ -1,3 +1,11 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     testCompile project(':kotlintest-assertions')
     testCompile 'junit:junit:4.12'
@@ -15,4 +23,4 @@ test {
     }
 }
 
-uploadArchives.enabled = false
+publish.enabled = false

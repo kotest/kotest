@@ -1,3 +1,11 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     compile project(':kotlintest-core')
     compile project(":kotlintest-extensions")
@@ -6,3 +14,6 @@ dependencies {
     compile 'io.arrow-kt:arrow-core:0.8.2'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
 }
+
+
+apply from: '../../publish.gradle'

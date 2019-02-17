@@ -1,5 +1,19 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile project(":kotlintest-assertions")
     compile 'io.arrow-kt:arrow-typeclasses:0.8.2'
     compile 'io.arrow-kt:arrow-data:0.8.2'
 }
+
+apply from: '../publish.gradle'

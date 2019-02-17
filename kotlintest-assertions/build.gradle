@@ -1,3 +1,15 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile 'com.univocity:univocity-parsers:2.8.1'
@@ -9,3 +21,5 @@ compileKotlin {
         freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
     }
 }
+
+apply from: '../publish.gradle'

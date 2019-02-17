@@ -1,3 +1,11 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
@@ -6,3 +14,5 @@ dependencies {
     compile 'org.junit.platform:junit-platform-suite-api:1.4.0'
     compile 'org.junit.platform:junit-platform-launcher:1.4.0'
 }
+
+apply from: '../../publish.gradle'
