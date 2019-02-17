@@ -10,6 +10,7 @@ import io.kotlintest.runner.jvm.TestDiscovery
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
+import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
@@ -22,7 +23,10 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.reflect.KClass
 
-class KotlinTestEngine : org.junit.platform.engine.TestEngine {
+/**
+ * An implementation of KotlinTest that runs as a JUnit Platform [TestEngine].
+ */
+class KotlinTestEngine : TestEngine {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -64,11 +68,12 @@ class KotlinTestEngine : org.junit.platform.engine.TestEngine {
 
       val result = TestDiscovery.discover(discoveryRequest(request))
 
-      // gradle passes through --tests some.Class using a PostDiscoveryFilter, specifically an
-      // internal gradle class called ClassMethodNameFilter. That class makes all kinds of
-      // assumptions around what is a test and what isn't, via the source so we must fool it.
-      // this is liable to be buggy as well, and should be stripped out as soon as gradle
-      // fix their bugs around junit 5 support
+      // gradles uses a post discovery filter called [ClassMethodNameFilter] when a user runs gradle
+      // with either `-- tests someClass` or by adding a test filter section to their gradle build.
+      // This filter class makes all kinds of assumptions around what is a test and what isn't,
+      // so we must fool it by creating a dummy test descriptor.
+      // This is liable to be buggy, and should be stripped out as soon as gradle
+      // fix their bugs around junit 5 support, if ever.
       class ClassMethodAdaptingFilter(val filter: PostDiscoveryFilter) : SpecFilter {
         override fun invoke(klass: KClass<out Spec>): Boolean {
           val id = uniqueId.appendSpec(klass.java.description())

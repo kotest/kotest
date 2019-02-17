@@ -12,18 +12,24 @@ import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UriSelector
 
 /**
- * Returns a [DiscoveryRequest] built from all selectors present
- * in the engine request.
+ * Returns a KotlinTest [DiscoveryRequest] built from the selectors and filters present
+ * in the JUnit [EngineDiscoveryRequest].
  *
  * Supported selectors are:
  *
  * - [ClassSelector] - used to specify a single class by fully qualified name
  * - [DirectorySelector] - classes are scanned in the given directory
  * - [UriSelector] - classes are scanned from the given uri
- * - [PackageSelector] - classes are limited to the given package name
+ * - [PackageSelector] - classes are scanned on the default classpath for the given package name
  *
- * [MethodSelector] is not supported because kotlintest does not work
- * on the method level.
+ * Support filters are:
+ *
+ * - [ClassNameFilter] - filters out specs based on a classname
+ * - [PackageNameFilter] - filters out specs based on package names
+ *
+ * Unsupported selectors are:
+ *
+ * - [MethodSelector] - not supported because kotlintest does not define tests as methods/functions
  */
 internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
 
