@@ -120,6 +120,7 @@ For the extension function style, each function has an equivalent negated versio
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
+| `value.shouldBeOneOf(collection)` | Asserts that a specific instance is contained in a collection. |
 
 | URIs ||
 | -------- | ---- |
