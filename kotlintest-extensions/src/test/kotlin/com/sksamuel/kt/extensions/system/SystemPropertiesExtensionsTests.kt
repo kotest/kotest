@@ -58,12 +58,12 @@ class SystemPropertyFunctionTest : FunSpec({
   }
 
   test("withSystemProperty should set and then restore sys property when not null") {
-    System.setProperty("wibblewobble", "dobble")
-    System.getProperty("wibblewobble") shouldBe "dobble"
-    withSystemProperty("wibblewobble", "dibble") {
-      System.getProperty("wibblewobble") shouldBe "dibble"
+    System.setProperty("fib", "fab")
+    System.getProperty("fib") shouldBe "fab"
+    withSystemProperty("fib", "fob") {
+      System.getProperty("fib") shouldBe "fob"
     }
-    System.getProperty("wibblewobble") shouldBe "dobble"
+    System.getProperty("fib") shouldBe "fab"
   }
 
   test("withSystemProperties from pairs should set and then restore all props") {

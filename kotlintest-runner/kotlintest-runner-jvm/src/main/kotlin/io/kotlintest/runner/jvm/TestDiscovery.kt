@@ -44,10 +44,10 @@ object TestDiscovery {
     val fromClassNames = loadClasses(request.classNames)
     logger.debug("Loaded ${fromClassNames.size} classes from classnames...")
 
-    val fromClassPaths = scanUris(request.uris)
+    val fromClassPaths = if (request.uris.isEmpty()) emptyList() else scanUris(request.uris)
     logger.debug("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
-    val fromPackages = scanPackages(request.packages)
+    val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
     logger.debug("Scan discovered ${fromClassPaths.size} classes by package...")
 
     val filtered = (fromClassNames + fromClassPaths + fromPackages)
