@@ -117,10 +117,10 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     Files.write(path, content.toByteArray())
   }
 
-  override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
-    logger.trace("prepareSpec [$description]")
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
+    logger.trace("beforeSpecClass [$klass]")
     try {
-      val descriptor = createSpecDescriptor(description, klass)
+      val descriptor = createSpecDescriptor(klass)
       listener.executionStarted(descriptor)
     } catch (t: Throwable) {
       logger.error("Error in JUnit Platform listener", t)
@@ -152,8 +152,10 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     results.add(ResultState(testCase, result))
   }
 
-  override fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {
-    logger.trace("completeSpec [$description]")
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+    logger.trace("afterSpecClass [$klass]")
+
+    val description = Description.spec(klass)
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
@@ -249,9 +251,12 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     return descriptor
   }
 
-  private fun createSpecDescriptor(description: Description, klass: KClass<out Spec>): TestDescriptor {
+  private fun createSpecDescriptor(klass: KClass<out Spec>): TestDescriptor {
 
-    val id = root.uniqueId.appendSpec(description)
+    // the id must be completely unique, so we need to use the full class name of the spec, otherwise
+    // if we have com.FooTest and org.FooTest gradle will throw a wobbly
+    val description = Description.spec(klass)
+    val id = root.uniqueId.append("spec", description.name)
     val source = ClassSource.from(klass.java)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name, source) {
@@ -264,6 +269,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     // we need to synchronize because we don't want to allow multiple specs adding
     // to the root container at the same time
     root.addChild(descriptor)
+    logger.trace("Dynamically registering spec [id=$id, descriptor=$descriptor]")
     listener.dynamicTestRegistered(descriptor)
 
     return descriptor

@@ -16,7 +16,7 @@ abstract class AbstractSpec : Spec {
   override fun testCases(): List<TestCase> = rootTestCases.toList()
 
   protected fun createTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
-      TestCase(description().append(name), this, test, lineNumber(), type, config)
+      TestCase(Description.spec(this::class).append(name), this, test, lineNumber(), type, config)
 
   protected fun addTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     if (rootTestCases.any { it.name == name })

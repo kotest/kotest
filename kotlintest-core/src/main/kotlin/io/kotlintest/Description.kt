@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import kotlin.reflect.KClass
+
 /**
  * The description gives the full path to a [TestCase].
  *
@@ -12,9 +14,11 @@ package io.kotlintest
  * @param parents each parent test case
  * @param name the name of this test case
  */
+@Suppress("MemberVisibilityCanBePrivate")
 data class Description(val parents: List<String>, val name: String) {
 
   companion object {
+    fun spec(klass: KClass<out Spec>) = spec(klass.qualifiedName!!)
     fun spec(name: String) = Description(emptyList(), name)
   }
 

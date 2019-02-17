@@ -1,6 +1,5 @@
 package io.kotlintest.extensions.system
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.extensions.TestListener
 import java.io.ByteArrayOutputStream
@@ -27,7 +26,7 @@ object NoSystemOutListener : TestListener {
   }
 
   override fun beforeProject() = setup()
-  override fun beforeSpec(description: Description, spec: Spec) = setup()
+  override fun beforeSpec(spec: Spec) = setup()
 }
 
 object NoSystemErrListener : TestListener {
@@ -48,5 +47,5 @@ object NoSystemErrListener : TestListener {
   }
 
   override fun beforeProject() = setup()
-  override fun beforeSpec(description: Description, spec: Spec) = setup()
+  override fun beforeSpec(spec: Spec) = setup()
 }

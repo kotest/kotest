@@ -1,6 +1,7 @@
 package io.kotlintest.runner.jvm.spec
 
 import arrow.core.Try
+import io.kotlintest.Description
 import io.kotlintest.IsolationMode
 import io.kotlintest.Project
 import io.kotlintest.Spec
@@ -35,7 +36,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
   fun execute(spec: Spec) = Try {
     withExecutor { listenerExecutor ->
 
-      engineListener.beforeSpecClass(spec.description(), spec::class)
+      engineListener.beforeSpecClass(spec::class)
 
       val userListeners = listOf(spec) + spec.listeners() + Project.listeners()
 
@@ -45,7 +46,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
         logger.trace("Discovered top level tests $tests for spec $spec")
 
         userListeners.forEach {
-          it.beforeSpecStarted(spec.description(), spec)
+          it.beforeSpecStarted(Description.spec(spec::class), spec)
           it.beforeSpecClass(spec, tests.tests)
         }
 
@@ -54,17 +55,17 @@ class SpecExecutor(private val engineListener: TestEngineListener,
 
         userListeners.forEach {
           it.afterSpecClass(spec, results)
-          it.afterSpecCompleted(spec.description(), spec)
+          it.afterSpecCompleted(Description.spec(spec::class), spec)
         }
 
       }.fold(
           {
-            logger.trace("Completing spec ${spec.description()} with error $it")
-            engineListener.afterSpecClass(spec.description(), spec.javaClass.kotlin, it)
+            logger.trace("Completing spec ${Description.spec(spec::class)} with error $it")
+            engineListener.afterSpecClass(spec.javaClass.kotlin, it)
           },
           {
-            logger.trace("Completing spec ${spec.description()} with success")
-            engineListener.afterSpecClass(spec.description(), spec.javaClass.kotlin, null)
+            logger.trace("Completing spec ${Description.spec(spec::class)} with success")
+            engineListener.afterSpecClass(spec.javaClass.kotlin, null)
           }
       )
     }

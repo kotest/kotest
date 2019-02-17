@@ -1,6 +1,5 @@
 package io.kotlintest.runner.jvm
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
@@ -20,15 +19,15 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
-  override fun beforeSpecClass(description: Description, klass: KClass<out Spec>) {
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
     synchronized(listener) {
-      listener.beforeSpecClass(description, klass)
+      listener.beforeSpecClass(klass)
     }
   }
 
-  override fun afterSpecClass(description: Description, klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     synchronized(listener) {
-      listener.afterSpecClass(description, klass, t)
+      listener.afterSpecClass(klass, t)
     }
   }
 

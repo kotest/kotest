@@ -64,18 +64,6 @@ interface Spec : TestListener {
   fun listeners(): List<TestListener> = emptyList()
 
   /**
-   * A Readable name for this spec. By default will use the
-   * simple class name, unless @DisplayName is used to annotate
-   * the spec. Alternatively, a user can override this function
-   * to return a customized name.
-   */
-  fun name(): String = javaClass.displayName()
-
-  fun canonicalName(): String = javaClass.canonicalName
-
-  fun description() = javaClass.description()
-
-  /**
    *  These are the top level [TestCase] instances for this Spec.
    */
   fun testCases(): List<TestCase>
@@ -102,13 +90,23 @@ interface Spec : TestListener {
    * tests themselves.
    */
   fun tags(): Set<Tag> = emptySet()
+
+  fun description(): Description = Description.spec(this::class)
 }
 
+/**
+ * A name slash id for this spec which is used as the parent route for tests.
+ * By default this will return the fully qualified class name, unless the spec
+ * class is annotated with @DisplayNamen.
+ *
+ * Note: This name must be globally unique. Two specs, even in different packages,
+ * cannot share the same name.
+ */
 fun Class<out Spec>.displayName(): String {
   val displayName = annotations.find { it is DisplayName }
   return when (displayName) {
     is DisplayName -> displayName.name
-    else -> simpleName
+    else -> canonicalName
   }
 }
 

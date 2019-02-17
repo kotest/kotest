@@ -1,7 +1,6 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
-import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCaseFilter
@@ -12,7 +11,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  filters: List<TestCaseFilter>,
@@ -97,9 +95,8 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           // will add a placeholder spec so we can see the error in intellij/gradle
           // otherwise it won't appear
           { t ->
-            val desc = Description.spec(klass.jvmName)
-            listener.beforeSpecClass(desc, klass)
-            listener.afterSpecClass(desc, klass, t)
+            listener.beforeSpecClass(klass)
+            listener.afterSpecClass(klass, t)
             error.compareAndSet(null, t)
             executor.shutdownNow()
           },
