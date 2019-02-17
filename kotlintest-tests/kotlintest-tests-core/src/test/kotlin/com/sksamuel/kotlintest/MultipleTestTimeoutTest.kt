@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest
 import io.kotlintest.milliseconds
 import io.kotlintest.specs.FreeSpec
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class MultipleTestTimeoutTest : FreeSpec() {
 
   // The test executor was failing because as it reutilizes some threads from a thread pool.

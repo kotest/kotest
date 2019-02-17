@@ -1,15 +1,14 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.WordSpec
 
 class FocusTest : WordSpec() {
 
-  var focus = false
+  private var focus = false
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(spec: Spec) {
     focus.shouldBeTrue()
   }
 

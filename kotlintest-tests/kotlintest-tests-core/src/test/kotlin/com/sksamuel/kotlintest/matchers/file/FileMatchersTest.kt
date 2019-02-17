@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.matchers.file
 
-import com.sksamuel.kotlintest.extensions.Numbers.a
 import io.kotlintest.matchers.file.aDirectory
 import io.kotlintest.matchers.file.aFile
 import io.kotlintest.matchers.file.beAbsolute
@@ -34,6 +33,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class FileMatchersTest : FunSpec() {
   private val osName = System.getProperty("os.name").toLowerCase()
   private val isWindows = osName.contains("windows")
