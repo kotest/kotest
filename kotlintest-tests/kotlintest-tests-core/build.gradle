@@ -7,7 +7,7 @@ dependencies {
     testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
     testImplementation 'org.mockito:mockito-core:2.24.0'
     // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.4.0'
 }
 
