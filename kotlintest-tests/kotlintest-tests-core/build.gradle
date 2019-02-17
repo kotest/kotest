@@ -24,11 +24,6 @@ test {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
         exceptionFormat = 'full'
     }
-
-    filter {
-        //include specific method in any of the tests
-        includeTestsMatching "*UiCheck"
-    }
 }
 
 uploadArchives.enabled = false
