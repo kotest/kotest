@@ -56,10 +56,10 @@ allprojects {
 
                 from components.java
 
-                if (isReleaseVersion) {
-                    artifact sourcesJar
-                    artifact javadocJar
-                }
+//                if (isReleaseVersion) {
+//                    artifact sourcesJar
+//                    artifact javadocJar
+//                }
 
                 pom {
                     name = 'KotlinTest'
