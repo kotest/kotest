@@ -33,9 +33,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     Project.registerTestCaseFilter(filters)
   }
 
-  private fun afterAll() = Try {
-    Project.afterAll()
-  }
+  private fun afterAll() = Try { Project.afterAll() }
 
   private fun start() = Try {
     listener.engineStarted(classes)
