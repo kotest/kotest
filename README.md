@@ -14,6 +14,7 @@ For latest updates see [Changelog](CHANGELOG.md)
 Community
 ---------
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotlintest) (don't forget to use the tag "kotlintest".)
+* [KotlinTest channel](https://kotlinlang.slack.com/messages/kotlintest) in the Kotlin Slack
 * [Contribute](https://github.com/kotlintest/kotlintest/wiki/contribute)
 
 Test with Style
