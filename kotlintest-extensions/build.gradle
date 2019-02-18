@@ -22,4 +22,4 @@ test {
     }
 }
 
-publish.enabled = false
+apply from: '../../publish.gradle'
