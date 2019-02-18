@@ -3,6 +3,7 @@ buildscript {
     ext.isTravis = System.getenv("TRAVIS") == "true"
     ext.travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
     ext.isReleaseVersion = !isTravis
+    ext.JUnitPlatformVersion = "1.4.0"
     repositories {
         mavenCentral()
     }
