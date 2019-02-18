@@ -53,7 +53,7 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
 
     // these two parameters are required by the console runner so it knows what test to execute
     params.programParametersList.add("--test", configuration.getTestName()!!)
-    params.programParametersList.add("--spec", configuration.getSpecName() ?: "spec name")
+    params.programParametersList.add("--spec", configuration.getSpecName()!!)
     return params
   }
 
