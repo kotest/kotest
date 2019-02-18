@@ -9,8 +9,7 @@ import kotlin.reflect.KClass
  * Implementations of this interface will be notified of events
  * that occur as part of the [TestEngine] lifecycle.
  *
- * This is an internal listener liable to be changed. User code can
- * plug into test events by using a [TestListener].
+ * This is an internal listener liable to be changed.
  */
 interface TestEngineListener {
 
