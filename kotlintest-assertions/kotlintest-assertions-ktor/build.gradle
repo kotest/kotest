@@ -32,4 +32,4 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-apply from: '../publish.gradle'
+apply from: '../../publish.gradle'

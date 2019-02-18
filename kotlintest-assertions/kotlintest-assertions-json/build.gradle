@@ -23,4 +23,4 @@ dependencies {
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
 }
 
-apply from: '../publish.gradle'
+apply from: '../../publish.gradle'

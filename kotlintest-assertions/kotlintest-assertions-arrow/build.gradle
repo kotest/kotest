@@ -16,4 +16,4 @@ dependencies {
     compile 'io.arrow-kt:arrow-data:0.8.2'
 }
 
-apply from: '../publish.gradle'
+apply from: '../../publish.gradle'
