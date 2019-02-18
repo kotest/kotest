@@ -43,4 +43,6 @@ project(":") {
 
 release {
     failOnUnversionedFiles = false
+    failOnPublishNeeded = false
+    failOnCommitNeeded = false
 }
