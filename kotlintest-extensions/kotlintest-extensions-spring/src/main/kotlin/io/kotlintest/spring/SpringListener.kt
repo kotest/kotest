@@ -1,6 +1,5 @@
 package io.kotlintest.spring
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.extensions.ConstructorExtension
 import io.kotlintest.extensions.TestListener
