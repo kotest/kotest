@@ -17,17 +17,17 @@ object DescribeSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryDescribe(): String? {
-    val describe = matchFunction2WithStringAndLambdaArgs(listOf("describe"))
+    val describe = matchFunction2WithStringAndLambda(listOf("describe"))
     return if (describe == null) null else "Describe: $describe"
   }
 
   private fun PsiElement.tryContext(): String? {
-    val context = matchFunction2WithStringAndLambdaArgs(listOf("context"))
+    val context = matchFunction2WithStringAndLambda(listOf("context"))
     return if (context == null) null else "Context: $context"
   }
 
   private fun PsiElement.tryIt(): String? {
-    val scenario = matchFunction2WithStringAndLambdaArgs(listOf("it"))
+    val scenario = matchFunction2WithStringAndLambda(listOf("it"))
     return if (scenario == null) null else "It: $scenario"
   }
 

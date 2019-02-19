@@ -11,6 +11,6 @@ object FunSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.matchFunction2WithStringAndLambdaArgs(listOf("test"))
+    return element.matchFunction2WithStringAndLambda(listOf("test"))
   }
 }

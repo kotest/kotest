@@ -13,11 +13,14 @@ object WordSpecStyle : SpecStyle {
     return if (param == null && parent == null) null else param ?: parent.locateParentTestName()
   }
 
+  private fun PsiElement.tryWhen(): String? =
+      matchInfixFunctionWithStringAndLambaArg(listOf("when"))
+
   private fun PsiElement.tryShould(): String? =
       matchInfixFunctionWithStringAndLambaArg(listOf("should"))
 
   private fun PsiElement.trySubject(): String? {
-    val subject = findReceiverForExtensionFunctionWithLambdaArgument()
+    val subject = matchStringInvoke()
     return if (subject == null) null else {
       val should = locateParentTestName()
       return "$should should $subject"
@@ -27,6 +30,6 @@ object WordSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.tryShould() ?: element.trySubject()
+    return element.trySubject() ?: element.tryShould() ?: element.tryWhen()
   }
 }

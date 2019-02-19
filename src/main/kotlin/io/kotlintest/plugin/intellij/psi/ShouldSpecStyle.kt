@@ -16,17 +16,17 @@ object ShouldSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryShouldWithConfig(): String? {
-    val should = matchDotExpressionWithReferenceOnBothSides(listOf("should"), listOf("config"))
+    val should = extractStringArgForFunctionBeforeDotExpr(listOf("should"), listOf("config"))
     return if (should == null) null else "should $should"
   }
 
   private fun PsiElement.tryShould(): String? {
-    val should = matchFunction2WithStringAndLambdaArgs(listOf("should"))
+    val should = matchFunction2WithStringAndLambda(listOf("should"))
     return if (should == null) null else "should $should"
   }
 
   private fun PsiElement.tryContainer(): String? {
-    return findReceiverForExtensionFunctionWithLambdaArgument()
+    return matchStringInvoke()
   }
 
   override fun testPath(element: PsiElement): String? {

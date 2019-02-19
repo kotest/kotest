@@ -15,17 +15,15 @@ object FreeSpecStyle : SpecStyle {
     return if (parent == null) result else parent.locateParentTests() + result
   }
 
-  private fun PsiElement.tryBranch(): String? {
-    return matchInfixFunctionWithStringAndLambaArg(listOf("-"))
-  }
-
-  private fun PsiElement.tryLeaf(): String? {
-    return findReceiverForExtensionFunctionWithLambdaArgument()
-  }
+  private fun PsiElement.tryBranch(): String? = matchInfixFunctionWithStringAndLambaArg(listOf("-"))
+  private fun PsiElement.tryLeaf(): String? = matchStringInvoke()
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
     val test = element.tryLeaf() ?: element.tryBranch()
+    if (test != null) {
+      println("Element $element matched $test")
+    }
     return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
   }
 }

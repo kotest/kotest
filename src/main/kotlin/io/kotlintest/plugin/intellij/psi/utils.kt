@@ -8,9 +8,11 @@ import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
+import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
 import org.jetbrains.kotlin.psi.KtReferenceExpression
+import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.KtSuperTypeList
@@ -39,11 +41,6 @@ fun PsiElement.isInSpecStyle(name: String): Boolean {
   return false
 }
 
-fun PsiElement.isSingleStringArgList(): Boolean = when (this) {
-  is KtValueArgumentList -> children.size == 1 && children[0] is KtValueArgument
-  else -> false
-}
-
 fun PsiElement.enclosingClassName(): String? {
   val ktclass = getParentOfType<KtClass>(true)
   return ktclass?.fqName?.asString()
@@ -52,29 +49,46 @@ fun PsiElement.enclosingClassName(): String? {
 /**
  * Matches blocks of the form:
  *
- * functionName("some string") { }
+ * functionName("some string").<ident>
  *
- * Eg, can be used to match: given("this is a test") { }
+ * Eg, can be used to match: should("this is a test").config { }
  *
  * @return the string argument of the invoked function
  *
  * @param lefts one or more acceptable names for the left hand side reference
  * @param rights one or more acceptable names for the right hand side reference
  */
-fun PsiElement.matchDotExpressionWithReferenceOnBothSides(lefts: List<String>, rights: List<String>): String? {
-  when (this) {
-    is KtDotQualifiedExpression -> {
-      val left = children[0]
-      val right = children[1]
-      // both sides should be call expressions with a reference name
-      if (left is KtCallExpression && left.children[0] is KtReferenceExpression && lefts.contains(left.children[0].text) &&
-          right is KtCallExpression && right.children[0] is KtReferenceExpression && rights.contains(right.children[0].text)) {
-        return left.children[1].children[0].children[0].children[0].text
+fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rights: List<String>): String? {
+  if (parent is KtLiteralStringTemplateEntry) {
+    val maybeTemplateExpr = parent.parent
+    if (maybeTemplateExpr is KtStringTemplateExpression) {
+      val maybeValueArg = maybeTemplateExpr.parent
+      if (maybeValueArg is KtValueArgument) {
+        val maybeValueArgList = maybeValueArg.parent
+        if (maybeValueArgList is KtValueArgumentList) {
+          val maybeCallExpr = maybeValueArgList.parent
+          if (maybeCallExpr is KtCallExpression) {
+            val maybeDotExpr = maybeCallExpr.parent
+            if (maybeDotExpr is KtDotQualifiedExpression) {
+              if (maybeDotExpr.children.size == 2
+                  && maybeDotExpr.children[0].isCallExprWithName(lefts)
+                  && maybeDotExpr.children[1].isCallExprWithName(rights)) {
+                return parent.text
+              }
+            }
+          }
+        }
       }
     }
   }
   return null
 }
+
+fun PsiElement.isCallExprWithName(names: List<String>): Boolean =
+    this is KtCallExpression
+        && children.isNotEmpty()
+        && children[0] is KtReferenceExpression
+        && names.contains(children[0].text)
 
 fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
 
@@ -91,16 +105,55 @@ fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationRe
  *
  * @param names one or more function names to search for
  */
-fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): String? {
-  if (this is KtCallExpression && children.size == 3) {
-    if (children[0].isNameReference(names)
-        && children[1] is KtValueArgumentList && children[1].isSingleStringArgList()
-        && children[2] is KtLambdaArgument) {
-      return children[1].children[0].children[0].children[0].text
+fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
+  return when (val p = parent) {
+    is KtStringTemplateEntry -> p.extractStringForFunction2WithStringAndLambda(names)
+    is KtCallExpression -> p.extractStringForFunction2WithStringAndLambda(names)
+    else -> null
+  }
+}
+
+fun KtStringTemplateEntry.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
+  if (parent is KtStringTemplateExpression) {
+    val maybeValueArg = parent.parent
+    if (maybeValueArg is KtValueArgument) {
+      val maybeValueArgList = maybeValueArg.parent
+      if (maybeValueArgList is KtValueArgumentList) {
+        val maybeCallExpr = maybeValueArgList.parent
+        if (maybeCallExpr is KtCallExpression) {
+          if (maybeCallExpr.children.size == 3
+              && maybeCallExpr.children[0].isNameReference(names)
+              && maybeCallExpr.children[2] is KtLambdaArgument) {
+            return text
+          }
+        }
+      }
     }
   }
   return null
 }
+
+fun KtCallExpression.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
+  if (children.size == 3
+      && children[0].isNameReference(names)
+      && children[1].isSingleStringTemplateArg()
+      && children[2] is KtLambdaArgument) {
+    return children[1] // KtValueArgumentList
+        .children[0] // KtValueArgument
+        .children[0] // KtStringTemplateExpression
+        .children[0] // KtStringTemplateEntry
+        .text
+  }
+  return null
+}
+
+fun PsiElement.isSingleStringTemplateArg(): Boolean =
+    this is KtValueArgumentList
+        && children.size == 1
+        && children[0] is KtValueArgument
+        && children[0].children.size == 1
+        && children[0].children[0] is KtStringTemplateExpression
+
 
 /**
  * Matches blocks of the form:
@@ -113,24 +166,74 @@ fun PsiElement.matchFunction2WithStringAndLambdaArgs(names: List<String>): Strin
  *
  * @param names one or more function names to search for
  */
-fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? {
-  if (this is KtBinaryExpression) {
-    if (children[0] is KtStringTemplateExpression
-        && children[1].isOperation(names)
-        && children[2] is KtLambdaExpression) {
-      return children[0].children[0].text
+fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? =
+    when (val p = parent) {
+      is KtStringTemplateEntry -> p.extractLhsForInfixFunction(names)
+      is KtBinaryExpression -> p.extractLhsForInfixFunction(names)
+      else -> null
+    }
+
+fun KtStringTemplateEntry.extractLhsForInfixFunction(names: List<String>): String? {
+  if (parent is KtStringTemplateExpression) {
+    val maybeBinaryExpr = parent.parent
+    if (maybeBinaryExpr is KtBinaryExpression) {
+      if (maybeBinaryExpr.children.size == 3
+          && maybeBinaryExpr.children[1].isOperation(names)
+          && maybeBinaryExpr.children[2] is KtLambdaExpression) {
+        return text
+      }
     }
   }
   return null
 }
 
-
-fun PsiElement.findReceiverForExtensionFunctionWithLambdaArgument(): String? {
-  if (this is KtCallExpression) {
-    if (children[0] is KtStringTemplateExpression
-        && children[1] is KtLambdaArgument) {
-      return children[0].children[0].text
+fun KtBinaryExpression.extractLhsForInfixFunction(names: List<String>): String? {
+  if (children.size == 3
+      && children[0] is KtStringTemplateExpression
+      && children[1].isOperation(names)
+      && children[2] is KtLambdaExpression) {
+    val template = children[0]
+    if (template.children.isNotEmpty() && template.children[0] is KtStringTemplateEntry) {
+      return template.children[0].text
     }
+  }
+  return null
+}
+
+/**
+ * Matches blocks of the form:
+ *
+ * "string" { }
+ *
+ * @return the LHS operand
+ */
+fun PsiElement.matchStringInvoke(): String? =
+    when (val p = parent) {
+      is KtStringTemplateEntry -> p.extractLhsForStringInvoke()
+      is KtCallExpression -> p.extractLhsForStringInvoke()
+      else -> null
+    }
+
+fun KtStringTemplateEntry.extractLhsForStringInvoke(): String? {
+  if (parent is KtStringTemplateExpression) {
+    val maybeCallExpr = parent.parent
+    if (maybeCallExpr is KtCallExpression) {
+      if (maybeCallExpr.children.size == 2
+          && maybeCallExpr.children[1] is KtLambdaArgument) {
+        return text
+      }
+    }
+  }
+  return null
+}
+
+fun KtCallExpression.extractLhsForStringInvoke(): String? {
+  if (children.size == 2
+      && children[0] is KtStringTemplateExpression
+      && children[1] is KtLambdaArgument) {
+    return children[0] // KtStringTemplateExpression
+        .children[0] // KtStringTemplateEntry
+        .text
   }
   return null
 }

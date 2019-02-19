@@ -11,6 +11,6 @@ object StringSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.findReceiverForExtensionFunctionWithLambdaArgument()
+    return element.matchStringInvoke()
   }
 }

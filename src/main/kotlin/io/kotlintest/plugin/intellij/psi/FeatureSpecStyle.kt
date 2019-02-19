@@ -17,17 +17,17 @@ object FeatureSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryFeature(): String? {
-    val feature = matchFunction2WithStringAndLambdaArgs(listOf("feature"))
+    val feature = matchFunction2WithStringAndLambda(listOf("feature"))
     return if (feature == null) null else "Feature: $feature"
   }
 
   private fun PsiElement.tryAnd(): String? {
-    val and = matchFunction2WithStringAndLambdaArgs(listOf("and"))
+    val and = matchFunction2WithStringAndLambda(listOf("and"))
     return if (and == null) null else "And: $and"
   }
 
   private fun PsiElement.tryScenario(): String? {
-    val scenario = matchFunction2WithStringAndLambdaArgs(listOf("scenario"))
+    val scenario = matchFunction2WithStringAndLambda(listOf("scenario"))
     return if (scenario == null) null else "Scenario: $scenario"
   }
 

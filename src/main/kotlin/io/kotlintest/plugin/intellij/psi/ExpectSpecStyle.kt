@@ -17,12 +17,12 @@ object ExpectSpecStyle : SpecStyle {
   }
 
   private fun PsiElement.tryExpect(): String? {
-    val expect = matchFunction2WithStringAndLambdaArgs(listOf("expect"))
+    val expect = matchFunction2WithStringAndLambda(listOf("expect"))
     return if (expect == null) null else "Expect: $expect"
   }
 
   private fun PsiElement.tryContext(): String? {
-    val context = matchFunction2WithStringAndLambdaArgs(listOf("context"))
+    val context = matchFunction2WithStringAndLambda(listOf("context"))
     return if (context == null) null else "Context: $context"
   }
 
