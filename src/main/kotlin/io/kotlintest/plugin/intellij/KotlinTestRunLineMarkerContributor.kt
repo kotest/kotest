@@ -19,10 +19,11 @@ import io.kotlintest.plugin.intellij.psi.WordSpecStyle
 abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
 
   override fun getInfo(element: PsiElement): Info? {
-    if (style.isTestElement(element)) {
+    val name = style.testPath(element)
+    if (name != null) {
       return Info(
           AllIcons.RunConfigurations.TestState.Run,
-          Function<PsiElement, String> { "Run test" },
+          Function<PsiElement, String> { "[KotlinTest] $name" },
           *ExecutorAction.getActions(0)
       )
     }
@@ -31,11 +32,11 @@ abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) 
 }
 
 class BehaviorSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(BehaviorSpecStyle)
+class DescribeSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(DescribeSpecStyle)
+class ExpectSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(ExpectSpecStyle)
+class FeatureSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(FeatureSpecStyle)
+class FreeSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(FreeSpecStyle)
 class FunSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(FunSpecStyle)
 class ShouldSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(ShouldSpecStyle)
 class StringSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(StringSpecStyle)
 class WordSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(WordSpecStyle)
-class FeatureSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(FeatureSpecStyle)
-class DescribeSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(DescribeSpecStyle)
-class FreeSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(FreeSpecStyle)
-class ExpectSpecRunLineMarkerContributor : KotlinTestRunLineMarkerContributor(ExpectSpecStyle)

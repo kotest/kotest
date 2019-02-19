@@ -15,6 +15,7 @@ import io.kotlintest.plugin.intellij.psi.ShouldSpecStyle
 import io.kotlintest.plugin.intellij.psi.SpecStyle
 import io.kotlintest.plugin.intellij.psi.StringSpecStyle
 import io.kotlintest.plugin.intellij.psi.WordSpecStyle
+import io.kotlintest.plugin.intellij.psi.buildSuggestedName
 import io.kotlintest.plugin.intellij.psi.enclosingClassName
 
 abstract class KotlinTestRunConfigurationProducer(private val style: SpecStyle) :
@@ -34,9 +35,13 @@ abstract class KotlinTestRunConfigurationProducer(private val style: SpecStyle) 
     }
   }
 
+  // compares the existing configurations to the context in question
+  // if one of the configurations matches then this should return true
   override fun isConfigurationFromContext(configuration: KotlinTestRunConfiguration, context: ConfigurationContext): Boolean {
     val element = context.psiLocation
-    val name = if (element == null) null else style.testPath(element)
+    val testName = if (element == null) null else style.testPath(element)
+    val specName = element?.enclosingClassName()
+    val name = buildSuggestedName(specName, testName)
     return configuration.name == name
   }
 

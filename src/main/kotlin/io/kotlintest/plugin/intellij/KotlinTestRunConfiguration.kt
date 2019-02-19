@@ -12,6 +12,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
+import io.kotlintest.plugin.intellij.psi.buildSuggestedName
 import java.util.*
 
 class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModule, factory: ConfigurationFactory) :
@@ -28,13 +29,7 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
   private var testName: String? = null
   private var specName: String? = null
 
-  override fun suggestedName(): String? {
-    val fqn = specName
-    return if (fqn == null) testName else {
-      val simpleName = fqn.split('.').last()
-      "$simpleName: $testName"
-    }
-  }
+  override fun suggestedName(): String? = buildSuggestedName(specName, testName)
 
   fun getTestName(): String? = testName
   fun getSpecName(): String? = specName

@@ -71,6 +71,7 @@ class KotlinTestSMTConsoleProperties(config: KotlinTestRunConfiguration, executo
 
 object KotlinTestSMTestLocator : SMTestLocator {
   override fun getLocation(protocol: String, path: String, project: Project, scope: GlobalSearchScope): MutableList<Location<PsiElement>> {
+    println("Asked to locate source for [protocol=$protocol, path=$path, project=$project, scope=$scope]")
     require(protocol == "kotlintest")
     return mutableListOf()
   }

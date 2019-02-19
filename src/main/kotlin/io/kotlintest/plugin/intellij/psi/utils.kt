@@ -134,3 +134,14 @@ fun PsiElement.findReceiverForExtensionFunctionWithLambdaArgument(): String? {
   }
   return null
 }
+
+fun buildSuggestedName(specName: String?, testName: String?): String? {
+  return when {
+    testName == null -> null
+    specName == null -> testName
+    else -> {
+      val simpleName = specName.split('.').last()
+      "$simpleName: $testName"
+    }
+  }
+}
