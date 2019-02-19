@@ -17,5 +17,5 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.3.0.1'
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.3.0-RC3'
 }

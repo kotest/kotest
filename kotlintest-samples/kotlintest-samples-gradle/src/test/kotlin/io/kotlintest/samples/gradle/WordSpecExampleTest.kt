@@ -11,5 +11,12 @@ class WordSpecExampleTest : WordSpec() {
         "wibble" should haveLength(6)
       }
     }
+    "given a potato" `when` {
+      "planted it" should {
+        "grow" {
+
+        }
+      }
+    }
   }
 }

@@ -39,9 +39,9 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   @KotlinTestDsl
   inner class DescribeScope(val context: TestContext) {
 
-    fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "Scenario: $name")
+    fun it(name: String) = this@AbstractDescribeSpec.TestBuilder(context, "It: $name")
     suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
-        context.registerTestCase(createTestName("Scenario: ", name), this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(createTestName("It: ", name), this@AbstractDescribeSpec, test, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Test)
 
     suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) =
         context.registerTestCase(createTestName("Context: ", name), this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)

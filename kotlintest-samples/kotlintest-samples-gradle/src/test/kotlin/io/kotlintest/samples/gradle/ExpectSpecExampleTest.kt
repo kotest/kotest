@@ -1,8 +1,6 @@
 package io.kotlintest.samples.gradle
 
-import io.kotlintest.matchers.haveLength
 import io.kotlintest.specs.ExpectSpec
-import io.kotlintest.specs.WordSpec
 
 class ExpectSpecExampleTest : ExpectSpec() {
     init {
