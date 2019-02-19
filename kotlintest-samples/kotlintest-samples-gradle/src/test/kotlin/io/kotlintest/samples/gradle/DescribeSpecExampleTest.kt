@@ -1,9 +1,6 @@
 package io.kotlintest.samples.gradle
 
-import io.kotlintest.matchers.haveLength
 import io.kotlintest.specs.DescribeSpec
-import io.kotlintest.specs.ExpectSpec
-import io.kotlintest.specs.WordSpec
 
 class DescribeSpecExampleTest : DescribeSpec() {
     init {
