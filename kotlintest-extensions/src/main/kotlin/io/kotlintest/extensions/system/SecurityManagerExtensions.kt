@@ -39,7 +39,6 @@ abstract class SecurityManagerListener(
   protected fun resetSecurityManager() {
     System.setSecurityManager(originalSecurityManager)
   }
-  
 }
 
 /**

@@ -957,98 +957,11 @@ class MyTests : ShouldSpec() {
 Extensions
 ----------
 
-KotlinTest comes with several extension modules which are not part of the main build.
+KotlinTest provides you with several extensions and listeners to test execution out of the box.
+ 
+Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow). 
+Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
 
-### Arrow
+We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.
 
-The arrow extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
- To use this library you need to add `kotlintest-assertions-arrow` to your build.
-
-Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
-
-```kotlin
-val option: Option<String> = ...
-option shouldBe beSome("foo")
-```
-
-For the full list of arrow matchers [click here](arrow-matchers.md).
-
-Additionally, the module provides inspectors that work specifically for the `NonEmptyList` type.
-For example, we can test that a set of assertions hold only for a single element in a Nel by using the `forOne` inspector.
-
-```kotlin
-val list = NonEmptyList(2, 4, 6, 7,8)
-list.forOne {
-  it.shouldBeOdd()
-}
-```
-
-Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotlintest/kotlintest/blob/master/doc/reference.md#inspectors) for more details.
-
-### Spring
-
-KotlinTest offers a Spring extension that allows you to test code that wires dependencies using Spring.
-To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
-
-In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
-This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
-point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
-
-There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
-
-#### Field Injection
-
-If you wish to use field injection, then the `SpringListener` must be registered with any
- Spec that uses spring beans. For example:
-
-```kotlin
-@ContextConfiguration(classes = [(TestConfiguration::class)])
-class SpringExampleSpec : WordSpec() {
-
-  override fun listeners() = listOf(SpringListener)
-
-  @Autowired
-  var bean: MyBean? = null
-
-  init {
-    "Spring Extension" should {
-      "have wired up the bean" {
-        bean shouldNotBe null
-      }
-    }
-  }
-}
-```
-
-You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](#project-config).
-
-#### Constructor Injection
-
-For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
- must be registered with [ProjectConfig](#project-config). This extension will intercept each call to create a Spec instance
- and will autowire the beans declared in the primary constructor.
-
-First an example of the project config.
-
-```kotlin
-class ProjectConfig : AbstractProjectConfig() {
-  override fun extensions(): List<ProjectLevelExtension> = listOf(SpringAutowireConstructorExtension)
-}
-```
-
-And now an example of a test class which requires a service called `UserService` in its primary constructor. This service
- class is just a regular spring bean which has been annotated with @Component.
-
-```kotlin
-@ContextConfiguration(classes = [(Components::class)])
-class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
-  init {
-    "SpringListener" should {
-      "have autowired the service" {
-        service.repository.findUser().name shouldBe "system_user"
-      }
-    }
-  }
-}
-```
-
+Take a better look at all the extensions available in the [extensions-reference](extensions.md)

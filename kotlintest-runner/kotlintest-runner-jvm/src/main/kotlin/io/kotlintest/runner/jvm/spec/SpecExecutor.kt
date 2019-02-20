@@ -1,10 +1,7 @@
 package io.kotlintest.runner.jvm.spec
 
 import arrow.core.Try
-import io.kotlintest.Description
-import io.kotlintest.IsolationMode
-import io.kotlintest.Project
-import io.kotlintest.Spec
+import io.kotlintest.*
 import io.kotlintest.internal.topLevelTests
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
@@ -38,7 +35,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
 
       engineListener.beforeSpecClass(spec::class)
 
-      val userListeners = listOf(spec) + spec.listeners() + Project.listeners()
+      val userListeners = listOf(spec) + spec.listenerInstances + Project.listeners()
 
       Try {
 

@@ -1,6 +1,8 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.kotlintest.extensions.system.SystemEnvironmentTestListener
 import io.kotlintest.extensions.system.withEnvironment
 import io.kotlintest.inspectors.forAll
@@ -76,10 +78,11 @@ class SystemEnvironmentTestListenerTest : ShouldSpec() {
     }
   }
   
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
     // The environment must be reset afterwards
     verifyFooIsUnset()
   }
+  
 }
 
 private fun verifyFooIsBar() {

@@ -70,12 +70,6 @@ inline fun <T> withEnvironment(environment: Map<String, String?>, block: () -> T
   }
 }
 
-
-@PublishedApi
-internal infix fun Map<String,String>.overridenWith(map: Map<String, String?>): MutableMap<String, String> {
-  return toMutableMap().apply { putReplacingNulls(map) }
-}
-
 @PublishedApi
 // Implementation inspired from https://github.com/stefanbirkner/system-rule
 internal fun setEnvironmentMap(map: Map<String, String?>) {
@@ -113,32 +107,17 @@ private fun  Field.asAccessible(): Field {
   return apply { isAccessible = true }
 }
 
-private fun MutableMap<String,String>.putReplacingNulls(map: Map<String, String?>) {
-  map.forEach { key, value ->
-    if(value == null) remove(key) else put(key, value)
-  }
-}
 
 abstract class SystemEnvironmentListener(private val environment: Map<String, String>) : TestListener {
   
+  private val originalEnvironment = System.getenv().toMap()
+  
   protected fun changeSystemEnvironment() {
-    originalEnvironment = System.getenv().toMap() // Using to map to guarantee it's not modified
     setEnvironmentMap(originalEnvironment overridenWith environment)
   }
   
   protected fun resetSystemEnvironment() {
     setEnvironmentMap(originalEnvironment)
-  }
-  
-  protected companion object {
-     /*
-     Must use a companion object because a new test listener is created every time.
-     When a new one is created, the original environment will be forgotten, and it won't be cleared
-     After the test is executed
-     It's also ok for this to be lateinit, because the first time this extension is used, the original
-     system Environment will be the same forever.
-     */
-    private lateinit var originalEnvironment: Map<String, String>
   }
 }
 
