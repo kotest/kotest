@@ -71,7 +71,7 @@ inline fun <T> withSystemProperties(props: Properties, block: () -> T): T {
  * already changed, the result is inconsistent, as the System Properties Map is a single map.
  */
 inline fun <T> withSystemProperties(props: Map<String, String?>, block: () -> T): T {
-  val previous = Properties(System.getProperties()).toStringStringMap()  // Safe copying to ensure immutability
+  val previous = Properties().apply { putAll(System.getProperties()) }.toStringStringMap()  // Safe copying to ensure immutability
   
   setSystemProperties(previous overridenWith props)
   
