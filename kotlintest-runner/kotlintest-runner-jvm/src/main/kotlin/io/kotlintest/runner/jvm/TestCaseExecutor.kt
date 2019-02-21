@@ -1,11 +1,6 @@
 package io.kotlintest.runner.jvm
 
-import io.kotlintest.Project
-import io.kotlintest.TestCase
-import io.kotlintest.TestContext
-import io.kotlintest.TestResult
-import io.kotlintest.TestStatus
-import io.kotlintest.assertSoftly
+import io.kotlintest.*
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
@@ -14,11 +9,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -172,7 +163,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private fun before(testCase: TestCase) {
     listener.enterTestCase(testCase)
 
-    val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
+    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
     val active = isActive(testCase)
     userListeners.forEach {
       it.beforeTest(testCase.description)
@@ -187,7 +178,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
    */
   private fun after(testCase: TestCase, result: TestResult) {
     val active = isActive(testCase)
-    val userListeners = testCase.spec.listeners() + testCase.spec + Project.listeners()
+    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
     userListeners.reversed().forEach {
       it.afterTest(testCase.description, result)
       if (active) {

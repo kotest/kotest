@@ -2,6 +2,8 @@ package io.kotlintest
 
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestListener
+import java.util.*
+import kotlin.reflect.KProperty
 
 /**
  * A [Spec] is the top level component in KotlinTest.
@@ -111,3 +113,16 @@ fun Class<out Spec>.displayName(): String {
 }
 
 fun Class<out Spec>.description() = Description.spec(this.displayName())
+
+val Spec.listenerInstances by LazyWithReceiver<Spec, List<TestListener>> { this.listeners() }
+
+private class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
+  private val values = WeakHashMap<This, Return>()
+  
+  @Suppress("UNCHECKED_CAST")
+  operator fun getValue(thisRef: Any, property: KProperty<*>): Return = synchronized(values)
+  {
+    thisRef as This
+    return values.getOrPut(thisRef) { thisRef.initializer() }
+  }
+}

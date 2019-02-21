@@ -1,9 +1,8 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.*
-import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.extensions.system.SystemPropertyExtension
+import io.kotlintest.extensions.system.SystemPropertyTestListener
 import io.kotlintest.extensions.system.withSystemProperties
 import io.kotlintest.extensions.system.withSystemProperty
 import io.kotlintest.specs.FreeSpec
@@ -24,13 +23,7 @@ class SystemPropertiesSuspendTest : FreeSpec() {
               suspendBlock()
           }
         }
-  
-        "List of Pair value overload" {
-          withSystemProperties(listOf("Key" to "Value")){
-            suspendBlock()
-          }
-        }
-  
+        
         "Properties value overload" {
           withSystemProperties(Properties()) {
             suspendBlock()
@@ -70,7 +63,7 @@ class SystemPropertyFunctionTest : FunSpec({
     System.setProperty("a", "foo")
     System.getProperty("a") shouldBe "foo"
     System.getProperty("b") shouldBe null
-    withSystemProperties(listOf("a" to "y", "b" to "z")) {
+    withSystemProperties(mapOf("a" to "y", "b" to "z")) {
       System.getProperty("a") shouldBe "y"
       System.getProperty("b") shouldBe "z"
     }
@@ -108,9 +101,9 @@ class SystemPropertyFunctionTest : FunSpec({
   }
 })
 
-class SystemPropertyExtensionTest : WordSpec() {
+class SystemPropertyListenerTest : WordSpec() {
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(SystemPropertyExtension("wibble", "wobble"))
+  override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
 
   override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
     System.getProperty("wibble") shouldBe null
