@@ -134,7 +134,7 @@ This page gives you just a short overview of KotlinTest. There are many more fea
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
-* Test tricky scenarios such as System Environment with [extensions](doc/extensions.md)
+* Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
 
