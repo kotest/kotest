@@ -32,6 +32,6 @@ object ShouldSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
     val test = element.tryShould() ?: element.tryShouldWithConfig() ?: element.tryContainer()
-    return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
+    return if (test == null) null else element.locateParentTests().joinToString(" -- ") + "$test"
   }
 }

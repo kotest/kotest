@@ -21,9 +21,6 @@ object FreeSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
     val test = element.tryLeaf() ?: element.tryBranch()
-    if (test != null) {
-      println("Element $element matched $test")
-    }
-    return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
+    return if (test == null) null else element.locateParentTests().joinToString(" -- ") + " $test"
   }
 }
