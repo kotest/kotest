@@ -261,3 +261,32 @@ And with the listeners
   )
 
 ```
+
+### Current instant listeners
+
+Sometimes you may want to user `java.time` classes' `now` static function for multiple reasons, such as setting the creation date of an entity
+`data class MyEntity(creationDate: LocalDateTime = LocalDateTime.now())`. But what to do when you want to test that value? `now` will be different
+each time you call it!
+
+For that, KotlinTest provides `ConstantNowListener` and `withConstantNow` functions.
+
+While executing your code, your `now` will always be the value that you want to test against!!
+
+```kotlin
+val foreverNow = LocalDateTime.now()
+
+withConstantNow(foreverNow) {
+  LocalDateTime.now() shouldBe foreverNow
+  delay(10) // Code is taking a small amount of time to execute, but `now` changed!
+  LocalDateTime.now() shouldBe foreverNow
+}
+
+```
+
+Or, with a listener for all the tests:
+
+```kotlin
+  override fun listeners() = listOf(
+    ConstantNowTestListener(foreverNow)
+  )
+```

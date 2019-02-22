@@ -1,7 +1,9 @@
-package io.kotlintest.extensions.system
+package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.extensions.system.SecurityManagerTestListener
+import io.kotlintest.extensions.system.withSecurityManager
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
@@ -12,8 +14,8 @@ class SecurityManagerExtensionFunctionTests : StringSpec() {
   init {
     "Should reset the security manager after execution" {
       val originalSecurityManager = System.getSecurityManager()
-      
-      withSecurityManager(MySecurityManager) {  }
+  
+      withSecurityManager(MySecurityManager) { }
       
       System.getSecurityManager() shouldBeSameInstanceAs originalSecurityManager
     }
