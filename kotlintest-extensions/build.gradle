@@ -10,6 +10,8 @@ dependencies {
     implementation project(':kotlintest-core')
     implementation project(':kotlintest-assertions')
 
+    implementation "io.mockk:mockk:1.9.1"
+    
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
     testRuntime 'log4j:log4j:1.2.17'
     testRuntime 'org.slf4j:slf4j-log4j12:1.7.25'
