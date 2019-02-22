@@ -1,7 +1,8 @@
-package io.kotlintest.runner.console
+package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
 import io.kotlintest.TestFilterResult
+import io.kotlintest.runner.console.SpecAwareTestFilter
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.kotlintest.specs.FeatureSpec
@@ -128,13 +129,17 @@ class SpecAwareTestFilterTest : FunSpec() {
       SpecAwareTestFilter("Given: a When: b", BehaviorSpecs::class)
           .filter(r.append("Given: a").append("When: b").append("Then: c")) shouldBe TestFilterResult.Include
 
-      SpecAwareTestFilter("Given: a When: b Then: c", BehaviorSpecs::class)
+      SpecAwareTestFilter("Given: a When: b Then: c",
+          BehaviorSpecs::class)
           .filter(r.append("Given: a").append("When: b").append("Then: c")) shouldBe TestFilterResult.Include
-      SpecAwareTestFilter("Given: a When: b Then: c", BehaviorSpecs::class)
+      SpecAwareTestFilter("Given: a When: b Then: c",
+          BehaviorSpecs::class)
           .filter(r.append("Given: aa").append("When: b").append("Then: c")) shouldBe TestFilterResult.Exclude
-      SpecAwareTestFilter("Given: a When: b Then: c", BehaviorSpecs::class)
+      SpecAwareTestFilter("Given: a When: b Then: c",
+          BehaviorSpecs::class)
           .filter(r.append("Given: a").append("When: bb").append("Then: c")) shouldBe TestFilterResult.Exclude
-      SpecAwareTestFilter("Given: a When: b Then: c", BehaviorSpecs::class)
+      SpecAwareTestFilter("Given: a When: b Then: c",
+          BehaviorSpecs::class)
           .filter(r.append("Given: a").append("When: b").append("Then: cc")) shouldBe TestFilterResult.Exclude
     }
 
@@ -154,11 +159,14 @@ class SpecAwareTestFilterTest : FunSpec() {
       SpecAwareTestFilter("Feature: b", FeatureSpecs::class)
           .filter(r.append("Feature: a").append("Scenario: c")) shouldBe TestFilterResult.Exclude
 
-      SpecAwareTestFilter("Feature: a Scenario: b", FeatureSpecs::class)
+      SpecAwareTestFilter("Feature: a Scenario: b",
+          FeatureSpecs::class)
           .filter(r.append("Feature: a").append("Scenario: b")) shouldBe TestFilterResult.Include
-      SpecAwareTestFilter("Feature: a Scenario: b", FeatureSpecs::class)
+      SpecAwareTestFilter("Feature: a Scenario: b",
+          FeatureSpecs::class)
           .filter(r.append("Feature: aa")) shouldBe TestFilterResult.Exclude
-      SpecAwareTestFilter("Feature: a Scenario: b", FeatureSpecs::class)
+      SpecAwareTestFilter("Feature: a Scenario: b",
+          FeatureSpecs::class)
           .filter(r.append("Feature: a").append("Scenario: bb")) shouldBe TestFilterResult.Exclude
     }
   }

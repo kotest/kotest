@@ -1,6 +1,7 @@
-package io.kotlintest.runner.console
+package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
+import io.kotlintest.runner.console.FreeSpecStyleParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
@@ -17,10 +18,12 @@ class FreeSpecStyleParserTest : FunSpec() {
     }
 
     test("should parse multiple tests") {
-      FreeSpecStyleParser.parse(Description.spec("myspec"), "testa -- testb -- testc") shouldBe
+      FreeSpecStyleParser.parse(Description.spec("myspec"),
+          "testa -- testb -- testc") shouldBe
           Description.spec("myspec").append("testa").append("testb").append("testc")
 
-      FreeSpecStyleParser.parse(Description.spec("myspec"), "testa -- testb-- -- testc") shouldBe
+      FreeSpecStyleParser.parse(Description.spec("myspec"),
+          "testa -- testb-- -- testc") shouldBe
           Description.spec("myspec").append("testa").append("testb--").append("testc")
     }
 

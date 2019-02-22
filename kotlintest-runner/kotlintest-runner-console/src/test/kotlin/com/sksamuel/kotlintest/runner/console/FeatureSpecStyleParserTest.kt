@@ -1,6 +1,7 @@
-package io.kotlintest.runner.console
+package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
+import io.kotlintest.runner.console.FeatureSpecStyleParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
@@ -17,10 +18,12 @@ class FeatureSpecStyleParserTest : FunSpec() {
     }
 
     test("should parse Feature / Scenario") {
-      FeatureSpecStyleParser.parse(Description.spec("myspec"), "Feature: foo Scenario: bar") shouldBe
+      FeatureSpecStyleParser.parse(Description.spec("myspec"),
+          "Feature: foo Scenario: bar") shouldBe
           Description.spec("myspec").append("Feature: foo").append("Scenario: bar")
 
-      FeatureSpecStyleParser.parse(Description.spec("myspec"), "Feature: foo     Scenario: bar!!!") shouldBe
+      FeatureSpecStyleParser.parse(Description.spec("myspec"),
+          "Feature: foo     Scenario: bar!!!") shouldBe
           Description.spec("myspec").append("Feature: foo    ").append("Scenario: bar!!!")
     }
   }

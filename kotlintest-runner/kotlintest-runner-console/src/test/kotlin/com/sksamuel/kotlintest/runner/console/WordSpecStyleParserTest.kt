@@ -1,6 +1,7 @@
-package io.kotlintest.runner.console
+package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
+import io.kotlintest.runner.console.WordSpecStyleParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
@@ -12,7 +13,8 @@ class WordSpecStyleParserTest : FunSpec() {
       WordSpecStyleParser.parse(Description.spec("myspec"), "foo should bar") shouldBe
           Description.spec("myspec").append("foo should").append("bar")
 
-      WordSpecStyleParser.parse(Description.spec("myspec"), "foo    should bar!  ") shouldBe
+      WordSpecStyleParser.parse(Description.spec("myspec"),
+          "foo    should bar!  ") shouldBe
           Description.spec("myspec").append("foo    should").append("bar!  ")
     }
   }

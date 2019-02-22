@@ -1,6 +1,7 @@
-package io.kotlintest.runner.console
+package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
+import io.kotlintest.runner.console.StringSpecStyleParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
