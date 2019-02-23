@@ -1,0 +1,4 @@
+@Override
+public void afterTest(io.kotlintest.TestCase testCase, io.kotlintest.TestResult result) {
+    ${BODY}
+}

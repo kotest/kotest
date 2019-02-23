@@ -10,7 +10,7 @@
       Official IntelliJ IDEA plugin for <a href="https://github.com/kotlintest/kotlintest">KotlinTest</a>.
     ]]></description>
 
-    <version>3.3.0.2</version>
+    <version>3.3.0.8</version>
 
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.modules.java</depends>
@@ -37,7 +37,8 @@
         <runLineMarkerContributor language="kotlin"
                                   implementationClass="io.kotlintest.plugin.intellij.FreeSpecRunLineMarkerContributor"/>
         <runConfigurationProducer
-                implementation="io.kotlintest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
+                implementation="io.kotlintest.plugin.intellij.BehaviorSpecRunConfigurationProducer"
+                order="first"/>
         <runConfigurationProducer
                 implementation="io.kotlintest.plugin.intellij.FunSpecRunConfigurationProducer"/>
         <runConfigurationProducer
@@ -54,6 +55,9 @@
                 implementation="io.kotlintest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
         <runConfigurationProducer
                 implementation="io.kotlintest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
+        <testFramework implementation="io.kotlintest.plugin.intellij.KotlinTestFramework" id="kotlintest"
+                       order="after junit5"/>
+        <stacktrace.fold substring="at io.kotlintest."/>
     </extensions>
 
 </idea-plugin>

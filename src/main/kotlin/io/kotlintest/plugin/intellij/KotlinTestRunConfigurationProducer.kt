@@ -45,13 +45,12 @@ abstract class KotlinTestRunConfigurationProducer(private val style: SpecStyle) 
     return configuration.name == name
   }
 
-  override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
-    // a kotlintest config will trump anything else
-    return self?.configuration is KotlinTestRunConfiguration
+  override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+    return self.isProducedBy(KotlinTestRunConfigurationProducer::class.java)
   }
 
-  override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
-    return self.configuration is KotlinTestRunConfiguration
+  override fun isPreferredConfiguration(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+    return self.isProducedBy(KotlinTestRunConfigurationProducer::class.java)
   }
 }
 
