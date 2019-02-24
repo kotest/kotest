@@ -3,7 +3,9 @@ package io.kotlintest.matchers.date
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
@@ -1851,5 +1853,339 @@ fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<Offset
     val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
     return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
+  }
+}
+
+/**
+ * Asserts that this is between [a] and [b]
+ *
+ * Verifies that this is after [a] and before [b], comparing year, month and day.
+ *
+ * Opposite of [LocalDate.shouldNotBeBetween]
+ *
+ * ```
+ *    val date = LocalDate.of(2019, 2, 16)
+ *    val firstDate = LocalDate.of(2019, 2, 15)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion passes
+ *
+ *
+ *    val date = LocalDate.of(2019, 2, 15)
+ *    val firstDate = LocalDate.of(2019, 2, 16)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion fails, date is NOT between firstDate and secondDate
+ * ```
+ *
+ * @see LocalDate.shouldNotBeBetween
+ */
+fun LocalDate.shouldBeBetween(a: LocalDate, b: LocalDate) = this shouldBe between(a, b)
+
+/**
+ * Asserts that this is NOT between [a] and [b]
+ *
+ * Verifies that this is not after [a] and before [b], comparing year, month and day.
+ *
+ * Opposite of [LocalDate.shouldBeBetween]
+ *
+ * ```
+ *    val date = LocalDate.of(2019, 2, 15)
+ *    val firstDate = LocalDate.of(2019, 2, 16)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = LocalDate.of(2019, 2, 16)
+ *    val firstDate = LocalDate.of(2019, 2, 15)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate)  // Assertion fails, date IS between firstDate and secondDate
+ * ```
+ *
+ * @see LocalDate.shouldBeBetween
+ */
+fun LocalDate.shouldNotBeBetween(a: LocalDate, b: LocalDate) = this shouldNotBe between(a, b)
+
+/**
+ * Matcher that checks if LocalDate is between two other LocalDates
+ *
+ * Verifies that LocalDate is after the first LocalDate and before the second LocalDate
+ * For example, 20/03/2019 is between 19/03/2019 and 21/03/2019, and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val date = LocalDate.of(2019, 2, 16)
+ *    val firstDate = LocalDate.of(2019, 2, 15)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = LocalDate.of(2019, 2, 15)
+ *    val firstDate = LocalDate.of(2019, 2, 16)
+ *    val secondDate = LocalDate.of(2019, 2, 17)
+ *
+ *    date shouldNotBe between(firstDate, secondDate)   // Assertion passes
+ * ```
+ *
+ * @see LocalDate.shouldBeBetween
+ * @see LocalDate.shouldNotBeBetween
+ */
+fun between(a: LocalDate, b: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
+  override fun test(value: LocalDate): Result {
+    val passed = value.isAfter(a) && value.isBefore(b)
+    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+  }
+}
+
+/**
+ * Asserts that this is between [a] and [b]
+ *
+ * Verifies that this is after [a] and before [b], comparing all fields in LocalDateTime.
+ *
+ * Opposite of [LocalDateTime.shouldNotBeBetween]
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion passes
+ *
+ *
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion fails, date is NOT between firstDate and secondDate
+ * ```
+ *
+ * @see LocalDateTime.shouldNotBeBetween
+ */
+fun LocalDateTime.shouldBeBetween(a: LocalDateTime, b: LocalDateTime) = this shouldBe between(a, b)
+
+/**
+ * Asserts that this is NOT between [a] and [b]
+ *
+ * Verifies that this is not after [a] and before [b], comparing all fields in LocalDateTime.
+ *
+ * Opposite of [LocalDateTime.shouldBeBetween]
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate)  // Assertion fails, date IS between firstDate and secondDate
+ * ```
+ *
+ * @see LocalDateTime.shouldBeBetween
+ */
+fun LocalDateTime.shouldNotBeBetween(a: LocalDateTime, b: LocalDateTime) = this shouldNotBe between(a, b)
+
+/**
+ * Matcher that checks if LocalDateTime is between two other LocalDateTimes
+ *
+ * Verifies that LocalDateTime is after the first LocalDateTime and before the second LocalDateTime
+ * For example, 20/03/2019 10:00:00 is between 19/03/2019 10:00:00 and 21/03/2019 10:00:00, and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0)
+ *    val firstDate = LocalDateTime.of(2019, 2, 16, 12, 0, 0)
+ *    val secondDate = LocalDateTime.of(2019, 2, 17, 12, 0, 0)
+ *
+ *    date shouldNotBe between(firstDate, secondDate)   // Assertion passes
+ * ```
+ *
+ * @see LocalDateTime.shouldBeBetween
+ * @see LocalDateTime.shouldNotBeBetween
+ */
+fun between(a: LocalDateTime, b: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
+  override fun test(value: LocalDateTime): Result {
+    val passed = value.isAfter(a) && value.isBefore(b)
+    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+  }
+}
+
+/**
+ * Asserts that this is between [a] and [b]
+ *
+ * Verifies that this is after [a] and before [b], comparing all fields in ZonedDateTime.
+ *
+ * Opposite of [ZonedDateTime.shouldNotBeBetween]
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion fails, date is NOT between firstDate and secondDate
+ * ```
+ *
+ * @see ZonedDateTime.shouldNotBeBetween
+ */
+fun ZonedDateTime.shouldBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this shouldBe between(a, b)
+
+/**
+ * Asserts that this is NOT between [a] and [b]
+ *
+ * Verifies that this is not after [a] and before [b], comparing all fields in ZonedDateTime.
+ *
+ * Opposite of [ZonedDateTime.shouldBeBetween]
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate)  // Assertion fails, date IS between firstDate and secondDate
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeBetween
+ */
+fun ZonedDateTime.shouldNotBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this shouldNotBe between(a, b)
+
+/**
+ * Matcher that checks if ZonedDateTime is between two other ZonedDateTimes
+ *
+ * Verifies that ZonedDateTime is after the first ZonedDateTime and before the second ZonedDateTime
+ * For example, 20/03/2019 10:00:00 -03:00 America/Sao_Paulo is between 19/03/2019 10:00:00 -03:00 America/Sao_Paulo
+ * and 21/03/2019 10:00:00 -03:00 America/Sao_Paulo, and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val firstDate = ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *    val secondDate = ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo"))
+ *
+ *    date shouldNotBe between(firstDate, secondDate)   // Assertion passes
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeBetween
+ * @see ZonedDateTime.shouldNotBeBetween
+ */
+fun between(a: ZonedDateTime, b: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
+  override fun test(value: ZonedDateTime): Result {
+    val passed = value.isAfter(a) && value.isBefore(b)
+    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+  }
+}
+
+/**
+ * Asserts that this is between [a] and [b]
+ *
+ * Verifies that this is after [a] and before [b], comparing all fields in ZonedDateTime.
+ *
+ * Opposite of [OffsetDateTime.shouldNotBeBetween]
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldBeBetween(firstDate, secondDate)  // Assertion fails, date is NOT between firstDate and secondDate
+ * ```
+ *
+ * @see OffsetDateTime.shouldNotBeBetween
+ */
+fun OffsetDateTime.shouldBeBetween(a: OffsetDateTime, b: OffsetDateTime) = this shouldBe between(a, b)
+
+/**
+ * Asserts that this is NOT between [a] and [b]
+ *
+ * Verifies that this is not after [a] and before [b], comparing all fields in ZonedDateTime.
+ *
+ * Opposite of [OffsetDateTime.shouldBeBetween]
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotBeBetween(firstDate, secondDate)  // Assertion fails, date IS between firstDate and secondDate
+ * ```
+ *
+ * @see OffsetDateTime.shouldBeBetween
+ */
+fun OffsetDateTime.shouldNotBeBetween(a: OffsetDateTime, b: OffsetDateTime) = this shouldNotBe between(a, b)
+
+/**
+ * Matcher that checks if OffsetDateTime is between two other OffsetDateTimes
+ *
+ * Verifies that OffsetDateTime is after the first OffsetDateTime and before the second OffsetDateTime
+ * For example, 20/03/2019 10:00:00 -03:00 is between 19/03/2019 10:00:00 -03:00 and 21/03/2019 10:00:00 -03:00,
+ * and the matcher will have a positive result for this comparison
+ *
+ * ```
+ *    val date = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *
+ *
+ *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val firstDate = OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val secondDate = OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date shouldNotBe between(firstDate, secondDate)   // Assertion passes
+ * ```
+ *
+ * @see OffsetDateTime.shouldBeBetween
+ * @see OffsetDateTime.shouldNotBeBetween
+ */
+fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
+  override fun test(value: OffsetDateTime): Result {
+    val passed = value.isAfter(a) && value.isBefore(b)
+    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
