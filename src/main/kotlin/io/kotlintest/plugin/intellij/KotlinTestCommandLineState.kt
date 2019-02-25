@@ -4,6 +4,7 @@ import com.intellij.execution.DefaultExecutionResult
 import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
 import com.intellij.execution.Location
+import com.intellij.execution.PsiLocation
 import com.intellij.execution.application.BaseJavaApplicationCommandLineState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -14,6 +15,7 @@ import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.PathUtil
@@ -56,7 +58,7 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
     params.programParametersList.add("--spec", configuration.getSpecName()!!)
     // test can actually be left out if you want to run the entire spec
     val testName = configuration.getTestName()
-    if (testName != null)
+    if (testName != null && testName.isNotBlank())
       params.programParametersList.add("--test", testName)
     return params
   }
@@ -65,6 +67,8 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
     val processHandler = startProcess()
     val props = KotlinTestSMTConsoleProperties(configuration, executor)
     props.setIfUndefined(TestConsoleProperties.HIDE_PASSED_TESTS, false)
+    props.setIfUndefined(TestConsoleProperties.SCROLL_TO_SOURCE, true)
+    props.setIfUndefined(TestConsoleProperties.TRACK_RUNNING_TEST, true)
     val console = SMTestRunnerConnectionUtil.createAndAttachConsole("kotlintest", processHandler, props)
     return DefaultExecutionResult(console, processHandler, *createActions(console, processHandler, executor))
   }
@@ -75,9 +79,17 @@ class KotlinTestSMTConsoleProperties(config: KotlinTestRunConfiguration, executo
 }
 
 object KotlinTestSMTestLocator : SMTestLocator {
-  override fun getLocation(protocol: String, path: String, project: Project, scope: GlobalSearchScope): MutableList<Location<PsiElement>> {
-    println("Asked to locate source for [protocol=$protocol, path=$path, project=$project, scope=$scope]")
-    require(protocol == "kotlintest")
-    return mutableListOf()
+  override fun getLocation(protocol: String,
+                           path: String,
+                           project: Project,
+                           scope: GlobalSearchScope): List<Location<PsiElement>> {
+    return if (protocol == "kotlintest") {
+      val cache = project.getComponent(ElementLocationCache::class.java)
+      val (fqn, line) = path.split(':')
+      val element = cache.element(fqn, line.toInt())
+      if (element == null) emptyList<Location<PsiElement>>() else listOf(PsiLocation(element.navigationElement))
+    } else emptyList()
   }
+
+  override fun getLocationCacheModificationTracker(project: Project): ModificationTracker = ModificationTracker.EVER_CHANGED
 }
