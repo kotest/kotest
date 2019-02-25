@@ -31,9 +31,17 @@ object FeatureSpecStyle : SpecStyle {
     return if (scenario == null) null else "Scenario: $scenario"
   }
 
+  private fun PsiElement.tryScenarioWithConfig(): String? {
+    val scenario = extractStringArgForFunctionWithConfig(listOf("scenario"))
+    return if (scenario == null) null else "Scenario: $scenario"
+  }
+
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
-    val test = element.tryScenario() ?: element.tryAnd() ?: element.tryFeature()
-    return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
+    val test = element.tryScenario() ?: element.tryScenarioWithConfig() ?: element.tryAnd() ?: element.tryFeature()
+    return if (test == null) null else {
+      val paths = element.locateParentTests() + test
+      paths.distinct().joinToString(" ")
+    }
   }
 }

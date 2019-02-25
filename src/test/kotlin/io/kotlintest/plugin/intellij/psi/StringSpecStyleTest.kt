@@ -13,7 +13,7 @@ class StringSpecStyleTest : LightCodeInsightFixtureTestCase() {
     return path.toString()
   }
 
-  fun testFoo() {
+  fun testGutterIcons() {
 
     myFixture.configureByFile("/stringspec.kt")
 

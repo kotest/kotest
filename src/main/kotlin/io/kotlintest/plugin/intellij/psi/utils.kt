@@ -58,6 +58,9 @@ fun PsiElement.enclosingClassName(): String? {
  * @param lefts one or more acceptable names for the left hand side reference
  * @param rights one or more acceptable names for the right hand side reference
  */
+fun PsiElement.extractStringArgForFunctionWithConfig(lefts:List<String>):String? =
+    extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
+
 fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rights: List<String>): String? {
   if (parent is KtLiteralStringTemplateEntry) {
     val maybeTemplateExpr = parent.parent
