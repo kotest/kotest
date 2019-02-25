@@ -8,6 +8,10 @@ import io.kotlintest.runner.jvm.TestEngineListener
 
 class ConsoleTestEngineListener : TestEngineListener {
 
+  private fun locationHint(testCase: TestCase): Pair<String, String> {
+    return "locationHint" to "kotlintest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.line
+  }
+
   /**
    * See https://github.com/JetBrains/intellij-plugins/blob/4481281dcdeee5db6cf6909ce302021716b0f0a7/flex/tools/flexunit-support/PureAs/src/com/intellij/flexunit/runner/TestRunnerBase.as
    * https://github.com/JetBrains/intellij-plugins/blob/4481281dcdeee5db6cf6909ce302021716b0f0a7/JsTestDriver/rt/src/com/google/jstestdriver/idea/rt/execution/tc/TCCommand.java
@@ -31,7 +35,7 @@ class ConsoleTestEngineListener : TestEngineListener {
           "testSuiteStarted",
           mapOf(
               "name" to testCase.description.name,
-              "locationHint" to testCase.spec.javaClass.canonicalName + ":" + testCase.line
+              locationHint(testCase)
           )
       )
     } else {
@@ -39,7 +43,7 @@ class ConsoleTestEngineListener : TestEngineListener {
           "testStarted",
           mapOf(
               "name" to testCase.description.name,
-              "locationHint" to testCase.spec.javaClass.canonicalName + ":" + testCase.line
+              locationHint(testCase)
           )
       )
     }
