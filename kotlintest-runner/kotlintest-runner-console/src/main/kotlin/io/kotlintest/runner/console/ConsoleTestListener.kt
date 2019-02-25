@@ -26,10 +26,23 @@ class ConsoleTestEngineListener : TestEngineListener {
   }
 
   override fun beforeTestCaseExecution(testCase: TestCase) {
-    if (testCase.type == TestType.Container)
-      log("testSuiteStarted", mapOf("name" to testCase.description.name))
-    else
-      log("testStarted", mapOf("name" to testCase.description.name))
+    if (testCase.type == TestType.Container) {
+      log(
+          "testSuiteStarted",
+          mapOf(
+              "name" to testCase.description.name,
+              "locationHint" to testCase.spec.javaClass.canonicalName + ":" + testCase.line
+          )
+      )
+    } else {
+      log(
+          "testStarted",
+          mapOf(
+              "name" to testCase.description.name,
+              "locationHint" to testCase.spec.javaClass.canonicalName + ":" + testCase.line
+          )
+      )
+    }
   }
 
   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
