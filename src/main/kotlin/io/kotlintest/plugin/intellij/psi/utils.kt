@@ -87,14 +87,14 @@ fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rig
   return null
 }
 
-fun PsiElement.extractLiteralForStringExtensionFunction(rights: List<String>): String? {
+fun PsiElement.extractLiteralForStringExtensionFunction(funcnames: List<String>): String? {
   if (parent is KtLiteralStringTemplateEntry) {
     val maybeTemplateExpr = parent.parent
     if (maybeTemplateExpr is KtStringTemplateExpression) {
       val maybeDotExpr = maybeTemplateExpr.parent
       if (maybeDotExpr is KtDotQualifiedExpression) {
         if (maybeDotExpr.children.size == 2
-            && maybeDotExpr.children[1].isCallExprWithName(rights)) {
+            && maybeDotExpr.children[1].isCallExprWithName(funcnames)) {
           return parent.text
         }
       }

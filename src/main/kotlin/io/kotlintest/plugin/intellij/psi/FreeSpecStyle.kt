@@ -17,10 +17,14 @@ object FreeSpecStyle : SpecStyle {
 
   private fun PsiElement.tryBranch(): String? = matchInfixFunctionWithStringAndLambaArg(listOf("-"))
   private fun PsiElement.tryLeaf(): String? = matchStringInvoke()
+  private fun PsiElement.tryLeafWithConfig(): String? = extractLiteralForStringExtensionFunction(listOf("config"))
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
-    val test = element.tryLeaf() ?: element.tryBranch()
-    return if (test == null) null else element.locateParentTests().joinToString(" -- ") + " $test"
+    val test = element.tryLeaf() ?: element.tryLeafWithConfig() ?: element.tryBranch()
+    return if (test == null) null else {
+      val tests = element.locateParentTests() + test
+      tests.distinct().joinToString(" -- ")
+    }
   }
 }
