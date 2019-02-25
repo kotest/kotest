@@ -17,7 +17,9 @@
     <depends>JUnit</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+
         <configurationType implementation="io.kotlintest.plugin.intellij.KotlinTestConfigurationType"/>
+
         <runLineMarkerContributor language="kotlin"
                                   implementationClass="io.kotlintest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
         <runLineMarkerContributor language="kotlin"
@@ -48,11 +50,25 @@
         <runConfigurationProducer implementation="io.kotlintest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
         <runConfigurationProducer implementation="io.kotlintest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
         <implicitUsageProvider implementation="io.kotlintest.plugin.intellij.KotlinTestImplicitUsageProvider"/>
-        <testFramework implementation="io.kotlintest.plugin.intellij.KotlinTestTestFramework" id="kotlintest"
-                       order="after junit5"/>
+
+        <testFramework implementation="io.kotlintest.plugin.intellij.KotlinTestTestFramework" id="kotlintest"/>
+
         <!--<testCreator language="kotlin" implementationClass="io.kotlintest.plugin.intellij.KotlinTestTestCreator"/>-->
         <testGenerator language="kotlin" implementationClass="io.kotlintest.plugin.intellij.KotlinTestTestGenerator"/>
         <stacktrace.fold substring="at io.kotlintest."/>
+
+        <intentionAction>
+            <className>io.kotlintest.plugin.intellij.intentions.SoftAssertIntention</className>
+            <category>Kotlin/Test</category>
+            <descriptionDirectoryName>SoftAssertIntention</descriptionDirectoryName>
+        </intentionAction>
+
+        <intentionAction>
+            <className>io.kotlintest.plugin.intellij.intentions.BangIntention</className>
+            <category>Kotlin/Test</category>
+            <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
+        </intentionAction>
+
     </extensions>
 
     <project-components>

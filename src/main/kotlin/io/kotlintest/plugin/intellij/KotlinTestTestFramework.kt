@@ -2,6 +2,7 @@ package io.kotlintest.plugin.intellij
 
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor
 import com.intellij.lang.Language
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ExternalLibraryDescriptor
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiClass
@@ -25,7 +26,7 @@ class KotlinTestTestFramework : JavaTestFramework() {
       "io.kotlintest.specs.WordSpec"
   )
 
-  override fun getName(): String = "kotlintest"
+  override fun getName(): String = "KotlinTest"
   override fun getLanguage(): Language = KotlinLanguage.INSTANCE
   override fun getIcon(): Icon = Icons.KotlinTest16
 
@@ -45,6 +46,8 @@ class KotlinTestTestFramework : JavaTestFramework() {
 
   override fun getMnemonic(): Char = 'K'
   override fun getLibraryPath(): String? = null
+
+  override fun isLibraryAttached(module: Module): Boolean = true
 
   override fun getDefaultSuperClass(): String = "io.kotlintest.specs.StringSpec"
 
