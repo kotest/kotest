@@ -2,6 +2,7 @@ package io.kotlintest.plugin.intellij
 
 import com.intellij.execution.CommonJavaRunConfigurationParameters
 import com.intellij.execution.Executor
+import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.JavaRunConfigurationModule
 import com.intellij.execution.configurations.ModuleBasedConfiguration
@@ -12,7 +13,9 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.util.JDOMExternalizerUtil
 import io.kotlintest.plugin.intellij.psi.buildSuggestedName
+import org.jdom.Element
 import java.util.*
 
 class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModule, factory: ConfigurationFactory) :
@@ -89,5 +92,33 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
 
   override fun setProgramParameters(programParameteres: String?) {
     this.programParameters = programParameteres
+  }
+
+  override fun writeExternal(element: Element) {
+    super.writeExternal(element)
+    JDOMExternalizerUtil.writeField(element, PassParentEnvsField, passParentEnvs.toString())
+    JDOMExternalizerUtil.writeField(element, WorkingDirField, workingDirectory)
+    JDOMExternalizerUtil.writeField(element, ProgramParamsField, programParameters)
+    JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
+    JDOMExternalizerUtil.writeField(element, TestNameField, testName)
+    EnvironmentVariablesComponent.writeExternal(element, envs)
+  }
+
+  override fun readExternal(element: Element) {
+    super.readExternal(element)
+    passParentEnvs = JDOMExternalizerUtil.readField(element, PassParentEnvsField, "false").toBoolean()
+    workingDirectory = JDOMExternalizerUtil.readField(element, WorkingDirField)
+    programParameters = JDOMExternalizerUtil.readField(element, ProgramParamsField)
+    specName = JDOMExternalizerUtil.readField(element, SpecNameField)
+    testName = JDOMExternalizerUtil.readField(element, TestNameField)
+    EnvironmentVariablesComponent.readExternal(element, envs)
+  }
+
+  companion object {
+    const val PassParentEnvsField = "passParentEnvs"
+    const val ProgramParamsField = "programParameters"
+    const val WorkingDirField = "workingDirectory"
+    const val TestNameField = "testName"
+    const val SpecNameField = "specName"
   }
 }
