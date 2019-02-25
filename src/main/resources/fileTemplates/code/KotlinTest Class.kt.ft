@@ -1,0 +1,25 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME} #end
+
+import ${SUPERCLASS_FQ}
+#if ((${BEFORE_TEST} == "true") || (${AFTER_TEST} == "true"))import io.kotlintest.TestCase
+#end
+#if (${AFTER_TEST} == "true")import io.kotlintest.TestResult
+#end
+import io.kotlintest.shouldBe
+
+class ${NAME} : ${SUPERCLASS}() {
+
+#if (${BEFORE_TEST} == "true")
+  override fun beforeTest(testCase: TestCase) {
+  }
+
+#end
+#if (${AFTER_TEST} == "true")
+  override fun afterTest(testCase: TestCase, result: TestResult) {
+  }
+
+#end
+  init {
+  }
+
+}

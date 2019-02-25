@@ -55,8 +55,10 @@
                 implementation="io.kotlintest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
         <runConfigurationProducer
                 implementation="io.kotlintest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
-        <testFramework implementation="io.kotlintest.plugin.intellij.KotlinTestFramework" id="kotlintest"
+        <testFramework implementation="io.kotlintest.plugin.intellij.KotlinTestTestFramework" id="kotlintest"
                        order="after junit5"/>
+        <!--<testCreator language="kotlin" implementationClass="io.kotlintest.plugin.intellij.KotlinTestTestCreator"/>-->
+        <testGenerator language="kotlin" implementationClass="io.kotlintest.plugin.intellij.KotlinTestTestGenerator"/>
         <stacktrace.fold substring="at io.kotlintest."/>
     </extensions>
 

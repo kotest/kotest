@@ -1,4 +1,0 @@
-@Override
-public void beforeTest(io.kotlintest.TestCase testCase) {
-    ${BODY}
-}
