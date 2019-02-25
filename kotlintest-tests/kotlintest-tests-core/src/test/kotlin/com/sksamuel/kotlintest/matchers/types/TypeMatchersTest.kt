@@ -60,7 +60,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list = arrayListOf(1, 2, 3)
         
-        list.shouldBeInstanceOf<ArrayList<Int>> {
+        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
           it shouldBeSameInstanceAs list
         }
       }
@@ -92,7 +92,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list: Any = arrayListOf(1, 2, 3)
         
-        list.shouldBeTypeOf<ArrayList<Int>> {
+        list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1
         }
