@@ -8,11 +8,14 @@ object ShouldSpecStyle : SpecStyle {
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-  private fun PsiElement.locateParentTests(): List<String> {
+  private fun PsiElement.locateContainerTests(): List<String> {
     val test = tryContainer()
-    val result = if (test == null) emptyList() else listOf(test)
-    // if parent is null then we have hit the end
-    return if (parent == null) result else parent.locateParentTests() + result
+    return when {
+      test != null && parent != null -> parent.locateContainerTests() + test
+      test != null -> listOf(test)
+      parent != null -> parent.locateContainerTests()
+      else -> emptyList()
+    }
   }
 
   private fun PsiElement.tryShouldWithConfig(): String? {
@@ -25,13 +28,23 @@ object ShouldSpecStyle : SpecStyle {
     return if (should == null) null else "should $should"
   }
 
-  private fun PsiElement.tryContainer(): String? {
-    return matchStringInvoke()
-  }
+  private fun PsiElement.tryContainer(): String? = matchStringInvoke()
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass()) return null
-    val test = element.tryShould() ?: element.tryShouldWithConfig() ?: element.tryContainer()
-    return if (test == null) null else element.locateParentTests().joinToString(" -- ") + "$test"
+    val leaf = element.tryShould() ?: element.tryShouldWithConfig()
+    val container = element.tryContainer()
+    return when {
+      leaf != null -> {
+        val parents = element.locateContainerTests()
+        if (parents.isEmpty()) leaf else {
+          val tests = (parents + leaf).distinct()
+          tests.dropLast(1).joinToString(" -- ") + " " + tests.last()
+        }
+      }
+      container != null ->
+        (element.locateContainerTests() + container).distinct().joinToString(" -- ")
+      else -> null
+    }
   }
 }

@@ -11,9 +11,9 @@ object WordSpecStyle : SpecStyle {
   private fun PsiElement.locateParentWhen(): String? {
     val wen = this.matchInfixFunctionWithStringAndLambaArg(listOf("when", "When"))
     return when {
-      wen == null && parent == null -> null
-      wen == null -> parent.locateParentWhen()
-      else -> wen
+      wen != null -> wen
+      parent != null -> parent.locateParentWhen()
+      else -> null
     }
   }
 
