@@ -49,6 +49,18 @@ fun PsiElement.enclosingClassName(): String? {
 /**
  * Matches blocks of the form:
  *
+ * functionName("some string").config(..)
+ *
+ * @return the string argument of the invoked function
+ *
+ * @param lefts one or more acceptable names for the left hand side reference
+ */
+fun PsiElement.extractStringArgForFunctionWithConfig(lefts:List<String>):String? =
+    extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
+
+/**
+ * Matches blocks of the form:
+ *
  * functionName("some string").<ident>
  *
  * Eg, can be used to match: should("this is a test").config { }
@@ -58,9 +70,6 @@ fun PsiElement.enclosingClassName(): String? {
  * @param lefts one or more acceptable names for the left hand side reference
  * @param rights one or more acceptable names for the right hand side reference
  */
-fun PsiElement.extractStringArgForFunctionWithConfig(lefts:List<String>):String? =
-    extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
-
 fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rights: List<String>): String? {
   if (parent is KtLiteralStringTemplateEntry) {
     val maybeTemplateExpr = parent.parent
@@ -259,11 +268,12 @@ fun KtCallExpression.extractLhsForStringInvoke(): String? {
 
 fun buildSuggestedName(specName: String?, testName: String?): String? {
   return when {
-    testName == null -> null
-    specName == null -> testName
-    else -> {
+    specName != null && testName != null -> {
       val simpleName = specName.split('.').last()
       "$simpleName: $testName"
     }
+    specName != null -> specName
+    testName != null -> testName
+    else -> null
   }
 }

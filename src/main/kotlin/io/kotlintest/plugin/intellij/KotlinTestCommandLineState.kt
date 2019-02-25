@@ -53,8 +53,11 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
     params.classPath.addAll(jars)
 
     // these two parameters are required by the console runner so it knows what test to execute
-    params.programParametersList.add("--test", configuration.getTestName()!!)
     params.programParametersList.add("--spec", configuration.getSpecName()!!)
+    // test can actually be left out if you want to run the entire spec
+    val testName = configuration.getTestName()
+    if (testName != null)
+      params.programParametersList.add("--test", testName)
     return params
   }
 

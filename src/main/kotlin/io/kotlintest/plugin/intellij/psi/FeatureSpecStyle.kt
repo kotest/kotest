@@ -4,6 +4,8 @@ import com.intellij.psi.PsiElement
 
 object FeatureSpecStyle : SpecStyle {
 
+  override fun fqn(): String = "io.kotlintest.specs.FeatureSpec"
+
   override fun specStyleName(): String = "FeatureSpec"
 
   // todo this could be optimized to not check for the other parts of the tree until the name is needed

@@ -4,6 +4,8 @@ import com.intellij.psi.PsiElement
 
 object StringSpecStyle : SpecStyle {
 
+  override fun fqn(): String = "io.kotlintest.specs.StringSpec"
+
   override fun specStyleName(): String = "StringSpec"
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
@@ -14,7 +16,6 @@ object StringSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    println(element.toString() + " " + element.text)
     return element.tryTestWithoutConfig() ?: element.tryTestWithConfig()
   }
 }

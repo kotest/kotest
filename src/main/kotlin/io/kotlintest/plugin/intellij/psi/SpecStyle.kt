@@ -11,5 +11,8 @@ interface SpecStyle {
   fun specStyleName(): String
 
   fun isTestElement(element: PsiElement): Boolean
+
+  fun fqn(): String
+
 }
 

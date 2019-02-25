@@ -4,6 +4,8 @@ import com.intellij.psi.PsiElement
 
 object ExpectSpecStyle : SpecStyle {
 
+  override fun fqn(): String = "io.kotlintest.specs.ExpectSpec"
+
   override fun specStyleName(): String = "ExpectSpec"
 
   // todo this could be optimized to not check for the other parts of the tree until the name is needed

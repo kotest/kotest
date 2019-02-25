@@ -4,6 +4,8 @@ import com.intellij.psi.PsiElement
 
 object BehaviorSpecStyle : SpecStyle {
 
+  override fun fqn(): String = "io.kotlintest.specs.BehaviorSpec"
+
   override fun specStyleName(): String = "BehaviorSpec"
 
   // todo this could be optimized to not check for the other parts of the tree until the name is needed

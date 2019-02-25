@@ -18,15 +18,15 @@ class FunSpecStyleTest : LightCodeInsightFixtureTestCase() {
     myFixture.configureByFile("/funspec.kt")
 
     val gutters = myFixture.findAllGutters()
-    gutters.size shouldBe 2
-
-    gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[0].tooltipText shouldBe "[KotlinTest] a string cannot be blank"
-    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 229
+    gutters.size shouldBe 3
 
     gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[1].tooltipText shouldBe "[KotlinTest] a string should be lower case"
-    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 303
+    gutters[1].tooltipText shouldBe "[KotlinTest] a string cannot be blank"
+    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 229
+
+    gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+    gutters[2].tooltipText shouldBe "[KotlinTest] a string should be lower case"
+    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 303
 
   }
 }

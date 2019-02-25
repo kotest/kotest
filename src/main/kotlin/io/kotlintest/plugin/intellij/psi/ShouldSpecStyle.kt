@@ -4,6 +4,8 @@ import com.intellij.psi.PsiElement
 
 object ShouldSpecStyle : SpecStyle {
 
+  override fun fqn(): String = "io.kotlintest.specs.ShouldSpec"
+
   override fun specStyleName(): String = "ShouldSpec"
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null

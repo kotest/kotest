@@ -17,10 +17,25 @@ import io.kotlintest.plugin.intellij.psi.SpecStyle
 import io.kotlintest.plugin.intellij.psi.StringSpecStyle
 import io.kotlintest.plugin.intellij.psi.WordSpecStyle
 import org.jetbrains.kotlin.lexer.KtToken
+import org.jetbrains.kotlin.psi.KtClass
 
 abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
 
   override fun getInfo(element: PsiElement): Info? {
+
+    if (element is KtClass) {
+      val superTypes = element.superTypeListEntries
+      if (superTypes.isNotEmpty()) {
+        val superClassReference = superTypes[0].typeAsUserType?.referencedName
+        if (superClassReference == style.specStyleName() || superClassReference == style.fqn()) {
+          return Info(
+              AllIcons.RunConfigurations.TestState.Run_run,
+              Function<PsiElement, String> { "[KotlinTest] $superClassReference" },
+              *ExecutorAction.getActions(0)
+          )
+        }
+      }
+    }
 
     // the docs say to only run a line marker for a leaf
     if (element !is LeafPsiElement) {
@@ -31,11 +46,11 @@ abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) 
       return null
     }
 
-    val name = style.testPath(element)
-    if (name != null) {
+    val testPath = style.testPath(element)
+    if (testPath != null) {
       return Info(
           AllIcons.RunConfigurations.TestState.Run,
-          Function<PsiElement, String> { "[KotlinTest] $name" },
+          Function<PsiElement, String> { "[KotlinTest] $testPath" },
           *ExecutorAction.getActions(0)
       )
     }
