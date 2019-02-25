@@ -13,9 +13,12 @@ apply plugin: 'kotlin'
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.3.0-RC3'
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.3.0.1906-SNAPSHOT'
 }

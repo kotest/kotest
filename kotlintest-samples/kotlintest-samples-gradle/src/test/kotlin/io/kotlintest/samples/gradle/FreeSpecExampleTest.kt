@@ -1,9 +1,6 @@
 package io.kotlintest.samples.gradle
 
-import io.kotlintest.matchers.haveLength
-import io.kotlintest.should
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.specs.StringSpec
 
 class FreeSpecExampleTest : FreeSpec() {
 

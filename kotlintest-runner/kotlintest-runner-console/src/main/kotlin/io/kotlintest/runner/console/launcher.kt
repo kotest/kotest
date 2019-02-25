@@ -10,8 +10,8 @@ fun main(args: Array<String>) {
   parser.addArgument("--spec").help("Specify the fully qualified name of the spec class which contains the test to execute")
   val ns = parser.parseArgs(args)
 
-  val test = ns.getString("test")
-  val spec = ns.getString("spec")
+  val test: String? = ns.getString("test")
+  val spec: String = ns.getString("spec")
 
   val runner = KotlinTestConsoleRunner()
   runner.execute(spec, test)
