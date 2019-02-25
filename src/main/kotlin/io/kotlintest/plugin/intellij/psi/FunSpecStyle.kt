@@ -8,9 +8,13 @@ object FunSpecStyle : SpecStyle {
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
+  private fun PsiElement.tryTestWithoutConfig() = this.matchFunction2WithStringAndLambda(listOf("test"))
+  private fun PsiElement.tryTestWithConfig() = this.extractStringArgForFunctionBeforeDotExpr(listOf("test"),
+      listOf("config"))
+
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.matchFunction2WithStringAndLambda(listOf("test"))
+    return element.tryTestWithoutConfig() ?: element.tryTestWithConfig()
   }
 }
