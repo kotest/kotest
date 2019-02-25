@@ -1,32 +1,97 @@
 package io.kotlintest.matchers.types
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.*
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-inline fun <reified T : Any> Any?.shouldBeInstanceOf() {
+/**
+ * Verifies that this is instanceof T
+ *
+ * Verifies that this value is an instance of T, which include any subclasses, and lets you execute [block] with that
+ * value casted.
+ *
+ * Opposite of [shouldNotBeInstanceOf]
+ *
+ * For an exact type, use [shouldBeTypeOf]
+ *
+ * ```
+ *
+ * val list: List<Int> = arraylistOf(1, 2, 3)
+ *
+ * list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> // Typecasted for you if not explicit
+ *  // Use it.
+ * }
+ *
+ * ```
+ */
+inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }) {
   val matcher = beInstanceOf<T>()
   this shouldBe matcher
+  block(this as T)
 }
 
+/**
+ * Verifies that this is NOT Instanceof T
+ *
+ * Verifies that this value is not an instance of T.
+ *
+ * Opposite of [shouldBeInstanceOf]
+ *
+ * For an exact type, use [shouldNotBeTypeOf]
+ *
+ * ```
+ * val list: List<Int> = arrayListOf(1, 2, 3)
+ *
+ * list.shouldNotBeInstanceOf<LinkedList<Int>>
+ * ```
+ */
 inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
   val matcher = beInstanceOf<T>()
   this shouldNotBe matcher
 }
 
-inline fun <reified T : Any> Any?.shouldBeTypeOf() {
+/**
+ * Verifies that this is exactly of type T
+ *
+ * Verifies that this value is exactly of type T, where no inheritance is verified. If the assertion passes, you may
+ * use [this] as T inside [block].
+ *
+ * Opposite of [shouldNotBeTypeOf]
+ *
+ * If you want to verify including inheritance, use [shouldBeInstanceOf]
+ *
+ * ```
+ * val list: List<Int> = arrayListOf(1, 2, 3)
+ *
+ * list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> // Typecasted for you if not explicit
+ * // Use it
+ * }
+ * ```
+ */
+inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }) {
   val matcher = beOfType<T>()
   this shouldBe matcher
+  block(this as T)
 }
 
+/**
+ * Verifies that this is NOT exactly of type T
+ *
+ * Verifies that this value is not of type T.
+ *
+ * Opposite of [shouldBeTypeOf]
+ *
+ * If you want to consider inheritance, use [shouldNotBeInstanceOf]
+ *
+ * ```
+ * val list: List<Int> = arrayListOf(1, 2, 3)
+ *
+ * list.shouldNotBeTypeOf<LinkedList<Int>>
+ * ```
+ */
 inline fun <reified T : Any> Any?.shouldNotBeTypeOf() {
   val matcher = beOfType<T>()
   this shouldNotBe matcher

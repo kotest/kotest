@@ -3,23 +3,13 @@ package com.sksamuel.kotlintest.matchers.types
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.matchers.types.beNull
-import io.kotlintest.matchers.types.haveAnnotation
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.matchers.types.shouldBeNull
-import io.kotlintest.matchers.types.shouldBeSameInstanceAs
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.matchers.types.shouldHaveAnnotation
-import io.kotlintest.matchers.types.shouldNotBeInstanceOf
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.matchers.types.shouldNotBeTypeOf
+import io.kotlintest.matchers.types.*
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
-import java.util.ArrayList
-import java.util.LinkedList
+import java.util.*
 
 @Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
@@ -66,6 +56,14 @@ class TypeMatchersTest : WordSpec() {
           arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
         }
       }
+      
+      "Allow execution with a lambda" {
+        val list = arrayListOf(1, 2, 3)
+        
+        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
+          it shouldBeSameInstanceAs list
+        }
+      }
 
       "accepts null values" {
         val arrayList: List<Int>? = null
@@ -88,6 +86,15 @@ class TypeMatchersTest : WordSpec() {
 
         shouldThrow<AssertionError> {
           arrayList should beOfType<List<Int>>()
+        }
+      }
+      
+      "Allow execution with a lambda" {
+        val list: Any = arrayListOf(1, 2, 3)
+        
+        list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
+          it shouldBeSameInstanceAs list
+          it[0] shouldBe 1
         }
       }
 
