@@ -25,7 +25,7 @@ class KotlinTestTestFramework : JavaTestFramework() {
       "io.kotlintest.specs.WordSpec"
   )
 
-  override fun getName(): String = "KotlinTest"
+  override fun getName(): String = "kotlintest"
   override fun getLanguage(): Language = KotlinLanguage.INSTANCE
   override fun getIcon(): Icon = Icons.KotlinTest16
 

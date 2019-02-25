@@ -1,9 +1,15 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
+import org.jetbrains.kotlin.idea.references.mainReference
+import org.jetbrains.kotlin.lexer.KtKeywordToken
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
@@ -11,6 +17,7 @@ import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
+import org.jetbrains.kotlin.psi.KtPrimaryConstructor
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
@@ -40,6 +47,66 @@ fun PsiElement.isInSpecStyle(name: String): Boolean {
   }
   return false
 }
+
+/**
+ * Returns the [KtClassOrObject] for a [LeafPsiElement] that is a [KtKeywordToken] with the
+ * token value "class" or "object"
+ */
+fun LeafPsiElement.enclosingClassOrObjectForClassOrObjectToken(): KtClassOrObject? {
+  if (elementType is KtKeywordToken && (text == "class" || text == "object")) {
+    val maybeKtClassOrObject = parent
+    if (maybeKtClassOrObject is KtClassOrObject) {
+      return maybeKtClassOrObject
+    }
+  }
+  return null
+}
+
+/**
+ * Returns true if this [KtClassOrObject] is a subclass of a Spec class (eg StringSpec or FunSpec).
+ * This method will recursively climb the supertypes until Any is reached.
+ */
+fun KtClassOrObject.isSpec(): Boolean {
+  val superClass = getSuperClass() ?: return false
+  val fqn = superClass.getKotlinFqName()?.asString()
+  return if (SpecStyle.specs.any { it.fqn() == fqn }) true else superClass.isSpec()
+}
+
+/**
+ * Returns the superclass parent of this [KtClassOrObject].
+ * If this class or object only implements interfaces then this function will
+ * return null.
+ */
+fun KtClassOrObject.getSuperClass(): KtClassOrObject? {
+  for (entry in superTypeListEntries) {
+    if (entry is KtSuperTypeCallEntry) {
+
+      val ref = entry.calleeExpression
+          .constructorReferenceExpression
+          ?.mainReference
+          ?.resolve()
+
+      if (ref is KtPrimaryConstructor) {
+        return ref.getContainingClassOrObject()
+      }
+    }
+  }
+  return null
+}
+
+/**
+ * Returns the [FqName] if this [LeafPsiElement] has type [KtKeywordToken] with the lexeme 'class'
+ * and the [KtClass] definition is a subclass of the given spec style.
+ */
+fun KtClassOrObject.superTypes(): List<String> {
+  return superTypeListEntries.mapNotNull { it.typeAsUserType?.referencedName }
+}
+
+fun KtClassOrObject.isSubclassOfSpec(style: SpecStyle): Boolean {
+  return superTypes().any { style.specStyleName() == it || style.fqn() == it }
+}
+
+fun PsiElement.enclosingClass(): KtClass? = getParentOfType(true)
 
 fun PsiElement.enclosingClassName(): String? {
   val ktclass = getParentOfType<KtClass>(true)
@@ -266,14 +333,16 @@ fun KtCallExpression.extractLhsForStringInvoke(): String? {
   return null
 }
 
+fun buildSuggestedName(spec: KtClassOrObject?, testName: String?): String? =
+    buildSuggestedName(spec?.fqName?.asString(), testName)
+
 fun buildSuggestedName(specName: String?, testName: String?): String? {
   return when {
-    specName != null && testName != null -> {
+    specName == null || specName.isBlank() -> null
+    testName == null || testName.isBlank() -> specName.split('.').last()
+    else -> {
       val simpleName = specName.split('.').last()
       "$simpleName: $testName"
     }
-    specName != null -> specName
-    testName != null -> testName
-    else -> null
   }
 }

@@ -18,35 +18,39 @@ class WordSpecStyleTest : LightCodeInsightFixtureTestCase() {
     myFixture.configureByFile("/wordspec.kt")
 
     val gutters = myFixture.findAllGutters()
-    gutters.size shouldBe 7
+    gutters.size shouldBe 8
 
-    gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[0].tooltipText shouldBe "[KotlinTest] some should context"
-    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 136
+    gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
+    gutters[0].tooltipText shouldBe "[KotlinTest] WordSpecExample"
+    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 85
 
     gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[1].tooltipText shouldBe "[KotlinTest] some should context should test something"
-    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 173
+    gutters[1].tooltipText shouldBe "[KotlinTest] some should context"
+    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 136
 
     gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[2].tooltipText shouldBe "[KotlinTest] some should context should allow config"
-    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 227
+    gutters[2].tooltipText shouldBe "[KotlinTest] some should context should test something"
+    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 173
 
     gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[3].tooltipText shouldBe "[KotlinTest] with capital When"
-    (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 287
+    gutters[3].tooltipText shouldBe "[KotlinTest] some should context should allow config"
+    (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 227
 
     gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[4].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should"
-    (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 320
+    gutters[4].tooltipText shouldBe "[KotlinTest] with capital When"
+    (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 287
 
     gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[5].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should should test something"
-    (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 358
+    gutters[5].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should"
+    (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 320
 
     gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[6].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should should allow config"
-    (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 417
+    gutters[6].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should should test something"
+    (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 358
+
+    gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+    gutters[7].tooltipText shouldBe "[KotlinTest] with capital When when and capital Should should allow config"
+    (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 417
 
   }
 }

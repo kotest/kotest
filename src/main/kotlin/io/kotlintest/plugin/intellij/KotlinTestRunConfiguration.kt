@@ -16,6 +16,7 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.util.JDOMExternalizerUtil
 import io.kotlintest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import java.util.*
 
 class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModule, factory: ConfigurationFactory) :
@@ -84,6 +85,10 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
 
   fun setSpecName(specName: String) {
     this.specName = specName
+  }
+
+  fun setSpec(spec: KtClassOrObject?) {
+    this.specName = spec?.fqName?.asString()
   }
 
   override fun setPassParentEnvs(passParentEnvs: Boolean) {
