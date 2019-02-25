@@ -8,6 +8,7 @@ import com.intellij.execution.application.BaseJavaApplicationCommandLineState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
+import com.intellij.execution.testframework.TestConsoleProperties
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
@@ -60,6 +61,7 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
   override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
     val processHandler = startProcess()
     val props = KotlinTestSMTConsoleProperties(configuration, executor)
+    props.setIfUndefined(TestConsoleProperties.HIDE_PASSED_TESTS, false)
     val console = SMTestRunnerConnectionUtil.createAndAttachConsole("kotlintest", processHandler, props)
     return DefaultExecutionResult(console, processHandler, *createActions(console, processHandler, executor))
   }
