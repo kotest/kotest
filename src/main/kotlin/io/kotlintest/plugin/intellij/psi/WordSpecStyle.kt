@@ -8,28 +8,66 @@ object WordSpecStyle : SpecStyle {
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-  private fun PsiElement.locateParentTestName(): String? {
-    val param = this.matchInfixFunctionWithStringAndLambaArg(listOf("should"))
-    return if (param == null && parent == null) null else param ?: parent.locateParentTestName()
+  private fun PsiElement.locateParentWhen(): String? {
+    val wen = this.matchInfixFunctionWithStringAndLambaArg(listOf("when", "When"))
+    return when {
+      wen == null && parent == null -> null
+      wen == null -> parent.locateParentWhen()
+      else -> wen
+    }
+  }
+
+  private fun PsiElement.locateParentShould(): String? {
+    val should = this.matchInfixFunctionWithStringAndLambaArg(listOf("should", "Should"))
+    return when {
+      should == null && parent == null -> null
+      should == null -> parent.locateParentShould()
+      else -> should
+    }
   }
 
   private fun PsiElement.tryWhen(): String? =
-      matchInfixFunctionWithStringAndLambaArg(listOf("when"))
+      matchInfixFunctionWithStringAndLambaArg(listOf("when", "When"))
 
-  private fun PsiElement.tryShould(): String? =
-      matchInfixFunctionWithStringAndLambaArg(listOf("should"))
+  private fun PsiElement.tryShould(): String? {
+    val should = matchInfixFunctionWithStringAndLambaArg(listOf("should", "Should"))
+    return if (should == null) null else {
+      val w = parent.locateParentWhen()
+      return if (w == null) should else "$w when $should"
+    }
+  }
 
   private fun PsiElement.trySubject(): String? {
     val subject = matchStringInvoke()
     return if (subject == null) null else {
-      val should = locateParentTestName()
-      return "$should should $subject"
+      val should = locateParentShould()
+      val w = locateParentWhen()
+      when {
+        should == null && w == null -> null
+        w == null -> "$should should $subject"
+        else -> "$w when $should should $subject"
+      }
+    }
+  }
+
+  private fun PsiElement.trySubjectWithConfig(): String? {
+    val subject = extractLiteralForStringExtensionFunction(listOf("config"))
+    return if (subject == null) null else {
+      val should = locateParentShould()
+      val w = locateParentWhen()
+      when {
+        should == null && w == null -> null
+        w == null -> "$should should $subject"
+        else -> "$w when $should should $subject"
+      }
     }
   }
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isInSpecClass())
       return null
-    return element.trySubject() ?: element.tryShould() ?: element.tryWhen()
+    return element.run {
+      trySubject() ?: trySubjectWithConfig() ?: tryShould() ?: tryWhen()
+    }
   }
 }
