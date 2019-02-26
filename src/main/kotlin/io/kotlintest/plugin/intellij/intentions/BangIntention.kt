@@ -27,7 +27,5 @@ class BangIntention : PsiElementBaseIntentionAction(), IntentionAction {
     val factory = JavaPsiFacade.getInstance(project).elementFactory
     val text = if (element.text.startsWith("!")) element.text.drop(1) else "!" + element.text
     (element.parent.parent as KtStringTemplateExpression).updateText(text)
-    // val withbang = factory.createExpressionFromText(text, null)
-   // element.replace(withbang)
   }
 }
