@@ -333,9 +333,6 @@ fun KtCallExpression.extractLhsForStringInvoke(): String? {
   return null
 }
 
-fun buildSuggestedName(spec: KtClassOrObject?, testName: String?): String? =
-    buildSuggestedName(spec?.fqName?.asString(), testName)
-
 fun buildSuggestedName(specName: String?, testName: String?): String? {
   return when {
     specName == null || specName.isBlank() -> null

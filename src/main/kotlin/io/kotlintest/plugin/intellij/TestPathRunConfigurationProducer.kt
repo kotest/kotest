@@ -55,7 +55,7 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :
       val testPath = style.testPath(element)
       if (testPath != null) {
         val spec = element.enclosingClass()
-        val name = buildSuggestedName(spec, testPath)
+        val name = buildSuggestedName(spec?.fqName?.asString(), testPath)
         return configuration.name == name
       }
     }
