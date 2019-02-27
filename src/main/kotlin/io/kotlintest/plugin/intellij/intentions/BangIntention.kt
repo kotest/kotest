@@ -4,7 +4,6 @@ import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtToken
@@ -24,7 +23,6 @@ class BangIntention : PsiElementBaseIntentionAction(), IntentionAction {
   }
 
   override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
-    val factory = JavaPsiFacade.getInstance(project).elementFactory
     val text = if (element.text.startsWith("!")) element.text.drop(1) else "!" + element.text
     (element.parent.parent as KtStringTemplateExpression).updateText(text)
   }

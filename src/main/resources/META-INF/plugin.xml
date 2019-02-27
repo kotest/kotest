@@ -69,6 +69,11 @@
             <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
         </intentionAction>
 
+        <intentionAction>
+            <className>io.kotlintest.plugin.intellij.intentions.ShouldThrowIntention</className>
+            <category>Kotlin/Test</category>
+            <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
+        </intentionAction>
     </extensions>
 
     <project-components>
