@@ -4,20 +4,20 @@ import io.kotlintest.specs.WordSpec
 
 class WordSpecExample : WordSpec() {
   init {
-    "some test" should {
-      "test something" {
+    "a stack" should {
+      "return the last element when popped" {
         // test here
       }
-      "allow config".config(invocations = 2) {
+      "push elements to the top".config(invocations = 2) {
       }
     }
 
-    "another test" When {
-      "using when" Should {
-        "test something"{
+    "a queue" When {
+      "iterated" Should {
+        "return in insertion order"{
           // test here
         }
-        "allow config".config(invocations = 2) {
+        "support removal".config(invocations = 2) {
         }
       }
     }

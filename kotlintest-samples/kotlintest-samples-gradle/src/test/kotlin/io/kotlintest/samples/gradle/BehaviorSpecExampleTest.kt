@@ -1,6 +1,9 @@
 package io.kotlintest.samples.gradle
 
+import io.kotlintest.matchers.string.shouldNotBeBlank
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
+import io.kotlintest.shouldThrowAny
 
 class BehaviorSpecExampleTest : BehaviorSpec() {
 
@@ -8,12 +11,14 @@ class BehaviorSpecExampleTest : BehaviorSpec() {
     given("a non empty stack") {
       `when`("invoking pop") {
         then("the top most element should be removed and returned") {
-          // test here
+          shouldThrowAny {
+            1 shouldBe 2
+          }
         }
       }
       `when`("invoking push") {
-        then("a new element should be added to the top of the stack") {
-          // test here
+        then(name = "a new element should be added to the top of the stack") {
+          "qweqwe".shouldNotBeBlank()
         }
       }
     }
