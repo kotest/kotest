@@ -2,11 +2,11 @@ package io.kotlintest.plugin.intellij.intentions
 
 import org.jetbrains.kotlin.name.FqName
 
-class SoftAssertIntention : SurroundSelectionWithBlockIntention() {
+class SoftAssertIntention : SurroundSelectionWithFunctionIntention() {
 
-  override val prefix: String = "assertSoftly"
+  override val function: String = "assertSoftly"
 
-  override val importFQN: FqName = FqName("io.kotlintest.$prefix")
+  override val importFQN: FqName = FqName("io.kotlintest.$function")
 
   override fun getText(): String = "Surround statements with soft assert"
 

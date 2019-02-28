@@ -25,6 +25,11 @@ import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
+fun PsiElement.isContainedInSpec(): Boolean {
+  val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
+  return enclosingClass.isAnySpecSubclass()
+}
+
 /**
  * Returns true if this element is contained within a class that is a Spec class.
  */
@@ -52,7 +57,8 @@ fun LeafPsiElement.enclosingClassOrObjectForClassOrObjectToken(): KtClassOrObjec
  * This function will recursively check all superclasses.
  */
 fun KtClassOrObject.isAnySpecSubclass(): Boolean {
-  val superClass = getSuperClass() ?: return false
+  val superClass = getSuperClass()
+      ?: return SpecStyle.specs.any { it.fqn().shortName().asString() == getSuperClassSimpleName() }
   val fqn = superClass.getKotlinFqName()
   return if (SpecStyle.specs.any { it.fqn() == fqn }) true else superClass.isAnySpecSubclass()
 }

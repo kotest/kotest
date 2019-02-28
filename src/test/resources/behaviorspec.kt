@@ -1,5 +1,7 @@
 package com.sksamuel.kotlintest.specs.behavior
 
+import io.kotlintest.matchers.string.shouldStartWith
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 
 class BehaviorSpecExample : BehaviorSpec() {
@@ -8,7 +10,7 @@ class BehaviorSpecExample : BehaviorSpec() {
     given("a given") {
       `when`("a when") {
         then("a test") {
-          // test here
+          "sam".shouldStartWith("s")
         }
         then("another test") {
           // test here
@@ -19,7 +21,7 @@ class BehaviorSpecExample : BehaviorSpec() {
           // test here
         }
         then("a test with config").config(invocations = 3) {
-          // test here
+          1 + 1 shouldBe 2
         }
       }
     }

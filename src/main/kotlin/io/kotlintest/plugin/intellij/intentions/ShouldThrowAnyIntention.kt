@@ -2,13 +2,13 @@ package io.kotlintest.plugin.intellij.intentions
 
 import org.jetbrains.kotlin.name.FqName
 
-class ShouldThrowAnyIntention : SurroundSelectionWithBlockIntention() {
+class ShouldThrowAnyIntention : SurroundSelectionWithFunctionIntention() {
 
   override fun getText(): String = "Surround statements with shouldThrowAny assertion"
 
   override fun getFamilyName(): String = text
 
-  override val prefix: String = "shouldThrowAny"
+  override val function: String = "shouldThrowAny"
 
   override val importFQN: FqName = FqName("io.kotlintest.shouldThrowAny")
 }

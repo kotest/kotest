@@ -22,35 +22,35 @@ class BehaviorSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
     gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
     gutters[0].tooltipText shouldBe "[KotlinTest] BehaviorSpecExample"
-    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 89
+    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 172
 
     gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[1].tooltipText shouldBe "[KotlinTest] Given: a given"
-    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 155
+    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 238
 
     gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[2].tooltipText shouldBe "[KotlinTest] Given: a given When: a when"
-    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 181
+    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 264
 
     gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[3].tooltipText shouldBe "[KotlinTest] Given: a given When: a when Then: a test"
-    (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 206
+    (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 289
 
     gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[4].tooltipText shouldBe "[KotlinTest] Given: a given When: a when Then: another test"
-    (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 264
+    (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 361
 
     gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[5].tooltipText shouldBe "[KotlinTest] Given: a given When: another when"
-    (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 336
+    (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 433
 
     gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[6].tooltipText shouldBe "[KotlinTest] Given: a given When: another when Then: a test"
-    (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 367
+    (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 464
 
     gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
     gutters[7].tooltipText shouldBe "[KotlinTest] Given: a given When: another when Then: a test with config"
-    (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 425
+    (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 522
 
   }
 }
