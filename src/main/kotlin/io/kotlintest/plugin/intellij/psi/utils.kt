@@ -63,8 +63,18 @@ fun KtClassOrObject.isAnySpecSubclass(): Boolean {
  */
 fun KtClassOrObject.isSpecSubclass(style: SpecStyle) = isSpecSubclass(style.fqn())
 fun KtClassOrObject.isSpecSubclass(fqn: FqName): Boolean {
-  val superClass = getSuperClass() ?: return false
+  val superClass = getSuperClass() ?: return getSuperClassSimpleName() == fqn.shortName().asString()
   return if (superClass.getKotlinFqName() == fqn) true else superClass.isSpecSubclass(fqn)
+}
+
+fun KtClassOrObject.getSuperClassSimpleName(): String? {
+  for (entry in superTypeListEntries) {
+    if (entry is KtSuperTypeCallEntry) {
+      val name = entry.typeAsUserType?.referencedName
+      if (name != null) return name
+    }
+  }
+  return null
 }
 
 /**

@@ -14,4 +14,26 @@ class FunSpecExampleTest : FunSpec({
     "wibble".shouldBeLowerCase()
   }
 
+  context("some context") {
+
+    test("a string cannot be blank") {
+      "wibble".shouldNotBeBlank()
+    }
+
+    test("a string should be lower case").config(enabled = true) {
+      "wibble".shouldBeLowerCase()
+    }
+
+    context("another context") {
+
+      test("a string cannot be blank") {
+        "wibble".shouldNotBeBlank()
+      }
+
+      test("a string should be lower case").config(enabled = true) {
+        "wibble".shouldBeLowerCase()
+      }
+    }
+  }
+
 })

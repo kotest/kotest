@@ -36,7 +36,6 @@ abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) 
     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
     if (ktclass != null) {
       if (ktclass.isSpecSubclass(style)) {
-        println("Returning true for style $style and element $element")
         return Info(
             AllIcons.RunConfigurations.TestState.Run_run,
             Function<PsiElement, String> { "[KotlinTest] ${ktclass.fqName!!.shortName()}" },
