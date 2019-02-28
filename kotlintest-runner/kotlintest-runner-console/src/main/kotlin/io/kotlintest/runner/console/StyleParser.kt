@@ -42,7 +42,10 @@ object FeatureSpecStyleParser : StyleParser {
 }
 
 object FunSpecStyleParser : StyleParser {
-  override fun parse(root: Description, testPath: String): Description = root.append(testPath)
+  override fun parse(root: Description, testPath: String): Description {
+    val parents = testPath.split(" -- ").filterNot { it.isEmpty() }
+    return parents.fold(root) { acc, string -> acc.append(string) }
+  }
 }
 
 object FreeSpecStyleParser : StyleParser {

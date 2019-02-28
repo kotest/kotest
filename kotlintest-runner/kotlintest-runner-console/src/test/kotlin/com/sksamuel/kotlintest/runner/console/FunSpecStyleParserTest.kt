@@ -17,5 +17,13 @@ class FunSpecStyleParserTest : FunSpec() {
           Description.spec("myspec").append("should testatesta--")
     }
 
+    test("should parse tests with a context") {
+      FunSpecStyleParser.parse(Description.spec("myspec"), "some context -- some other context -- test") shouldBe
+          Description.spec("myspec").append("some context").append("some other context").append("test")
+
+      FunSpecStyleParser.parse(Description.spec("myspec"), "some context -- test") shouldBe
+          Description.spec("myspec").append("some context").append("test")
+
+    }
   }
 }
