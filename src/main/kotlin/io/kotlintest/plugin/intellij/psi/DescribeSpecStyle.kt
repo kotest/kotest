@@ -19,23 +19,31 @@ object DescribeSpecStyle : SpecStyle {
     return if (parent == null) result else parent.locateParentTests() + result
   }
 
-  private fun PsiElement.tryDescribe(): String? =
-      matchFunction2WithStringAndLambda(listOf("describe"))
+  private fun PsiElement.tryDescribe(): String? {
+    val test = matchFunction2WithStringAndLambda(listOf("describe"))
+    return if (test == null) null else "Describe: $test"
+  }
 
-  private fun PsiElement.tryContext(): String? =
-      matchFunction2WithStringAndLambda(listOf("context"))
+  private fun PsiElement.tryContext(): String? {
+    val test = matchFunction2WithStringAndLambda(listOf("context"))
+    return if (test == null) null else "Context: $test"
+  }
 
-  private fun PsiElement.tryIt(): String? =
-      matchFunction2WithStringAndLambda(listOf("it"))
+  private fun PsiElement.tryIt(): String? {
+    val test = matchFunction2WithStringAndLambda(listOf("it"))
+    return if (test == null) null else "It: $test"
+  }
 
-  private fun PsiElement.tryItWithConfig(): String? =
-      extractStringArgForFunctionBeforeDotExpr(listOf("it"), listOf("config"))
+  private fun PsiElement.tryItWithConfig(): String? {
+    val test = extractStringArgForFunctionBeforeDotExpr(listOf("it"), listOf("config"))
+    return if (test == null) null else "It: $test"
+  }
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isContainedInSpec()) return null
     val test = element.run {
       tryIt() ?: tryItWithConfig() ?: tryContext() ?: tryDescribe() ?: return null
     }
-    return (element.locateParentTests() + test).distinct().joinToString(" -- ")
+    return (element.locateParentTests() + test).distinct().joinToString(" ")
   }
 }
