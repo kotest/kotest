@@ -18,7 +18,7 @@ class BangIntentionTest : LightCodeInsightFixtureTestCase() {
   fun testIntention() {
 
     myFixture.configureByFile("/behaviorspec.kt")
-    editor.moveCaret(270)
+    editor.moveCaret(366)
 
     val intention = myFixture.findSingleIntention("Add/Remove bang to test name")
     intention.familyName shouldBe "Add/Remove bang to test name"
@@ -27,20 +27,20 @@ class BangIntentionTest : LightCodeInsightFixtureTestCase() {
         intention.invoke(project, editor, file)
       }
     }
-    file.findElementAt(270)?.text shouldBe "!another test"
+    file.findElementAt(366)?.text shouldBe "!another test"
 
     CommandProcessor.getInstance().runUndoTransparentAction {
       runWriteAction {
         intention.invoke(project, editor, file)
       }
     }
-    file.findElementAt(270)?.text shouldBe "another test"
+    file.findElementAt(366)?.text shouldBe "another test"
   }
 
   fun testIntentionShouldOnlyBeAvailableOnStrings() {
 
     myFixture.configureByFile("/behaviorspec.kt")
-    editor.moveCaret(313)
+    editor.moveCaret(418)
     myFixture.filterAvailableIntentions("Add/Remove bang to test name").shouldBeEmpty()
   }
 }
