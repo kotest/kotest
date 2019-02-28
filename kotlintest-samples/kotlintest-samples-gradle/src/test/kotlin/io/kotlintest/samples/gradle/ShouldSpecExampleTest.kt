@@ -1,7 +1,6 @@
 package io.kotlintest.samples.gradle
 
 import io.kotlintest.specs.ShouldSpec
-import org.junit.platform.commons.annotation.Testable
 
 class ShouldSpecExampleTest : ShouldSpec() {
   init {

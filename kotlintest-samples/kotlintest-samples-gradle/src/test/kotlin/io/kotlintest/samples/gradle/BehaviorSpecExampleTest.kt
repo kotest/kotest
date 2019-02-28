@@ -11,9 +11,7 @@ class BehaviorSpecExampleTest : BehaviorSpec() {
     given("a non empty stack") {
       `when`("invoking pop") {
         then("the top most element should be removed and returned") {
-          shouldThrowAny {
             1 shouldBe 2
-          }
         }
       }
       `when`("invoking push") {
