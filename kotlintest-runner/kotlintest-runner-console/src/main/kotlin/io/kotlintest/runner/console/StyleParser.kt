@@ -26,11 +26,6 @@ object DescribeSpecStyleParser : StyleParser {
   }
 }
 
-object ExpectSpecStyleParser : StyleParser {
-  override fun parse(root: Description, testPath: String): Description =
-      testPath.split("Context\\: |Expect\\: ").fold(root) { acc, name -> acc.append(name) }
-}
-
 object FeatureSpecStyleParser : StyleParser {
 
   private val regex = "(Feature: .*?)\\s?(Scenario: .*?)?".toRegex()
@@ -41,16 +36,11 @@ object FeatureSpecStyleParser : StyleParser {
   }
 }
 
-object FunSpecStyleParser : StyleParser {
-  override fun parse(root: Description, testPath: String): Description {
-    val parents = testPath.split(" -- ").filterNot { it.isEmpty() }
-    return parents.fold(root) { acc, string -> acc.append(string) }
-  }
-}
-
-object FreeSpecStyleParser : StyleParser {
+object DelimitedTestPathParser : StyleParser {
   override fun parse(root: Description, testPath: String): Description =
-      testPath.split(" -- ").fold(root) { acc, name -> acc.append(name) }
+      testPath.split(" -- ")
+          .filterNot { it.isEmpty() }
+          .fold(root) { acc, name -> acc.append(name) }
 }
 
 object ShouldSpecStyleParser : StyleParser {
