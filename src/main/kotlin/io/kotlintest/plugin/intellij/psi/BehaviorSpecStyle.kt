@@ -21,6 +21,15 @@ object BehaviorSpecStyle : SpecStyle {
     return if (param == null && parent == null) null else param ?: parent.locateParentTestName(names)
   }
 
+  private fun PsiElement.tryThenWithConfig(): String? {
+    val then = extractStringArgForFunctionBeforeDotExpr(thens, listOf("config"))
+    return if (then == null) null else {
+      val `when` = locateParentTestName(whens)
+      val given = locateParentTestName(givens)
+      "Given: $given When: $`when` Then: $then"
+    }
+  }
+
   private fun PsiElement.tryThen(): String? {
     val then = matchFunction2WithStringAndLambda(thens)
     return if (then == null) null else {
@@ -46,6 +55,6 @@ object BehaviorSpecStyle : SpecStyle {
   override fun testPath(element: PsiElement): String? {
     if (!element.isContainedInSpec())
       return null
-    return element.tryThen() ?: element.tryWhen() ?: element.tryGiven()
+    return element.tryThen() ?: element.tryThenWithConfig() ?: element.tryWhen() ?: element.tryGiven()
   }
 }
