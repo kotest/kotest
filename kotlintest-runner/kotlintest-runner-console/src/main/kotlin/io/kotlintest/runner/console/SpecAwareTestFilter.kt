@@ -18,6 +18,7 @@ class SpecAwareTestFilter(testPath: String, spec: KClass<out Spec>) : TestCaseFi
   private val parser = spec.run {
     when {
       this.isSpec("io.kotlintest.specs.BehaviorSpec") -> BehaviorSpecStyleParser
+      this.isSpec("io.kotlintest.specs.DescribeSpec") -> DescribeSpecStyleParser
       this.isSpec("io.kotlintest.specs.FeatureSpec") -> FeatureSpecStyleParser
       this.isSpec("io.kotlintest.specs.FreeSpec") -> FreeSpecStyleParser
       this.isSpec("io.kotlintest.specs.FunSpec") -> FunSpecStyleParser
