@@ -20,13 +20,26 @@ class MyTests : StringSpec({
 ### Fun Spec
 
 `FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
-and then the test itself as a closure.
+and then the test itself as a lambda.
 
 ```kotlin
 class MyTests : FunSpec({
     test("String length should return the length of the string") {
         "sammy".length shouldBe 5
         "".length shouldBe 0
+    }
+})
+```
+
+You can also next these tests inside `context` blocks like this:
+
+```kotlin
+class MyTests : FunSpec({
+    context("a test group") {
+        test("String length should return the length of the string") {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
     }
 })
 ```
