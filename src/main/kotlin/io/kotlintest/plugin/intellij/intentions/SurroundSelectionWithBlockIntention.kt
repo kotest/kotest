@@ -1,6 +1,5 @@
 package io.kotlintest.plugin.intellij.intentions
 
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -13,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import org.jetbrains.kotlin.resolve.ImportPath
 
-abstract class SurroundSelectionWithBlockIntention : PsiElementBaseIntentionAction(), IntentionAction {
+abstract class SurroundSelectionWithBlockIntention : PsiElementBaseIntentionAction() {
 
   override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
     try {
