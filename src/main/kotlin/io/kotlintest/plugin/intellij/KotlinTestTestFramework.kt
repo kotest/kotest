@@ -39,7 +39,7 @@ class KotlinTestTestFramework : JavaTestFramework() {
   override fun findTearDownMethod(clazz: PsiClass): PsiMethod? = null
 
   override fun isTestClass(clazz: PsiClass, canBePotential: Boolean): Boolean {
-    return if (canBePotential) isUnderTestSources(clazz) else clazz.superTypes.any { specs.contains(it.className) }
+    return if (canBePotential) isUnderTestSources(clazz) else clazz.superTypes.any { specs.contains(it.resolve()?.qualifiedName) }
   }
 
   override fun getMarkerClassFQName(): String = "io.kotlintest.TestCase"

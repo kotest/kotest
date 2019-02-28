@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object DescribeSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.DescribeSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.DescribeSpec")
 
   override fun specStyleName(): String = "DescribeSpec"
 
@@ -34,7 +35,7 @@ object DescribeSpecStyle : SpecStyle {
   }
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass()) return null
+    if (!element.isContainedInSpec()) return null
     val test = element.tryIt() ?: element.tryContext() ?: element.tryDescribe()
     return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
   }

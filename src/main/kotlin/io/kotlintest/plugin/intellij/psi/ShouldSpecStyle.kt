@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object ShouldSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.ShouldSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.ShouldSpec")
 
   override fun specStyleName(): String = "ShouldSpec"
 
@@ -33,7 +34,7 @@ object ShouldSpecStyle : SpecStyle {
   private fun PsiElement.tryContainer(): String? = matchStringInvoke()
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass()) return null
+    if (!element.isContainedInSpec()) return null
     val leaf = element.tryShould() ?: element.tryShouldWithConfig()
     val container = element.tryContainer()
     return when {

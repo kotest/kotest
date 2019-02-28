@@ -4,24 +4,27 @@ import com.intellij.execution.CommonJavaRunConfigurationParameters
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
-import com.intellij.execution.configurations.JavaRunConfigurationModule
 import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.RunConfigurationModule
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMExternalizerUtil
 import io.kotlintest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import java.util.*
 
-class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModule, factory: ConfigurationFactory) :
-    ModuleBasedConfiguration<JavaRunConfigurationModule, RunConfigurationOptions>(name, module, factory),
-    CommonJavaRunConfigurationParameters {
+class KotlinTestRunConfiguration(name: String, configurationFactory: ConfigurationFactory, project: Project) :
+    ModuleBasedConfiguration<RunConfigurationModule, RunConfigurationOptions>(
+        name,
+        RunConfigurationModule(project),
+        configurationFactory
+    ), CommonJavaRunConfigurationParameters {
 
   private var alternativeJrePath: String? = ""
   private var alternativeJrePathEnabled = false
@@ -52,9 +55,8 @@ class KotlinTestRunConfiguration(name: String, module: JavaRunConfigurationModul
       SettingsEditorPanel(project)
 
   // let all modules be valid
-  override fun getValidModules(): MutableCollection<Module> {
-    return Arrays.asList(*ModuleManager.getInstance(project).modules)
-  }
+  override fun getValidModules(): MutableCollection<Module> =
+      ModuleManager.getInstance(project).modules.toMutableList()
 
   override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
       KotlinTestCommandLineState(environment, this)

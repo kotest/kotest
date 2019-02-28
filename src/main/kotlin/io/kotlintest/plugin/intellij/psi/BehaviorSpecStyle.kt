@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object BehaviorSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.BehaviorSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.BehaviorSpec")
 
   override fun specStyleName(): String = "BehaviorSpec"
 
@@ -43,7 +44,7 @@ object BehaviorSpecStyle : SpecStyle {
   }
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass())
+    if (!element.isContainedInSpec())
       return null
     return element.tryThen() ?: element.tryWhen() ?: element.tryGiven()
   }

@@ -1,6 +1,7 @@
 package io.kotlintest.plugin.intellij
 
 import com.intellij.execution.actions.ConfigurationContext
+import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
@@ -16,6 +17,7 @@ import io.kotlintest.plugin.intellij.psi.StringSpecStyle
 import io.kotlintest.plugin.intellij.psi.WordSpecStyle
 import io.kotlintest.plugin.intellij.psi.buildSuggestedName
 import io.kotlintest.plugin.intellij.psi.enclosingClass
+import removeJUnitRunConfigs
 
 abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :
     RunConfigurationProducer<KotlinTestRunConfiguration>(KotlinTestConfigurationType::class.java) {
@@ -37,7 +39,7 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :
           configuration.setGeneratedName()
 
           context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
-
+          removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
           return true
         }
       }
@@ -59,6 +61,14 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :
         return configuration.name == name
       }
     }
+    return false
+  }
+
+  override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
+    return true
+  }
+
+  override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
     return false
   }
 }

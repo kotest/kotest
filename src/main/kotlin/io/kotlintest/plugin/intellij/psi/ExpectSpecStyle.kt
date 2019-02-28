@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object ExpectSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.ExpectSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.ExpectSpec")
 
   override fun specStyleName(): String = "ExpectSpec"
 
@@ -29,7 +30,7 @@ object ExpectSpecStyle : SpecStyle {
   }
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass()) return null
+    if (!element.isContainedInSpec()) return null
     val test = element.tryExpect() ?: element.tryContext()
     return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
   }

@@ -16,8 +16,8 @@ import io.kotlintest.plugin.intellij.psi.ShouldSpecStyle
 import io.kotlintest.plugin.intellij.psi.SpecStyle
 import io.kotlintest.plugin.intellij.psi.StringSpecStyle
 import io.kotlintest.plugin.intellij.psi.WordSpecStyle
-import io.kotlintest.plugin.intellij.psi.isSubclassOfSpec
 import io.kotlintest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotlintest.plugin.intellij.psi.isSpecSubclass
 import org.jetbrains.kotlin.lexer.KtToken
 
 abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
@@ -35,7 +35,8 @@ abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) 
 
     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
     if (ktclass != null) {
-      if (ktclass.isSubclassOfSpec(style)) {
+      if (ktclass.isSpecSubclass(style)) {
+        println("Returning true for style $style and element $element")
         return Info(
             AllIcons.RunConfigurations.TestState.Run_run,
             Function<PsiElement, String> { "[KotlinTest] ${ktclass.fqName!!.shortName()}" },

@@ -2,7 +2,7 @@ package io.kotlintest.plugin.intellij
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotlintest.plugin.intellij.psi.isSpec
+import io.kotlintest.plugin.intellij.psi.isAnySpecSubclass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -17,6 +17,6 @@ class KotlinTestImplicitUsageProvider : ImplicitUsageProvider {
       is KtLightClass -> element.kotlinOrigin
       else -> null
     }
-    return ktclass?.isSpec() ?: false
+    return ktclass?.isAnySpecSubclass() ?: false
   }
 }

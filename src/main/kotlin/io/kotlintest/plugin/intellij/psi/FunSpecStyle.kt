@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object FunSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.FunSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.FunSpec")
 
   override fun specStyleName(): String = "FunSpec"
 
@@ -15,7 +16,7 @@ object FunSpecStyle : SpecStyle {
       listOf("config"))
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass())
+    if (!element.isContainedInSpec())
       return null
     return element.tryTestWithoutConfig() ?: element.tryTestWithConfig()
   }

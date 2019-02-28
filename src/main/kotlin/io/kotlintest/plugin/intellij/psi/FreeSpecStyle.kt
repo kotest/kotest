@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object FreeSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.FreeSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.FreeSpec")
 
   override fun specStyleName(): String = "FreeSpec"
 
@@ -22,7 +23,7 @@ object FreeSpecStyle : SpecStyle {
   private fun PsiElement.tryLeafWithConfig(): String? = extractLiteralForStringExtensionFunction(listOf("config"))
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass()) return null
+    if (!element.isContainedInSpec()) return null
     val test = element.tryLeaf() ?: element.tryLeafWithConfig() ?: element.tryBranch()
     return if (test == null) null else {
       val tests = element.locateParentTests() + test

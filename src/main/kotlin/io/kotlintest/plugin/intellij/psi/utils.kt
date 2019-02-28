@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
@@ -22,30 +21,16 @@ import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
-import org.jetbrains.kotlin.psi.KtSuperTypeList
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 /**
- * Finds the enclosing class for the receiver [PsiElement] and then
- * locates the super types. Returns true if a super type corresponds to the given spec style.
+ * Returns true if this element is contained within a class that is a Spec class.
  */
-fun PsiElement.isInSpecStyle(name: String): Boolean {
-  val ktclass = getParentOfType<KtClass>(true)
-  if (ktclass != null) {
-    if (ktclass.children.isNotEmpty() && ktclass.children[0] is KtSuperTypeList) {
-      val ktsuper = ktclass.children[0]
-      if (ktsuper.children.isNotEmpty() && ktsuper.children[0] is KtSuperTypeCallEntry) {
-        val ktsupercall = ktsuper.children[0]
-        if (ktsupercall.children.isNotEmpty() && ktsupercall.children[0] is KtConstructorCalleeExpression) {
-          val ktconstructor = ktsupercall.children[0]
-          if (ktconstructor.text == name) return true
-        }
-      }
-    }
-  }
-  return false
+fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
+  val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
+  return enclosingClass.isSpecSubclass(fqn)
 }
 
 /**
@@ -63,13 +48,23 @@ fun LeafPsiElement.enclosingClassOrObjectForClassOrObjectToken(): KtClassOrObjec
 }
 
 /**
- * Returns true if this [KtClassOrObject] is a subclass of a Spec class (eg StringSpec or FunSpec).
- * This method will recursively climb the supertypes until Any is reached.
+ * Returns true if this [KtClassOrObject] is a subclass of any Spec.
+ * This function will recursively check all superclasses.
  */
-fun KtClassOrObject.isSpec(): Boolean {
+fun KtClassOrObject.isAnySpecSubclass(): Boolean {
   val superClass = getSuperClass() ?: return false
-  val fqn = superClass.getKotlinFqName()?.asString()
-  return if (SpecStyle.specs.any { it.fqn() == fqn }) true else superClass.isSpec()
+  val fqn = superClass.getKotlinFqName()
+  return if (SpecStyle.specs.any { it.fqn() == fqn }) true else superClass.isAnySpecSubclass()
+}
+
+/**
+ * Returns true if this [KtClassOrObject] is a subclass of a specific Spec.
+ * This function will recursively check all superclasses.
+ */
+fun KtClassOrObject.isSpecSubclass(style: SpecStyle) = isSpecSubclass(style.fqn())
+fun KtClassOrObject.isSpecSubclass(fqn: FqName): Boolean {
+  val superClass = getSuperClass() ?: return false
+  return if (superClass.getKotlinFqName() == fqn) true else superClass.isSpecSubclass(fqn)
 }
 
 /**
@@ -86,9 +81,8 @@ fun KtClassOrObject.getSuperClass(): KtClassOrObject? {
           ?.mainReference
           ?.resolve()
 
-      if (ref is KtPrimaryConstructor) {
-        return ref.getContainingClassOrObject()
-      }
+      if (ref is KtClassOrObject) return ref
+      if (ref is KtPrimaryConstructor) return ref.getContainingClassOrObject()
     }
   }
   return null
@@ -98,20 +92,8 @@ fun KtClassOrObject.getSuperClass(): KtClassOrObject? {
  * Returns the [FqName] if this [LeafPsiElement] has type [KtKeywordToken] with the lexeme 'class'
  * and the [KtClass] definition is a subclass of the given spec style.
  */
-fun KtClassOrObject.superTypes(): List<String> {
-  return superTypeListEntries.mapNotNull { it.typeAsUserType?.referencedName }
-}
-
-fun KtClassOrObject.isSubclassOfSpec(style: SpecStyle): Boolean {
-  return superTypes().any { style.specStyleName() == it || style.fqn() == it }
-}
 
 fun PsiElement.enclosingClass(): KtClass? = getParentOfType(true)
-
-fun PsiElement.enclosingClassName(): String? {
-  val ktclass = getParentOfType<KtClass>(true)
-  return ktclass?.fqName?.asString()
-}
 
 /**
  * Matches blocks of the form:
@@ -122,7 +104,7 @@ fun PsiElement.enclosingClassName(): String? {
  *
  * @param lefts one or more acceptable names for the left hand side reference
  */
-fun PsiElement.extractStringArgForFunctionWithConfig(lefts:List<String>):String? =
+fun PsiElement.extractStringArgForFunctionWithConfig(lefts: List<String>): String? =
     extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
 
 /**

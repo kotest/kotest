@@ -1,10 +1,11 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 object WordSpecStyle : SpecStyle {
 
-  override fun fqn(): String = "io.kotlintest.specs.WordSpec"
+  override fun fqn() = FqName("io.kotlintest.specs.WordSpec")
 
   override fun specStyleName(): String = "WordSpec"
 
@@ -66,7 +67,7 @@ object WordSpecStyle : SpecStyle {
   }
 
   override fun testPath(element: PsiElement): String? {
-    if (!element.isInSpecClass())
+    if (!element.isContainedInSpec())
       return null
     return element.run {
       trySubject() ?: trySubjectWithConfig() ?: tryShould() ?: tryWhen()

@@ -1,6 +1,7 @@
 package io.kotlintest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.name.FqName
 
 interface SpecStyle {
 
@@ -18,7 +19,7 @@ interface SpecStyle {
     )
   }
 
-  fun PsiElement.isInSpecClass(): Boolean = this.isInSpecStyle(specStyleName())
+  fun PsiElement.isContainedInSpec(): Boolean = this.isContainedInSpec(fqn())
 
   fun testPath(element: PsiElement): String?
 
@@ -26,5 +27,5 @@ interface SpecStyle {
 
   fun isTestElement(element: PsiElement): Boolean
 
-  fun fqn(): String
+  fun fqn(): FqName
 }
