@@ -19,19 +19,18 @@ object ExpectSpecStyle : SpecStyle {
     return if (parent == null) result else parent.locateParentTests() + result
   }
 
-  private fun PsiElement.tryExpect(): String? {
-    val expect = matchFunction2WithStringAndLambda(listOf("expect"))
-    return if (expect == null) null else "Expect: $expect"
-  }
+  private fun PsiElement.tryExpect() =
+      matchFunction2WithStringAndLambda(listOf("expect"))
 
-  private fun PsiElement.tryContext(): String? {
-    val context = matchFunction2WithStringAndLambda(listOf("context"))
-    return if (context == null) null else "Context: $context"
-  }
+  private fun PsiElement.tryExpectWithConfig() =
+      extractStringArgForFunctionBeforeDotExpr(listOf("expect"), listOf("config"))
+
+  private fun PsiElement.tryContext() =
+      matchFunction2WithStringAndLambda(listOf("context"))
 
   override fun testPath(element: PsiElement): String? {
     if (!element.isContainedInSpec()) return null
-    val test = element.tryExpect() ?: element.tryContext()
-    return if (test == null) null else element.locateParentTests().joinToString(" ") + " $test"
+    val test = element.tryExpect() ?: element.tryExpectWithConfig() ?: element.tryContext() ?: return null
+    return (element.locateParentTests() + test).distinct().joinToString(" -- ")
   }
 }
