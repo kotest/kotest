@@ -74,6 +74,18 @@
             <category>Kotlin/Test</category>
             <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
         </intentionAction>
+
+        <intentionAction>
+            <className>io.kotlintest.plugin.intellij.intentions.ShouldThrowAnyIntention</className>
+            <category>Kotlin/Test</category>
+            <descriptionDirectoryName>ShouldThrowAnyIntention</descriptionDirectoryName>
+        </intentionAction>
+
+        <intentionAction>
+            <className>io.kotlintest.plugin.intellij.intentions.ShouldThrowExactlyIntention</className>
+            <category>Kotlin/Test</category>
+            <descriptionDirectoryName>ShouldThrowExactlyIntention</descriptionDirectoryName>
+        </intentionAction>
     </extensions>
 
     <project-components>

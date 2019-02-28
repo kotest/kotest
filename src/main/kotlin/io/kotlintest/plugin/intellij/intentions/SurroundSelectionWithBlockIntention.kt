@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtFile
@@ -71,7 +72,9 @@ abstract class SurroundSelectionWithBlockIntention : PsiElementBaseIntentionActi
             // place the new block at the position of the original text
             val wrapped = "$prefixWhitespace$prefix {\n$prefixedStatements\n$prefixWhitespace}"
 
+            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
             editor.document.replaceString(lineStart, lineEnd, wrapped)
+            PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document)
           }
         }
       }
