@@ -213,7 +213,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
