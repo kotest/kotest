@@ -155,7 +155,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
 }
 ```
 
@@ -167,7 +167,7 @@ val test by tasks.getting(Test::class) {
 }
 
 dependencies {
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.2.1")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
 }
 ```
 
