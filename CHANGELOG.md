@@ -1,6 +1,40 @@
 Changelog
 =========
 
+#### 3.3.0
+
+* Feature: Intellij Plugin now available!
+* Feature: FunSpec now allows parent context blocks
+* Feature: java.time between matcher (#694)
+* Feature: Constant 'now' listeners (#693)
+* Feature: PITest plugin (#687)
+* Feature: Spring mocking injection @MockBean @MockkBean (#684)
+* Feature: instanceOf and typeOf matchers to use the casted value (#695)
+* Feature: Digest Matchers #667
+* Feature: continually assertion function #643
+* Feature: Add project config option for `assertSoftly` #512 (#655)
+* Feature: Implement System Security Manager Extensions (#640)
+* Feature: Implement System Environment Extension (#633)
+* Feature: Implement shouldBeOneOf matcher and assertions (#647)
+* Feature: Add nullability matchers with Kotlin Contracts (#602) (#646)
+* Feature: SystemProperty Test Helpers #524 (#608)
+* Feature: Timezone / Locale Extension #587 (#609)
+* Feature: Move extensions to Kotlintest-Extensions module (#629)
+* Feature: Provide range-based numeric generators and javax.time generators #530 (#543)
+* Feature: Extended word spec (#635)
+* Feature: Implement shouldNotThrow matchers (#603)
+* Improvement: Make "condensed" multi-line diffs configurable #607
+* Improvement: Allow Arrow Either extensions to support nullable types (#613)
+* Improvement: Enables test bang on all specs (#606)
+* Improvement: Add property testing extensions for custom generators (#506)
+* Improvement: Added issue flag in config #525
+* Bugfix: Added support for package selectors from junit discovery requests #597
+* Bugfix: Disabled top level tests are not marked as ignored in JUnit #656
+* Bugfix: Fix containOnlyOnce which return true when no occurrence (#660)
+* Internal: Auto deploy snapshot on each travis build
+* Internal: Remove all deprecated matchers/assertions (#653)
+
+
 #### 3.2.1
 
 * Feature: AnnotationSpec now has a `expected` exception configuration #527 #559
