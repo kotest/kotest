@@ -133,7 +133,7 @@ This page gives you just a short overview of KotlinTest. There are many more fea
 * Test whole collections with [Inspectors](doc/reference.md#inspectors).
 * Write elegant conditions with the [matcher DSL](doc/reference.md#matchers-and-assertions): `"hello".shouldHaveSubstring("ell")`.
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
-* Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and [`eventually`](doc/reference.md#eventually).
+* Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and non-deterministic code with [`eventually`](doc/nondeterministic.md) or [`continually`](doc/nondeterministic.md)
 * Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
