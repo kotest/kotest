@@ -3,8 +3,8 @@ KotlinTest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
-This version of the document is for version 3.3+.
-For previous versions see [here](reference_3.2.md)
+This version of the document is for version 3.2+.
+For docs for earlier versions see [here](reference_3.1.md)
 
 How to use
 ----------
@@ -22,7 +22,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.2.1'
 }
 ```
 
@@ -39,7 +39,7 @@ For maven you must configure the surefire plugin for junit tests.
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.3.2</version>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -51,7 +51,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.3.0</version>
+    <version>3.1.8</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -283,11 +283,6 @@ The full list of inspectors are:
 
 
 
-
-
-
-
-
 Listeners
 ---------
 
@@ -360,12 +355,6 @@ The full list of the functions in the `TestListener` interface is as follows:
 |afterDiscovery|Is invoked after all the Spec classes have been discovered, but before any `beforeSpec` functions are called, and before any specs are instantiated by the Test Engine. |
 
 
-
-
-
-
-
-
 Project Config
 --------------
 
@@ -405,10 +394,37 @@ object ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
+### Project Extensions
+_(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 
+Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
+ test cases and specs. Test level extensions will be covered in the next section.
 
+For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
 
+```kotlin
+class TimerExtension: ProjectExtension {
 
+  private var started: Long = 0
+
+  override fun beforeAll() {
+    started = System.currentTimeMillis()
+  }
+
+  override fun afterAll() {
+    val time = System.currentTimeMillis() - started
+    println("overall time [ms]: " + time)
+  }
+}
+```
+
+This extension can then be registered with the project config.
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig() {
+  override val extensions = listOf(TimerExtension)
+}
+```
 
 ### Parallelism
 
@@ -422,11 +438,6 @@ object ProjectConfig : AbstractProjectConfig() {
 ```
 
 By default the value is 1, which will run each spec serially.
-
-
-
-
-
 
 ### Discovery Extension
 
@@ -518,10 +529,6 @@ class PropertyExample: StringSpec() {
   }
 }
 ```
-
-
-
-
 
 
 ### Custom Generators
@@ -924,18 +931,25 @@ class MyTests : StringSpec({
 })
 ```
 
+### Eventually <a name="eventually"></a>
 
+When testing non-deterministic code, it's handy to be able to say "I expect these assertions to pass in a certain time".
+Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely.
+Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches.
+KotlinTest provides the `Eventually` mixin, which gives you the `eventually` function which will repeatedly test the code until it either passes,
+or the timeout is reached. This is perfect for nondeterministic code. For example:
 
-Non-determinstic Tests
-----------------------
-
-Sometimes you have to work with code that are non-deterministic in nature. This is never ideal, but if you have no choice then
-KotlinTest has this covered with two functions called `eventually` and `continually`.
-
-Eventually will repeatedly run a code block either it either succeeds or the given duration has expired.
-Continually is kind of the opposite - it will repeatedly run a code block requiring that it suceeds every time until the given duration has expired.
-
-See full docs [here](nondeterministic.md)
+```kotlin
+class MyTests : ShouldSpec() {
+  init {
+    should("do something") {
+      eventually(5.seconds) {
+        // code here that should complete in 5 seconds but takes an non-determistic amount of time.
+      }
+    }
+  }
+}
+```
 
 
 
