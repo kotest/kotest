@@ -14,6 +14,7 @@ object Icons {
 }
 
 class KotlinTestConfigurationType : ConfigurationType, DumbAware {
+
   private val factory = KotlinTestConfigurationFactory(this)
 
   override fun getIcon(): Icon = Icons.KotlinTest16
