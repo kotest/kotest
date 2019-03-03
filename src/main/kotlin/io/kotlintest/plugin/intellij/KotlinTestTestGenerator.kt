@@ -13,7 +13,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testIntegration.createTest.CreateTestDialog
 import com.intellij.testIntegration.createTest.TestGenerator
+import io.kotlintest.plugin.intellij.styles.SpecStyle
+import io.kotlintest.plugin.intellij.styles.StringSpecStyle
 import org.jetbrains.kotlin.idea.KotlinLanguage
+import org.jetbrains.kotlin.idea.refactoring.memberInfo.toKotlinMemberInfo
+import org.jetbrains.kotlin.name.FqName
 import java.util.*
 
 class KotlinTestTestGenerator : TestGenerator {
@@ -32,6 +36,9 @@ class KotlinTestTestGenerator : TestGenerator {
       })
     })
   }
+
+  private fun styleForSuperClass(fqn: FqName): SpecStyle =
+      SpecStyle.specs.find { it.fqn() == fqn } ?: StringSpecStyle
 
   private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 
@@ -61,6 +68,17 @@ class KotlinTestTestGenerator : TestGenerator {
 
         if (d.shouldGeneratedAfter()) {
           props.setProperty("AFTER_TEST", "true")
+        }
+
+        if (d.selectedMethods.isNotEmpty()) {
+          val style = styleForSuperClass(FqName(superClass))
+          val tests = d.selectedMethods.mapNotNull {
+            it.toKotlinMemberInfo()?.member?.name
+          }.map { methodName ->
+            style.generateTest(targetClass.name ?: "SpecName", methodName)
+          }
+          val testBodies = tests.joinToString("\n\n")
+          props.setProperty("TEST_METHODS", testBodies)
         }
 
         FileTemplateUtil.createFromTemplate(fileTemplate, d.className, props, d.targetDirectory)

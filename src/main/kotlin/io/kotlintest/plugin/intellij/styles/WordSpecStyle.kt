@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
@@ -8,6 +8,10 @@ object WordSpecStyle : SpecStyle {
   override fun fqn() = FqName("io.kotlintest.specs.WordSpec")
 
   override fun specStyleName(): String = "WordSpec"
+
+  override fun generateTest(specName: String, name: String): String {
+    return "\"$name\" should { }"
+  }
 
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 

@@ -5,18 +5,18 @@ import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotlintest.plugin.intellij.psi.BehaviorSpecStyle
-import io.kotlintest.plugin.intellij.psi.DescribeSpecStyle
-import io.kotlintest.plugin.intellij.psi.ExpectSpecStyle
-import io.kotlintest.plugin.intellij.psi.FeatureSpecStyle
-import io.kotlintest.plugin.intellij.psi.FreeSpecStyle
-import io.kotlintest.plugin.intellij.psi.FunSpecStyle
-import io.kotlintest.plugin.intellij.psi.ShouldSpecStyle
-import io.kotlintest.plugin.intellij.psi.SpecStyle
-import io.kotlintest.plugin.intellij.psi.StringSpecStyle
-import io.kotlintest.plugin.intellij.psi.WordSpecStyle
-import io.kotlintest.plugin.intellij.psi.buildSuggestedName
-import io.kotlintest.plugin.intellij.psi.enclosingClass
+import io.kotlintest.plugin.intellij.styles.BehaviorSpecStyle
+import io.kotlintest.plugin.intellij.styles.DescribeSpecStyle
+import io.kotlintest.plugin.intellij.styles.ExpectSpecStyle
+import io.kotlintest.plugin.intellij.styles.FeatureSpecStyle
+import io.kotlintest.plugin.intellij.styles.FreeSpecStyle
+import io.kotlintest.plugin.intellij.styles.FunSpecStyle
+import io.kotlintest.plugin.intellij.styles.ShouldSpecStyle
+import io.kotlintest.plugin.intellij.styles.SpecStyle
+import io.kotlintest.plugin.intellij.styles.StringSpecStyle
+import io.kotlintest.plugin.intellij.styles.WordSpecStyle
+import io.kotlintest.plugin.intellij.styles.buildSuggestedName
+import io.kotlintest.plugin.intellij.styles.enclosingClass
 import removeJUnitRunConfigs
 
 abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :

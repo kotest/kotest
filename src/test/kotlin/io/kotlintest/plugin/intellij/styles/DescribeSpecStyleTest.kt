@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.icons.AllIcons

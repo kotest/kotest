@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe

@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement

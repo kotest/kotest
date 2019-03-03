@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
@@ -28,4 +28,10 @@ interface SpecStyle {
   fun isTestElement(element: PsiElement): Boolean
 
   fun fqn(): FqName
+
+  /**
+   * Returns a test for a method with the given name, in a way that is compatible with this style.
+   * For example, a [FunSpec] would return a string like this: test("given name") { }
+   */
+  fun generateTest(specName: String, name: String): String
 }

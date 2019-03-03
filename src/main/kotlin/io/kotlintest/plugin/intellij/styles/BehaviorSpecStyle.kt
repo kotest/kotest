@@ -1,9 +1,13 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
 
 object BehaviorSpecStyle : SpecStyle {
+
+  override fun generateTest(specName: String, name: String): String {
+    return "Given(\"$name\") { }"
+  }
 
   override fun fqn() = FqName("io.kotlintest.specs.BehaviorSpec")
 

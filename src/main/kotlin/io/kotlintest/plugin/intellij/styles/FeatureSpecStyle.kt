@@ -1,4 +1,4 @@
-package io.kotlintest.plugin.intellij.psi
+package io.kotlintest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
@@ -8,6 +8,10 @@ object FeatureSpecStyle : SpecStyle {
   override fun fqn() = FqName("io.kotlintest.specs.FeatureSpec")
 
   override fun specStyleName(): String = "FeatureSpec"
+
+  override fun generateTest(specName: String, name: String): String {
+    return "feature(\"$name\") { }"
+  }
 
   // todo this could be optimized to not check for the other parts of the tree until the name is needed
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null

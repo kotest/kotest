@@ -1,15 +1,13 @@
 package io.kotlintest.plugin.intellij
 
-import com.intellij.execution.RunManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.RunConfigurationProducer
-import com.intellij.execution.junit.JUnitConfigurationType
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotlintest.plugin.intellij.psi.buildSuggestedName
-import io.kotlintest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotlintest.plugin.intellij.psi.isAnySpecSubclass
+import io.kotlintest.plugin.intellij.styles.buildSuggestedName
+import io.kotlintest.plugin.intellij.styles.enclosingClassOrObjectForClassOrObjectToken
+import io.kotlintest.plugin.intellij.styles.isAnySpecSubclass
 import removeJUnitRunConfigs
 
 class SpecRunConfigurationProducer :

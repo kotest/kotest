@@ -2,7 +2,7 @@ package io.kotlintest.plugin.intellij
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotlintest.plugin.intellij.psi.isAnySpecSubclass
+import io.kotlintest.plugin.intellij.styles.isAnySpecSubclass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 

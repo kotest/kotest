@@ -20,6 +20,7 @@ class ${NAME} : ${SUPERCLASS}() {
 
 #end
   init {
+    #if (${TEST_METHODS}) ${TEST_METHODS} #end
   }
 
 }

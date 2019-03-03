@@ -6,18 +6,18 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
-import io.kotlintest.plugin.intellij.psi.BehaviorSpecStyle
-import io.kotlintest.plugin.intellij.psi.DescribeSpecStyle
-import io.kotlintest.plugin.intellij.psi.ExpectSpecStyle
-import io.kotlintest.plugin.intellij.psi.FeatureSpecStyle
-import io.kotlintest.plugin.intellij.psi.FreeSpecStyle
-import io.kotlintest.plugin.intellij.psi.FunSpecStyle
-import io.kotlintest.plugin.intellij.psi.ShouldSpecStyle
-import io.kotlintest.plugin.intellij.psi.SpecStyle
-import io.kotlintest.plugin.intellij.psi.StringSpecStyle
-import io.kotlintest.plugin.intellij.psi.WordSpecStyle
-import io.kotlintest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotlintest.plugin.intellij.psi.isSpecSubclass
+import io.kotlintest.plugin.intellij.styles.BehaviorSpecStyle
+import io.kotlintest.plugin.intellij.styles.DescribeSpecStyle
+import io.kotlintest.plugin.intellij.styles.ExpectSpecStyle
+import io.kotlintest.plugin.intellij.styles.FeatureSpecStyle
+import io.kotlintest.plugin.intellij.styles.FreeSpecStyle
+import io.kotlintest.plugin.intellij.styles.FunSpecStyle
+import io.kotlintest.plugin.intellij.styles.ShouldSpecStyle
+import io.kotlintest.plugin.intellij.styles.SpecStyle
+import io.kotlintest.plugin.intellij.styles.StringSpecStyle
+import io.kotlintest.plugin.intellij.styles.WordSpecStyle
+import io.kotlintest.plugin.intellij.styles.enclosingClassOrObjectForClassOrObjectToken
+import io.kotlintest.plugin.intellij.styles.isSpecSubclass
 import org.jetbrains.kotlin.lexer.KtToken
 
 abstract class KotlinTestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
