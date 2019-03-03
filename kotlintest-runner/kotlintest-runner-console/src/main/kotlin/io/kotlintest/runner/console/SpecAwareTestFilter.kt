@@ -5,7 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCaseFilter
 import io.kotlintest.TestFilterResult
 import kotlin.reflect.KClass
-import kotlin.reflect.full.superclasses
+import kotlin.reflect.full.allSuperclasses
 
 /**
  * A [TestCaseFilter] that parses the a test path by detecting the type of spec in use.
@@ -13,7 +13,7 @@ import kotlin.reflect.full.superclasses
 class SpecAwareTestFilter(testPath: String, spec: KClass<out Spec>) : TestCaseFilter {
 
   private fun KClass<out Spec>.isSpec(classname: String): Boolean =
-      this.superclasses.map { it.qualifiedName }.contains(classname)
+      this.allSuperclasses.map { it.qualifiedName }.contains(classname)
 
   private val parser = spec.run {
     when {
@@ -26,7 +26,7 @@ class SpecAwareTestFilter(testPath: String, spec: KClass<out Spec>) : TestCaseFi
       this.isSpec("io.kotlintest.specs.ShouldSpec") -> ShouldSpecStyleParser
       this.isSpec("io.kotlintest.specs.StringSpec") -> StringSpecStyleParser
       this.isSpec("io.kotlintest.specs.WordSpec") -> WordSpecStyleParser
-      else -> throw RuntimeException("Could not detect spec class style for supertypes ${spec.superclasses}")
+      else -> throw RuntimeException("Could not detect Spec Style for class [$this] with super [${spec.allSuperclasses}]")
     }
   }
 
