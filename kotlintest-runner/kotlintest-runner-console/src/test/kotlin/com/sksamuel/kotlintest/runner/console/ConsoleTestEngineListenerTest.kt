@@ -61,14 +61,25 @@ class ConsoleTestEngineListenerTest : FunSpec() {
       stdout.output() shouldBe "\n##teamcity[testSuiteFinished name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
     }
 
+    test("after spec class should insert dummy test and write testSuiteFinished for spec error") {
+      ConsoleTestEngineListener().afterSpecClass(klass, AssertionError("wibble"))
+      stdout.output() shouldBe "\n" +
+          "##teamcity[testStarted name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>']\n" +
+          "##teamcity[testFailed name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>' message='wibble']\n" +
+          "##teamcity[testSuiteFinished name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
+    }
+
     test("after test should write testSuiteFinished for container success") {
       ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer, TestResult.Success)
       stdout.output() shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
     }
 
-    test("after test should write testSuiteFinished for container error") {
+    test("after test should insert dummy test and write testSuiteFinished for container error") {
       ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer, TestResult.error(AssertionError("wibble")))
-      stdout.output() shouldBe "\n##teamcity[testFailed name='my test container' message='wibble']\n"
+      stdout.output() shouldBe "\n" +
+          "##teamcity[testStarted name='my test container <init>']\n" +
+          "##teamcity[testFailed name='my test container <init>' message='wibble']\n" +
+          "##teamcity[testSuiteFinished name='my test container']\n"
     }
 
     test("after test should write stack trace for error to std err") {
@@ -79,7 +90,7 @@ class ConsoleTestEngineListenerTest : FunSpec() {
 
     test("after test should write testSuiteFinished for container ignored") {
       ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer, TestResult.ignored("ignore me?"))
-      stdout.output() shouldBe "\n##teamcity[testIgnored name='my test container' ignoreComment='ignore me?']\n"
+      stdout.output() shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
     }
 
     test("after test should write testFinished for test success") {

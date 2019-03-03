@@ -15,39 +15,70 @@ class ConsoleTestEngineListener : TestEngineListener {
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
     println()
-    println(TeamCityMessageBuilder.testSuiteStarted(Description.spec(klass).name))
+    println(TeamCityMessages.testSuiteStarted(Description.spec(klass).name))
   }
 
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     println()
-    println(TeamCityMessageBuilder.testSuiteFinished(Description.spec(klass).name))
+    val desc = Description.spec(klass)
+    if (t == null) {
+      println(TeamCityMessages.testSuiteFinished(desc.name))
+    } else {
+      // intellij has no support for failed container tests, so if a container failed we must insert
+      // a dummy "test" in order to show something is red or yellow.
+      val initName = desc.name + " <init>"
+      println(TeamCityMessages.testStarted(initName))
+      println(TeamCityMessages.testFailed(initName).message(t.message ?: "Test Container Failed"))
+      // We must mark the test suite as completed regardless of the state
+      println(TeamCityMessages.testSuiteFinished(desc.name))
+    }
   }
 
   override fun beforeTestCaseExecution(testCase: TestCase) {
     if (testCase.type == TestType.Container) {
       println()
-      println(TeamCityMessageBuilder.testSuiteStarted(testCase.description.name).locationHint(locationHint(testCase)))
+      println(TeamCityMessages.testSuiteStarted(testCase.description.name).locationHint(locationHint(testCase)))
     } else {
       println()
-      println(TeamCityMessageBuilder.testStarted(testCase.description.name).locationHint(locationHint(testCase)))
+      println(TeamCityMessages.testStarted(testCase.description.name).locationHint(locationHint(testCase)))
     }
   }
 
   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
-    val msg = when (result.status) {
+    val desc = testCase.description
+    println()
+    when (result.status) {
       TestStatus.Failure, TestStatus.Error -> {
         result.error?.printStackTrace(System.err)
-        TeamCityMessageBuilder.testFailed(testCase.description.name).message(result.error?.message ?: "No message")
-      }
-      TestStatus.Ignored ->
-        TeamCityMessageBuilder.testIgnored(testCase.description.name).ignoreComment(result.reason ?: "No reason")
-      TestStatus.Success ->
         when (testCase.type) {
-          TestType.Container -> TeamCityMessageBuilder.testSuiteFinished(testCase.description.name)
-          TestType.Test -> TeamCityMessageBuilder.testFinished(testCase.description.name)
+          TestType.Container -> {
+            // intellij has no support for failed container tests, so if a container failed we must insert
+            // a dummy "test" in order to show something is red or yellow.
+            val initName = desc.name + " <init>"
+            println(TeamCityMessages.testStarted(initName))
+            println(TeamCityMessages.testFailed(initName).message(result.error?.message ?: "Test Container Failed"))
+            // We must mark the test suite as completed regardless of the state
+            println(TeamCityMessages.testSuiteFinished(desc.name))
+          }
+          TestType.Test ->
+            println(TeamCityMessages.testFailed(desc.name).message(result.error?.message ?: "No message"))
         }
+      }
+      TestStatus.Ignored -> {
+        val msg = when (testCase.type) {
+          // this will show up as green rather than ignored in intellij but that's ok, we can't rewrite the IDE!
+          TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name)
+          TestType.Test -> TeamCityMessages.testIgnored(desc.name).ignoreComment(result.reason ?: "No reason")
+        }
+        println(msg)
+      }
+      TestStatus.Success -> {
+        val msg = when (testCase.type) {
+          TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name)
+          TestType.Test -> TeamCityMessages.testFinished(desc.name)
+        }
+        println(msg)
+      }
     }
-    println()
-    println(msg)
   }
 }
