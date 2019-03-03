@@ -55,6 +55,6 @@ class BehaviorSpecStyleTest : LightCodeInsightFixtureTestCase() {
   }
 
   fun testMethodGeneration() {
-    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "Given(\"testName\") { }"
+    BehaviorSpecStyle.generateTest("myspec", "testName") shouldBe "Given(\"testName\") { }"
   }
 }

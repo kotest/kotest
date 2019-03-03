@@ -55,6 +55,6 @@ class FreeSpecStyleTest : LightCodeInsightFixtureTestCase() {
   }
 
   fun testMethodGeneration() {
-    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" { }"
+    FreeSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" { }"
   }
 }

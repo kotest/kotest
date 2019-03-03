@@ -55,6 +55,6 @@ class WordSpecStyleTest : LightCodeInsightFixtureTestCase() {
   }
 
   fun testMethodGeneration() {
-    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" should { }"
+    WordSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" should { }"
   }
 }

@@ -63,6 +63,6 @@ class FeatureSpecStyleTest : LightCodeInsightFixtureTestCase() {
   }
 
   fun testMethodGeneration() {
-    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "feature(\"testName\") { }"
+    FeatureSpecStyle.generateTest("myspec", "testName") shouldBe "feature(\"testName\") { }"
   }
 }
