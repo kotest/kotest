@@ -1,4 +1,4 @@
-package io.kotlintest.samples.gradle
+package com.sksamuel.samples.gradle
 
 import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.shouldBe

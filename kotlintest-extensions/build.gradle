@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation project(':kotlintest-core')
     implementation project(':kotlintest-assertions')
-
+    compile 'commons-io:commons-io:2.6'
     implementation "io.mockk:mockk:1.9.1"
     
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
