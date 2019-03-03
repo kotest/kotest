@@ -53,4 +53,8 @@ class WordSpecStyleTest : LightCodeInsightFixtureTestCase() {
     (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 417
 
   }
+
+  fun testMethodGeneration() {
+    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" should { }"
+  }
 }

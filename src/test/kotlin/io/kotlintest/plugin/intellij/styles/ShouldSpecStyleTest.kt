@@ -56,4 +56,8 @@ class ShouldSpecStyleTest : LightCodeInsightFixtureTestCase() {
     gutters[8].tooltipText shouldBe "[KotlinTest] another context -- a nested context should do a test"
     (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 516
   }
+
+  fun testMethodGeneration() {
+    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "should(\"testName\") { }"
+  }
 }

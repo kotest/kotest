@@ -53,4 +53,8 @@ class BehaviorSpecStyleTest : LightCodeInsightFixtureTestCase() {
     (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 522
 
   }
+
+  fun testMethodGeneration() {
+    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "Given(\"testName\") { }"
+  }
 }
