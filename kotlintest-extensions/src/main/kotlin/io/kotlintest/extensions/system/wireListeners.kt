@@ -8,6 +8,36 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 /**
+ * A wrapper function that captures any writes to standard out.
+ */
+fun captureStandardOut(fn: () -> Unit): String {
+  val previous = System.out
+  val buffer = ByteArrayOutputStream()
+  System.setOut(PrintStream(buffer))
+  try {
+    fn()
+    return String(buffer.toByteArray())
+  } finally {
+    System.setOut(previous)
+  }
+}
+
+/**
+ * A wrapper function that captures any writes to standard error.
+ */
+fun captureStandardErr(fn: () -> Unit): String {
+  val previous = System.err
+  val buffer = ByteArrayOutputStream()
+  System.setErr(PrintStream(buffer))
+  try {
+    fn()
+    return String(buffer.toByteArray())
+  } finally {
+    System.setErr(previous)
+  }
+}
+
+/**
  * A KotlinTest listener that facilities testing writes to standard out,
  * by redirecting any data written to standard out to an internal buffer.
  *
