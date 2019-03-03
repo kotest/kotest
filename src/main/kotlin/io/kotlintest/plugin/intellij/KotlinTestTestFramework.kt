@@ -3,7 +3,6 @@ package io.kotlintest.plugin.intellij
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor
 import com.intellij.lang.Language
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ExternalLibraryDescriptor
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -29,10 +28,6 @@ class KotlinTestTestFramework : JavaTestFramework() {
   override fun getName(): String = "KotlinTest"
   override fun getLanguage(): Language = KotlinLanguage.INSTANCE
   override fun getIcon(): Icon = Icons.KotlinTest16
-
-  override fun getFrameworkLibraryDescriptor(): ExternalLibraryDescriptor {
-    return ExternalLibraryDescriptor("io.kotlintest", "kotlintest-core", "3.0.0", "3.99999.99999", "3.2.1")
-  }
 
   override fun findOrCreateSetUpMethod(clazz: PsiClass?): PsiMethod? = null
   override fun findSetUpMethod(clazz: PsiClass): PsiMethod? = null

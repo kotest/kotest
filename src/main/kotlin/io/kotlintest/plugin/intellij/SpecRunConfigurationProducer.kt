@@ -11,7 +11,7 @@ import io.kotlintest.plugin.intellij.styles.isAnySpecSubclass
 import removeJUnitRunConfigs
 
 class SpecRunConfigurationProducer :
-    RunConfigurationProducer<KotlinTestRunConfiguration>(KotlinTestConfigurationType::class.java) {
+    RunConfigurationProducer<KotlinTestRunConfiguration>(KotlinTestConfigurationType()) {
 
   override fun setupConfigurationFromContext(configuration: KotlinTestRunConfiguration,
                                              context: ConfigurationContext,
