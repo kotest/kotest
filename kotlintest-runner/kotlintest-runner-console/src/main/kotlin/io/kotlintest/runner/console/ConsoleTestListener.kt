@@ -7,6 +7,8 @@ import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestEngineListener
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.reflect.KClass
 
 class ConsoleTestEngineListener : TestEngineListener {
@@ -19,8 +21,16 @@ class ConsoleTestEngineListener : TestEngineListener {
     val initName = desc.name + " <init>"
     println(TeamCityMessages.testStarted(initName))
     // we must print out the stack trace in between the dummy so it appears when you click on the test name
-    t?.printStackTrace(System.err)
+    if (t != null) printStackTrace(t)
     println(TeamCityMessages.testFailed(initName).message(t?.message ?: "Test Container Failed"))
+  }
+
+  private fun printStackTrace(t: Throwable) {
+    val writer = StringWriter()
+    t.printStackTrace(PrintWriter(writer))
+    System.err.println()
+    System.err.println(writer.toString())
+    System.err.flush()
   }
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
@@ -60,7 +70,7 @@ class ConsoleTestEngineListener : TestEngineListener {
             println(TeamCityMessages.testSuiteFinished(desc.name))
           }
           TestType.Test -> {
-            result.error?.printStackTrace(System.err)
+            result.error?.apply { printStackTrace(this) }
             println(TeamCityMessages.testFailed(desc.name).message(result.error?.message ?: "No message"))
           }
         }
