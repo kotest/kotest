@@ -4,6 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.TestFilterResult
 import io.kotlintest.runner.console.SpecAwareTestFilter
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.AbstractFeatureSpec
 import io.kotlintest.specs.BehaviorSpec
 import io.kotlintest.specs.FeatureSpec
 import io.kotlintest.specs.FreeSpec
@@ -16,12 +17,18 @@ class SpecAwareTestFilterTest : FunSpec() {
 
   init {
 
+    test("should detect style for spec with intermediate parents") {
+      val r = Description.spec(FeatureSpecs2::class)
+      SpecAwareTestFilter("Feature: a", FeatureSpecs2::class)
+          .filter(r.append("Feature: a").append("Scenario: c")) shouldBe TestFilterResult.Include
+    }
+
     test("should filter for fun specs") {
-      val root = Description.spec(FunSpecs::class)
-      SpecAwareTestFilter("test a", FunSpecs::class).filter(root.append("test")) shouldBe TestFilterResult.Exclude
-      SpecAwareTestFilter("test", FunSpecs::class).filter(root.append("test a")) shouldBe TestFilterResult.Exclude
-      SpecAwareTestFilter("test a", FunSpecs::class).filter(root.append("test a")) shouldBe TestFilterResult.Include
-      SpecAwareTestFilter("test a", FunSpecs::class).filter(root.append("test a b")) shouldBe TestFilterResult.Exclude
+      val r = Description.spec(FunSpecs::class)
+      SpecAwareTestFilter("test a", FunSpecs::class).filter(r.append("test")) shouldBe TestFilterResult.Exclude
+      SpecAwareTestFilter("test", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Exclude
+      SpecAwareTestFilter("test a", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Include
+      SpecAwareTestFilter("test a", FunSpecs::class).filter(r.append("test a b")) shouldBe TestFilterResult.Exclude
     }
 
     test("should filter for strings specs") {
@@ -172,8 +179,11 @@ class SpecAwareTestFilterTest : FunSpec() {
   }
 }
 
+abstract class AbstractFeature(body: AbstractFeatureSpec.() -> Unit = {}) : FeatureSpec(body = body)
+
 class BehaviorSpecs : BehaviorSpec()
 class FeatureSpecs : FeatureSpec()
+class FeatureSpecs2 : AbstractFeature()
 class FreeSpecs : FreeSpec()
 class FunSpecs : FunSpec()
 class ShouldSpecs : ShouldSpec()
