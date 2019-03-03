@@ -20,7 +20,7 @@ import io.kotlintest.plugin.intellij.styles.enclosingClass
 import removeJUnitRunConfigs
 
 abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) :
-    RunConfigurationProducer<KotlinTestRunConfiguration>(KotlinTestConfigurationType::class.java) {
+    RunConfigurationProducer<KotlinTestRunConfiguration>(KotlinTestConfigurationType()) {
 
   override fun setupConfigurationFromContext(configuration: KotlinTestRunConfiguration,
                                              context: ConfigurationContext,
