@@ -1,5 +1,5 @@
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
+    from sourceSets.main.kotlin
     archiveClassifier = 'sources'
 }
 
