@@ -4,8 +4,13 @@ buildscript {
     ext.travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
     ext.isReleaseVersion = !isTravis
     ext.JUnitPlatformVersion = "1.4.0"
+    ext.dokkaVersion = '0.9.17'
     repositories {
         mavenCentral()
+    }
+    
+    dependencies {
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
     }
 }
 
