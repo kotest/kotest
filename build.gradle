@@ -15,6 +15,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id 'net.researchgate.release' version '2.8.0'
 }
 
 allprojects {
@@ -31,11 +32,20 @@ allprojects {
     if (isTravis) {
         version "3.3.0." + travisBuildNumber + "-SNAPSHOT"
     }
+
+    release {
+        failOnCommitNeeded = false
+        failOnPublishNeeded = false
+        failOnUnversionedFiles = false
+    }
+
+    afterReleaseBuild.dependsOn publish
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
 }
+
 
 project(":") {
     publish.enabled = false

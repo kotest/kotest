@@ -236,9 +236,9 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
   )
 }
 
-fun <T : Comparable<T>> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
-infix fun <T : Comparable<T>> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
-infix fun <T : Comparable<T>> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
+fun <T> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
+infix fun <T> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
+infix fun <T> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
 
 fun <T> Collection<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Collection<T>.shouldNotBeEmpty() = this shouldNot beEmpty()

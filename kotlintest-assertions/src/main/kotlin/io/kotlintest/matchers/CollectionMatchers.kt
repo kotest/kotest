@@ -36,7 +36,7 @@ fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher
 fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
 /** Assert that a collection contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-  assert(subsequence.isNotEmpty(), { "expected values must not be empty" })
+  assert(subsequence.isNotEmpty()) { "expected values must not be empty" }
 
   var subsequenceIndex = 0
   val actualIterator = actual.iterator()
