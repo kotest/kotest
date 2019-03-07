@@ -1,11 +1,20 @@
+apply plugin: 'org.jetbrains.dokka'
+
+dokka {
+    outputFormat = 'javadoc'
+    outputDirectory = javadoc.destinationDir
+}
+
+dokka.dependsOn javadoc
+
+task javadocJar(type: Jar, dependsOn: dokka) {
+    from javadoc.destinationDir
+    archiveClassifier = 'javadoc'
+}
+
 task sourcesJar(type: Jar) {
     from sourceSets.main.kotlin
     archiveClassifier = 'sources'
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
 }
 
 publishing {
