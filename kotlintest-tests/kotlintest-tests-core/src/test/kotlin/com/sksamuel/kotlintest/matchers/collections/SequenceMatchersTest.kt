@@ -8,11 +8,11 @@ import io.kotlintest.shouldThrow
 class SequenceMatchersTest : WordSpec() {
 
 	/* PassFail */
-	private suspend fun WordScope.pass(name: String, test: FinalTestContext.() -> Unit) {
+	private suspend fun WordScope.pass(name: String, test: suspend FinalTestContext.() -> Unit) {
 		("succeed $name")(test)
     }
 
-	private suspend fun WordScope.succeed(name: String, test: FinalTestContext.() -> Unit) = pass(name, test)
+	private suspend fun WordScope.succeed(name: String, test: suspend FinalTestContext.() -> Unit) = pass(name, test)
 	
 	fun WordScope.fail(msg: String):Nothing = io.kotlintest.fail(msg)
 	suspend fun WordScope.fail(name: String, test: () -> Any?) {

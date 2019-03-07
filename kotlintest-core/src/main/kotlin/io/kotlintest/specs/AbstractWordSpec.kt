@@ -42,7 +42,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: FinalTestContext.() -> Unit) {
+        test: suspend FinalTestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
           invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
@@ -53,7 +53,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
       context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this, coroutineContext).test() }, config, TestType.Test)
     }
 
-    suspend infix operator fun String.invoke(test: FinalTestContext.() -> Unit) =
+    suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this, coroutineContext).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
 
     // we need to override the should method to stop people nesting a should inside a should
