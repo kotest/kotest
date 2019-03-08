@@ -1,3 +1,4 @@
+@file:JvmName("TableTestingKt")
 package io.kotlintest.tables
 
 import io.kotlintest.Failures
@@ -73,7 +74,8 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> table(headers: 
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> table(headers: Headers21, vararg rows: Row21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>) = Table21(headers, rows.asList())
 fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> table(headers: Headers22, vararg rows: Row22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>) = Table22(headers, rows.asList())
 
-private fun error(e: Throwable, headers: List<String>, values: List<*>): AssertionError {
+@PublishedApi
+internal fun error(e: Throwable, headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
   // Include class name for non-assertion errors, since the class is often meaningful and there might not
   // be a message (e.g. NullPointerException)
@@ -85,12 +87,14 @@ private fun error(e: Throwable, headers: List<String>, values: List<*>): Asserti
   return Failures.failure("Test failed for $params with error $message")
 }
 
-private fun forNoneError(headers: List<String>, values: List<*>): AssertionError {
+@PublishedApi
+internal fun forNoneError(headers: List<String>, values: List<*>): AssertionError {
   val params = headers.zip(values).joinToString(", ")
   return Failures.failure("Test passed for $params but expected failure")
 }
 
-private class ErrorCollector {
+@PublishedApi
+internal class ErrorCollector {
   private val errors = mutableListOf<Throwable>()
 
   operator fun plusAssign(t: Throwable) {
@@ -106,7 +110,7 @@ private class ErrorCollector {
   }
 }
 
-fun <A> forAll(table: Table1<A>, fn: (A) -> Unit) {
+inline fun <A> forAll(table: Table1<A>, fn: (A) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -118,7 +122,7 @@ fun <A> forAll(table: Table1<A>, fn: (A) -> Unit) {
   collector.assertAll()
 }
 
-fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit) {
+inline fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -130,7 +134,7 @@ fun <A, B> forAll(table: Table2<A, B>, fn: (A, B) -> Unit) {
   collector.assertAll()
 }
 
-fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
+inline fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -142,7 +146,7 @@ fun <A, B, C> forAll(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   collector.assertAll()
 }
 
-fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
+inline fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -154,7 +158,7 @@ fun <A, B, C, D> forAll(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   collector.assertAll()
 }
 
-fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
+inline fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -167,7 +171,7 @@ fun <A, B, C, D, E> forAll(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> 
 }
 
 
-fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
+inline fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -179,7 +183,7 @@ fun <A, B, C, D, E, F> forAll(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, 
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
+inline fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -191,7 +195,7 @@ fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, 
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -203,7 +207,7 @@ fun <A, B, C, D, E, F, G, H> forAll(table: Table8<A, B, C, D, E, F, G, H>, fn: (
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -215,7 +219,7 @@ fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -227,7 +231,7 @@ fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -239,7 +243,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K> forAll(table: Table11<A, B, C, D, E, F, G,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -251,7 +255,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> forAll(table: Table12<A, B, C, D, E, F,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -263,7 +267,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(table: Table13<A, B, C, D, E,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -275,7 +279,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -287,7 +291,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forAll(table: Table15<A, B, C,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -299,7 +303,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forAll(table: Table16<A, B,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -311,7 +315,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forAll(table: Table17<A,
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -323,7 +327,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -335,7 +339,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Tabl
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -347,7 +351,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forAll(table: T
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -359,7 +363,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forAll(table
   collector.assertAll()
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
   val collector = ErrorCollector()
   for (row in table.rows) {
     try {
@@ -371,30 +375,30 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forAll(ta
   collector.assertAll()
 }
 
-@JvmName("forAll1receiver") fun <A> Table1<A>.forAll(fn: (A) -> Unit) = forAll(this, fn)
-@JvmName("forAll2receiver") fun <A, B> Table2<A, B>.forAll(fn: (A, B) -> Unit) = forAll(this, fn)
-@JvmName("forAll3receiver") fun <A, B, C> Table3<A, B, C>.forAll(fn: (A, B, C) -> Unit) = forAll(this, fn)
-@JvmName("forAll4receiver") fun <A, B, C, D> Table4<A, B, C, D>.forAll(fn: (A, B, C, D) -> Unit) = forAll(this, fn)
-@JvmName("forAll5receiver") fun <A, B, C, D, E> Table5<A, B, C, D, E>.forAll(fn: (A, B, C, D, E) -> Unit) = forAll(this, fn)
-@JvmName("forAll6receiver") fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forAll(fn: (A, B, C, D, E, F) -> Unit) = forAll(this, fn)
-@JvmName("forAll7receiver") fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forAll(fn: (A, B, C, D, E, F, G) -> Unit) = forAll(this, fn)
-@JvmName("forAll8receiver") fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forAll(fn: (A, B, C, D, E, F, G, H) -> Unit) = forAll(this, fn)
-@JvmName("forAll9receiver") fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forAll(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forAll(this, fn)
-@JvmName("forAll10receiver") fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forAll(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forAll(this, fn)
-@JvmName("forAll11receiver") fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forAll(this, fn)
-@JvmName("forAll12receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forAll(this, fn)
-@JvmName("forAll13receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forAll(this, fn)
-@JvmName("forAll14receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forAll(this, fn)
-@JvmName("forAll15receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forAll(this, fn)
-@JvmName("forAll16receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forAll(this, fn)
-@JvmName("forAll17receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forAll(this, fn)
-@JvmName("forAll18receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forAll(this, fn)
-@JvmName("forAll19receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forAll(this, fn)
-@JvmName("forAll20receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forAll(this, fn)
-@JvmName("forAll21receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forAll(this, fn)
-@JvmName("forAll22receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forAll(this, fn)
+@JvmName("forAll1receiver") inline fun <A> Table1<A>.forAll(fn: (A) -> Unit) = forAll(this, fn)
+@JvmName("forAll2receiver") inline fun <A, B> Table2<A, B>.forAll(fn: (A, B) -> Unit) = forAll(this, fn)
+@JvmName("forAll3receiver") inline fun <A, B, C> Table3<A, B, C>.forAll(fn: (A, B, C) -> Unit) = forAll(this, fn)
+@JvmName("forAll4receiver") inline fun <A, B, C, D> Table4<A, B, C, D>.forAll(fn: (A, B, C, D) -> Unit) = forAll(this, fn)
+@JvmName("forAll5receiver") inline fun <A, B, C, D, E> Table5<A, B, C, D, E>.forAll(fn: (A, B, C, D, E) -> Unit) = forAll(this, fn)
+@JvmName("forAll6receiver") inline fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forAll(fn: (A, B, C, D, E, F) -> Unit) = forAll(this, fn)
+@JvmName("forAll7receiver") inline fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forAll(fn: (A, B, C, D, E, F, G) -> Unit) = forAll(this, fn)
+@JvmName("forAll8receiver") inline fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forAll(fn: (A, B, C, D, E, F, G, H) -> Unit) = forAll(this, fn)
+@JvmName("forAll9receiver") inline fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forAll(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forAll(this, fn)
+@JvmName("forAll10receiver") inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forAll(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forAll(this, fn)
+@JvmName("forAll11receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forAll(this, fn)
+@JvmName("forAll12receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forAll(this, fn)
+@JvmName("forAll13receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forAll(this, fn)
+@JvmName("forAll14receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forAll(this, fn)
+@JvmName("forAll15receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forAll(this, fn)
+@JvmName("forAll16receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forAll(this, fn)
+@JvmName("forAll17receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forAll(this, fn)
+@JvmName("forAll18receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forAll(this, fn)
+@JvmName("forAll19receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forAll(this, fn)
+@JvmName("forAll20receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forAll(this, fn)
+@JvmName("forAll21receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forAll(this, fn)
+@JvmName("forAll22receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forAll(this, fn)
 
-fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
+inline fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a)
@@ -405,7 +409,7 @@ fun <A> forNone(table: Table1<A>, fn: (A) -> Unit) {
   }
 }
 
-fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit) {
+inline fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b)
@@ -416,7 +420,7 @@ fun <A, B> forNone(table: Table2<A, B>, fn: (A, B) -> Unit) {
   }
 }
 
-fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
+inline fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c)
@@ -427,7 +431,7 @@ fun <A, B, C> forNone(table: Table3<A, B, C>, fn: (A, B, C) -> Unit) {
   }
 }
 
-fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
+inline fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d)
@@ -438,7 +442,7 @@ fun <A, B, C, D> forNone(table: Table4<A, B, C, D>, fn: (A, B, C, D) -> Unit) {
   }
 }
 
-fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
+inline fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e)
@@ -450,7 +454,7 @@ fun <A, B, C, D, E> forNone(table: Table5<A, B, C, D, E>, fn: (A, B, C, D, E) ->
 }
 
 
-fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
+inline fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D, E, F) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f)
@@ -461,7 +465,7 @@ fun <A, B, C, D, E, F> forNone(table: Table6<A, B, C, D, E, F>, fn: (A, B, C, D,
   }
 }
 
-fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
+inline fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B, C, D, E, F, G) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g)
@@ -472,7 +476,7 @@ fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, fn: (A, B,
   }
 }
 
-fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: (A, B, C, D, E, F, G, H) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h)
@@ -483,7 +487,7 @@ fun <A, B, C, D, E, F, G, H> forNone(table: Table8<A, B, C, D, E, F, G, H>, fn: 
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>, fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i)
@@ -494,7 +498,7 @@ fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j)
@@ -505,7 +509,7 @@ fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G, H, I, J, K>, fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k)
@@ -516,7 +520,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K> forNone(table: Table11<A, B, C, D, E, F, G
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F, G, H, I, J, K, L>, fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l)
@@ -527,7 +531,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> forNone(table: Table12<A, B, C, D, E, F
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m)
@@ -538,7 +542,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(table: Table13<A, B, C, D, E
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n)
@@ -549,7 +553,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o)
@@ -560,7 +564,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> forNone(table: Table15<A, B, C
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p)
@@ -571,7 +575,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> forNone(table: Table16<A, B
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q)
@@ -582,7 +586,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> forNone(table: Table17<A
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r)
@@ -593,7 +597,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table1
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s)
@@ -604,7 +608,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Tab
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t)
@@ -615,7 +619,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> forNone(table: 
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(table: Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u)
@@ -626,7 +630,7 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> forNone(tabl
   }
 }
 
-fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
+inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(table: Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>, fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) {
   for (row in table.rows) {
     try {
       fn(row.a, row.b, row.c, row.d, row.e, row.f, row.g, row.h, row.i, row.j, row.k, row.l, row.m, row.n, row.o, row.p, row.q, row.r, row.s, row.t, row.u, row.v)
@@ -637,28 +641,28 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> forNone(t
   }
 }
 
-@JvmName("forNone1receiver") fun <A> Table1<A>.forNone(fn: (A) -> Unit) = forNone(this, fn)
-@JvmName("forNone2receiver") fun <A, B> Table2<A, B>.forNone(fn: (A, B) -> Unit) = forNone(this, fn)
-@JvmName("forNone3receiver") fun <A, B, C> Table3<A, B, C>.forNone(fn: (A, B, C) -> Unit) = forNone(this, fn)
-@JvmName("forNone4receiver") fun <A, B, C, D> Table4<A, B, C, D>.forNone(fn: (A, B, C, D) -> Unit) = forNone(this, fn)
-@JvmName("forNone5receiver") fun <A, B, C, D, E> Table5<A, B, C, D, E>.forNone(fn: (A, B, C, D, E) -> Unit) = forNone(this, fn)
-@JvmName("forNone6receiver") fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forNone(fn: (A, B, C, D, E, F) -> Unit) = forNone(this, fn)
-@JvmName("forNone7receiver") fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forNone(fn: (A, B, C, D, E, F, G) -> Unit) = forNone(this, fn)
-@JvmName("forNone8receiver") fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forNone(fn: (A, B, C, D, E, F, G, H) -> Unit) = forNone(this, fn)
-@JvmName("forNone9receiver") fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forNone(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forNone(this, fn)
-@JvmName("forNone10receiver") fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forNone(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forNone(this, fn)
-@JvmName("forNone11receiver") fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forNone(this, fn)
-@JvmName("forNone12receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forNone(this, fn)
-@JvmName("forNone13receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forNone(this, fn)
-@JvmName("forNone14receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forNone(this, fn)
-@JvmName("forNone15receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forNone(this, fn)
-@JvmName("forNone16receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forNone(this, fn)
-@JvmName("forNone17receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forNone(this, fn)
-@JvmName("forNone18receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forNone(this, fn)
-@JvmName("forNone19receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forNone(this, fn)
-@JvmName("forNone20receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forNone(this, fn)
-@JvmName("forNone21receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forNone(this, fn)
-@JvmName("forNone22receiver") fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forNone(this, fn)
+@JvmName("forNone1receiver") inline fun <A> Table1<A>.forNone(fn: (A) -> Unit) = forNone(this, fn)
+@JvmName("forNone2receiver") inline fun <A, B> Table2<A, B>.forNone(fn: (A, B) -> Unit) = forNone(this, fn)
+@JvmName("forNone3receiver") inline fun <A, B, C> Table3<A, B, C>.forNone(fn: (A, B, C) -> Unit) = forNone(this, fn)
+@JvmName("forNone4receiver") inline fun <A, B, C, D> Table4<A, B, C, D>.forNone(fn: (A, B, C, D) -> Unit) = forNone(this, fn)
+@JvmName("forNone5receiver") inline fun <A, B, C, D, E> Table5<A, B, C, D, E>.forNone(fn: (A, B, C, D, E) -> Unit) = forNone(this, fn)
+@JvmName("forNone6receiver") inline fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forNone(fn: (A, B, C, D, E, F) -> Unit) = forNone(this, fn)
+@JvmName("forNone7receiver") inline fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forNone(fn: (A, B, C, D, E, F, G) -> Unit) = forNone(this, fn)
+@JvmName("forNone8receiver") inline fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forNone(fn: (A, B, C, D, E, F, G, H) -> Unit) = forNone(this, fn)
+@JvmName("forNone9receiver") inline fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forNone(fn: (A, B, C, D, E, F, G, H, I) -> Unit) = forNone(this, fn)
+@JvmName("forNone10receiver") inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forNone(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) = forNone(this, fn)
+@JvmName("forNone11receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K> Table11<A, B, C, D, E, F, G, H, I, J, K>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K) -> Unit) = forNone(this, fn)
+@JvmName("forNone12receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L> Table12<A, B, C, D, E, F, G, H, I, J, K, L>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L) -> Unit) = forNone(this, fn)
+@JvmName("forNone13receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M> Table13<A, B, C, D, E, F, G, H, I, J, K, L, M>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit) = forNone(this, fn)
+@JvmName("forNone14receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) = forNone(this, fn)
+@JvmName("forNone15receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> Table15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit) = forNone(this, fn)
+@JvmName("forNone16receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> Table16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit) = forNone(this, fn)
+@JvmName("forNone17receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> Table17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit) = forNone(this, fn)
+@JvmName("forNone18receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) = forNone(this, fn)
+@JvmName("forNone19receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) = forNone(this, fn)
+@JvmName("forNone20receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> Table20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit) = forNone(this, fn)
+@JvmName("forNone21receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> Table21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit) = forNone(this, fn)
+@JvmName("forNone22receiver") inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> Table22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit) = forNone(this, fn)
 
 
 data class Table1<out A>(val headers: Headers1, val rows: List<Row1<A>>)
