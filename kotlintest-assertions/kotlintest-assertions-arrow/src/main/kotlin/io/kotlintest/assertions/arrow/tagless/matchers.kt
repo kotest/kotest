@@ -2,8 +2,7 @@ package io.kotlintest.assertions.arrow.tagless
 
 import arrow.Kind
 import arrow.effects.*
-import arrow.effects.deferredk.applicative.applicative
-import arrow.effects.instances.io.applicative.applicative
+import arrow.effects.extensions.io.applicative.applicative
 import arrow.extension
 import arrow.typeclasses.Applicative
 import io.kotlintest.Matcher
@@ -25,16 +24,12 @@ interface TaglessAssertions<F> {
   /**
    * Asserts that the given tagless program [this] can be reduced to [a]
    * blocking if necessary in async and effect capable data types such as
-   * [IO] and [DeferredK]
+   * [IO]
    *
    * ```kotlin
    * fun <F> Applicative<F>.helloWorldPoly(): Kind<F, String> = just("Hello World")
    *
    * IO.applicative().run {
-   *   helloWorldPoly() shouldBeInterpretedTo "Hello World"
-   * }
-   *
-   * DeferredK.applicative().run {
    *   helloWorldPoly() shouldBeInterpretedTo "Hello World"
    * }
    * ```
@@ -59,11 +54,4 @@ interface IOAssertions : TaglessAssertions<ForIO> {
   override fun AF(): Applicative<ForIO> = IO.applicative()
 
   override fun <A> Kind<ForIO, A>.blockingValue(): A = fix().unsafeRunSync()
-}
-
-@extension
-interface DeferredAssertions : TaglessAssertions<ForDeferredK> {
-  override fun AF(): Applicative<ForDeferredK> = DeferredK.applicative()
-
-  override fun <A> Kind<ForDeferredK, A>.blockingValue(): A = fix().unsafeRunSync()
 }

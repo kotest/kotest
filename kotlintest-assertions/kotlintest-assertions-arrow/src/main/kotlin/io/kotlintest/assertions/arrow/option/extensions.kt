@@ -2,9 +2,9 @@ package io.kotlintest.assertions.arrow.option
 
 import arrow.core.Option
 import arrow.core.Some
+import arrow.core.extensions.option.applicativeError.applicativeError
 import arrow.core.fix
 import arrow.data.NonEmptyList
-import arrow.instances.option.applicativeError.applicativeError
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
 

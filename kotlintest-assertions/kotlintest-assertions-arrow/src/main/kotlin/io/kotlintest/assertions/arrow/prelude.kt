@@ -4,7 +4,7 @@ import arrow.Kind
 import arrow.typeclasses.ApplicativeError
 import io.kotlintest.Matcher
 import io.kotlintest.Result
-import io.kotlintest.properties.RANDOM
+import kotlin.random.Random
 
 internal fun <A> matcher(
   passed: Boolean,
@@ -21,4 +21,4 @@ internal fun <A> matcher(
  * The chooser dispatches returns an error or value in the context of [F]
  */
 fun <F, E, A> ApplicativeError<F, E>.choose(fe: () -> E, fa: () -> A): Kind<F, A> =
-  if (RANDOM.nextBoolean()) raiseError(fe()) else just(fa())
+  if (Random.nextBoolean()) raiseError(fe()) else just(fa())

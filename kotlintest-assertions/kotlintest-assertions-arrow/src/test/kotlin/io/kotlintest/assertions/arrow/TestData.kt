@@ -6,9 +6,9 @@ import arrow.data.Nel
 import arrow.data.NonEmptyList
 import arrow.data.Validated
 import arrow.data.ValidatedPartialOf
+import arrow.data.extensions.nonemptylist.semigroup.semigroup
+import arrow.data.extensions.validated.applicativeError.applicativeError
 import arrow.extension
-import arrow.instances.nonemptylist.semigroup.semigroup
-import arrow.instances.validated.applicativeError.applicativeError
 import arrow.product
 import arrow.typeclasses.Applicative
 import arrow.validation.RefinedPredicateException

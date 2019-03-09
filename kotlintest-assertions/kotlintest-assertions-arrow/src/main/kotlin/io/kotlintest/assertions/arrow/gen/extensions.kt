@@ -4,6 +4,8 @@ import arrow.Kind
 import arrow.core.Either
 import arrow.extension
 import arrow.typeclasses.*
+import arrow.typeclasses.suspended.monad.Fx
+import io.kotlintest.assertions.arrow.gen.gen.monad.monad
 import io.kotlintest.properties.ForGen
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.GenOf
@@ -123,4 +125,25 @@ interface GenMonad : Monad<ForGen>, GenApplicative {
 
   override fun <A> just(a: A): Gen<A> =
     Gen.constant(a)
+}
+
+/**
+ * [Monad] extension for Gen<_>
+ *
+ * Sequentially bind generators to produce new generators
+ *
+ * ```kotlin
+ * val prefix = "_"
+ * val personGen: Gen<Person> =
+ *   binding {
+ *     val id = Gen.long().bind()
+ *     val name = Gen.string().bind()
+ *     Person(id, prefix + name)
+ *   }
+ * forAll(personGen) { it.name.startsWith(prefix) }
+ * ```
+ */
+@extension
+interface GenFx : Fx<ForGen> {
+  override fun monad(): Monad<ForGen> = Gen.monad()
 }

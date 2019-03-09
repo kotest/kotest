@@ -3,8 +3,8 @@ package io.kotlintest.assertions.arrow.validation
 import arrow.data.Invalid
 import arrow.data.Valid
 import arrow.data.Validated
+import arrow.data.extensions.validated.applicativeError.applicativeError
 import arrow.data.fix
-import arrow.instances.validated.applicativeError.applicativeError
 import arrow.typeclasses.Semigroup
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen

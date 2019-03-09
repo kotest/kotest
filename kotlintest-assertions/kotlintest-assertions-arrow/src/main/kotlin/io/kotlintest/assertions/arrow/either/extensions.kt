@@ -3,10 +3,10 @@ package io.kotlintest.assertions.arrow.either
 import arrow.core.Either
 import arrow.core.Left
 import arrow.core.Right
+import arrow.core.extensions.either.applicativeError.applicativeError
 import arrow.core.fix
-import arrow.instances.either.applicativeError.applicativeError
-import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
+import io.kotlintest.assertions.arrow.choose
 
 /**
  * [Gen] extension instance for [Either].

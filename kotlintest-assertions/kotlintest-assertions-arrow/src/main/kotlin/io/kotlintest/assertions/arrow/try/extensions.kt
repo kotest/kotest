@@ -3,7 +3,7 @@ package io.kotlintest.assertions.arrow.`try`
 import arrow.core.Success
 import arrow.core.Try
 import arrow.core.fix
-import arrow.instances.`try`.applicativeError.applicativeError
+import arrow.core.extensions.`try`.applicativeError.applicativeError
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
 

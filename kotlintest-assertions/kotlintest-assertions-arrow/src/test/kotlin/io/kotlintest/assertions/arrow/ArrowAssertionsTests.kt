@@ -1,24 +1,20 @@
 package io.kotlintest.assertions.arrow
 
 import arrow.data.Validated
-import arrow.effects.DeferredK
 import arrow.effects.IO
-import arrow.effects.deferredk.applicative.applicative
-import arrow.effects.instances.io.applicative.applicative
-import arrow.instances.eq
-import arrow.instances.order
-import arrow.instances.semigroup
+import arrow.effects.extensions.io.applicative.applicative
+import arrow.core.extensions.eq
+import arrow.core.extensions.order
+import arrow.core.extensions.semigroup
 import arrow.validation.refinedTypes.numeric.validated.negative.negative
 import io.kotlintest.assertions.arrow.`try`.`try`
 import io.kotlintest.assertions.arrow.either.either
 import io.kotlintest.assertions.arrow.eq.EqAssertions
-import io.kotlintest.assertions.arrow.gen.gen.monad.binding
 import io.kotlintest.assertions.arrow.nel.nel
 import io.kotlintest.assertions.arrow.option.option
 import io.kotlintest.assertions.arrow.order.OrderAssertions
 import io.kotlintest.assertions.arrow.refinements.forAll
 import io.kotlintest.assertions.arrow.refinements.shouldBeRefinedBy
-import io.kotlintest.assertions.arrow.tagless.deferredk.taglessAssertions.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.tagless.io.taglessAssertions.shouldBeInterpretedTo
 import io.kotlintest.assertions.arrow.validated.nonEmptyPerson.nonEmptyPerson
 import io.kotlintest.assertions.arrow.validation.validated
@@ -26,6 +22,7 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
+import io.kotlintest.assertions.arrow.gen.gen.fx.fx
 
 class ArrowAssertionsTests : StringSpec({
 
@@ -45,12 +42,6 @@ class ArrowAssertionsTests : StringSpec({
 
   "Provide assertions for ad-hoc polymorphic programs and higher kinded values [IO]" {
     IO.applicative().run {
-      helloWorldPoly() shouldBeInterpretedTo "Hello World"
-    }
-  }
-
-  "Provide assertions for ad-hoc polymorphic programs and higher kinded values [Deferred]" {
-    DeferredK.applicative().run {
       helloWorldPoly() shouldBeInterpretedTo "Hello World"
     }
   }
@@ -103,9 +94,9 @@ class ArrowAssertionsTests : StringSpec({
 
   "Gen binding" {
     val prefix = "_"
-    val personGen: Gen<Person> = binding {
-      val id = Gen.long().bind()
-      val name = Gen.string().bind()
+    val personGen: Gen<Person> = fx {
+      val id = !Gen.long()
+      val name = !Gen.string()
       Person(id, prefix + name)
     }
     forAll(personGen) { it.name.startsWith(prefix) }
