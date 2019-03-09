@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import arrow.higherkind
 import io.kotlintest.properties.shrinking.*
 import java.io.File
 import java.lang.reflect.ParameterizedType
@@ -46,7 +47,8 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  * The [Int] generator example should return a random int
  * from across the entire integer range.
  */
-@higherkind interface Gen<T> : GenOf<T> {
+@higherkind
+interface Gen<T> : GenOf<T> {
 
   /**
    * Returns the values that should always be used

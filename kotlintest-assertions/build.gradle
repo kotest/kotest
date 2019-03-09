@@ -4,8 +4,9 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-    id 'kotlin-kapt'
 }
+
+apply plugin: 'kotlin-kapt'
 
 repositories {
     mavenCentral()
@@ -13,7 +14,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile "io.arrow-kt:arrow-core:$arrow_version"
+    compile "io.arrow-kt:arrow-core-data:$arrow_version"
     kapt "io.arrow-kt:arrow-meta:$arrow_version"
     compile 'com.univocity:univocity-parsers:2.8.1'
     compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
