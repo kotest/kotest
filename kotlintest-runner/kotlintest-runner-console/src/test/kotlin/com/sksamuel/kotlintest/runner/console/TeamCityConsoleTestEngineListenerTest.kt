@@ -9,19 +9,19 @@ import io.kotlintest.TestType
 import io.kotlintest.extensions.system.captureStandardErr
 import io.kotlintest.extensions.system.captureStandardOut
 import io.kotlintest.matchers.string.shouldStartWith
-import io.kotlintest.runner.console.ConsoleTestEngineListener
+import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import kotlin.reflect.KClass
 
-class ConsoleTestEngineListenerTest : FunSpec() {
+class TeamCityConsoleTestEngineListenerTest : FunSpec() {
 
   @Suppress("UNCHECKED_CAST")
-  private val klass: KClass<out Spec> = ConsoleTestEngineListener::class as KClass<out Spec>
+  private val klass: KClass<out Spec> = TeamCityConsoleWriter::class as KClass<out Spec>
 
   private val testCaseContainer = TestCase(
       Description.spec(klass).append("my context").append("my test container"),
-      this@ConsoleTestEngineListenerTest,
+      this@TeamCityConsoleTestEngineListenerTest,
       { },
       123,
       TestType.Container,
@@ -37,32 +37,32 @@ class ConsoleTestEngineListenerTest : FunSpec() {
 
     test("before spec class should write testSuiteStarted started") {
       captureStandardOut {
-        ConsoleTestEngineListener().beforeSpecClass(klass)
+        TeamCityConsoleWriter().beforeSpecClass(klass)
       } shouldBe "\n##teamcity[testSuiteStarted name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
     }
 
     test("before test should write testSuiteStarted for TestType.Container") {
       captureStandardOut {
-        ConsoleTestEngineListener().beforeTestCaseExecution(testCaseContainer)
+        TeamCityConsoleWriter().beforeTestCaseExecution(testCaseContainer)
       } shouldBe "\n##teamcity[testSuiteStarted name='my test container' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest:123']\n"
     }
 
     test("before test should write testStarted for TestType.Test") {
       captureStandardOut {
-        ConsoleTestEngineListener().beforeTestCaseExecution(testCaseTest)
+        TeamCityConsoleWriter().beforeTestCaseExecution(testCaseTest)
       } shouldBe "\n##teamcity[testStarted name='my test case' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest:123']\n"
     }
 
     test("after spec class should write testSuiteFinished") {
       captureStandardOut {
-        ConsoleTestEngineListener().afterSpecClass(klass, null)
+        TeamCityConsoleWriter().afterSpecClass(klass, null)
       } shouldBe "\n##teamcity[testSuiteFinished name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
     }
 
     test("afterSpecClass should insert dummy test and write testSuiteFinished for spec error") {
       captureStandardErr {
         captureStandardOut {
-          ConsoleTestEngineListener().afterSpecClass(klass, AssertionError("boom"))
+          TeamCityConsoleWriter().afterSpecClass(klass, AssertionError("boom"))
         } shouldBe "\n" +
           "##teamcity[testStarted name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>']\n" +
             "##teamcity[testFailed name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>' message='boom']\n" +
@@ -73,14 +73,14 @@ class ConsoleTestEngineListenerTest : FunSpec() {
 
     test("after test should write testSuiteFinished for container success") {
       captureStandardOut {
-        ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer, TestResult.Success)
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.Success)
       } shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
     }
 
     test("after test should insert dummy test and write testSuiteFinished for container error") {
       captureStandardErr {
         captureStandardOut {
-          ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer,
+          TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer,
               TestResult.error(AssertionError("wibble")))
         } shouldBe "\n" +
           "##teamcity[testStarted name='my test container <init>']\n" +
@@ -92,20 +92,20 @@ class ConsoleTestEngineListenerTest : FunSpec() {
 
     test("after test should write testSuiteFinished for container ignored") {
       captureStandardOut {
-        ConsoleTestEngineListener().afterTestCaseExecution(testCaseContainer, TestResult.ignored("ignore me?"))
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.ignored("ignore me?"))
       } shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
     }
 
     test("after test should write testFinished for test success") {
       captureStandardOut {
-        ConsoleTestEngineListener().afterTestCaseExecution(testCaseTest, TestResult.Success)
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.Success)
       } shouldBe "\n##teamcity[testFinished name='my test case']\n"
     }
 
     test("afterTestCaseExecution for errored test should write stack trace for error to std err, and write testFailed to std out") {
       captureStandardOut {
         captureStandardErr {
-          ConsoleTestEngineListener().afterTestCaseExecution(testCaseTest, TestResult.error(AssertionError("wibble")))
+          TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.error(AssertionError("wibble")))
         } shouldStartWith "java.lang.AssertionError: wibble\n" +
           "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
       } shouldBe "\n##teamcity[testFailed name='my test case' message='wibble']\n"
@@ -114,7 +114,7 @@ class ConsoleTestEngineListenerTest : FunSpec() {
     test("afterTestCaseExecution for failed test should write stack trace for error to std err, and write testFailed to std out") {
       captureStandardOut {
         captureStandardErr {
-          ConsoleTestEngineListener().afterTestCaseExecution(testCaseTest, TestResult.failure(AssertionError("wibble")))
+          TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(AssertionError("wibble")))
         } shouldStartWith "java.lang.AssertionError: wibble\n" +
             "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
       } shouldBe "\n##teamcity[testFailed name='my test case' message='wibble']\n"
@@ -122,7 +122,7 @@ class ConsoleTestEngineListenerTest : FunSpec() {
 
     test("after test should write testIgnored for test with ignored") {
       captureStandardOut {
-        ConsoleTestEngineListener().afterTestCaseExecution(testCaseTest, TestResult.ignored("ignore me?"))
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.ignored("ignore me?"))
       } shouldBe "\n##teamcity[testIgnored name='my test case' ignoreComment='ignore me?']\n"
     }
   }

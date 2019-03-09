@@ -11,7 +11,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
 
-class ConsoleTestEngineListener : TestEngineListener {
+class TeamCityConsoleWriter : TestEngineListener {
 
   private fun locationHint(testCase: TestCase) = "kotlintest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.line
 

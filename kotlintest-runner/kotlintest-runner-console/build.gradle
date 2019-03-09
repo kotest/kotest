@@ -9,6 +9,7 @@ plugins {
 dependencies {
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
     compile 'net.sourceforge.argparse4j:argparse4j:0.8.1'
+    compile 'com.github.ajalt:mordant:1.2.0'
     testImplementation project(":kotlintest-runner:kotlintest-runner-junit5")
 }
 

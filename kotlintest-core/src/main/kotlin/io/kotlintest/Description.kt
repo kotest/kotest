@@ -31,6 +31,8 @@ data class Description(val parents: List<String>, val name: String) {
 
   fun isSpec(): Boolean = parents.isEmpty()
 
+  fun spec(): Description = Description.spec(parents.first())
+
   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(parents.drop(1), name)
 
   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
