@@ -92,17 +92,8 @@ interface GenApplicative : Applicative<ForGen>, GenFunctor {
  *
  * Sequentially bind generators to produce new generators
  *
- * ```kotlin
- * val prefix = "_"
- * val personGen: Gen<Person> =
- *   binding {
- *     val id = Gen.long().bind()
- *     val name = Gen.string().bind()
- *     Person(id, prefix + name)
- *   }
- * forAll(personGen) { it.name.startsWith(prefix) }
- * ```
- */
+ * @see [GenFx]
+ **/
 @extension
 interface GenMonad : Monad<ForGen>, GenApplicative {
   override fun <A, B> GenOf<A>.ap(ff: Kind<ForGen, (A) -> B>): Gen<B> =
@@ -128,16 +119,16 @@ interface GenMonad : Monad<ForGen>, GenApplicative {
 }
 
 /**
- * [Monad] extension for Gen<_>
+ * [Fx] extension for Gen<_>
  *
  * Sequentially bind generators to produce new generators
  *
  * ```kotlin
  * val prefix = "_"
  * val personGen: Gen<Person> =
- *   binding {
- *     val id = Gen.long().bind()
- *     val name = Gen.string().bind()
+ *   fx {
+ *     val id = !Gen.long()
+ *     val name = !Gen.string()
  *     Person(id, prefix + name)
  *   }
  * forAll(personGen) { it.name.startsWith(prefix) }
