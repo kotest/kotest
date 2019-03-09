@@ -160,12 +160,16 @@ fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50):
     }
   }
 
-  return if (expected.lines().size < minSizeForDiff && actual.lines().size < minSizeForDiff) Pair(expected, actual) else {
+  val useDiff = expected.lines().size >= minSizeForDiff
+      && actual.lines().size >= minSizeForDiff &&
+      System.getProperty("kotlintest.assertions.multi-line-diff") != "simple"
+
+  return if (useDiff) {
     val patch = DiffUtils.diff(actual, expected)
     return if (patch.deltas.isEmpty()) Pair(expected, actual) else {
       Pair(diffs(expected.lines(), patch.deltas, { it.original }), diffs(actual.lines(), patch.deltas, { it.revised }))
     }
-  }
+  } else Pair(expected, actual)
 }
 
 private fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
@@ -219,8 +223,3 @@ internal fun stringRepr(obj: Any?): String = when (obj) {
 private fun recursiveRepr(root: Any, node: Any?): String {
   return if (root == node) "(this ${root::class.java.simpleName})" else stringRepr(node)
 }
-
-// -- deprecated dsl
-
-@Deprecated("shouldEqual is deprecated in favour of shouldBe", ReplaceWith("shouldBe(any)"))
-infix fun <T> T.shouldEqual(any: Any?) = shouldBe(any)

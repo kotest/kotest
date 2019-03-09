@@ -27,6 +27,7 @@ For the extension function style, each function has an equivalent negated versio
 | `obj.shouldBeTypeOf<T>()` | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
 | `obj.shouldBeInstanceOf<T>` | Asserts that the given reference is of type T or a subclass of T. |
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
+| `obj.shouldBeNull()` | Asserts that a given reference is null.|
 
 | Maps ||
 | -------- | ---- |
@@ -119,6 +120,7 @@ For the extension function style, each function has an equivalent negated versio
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
+| `value.shouldBeOneOf(collection)` | Asserts that a specific instance is contained in a collection. |
 
 | URIs ||
 | -------- | ---- |
@@ -164,6 +166,7 @@ For the extension function style, each function has an equivalent negated versio
 | `date.shouldBeAfter(otherDate)` | Asserts that the date is after the given date. |
 | `date.shouldBeWithin(period, otherDate)` | Asserts that the date is within the period of the given date. |
 | `date.shouldBeWithin(duration, otherDate)` | Asserts that the date is within the duration of the given date. |
+| `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate. |
 
 | Concurrent ||
 | -------- | ---- |

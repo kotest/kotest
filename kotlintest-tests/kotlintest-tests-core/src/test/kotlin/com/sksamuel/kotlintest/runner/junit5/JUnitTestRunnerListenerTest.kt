@@ -11,7 +11,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
 import io.kotlintest.runner.junit5.JUnitTestRunnerListener
-import io.kotlintest.runner.jvm.TestSet
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import org.junit.platform.engine.EngineExecutionListener
@@ -33,12 +32,12 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.size.shouldBe(1)
-      rootDescriptor.children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]")
-      then(mock).should().dynamicTestRegistered(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" })
+      rootDescriptor.children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]")
+      then(mock).should().dynamicTestRegistered(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]" })
     }
 
     "add test to spec descriptor and dynamically register" {
@@ -49,17 +48,16 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
-      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc)
-      listener.testRun(set, 1)
-      listener.completeTestCase(tc, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc)
+      listener.invokingTestCase(tc, 1)
+      listener.exitTestCase(tc, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
-      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
-      then(mock).should().dynamicTestRegistered(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
+      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]")
+      then(mock).should().dynamicTestRegistered(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
     }
 
     "set TestDescriptor.Type to CONTAINER when TestType is Container" {
@@ -70,16 +68,15 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
-      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc)
-      listener.testRun(set, 1)
-      listener.completeTestCase(tc, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc)
+      listener.invokingTestCase(tc, 1)
+      listener.exitTestCase(tc, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
-      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
+      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]")
       rootDescriptor.children.first().children.first().type shouldBe TestDescriptor.Type.CONTAINER
     }
 
@@ -91,16 +88,15 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Test, TestCaseConfig())
-      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc)
-      listener.testRun(set, 1)
-      listener.completeTestCase(tc, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc)
+      listener.invokingTestCase(tc, 1)
+      listener.exitTestCase(tc, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
-      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]")
+      rootDescriptor.children.first().children.first().uniqueId.toString().shouldBe("[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]")
       rootDescriptor.children.first().children.first().type shouldBe TestDescriptor.Type.TEST
     }
 
@@ -112,26 +108,25 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
-      val set = TestSet(tc, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc)
 
       // no start notifications until we see a test run
-      then(mock).should(never()).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
+      then(mock).should(never()).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
 
-      listener.testRun(set, 1)
-      listener.completeTestCase(tc, TestResult.Success)
+      listener.invokingTestCase(tc, 1)
+      listener.exitTestCase(tc, TestResult.Success)
 
       // no finished notifications until complete spec is called
       then(mock).should(never()).executionFinished(any(), any())
 
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" })
-      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
-      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
-      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
+      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]" })
+      then(mock).should().executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
+      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
+      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
     }
 
     "only start a test once" {
@@ -140,24 +135,23 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig(invocations = 3))
-      val set = TestSet(tc, Duration.ofMinutes(2), 3, 1)
+      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig(invocations = 3, timeout = Duration.ofMinutes(2)))
 
-      listener.prepareSpec(spec.description(), spec::class)
+      listener.beforeSpecClass(spec::class)
 
-      listener.prepareTestCase(tc)
-      listener.testRun(set, 1)
-      listener.testRun(set, 2)
-      listener.completeTestCase(tc, TestResult.Success)
+      listener.enterTestCase(tc)
+      listener.invokingTestCase(tc, 1)
+      listener.invokingTestCase(tc, 2)
+      listener.exitTestCase(tc, TestResult.Success)
 
-      listener.prepareTestCase(tc)
-      listener.testRun(set, 1)
-      listener.testRun(set, 2)
-      listener.completeTestCase(tc, TestResult.Success)
+      listener.enterTestCase(tc)
+      listener.invokingTestCase(tc, 1)
+      listener.invokingTestCase(tc, 2)
+      listener.exitTestCase(tc, TestResult.Success)
 
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should(times(1)).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:my test]" })
+      then(mock).should(times(1)).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
     }
 
     "propagate nested failure to parent test" {
@@ -167,22 +161,20 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
-      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
+      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig(timeout = Duration.ofMinutes(2)))
+      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig(timeout = Duration.ofMinutes(2)))
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc1)
-      listener.testRun(set1, 1)
-      listener.prepareTestCase(tc2)
-      listener.testRun(set2, 1)
-      listener.completeTestCase(tc2, TestResult.error(RuntimeException("boom")))
-      listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc1)
+      listener.invokingTestCase(tc1, 1)
+      listener.enterTestCase(tc2)
+      listener.invokingTestCase(tc2, 1)
+      listener.exitTestCase(tc2, TestResult.error(RuntimeException("boom")))
+      listener.exitTestCase(tc1, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
-      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
+      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
+      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
     }
 
     "mark inactive test as skipped" {
@@ -194,13 +186,13 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase(spec.description().append("test"), spec, { }, 1, TestType.Container, TestCaseConfig())
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc)
-      listener.completeTestCase(tc, TestResult.Ignored)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc)
+      listener.exitTestCase(tc, TestResult.Ignored)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
-      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test]" }, any())
+      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test]" }, any())
+      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test]" }, any())
     }
 
     "mark nested inactive test as skipped" {
@@ -212,19 +204,18 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
       val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc1)
-      listener.testRun(set1, 1)
-      listener.prepareTestCase(tc2)
-      listener.completeTestCase(tc2, TestResult.Ignored)
-      listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc1)
+      listener.invokingTestCase(tc1, 1)
+      listener.enterTestCase(tc2)
+      listener.exitTestCase(tc2, TestResult.Ignored)
+      listener.exitTestCase(tc1, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
-      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
-      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, any())
+      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
+      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
+      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, any())
     }
 
     "a skipped child should not notify parent as skipped" {
@@ -236,21 +227,20 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
       val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc1)
-      listener.testRun(set1, 1)
-      listener.prepareTestCase(tc2)
-      listener.completeTestCase(tc2, TestResult.Ignored)
-      listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc1)
+      listener.invokingTestCase(tc1, 1)
+      listener.enterTestCase(tc2)
+      listener.exitTestCase(tc2, TestResult.Ignored)
+      listener.exitTestCase(tc1, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
-      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
-      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
+      then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
+      then(mock).should(never()).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
 
-      then(mock).should(never()).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, any())
-      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { status == TestExecutionResult.Status.SUCCESSFUL })
+      then(mock).should(never()).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, any())
+      then(mock).should(times(1)).executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { status == TestExecutionResult.Status.SUCCESSFUL })
     }
 
     "only notify for descriptions that belong to the spec" {
@@ -264,31 +254,29 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec2 = KotlinTestEngineTest()
       val tc1 = TestCase(spec1.description().append("test1"), spec1, { }, 1, TestType.Container, TestCaseConfig())
       val tc2 = TestCase(spec2.description().append("test2"), spec2, { }, 1, TestType.Container, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
-      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec1.description(), spec1::class)
-      listener.prepareSpec(spec2.description(), spec2::class)
+      listener.beforeSpecClass(spec1::class)
+      listener.beforeSpecClass(spec2::class)
 
-      listener.prepareTestCase(tc1)
-      listener.prepareTestCase(tc2)
+      listener.enterTestCase(tc1)
+      listener.enterTestCase(tc2)
 
-      listener.testRun(set1, 1)
-      listener.testRun(set2, 1)
+      listener.invokingTestCase(tc1, 1)
+      listener.invokingTestCase(tc2, 1)
 
-      listener.completeTestCase(tc1, TestResult.Success)
-      listener.completeTestCase(tc2, TestResult.Success)
+      listener.exitTestCase(tc1, TestResult.Success)
+      listener.exitTestCase(tc2, TestResult.Success)
 
-      listener.completeSpec(spec1.description(), spec1::class, null)
-      listener.completeSpec(spec2.description(), spec2::class, null)
+      listener.afterSpecClass(spec1::class, null)
+      listener.afterSpecClass(spec2::class, null)
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" },
           any()
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:KotlinTestEngineTest]/[test:test2]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.KotlinTestEngineTest]/[test:test2]" },
           argThat { status == TestExecutionResult.Status.SUCCESSFUL }
       )
     }
@@ -302,30 +290,28 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
       val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
-      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc1)
-      listener.prepareTestCase(tc2)
-      listener.testRun(set1, 1)
-      listener.testRun(set2, 1)
-      listener.completeTestCase(tc1, TestResult.failure(AssertionError("boom")))
-      listener.completeTestCase(tc2, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc1)
+      listener.enterTestCase(tc2)
+      listener.invokingTestCase(tc1, 1)
+      listener.invokingTestCase(tc2, 1)
+      listener.exitTestCase(tc1, TestResult.failure(AssertionError("boom")))
+      listener.exitTestCase(tc2, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" },
           argThat { this.status == TestExecutionResult.Status.FAILED }
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test2]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test2]" },
           argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]" },
           argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
       )
     }
@@ -339,30 +325,28 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
       val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
-      val set1 = TestSet(tc1, Duration.ofMinutes(2), 1, 1)
-      val set2 = TestSet(tc2, Duration.ofMinutes(2), 1, 1)
 
-      listener.prepareSpec(spec.description(), spec::class)
-      listener.prepareTestCase(tc1)
-      listener.prepareTestCase(tc2)
-      listener.testRun(set1, 1)
-      listener.testRun(set2, 1)
-      listener.completeTestCase(tc1, TestResult.error(RuntimeException("boom")))
-      listener.completeTestCase(tc2, TestResult.Success)
-      listener.completeSpec(spec.description(), spec::class, null)
+      listener.beforeSpecClass(spec::class)
+      listener.enterTestCase(tc1)
+      listener.enterTestCase(tc2)
+      listener.invokingTestCase(tc1, 1)
+      listener.invokingTestCase(tc2, 1)
+      listener.exitTestCase(tc1, TestResult.error(RuntimeException("boom")))
+      listener.exitTestCase(tc2, TestResult.Success)
+      listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test1]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" },
           argThat { this.status == TestExecutionResult.Status.FAILED }
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]/[test:test2]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test2]" },
           argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
       )
 
       then(mock).should(times(1)).executionFinished(
-          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:JUnitTestRunnerListenerTest]" },
+          argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]" },
           argThat { this.status == TestExecutionResult.Status.SUCCESSFUL }
       )
     }

@@ -7,6 +7,7 @@ import io.kotlintest.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Predicate
 import kotlin.reflect.KClass
 
 /**
@@ -20,8 +21,12 @@ import kotlin.reflect.KClass
 data class DiscoveryRequest(val uris: List<URI>,
                             val classNames: List<String>,
                             val packages: List<String>,
-                            val classNameFilters: List<((String) -> Boolean)>)
+                            val classNameFilters: List<Predicate<String>>,
+                            val packageFilters: List<Predicate<String>>)
 
+/**
+ * Contains [Spec] classes discovered as part of a discovery request scan.
+ */
 data class DiscoveryResult(val classes: List<KClass<out Spec>>)
 
 /**
@@ -34,55 +39,82 @@ object TestDiscovery {
   private val logger = LoggerFactory.getLogger(this.javaClass)
   private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
-  // returns all the locatable specs for the given uris
-  private fun scan(uris: List<URI>, packages: List<String>): List<KClass<out Spec>> {
-    val scanResult = ClassGraph()
-        .verbose()                   // Log to stderr
-        .enableClassInfo()
-        .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
-        .whitelistPaths(* uris.map { it.path }.toTypedArray())
-        .scan()
-    return scanResult.getClassesImplementing(Spec::class.java.canonicalName)
-        .map { Class.forName(it.name).kotlin  }
-        .filterIsInstance<KClass<out Spec>>()
-        .filter { klass -> packages.isEmpty() || packages.any { klass.java.canonicalName.startsWith("$it.") } }
-  }
+  fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
-  private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
-      classes.map { Class.forName(it).kotlin }
-          .filterIsInstance<KClass<out Spec>>()
+    val fromClassNames = loadClasses(request.classNames)
+    logger.debug("Loaded ${fromClassNames.size} classes from classnames...")
 
-  private fun scan(request: DiscoveryRequest): List<KClass<out Spec>> {
+    val fromClassPaths = if (request.uris.isEmpty()) emptyList() else scanUris(request.uris)
+    logger.debug("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
-    val classes = when {
-      request.classNames.isNotEmpty() -> loadClasses(request.classNames).apply {
-        logger.debug("Loaded ${this.size} classes from classnames...")
-      }
-      else -> scan(request.uris, request.packages).apply {
-        logger.debug("Scan discovered ${this.size} classes...")
-      }
-    }
+    val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
+    logger.debug("Scan discovered ${fromClassPaths.size} classes by package...")
 
-    val specs = classes
+    val filtered = (fromClassNames + fromClassPaths + fromPackages)
+        .asSequence()
+        .filter { klass -> request.classNameFilters.isEmpty() || request.classNameFilters.all { it.test(klass.java.canonicalName) } }
+        .filter { klass -> request.packageFilters.isEmpty() || request.packageFilters.all { it.test(klass.java.`package`.name) } }
+        .filter { klass -> request.packages.isEmpty() || request.packages.any { klass.java.canonicalName.startsWith("$it.") } }
         .filter { Spec::class.java.isAssignableFrom(it.java) }
         // must filter out abstract classes to avoid the spec parent classes themselves
         .filter { !it.isAbstract }
         // keep only class instances and not objects
         .filter { it.objectInstance == null }
+        .toList()
 
-    logger.debug("...which has filtered to ${specs.size} non abstract classes")
+    logger.debug("After filters there are ${filtered.size} spec classes")
 
-    val extensions = Project.discoveryExtensions()
-    val filtered = extensions
-        .fold(specs) { cl, ext -> ext.afterScan(cl) }
+    val afterExtensions = Project.discoveryExtensions()
+        .fold(filtered) { cl, ext -> ext.afterScan(cl) }
         .sortedBy { it.simpleName }
+    logger.debug("After discovery extensions there are ${filtered.size} spec classes")
 
-    logger.debug("${filtered.size} classes after applying discovery extensions")
-    return filtered
+    DiscoveryResult(afterExtensions)
   }
 
-  fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
-    val classes = scan(request)
-    DiscoveryResult(classes)
+  /**
+   * Returns a list of [Spec] classes detected using classgraph for the given packages
+   */
+  private fun scanPackages(packages: List<String>): List<KClass<out Spec>> {
+
+    val scanResult = ClassGraph()
+        .enableClassInfo()
+        .enableExternalClasses()
+        .ignoreClassVisibility()
+        .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+        .whitelistPackages(*packages.toTypedArray())
+        .scan()
+
+    return scanResult
+        .getClassesImplementing(Spec::class.java.canonicalName)
+        .map { Class.forName(it.name).kotlin }
+        .filterIsInstance<KClass<out Spec>>()
   }
+
+  /**
+   * Returns a list of [Spec] classes detected using classgraph in the list of
+   * locations specified by the uris param.
+   */
+  private fun scanUris(uris: List<URI>): List<KClass<out Spec>> {
+
+    val scanResult = ClassGraph()
+        .enableClassInfo()
+        .enableExternalClasses()
+        .ignoreClassVisibility()
+        .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+        .scan()
+
+    return scanResult
+        .getClassesImplementing(Spec::class.java.canonicalName)
+        .map { Class.forName(it.name).kotlin }
+        .filterIsInstance<KClass<out Spec>>()
+  }
+
+  /**
+   * Returns a list of [Spec] classes from the given list of class names.
+   * The input must be a list of fully qualified classnames.
+   */
+  private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
+      classes.map { Class.forName(it).kotlin }
+          .filterIsInstance<KClass<out Spec>>()
 }

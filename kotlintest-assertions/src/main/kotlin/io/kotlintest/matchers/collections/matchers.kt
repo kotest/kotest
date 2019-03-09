@@ -1,18 +1,7 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.matchers.beEmpty
-import io.kotlintest.matchers.beSorted
-import io.kotlintest.matchers.containAll
-import io.kotlintest.matchers.containsInOrder
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.singleElement
-import io.kotlintest.neverNullMatcher
-import io.kotlintest.should
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.stringRepr
+import io.kotlintest.*
+import io.kotlintest.matchers.*
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
@@ -62,11 +51,6 @@ fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveEl
 
 fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
-@Deprecated("Use shouldHaveElementAt", ReplaceWith("this.shouldHaveElementAt(index, element)", "io.kotlintest.should"))
-fun <T, L : List<T>> L.shouldContainElementAt(index: Int, element: T) = this should haveElementAt(index, element)
-
-@Deprecated("Use shouldNotHaveElementAt", ReplaceWith("this.shouldNotHaveElementAt(index, element)", "io.kotlintest.should"))
-fun <T, L : List<T>> L.shouldNotContainElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
   override fun test(value: L) =
@@ -252,9 +236,9 @@ fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
   )
 }
 
-fun <T : Comparable<T>> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
-infix fun <T : Comparable<T>> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
-infix fun <T : Comparable<T>> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
+fun <T> List<T>.shouldContainInOrder(vararg ts: T) = this.shouldContainInOrder(ts.toList())
+infix fun <T> List<T>.shouldContainInOrder(expected: List<T>) = this should containsInOrder(expected)
+infix fun <T> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
 
 fun <T> Collection<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Collection<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
@@ -263,3 +247,83 @@ fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*t
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)
+
+
+/**
+ * Verifies that this instance is in [collection]
+ *
+ * Assertion to check that this instance is in [collection]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+infix fun <T> T.shouldBeOneOf(collection: Collection<T>) = this should beOneOf(collection)
+
+/**
+ * Verifies that this instance is NOT in [collection]
+ *
+ * Assertion to check that this instance is not in [collection]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must not be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldBeOneOf]
+ * @see [beOneOf]
+ */
+infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>) = this shouldNot beOneOf(collection)
+
+/**
+ * Verifies that this instance is any of [any]
+ *
+ * Assertion to check that this instance is any of [any]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must be in [any], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+fun <T> T.shouldBeOneOf(vararg any: T) = this should beOneOf(any.toList())
+
+/**
+ * Verifies that this instance is NOT any of [any]
+ *
+ * Assertion to check that this instance is not any of [any]. This assertion checks by reference, and not by value,
+ * therefore the exact instance must not be in [any], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeOneOf]
+ * @see [beOneOf]
+ */
+fun <T> T.shouldNotBeOneOf(vararg any: T) = this shouldNot beOneOf(any.toList())
+
+/**
+ * Mather that verifies that this instance is in [collection]
+ *
+ * Assertion to check that this instance is in [collection]. This matcher checks by reference, and not by value,
+ * therefore the exact instance must be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldBeOneOf]
+ * @see [shouldNotBeOneOf]
+ */
+fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
+  override fun test(value: T): Result {
+    if(collection.isEmpty()) throwEmptyCollectionError()
+    
+    val match = collection.any { it === value }
+    return Result(match,
+            "Collection should contain the instance of value, but doesn't.",
+            "Collection should not contain the instance of value, but does.")
+  }
+}
+
+private fun throwEmptyCollectionError(): Nothing {
+  throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+}
+

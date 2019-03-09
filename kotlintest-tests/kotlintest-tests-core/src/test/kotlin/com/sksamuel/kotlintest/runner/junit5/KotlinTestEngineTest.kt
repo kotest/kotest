@@ -20,7 +20,7 @@ class KotlinTestEngineTest : StringSpec() {
           .filters(PostDiscoveryFilter {
             println(it.uniqueId)
             when (it.uniqueId.toString()) {
-              "[engine:test-engine]/[spec:SpecToBeExcluded]" -> FilterResult.excluded("")
+              "[engine:test-engine]/[spec:com.sksamuel.kotlintest.runner.junit5.SpecToBeExcluded]" -> FilterResult.excluded("")
               else -> FilterResult.included("")
             }
           }).build()

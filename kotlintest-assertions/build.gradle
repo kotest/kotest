@@ -1,9 +1,28 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'kotlin-kapt'
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile 'com.univocity:univocity-parsers:2.7.6'
     compile "io.arrow-kt:arrow-core:$arrow_version"
-    kapt "io.arrow-kt:arrow-annotations-processor:$arrow_version"
+    kapt "io.arrow-kt:arrow-meta:$arrow_version"
+    compile 'com.univocity:univocity-parsers:2.8.1'
     compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
 }
 
-apply plugin: 'kotlin-kapt' 
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+apply from: '../publish.gradle'

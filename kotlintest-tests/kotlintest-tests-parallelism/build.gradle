@@ -1,9 +1,16 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     testImplementation project(':kotlintest-core')
     testImplementation project(':kotlintest-assertions')
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
-    testImplementation project(':kotlintest-assertions-arrow')
-    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.0'
+    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
 }
 
 test {
@@ -22,6 +29,4 @@ test {
     }
 }
 
-
-
-uploadArchives.enabled = false
+publish.enabled = false

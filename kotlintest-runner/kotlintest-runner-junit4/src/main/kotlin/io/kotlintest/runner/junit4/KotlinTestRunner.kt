@@ -14,18 +14,18 @@ class KotlinTestRunner(private val testClass: Class<out Spec>) : Runner() {
 
   override fun run(notifier: RunNotifier) {
     val listener = JUnitTestRunnerListener(notifier)
-    val runner = TestEngine(listOf(testClass.kotlin), Project.parallelism(), listener)
+    val runner = TestEngine(listOf(testClass.kotlin), emptyList(), Project.parallelism(), listener)
     runner.execute()
   }
 
-  private val description: Description = testClass.let {
-    instantiateSpec(it.kotlin).let {
+  private val description: Description = testClass.let { klass ->
+    instantiateSpec(klass.kotlin).let {
       when (it) {
         is Failure -> throw it.exception
         is Success -> {
           val spec = it.value
           val desc = Description.createSuiteDescription(spec::class.java)
-          spec.testCases().forEach { desc.addChild(describeTestCase(it)) }
+          spec.testCases().forEach { topLevel -> desc.addChild(describeTestCase(topLevel)) }
           desc
         }
       }

@@ -1,35 +1,39 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
-import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.TestCaseFilter
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
-import io.kotlintest.runner.jvm.spec.InstancePerLeafSpecRunner
-import io.kotlintest.runner.jvm.spec.InstancePerNodeSpecRunner
-import io.kotlintest.runner.jvm.spec.SharedInstanceSpecRunner
-import io.kotlintest.runner.jvm.spec.SpecRunner
+import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
-
-
 
 class TestEngine(val classes: List<KClass<out Spec>>,
+                 filters: List<TestCaseFilter>,
                  parallelism: Int,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
   private val error = AtomicReference<Throwable?>(null)
 
-  private fun afterAll() = Try {
-    Project.afterAll()
+  // the main executor is used to parallelize the execution of specs
+  // inside a spec, tests themselves are executed as coroutines
+  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
+
+  // the scheduler executor is used for notifications on when a test case timeout has been reached
+  private val scheduler = Executors.newSingleThreadScheduledExecutor()
+
+  private val specExecutor = SpecExecutor(listener, scheduler)
+
+  init {
+    Project.registerTestCaseFilter(filters)
   }
+
+  private fun afterAll() = Try { Project.afterAll() }
 
   private fun start() = Try {
     listener.engineStarted(classes)
@@ -75,7 +79,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
         },
         {
           afterAll().fold(
-              { end(it) },
+              { t -> end(t) },
               { end(null) }
           )
         }
@@ -89,14 +93,13 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           // will add a placeholder spec so we can see the error in intellij/gradle
           // otherwise it won't appear
           { t ->
-            val desc = Description.root(klass.jvmName)
-            listener.prepareSpec(desc, klass)
-            listener.completeSpec(desc, klass, t)
+            listener.beforeSpecClass(klass)
+            listener.afterSpecClass(klass, t)
             error.compareAndSet(null, t)
             executor.shutdownNow()
           },
           { spec ->
-            executeSpec(spec).onf { t ->
+            specExecutor.execute(spec).onFailure { t ->
               error.compareAndSet(null, t)
               executor.shutdownNow()
             }
@@ -112,29 +115,4 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           it
         }
       }
-
-  private fun executeSpec(spec: Spec) = Try {
-    listener.prepareSpec(spec.description(), spec::class)
-    Try {
-      spec.beforeSpecStarted(spec.description(), spec)
-      runner(spec).execute(spec)
-      spec.afterSpecCompleted(spec.description(), spec)
-    }.fold(
-        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, it) },
-        { listener.completeSpec(spec.description(), spec.javaClass.kotlin, null) }
-    )
-    spec.closeResources()
-  }
-
-  private fun runner(spec: Spec): SpecRunner {
-    return when (spec.testIsolationMode()) {
-      TestIsolationMode.SingleInstance -> SharedInstanceSpecRunner(listener)
-      TestIsolationMode.InstancePerTest -> InstancePerNodeSpecRunner(listener)
-      TestIsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener)
-      null -> when {
-        spec.isInstancePerTest() -> InstancePerNodeSpecRunner(listener)
-        else -> SharedInstanceSpecRunner(listener)
-      }
-    }
-  }
 }

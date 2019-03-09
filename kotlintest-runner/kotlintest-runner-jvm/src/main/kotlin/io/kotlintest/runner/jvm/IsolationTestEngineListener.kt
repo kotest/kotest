@@ -7,13 +7,14 @@ import io.kotlintest.TestResult
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
+@Suppress("LocalVariableName")
 class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
   private val runningSpec = AtomicReference<Description?>(null)
   private val callbacks = mutableListOf<() -> Unit>()
 
   private fun queue(fn: () -> Unit) {
-    callbacks.add({ fn() })
+    callbacks.add { fn() }
   }
 
   private fun replay() {
@@ -40,64 +41,64 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
-    if (runningSpec.get() == description) {
-      listener.prepareSpec(description, klass)
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
+    if (runningSpec.get() == Description.spec(klass)) {
+      listener.beforeSpecClass(klass)
     } else {
       queue {
-        prepareSpec(description, klass)
+        beforeSpecClass(klass)
       }
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     if (runningSpec.get() == testCase.spec.description()) {
-      listener.prepareTestCase(testCase)
+      listener.enterTestCase(testCase)
     } else {
       queue {
-        prepareTestCase(testCase)
+        enterTestCase(testCase)
       }
     }
   }
 
-  override fun testRun(set: TestSet, k: Int) {
-    if (runningSpec.get() == set.testCase.spec.description()) {
-      listener.testRun(set, k)
-    } else {
-      queue {
-        testRun(set, k)
-      }
-    }
-  }
-
-  override fun completeTestSet(set: TestSet, result: TestResult) {
-    if (runningSpec.get() == set.testCase.spec.description()) {
-      listener.completeTestSet(set, result)
-    } else {
-      queue {
-        completeTestSet(set, result)
-      }
-    }
-  }
-
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     if (runningSpec.get() == testCase.spec.description()) {
-      listener.completeTestCase(testCase, result)
+      listener.invokingTestCase(testCase, k)
     } else {
       queue {
-        completeTestCase(testCase, result)
+        invokingTestCase(testCase, k)
       }
     }
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
-    if (runningSpec.get() == description) {
-      listener.completeSpec(description, klass, t)
+  override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
+    if (runningSpec.get() == testCase.spec.description()) {
+      listener.afterTestCaseExecution(testCase, result)
+    } else {
+      queue {
+        afterTestCaseExecution(testCase, result)
+      }
+    }
+  }
+
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    if (runningSpec.get() == testCase.spec.description()) {
+      listener.exitTestCase(testCase, result)
+    } else {
+      queue {
+        exitTestCase(testCase, result)
+      }
+    }
+  }
+
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+    if (runningSpec.get() == Description.spec(klass)) {
+      listener.afterSpecClass(klass, t)
       runningSpec.set(null)
       replay()
     } else {
       queue {
-        completeSpec(description, klass, t)
+        afterSpecClass(klass, t)
       }
     }
   }

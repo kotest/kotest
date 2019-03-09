@@ -21,22 +21,22 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnabledIfSystemProperty {
 
-	/**
-	 * The name of the JVM system property to retrieve.
-	 *
-	 * @return the system property name; never <em>blank</em>
-	 * @see System#getProperty(String)
-	 */
-	String named();
+    /**
+     * The name of the JVM system property to retrieve.
+     *
+     * @return the system property name; never <em>blank</em>
+     * @see System#getProperty(String)
+     */
+    String named();
 
-	/**
-	 * A regular expression that will be used to match against the retrieved
-	 * value of the {@link #named} JVM system property.
-	 *
-	 * @return the regular expression; never <em>blank</em>
-	 * @see String#matches(String)
-	 * @see java.util.regex.Pattern
-	 */
-	String matches();
+    /**
+     * A regular expression that will be used to match against the retrieved
+     * value of the {@link #named} JVM system property.
+     *
+     * @return the regular expression; never <em>blank</em>
+     * @see String#matches(String)
+     * @see java.util.regex.Pattern
+     */
+    String matches();
 
 }

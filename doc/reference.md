@@ -3,6 +3,9 @@ KotlinTest
 
 [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 
+This version of the document is for version 3.3+.
+For previous versions see [here](reference_3.2.md)
+
 How to use
 ----------
 
@@ -19,7 +22,7 @@ test {
 }
 
 dependencies {
-  testCompile 'io.kotlintest:kotlintest-runner-junit5:3.1.10'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
 }
 ```
 
@@ -36,7 +39,7 @@ For maven you must configure the surefire plugin for junit tests.
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.2</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -48,7 +51,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.1.8</version>
+    <version>3.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -69,7 +72,7 @@ KotlinTest is permissive in the way you can lay out tests, which it calls a test
 There are [several styles](styles.md) to pick from. There is no functional difference between these -
  it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
 
-You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, or ExpectSpec in your test class,
+You can choose a testing style by extending StringSpec, WordSpec, FunSpec, ShouldSpec, FeatureSpec, BehaviorSpec, FreeSpec, DescribeSpec, ExpectSpec  or AnnotationSpec in your test class,
  and writing your tests either inside an `init {}` block or inside a lambda parameter in the class constructor.
 
 For example, using a lambda expression in the constructor, with the StringSpec gives us:
@@ -92,10 +95,12 @@ class MyTests : StringSpec() {
 
 Using the lambda expression avoids another level of indentation and looks neater,
  but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
+ 
+ All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
 
 [See an example](styles.md) of each testing style.
 
-
+Note: Test cases inside each spec will always run in a certain order (either in definition order, or in a random order, see [documentation](/doc/test_ordering.md#test-ordering) on test ordering).
 
 
 
@@ -278,6 +283,11 @@ The full list of inspectors are:
 
 
 
+
+
+
+
+
 Listeners
 ---------
 
@@ -296,12 +306,12 @@ object TimerListener : TestListener {
 
   var started = 0L
 
-  override fun beforeTest(description: Description): Unit {
+  override fun beforeTest(testCase: TestCase): Unit {
     started = System.currentTimeMillis()
   }
 
-  override fun afterTest(description: Description, result: TestResult): Unit {
-    println("Duration of $description = " + (System.currentTimeMillis() - started))
+  override fun afterTest(testCase: TestCase, result: TestResult): Unit {
+    println("Duration of ${testCase.description} = " + (System.currentTimeMillis() - started))
   }
 }
 ```
@@ -318,6 +328,19 @@ class MyTestClass : WordSpec() {
 }
 ```
 
+It's also important to notice that every `Spec` is also a `TestListener`, therefore you may override these functions directly in `Spec`.
+
+```kotlin
+class MyTestClass : WordSpec() {
+
+    override fun beforeTest(testCase: TestCase) {
+      // BeforeTest here
+    }
+
+}
+
+```
+
 These functions will now be invoked for every test case inside the `MyTestClass` test class. Maybe you want
  this listener to run for every test in the entire project. To do that, you would register the listener with
  the project config singleton. For more information on this see [ProjectConfig](#project-config).
@@ -326,13 +349,21 @@ The full list of the functions in the `TestListener` interface is as follows:
 
 |Function|Purpose|
 |--------|-------|
-|beforeTest|This function will be invoked each time a new Test Case is executed.|
-|afterTest|Is invoked when a Test Case has finished. This includes when a test case is ignored (skipped), passes (is successful), or fails (errors).|
+|beforeTest|Is invoked each time before a Test Case is executed. If the test is marked as Ignored, this won't execute.|
+|afterTest|Is invoked each time after a Test Case is executed. If the test is marked as Ignored, this won't execute. This will execute even if the test fails |
 |beforeSpec|Is invoked each time a Spec is started, before any `beforeTest` functions are invoked. |
 |afterSpec|Is invoked each time a Spec completes, after all `afterTest` functions are invoked. |
+|beforeSpecClass|Is invoked when the engine is preparing the spec to be executed. It will be executed only once, regardless of how many times the [Spec is instantiated](isolation_mode.md)
+|afterSpecClass|Is invoked once all tests for a `Spec` have completed, regardless of how many times the [Spec is instantiated](isolation_mode.md)
 |beforeProject|Is invoked as soon as the Test Engine is started.|
 |afterProject|Is invoked as soon as the Test Engine has finished.|
 |afterDiscovery|Is invoked after all the Spec classes have been discovered, but before any `beforeSpec` functions are called, and before any specs are instantiated by the Test Engine. |
+
+
+
+
+
+
 
 
 Project Config
@@ -374,37 +405,10 @@ object ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-### Project Extensions
-_(Project Extensions are DEPRECATED in favour of Test Listeners.)_
 
-Many types of reusable extensions can be registered in the `ProjectConfig`. Where appropriate these will be executed for all
- test cases and specs. Test level extensions will be covered in the next section.
 
-For example, to extract logic for beforeAll and afterAll into a seperate class you can implement the interface `ProjectExtension`.
 
-```kotlin
-class TimerExtension: ProjectExtension {
 
-  private var started: Long = 0
-
-  override fun beforeAll() {
-    started = System.currentTimeMillis()
-  }
-
-  override fun afterAll() {
-    val time = System.currentTimeMillis() - started
-    println("overall time [ms]: " + time)
-  }
-}
-```
-
-This extension can then be registered with the project config.
-
-```kotlin
-object ProjectConfig : AbstractProjectConfig() {
-  override val extensions = listOf(TimerExtension)
-}
-```
 
 ### Parallelism
 
@@ -419,7 +423,10 @@ object ProjectConfig : AbstractProjectConfig() {
 
 By default the value is 1, which will run each spec serially.
 
-Note: Test cases inside each spec will always run sequentially (either in definition order, or in a random order, see documentation on test ordering).
+
+
+
+
 
 ### Discovery Extension
 
@@ -511,6 +518,10 @@ class PropertyExample: StringSpec() {
   }
 }
 ```
+
+
+
+
 
 
 ### Custom Generators
@@ -608,36 +619,18 @@ class StringSpecExample : StringSpec({
 
 
 
+Isolation Modes
+---------------
 
+Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
 
+By default, one instance of the Spec class is created and then each test case is executed until they all complete.
+This is different to the default in JUnit where a new class is instantiated for every test.
 
+However sometimes it may be desirable for each test - or each outer test - to be executed in a different
+instance of the Spec class, much like JUnit. In this case, you will want to change the isolation mode.
 
-
-One Instance Per Test
----------------------
-
-All specs allow you to instruct the test engine to create a new instance of the Spec for every test case.
-
-To do this simply override the `isInstancePerTest()` function returning true:
-
-```kotlin
-class MyTests : FunSpec() {
-  override fun isInstancePerTest() = true
-  init {
-    // tests here
-  }
-}
-```
-
-This style of testing allows variables to be reset for each test. By default `isInstancePerTest()` returns false.
-
-
-
-
-
-
-
-
+All specs allow you to control the isolation mode. Full instructions can be found [here](isolation_mode.md)
 
 
 
@@ -649,8 +642,8 @@ Test Case Config
 Each test can be configured with various parameters. After the test name, invoke the config function
  passing in the parameters you wish to set. The available parameters are:
 
-* `invocations` - the number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times. Defaults to 1.
-* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads to use in a thread pool executor for this test. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
+* `invocations` - The number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times to see if it eventually fails. A test will only succeed if all invocations succeed. Defaults to 1.
+* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
 * `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
@@ -931,25 +924,18 @@ class MyTests : StringSpec({
 })
 ```
 
-### Eventually <a name="eventually"></a>
 
-When testing non-deterministic code, it's handy to be able to say "I expect these assertions to pass in a certain time".
-Sometimes you can do a Thread.sleep but this is bad as you have to set a timeout that's high enough so that it won't expire prematurely.
-Plus it means that your test will sit around even if the code completes quickly. Another common method is to use countdown latches.
-KotlinTest provides the `Eventually` mixin, which gives you the `eventually` function which will repeatedly test the code until it either passes,
-or the timeout is reached. This is perfect for nondeterministic code. For example:
 
-```kotlin
-class MyTests : ShouldSpec() {
-  init {
-    should("do something") {
-      eventually(5.seconds) {
-        // code here that should complete in 5 seconds but takes an non-determistic amount of time.
-      }
-    }
-  }
-}
-```
+Non-determinstic Tests
+----------------------
+
+Sometimes you have to work with code that are non-deterministic in nature. This is never ideal, but if you have no choice then
+KotlinTest has this covered with two functions called `eventually` and `continually`.
+
+Eventually will repeatedly run a code block either it either succeeds or the given duration has expired.
+Continually is kind of the opposite - it will repeatedly run a code block requiring that it suceeds every time until the given duration has expired.
+
+See full docs [here](nondeterministic.md)
 
 
 
@@ -957,98 +943,11 @@ class MyTests : ShouldSpec() {
 Extensions
 ----------
 
-KotlinTest comes with several extension modules which are not part of the main build.
+KotlinTest provides you with several extensions and listeners to test execution out of the box.
+ 
+Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow). 
+Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
 
-### Arrow
+We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.
 
-The arrow extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
- To use this library you need to add `kotlintest-assertions-arrow` to your build.
-
-Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
-
-```kotlin
-val option: Option<String> = ...
-option shouldBe beSome("foo")
-```
-
-For the full list of arrow matchers [click here](arrow-matchers.md).
-
-Additionally, the module provides inspectors that work specifically for the `NonEmptyList` type.
-For example, we can test that a set of assertions hold only for a single element in a Nel by using the `forOne` inspector.
-
-```kotlin
-val list = NonEmptyList(2, 4, 6, 7,8)
-list.forOne {
-  it.shouldBeOdd()
-}
-```
-
-Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotlintest/kotlintest/blob/master/doc/reference.md#inspectors) for more details.
-
-### Spring
-
-KotlinTest offers a Spring extension that allows you to test code that wires dependencies using Spring.
-To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
-
-In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
-This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
-point to a [specific application context file](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
-
-There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
-
-#### Field Injection
-
-If you wish to use field injection, then the `SpringListener` must be registered with any
- Spec that uses spring beans. For example:
-
-```kotlin
-@ContextConfiguration(classes = [(TestConfiguration::class)])
-class SpringExampleSpec : WordSpec() {
-
-  override fun listeners() = listOf(SpringListener)
-
-  @Autowired
-  var bean: MyBean? = null
-
-  init {
-    "Spring Extension" should {
-      "have wired up the bean" {
-        bean shouldNotBe null
-      }
-    }
-  }
-}
-```
-
-You could add the `SpringListener` project wide by registering the listener in [ProjectConfig](#project-config).
-
-#### Constructor Injection
-
-For constructor injection, we use a different implementation called `SpringAutowireConstructorExtension` which
- must be registered with [ProjectConfig](#project-config). This extension will intercept each call to create a Spec instance
- and will autowire the beans declared in the primary constructor.
-
-First an example of the project config.
-
-```kotlin
-class ProjectConfig : AbstractProjectConfig() {
-  override fun extensions(): List<ProjectLevelExtension> = listOf(SpringAutowireConstructorExtension)
-}
-```
-
-And now an example of a test class which requires a service called `UserService` in its primary constructor. This service
- class is just a regular spring bean which has been annotated with @Component.
-
-```kotlin
-@ContextConfiguration(classes = [(Components::class)])
-class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
-  init {
-    "SpringListener" should {
-      "have autowired the service" {
-        service.repository.findUser().name shouldBe "system_user"
-      }
-    }
-  }
-}
-```
-
+Take a better look at all the extensions available in the [extensions-reference](extensions.md)

@@ -2,7 +2,6 @@ package com.sksamuel.kotlintest.specs.annotation
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
-import io.kotlintest.specs.Test
 
 class AnnotationSpecExample : AnnotationSpec() {
 

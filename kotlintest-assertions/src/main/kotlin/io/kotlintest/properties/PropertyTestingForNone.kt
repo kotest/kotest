@@ -9,6 +9,12 @@ inline fun <reified A> forNone(iterations: Int, noinline fn: PropertyContext.(a:
 }
 
 fun <A> forNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = forNone(1000, gena, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = forNone(iterations, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = forNone(iterations, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = forNone(iterations, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = forNone(iterations, this, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = forNone(iterations, this, this, this, this, this, fn)
+fun <A> Gen<A>.forNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = forNone(iterations, this, this, this, this, this, this, fn)
 fun <A> forNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
@@ -73,7 +79,7 @@ inline fun <reified A, reified B, reified C> forNone(iterations: Int, noinline f
 }
 
 fun <A, B, C> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) =
-    forNone(1000, gena, genb, genc, fn)
+  forNone(1000, gena, genb, genc, fn)
 
 fun <A, B, C> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
@@ -114,7 +120,7 @@ inline fun <reified A, reified B, reified C, reified D> forNone(iterations: Int,
 }
 
 fun <A, B, C, D> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Boolean) =
-    forNone(1000, gena, genb, genc, gend, fn)
+  forNone(1000, gena, genb, genc, gend, fn)
 
 fun <A, B, C, D> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Boolean) {
   val context = PropertyContext()
@@ -145,14 +151,14 @@ fun <A, B, C, D> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
 }
 
 inline fun <reified A, reified B, reified C, reified D, reified E> forNone(noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) =
-    forNone(1000, fn)
+  forNone(1000, fn)
 
 inline fun <reified A, reified B, reified C, reified D, reified E> forNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) {
   forNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
 fun <A, B, C, D, E> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) =
-    forNone(1000, gena, genb, genc, gend, gene, fn)
+  forNone(1000, gena, genb, genc, gend, gene, fn)
 
 fun <A, B, C, D, E> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
@@ -200,7 +206,7 @@ inline fun <reified A, reified B, reified C, reified D, reified E, reified F> fo
 }
 
 fun <A, B, C, D, E, F> forNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) =
-    forNone(1000, gena, genb, genc, gend, gene, genf, fn)
+  forNone(1000, gena, genb, genc, gend, gene, genf, fn)
 
 fun <A, B, C, D, E, F> forNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")

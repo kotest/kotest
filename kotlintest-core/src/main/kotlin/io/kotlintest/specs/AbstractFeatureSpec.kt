@@ -15,14 +15,14 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
   }
 
   inner class ScenarioBuilder(val name: String, val context: TestContext) {
-    fun config(
+    suspend fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
         timeout: Duration? = null,
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: TestContext.() -> Unit) {
+        test: suspend TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: defaultTestCaseConfig.enabled,
           invocations ?: defaultTestCaseConfig.invocations,
@@ -34,18 +34,18 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
     }
   }
 
-  fun feature(name: String, init: FeatureScope.() -> Unit) =
-      addTestCase("Feature: $name", { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig, TestType.Container)
+  fun feature(name: String, init: suspend FeatureScope.() -> Unit) =
+      addTestCase(createTestName("Feature: ", name), { this@AbstractFeatureSpec.FeatureScope(this).init() }, defaultTestCaseConfig, TestType.Container)
 
   @KotlinTestDsl
   inner class FeatureScope(val context: TestContext) {
 
-    fun and(name: String, init: FeatureScope.() -> Unit) =
-        context.registerTestCase("And: $name", this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Container)
+    suspend fun and(name: String, init: suspend FeatureScope.() -> Unit) =
+        context.registerTestCase(createTestName("And: ", name), this@AbstractFeatureSpec, { this@AbstractFeatureSpec.FeatureScope(this).init() }, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Container)
 
-    fun scenario(name: String, test: TestContext.() -> Unit) =
-        context.registerTestCase("Scenario: $name", this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Test)
+    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) =
+        context.registerTestCase(createTestName("Scenario: ", name), this@AbstractFeatureSpec, test, this@AbstractFeatureSpec.defaultTestCaseConfig, TestType.Test)
 
-    fun scenario(name: String) = this@AbstractFeatureSpec.ScenarioBuilder("Scenario: $name", context)
+    fun scenario(name: String) = this@AbstractFeatureSpec.ScenarioBuilder(createTestName("Scenario: ", name), context)
   }
 }

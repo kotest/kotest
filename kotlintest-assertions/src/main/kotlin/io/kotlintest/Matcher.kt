@@ -16,6 +16,10 @@ interface Matcher<T> {
 
   fun test(value: T): Result
 
+  fun <U> contramap(f: (U) -> T): Matcher<U> = object : Matcher<U> {
+    override fun test(value: U): Result = this@Matcher.test(f(value))
+  }
+
   fun invert(): Matcher<T> = object : Matcher<T> {
     override fun test(value: T): Result {
       val result = this@Matcher.test(value)
@@ -94,7 +98,4 @@ internal inline fun <T : Any> neverNullMatcher(crossinline test: (T) -> Result):
  * if a size matcher was used like `mylist shouldNot haveSize(5)` then
  * an appropriate negated failure would be "List should not have size 5".
  */
-data class Result(val passed: Boolean, val failureMessage: String, val negatedFailureMessage: String) {
-  @Deprecated("Add a specific negatedFailureMessage")
-  constructor(passed: Boolean, failureMessage: String) : this(passed, failureMessage, "Test passed which should have failed: $failureMessage")
-}
+data class Result(val passed: Boolean, val failureMessage: String, val negatedFailureMessage: String)

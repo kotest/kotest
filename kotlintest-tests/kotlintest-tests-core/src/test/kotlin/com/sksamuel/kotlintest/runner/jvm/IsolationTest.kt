@@ -25,9 +25,9 @@ class IsolationTestEngineListenerTest : WordSpec({
       listener.specCreated(spec2)
       listener.specCreated(spec3)
 
-      then(mock).should().specCreated(argThat { this.description().fullName() == "IsolationTestSpec1" })
-      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "IsolationTestSpec2" })
-      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "IsolationTestSpec3" })
+      then(mock).should().specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationTestSpec1" })
+      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationTestSpec2" })
+      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationIsolationTestSpec3" })
     }
     "run queued callbacks for a single next spec when current spec completes" {
 
@@ -40,15 +40,15 @@ class IsolationTestEngineListenerTest : WordSpec({
 
       listener.specCreated(spec1)
       listener.specCreated(spec2)
-      listener.prepareSpec(spec2.description(), spec2::class)
+      listener.beforeSpecClass(spec2::class)
       listener.specCreated(spec3)
-      then(mock).should().specCreated(argThat { this.description().fullName() == "IsolationTestSpec1" })
+      then(mock).should().specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationTestSpec1" })
 
-      listener.completeSpec(spec1.description(), spec1::class, null)
-      then(mock).should().specCreated(argThat { this.description().fullName() == "IsolationTestSpec2" })
-      then(mock).should().prepareSpec(argThat { this.fullName() == "IsolationTestSpec2" }, any())
+      listener.afterSpecClass(spec1::class, null)
+      then(mock).should().specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationTestSpec2" })
+      then(mock).should().beforeSpecClass(any())
 
-      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "IsolationTestSpec3" })
+      then(mock).should(never()).specCreated(argThat { this.description().fullName() == "com.sksamuel.kotlintest.runner.jvm.IsolationTestSpec3" })
     }
   }
 })

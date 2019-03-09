@@ -1,12 +1,12 @@
 package io.kotlintest.internal
 
 import io.kotlintest.Project
-import io.kotlintest.TestCase
-import io.kotlintest.TestFilterResult
-import io.kotlintest.TestCaseFilter
-import io.kotlintest.Tag
 import io.kotlintest.Spec
+import io.kotlintest.Tag
+import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
+import io.kotlintest.TestCaseFilter
+import io.kotlintest.TestFilterResult
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -23,12 +23,15 @@ import io.kotlintest.TestCaseConfig
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] itself.
  *
+ * Note2: Focused tests will override any settings here.
+ *
  */
 fun isActive(test: TestCase): Boolean {
+  val focused = test.isFocused() && test.isTopLevel()
+  val hasFocused = test.spec.hasFocusedTest()
   val enabledInConfig = test.config.enabled
   val disabledViaBang = test.name.startsWith("!") && System.getProperty("kotlintest.bang.disable") == null
-  val allTags = test.config.tags + test.spec.tags()
-  val activeViaTags = Project.tags().isActive(allTags)
-  val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Ignore }
-  return enabledInConfig && activeViaTags && !disabledViaBang && !filtered
+  val activeViaTags = Project.tags().isActive(test.config.tags + test.spec.tags())
+  val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Exclude }
+  return focused || !hasFocused && enabledInConfig && activeViaTags && !disabledViaBang && !filtered
 }

@@ -1,1 +1,9 @@
-uploadArchives.enabled = false
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+publish.enabled = false

@@ -1,6 +1,88 @@
 Changelog
 =========
 
+#### 3.3.0
+
+* Feature: Intellij Plugin now available!
+* Feature: FunSpec now allows parent context blocks
+* Feature: java.time between matcher (#694)
+* Feature: Constant 'now' listeners (#693)
+* Feature: PITest plugin (#687)
+* Feature: Spring mocking injection @MockBean @MockkBean (#684)
+* Feature: instanceOf and typeOf matchers to use the casted value (#695)
+* Feature: Digest Matchers #667
+* Feature: continually assertion function #643
+* Feature: Add project config option for `assertSoftly` #512 (#655)
+* Feature: Implement System Security Manager Extensions (#640)
+* Feature: Implement System Environment Extension (#633)
+* Feature: Implement shouldBeOneOf matcher and assertions (#647)
+* Feature: Add nullability matchers with Kotlin Contracts (#602) (#646)
+* Feature: SystemProperty Test Helpers #524 (#608)
+* Feature: Timezone / Locale Extension #587 (#609)
+* Feature: Move extensions to Kotlintest-Extensions module (#629)
+* Feature: Provide range-based numeric generators and javax.time generators #530 (#543)
+* Feature: Extended word spec (#635)
+* Feature: Implement shouldNotThrow matchers (#603)
+* Improvement: Make "condensed" multi-line diffs configurable #607
+* Improvement: Allow Arrow Either extensions to support nullable types (#613)
+* Improvement: Enables test bang on all specs (#606)
+* Improvement: Add property testing extensions for custom generators (#506)
+* Improvement: Added issue flag in config #525
+* Bugfix: Added support for package selectors from junit discovery requests #597
+* Bugfix: Disabled top level tests are not marked as ignored in JUnit #656
+* Bugfix: Fix containOnlyOnce which return true when no occurrence (#660)
+* Internal: Auto deploy snapshot on each travis build
+* Internal: Remove all deprecated matchers/assertions (#653)
+
+
+#### 3.2.1
+
+* Feature: AnnotationSpec now has a `expected` exception configuration #527 #559
+* Feature: BehaviorSpec gained extra nesting possibilities, with `And` between any other keywords #562 #593
+* Bugfix: Independent tests were sharing a thread, and one test could timeout a different one for apparently no reason #588 #590
+* Improvement: Documentation on TestConfig.invocations clarified #591 #592
+
+
+#### 3.2.0
+
+* Feature: Support for coroutines directly from tests #386
+* Feature: Isolation mode added to more finely control the instances in which tests execute #379
+* Feature: When re-running tests, execute previously failing specs first #388
+* Feature: Support for @Before and @After in AnnotationSpec for easier migration from JUnit #513
+* Feature: Support package selectors in discovery #461
+* Improvement: The test listeners have been reworked to make them more powerful and clearer #494
+* Improvement: Better support for multi-line string comparisions #402
+* Improvement: Gen.oneOf should be covariant #471
+* Improvement: Double should have oppostive matchers for shouldBePositive and shouldBeNegative #435
+* Improvement: New matchers #393 #325
+* Bugfix: BehaviorSpec doesn't allow config bug #495
+* Bugfix: Error when throwing AssertionError from inside a shouldThrow{} block #479
+* Bugfix: Fix test timeouts #476
+* Bugfix: Fix annotation spec failure message #539
+* Internal: Build now uses Kotlin 1.3 #379
+* Internal: Upgraded class scanning to use ClassGraph instead of Reflections #459
+
+#### 3.1.11
+
+* Feature: Infix support to String matchers #443
+* Feature: Infix support to files, floats, sequences, types and uri matchers #445
+* Feature: Infix support to Double matchers #429
+* Feature: Infix suport to Map matchers #417
+* Feature: `shouldNotBePositive` and `shouldNotBeNegative` for Double matchers #435
+* Feature: Support for Duration in time matchers #423
+* Feature: arrow-assertion Failure matcher that checks underlying throwable equality #427 
+* Feature: `shouldNotBeTrue` and `shouldNotBeFalse` for Boolean matchers #452
+* Improvement: Documentation for `Gen.int()` #419
+* Improvement: Javadocs for Date matchers #420
+* Improvement: Better error message for empty collection in matchers #438
+* Improvement: Better stacktrace filtering from Failures class #465
+* Bugfix: Double matcher `shouldNotBeExactly` had the wrong implementation #432
+* Bugfix: Single-thread test had `before` and `after` running in separate thread from the test #447
+* Bugfix: Test with invocations > 1 wouldn't complete if test failed #413
+* Bugfix: Wrong assertion on `shouldThrow` #479 #484
+
+
+
 #### 3.1.10
 
 * Feature: Infix version of some inline matchers, eg `date1 shouldHaveSameYearAs date2` (#404 #407 #409)

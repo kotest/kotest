@@ -1,10 +1,10 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.Tag
 import io.kotlintest.Tags
+import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.extensions.TagExtension
@@ -13,43 +13,34 @@ import io.kotlintest.specs.StringSpec
 
 class TagExtensionTest : StringSpec() {
 
-  var addTags = false
-
-  val ext = object : TagExtension {
-    override fun tags(): Tags = if (addTags) Tags(setOf(TagA), setOf(TagB)) else Tags.Empty
-  }
-
-  override fun beforeSpec(description: Description, spec: Spec) {
-    addTags = true
-  }
-
-  override fun afterSpec(description: Description, spec: Spec) {
-    addTags = false
-  }
-
-  override fun afterTest(description: Description, result: TestResult) {
-    when (description.name) {
-      "should be tagged with tagA" -> result.status shouldBe TestStatus.Success
-      "should be untagged" -> result.status shouldBe TestStatus.Ignored
-      "should be tagged with tagB" -> result.status shouldBe TestStatus.Ignored
-      else -> {
-      }
-    }
-    if (description.name == "test TagExtension")
-      addTags = false
-  }
-
   object TagA : Tag()
   object TagB : Tag()
 
-  init {
+  private val ext = object : TagExtension {
+    override fun tags(): Tags = Tags(setOf(TagA), setOf(TagB))
+  }
 
+  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
+        "should be tagged with tagA and therefore included" to TestStatus.Success,
+        "should be untagged and therefore excluded" to TestStatus.Ignored,
+        "should be tagged with tagB and therefore excluded" to TestStatus.Ignored
+    )
+  }
+
+  override fun beforeSpec(spec: Spec) {
     Project.registerExtension(ext)
+  }
 
-    "should be tagged with tagA".config(tags = setOf(TagA)) { }
+  override fun afterSpec(spec: Spec) {
+    Project.deregisterExtension(ext)
+  }
 
-    "should be untagged" { }
+  init {
+    "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
 
-    "should be tagged with tagB".config(tags = setOf(TagB)) { }
+    "should be untagged and therefore excluded" { }
+
+    "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
   }
 }

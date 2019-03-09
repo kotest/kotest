@@ -1,7 +1,19 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     compile project(':kotlintest-core')
-    compile 'io.github.classgraph:classgraph:4.4.12'
+    compile project(":kotlintest-extensions")
+    compile 'io.github.classgraph:classgraph:4.8.1'
     compile 'org.slf4j:slf4j-api:1.7.25'
-    compile 'io.arrow-kt:arrow-core:0.8.1'
-    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1'
+    compile 'io.arrow-kt:arrow-core:0.8.2'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
 }
+
+
+apply from: '../../publish.gradle'

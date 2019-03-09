@@ -1,6 +1,5 @@
 package io.kotlintest.spring
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.extensions.ConstructorExtension
 import io.kotlintest.extensions.TestListener
@@ -11,11 +10,9 @@ import kotlin.reflect.full.primaryConstructor
 
 object SpringListener : TestListener {
 
-  override fun beforeSpec(description: Description, spec: Spec) {
+  override fun beforeSpec(spec: Spec) {
     try {
-      val manager = TestContextManager(spec.javaClass)
-      val ac = manager.testContext.applicationContext
-      ac.autowireCapableBeanFactory.autowireBean(spec)
+      TestContextManager(spec.javaClass).prepareTestInstance(spec)
     } catch (t: Throwable) {
       t.printStackTrace()
     }

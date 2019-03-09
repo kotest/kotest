@@ -7,18 +7,22 @@ import java.util.*
 @Testable
 abstract class AbstractSpec : Spec {
 
+  var acceptingTopLevelRegistration = true
+
   override fun isInstancePerTest(): Boolean = false
 
   private val rootTestCases = mutableListOf<TestCase>()
 
   override fun testCases(): List<TestCase> = rootTestCases.toList()
 
-  protected fun createTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
-      TestCase(description().append(name), this, test, lineNumber(), type, config)
+  protected fun createTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
+      TestCase(Description.spec(this::class).append(name), this, test, lineNumber(), type, config)
 
-  protected fun addTestCase(name: String, test: TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+  protected fun addTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     if (rootTestCases.any { it.name == name })
       throw IllegalArgumentException("Cannot add test with duplicate name $name")
+    if (!acceptingTopLevelRegistration)
+      throw IllegalArgumentException("Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly")
     rootTestCases.add(createTestCase(name, test, config, type))
   }
 

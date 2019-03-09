@@ -32,7 +32,7 @@ infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnl
 infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   Result(
-      value.indexOf(substring) == value.lastIndexOf(substring),
+      value.indexOf(substring)>=0 && value.indexOf(substring) == value.lastIndexOf(substring),
       "${convertValueToString(value)} should contain the substring ${convertValueToString(substring)} exactly once",
       "${convertValueToString(value)} should not contain the substring ${convertValueToString(substring)} exactly once"
   )
@@ -156,5 +156,5 @@ infix fun String?.shouldMatch(regex: Regex) = this should match(regex)
 infix fun String?.shouldNotMatch(regex: String) = this shouldNot match(regex)
 infix fun String?.shouldEndWith(suffix: String) = this should endWith(suffix)
 infix fun String?.shouldNotEndWith(suffix: String) = this shouldNot endWith(suffix)
-infix fun String?.shouldStartWith(suffix: String) = this should startWith(suffix)
-infix fun String?.shouldNotStartWith(suffix: String) = this shouldNot startWith(suffix)
+infix fun String?.shouldStartWith(prefix: String) = this should startWith(prefix)
+infix fun String?.shouldNotStartWith(prefix: String) = this shouldNot startWith(prefix)

@@ -2,9 +2,7 @@
 
 package io.kotlintest.matchers
 
-import io.kotlintest.ErrorCollector
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.*
 
 fun withClue(clue: String, thunk: () -> Any) {
   val currentClue = ErrorCollector.clueContext.get()

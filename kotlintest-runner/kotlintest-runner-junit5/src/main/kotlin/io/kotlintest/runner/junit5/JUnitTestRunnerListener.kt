@@ -1,13 +1,14 @@
 package io.kotlintest.runner.junit5
 
+import arrow.core.Try
 import io.kotlintest.Description
+import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
 import io.kotlintest.runner.jvm.TestEngineListener
-import io.kotlintest.runner.jvm.TestSet
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -90,54 +91,71 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   override fun engineFinished(t: Throwable?) {
     logger.debug("Engine finished; throwable=[$t]")
 
-    val failures = results.filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
+    val failures = results
+        .filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }
 
+    if (Project.writeSpecFailureFile())
+      writeSpecFailures(failures)
+
+    fun hasIgnored() = results.any { it.result.status == TestStatus.Ignored }
+
+    val result = when {
+      t != null -> TestExecutionResult.failed(t)
+      Project.failOnIgnoredTests && hasIgnored() -> TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+      else -> TestExecutionResult.successful()
+    }
+
+    listener.executionFinished(root, result)
+  }
+
+  private fun writeSpecFailures(failures: List<ResultState>): Try<Any> = Try {
     val dir = Paths.get(".kotlintest")
     dir.toFile().mkdirs()
     val path = dir.resolve("spec_failures").toAbsolutePath()
     logger.debug("Writing report to $path")
-    Files.write(path, failures.toByteArray())
-
-    val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-    listener.executionFinished(root, result)
+    val content = failures.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
+    Files.write(path, content.toByteArray())
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
-    logger.debug("prepareSpec [$description]")
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
+    logger.trace("beforeSpecClass [$klass]")
     try {
-      val descriptor = createSpecDescriptor(description, klass)
+      val descriptor = createSpecDescriptor(klass)
       listener.executionStarted(descriptor)
     } catch (t: Throwable) {
       logger.error("Error in JUnit Platform listener", t)
+      throw t
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     discovered.add(Pair(testCase.description, testCase.type))
   }
 
-  override fun testRun(set: TestSet, k: Int) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     // we only "start" a test once, the first time a test is actually run, because
     // at that point we know the test cannot be skipped. This is required because JUnit requires
     // that we do not "start" a test that is later marked as skipped.
-    if (!started.contains(set.testCase.description)) {
-      started.add(set.testCase.description)
-      val descriptor = createTestCaseDescriptor(set.testCase.description, set.testCase.type)
-      logger.debug("Notifying junit of start event ${descriptor.uniqueId}")
+    if (!started.contains(testCase.description)) {
+      started.add(testCase.description)
+      val descriptor = createTestCaseDescriptor(testCase.description, testCase.type)
+      logger.trace("Notifying junit of start event ${descriptor.uniqueId}")
       listener.executionStarted(descriptor)
     }
   }
 
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
-    logger.debug("completeTestCase ${testCase.description} with result $result")
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    logger.trace("exitTestCase ${testCase.description} with result $result")
     // we don't immediately finish a test, we just store the result until we have completed the spec
     // this allows us to handle multiple invocations of the same test case, deferring the notification
     // to junit until all invocations have completed
     results.add(ResultState(testCase, result))
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
-    logger.debug("completeSpec [$description]")
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+    logger.trace("afterSpecClass [$klass]")
+
+    val description = Description.spec(klass)
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
@@ -155,15 +173,16 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
             logger.error("Could not find result for $it")
             throw RuntimeException("Every description must have a result but could not find one for $it")
           } else {
-            logger.debug("Notifying junit of test case completion ${descriptor.uniqueId}=$result")
+            logger.trace("Notifying junit of test case completion ${descriptor.uniqueId}=$result")
             try {
               when (result.status) {
                 TestStatus.Success -> listener.executionFinished(descriptor, TestExecutionResult.successful())
                 TestStatus.Error, TestStatus.Failure -> listener.executionFinished(descriptor, TestExecutionResult.failed(result.error))
-                TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "Test Ignored")
+                TestStatus.Ignored -> listener.executionSkipped(descriptor, result.reason ?: "No reason given")
               }
             } catch (t: Throwable) {
               logger.error("Error in JUnit Platform listener", t)
+              throw t
             }
           }
         }
@@ -174,8 +193,11 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
       logger.error("Spec descriptor cannot be null $description")
       throw RuntimeException("Spec descriptor cannot be null")
     } else {
-      val result = if (t == null) TestExecutionResult.successful() else TestExecutionResult.failed(t)
-      logger.debug("Notifying junit that spec finished ${descriptor.uniqueId} $result")
+      val result = when (t) {
+        null -> TestExecutionResult.successful()
+        else -> TestExecutionResult.failed(t)
+      }
+      logger.trace("Notifying junit that spec finished ${descriptor.uniqueId} $result")
       listener.executionFinished(descriptor, result)
     }
   }
@@ -201,7 +223,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   private fun createTestCaseDescriptor(description: Description, type: TestType): TestDescriptor {
-    logger.debug("Creating test case descriptor $description/$type")
+    logger.trace("Creating test case descriptor $description/$type")
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
     val parent = descriptors[parentDescription]!!
@@ -221,8 +243,6 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
       override fun mayRegisterTests(): Boolean = type == TestType.Container
     }
 
-
-
     descriptors[description] = descriptor
 
     parent.addChild(descriptor)
@@ -231,9 +251,12 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     return descriptor
   }
 
-  private fun createSpecDescriptor(description: Description, klass: KClass<out Spec>): TestDescriptor {
+  private fun createSpecDescriptor(klass: KClass<out Spec>): TestDescriptor {
 
-    val id = root.uniqueId.appendSpec(description)
+    // the id must be completely unique, so we need to use the full class name of the spec, otherwise
+    // if we have com.FooTest and org.FooTest gradle will throw a wobbly
+    val description = Description.spec(klass)
+    val id = root.uniqueId.append("spec", description.name)
     val source = ClassSource.from(klass.java)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name, source) {
@@ -246,6 +269,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     // we need to synchronize because we don't want to allow multiple specs adding
     // to the root container at the same time
     root.addChild(descriptor)
+    logger.trace("Dynamically registering spec [id=$id, descriptor=$descriptor]")
     listener.dynamicTestRegistered(descriptor)
 
     return descriptor

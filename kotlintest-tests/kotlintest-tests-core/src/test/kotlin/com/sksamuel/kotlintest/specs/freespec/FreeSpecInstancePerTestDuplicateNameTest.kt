@@ -1,12 +1,12 @@
 package com.sksamuel.kotlintest.specs.freespec
 
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.IsolationMode
 import io.kotlintest.fail
 import io.kotlintest.specs.FreeSpec
 
 class FreeSpecInstancePerTestDuplicateNameTest : FreeSpec() {
 
-  override fun testIsolationMode() = TestIsolationMode.InstancePerTest
+  override fun isolationMode() = IsolationMode.InstancePerTest
 
   init {
 

@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.extensions
 
 import io.kotlintest.Project
-import io.kotlintest.extensions.ProjectExtension
+import io.kotlintest.Spec
 import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.SpecInterceptContext
+import io.kotlintest.extensions.TestListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
@@ -13,8 +13,8 @@ object SpecExtensionNumbers {
   var after = 0
 
   val ext = object : SpecExtension {
-    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
-      if (context.description.name == "SpecExtensionTest") {
+    override suspend fun intercept(spec: Spec, process: suspend () -> Unit) {
+      if (spec.description().name == "com.sksamuel.kotlintest.extensions.SpecExtensionTest") {
         before++
         process()
         println("AFTER SPEK")
@@ -38,9 +38,8 @@ class SpecExtensionTest : WordSpec() {
 
     SpecSetup.setup()
 
-    // use a project after all extension to test the around advice of a spec
-    Project.registerExtension(object : ProjectExtension {
-      override fun afterAll() {
+    Project.registerListeners(object : TestListener {
+      override fun afterProject() {
         SpecExtensionNumbers.after shouldBe 1
       }
     })

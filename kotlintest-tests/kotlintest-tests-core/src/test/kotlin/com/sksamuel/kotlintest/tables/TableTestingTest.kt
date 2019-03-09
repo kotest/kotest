@@ -3,8 +3,13 @@ package com.sksamuel.kotlintest.tables
 import io.kotlintest.*
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.types.shouldNotBeInstanceOf
+import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.*
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.jvm.kotlinFunction
 
 class TableTestingTest : StringSpec() {
   init {
@@ -197,6 +202,31 @@ class TableTestingTest : StringSpec() {
         it.message should contain("1) Test failed for (name, null) with error kotlin.KotlinNullPointerException")
         it.message should contain("2) Test failed for (name, christian) with error \"christian\" should not equal \"christian\"")
         it.message shouldNot contain("3) Test failed")
+      }
+    }
+  }
+}
+
+class TableTestingCoroutinesTests : FreeSpec() {
+  
+  init {
+    "Should allow suspend execution" {
+      allFunctionsThatTakeALambda().shouldHaveTheInlineModifier()
+    }
+  }
+  
+  private fun allFunctionsThatTakeALambda(): List<KFunction<*>> {
+    return Class
+            .forName("io.kotlintest.tables.TableTestingKt")
+            .declaredMethods
+            .map { it.kotlinFunction!! }
+            .filter { fn -> fn.parameters.any { it.type.isSubtypeOf(Function::class.starProjectedType) } }
+  }
+  
+  private fun List<KFunction<*>>.shouldHaveTheInlineModifier() {
+    forEach {
+      if (!it.isInline) {
+        fail("$it should be inlined")
       }
     }
   }

@@ -23,12 +23,6 @@ fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   )
 }
 
-@Deprecated("use containAll", ReplaceWith("containsAll(ts.asList())"))
-fun <T> containsAll(vararg ts: T) = containAll(ts.asList())
-
-@Deprecated("use containAll", ReplaceWith("containAll(ts)"))
-fun <T> containsAll(ts: List<T>): Matcher<Collection<T>> = containAll(ts)
-
 
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
@@ -42,7 +36,7 @@ fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher
 fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
 /** Assert that a collection contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-  assert(subsequence.isNotEmpty(), { "expected values must not be empty" })
+  assert(subsequence.isNotEmpty()) { "expected values must not be empty" }
 
   var subsequenceIndex = 0
   val actualIterator = actual.iterator()
@@ -59,9 +53,6 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
 }
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
-
-@Deprecated("use io.kotlintest.matchers.collection.contain(t)", ReplaceWith("containsMatcher(t)"))
-fun <T> contain(t: T): Matcher<Collection<T>> = io.kotlintest.matchers.collections.contain(t)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = Result(

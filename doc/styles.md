@@ -20,13 +20,26 @@ class MyTests : StringSpec({
 ### Fun Spec
 
 `FunSpec` allows you to create tests by invoking a function called `test` with a string parameter to describe the test,
-and then the test itself as a closure.
+and then the test itself as a lambda.
 
 ```kotlin
 class MyTests : FunSpec({
     test("String length should return the length of the string") {
         "sammy".length shouldBe 5
         "".length shouldBe 0
+    }
+})
+```
+
+You can also next these tests inside `context` blocks like this:
+
+```kotlin
+class MyTests : FunSpec({
+    context("a test group") {
+        test("String length should return the length of the string") {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
     }
 })
 ```
@@ -72,6 +85,26 @@ class MyTests : WordSpec({
 })
 ```
 
+It also supports the keyword `When` allowing to add another level of nesting.
+
+```
+class MyTests : WordSpec({
+    "Hello" When {
+        "asked for length" should {
+            "return 5" {
+                "Hello".length shouldBe 5
+            }
+        }
+        "appended to Bob" should {
+            "return Hello Bob" {
+                "Hello " + "Bob" shouldBe "Hello Bob"
+            }
+        }
+    }
+    
+})
+```
+
 ### Feature Spec
 
 `FeatureSpec` allows you to use `feature` and `scenario`, which will be familar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/)
@@ -114,6 +147,26 @@ class MyTests : BehaviorSpec({
 Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
+You can also use the `And` keyword in `Given` and `When` to add an extra depth to it:
+
+```kotlin
+class MyTests : BehaviorSpec({
+    given("a broomstick") {
+        and("a witch") {
+            `when`("The witch sits on it") {
+                and("she laughs hysterically") {
+                     then("She should be able to fly") {
+                     }
+                 }
+            }
+        }
+    }
+})
+
+```
+
+Note: `Then` scope doesn't have an `and` scope due to a gradle bug. For more information, see #594
+
 ### Free Spec
 
 `FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
@@ -126,6 +179,15 @@ class MyTests : FreeSpec({
             "".length shouldBe 0
         }
     }
+    "containers can be nested as deep as you want" - {
+        "and so we nest another container" - {
+            "yet another container" - {
+                "finally a real test" {
+                    1 + 1 shouldBe 2
+                }   
+            }
+        }
+    }    
 })
 ```
 
@@ -170,11 +232,26 @@ class MyTests : ExpectSpec({
 
 ### Annotation Spec
 
-If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4.
+If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4/5.
 Just add the `@Test` annotation to any function defined in the spec class.
+
+You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
+```
+@BeforeAll / @BeforeClass
+@BeforeEach / @Before
+@AfterAll / @AfterClass
+@AfterEach / @After
+```
+
+If you want to ignore a test, use `@Ignore`
 
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {
+
+  @BeforeEach
+  fun beforeTest() {
+    println("Before each test")
+  }
 
   @Test
   fun test1() {

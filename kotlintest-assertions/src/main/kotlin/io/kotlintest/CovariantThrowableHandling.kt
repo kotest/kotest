@@ -14,7 +14,7 @@ package io.kotlintest
  *
  * If you wish to test for a specific class strictly (excluding subclasses), use [shouldThrowExactlyUnit] instead.
  *
- * If you don't care about the thrown exception, use [shouldThrowAnyUnit].
+ * If you don't care about the thrown exception type, use [shouldThrowAnyUnit].
  *
  *
  * ```
@@ -27,6 +27,35 @@ package io.kotlintest
  * @see [shouldThrow]
  */
 inline fun <reified T : Throwable> shouldThrowUnit(block: () -> Unit): T = shouldThrow { block() }
+
+/**
+ * Verifies that a block of code doesn't throw a Throwable of type [T] or subtypes
+ *
+ * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
+ * If [T] is thrown, this will thrown an [AssertionError]. If anything else is thrown, the throwable will be propagated.
+ * This is done so that no unexpected error is silently ignored.
+ *
+ * This should be used when [shouldNotThrow] can't be used, such as when doing assignments (assignments are statements,
+ * therefore has no return value).
+ *
+ * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
+ * throws [java.io.FileNotFoundException], this will also throw an AssertionError instead of propagating the [java.io.FileNotFoundException]
+ * directly.
+ *
+ * If you wish to test for a specific class strictly (excluding subclasses), use [shouldNotThrowExactlyUnit] instead.
+ *
+ * If you don't care about the thrown exception type, use [shouldNotThrowAnyUnit].
+ *
+ * ```
+ *     shouldNotThrowUnit<FooException> {
+ *        throw FooException() // Fails
+ *     }
+ * ```
+ *
+ * @see [shouldNotThrow]
+ *
+ */
+inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shouldNotThrow<T>(block)
 
 /**
  * Verifies if a block of code will throw a Throwable of type [T] or subtypes
@@ -67,4 +96,43 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
     is AssertionError -> throw thrownThrowable
     else -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
   }
+}
+
+/**
+ * Verifies that a block of code will not throw a Throwable of type [T] or subtypes
+ *
+ * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
+ * If [T] is thrown, this will thrown an [AssertionError]. If anything else is thrown, the throwable will be propagated.
+ * This is done so that no unexpected error is silently ignored.
+ *
+ * This function will include all subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
+ * throws [java.io.FileNotFoundException], this will also throw an AssertionError instead of propagating the [java.io.FileNotFoundException]
+ * directly.
+ *
+ * If you wish to test for a specific class strictly (excluding subclasses), use [shouldNotThrowExactly] instead.
+ *
+ * If you don't care about the thrown exception, use [shouldNotThrowAny].
+ *
+ * **Attention to assignment operations**:
+ *
+ * When doing an assignment to a variable, the code won't compile, because an assignment is not of type [Any], as required
+ * by [block]. If you need to test that an assignment doesn't throw a [Throwable], use [shouldNotThrowUnit] or it's variations.
+ *
+ * ```
+ *     val thrownException: FooException = shouldThrow<FooException> {
+ *         throw FooException() // Fails
+ *     }
+ * ```
+ *
+ * @see [shouldNotThrowUnit]
+ */
+inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
+  val thrown = try {
+    block()
+    return
+  } catch (e: Throwable) { e }
+
+  if(thrown is T) throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
+  throw thrown
+
 }

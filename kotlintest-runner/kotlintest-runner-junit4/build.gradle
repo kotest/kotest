@@ -1,10 +1,18 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
     compile 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.18.3'
-    testCompile "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation 'org.mockito:mockito-core:2.24.0'
+    testCompile "com.nhaarman:mockito-kotlin:1.6.0"
 }
 
 test {
@@ -20,3 +28,5 @@ test {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
     }
 }
+
+apply from: '../../publish.gradle'

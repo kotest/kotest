@@ -1,3 +1,5 @@
+@file:Suppress("ObjectPropertyName", "MemberVisibilityCanBePrivate")
+
 package io.kotlintest
 
 import io.kotlintest.extensions.ConstructorExtension
@@ -38,13 +40,14 @@ object Project {
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
-      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config") ?: defaultProjectConfigFullyQualifiedName
+      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config")
+          ?: defaultProjectConfigFullyQualifiedName
       val clas = Class.forName(projectConfigFullyQualifiedName)
       val field = clas.declaredFields.find { it.name == "INSTANCE" }
       when (field) {
-      // if the static field for an object cannot be found, then instantiate
+        // if the static field for an object cannot be found, then instantiate
         null -> clas.newInstance() as AbstractProjectConfig
-      // if the static field can be found then use it
+        // if the static field can be found then use it
         else -> field.get(null) as AbstractProjectConfig
       }
     } catch (cnf: ClassNotFoundException) {
@@ -56,7 +59,8 @@ object Project {
   private val _listeners = mutableListOf<TestListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
-
+  private var writeSpecFailureFile: Boolean = true
+  private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
@@ -69,21 +73,30 @@ object Project {
   fun listeners(): List<TestListener> = _listeners
   fun testCaseFilters(): List<TestCaseFilter> = _filters.filterIsInstance<TestCaseFilter>()
 
+  fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
+
+  var failOnIgnoredTests: Boolean = System.getProperty("kotlintest.build.fail-on-ignore") == "true"
 
   fun tags(): Tags {
     val tags = tagExtensions().map { it.tags() }
     return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
   }
 
-  private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.apply {
-    _extensions.addAll(this.extensions())
-    _listeners.addAll(this.listeners())
-    _filters.addAll(this.filters())
-    _specExecutionOrder = this.specExecutionOrder()
-    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: this.parallelism()
+  private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.also {
+    _extensions.addAll(it.extensions())
+    _listeners.addAll(it.listeners())
+    _filters.addAll(it.filters())
+    _specExecutionOrder = it.specExecutionOrder()
+    _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
+    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
+    writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
+    if (it.failOnIgnoredTests) {
+      this.failOnIgnoredTests = true
+    }
   }
 
+  fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
   fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
   fun beforeAll() {
@@ -97,6 +110,8 @@ object Project {
     projectConfig?.afterAll()
     projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
+
+  fun registerTestCaseFilter(filters: List<TestCaseFilter>) = _filters.addAll(filters)
 
   fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
   private fun registerListener(listener: TestListener) {

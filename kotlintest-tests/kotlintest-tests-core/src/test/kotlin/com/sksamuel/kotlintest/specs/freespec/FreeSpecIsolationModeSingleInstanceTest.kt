@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.specs.freespec
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestIsolationMode
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -12,7 +12,7 @@ class FreeSpecIsolationModeSingleInstanceTest : FreeSpec() {
     var string = ""
   }
 
-  override fun testIsolationMode() = TestIsolationMode.SingleInstance
+  override fun isolationMode() = IsolationMode.SingleInstance
 
   override fun afterSpecCompleted(description: Description, spec: Spec) {
     string shouldBe "abcccde_"

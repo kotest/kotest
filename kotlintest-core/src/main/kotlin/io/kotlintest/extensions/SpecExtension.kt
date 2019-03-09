@@ -1,7 +1,6 @@
 package io.kotlintest.extensions
 
 import io.kotlintest.AbstractProjectConfig
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 
@@ -24,10 +23,7 @@ interface SpecExtension : ProjectLevelExtension, SpecLevelExtension {
    * [Spec] and all it's nested [TestCase]s are guaranteed
    * to have been completed.
    *
-   * @param context contains the [Spec] instance under consideration and the [Description] identifer.
    * @param process callback function required to continue spec processing
    */
-  fun intercept(context: SpecInterceptContext, process: () -> Unit) = process()
+  suspend fun intercept(spec: Spec, process: suspend () -> Unit)
 }
-
-data class SpecInterceptContext(val description: Description, val spec: Spec)

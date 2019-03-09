@@ -32,14 +32,17 @@ data class TestCase(
     // the spec that contains this testcase
     val spec: Spec,
     // a closure of the test function
-    val test: TestContext.() -> Unit,
+    val test: suspend TestContext.() -> Unit,
     // the first line number of the test
     val line: Int,
     val type: TestType,
     // config used when running the test, such as number of
-    // invocations, number of threads, etc
+    // invocations, threads, etc
     val config: TestCaseConfig) {
   val name = description.name
+  fun isFocused() = name.startsWith("f:")
+  fun isTopLevel(): Boolean = description.isTopLevel()
+  fun isBang(): Boolean = name.startsWith("!")
 }
 
 enum class TestType {

@@ -43,13 +43,13 @@ object AllureExtension : TestListener {
 
   override fun afterTest(description: Description, result: TestResult) {
     try {
-      allure.updateTestCase(safeId(description), {
+      allure.updateTestCase(safeId(description)) {
         when (result.status) {
-        // what we call an error, allure calls a failure
-          TestStatus.Error -> it.withStatus(Status.BROKEN)
-          TestStatus.Failure -> it.withStatus(Status.FAILED)
-          TestStatus.Ignored -> it.withStatus(Status.SKIPPED)
-          TestStatus.Success -> it.withStatus(Status.PASSED)
+          // what we call an error, allure calls a failure
+          TestStatus.Error -> it.status = Status.BROKEN
+          TestStatus.Failure -> it.status = Status.FAILED
+          TestStatus.Ignored -> it.status = Status.SKIPPED
+          TestStatus.Success -> it.status = Status.PASSED
         }
         it.withFullName(description.fullName())
         val severity = result.metaData["Severity"]
@@ -60,7 +60,7 @@ object AllureExtension : TestListener {
           else -> {
           }
         }
-      })
+      }
       allure.stopTestCase(safeId(description))
       allure.writeTestCase(safeId(description))
     } catch (t: Throwable) {

@@ -1,0 +1,35 @@
+buildscript {
+    ext.ktor_version = '1.1.2'
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
+}
+
+dependencies {
+    compile project(':kotlintest-assertions')
+    compile "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-server-test-host:$ktor_version"
+    testCompile project(':kotlintest-core')
+    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+apply from: '../../publish.gradle'

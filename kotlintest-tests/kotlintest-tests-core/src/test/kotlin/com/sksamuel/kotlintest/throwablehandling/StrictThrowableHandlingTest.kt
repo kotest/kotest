@@ -2,7 +2,10 @@ package com.sksamuel.kotlintest.throwablehandling
 
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotThrowExactly
+import io.kotlintest.shouldNotThrowExactlyUnit
 import io.kotlintest.shouldThrowExactly
 import io.kotlintest.shouldThrowExactlyUnit
 import io.kotlintest.specs.FreeSpec
@@ -84,8 +87,64 @@ class StrictThrowableHandlingTest : FreeSpec() {
         }
       }
     }
-  }
 
+    "Should not throw exactly" - {
+      "Should throw an assertion error wrapping the thrown exception" - {
+        "When the exact class is thrown" {
+          val thrownException = FooRuntimeException()
+
+          onShouldNotThrowExactlyMatcher<FooRuntimeException> { shouldNotThrowExactlyMatcher ->
+            verifyThrowsAssertionWrapping(thrownException) {
+              shouldNotThrowExactlyMatcher { throw thrownException }
+            }
+          }
+        }
+      }
+
+      "Should throw the thrown exception" - {
+        "When it's a subclass of the expected type" {
+          val thrownException = SubException()
+
+          onShouldNotThrowExactlyMatcher<ParentException> { shouldNotThrowExactlyMatcher ->
+            verifyThrowsExactly(thrownException) {
+              shouldNotThrowExactlyMatcher { throw thrownException }
+            }
+          }
+        }
+
+        "When it's a super class of the expected type" {
+          val thrownException = ParentException()
+
+          onShouldNotThrowExactlyMatcher<SubException> { shouldNotThrowExactlyMatcher ->
+            verifyThrowsExactly(thrownException) {
+              shouldNotThrowExactlyMatcher { throw thrownException }
+            }
+          }
+        }
+
+        "When it's unrelated to the expected type" {
+          val thrownException = FooRuntimeException()
+
+          onShouldNotThrowExactlyMatcher<ParentException> { shouldNotThrowExactlyMatcher ->
+            verifyThrowsExactly(thrownException) {
+              shouldNotThrowExactlyMatcher { throw thrownException }
+            }
+          }
+        }
+      }
+
+      "Should not throw anything" - {
+        "When nothing is thrown" {
+
+          onShouldNotThrowExactlyMatcher<FooRuntimeException> { shouldNotThrowExactlyMatcher ->
+            verifyNoErrorIsThrown {
+              shouldNotThrowExactlyMatcher { /* Success */ }
+            }
+          }
+        }
+      }
+    }
+  }
 
   private inline fun <reified T : Throwable> onShouldThrowExactlyMatcher(func: (ShouldThrowExactlyMatcher<T>) -> Unit) {
     func(::shouldThrowExactlyUnit)
@@ -98,6 +157,7 @@ class StrictThrowableHandlingTest : FreeSpec() {
     throwable.shouldBeInstanceOf<AssertionError>()
     throwable!!.message shouldBe "Expected exception ${expectedClass.qualifiedName} but no exception was thrown."
   }
+
 
   private fun verifyThrowsAssertionErrorInstance(assertionErrorInstance: AssertionError, block: () -> Unit) {
     val throwable = catchThrowable(block)
@@ -117,6 +177,30 @@ class StrictThrowableHandlingTest : FreeSpec() {
 
     (thrownException === actualReturn).shouldBeTrue()
   }
+
+  private inline fun <reified T : Throwable> onShouldNotThrowExactlyMatcher(func: (ShouldNotThrowExactlyMatcher) -> Unit) {
+    func { shouldNotThrowExactly<T>(it) }
+    func { shouldNotThrowExactlyUnit<T>(it) }
+  }
+
+  private fun verifyThrowsAssertionWrapping(thrownException: FooRuntimeException, block: () -> Unit) {
+    val thrown = catchThrowable(block)
+
+    thrown!!.shouldBeInstanceOf<AssertionError>()
+    thrown.message shouldBe "No exception expected, but a FooRuntimeException was thrown."
+    thrown.cause shouldBeSameInstanceAs thrownException
+
+  }
+
+  private fun verifyThrowsExactly(thrownException: Throwable, block: () -> Unit) {
+    catchThrowable(block).shouldBeSameInstanceAs(thrownException)
+  }
+
+  private fun verifyNoErrorIsThrown(block: () -> Unit) {
+    block()
+  }
+
 }
 
 private typealias ShouldThrowExactlyMatcher<T> = (() -> Unit) -> T
+private typealias ShouldNotThrowExactlyMatcher = (() -> Unit) -> Unit

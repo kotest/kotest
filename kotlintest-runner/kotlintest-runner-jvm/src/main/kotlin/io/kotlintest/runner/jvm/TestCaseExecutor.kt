@@ -1,76 +1,197 @@
 package io.kotlintest.runner.jvm
 
-import io.kotlintest.Project
-import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
-import io.kotlintest.TestResult
+import io.kotlintest.*
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestCaseInterceptContext
+import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
+import io.kotlintest.internal.unwrapIfReflectionCall
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.time.Duration
+import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicReference
 
-class TestCaseExecutor(val listener: TestEngineListener,
-                       val testCase: TestCase,
-                       val context: TestContext) {
+/**
+ * The [TestCaseExecutor] is responsible for preparing and executing a single [TestCase].
+ *
+ * A test may be executed multiple times, if the config has set invocations > 1.
+ * Also, tests may be executed concurrently if threads > 1.
+ *
+ * This class handles notifications to [TestListener] instances, as well as any
+ * [TestCaseExtension] instances which may intercept and circumvent execution.
+ *
+ * A [TestCase] is only executed if it is considered active (see [isActive]),
+ * otherwise a result of [TestResult.Ignored] is returned.
+ *
+ * Executing a [TestCase] is a blocking operation. Although each invocation of the
+ * test closure will occur in a coroutine, the overall test execution will block
+ * until all runs are completed and the final [TestResult] is returned.
+ *
+ * The executor can be shared between multiple tests as it is thread safe.
+ */
+class TestCaseExecutor(private val listener: TestEngineListener,
+                       private val executor: ExecutorService,
+                       private val scheduler: ScheduledExecutorService) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  fun execute() {
+  suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
+
     try {
 
-      listener.prepareTestCase(testCase)
-
-      val listeners = listOf(testCase.spec) + testCase.spec.listeners() + Project.listeners()
+      // invoke the "before" callbacks here on the main executor
+      context.launch(executor.asCoroutineDispatcher()) {
+        before(testCase)
+      }.join()
 
       val extensions = testCase.config.extensions +
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
           Project.testCaseExtensions()
 
-      listeners.forEach { it.beforeTest(testCase.description) }
-
-      fun onComplete(result: TestResult) {
-        listeners.reversed().forEach { it.afterTest(testCase.description, result) }
-        listener.completeTestCase(testCase, result)
+      // get active status here in case calling this function is expensive
+      runExtensions(testCase, context, extensions) { result ->
+        // invoke the "after" callbacks here on the main executor
+        context.launch(executor.asCoroutineDispatcher()) {
+          after(testCase, result)
+        }.join()
+        onResult(result)
       }
 
-      fun interceptTestCase(remaining: List<TestCaseExtension>,
-                            config: TestCaseConfig,
-                            onComplete: (TestResult) -> Unit) {
-        when {
-          remaining.isEmpty() -> {
-            val result = executeTestIfActive(testCase, config)
-            onComplete(result)
-          }
-          else -> {
-            val ctx = TestCaseInterceptContext(testCase.description, testCase.spec, config)
-            remaining.first().intercept(ctx, { conf, callback -> interceptTestCase(remaining.drop(1), conf, callback) }, { onComplete(it) })
+    } catch (t: Throwable) {
+      t.printStackTrace()
+      listener.exitTestCase(testCase, TestResult.error(t))
+    }
+  }
+
+  private suspend fun runExtensions(testCase: TestCase,
+                                    context: TestContext,
+                                    remaining: List<TestCaseExtension>,
+                                    onComplete: suspend (TestResult) -> Unit) {
+    when {
+      remaining.isEmpty() -> {
+        val result = executeTestIfActive(testCase, context)
+        onComplete(result)
+      }
+      else -> {
+        remaining.first().intercept(
+            testCase,
+            { test, callback -> runExtensions(test, context, remaining.drop(1), callback) },
+            { onComplete(it) }
+        )
+      }
+    }
+  }
+
+  private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
+    val active = isActive(testCase)
+    return if (active) executeTest(testCase, context) else TestResult.Ignored
+  }
+
+  // exectues the test case or if the test is not active then returns a ignored test result
+  private suspend fun executeTest(testCase: TestCase, context: TestContext): TestResult {
+    listener.beforeTestCaseExecution(testCase)
+
+    // if we have more than one requested thread, we run the tests inside a clean executor;
+    // otherwise we run on the same thread as the listeners to avoid issues where the before and
+    // after listeners  require the same thread as the test case.
+    // @see https://github.com/kotlintest/kotlintest/issues/447
+    val executor = when (testCase.config.threads) {
+      1 -> executor
+      else -> Executors.newFixedThreadPool(testCase.config.threads)!!
+    }
+
+    val dispatcher = executor.asCoroutineDispatcher()
+
+    // captures an error from the test case closures
+    val error = AtomicReference<Throwable?>(null)
+
+    val supervisorJob = context.launch {
+
+      val testCaseJobs = (0 until testCase.config.invocations).map {
+        // asynchronously disaptch the job and return any error
+        async(dispatcher) {
+          listener.invokingTestCase(testCase, 1)
+          try {
+            if (Project.globalAssertSoftly()) {
+              assertSoftly {
+                testCase.test(context)
+              }
+            } else {
+              testCase.test(context)
+            }
+            null
+          } catch (t: Throwable) {
+            t.unwrapIfReflectionCall()
           }
         }
       }
 
-      interceptTestCase(extensions, testCase.config, ::onComplete)
+      testCaseJobs.forEach {
+        val testError = it.await()
+        error.compareAndSet(null, testError)
+      }
+    }
 
-    } catch (t: Throwable) {
-      t.printStackTrace()
-      listener.completeTestCase(testCase, TestResult.error(t))
+    // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
+    if (testCase.config.timeout.nano > 0) {
+      scheduler.schedule({
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
+      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+    }
+
+    supervisorJob.invokeOnCompletion { e ->
+      error.compareAndSet(null, e)
+    }
+
+    supervisorJob.join()
+
+    // if the tests had their own special executor (ie threads > 1) then we need to shut it down
+    if (testCase.config.threads > 1) {
+      executor.shutdown()
+    }
+
+    val result = buildTestResult(error.get(), context.metaData())
+
+    listener.afterTestCaseExecution(testCase, result)
+    return result
+  }
+
+  /**
+   * Handles all "before" listeners.
+   */
+  private fun before(testCase: TestCase) {
+    listener.enterTestCase(testCase)
+
+    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+    val active = isActive(testCase)
+    userListeners.forEach {
+      it.beforeTest(testCase.description)
+      if (active) {
+        it.beforeTest(testCase)
+      }
     }
   }
 
-  private fun executeTestIfActive(testCase: TestCase, config: TestCaseConfig): TestResult {
-    return if (isActive(testCase.copy(config = config))) {
-      TestSetExecutor(listener, context).execute(TestSet(testCase, config.timeout, config.invocations, config.threads))
-    } else {
-      TestResult.Ignored
+  /**
+   * Handles all "after" listeners.
+   */
+  private fun after(testCase: TestCase, result: TestResult) {
+    val active = isActive(testCase)
+    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+    userListeners.reversed().forEach {
+      it.afterTest(testCase.description, result)
+      if (active) {
+        it.afterTest(testCase, result)
+      }
     }
+    listener.exitTestCase(testCase, result)
   }
+
+  private fun buildTestResult(error: Throwable?, metadata: Map<String, Any?>): TestResult = when (error) {
+    null -> TestResult(TestStatus.Success, null, null, metadata)
+    is AssertionError -> TestResult(TestStatus.Failure, error, null, metadata)
+    else -> TestResult(TestStatus.Error, error, null, metadata)
+  }
+
 }
-
-/**
- * A testset comprises the parameters of a particular [TestCase]s execution.
- */
-data class TestSet(val testCase: TestCase,
-                   val timeout: Duration,
-                   val invocations: Int,
-                   val threads: Int)

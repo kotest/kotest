@@ -1,6 +1,5 @@
 package io.kotlintest.runner.jvm
 
-import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
@@ -20,39 +19,39 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
-  override fun prepareSpec(description: Description, klass: KClass<out Spec>) {
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
     synchronized(listener) {
-      listener.prepareSpec(description, klass)
+      listener.beforeSpecClass(klass)
     }
   }
 
-  override fun completeSpec(description: Description, klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     synchronized(listener) {
-      listener.completeSpec(description, klass, t)
+      listener.afterSpecClass(klass, t)
     }
   }
 
-  override fun prepareTestCase(testCase: TestCase) {
+  override fun enterTestCase(testCase: TestCase) {
     synchronized(listener) {
-      listener.prepareTestCase(testCase)
+      listener.enterTestCase(testCase)
     }
   }
 
-  override fun completeTestCase(testCase: TestCase, result: TestResult) {
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
     synchronized(listener) {
-      listener.completeTestCase(testCase, result)
+      listener.exitTestCase(testCase, result)
     }
   }
 
-  override fun testRun(set: TestSet, k: Int) {
+  override fun invokingTestCase(testCase: TestCase, k: Int) {
     synchronized(listener) {
-      listener.testRun(set, k)
+      listener.invokingTestCase(testCase, k)
     }
   }
 
-  override fun completeTestSet(set: TestSet, result: TestResult) {
+  override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
     synchronized(listener) {
-      listener.completeTestSet(set, result)
+      listener.afterTestCaseExecution(testCase, result)
     }
   }
 

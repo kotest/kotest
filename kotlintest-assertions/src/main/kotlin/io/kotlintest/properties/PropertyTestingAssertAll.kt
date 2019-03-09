@@ -1,3 +1,5 @@
+@file:Suppress("RemoveExplicitTypeArguments")
+
 package io.kotlintest.properties
 
 import io.kotlintest.properties.shrinking.Shrinker
@@ -5,18 +7,38 @@ import outputClassifications
 import shrink
 import testAndShrink
 
+data class Tuple4<out A, out B, out C, out D>(val a: A, val b: B, val c: C, val d: D) {
+  override fun toString(): String {
+    return "($a, $b, $c, $d)"
+  }
+}
+data class Tuple5<out A, out B, out C, out D, out E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
+  override fun toString(): String {
+    return "($a, $b, $c, $d, $e)"
+  }
+}
+data class Tuple6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
+  override fun toString(): String {
+    return "($a, $b, $c, $d, $e, $f)"
+  }
+}
+
 inline fun <reified A> assertAll(noinline fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, fn)
 inline fun <reified A> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Unit) {
   assertAll(iterations, Gen.default(), fn)
 }
 
 fun <A> assertAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, gena, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a: A) -> Unit) = assertAll(iterations, this, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(iterations, this, this, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(iterations, this, this, this, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(iterations, this, this, this, this, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(iterations, this, this, this, this, this, fn)
+fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(iterations, this, this, this, this, this, this, fn)
 fun <A> assertAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
-  val context = PropertyContext()
   val values = gena.constants().asSequence() + gena.random()
   _assertAll(iterations, values, gena.shrinker(), fn)
-  outputClassifications(context)
 }
 
 fun <A> _assertAll(iterations: Int,
@@ -26,8 +48,10 @@ fun <A> _assertAll(iterations: Int,
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
   values.take(iterations).forEach { a ->
+    context.addValue(a)
     testAndShrink(a, shrinkera, context, fn)
   }
+  outputValues(context)
   outputClassifications(context)
 }
 
@@ -54,9 +78,11 @@ fun <A, B> _assertAll(iterations: Int,
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
   values.take(iterations).forEach {
+    context.addValue(it)
     val (a, b) = it
     testAndShrink(a, b, shrinkera, shrinkerb, context, fn)
   }
+  outputValues(context)
   outputClassifications(context)
 }
 
@@ -74,6 +100,7 @@ fun <A, B, C> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C
   for (a in gena.constants()) {
     for (b in genb.constants()) {
       for (c in genc.constants()) {
+        context.addValue(Triple(a, b, c))
         testAndShrink(a, b, c, gena, genb, genc, context, fn)
       }
     }
@@ -85,8 +112,10 @@ fun <A, B, C> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C
     val a = avalues.next()
     val b = bvalues.next()
     val c = cvalues.next()
+    context.addValue(Triple(a, b, c))
     testAndShrink(a, b, c, gena, genb, genc, context, fn)
   }
+  outputValues(context)
   outputClassifications(context)
 }
 
@@ -110,6 +139,7 @@ fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Ge
     for (b in genb.constants()) {
       for (c in genc.constants()) {
         for (d in gend.constants()) {
+          context.addValue(Tuple4(a, b, c, d))
           testAndShrink(a, b, c, d, gena, genb, genc, gend, context, fn)
         }
       }
@@ -120,8 +150,14 @@ fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Ge
   val cvalues = genc.random().iterator()
   val dvalues = gend.random().iterator()
   while (context.attempts() < iterations) {
-    testAndShrink(avalues.next(), bvalues.next(), cvalues.next(), dvalues.next(), gena, genb, genc, gend, context, fn)
+    val a = avalues.next()
+    val b = bvalues.next()
+    val c = cvalues.next()
+    val d = dvalues.next()
+    context.addValue(Tuple4(a, b, c, d))
+    testAndShrink(a, b, c, d, gena, genb, genc, gend, context, fn)
   }
+  outputValues(context)
   outputClassifications(context)
 }
 
@@ -144,6 +180,7 @@ fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc:
       for (c in genc.constants()) {
         for (d in gend.constants()) {
           for (e in gene.constants()) {
+            context.addValue(Tuple5(a, b, c, d, e))
             testAndShrink(a, b, c, d, e, gena, genb, genc, gend, gene, context, fn)
           }
         }
@@ -161,8 +198,10 @@ fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc:
     val c = cvalues.next()
     val d = dvalues.next()
     val e = evalues.next()
+    context.addValue(Tuple5(a, b, c, d, e))
     testAndShrink(a, b, c, d, e, gena, genb, genc, gend, gene, context, fn)
   }
+  outputValues(context)
   outputClassifications(context)
 }
 
@@ -188,12 +227,12 @@ fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, ge
     try {
       context.fn(a, b, c, d, e, f)
     } catch (x: AssertionError) {
-      val smallestA = shrink(a, gena, { context.fn(it, b, c, d, e, f) })
-      val smallestB = shrink(b, genb, { context.fn(smallestA, it, c, d, e, f) })
-      val smallestC = shrink(c, genc, { context.fn(smallestA, smallestB, it, d, e, f) })
-      val smallestD = shrink(d, gend, { context.fn(smallestA, smallestB, smallestC, it, e, f) })
-      val smallestE = shrink(e, gene, { context.fn(smallestA, smallestB, smallestC, smallestD, it, f) })
-      val smallestF = shrink(f, genf, { context.fn(smallestA, smallestB, smallestC, smallestD, smallestE, it) })
+      val smallestA = shrink(a, gena) { context.fn(it, b, c, d, e, f) }
+      val smallestB = shrink(b, genb) { context.fn(smallestA, it, c, d, e, f) }
+      val smallestC = shrink(c, genc) { context.fn(smallestA, smallestB, it, d, e, f) }
+      val smallestD = shrink(d, gend) { context.fn(smallestA, smallestB, smallestC, it, e, f) }
+      val smallestE = shrink(e, gene) { context.fn(smallestA, smallestB, smallestC, smallestD, it, f) }
+      val smallestF = shrink(f, genf) { context.fn(smallestA, smallestB, smallestC, smallestD, smallestE, it) }
       val inputs = listOf(
           PropertyFailureInput<A>(a, smallestA),
           PropertyFailureInput<B>(b, smallestB),
@@ -212,6 +251,7 @@ fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, ge
         for (d in gend.constants()) {
           for (e in gene.constants()) {
             for (f in genf.constants()) {
+              context.addValue(Tuple6(a, b, c, d, e, f))
               test(a, b, c, d, e, f)
             }
           }
@@ -232,7 +272,9 @@ fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, ge
     val d = dvalues.next()
     val e = evalues.next()
     val f = fvalues.next()
+    context.addValue(Tuple6(a, b, c, d, e, f))
     test(a, b, c, d, e, f)
   }
+  outputValues(context)
   outputClassifications(context)
 }

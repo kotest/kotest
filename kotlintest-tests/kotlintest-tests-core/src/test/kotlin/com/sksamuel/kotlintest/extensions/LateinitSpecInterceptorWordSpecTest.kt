@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.extensions
 
+import io.kotlintest.Spec
 import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.SpecInterceptContext
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
@@ -11,7 +11,7 @@ class LateinitSpecInterceptorWordSpecTest : WordSpec() {
   private lateinit var string: String
 
   inner class Interceptor : SpecExtension {
-    override fun intercept(context: SpecInterceptContext, process: () -> Unit) {
+    override suspend fun intercept(spec: Spec, process: suspend () -> Unit) {
       this@LateinitSpecInterceptorWordSpecTest.string = "Hello"
       process()
     }
