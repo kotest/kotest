@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
 
   val test: String? = ns.getString("test")
   val writerClass: String? = ns.getString("writer")
-  val spec: String = ns.getString("spec")
+  val spec: String? = ns.getString("spec")
 
   val writer = if (writerClass == null) TeamCityConsoleWriter() else Class.forName(writerClass).kotlin.createInstance() as TestEngineListener
   val runner = KotlinTestConsoleRunner(writer)

@@ -7,10 +7,17 @@ import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.TestEngineListener
 
 class KotlinTestConsoleRunner(private val writer: TestEngineListener) {
-  fun execute(specFQN: String, test: String?) {
-    val spec = (Class.forName(specFQN) as Class<Spec>).kotlin
-    val filter = if (test == null) emptyList() else listOf(SpecAwareTestFilter(test, spec))
-    val runner = io.kotlintest.runner.jvm.TestEngine(listOf(spec), filter, Project.parallelism(), writer)
+  fun execute(specFQN: String?, test: String?) {
+
+    val spec = if (specFQN != null) (Class.forName(specFQN) as Class<Spec>).kotlin else null
+    val filter = if (test != null && spec != null) SpecAwareTestFilter(test, spec) else null
+
+    val runner = io.kotlintest.runner.jvm.TestEngine(
+        if (spec == null) emptyList() else listOf(spec),
+        if (filter == null) emptyList() else listOf(filter),
+        Project.parallelism(),
+        writer
+    )
     runner.execute()
   }
 }

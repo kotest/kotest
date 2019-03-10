@@ -14,6 +14,10 @@ interface TestCaseFilter : ProjectLevelFilter {
   }
 }
 
+object IncludeAllTestCaseFilter : TestCaseFilter {
+  override fun filter(description: Description): TestFilterResult = TestFilterResult.Include
+}
+
 interface ProjectLevelFilter
 
 enum class TestFilterResult {
