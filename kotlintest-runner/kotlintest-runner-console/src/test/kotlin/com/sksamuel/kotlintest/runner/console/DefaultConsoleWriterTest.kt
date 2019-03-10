@@ -44,7 +44,7 @@ class DefaultConsoleWriterTest : FunSpec() {
       out.shouldContain("\tfirst test")
       out.shouldContain("\t\tcause: wibble boom (1)")
       out.shouldContain("KotlinTest completed in")
-      out.shouldContain("1 specs containing 5 tests")
+      out.shouldContain("1 spec containing 5 tests")
       out.shouldContain("Tests: passed 2, failed 2, ignored 1")
       out.shouldContain("*** 2 TESTS FAILED ***")
       out.shouldContain("Specs with failing tests:")

@@ -6,7 +6,7 @@ import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.runner.jvm.TestEngineListener
 
-class KotlinTestConsoleRunner(val writer: TestEngineListener) {
+class KotlinTestConsoleRunner(private val writer: TestEngineListener) {
   fun execute(specFQN: String, test: String?) {
     val spec = (Class.forName(specFQN) as Class<Spec>).kotlin
     val filter = if (test == null) emptyList() else listOf(SpecAwareTestFilter(test, spec))

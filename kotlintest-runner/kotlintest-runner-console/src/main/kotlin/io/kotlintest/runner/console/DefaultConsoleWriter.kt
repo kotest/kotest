@@ -59,8 +59,11 @@ class DefaultConsoleWriter : TestEngineListener {
 
   override fun engineFinished(t: Throwable?) {
     val duration = Duration.ofMillis(System.currentTimeMillis() - start)
+    val specDistinctCount = specs.distinct().size
+    val specPluralOrSingular = if (specDistinctCount == 1) "spec" else "specs"
+    println()
     println(term.blue("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis"))
-    println(term.blue("${specs.distinct().size} specs containing ${failed.size + passed.size + ignored.size} tests"))
+    println(term.blue("$specDistinctCount $specPluralOrSingular containing ${failed.size + passed.size + ignored.size} tests"))
     println(term.blue("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}"))
     if (failed.isNotEmpty()) {
       println(term.red("*** ${failed.size} TESTS FAILED ***"))
