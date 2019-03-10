@@ -24,7 +24,7 @@ class DefaultConsoleWriterTest : FunSpec() {
 
   init {
 
-    test("final write should include total tests run") {
+    test("final write should include summary info") {
 
       val out = captureStandardOut {
         val writer = DefaultConsoleWriter()
@@ -42,7 +42,7 @@ class DefaultConsoleWriterTest : FunSpec() {
 
       out.shouldContain("com.sksamuel.kotlintest.runner.console.DefaultConsoleWriterTest")
       out.shouldContain("\tfirst test")
-      out.shouldContain("\t\tcause: wibble boom (1)")
+      out.shouldContain("\t\tcause: wibble boom (sourcefile.kt 1)")
       out.shouldContain("KotlinTest completed in")
       out.shouldContain("1 spec containing 5 tests")
       out.shouldContain("Tests: passed 2, failed 2, ignored 1")

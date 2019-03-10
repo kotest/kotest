@@ -1,6 +1,7 @@
 package io.kotlintest.runner.console
 
-import com.github.ajalt.mordant.TermColors
+import com.andreapivetta.kolor.Color
+import com.andreapivetta.kolor.Kolor
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -15,8 +16,6 @@ import kotlin.reflect.KClass
  */
 class DefaultConsoleWriter : TestEngineListener {
 
-  private val term = TermColors()
-
   private fun Description.indent(): String = "\t".repeat(parents.size)
   private fun Description.indented(): String = "${indent()}$name"
   private fun TestCase.indented(): String = description.indented()
@@ -28,26 +27,26 @@ class DefaultConsoleWriter : TestEngineListener {
   private var start = 0L
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
-    println(term.green(Description.spec(klass).name))
+    println(Kolor.foreground(Description.spec(klass).name, Color.GREEN))
   }
 
   override fun exitTestCase(testCase: TestCase, result: TestResult) {
     specs.add(testCase.spec::class)
     when (result.status) {
       TestStatus.Success -> {
-        println(term.green(testCase.indented()))
+        println(Kolor.foreground(testCase.indented(), Color.GREEN))
         passed.add(testCase)
       }
       TestStatus.Error, TestStatus.Failure -> {
-        println(term.red(testCase.indented()) + " *** FAILED ***")
+        println(Kolor.foreground(testCase.indented(), Color.RED) + " *** FAILED ***")
         result.error?.message?.apply {
-          val assertion = testCase.description.indent() + "\tcause: " + term.red("$this (${testCase.line})")
+          val assertion = Kolor.foreground(testCase.description.indent() + "\tcause: $this (sourcefile.kt ${testCase.line})", Color.RED)
           println(assertion)
         }
         failed.add(testCase)
       }
       TestStatus.Ignored -> {
-        println(term.yellow(testCase.indented()))
+        println(Kolor.foreground(testCase.indented() + " (Ignored)", Color.YELLOW))
         ignored.add(testCase)
       }
     }
@@ -62,14 +61,14 @@ class DefaultConsoleWriter : TestEngineListener {
     val specDistinctCount = specs.distinct().size
     val specPluralOrSingular = if (specDistinctCount == 1) "spec" else "specs"
     println()
-    println(term.blue("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis"))
-    println(term.blue("$specDistinctCount $specPluralOrSingular containing ${failed.size + passed.size + ignored.size} tests"))
-    println(term.blue("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}"))
+    println("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
+    println("$specDistinctCount $specPluralOrSingular containing ${failed.size + passed.size + ignored.size} tests")
+    println("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
     if (failed.isNotEmpty()) {
-      println(term.red("*** ${failed.size} TESTS FAILED ***"))
+      println(Kolor.foreground("*** ${failed.size} TESTS FAILED ***", Color.RED))
       println("Specs with failing tests:")
       failed.map { it.description.spec() }.distinct().sortedBy { it.name }.forEach {
-        println(" - ${it.name}")
+        println(Kolor.foreground(" - ${it.name}", Color.RED))
       }
     }
   }

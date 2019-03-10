@@ -6,10 +6,16 @@ plugins {
     id 'signing'
 }
 
+repositories {
+    maven {
+        url  "https://dl.bintray.com/ziggy42/kolor"
+    }
+}
+
 dependencies {
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
     compile 'net.sourceforge.argparse4j:argparse4j:0.8.1'
-    compile 'com.github.ajalt:mordant:1.2.0'
+    compile 'com.andreapivetta.kolor:kolor:0.0.2'
     testImplementation project(":kotlintest-runner:kotlintest-runner-junit5")
 }
 
