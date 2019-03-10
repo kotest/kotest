@@ -9,7 +9,6 @@ import com.nhaarman.mockito_kotlin.times
 import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
-import io.kotlintest.TestType
 import io.kotlintest.runner.junit5.JUnitTestRunnerListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
@@ -47,7 +46,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
+      val tc = TestCase.test(spec.description().append("my test"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
@@ -67,7 +66,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
+      val tc = TestCase.test(spec.description().append("my test"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
@@ -87,7 +86,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Test, TestCaseConfig())
+      val tc = TestCase.test(spec.description().append("my test"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
@@ -107,7 +106,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig())
+      val tc = TestCase.container(spec.description().append("my test"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
@@ -135,7 +134,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("my test"), spec, { }, 5, TestType.Container, TestCaseConfig(invocations = 3, timeout = Duration.ofMinutes(2)))
+      val tc = TestCase.container(spec.description().append("my test"), spec) { }
+          .copy(config = TestCaseConfig(invocations = 3, timeout = Duration.ofMinutes(2)))
 
       listener.beforeSpecClass(spec::class)
 
@@ -161,8 +161,10 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig(timeout = Duration.ofMinutes(2)))
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig(timeout = Duration.ofMinutes(2)))
+      val tc1 = TestCase.container(spec.description().append("test1"), spec) { }
+          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
+      val tc2 = TestCase.container(tc1.description.append("test2"), spec) { }
+          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)
@@ -184,7 +186,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc = TestCase(spec.description().append("test"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc = TestCase.container(spec.description().append("test"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
@@ -202,8 +204,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc1 = TestCase.container(spec.description().append("test1"), spec) { }
+      val tc2 = TestCase.container(tc1.description.append("test2"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)
@@ -225,8 +227,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Container, TestCaseConfig())
-      val tc2 = TestCase(tc1.description.append("test2"), spec, { }, 1, TestType.Container, TestCaseConfig())
+      val tc1 = TestCase.container(spec.description().append("test1"), spec) { }
+      val tc2 = TestCase.container(tc1.description.append("test2"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)
@@ -252,8 +254,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec1 = JUnitTestRunnerListenerTest()
       val spec2 = KotlinTestEngineTest()
-      val tc1 = TestCase(spec1.description().append("test1"), spec1, { }, 1, TestType.Container, TestCaseConfig())
-      val tc2 = TestCase(spec2.description().append("test2"), spec2, { }, 1, TestType.Container, TestCaseConfig())
+      val tc1 = TestCase.container(spec1.description().append("test1"), spec1) { }
+      val tc2 = TestCase.container(spec2.description().append("test2"), spec2) { }
 
       listener.beforeSpecClass(spec1::class)
       listener.beforeSpecClass(spec2::class)
@@ -288,8 +290,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
-      val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val tc1 = TestCase.test(spec.description().append("test1"), spec) { }
+      val tc2 = TestCase.test(spec.description().append("test2"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)
@@ -323,8 +325,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       val listener = JUnitTestRunnerListener(mock, rootDescriptor)
 
       val spec = JUnitTestRunnerListenerTest()
-      val tc1 = TestCase(spec.description().append("test1"), spec, { }, 1, TestType.Test, TestCaseConfig())
-      val tc2 = TestCase(spec.description().append("test2"), spec, { }, 1, TestType.Test, TestCaseConfig())
+      val tc1 = TestCase.test(spec.description().append("test1"), spec) { }
+      val tc2 = TestCase.test(spec.description().append("test2"), spec) { }
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)

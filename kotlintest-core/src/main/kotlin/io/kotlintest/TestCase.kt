@@ -38,6 +38,7 @@ data class TestCase(
     // config used when running the test, such as number of
     // invocations, threads, etc
     val config: TestCaseConfig) {
+
   val name = description.name
   fun isFocused() = name.startsWith("f:")
   fun isTopLevel(): Boolean = description.isTopLevel()

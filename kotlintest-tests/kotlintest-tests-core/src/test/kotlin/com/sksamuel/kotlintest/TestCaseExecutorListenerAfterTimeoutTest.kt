@@ -10,7 +10,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
-import io.kotlintest.TestType
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -41,9 +40,9 @@ class TestCaseExecutorListenerAfterTimeoutTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorListenerAfterTimeoutTest) {
         Thread.sleep(500)
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}

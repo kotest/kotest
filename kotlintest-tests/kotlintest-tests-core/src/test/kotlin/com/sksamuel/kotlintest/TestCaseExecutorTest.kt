@@ -33,9 +33,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
-        counter++
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1))
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) { counter++ }
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.spec("wibble")
@@ -50,9 +48,9 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter++
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
+      }.copy(config = TestCaseConfig(true, invocations = 10, threads = 1))
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.spec("wibble")
@@ -70,10 +68,10 @@ class TestCaseExecutorTest : FunSpec() {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter.incrementAndGet()
         threadLocal.set(true)
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 50, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 50, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -93,10 +91,10 @@ class TestCaseExecutorTest : FunSpec() {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter.incrementAndGet()
         threadLocal.set(true)
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -114,9 +112,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -133,9 +131,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -152,9 +150,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 10, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -171,9 +169,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 5))
+      }.copy(config = TestCaseConfig(true, invocations = 10, threads = 5))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -190,9 +188,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
+      }.copy(config = TestCaseConfig(true, invocations = 10, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -209,9 +207,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 10, threads = 1))
+      }.copy(config = TestCaseConfig(true, invocations = 10, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -227,9 +225,9 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         Thread.sleep(10000)
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -249,12 +247,12 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         val startTime = currentTimeMillis()
         while (currentTimeMillis() < startTime + 1000) {
           "this" shouldNotBe "that"
         }
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125.milliseconds))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -274,11 +272,11 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         while (true) {
           "this" shouldBe "that"
         }
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 1, threads = 1))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -295,11 +293,11 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest, {
         while (true) {
           "this" shouldBe "that"
         }
-      }, 0, TestType.Test, TestCaseConfig(true, invocations = 2, threads = 1))
+      }).copy(config = TestCaseConfig(true, invocations = 2, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
