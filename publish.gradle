@@ -1,13 +1,14 @@
-apply plugin: 'org.jetbrains.dokka'
+//apply plugin: 'org.jetbrains.dokka'
 
-dokka {
-    outputFormat = 'javadoc'
-    outputDirectory = javadoc.destinationDir
-}
+//dokka {
+//    outputFormat = 'javadoc'
+//    outputDirectory = javadoc.destinationDir
+//}
 
-dokka.dependsOn javadoc
+//dokka.dependsOn javadoc
 
-task javadocJar(type: Jar, dependsOn: dokka) {
+// task javadocJar(type: Jar, dependsOn: dokka) {
+task javadocJar(type: Jar) {
     from javadoc.destinationDir
     archiveClassifier = 'javadoc'
 }
