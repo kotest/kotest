@@ -1,7 +1,6 @@
 package io.kotlintest.runner.console
 
-import com.andreapivetta.kolor.Color
-import com.andreapivetta.kolor.Kolor
+import com.github.ajalt.mordant.TermColors
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
@@ -16,32 +15,24 @@ import kotlin.reflect.KClass
  */
 class DefaultConsoleWriter : TestEngineListener {
 
+  private val term = TermColors(TermColors.Level.ANSI256)
+
   private fun Description.indent(): String = "\t".repeat(parents.size)
   private fun Description.indented(): String = "${indent()}$name"
-  private fun TestCase.indented(): String = description.indented()
 
-  private val failed = mutableListOf<TestCase>()
-  private val passed = mutableListOf<TestCase>()
-  private val ignored = mutableListOf<TestCase>()
-  private val specs = mutableListOf<KClass<out Spec>>()
   private var start = 0L
+  private var n = 0
 
   private val tests = mutableListOf<TestCase>()
   private val results = mutableMapOf<Description, TestResult>()
 
-  private fun green(str: String) = println(Kolor.foreground(str, Color.GREEN))
-  private fun red(str: String) = println(Kolor.foreground(str, Color.RED))
-  private fun yellow(str: String) = println(Kolor.foreground(str, Color.YELLOW))
+  private fun green(str: String) = println(term.green(str))
+  private fun red(str: String) = println(term.red(str))
+  private fun yellow(str: String) = println(term.yellow(str))
 
   override fun engineStarted(classes: List<KClass<out Spec>>) {
     start = System.currentTimeMillis()
   }
-
-  override fun beforeSpecClass(klass: KClass<out Spec>) {
-    specs.add(klass)
-  }
-
-  //
 
   override fun enterTestCase(testCase: TestCase) {
     tests.add(testCase)
@@ -53,52 +44,56 @@ class DefaultConsoleWriter : TestEngineListener {
 
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
 
+    n += 1
     val specDesc = Description.spec(klass)
 
     if (t == null) {
-      green(specDesc.name)
+      green("$n) ${specDesc.name}")
     } else {
       red(specDesc.name + " *** FAILED ***")
-      red("\tcause: ${t.message})")
+      red("  \tcause: ${t.message})")
     }
 
-    tests.forEach {
+    tests.filter { it.spec::class.qualifiedName == klass.qualifiedName }.forEach {
       val result = results[it.description]
       when (result?.status) {
         null -> red("${it.description} did not complete")
-        TestStatus.Success -> {
-          green(it.indented())
-          passed.add(it)
-        }
+        TestStatus.Success -> green("   " + it.description.indented())
         TestStatus.Error, TestStatus.Failure -> {
-          red(it.indented() + " *** FAILED ***")
+          red("   " + it.description.indented() + " *** FAILED ***")
           result.error?.message?.apply {
-            red(it.description.indent() + "\tcause: $this (${it.source.fileName}:${it.source.lineNumber})")
+            red(it.description.indent() + "  \tcause: $this (${it.source.fileName}:${it.source.lineNumber})")
           }
-          failed.add(it)
         }
-        TestStatus.Ignored -> {
-          yellow(it.indented() + " (Ignored)")
-          ignored.add(it)
-        }
+        TestStatus.Ignored -> yellow("   " + it.description.indented() + " (Ignored)")
       }
     }
   }
 
   override fun engineFinished(t: Throwable?) {
+
     val duration = Duration.ofMillis(System.currentTimeMillis() - start)
+
+    val ignored = results.filter { it.value.status == TestStatus.Ignored }
+    val failed = results.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
+    val passed = results.filter { it.value.status == TestStatus.Success }
+
+    val specs = tests.map { it.spec.description() }.distinct()
     val specDistinctCount = specs.distinct().size
-    val specPluralOrSingular = if (specDistinctCount == 1) "spec" else "specs"
+
     println()
     println("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
-    println("$specDistinctCount $specPluralOrSingular containing ${failed.size + passed.size + ignored.size} tests")
+    println("Specs: completed $specDistinctCount, tests ${failed.size + passed.size + ignored.size}")
     println("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
     if (failed.isNotEmpty()) {
       red("*** ${failed.size} TESTS FAILED ***")
       println("Specs with failing tests:")
-      failed.map { it.description.spec() }.distinct().sortedBy { it.name }.forEach {
-        red(" - ${it.name}")
-      }
+      failed.map { it.key.spec() }
+          .distinct()
+          .sortedBy { it.name }
+          .forEach {
+            red(" - ${it.name}")
+          }
     }
   }
 }

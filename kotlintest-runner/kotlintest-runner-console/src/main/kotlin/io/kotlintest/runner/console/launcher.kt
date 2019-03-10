@@ -13,9 +13,9 @@ fun main(args: Array<String>) {
   parser.addArgument("--writer").help("Specify the fully qualified name of the console writer implementation. Defaults to io.kotlintest.runner.console.TeamCityConsoleWriter")
   val ns = parser.parseArgs(args)
 
-  val test: String? = ns.getString("test")
   val writerClass: String? = ns.getString("writer")
   val spec: String? = ns.getString("spec")
+  val test: String? = ns.getString("test")
 
   val writer = if (writerClass == null) TeamCityConsoleWriter() else Class.forName(writerClass).kotlin.createInstance() as TestEngineListener
   val runner = KotlinTestConsoleRunner(writer)

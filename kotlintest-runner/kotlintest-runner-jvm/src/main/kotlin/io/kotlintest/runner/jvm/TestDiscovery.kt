@@ -19,10 +19,10 @@ import kotlin.reflect.KClass
  * @param classNameFilters list of class name filters
  */
 data class DiscoveryRequest(val uris: List<URI>,
-                            val classNames: List<String>,
-                            val packages: List<String>,
-                            val classNameFilters: List<Predicate<String>>,
-                            val packageFilters: List<Predicate<String>>)
+                            val classNames: List<String> = emptyList(),
+                            val packages: List<String> = emptyList(),
+                            val classNameFilters: List<Predicate<String>> = emptyList(),
+                            val packageFilters: List<Predicate<String>> = emptyList())
 
 /**
  * Contains [Spec] classes discovered as part of a discovery request scan.
@@ -44,7 +44,7 @@ object TestDiscovery {
     val fromClassNames = loadClasses(request.classNames)
     logger.debug("Loaded ${fromClassNames.size} classes from classnames...")
 
-    val fromClassPaths = if (request.uris.isEmpty()) emptyList() else scanUris(request.uris)
+    val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty()) emptyList() else scanUris(request.uris)
     logger.debug("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
     val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
