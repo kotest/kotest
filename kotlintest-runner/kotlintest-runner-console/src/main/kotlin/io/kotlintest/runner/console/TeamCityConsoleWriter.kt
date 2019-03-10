@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 
 class TeamCityConsoleWriter : TestEngineListener {
 
-  private fun locationHint(testCase: TestCase) = "kotlintest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.line
+  private fun locationHint(testCase: TestCase) = "kotlintest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.source.lineNumber
 
   // intellij has no support for failed suites, so if a container or spec fails we must insert
   // a dummy "test" in order to show something is red or yellow.

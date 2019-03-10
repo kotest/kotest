@@ -11,6 +11,7 @@ import io.kotlintest.extensions.system.captureStandardOut
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
+import io.kotlintest.sourceRef
 import io.kotlintest.specs.FunSpec
 import kotlin.reflect.KClass
 
@@ -23,7 +24,7 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
       Description.spec(klass).append("my context").append("my test container"),
       this@TeamCityConsoleTestEngineListenerTest,
       { },
-      123,
+      sourceRef(),
       TestType.Container,
       TestCaseConfig()
   )

@@ -116,6 +116,15 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
       "${convertValueToString(value)} should not contain regex $regex")
 }
 
+fun String?.shouldContainInOrder(vararg substrings: String) = this should containInOrder(*substrings)
+fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
+  val indexes = substrings.map { value.indexOf(it) }
+  Result(
+      indexes == indexes.sorted(),
+      "${convertValueToString(value)} should include substrings ${convertValueToString(substrings)} in order",
+      "$value should not include substrings ${convertValueToString(substrings)} in order")
+}
+
 infix fun String?.shouldContain(substr: String) = this should contain(substr)
 infix fun String?.shouldNotContain(substr: String) = this shouldNot contain(substr)
 fun contain(substr: String) = include(substr)

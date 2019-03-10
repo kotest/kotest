@@ -26,34 +26,63 @@ class DefaultConsoleWriter : TestEngineListener {
   private val specs = mutableListOf<KClass<out Spec>>()
   private var start = 0L
 
-  override fun beforeSpecClass(klass: KClass<out Spec>) {
-    println(Kolor.foreground(Description.spec(klass).name, Color.GREEN))
-  }
+  private val tests = mutableListOf<TestCase>()
+  private val results = mutableMapOf<Description, TestResult>()
 
-  override fun exitTestCase(testCase: TestCase, result: TestResult) {
-    specs.add(testCase.spec::class)
-    when (result.status) {
-      TestStatus.Success -> {
-        println(Kolor.foreground(testCase.indented(), Color.GREEN))
-        passed.add(testCase)
-      }
-      TestStatus.Error, TestStatus.Failure -> {
-        println(Kolor.foreground(testCase.indented(), Color.RED) + " *** FAILED ***")
-        result.error?.message?.apply {
-          val assertion = Kolor.foreground(testCase.description.indent() + "\tcause: $this (sourcefile.kt ${testCase.line})", Color.RED)
-          println(assertion)
-        }
-        failed.add(testCase)
-      }
-      TestStatus.Ignored -> {
-        println(Kolor.foreground(testCase.indented() + " (Ignored)", Color.YELLOW))
-        ignored.add(testCase)
-      }
-    }
-  }
+  private fun green(str: String) = println(Kolor.foreground(str, Color.GREEN))
+  private fun red(str: String) = println(Kolor.foreground(str, Color.RED))
+  private fun yellow(str: String) = println(Kolor.foreground(str, Color.YELLOW))
 
   override fun engineStarted(classes: List<KClass<out Spec>>) {
     start = System.currentTimeMillis()
+  }
+
+  override fun beforeSpecClass(klass: KClass<out Spec>) {
+    specs.add(klass)
+  }
+
+  //
+
+  override fun enterTestCase(testCase: TestCase) {
+    tests.add(testCase)
+  }
+
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    results[testCase.description] = result
+  }
+
+  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+
+    val specDesc = Description.spec(klass)
+
+    if (t == null) {
+      green(specDesc.name)
+    } else {
+      red(specDesc.name + " *** FAILED ***")
+      red("\tcause: ${t.message})")
+    }
+
+    tests.forEach {
+      val result = results[it.description]
+      when (result?.status) {
+        null -> red("${it.description} did not complete")
+        TestStatus.Success -> {
+          green(it.indented())
+          passed.add(it)
+        }
+        TestStatus.Error, TestStatus.Failure -> {
+          red(it.indented() + " *** FAILED ***")
+          result.error?.message?.apply {
+            red(it.description.indent() + "\tcause: $this (${it.source.fileName}:${it.source.lineNumber})")
+          }
+          failed.add(it)
+        }
+        TestStatus.Ignored -> {
+          yellow(it.indented() + " (Ignored)")
+          ignored.add(it)
+        }
+      }
+    }
   }
 
   override fun engineFinished(t: Throwable?) {
@@ -65,10 +94,10 @@ class DefaultConsoleWriter : TestEngineListener {
     println("$specDistinctCount $specPluralOrSingular containing ${failed.size + passed.size + ignored.size} tests")
     println("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
     if (failed.isNotEmpty()) {
-      println(Kolor.foreground("*** ${failed.size} TESTS FAILED ***", Color.RED))
+      red("*** ${failed.size} TESTS FAILED ***")
       println("Specs with failing tests:")
       failed.map { it.description.spec() }.distinct().sortedBy { it.name }.forEach {
-        println(Kolor.foreground(" - ${it.name}", Color.RED))
+        red(" - ${it.name}")
       }
     }
   }

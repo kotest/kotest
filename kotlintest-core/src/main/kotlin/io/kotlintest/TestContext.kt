@@ -48,7 +48,7 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
    * Creates a new [TestCase] and then notifies the test runner of this nested test.
    */
   suspend fun registerTestCase(name: String, spec: Spec, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
-    val tc = TestCase(description().append(name), spec, test, lineNumber(), type, config)
+    val tc = TestCase(description().append(name), spec, test, sourceRef(), type, config)
     registerTestCase(tc)
   }
 

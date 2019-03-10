@@ -38,9 +38,9 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
     override suspend fun registerTestCase(testCase: TestCase) {
       // if we have a test with this name already, but the line number is different
       // then it's a duplicate test name, so boom
-      if (seen.containsKey(testCase.name) && seen[testCase.name] != testCase.line)
+      if (seen.containsKey(testCase.name) && seen[testCase.name] != testCase.source.lineNumber)
         throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
-      seen[testCase.name] = testCase.line
+      seen[testCase.name] = testCase.source.lineNumber
       executor.execute(testCase, Context(testCase.description, coroutineContext)) { result -> results[testCase] = result }
     }
   }

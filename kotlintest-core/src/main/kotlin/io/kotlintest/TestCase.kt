@@ -33,8 +33,7 @@ data class TestCase(
     val spec: Spec,
     // a closure of the test function
     val test: suspend TestContext.() -> Unit,
-    // the first line number of the test
-    val line: Int,
+    val source: SourceRef,
     val type: TestType,
     // config used when running the test, such as number of
     // invocations, threads, etc
@@ -43,7 +42,17 @@ data class TestCase(
   fun isFocused() = name.startsWith("f:")
   fun isTopLevel(): Boolean = description.isTopLevel()
   fun isBang(): Boolean = name.startsWith("!")
+
+  companion object {
+    fun test(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
+        TestCase(description, spec, test, sourceRef(), TestType.Test, TestCaseConfig())
+
+    fun container(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
+        TestCase(description, spec, test, sourceRef(), TestType.Container, TestCaseConfig())
+  }
 }
+
+data class SourceRef(val lineNumber: Int, val fileName: String)
 
 enum class TestType {
   Container, Test
@@ -73,9 +82,9 @@ data class TestResult(val status: TestStatus,
   }
 }
 
-fun lineNumber(): Int {
+fun sourceRef(): SourceRef {
   val stack = Throwable().stackTrace
   return stack.dropWhile {
     it.className.startsWith("io.kotlintest")
-  }[0].lineNumber
+  }[0].run { SourceRef(lineNumber, fileName) }
 }
