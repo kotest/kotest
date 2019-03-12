@@ -18,14 +18,13 @@ import io.kotlintest.specs.FunSpec
 import io.kotlintest.tables.row
 import kotlin.reflect.KClass
 
-class TeamCityConsoleTestEngineListenerTest : FunSpec() {
+class TeamCityConsoleWriterTest : FunSpec() {
 
-  @Suppress("UNCHECKED_CAST")
-  private val klass: KClass<out Spec> = TeamCityConsoleWriter::class as KClass<out Spec>
+  private val klass: KClass<out Spec> = TeamCityConsoleWriterTest::class
 
   private val testCaseContainer = TestCase(
       Description.spec(klass).append("my context").append("my test container"),
-      this@TeamCityConsoleTestEngineListenerTest,
+      this@TeamCityConsoleWriterTest,
       { },
       sourceRef(),
       TestType.Container,
@@ -42,37 +41,38 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
     test("before spec class should write testSuiteStarted started") {
       captureStandardOut {
         TeamCityConsoleWriter().beforeSpecClass(klass)
-      } shouldBe "\n##teamcity[testSuiteStarted name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
+      } shouldBe "\n##teamcity[testSuiteStarted name='com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest']\n"
     }
 
     test("before test should write testSuiteStarted for TestType.Container") {
       captureStandardOut {
         TeamCityConsoleWriter().beforeTestCaseExecution(testCaseContainer)
-      } shouldBe "\n##teamcity[testSuiteStarted name='my test container' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest:123']\n"
+      } shouldBe "\n##teamcity[testSuiteStarted name='my test container' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest:29']\n"
     }
 
     test("before test should write testStarted for TestType.Test") {
       captureStandardOut {
         TeamCityConsoleWriter().beforeTestCaseExecution(testCaseTest)
-      } shouldBe "\n##teamcity[testStarted name='my test case' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest:123']\n"
+      } shouldBe "\n##teamcity[testStarted name='my test case' locationHint='kotlintest://com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest:29']\n"
     }
 
     test("after spec class should write testSuiteFinished") {
       captureStandardOut {
         TeamCityConsoleWriter().afterSpecClass(klass, null)
-      } shouldBe "\n##teamcity[testSuiteFinished name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
+      } shouldBe "\n##teamcity[testSuiteFinished name='com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest']\n"
     }
 
     test("afterSpecClass should insert dummy test and write testSuiteFinished for spec error") {
-      captureStandardErr {
+      val err = captureStandardErr {
         captureStandardOut {
           TeamCityConsoleWriter().afterSpecClass(klass, AssertionError("boom"))
         } shouldBe "\n" +
-          "##teamcity[testStarted name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>']\n" +
-            "##teamcity[testFailed name='io.kotlintest.runner.console.ConsoleTestEngineListener <init>' message='boom']\n" +
-          "##teamcity[testSuiteFinished name='io.kotlintest.runner.console.ConsoleTestEngineListener']\n"
-      } shouldStartWith "java.lang.AssertionError: boom\n" +
-          "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
+            "##teamcity[testStarted name='com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest <init>']\n" +
+            "##teamcity[testFailed name='com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest <init>' message='boom']\n" +
+            "##teamcity[testSuiteFinished name='com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest']\n"
+      }
+      err shouldStartWith "\njava.lang.AssertionError: boom\n" +
+          "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest"
     }
 
     test("after test should write testSuiteFinished for container success") {
@@ -90,8 +90,8 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
           "##teamcity[testStarted name='my test container <init>']\n" +
           "##teamcity[testFailed name='my test container <init>' message='wibble']\n" +
             "##teamcity[testSuiteFinished name='my test container']\n"
-      } shouldStartWith "java.lang.AssertionError: wibble\n" +
-          "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
+      } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
+          "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriterTest"
     }
 
     test("after test should write testSuiteFinished for container ignored") {
@@ -110,8 +110,8 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
       captureStandardOut {
         captureStandardErr {
           TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.error(AssertionError("wibble")))
-        } shouldStartWith "java.lang.AssertionError: wibble\n" +
-          "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
+        } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
+            "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriter"
       } shouldBe "\n##teamcity[testFailed name='my test case' message='wibble']\n"
     }
 
@@ -119,8 +119,8 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
       captureStandardOut {
         captureStandardErr {
           TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(AssertionError("wibble")))
-        } shouldStartWith "java.lang.AssertionError: wibble\n" +
-            "\tat com.sksamuel.kotlintest.runner.console.ConsoleTestEngineListenerTest"
+        } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
+            "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriter"
       } shouldBe "\n##teamcity[testFailed name='my test case' message='wibble']\n"
     }
 
@@ -143,7 +143,7 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
 
       captureStandardOut {
         TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(error))
-      } shouldStartWith "\n##teamcity[testFailed name='my test case' message='The following 2 assertions failed"
+      } shouldBe "\n##teamcity[testFailed name='my test case' message='Test failed']\n"
     }
   }
 }

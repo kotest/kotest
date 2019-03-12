@@ -23,7 +23,8 @@ class TeamCityConsoleWriter : ConsoleWriter {
     println(TeamCityMessages.testStarted(initName))
     // we must print out the stack trace in between the dummy so it appears when you click on the test name
     if (t != null) printStackTrace(t)
-    println(TeamCityMessages.testFailed(initName).message(t?.message ?: "Test Container Failed"))
+    val message = t?.message?.let { if (it.lines().size == 1) it else null } ?: "Spec failed"
+    println(TeamCityMessages.testFailed(initName).message(message))
   }
 
   private fun printStackTrace(t: Throwable) {
@@ -76,7 +77,8 @@ class TeamCityConsoleWriter : ConsoleWriter {
           }
           TestType.Test -> {
             result.error?.apply { printStackTrace(this) }
-            println(TeamCityMessages.testFailed(desc.name).message(result.error?.message ?: "No message"))
+            val message = result.error?.message?.let { if (it.lines().size == 1) it else null } ?: "Test failed"
+            println(TeamCityMessages.testFailed(desc.name).message(message))
           }
         }
       }
