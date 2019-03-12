@@ -6,12 +6,13 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
-import io.kotlintest.runner.jvm.TestEngineListener
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
 
-class TeamCityConsoleWriter : TestEngineListener {
+class TeamCityConsoleWriter : ConsoleWriter {
+
+  private var errors = false
 
   private fun locationHint(testCase: TestCase) = "kotlintest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.source.lineNumber
 
@@ -33,6 +34,8 @@ class TeamCityConsoleWriter : TestEngineListener {
     System.err.flush()
   }
 
+  override fun hasErrors(): Boolean = errors
+
   override fun beforeSpecClass(klass: KClass<out Spec>) {
     println()
     println(TeamCityMessages.testSuiteStarted(Description.spec(klass).name))
@@ -44,6 +47,7 @@ class TeamCityConsoleWriter : TestEngineListener {
     if (t == null) {
       println(TeamCityMessages.testSuiteFinished(desc.name))
     } else {
+      errors = true
       insertDummyFailure(desc, t)
       println(TeamCityMessages.testSuiteFinished(desc.name))
     }
@@ -64,6 +68,7 @@ class TeamCityConsoleWriter : TestEngineListener {
     println()
     when (result.status) {
       TestStatus.Failure, TestStatus.Error -> {
+        errors = true
         when (testCase.type) {
           TestType.Container -> {
             insertDummyFailure(desc, result.error)

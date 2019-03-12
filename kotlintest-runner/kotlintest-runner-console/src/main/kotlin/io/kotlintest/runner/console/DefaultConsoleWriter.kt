@@ -6,15 +6,15 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
-import io.kotlintest.runner.jvm.TestEngineListener
 import java.time.Duration
 import kotlin.reflect.KClass
 
 /**
  * Writes to the console.
  */
-class DefaultConsoleWriter : TestEngineListener {
+class DefaultConsoleWriter : ConsoleWriter {
 
+  private var errors = false
   private val term = TermColors(TermColors.Level.ANSI256)
 
   private fun Description.indent(): String = "\t".repeat(parents.size)
@@ -29,6 +29,8 @@ class DefaultConsoleWriter : TestEngineListener {
   private fun green(str: String) = println(term.green(str))
   private fun red(str: String) = println(term.red(str))
   private fun yellow(str: String) = println(term.yellow(str))
+
+  override fun hasErrors(): Boolean = errors
 
   override fun engineStarted(classes: List<KClass<out Spec>>) {
     start = System.currentTimeMillis()
@@ -48,8 +50,10 @@ class DefaultConsoleWriter : TestEngineListener {
     val specDesc = Description.spec(klass)
 
     if (t == null) {
-      green("$n) ${specDesc.name}")
+      print("$n) ")
+      term.green(specDesc.name)
     } else {
+      errors = true
       red(specDesc.name + " *** FAILED ***")
       red("  \tcause: ${t.message})")
     }
@@ -60,6 +64,7 @@ class DefaultConsoleWriter : TestEngineListener {
         null -> red("${it.description} did not complete")
         TestStatus.Success -> green("   " + it.description.indented())
         TestStatus.Error, TestStatus.Failure -> {
+          errors = true
           red("   " + it.description.indented() + " *** FAILED ***")
           result.error?.message?.apply {
             red(it.description.indent() + "  \tcause: $this (${it.source.fileName}:${it.source.lineNumber})")

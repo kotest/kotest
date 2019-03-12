@@ -1,6 +1,5 @@
 package io.kotlintest.runner.console
 
-import io.kotlintest.runner.jvm.TestEngineListener
 import net.sourceforge.argparse4j.ArgumentParsers
 import kotlin.reflect.full.createInstance
 
@@ -17,7 +16,9 @@ fun main(args: Array<String>) {
   val spec: String? = ns.getString("spec")
   val test: String? = ns.getString("test")
 
-  val writer = if (writerClass == null) TeamCityConsoleWriter() else Class.forName(writerClass).kotlin.createInstance() as TestEngineListener
+  val writer = if (writerClass == null) TeamCityConsoleWriter() else Class.forName(writerClass).kotlin.createInstance() as ConsoleWriter
   val runner = KotlinTestConsoleRunner(writer)
   runner.execute(spec, test)
+
+  if (writer.hasErrors()) System.exit(-1)
 }

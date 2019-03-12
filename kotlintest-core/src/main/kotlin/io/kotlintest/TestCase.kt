@@ -44,6 +44,9 @@ data class TestCase(
   fun isTopLevel(): Boolean = description.isTopLevel()
   fun isBang(): Boolean = name.startsWith("!")
 
+  // for compatiblity with earlier plugins
+  fun getLine(): Int = source.lineNumber
+
   companion object {
     fun test(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
         TestCase(description, spec, test, sourceRef(), TestType.Test, TestCaseConfig())
