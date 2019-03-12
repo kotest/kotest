@@ -16,9 +16,20 @@ fun main(args: Array<String>) {
   val spec: String? = ns.getString("spec")
   val test: String? = ns.getString("test")
 
-  val writer = if (writerClass == null) TeamCityConsoleWriter() else Class.forName(writerClass).kotlin.createInstance() as ConsoleWriter
+  val writer = if (writerClass == null) defaultWriter() else Class.forName(writerClass).kotlin.createInstance() as ConsoleWriter
   val runner = KotlinTestConsoleRunner(writer)
   runner.execute(spec, test)
 
   if (writer.hasErrors()) System.exit(-1)
+}
+
+// returns a console writer appropriate for the environment when none was specified
+// attempts to find the idea_rt.jar and if it exists, we assume we are running from intellij, and thus
+// change our output to be an IDEA compatible team city writer
+// otherwise we use the default colour writer
+fun defaultWriter(): ConsoleWriter = try {
+  Class.forName("com.intellij.rt.execution.CommandLineWrapper")
+  TeamCityConsoleWriter()
+} catch (_: ClassNotFoundException) {
+  DefaultConsoleWriter()
 }
