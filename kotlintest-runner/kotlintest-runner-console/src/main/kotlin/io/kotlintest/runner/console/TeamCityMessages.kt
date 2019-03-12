@@ -11,7 +11,7 @@ class TeamCityMessages(command: String) {
   }
 
   internal fun ignoreComment(value: String): TeamCityMessages = addAttribute("ignoreComment", value)
-  internal fun message(value: String): TeamCityMessages = addAttribute("message", value)
+  internal fun message(value: String): TeamCityMessages = addAttribute("message", value.trim())
   internal fun locationHint(value: String): TeamCityMessages = addAttribute("locationHint", value)
 
   override fun toString(): String = "$myText]"

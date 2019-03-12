@@ -6,13 +6,16 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
+import io.kotlintest.data.forall
 import io.kotlintest.extensions.system.captureStandardErr
 import io.kotlintest.extensions.system.captureStandardOut
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldFail
 import io.kotlintest.sourceRef
 import io.kotlintest.specs.FunSpec
+import io.kotlintest.tables.row
 import kotlin.reflect.KClass
 
 class TeamCityConsoleTestEngineListenerTest : FunSpec() {
@@ -125,6 +128,22 @@ class TeamCityConsoleTestEngineListenerTest : FunSpec() {
       captureStandardOut {
         TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.ignored("ignore me?"))
       } shouldBe "\n##teamcity[testIgnored name='my test case' ignoreComment='ignore me?']\n"
+    }
+
+    test("after test with error should handle multiline messages") {
+
+      val error = shouldFail {
+        forall(
+            row(2, 3, 1),
+            row(0, 2, 0)
+        ) { a, b, max ->
+          Math.max(a, b) shouldBe max
+        }
+      }
+
+      captureStandardOut {
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(error))
+      } shouldStartWith "\n##teamcity[testFailed name='my test case' message='The following 2 assertions failed"
     }
   }
 }

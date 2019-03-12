@@ -18,7 +18,7 @@ package io.kotlintest
  * @see shouldThrow
  * @see shouldThrowExactly
  */
-fun shouldFail(block: () -> Any?) = shouldThrow<AssertionError>(block)
+fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
 
 object Failures {
 
