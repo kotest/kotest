@@ -19,18 +19,19 @@ apply plugin: 'kotlin'
 apply plugin: 'java'
 apply plugin: 'org.jetbrains.intellij'
 
-
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.3.21"
     compile 'javax.xml.bind:jaxb-api:2.2.12'
     compile 'javax.activation:activation:1.1.1'
-    compile 'io.kotlintest:kotlintest-runner-console:3.3.1'
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.1'
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.1994-SNAPSHOT'
 }
 
 intellij {
