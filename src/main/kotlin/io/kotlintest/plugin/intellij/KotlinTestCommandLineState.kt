@@ -18,9 +18,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.util.PathUtil
-import io.kotlintest.runner.console.KotlinTestConsoleRunner
-import net.sourceforge.argparse4j.inf.ArgumentParser
 
 class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuration: KotlinTestRunConfiguration) :
     BaseJavaApplicationCommandLineState<KotlinTestRunConfiguration>(environment, configuration) {
@@ -48,11 +45,11 @@ class KotlinTestCommandLineState(environment: ExecutionEnvironment, configuratio
     // the module assigned to a configuration contains the classpath deps defined in the users build
     // but we must also include any dependencies we need that the user won't explicitly depend on, such
     // as the console runner, and args4j
-    val jars = listOf(
-        PathUtil.getJarPathForClass(KotlinTestConsoleRunner::class.java),
-        PathUtil.getJarPathForClass(ArgumentParser::class.java)
-    )
-    params.classPath.addAll(jars)
+//    val jars = listOf(
+//        PathUtil.getJarPathForClass(KotlinTestConsoleRunner::class.java),
+//        PathUtil.getJarPathForClass(ArgumentParser::class.java)
+//    )
+//    params.classPath.addAll(jars)
 
     // these two parameters are required by the console runner so it knows what test to execute
     params.programParametersList.add("--spec", configuration.getSpecName()!!)
