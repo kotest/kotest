@@ -10,6 +10,7 @@ dependencies {
     compile project(':kotlintest-core')
     compile project(':kotlintest-assertions')
     compile project(':kotlintest-runner:kotlintest-runner-jvm')
+    compile project(':kotlintest-runner:kotlintest-runner-console')
     compile "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
     compile "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
     compile "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"

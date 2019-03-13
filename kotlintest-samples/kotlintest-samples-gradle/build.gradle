@@ -2,24 +2,29 @@ buildscript {
     ext.kotlin_version = '1.3.21'
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-apply plugin: 'kotlin'
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.21"
+    id "io.kotlintest" version "3.3.2"
+}
 
 repositories {
     mavenCentral()
     mavenLocal()
-    jcenter()
     maven {
-      url "https://oss.sonatype.org/content/repositories/snapshots"
+        url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.3.0.LOCAL'
+    testCompile 'io.kotlintest:kotlintest-runner-console:3.4.1993-SNAPSHOT'
+    testCompile 'io.kotlintest:kotlintest-runner-junit5:3.4.1993-SNAPSHOT'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.26'
 }
