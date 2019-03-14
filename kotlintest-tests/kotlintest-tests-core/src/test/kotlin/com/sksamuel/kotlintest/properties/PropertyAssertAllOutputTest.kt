@@ -4,6 +4,7 @@ import io.kotlintest.Spec
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.assertAll
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FunSpec
 import java.io.ByteArrayOutputStream
