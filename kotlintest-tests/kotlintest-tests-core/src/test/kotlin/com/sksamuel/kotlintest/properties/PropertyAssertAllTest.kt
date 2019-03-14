@@ -7,9 +7,9 @@ import io.kotlintest.properties.forAll
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.FreeSpec
 
-class PropertyAssertAllTest : StringSpec({
+class PropertyAssertAllTest : FreeSpec({
 
   "startsWith" {
     var actualAttempts = 0
@@ -437,7 +437,7 @@ class PropertyAssertAllTest : StringSpec({
     assertAll { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
-    attempts shouldBe 3888
+    attempts shouldBe 1000
   }
 
   "sets" {
@@ -466,4 +466,35 @@ class PropertyAssertAllTest : StringSpec({
     }
   }
 
+  "accept suspend" {
+    suspend fun foo() { }
+  
+    assertAll { _: Int ->
+      foo()
+    }
+
+    assertAll { _: Int, _: Int ->
+      foo()
+    }
+
+    assertAll { _: Int, _: Int, _: Int ->
+      foo()
+    }
+    
+    assertAll { _: Int, _: Int, _: Int, _: Int ->
+      foo()
+    }
+    
+    assertAll { _: Int, _: Int, _: Int, _: Int ->
+      foo()
+    }
+  
+    assertAll { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      foo()
+    }
+    
+  }
+  
 })
+
+

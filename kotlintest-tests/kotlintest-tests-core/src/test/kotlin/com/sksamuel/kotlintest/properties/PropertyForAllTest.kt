@@ -7,9 +7,9 @@ import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.specs.FreeSpec
 
-class PropertyForAllTest : StringSpec() {
+class PropertyForAllTest : FreeSpec() {
   init {
 
     "startsWith" {
@@ -245,7 +245,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         a + b + c + d == d + c + b + a
       }
-      attempts shouldBe 81
+      attempts shouldBe 50
     }
 
     "forAll: Four explicit generators failed after 4 attempts" {
@@ -415,7 +415,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 3888
+      attempts shouldBe 1000
     }
 
     "sets" {
@@ -443,6 +443,36 @@ class PropertyForAllTest : StringSpec() {
             a.keys.size + a.values.toSet().size + b.keys.size + b.values.toSet().size
       }
     }
+
+//    "accepts suspension" {
+//      suspend fun foo() {}
+//
+//      forAll { _: Int ->
+//        foo()
+//        true
+//      }
+//
+//      forAll { _: Int, _: Int ->
+//        foo()
+//        true
+//      }
+//
+//      forAll { _: Int, _: Int, _: Int ->
+//        foo()
+//        true
+//      }
+//    }
+//
+//    "Accepts nested scope" - {
+//      suspend fun foo() { }
+//
+//      forAll { a: Int ->
+//        "Foo $a" {
+//          foo()
+//        }
+//        true
+//      }
+//    }
 
   }
 }

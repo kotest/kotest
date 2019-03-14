@@ -25,6 +25,7 @@ fun propertyTestFailureMessage(attempt: Int,
 
 data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
+@PublishedApi
 internal fun propertyAssertionError(e: AssertionError,
                                     attempt: Int,
                                     inputs: List<PropertyFailureInput<out Any?>>): AssertionError {

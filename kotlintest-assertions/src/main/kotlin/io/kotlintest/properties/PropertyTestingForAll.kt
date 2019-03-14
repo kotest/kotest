@@ -3,9 +3,7 @@ package io.kotlintest.properties
 import io.kotlintest.shouldBe
 
 inline fun <reified A> forAll(noinline fn: PropertyContext.(a: A) -> Boolean) = forAll(1000, fn)
-inline fun <reified A> forAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {
-  forAll(iterations, Gen.default(), fn)
-}
+inline fun <reified A> forAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) = forAll(iterations, Gen.default(), fn)
 
 fun <A> forAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = forAll(1000, gena, fn)
 fun <A> Gen<A>.forAll(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = forAll(iterations, this, fn)

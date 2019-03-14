@@ -3,11 +3,11 @@ package com.sksamuel.kotlintest.properties
 import io.kotlintest.matchers.gt
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forNone
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
+import io.kotlintest.specs.FreeSpec
 
-class PropertyForNoneTest : StringSpec() {
+class PropertyForNoneTest : FreeSpec() {
   init {
 
     "forNoneTestStrings" {
@@ -576,6 +576,36 @@ class PropertyForNoneTest : StringSpec() {
       }
       attempts shouldBe 30000
     }
+    
+//    "Accept suspended" {
+//      suspend fun foo() { }
+//
+//      forNone { _: Int ->
+//        foo()
+//        false
+//      }
+//
+//      forNone { _: Int ->
+//        foo()
+//        false
+//      }
+//
+//      forNone { _: Int ->
+//        foo()
+//        false
+//      }
+//    }
+//
+//    "Accept nested context" - {
+//      suspend fun foo() { }
+//
+//      forNone { a: Int ->
+//        "Foo $a" {
+//          foo()
+//        }
+//        false
+//      }
+//    }
 
   }
 }

@@ -12,6 +12,7 @@ class PropertyContext {
   private var attempts = 0
   private val counts = ConcurrentHashMap<String, Int>()
 
+  @PublishedApi
   internal fun inc() {
     attempts++
   }

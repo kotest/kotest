@@ -43,7 +43,7 @@ class StringShrinkerTest : StringSpec({
 
   "StringShrinker should shrink to expected value" {
     assertAll { it: String ->
-      val shrunk = shrink(it, Gen.string()) { it.shouldNotContain("#") }
+      val shrunk = shrink(it, Gen.string().shrinker()) { it.shouldNotContain("#") }
       if (it.contains("#")) {
         shrunk shouldBe "#"
       } else {
@@ -53,7 +53,7 @@ class StringShrinkerTest : StringSpec({
   }
 
   "StringShrinker should prefer padded values" {
-    shrink("97asd!@#ASD'''234)*safmasd", Gen.string()) { it.length.shouldBeLessThan(13) } shouldBe "aaaaaaaaaaaaa"
-    shrink("97a", Gen.string()) { it.length.shouldBeLessThan(13) } shouldBe "97a"
+    shrink("97asd!@#ASD'''234)*safmasd", Gen.string().shrinker()) { it.length.shouldBeLessThan(13) } shouldBe "aaaaaaaaaaaaa"
+    shrink("97a", Gen.string().shrinker()) { it.length.shouldBeLessThan(13) } shouldBe "97a"
   }
 })

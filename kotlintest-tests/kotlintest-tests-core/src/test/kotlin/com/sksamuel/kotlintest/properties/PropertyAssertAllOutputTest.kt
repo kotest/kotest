@@ -4,7 +4,6 @@ import io.kotlintest.Spec
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.assertAll
-import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FunSpec
 import java.io.ByteArrayOutputStream
@@ -106,7 +105,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
-        assertAll(10, gen, gen2, gen, gen2) { a, b, c, d ->
+        assertAll(16, gen, gen2, gen, gen2) { a, b, c, d ->
           a shouldNotBe null
           b shouldNotBe null
           c shouldNotBe null
@@ -130,7 +129,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
-        assertAll(10, gen, gen2, gen, gen2, gen) { a, b, c, d, e ->
+        assertAll(32, gen, gen2, gen, gen2, gen) { a, b, c, d, e ->
           a shouldNotBe null
           b shouldNotBe null
           c shouldNotBe null
@@ -155,7 +154,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
-        assertAll(10, gen, gen2, gen, gen2, gen, gen2) { a, b, c, d, e, f ->
+        assertAll(64, gen, gen2, gen, gen2, gen, gen2) { a, b, c, d, e, f ->
           a shouldNotBe null
           b shouldNotBe null
           c shouldNotBe null
