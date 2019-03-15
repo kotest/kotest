@@ -2,10 +2,12 @@
 
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.forAll
+import io.kotlintest.*
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
+import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.doubles.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.floats.shouldBeGreaterThanOrEqual
@@ -16,15 +18,22 @@ import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
 import java.time.*
 import java.util.Random
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.Set
+import kotlin.collections.last
+import kotlin.collections.listOf
+import kotlin.collections.mutableSetOf
+import kotlin.collections.plusAssign
+import kotlin.collections.setOf
+import kotlin.collections.toList
+import kotlin.collections.toSet
 
 class GenTest : WordSpec() {
   init {

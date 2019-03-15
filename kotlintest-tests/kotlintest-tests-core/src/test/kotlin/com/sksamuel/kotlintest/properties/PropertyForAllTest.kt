@@ -444,35 +444,24 @@ class PropertyForAllTest : FreeSpec() {
       }
     }
 
-//    "accepts suspension" {
-//      suspend fun foo() {}
-//
-//      forAll { _: Int ->
-//        foo()
-//        true
-//      }
-//
-//      forAll { _: Int, _: Int ->
-//        foo()
-//        true
-//      }
-//
-//      forAll { _: Int, _: Int, _: Int ->
-//        foo()
-//        true
-//      }
-//    }
-//
-//    "Accepts nested scope" - {
-//      suspend fun foo() { }
-//
-//      forAll { a: Int ->
-//        "Foo $a" {
-//          foo()
-//        }
-//        true
-//      }
-//    }
+    "accepts suspension" {
+      suspend fun foo() {}
 
+      forAll { _: Int ->
+        foo()
+        true
+      }
+
+      forAll { _: Int, _: Int ->
+        foo()
+        true
+      }
+
+      forAll { _: Int, _: Int, _: Int ->
+        foo()
+        true
+      }
+    }
+    
   }
 }

@@ -319,11 +319,11 @@ data class Tuple6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, 
   }
 }
 
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a: A) -> Unit) = assertAll(iterations, this, fn)
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(iterations, this, this, fn)
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(iterations, this, this, this, fn)
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(iterations, this, this, this, this, fn)
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(iterations, this, this, this, this, this, fn)
-fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(iterations, this, this, this, this, this, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a: A) -> Unit) = assertAll(iterations, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(iterations, this, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(iterations, this, this, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(iterations, this, this, this, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(iterations, this, this, this, this, this, fn)
+inline fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(iterations, this, this, this, this, this, this, fn)
 
 data class ContextValues<T>(val context: PropertyContext, val values: Sequence<T>)
