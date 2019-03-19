@@ -87,7 +87,7 @@ class MyTests : WordSpec({
 
 It also supports the keyword `When` allowing to add another level of nesting.
 
-```
+```kotlin
 class MyTests : WordSpec({
     "Hello" When {
         "asked for length" should {
