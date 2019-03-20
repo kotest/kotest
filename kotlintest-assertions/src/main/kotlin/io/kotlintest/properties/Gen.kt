@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import arrow.higherkind
 import io.kotlintest.properties.shrinking.*
 import java.io.File
 import java.lang.reflect.ParameterizedType
@@ -46,7 +47,8 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  * The [Int] generator example should return a random int
  * from across the entire integer range.
  */
-interface Gen<T> {
+@higherkind
+interface Gen<T> : GenOf<T> {
 
   /**
    * Returns the values that should always be used
@@ -84,11 +86,11 @@ interface Gen<T> {
   /**
    * Create a new [Gen] by mapping the output of this gen.
    */
-  fun <U> flatMap(f: (T) -> Gen<U>): Gen<U> {
+  fun <U> flatMap(f: (T) -> GenOf<U>): Gen<U> {
     val outer = this
     return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
-      override fun random(): Sequence<U> = outer.random().flatMap { f(it).random() }
+      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).fix().constants() }
+      override fun random(): Sequence<U> = outer.random().flatMap { f(it).fix().random() }
     }
   }
 
@@ -368,7 +370,7 @@ interface Gen<T> {
       override fun constants(): Iterable<UUID> = emptyList()
       override fun random(): Sequence<UUID> = generateSequence { UUID.randomUUID() }
     }
-  
+
     /**
      * Generates a stream of random LocalDates
      *
@@ -399,7 +401,7 @@ interface Gen<T> {
         minDate.plusDays(Random.nextLong(days + 1))
       }
     }
-  
+
     /**
      * Generates a stream of random LocalTimes
      *
@@ -414,7 +416,7 @@ interface Gen<T> {
         LocalTime.of(Random.nextInt(24), Random.nextInt(60), Random.nextInt(60))
       }
     }
-  
+
     /**
      * Generates a stream of random LocalDateTimes
      *
@@ -441,7 +443,7 @@ interface Gen<T> {
         return generateSequence { dateSequence.next().atTime(timeSequence.next()) }
       }
     }
-  
+
     /**
      * Generates a stream of random Durations
      *
@@ -449,11 +451,11 @@ interface Gen<T> {
      */
     fun duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Duration> = object : Gen<Duration> {
       private val maxDurationInSeconds = maxDuration.seconds
-      
+
       override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
       override fun random(): Sequence<Duration> = generateSequence { Duration.ofSeconds(Random.nextLong(maxDurationInSeconds)) }
     }
-  
+
     /**
      * Generates a stream of random Periods
      *
