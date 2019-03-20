@@ -81,8 +81,8 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: List<T>): Matcher<NonEmptyList<T>> = object : Matcher<NonEmptyList<T>> {
   override fun test(value: NonEmptyList<T>) = Result(
       ts.all { value.contains(it) },
-      "NonEmptyList should contain all of ${ts.joinToString(",", limit=10)}",
-      "NonEmptyList should not contain all of ${ts.joinToString(",", limit=10)}"
+      "NonEmptyList should contain all of ${ts.joinToString(",", limit = 10)}",
+      "NonEmptyList should not contain all of ${ts.joinToString(",", limit = 10)}"
   )
 }
 

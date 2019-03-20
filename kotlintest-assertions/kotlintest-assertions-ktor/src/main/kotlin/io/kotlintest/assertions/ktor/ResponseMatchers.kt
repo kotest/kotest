@@ -4,7 +4,6 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
-import io.ktor.http.Cookie
 import io.ktor.response.ApplicationResponse
 import io.ktor.server.testing.TestApplicationResponse
 
