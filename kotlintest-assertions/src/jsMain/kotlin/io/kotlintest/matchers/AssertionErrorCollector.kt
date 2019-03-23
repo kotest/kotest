@@ -14,7 +14,7 @@ actual object AssertionErrorCollector {
     TODO()
   }
 
-  actual fun getClueContext(): String? {
+  actual fun getClueContext(): String {
     TODO()
   }
 }

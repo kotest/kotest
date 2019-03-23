@@ -6,8 +6,6 @@ plugins {
     id 'signing'
 }
 
-apply plugin: 'kotlin-kapt'
-
 repositories {
     mavenCentral()
 }
@@ -17,7 +15,7 @@ kotlin {
     jvm {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "1.6"
                 freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
             }
         }
@@ -46,7 +44,6 @@ kotlin {
                 api 'com.univocity:univocity-parsers:2.8.1'
                 api "com.github.wumpz:diffutils:2.2"
                 api "io.arrow-kt:arrow-core-data:$arrow_version"
-                // kapt "io.arrow-kt:arrow-meta:$arrow_version"
             }
         }
     }

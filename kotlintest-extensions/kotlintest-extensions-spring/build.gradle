@@ -1,17 +1,49 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    compile 'org.springframework:spring-test:4.3.14.RELEASE'
-    compile 'org.springframework:spring-context:4.3.14.RELEASE'
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+kotlin {
+
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.6"
+                freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+            }
+        }
+    }
+
+    sourceSets {
+        jvmMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+                api project(':kotlintest-core')
+                api project(':kotlintest-assertions')
+                api 'org.slf4j:slf4j-api:1.7.25'
+                api 'org.springframework:spring-test:4.3.14.RELEASE'
+                api 'org.springframework:spring-context:4.3.14.RELEASE'
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-assertions')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
+}
+
+kotlin.sourceSets.all {
+    languageSettings {
+        languageVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        apiVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        enableLanguageFeature('InlineClasses') // language feature name
+    }
 }
 
 test {
@@ -21,4 +53,4 @@ test {
     }
 }
 
-apply from: '../../publish.gradle'
+// apply from: '../../publish.gradle'

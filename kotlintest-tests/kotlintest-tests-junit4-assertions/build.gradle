@@ -11,6 +11,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
 test {
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true

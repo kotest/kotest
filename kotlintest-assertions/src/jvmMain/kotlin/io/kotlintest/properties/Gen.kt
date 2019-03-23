@@ -1,5 +1,6 @@
 package io.kotlintest.properties
 
+import arrow.Kind
 import arrow.higherkind
 import io.kotlintest.properties.shrinking.*
 import java.io.File
@@ -20,6 +21,10 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
   override fun random(): Sequence<BigInteger> =
       numBitsGen.random().map { it.toBigInteger() }
 }
+
+class ForGen private constructor() { companion object }
+typealias GenOf<A> = Kind<ForGen, A>
+fun <A> GenOf<A>.fix() = this as Gen<A>
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -47,7 +52,6 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  * The [Int] generator example should return a random int
  * from across the entire integer range.
  */
-@higherkind
 interface Gen<T> : GenOf<T> {
 
   /**
