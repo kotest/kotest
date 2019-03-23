@@ -17,7 +17,7 @@ abstract class Tag {
   /**
    * Simple name of the singleton/class derived from this class.
    */
-  open val name: String = javaClass.simpleName
+  open val name: String = this::class.simpleName ?: "unknown"
 
   /**
    * Same as [name].

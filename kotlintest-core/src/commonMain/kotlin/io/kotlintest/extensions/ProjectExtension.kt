@@ -1,7 +1,5 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.AbstractProjectConfig
-
 /**
  * Reusable extension to be registered with [AbstractProjectConfig.extensions].
  */
