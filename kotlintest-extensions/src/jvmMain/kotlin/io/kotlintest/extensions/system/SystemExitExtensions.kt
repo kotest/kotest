@@ -3,7 +3,7 @@ package io.kotlintest.extensions.system
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.extensions.TestListener
+import io.kotlintest.listener.TestListener
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission

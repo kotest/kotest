@@ -1,9 +1,9 @@
 package com.sksamuel.kt.extensions.locale
 
 import io.kotlintest.*
-import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.extensions.locale.LocaleTestListener
 import io.kotlintest.extensions.locale.withDefaultLocale
+import io.kotlintest.listener.TopLevelTest
 import io.kotlintest.specs.DescribeSpec
 import io.kotlintest.specs.FunSpec
 import java.util.*

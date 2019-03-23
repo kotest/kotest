@@ -1,7 +1,7 @@
 package io.kotlintest.extensions.system
 
 import io.kotlintest.Spec
-import io.kotlintest.extensions.TestListener
+import io.kotlintest.listener.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 

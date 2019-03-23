@@ -1,8 +1,8 @@
 package io.kotlintest.extensions.system
 
 import io.kotlintest.TestCase
+import io.kotlintest.listener.TestListener
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TestListener
 import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream

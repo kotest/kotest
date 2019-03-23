@@ -1,8 +1,8 @@
 package io.kotlintest.spring
 
 import io.kotlintest.Spec
+import io.kotlintest.listener.TestListener
 import io.kotlintest.extensions.ConstructorExtension
-import io.kotlintest.extensions.TestListener
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR
 import org.springframework.test.context.TestContextManager
 import kotlin.reflect.KClass

@@ -8,7 +8,7 @@ import io.kotlintest.fail
 import io.kotlintest.provided.ProjectConfig
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import java.time.Duration
+import io.kotlintest.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {

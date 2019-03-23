@@ -1,6 +1,5 @@
 package io.kotlintest.extensions
 
-
 /**
  * What is an extension? - An extension allows your code to interact
  * with the KotlinTest Engine, changing the behavior of the engine

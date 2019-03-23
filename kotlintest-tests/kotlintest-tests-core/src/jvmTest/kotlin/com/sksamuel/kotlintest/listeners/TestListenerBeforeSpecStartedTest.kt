@@ -4,7 +4,7 @@ import io.kotlintest.IsolationMode
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.listener.TopLevelTest
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.util.concurrent.atomic.AtomicInteger

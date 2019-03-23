@@ -1,10 +1,10 @@
 package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.*
-import io.kotlintest.extensions.TopLevelTest
 import io.kotlintest.extensions.system.SystemPropertyTestListener
 import io.kotlintest.extensions.system.withSystemProperties
 import io.kotlintest.extensions.system.withSystemProperty
+import io.kotlintest.listener.TopLevelTest
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.WordSpec

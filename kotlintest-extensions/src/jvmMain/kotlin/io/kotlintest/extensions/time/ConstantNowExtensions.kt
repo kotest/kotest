@@ -1,8 +1,8 @@
 package io.kotlintest.extensions.time
 
 import io.kotlintest.TestCase
+import io.kotlintest.listener.TestListener
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic

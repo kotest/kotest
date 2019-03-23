@@ -1,6 +1,6 @@
 package io.kotlintest
 
-import java.time.Duration
+import io.kotlintest.Duration
 
 // Actually limited to 9223372036854775807 days, so unless you are very patient, it is unlimited ;-)
 val Duration.unlimited: Duration
