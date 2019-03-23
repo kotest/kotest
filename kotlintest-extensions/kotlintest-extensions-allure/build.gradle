@@ -1,19 +1,9 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-}
-
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    compile 'io.qameta.allure:allure-java-commons:2.10.0'
-    compile 'javax.xml.bind:jaxb-api:2.3.1'
-    compile 'com.sun.xml.bind:jaxb-core:2.3.0.1'
-    compile 'com.sun.xml.bind:jaxb-impl:2.3.2'
-
 }
 
 kotlin {
@@ -31,11 +21,12 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-                api 'commons-io:commons-io:2.6'
                 api project(':kotlintest-core')
                 api project(':kotlintest-assertions')
-                api "io.mockk:mockk:1.9.1"
-                api 'org.slf4j:slf4j-api:1.7.25'
+                api 'io.qameta.allure:allure-java-commons:2.10.0'
+                api 'javax.xml.bind:jaxb-api:2.3.1'
+                api 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+                api 'com.sun.xml.bind:jaxb-impl:2.3.2'
             }
         }
         jvmTest {
