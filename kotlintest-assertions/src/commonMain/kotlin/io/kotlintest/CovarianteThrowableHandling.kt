@@ -89,12 +89,12 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
     block()
     null  // Can't throw Failures.failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
   } catch (thrown: Throwable) { thrown }
-
+  
   return when (thrownThrowable) {
-    null -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but no exception was thrown.")
+    null -> throw Failures.failure("Expected exception ${expectedExceptionClass.platformQualifiedName} but no exception was thrown.")
     is T -> thrownThrowable               // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
     is AssertionError -> throw thrownThrowable
-    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
+    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.platformQualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
   }
 }
 
@@ -131,8 +131,8 @@ inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
     block()
     return
   } catch (e: Throwable) { e }
-
+  
   if(thrown is T) throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
   throw thrown
-
+  
 }

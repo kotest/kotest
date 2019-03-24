@@ -8,9 +8,9 @@ package io.kotlintest
  * can't be used for whatever reason, such as assignment operations (assignments are statements therefore has no return
  * value).
  *
- * This function will exclude subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], the test will fail, as [java.io.FileNotFoundException] is a subclass of
- * [java.io.IOException], but not exactly [java.io.IOException].
+ * This function will exclude subclasses of [T]. For example, if you test for [Exception] and the code block
+ * throws [RuntimeException], the test will fail, as [RuntimeException] is a subclass of
+ * [Exception], but not exactly [Exception].
  *
  * If you wish to include any subclasses, you should use [shouldThrowUnit] instead.
  *
@@ -38,8 +38,8 @@ inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T 
  * This should be used when [shouldNotThrowExactly] can't be used, such as when doing assignments (assignments are statements,
  * therefore has no return value).
  *
- * This function won't include subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], propagate the [java.io.FileNotFoundException] instead of wrapping it in an AssertionError.
+ * This function won't include subclasses of [T]. For example, if you test for [Exception] and the code block
+ * throws [RuntimeException], propagate the [RuntimeException] instead of wrapping it in an AssertionError.
  *
  * If you wish to test [T] and subclasses, use [shouldNotThrowUnit].
  *
@@ -61,9 +61,9 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  *
  * Use this function to wrap a block of code to verify if it throws a specific throwable [T]
  *
- * This function will exclude subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], the test will fail, as [java.io.FileNotFoundException] is a subclass of
- * [java.io.IOException], but not exactly [java.io.IOException].
+ * This function will exclude subclasses of [T]. For example, if you test for [Exception] and the code block
+ * throws [RuntimeException], the test will fail, as [RuntimeException] is a subclass of
+ * [Exception], but not exactly [Exception].
  *
  * If you wish to include any subclasses, you should use [shouldThrow] instead.
  *
@@ -91,12 +91,12 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
     block()
     null  // Can't throw Failures.failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
   } catch (thrown: Throwable) { thrown  }
-
+  
   return when {
-    thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.qualifiedName} but no exception was thrown.")
+    thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.platformQualifiedName} but no exception was thrown.")
     thrownThrowable::class == expectedExceptionClass -> thrownThrowable as T  // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
     thrownThrowable is AssertionError -> throw thrownThrowable
-    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
+    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.platformQualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
   }
 }
 
@@ -109,8 +109,8 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  * This is done so that no unexpected error is silently ignored.
  *
  *
- * This function won't include subclasses of [T]. For example, if you test for [java.io.IOException] and the code block
- * throws [java.io.FileNotFoundException], propagate the [java.io.FileNotFoundException] instead of wrapping it in an AssertionError.
+ * This function won't include subclasses of [T]. For example, if you test for [Exception] and the code block
+ * throws [RuntimeException], propagate the [RuntimeException] instead of wrapping it in an AssertionError.
  *
  * If you wish to test [T] and subclasses, use [shouldNotThrow].
  *
@@ -136,7 +136,7 @@ inline fun <reified T : Throwable> shouldNotThrowExactly(block: () -> Any?) {
     block()
     return
   } catch(t: Throwable) { t }
-
+  
   if(thrown::class == T::class) throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
   throw thrown
 }
