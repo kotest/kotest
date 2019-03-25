@@ -10,7 +10,20 @@ actual object Failures {
    *
    */
   actual fun failure(message: String, cause: Throwable?): AssertionError {
-    return AssertionError(message)
+    val error = AssertionError(message)
+    return modifyThrowable(error)
+  }
+  
+  /**
+   * Returns [throwable] after KotlinTest modifications
+   *
+   * This method, along with [failure] centralizes the creation of Assertion Errors on all platforms.
+   * The errors might be tempered with depending on the platform and its features. These changes may include StackTrace
+   * manipulation, for example.
+   *
+   */
+  actual fun <T : Throwable> modifyThrowable(throwable: T): T {
+    return throwable
   }
   
 }

@@ -14,17 +14,21 @@ actual object AssertionErrorCollector {
     override fun initialValue(): String = ""
   }
 
-  @PublishedApi
-  internal val shouldCollectErrors = object : ThreadLocal<Boolean>() {
+  private val _shouldCollectErrors = object : ThreadLocal<Boolean>() {
     override fun initialValue() = false
   }
+  
+  @PublishedApi
+  internal actual var shouldCollectErrors
+    get() = _shouldCollectErrors.get()
+    set(value) = _shouldCollectErrors.set(value)
 
   actual fun setClueContext(context: String?) {
     clues.set(context)
   }
 
   actual fun collectOrThrow(error: Throwable) {
-    if (shouldCollectErrors.get()) {
+    if (shouldCollectErrors) {
       failures.get().add(error)
     } else {
       throw error
@@ -32,7 +36,7 @@ actual object AssertionErrorCollector {
   }
 
   actual fun throwCollectedErrors() {
-    shouldCollectErrors.set(false)
+    _shouldCollectErrors.set(false)
     val failures = failures.get()
     if (failures.isNotEmpty()) {
       AssertionErrorCollector.failures.set(mutableListOf())
