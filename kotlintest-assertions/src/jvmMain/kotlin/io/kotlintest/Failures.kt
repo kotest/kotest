@@ -20,7 +20,7 @@ package io.kotlintest
  */
 fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
 
-object Failures {
+actual object Failures {
 
   /**
    * Whether KotlinTest-related frames will be removed from the stack traces of thrown [AssertionError]s.
@@ -52,7 +52,7 @@ object Failures {
    * If [shouldRemoveKotlintestElementsFromStacktrace] is `true`, the stacktrace will be reduced to the user-code
    * StackTrace only.
    */
-  fun failure(message: String, cause: Throwable? = null): AssertionError = AssertionError(message).apply {
+  actual fun failure(message: String, cause: Throwable?): AssertionError = AssertionError(message).apply {
     if (shouldRemoveKotlintestElementsFromStacktrace) {
       removeKotlintestElementsFromStacktrace(this)
     }

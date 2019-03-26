@@ -43,6 +43,11 @@ class FailuresTest : FreeSpec() {
         val t = shouldThrowAny { 1 shouldBe 2 }
         t.stackTrace[0].className.shouldStartWith("com.sksamuel.kotlintest.FailuresTest")
       }
+      
+      "Has the default cause as null" {
+        val failure = Failures.failure("msg")
+        failure.cause shouldBe null
+      }
     }
   }
 
