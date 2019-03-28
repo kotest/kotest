@@ -134,10 +134,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     }
 
     // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-    if (testCase.config.timeout.nano > 0) {
+    if (testCase.config.timeout.nanos > 0) {
       scheduler.schedule({
         error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
-      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+      }, testCase.config.timeout.nanos, TimeUnit.NANOSECONDS)
     }
 
     supervisorJob.invokeOnCompletion { e ->
@@ -151,7 +151,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       executor.shutdown()
     }
 
-    val result = buildTestResult(error.get(), context.metaData())
+    val result = buildTestResult(error.get(), emptyMap())
 
     listener.afterTestCaseExecution(testCase, result)
     return result

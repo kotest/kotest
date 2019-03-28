@@ -8,7 +8,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
-import io.kotlintest.extensions.TopLevelTests
+import io.kotlintest.listener.TopLevelTests
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.runner.jvm.instantiateSpec

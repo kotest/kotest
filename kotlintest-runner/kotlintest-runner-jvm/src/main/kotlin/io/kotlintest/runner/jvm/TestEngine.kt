@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
-class TestEngine(val classes: List<KClass<out Spec>>,
+class TestEngine(private val classes: List<KClass<out Spec>>,
                  filters: List<TestCaseFilter>,
                  parallelism: Int,
                  val listener: TestEngineListener) {

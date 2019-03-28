@@ -5,7 +5,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
-import io.kotlintest.extensions.TopLevelTests
+import io.kotlintest.listener.TopLevelTests
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.runBlocking
@@ -27,7 +27,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
   private val results = mutableMapOf<TestCase, TestResult>()
 
-  inner class Context(val description: Description, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
+  inner class Context(private val description: Description, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
 
     // test names mapped to their line numbers, allows detection of duplicate test names
     // the line number is required because the same test is allowed to be invoked multiple times

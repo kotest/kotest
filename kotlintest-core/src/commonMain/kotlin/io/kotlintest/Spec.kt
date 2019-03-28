@@ -94,17 +94,4 @@ interface Spec : TestListener {
   fun description(): Description = Description.spec(this::class)
 }
 
-// TODO this functionality must be added back in
-
-//val Spec.listenerInstances by LazyWithReceiver<Spec, List<TestListener>> { this.listeners() }
-//
-//private class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
-//  private val values = Map<This, Return>()
-//
-//  @Suppress("UNCHECKED_CAST")
-//  operator fun getValue(thisRef: Any, property: KProperty<*>): Return = synchronized(values)
-//  {
-//    thisRef as This
-//    return values.getOrPut(thisRef) { thisRef.initializer() }
-//  }
-//}
+expect val Spec.listenerInstances: List<TestListener>

@@ -3,7 +3,7 @@ package io.kotlintest.runner.jvm.spec
 import io.kotlintest.*
 import io.kotlintest.extensions.SpecExtension
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.extensions.TopLevelTests
+import io.kotlintest.listener.TopLevelTests
 import io.kotlintest.runner.jvm.TestEngineListener
 
 /**

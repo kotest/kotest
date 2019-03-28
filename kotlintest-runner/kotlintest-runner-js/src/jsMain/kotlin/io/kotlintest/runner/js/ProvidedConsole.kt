@@ -3,6 +3,7 @@ package io.kotlintest.runner.js
 import kotlin.js.Console
 
 class ProvidedConsole : Console {
+
   override fun dir(o: Any) {
   }
 
