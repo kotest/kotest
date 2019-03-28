@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.doubles
+package io.kotlintest.matchers.double
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
@@ -29,7 +29,7 @@ class ToleranceMatcher(private val expected: Double?, private val tolerance: Dou
       )
     } else {
       if (tolerance == 0.0)
-        println("[WARN] When comparing doubles consider using tolerance, eg: a shouldBe (b plusOrMinus c)")
+        println("[WARN] When comparing double consider using tolerance, eg: a shouldBe (b plusOrMinus c)")
       val diff = abs(value - expected)
       Result(diff <= tolerance,
           "$value should be equal to $expected",

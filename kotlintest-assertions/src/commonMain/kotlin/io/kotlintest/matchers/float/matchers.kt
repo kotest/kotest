@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.floats
+package io.kotlintest.matchers.float
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result

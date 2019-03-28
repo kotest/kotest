@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.properties.shrinking
 
-import io.kotlintest.matchers.doubles.lt
-import io.kotlintest.matchers.integers.shouldBeLessThan
+import io.kotlintest.matchers.double.lt
+import io.kotlintest.matchers.integer.shouldBeLessThan
 import io.kotlintest.matchers.lte
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
@@ -57,7 +57,7 @@ class ShrinkTest : StringSpec({
     }.message shouldBe "Property failed for\nArg 0: -1 (shrunk from -2147483648)\nArg 1: -1 (shrunk from -2147483648)\nArg 2: -1 (shrunk from -2147483648)\nArg 3: -1 (shrunk from -2147483648)\nafter 1 attempts\nCaused by: expected: 4 but was: 0"
   }
 
-  "should shrink arity 1 doubles" {
+  "should shrink arity 1 double" {
     shouldThrowAny {
       assertAll(Gen.double()) { a ->
         a shouldBe lt(3.0)

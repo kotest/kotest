@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.integers
+package io.kotlintest.matchers.integer
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result

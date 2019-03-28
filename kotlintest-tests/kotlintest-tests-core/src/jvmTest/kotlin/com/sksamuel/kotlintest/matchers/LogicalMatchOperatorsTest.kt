@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.matchers.integers.between
+import io.kotlintest.matchers.integer.between
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
