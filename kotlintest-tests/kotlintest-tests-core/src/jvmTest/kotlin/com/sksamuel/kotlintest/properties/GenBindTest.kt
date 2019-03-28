@@ -2,14 +2,14 @@
 
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.integers.beGreaterThan
-import io.kotlintest.matchers.integers.beLessThan
+import io.kotlintest.matchers.integer.beGreaterThan
+import io.kotlintest.matchers.integer.beLessThan
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.should
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.matchers.doubles.beGreaterThan as gtd
+import io.kotlintest.matchers.double.beGreaterThan as gtd
 
 class GenBindTest : StringSpec({
 

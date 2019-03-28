@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.doubles
+package io.kotlintest.matchers.double
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
@@ -44,7 +44,7 @@ fun Double.shouldBeBetween(a: Double, b: Double, tolerance: Double) = this shoul
 fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double) = this shouldNotBe between(a, b, tolerance)
 
 /**
- * Matcher that matches doubles and intervals
+ * Matcher that matches double and intervals
  *
  * Verifies that a specific [Double] is in the interval [[a] - [tolerance] , [b] + [tolerance]].
  *

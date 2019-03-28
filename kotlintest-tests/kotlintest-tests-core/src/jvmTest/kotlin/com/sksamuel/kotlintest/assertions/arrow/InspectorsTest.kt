@@ -6,8 +6,8 @@ import io.kotlintest.assertions.arrow.nel.forExactly
 import io.kotlintest.assertions.arrow.nel.forNone
 import io.kotlintest.assertions.arrow.nel.forOne
 import io.kotlintest.assertions.arrow.nel.forSome
-import io.kotlintest.matchers.integers.beGreaterThan
-import io.kotlintest.matchers.integers.beLessThan
+import io.kotlintest.matchers.integer.beGreaterThan
+import io.kotlintest.matchers.integer.beLessThan
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
