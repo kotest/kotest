@@ -3,4 +3,6 @@ plugins {
     id 'java-library'
 }
 
+apply plugin: 'maven-publish'
+
 publish.enabled = false
