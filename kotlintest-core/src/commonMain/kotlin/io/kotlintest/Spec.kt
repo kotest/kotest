@@ -77,8 +77,6 @@ interface Spec : TestListener {
    */
   fun focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }
 
-  fun hasFocusedTest(): Boolean = focused().isNotEmpty()
-
   fun closeResources()
 
   /**
@@ -97,5 +95,7 @@ interface Spec : TestListener {
 
   fun description(): Description = Description.spec(this::class)
 }
+
+fun Spec.hasFocusedTest(): Boolean = focused().isNotEmpty()
 
 expect val Spec.listenerInstances: List<TestListener>

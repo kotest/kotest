@@ -1,22 +1,5 @@
-apply plugin: 'org.jetbrains.dokka'
-
-dokka {
-    outputFormat = 'javadoc'
-    outputDirectory = javadoc.destinationDir
-}
-
-dokka.dependsOn javadoc
-
-task javadocJar(type: Jar, dependsOn: dokka) {
-//task javadocJar(type: Jar) {
-    from javadoc.destinationDir
-    archiveClassifier = 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.kotlin
-    archiveClassifier = 'sources'
-}
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 publishing {
     repositories {
@@ -26,7 +9,9 @@ publishing {
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 
             name 'deploy'
+
             url = isTravis ? snapshotsRepoUrl : releasesRepoUrl
+
             credentials {
                 username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
                 password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
@@ -36,11 +21,11 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
 
-            from components.java
+            //      from components.java
 
             if (isReleaseVersion) {
-                artifact sourcesJar
-                artifact javadocJar
+                //       artifact sourcesJar
+                //       artifact javadocJar
             }
 
             pom {
@@ -73,22 +58,101 @@ publishing {
     }
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
 
-build {
-    // afterReleaseBuild.dependsOn publish
-}
 
-tasks.withType(Sign) {
-    onlyIf { isReleaseVersion }
-}
 
-tasks.withType(Javadoc) {
-    onlyIf { isReleaseVersion }
-}
 
+//apply plugin: 'org.jetbrains.dokka'
+//
+//dokka {
+//    outputFormat = 'javadoc'
+//    outputDirectory = javadoc.destinationDir
+//}
+//
+//dokka.dependsOn javadoc
+//
+//task javadocJar(type: Jar, dependsOn: dokka) {
+////task javadocJar(type: Jar) {
+//    from javadoc.destinationDir
+//    archiveClassifier = 'javadoc'
+//}
+//
+//task sourcesJar(type: Jar) {
+//    from sourceSets.main.kotlin
+//    archiveClassifier = 'sources'
+//}
+//
+//publishing {
+//    repositories {
+//        maven {
+//
+//            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+//            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+//
+//            name 'deploy'
+//            url = isTravis ? snapshotsRepoUrl : releasesRepoUrl
+//            credentials {
+//                username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
+//                password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
+//            }
+//        }
+//    }
+//    publications {
+//        mavenJava(MavenPublication) {
+//
+//            from components.java
+//
+//            if (isReleaseVersion) {
+//                artifact sourcesJar
+//                artifact javadocJar
+//            }
+//
+//            pom {
+//                name = 'KotlinTest'
+//                description = 'Kotlin Test Framework'
+//                url = 'http://www.github.com/kotlintest/kotlintest'
+//
+//                scm {
+//                    connection = 'scm:git:http://www.github.com/kotlintest/kotlintest/'
+//                    developerConnection = 'scm:git:http://github.com/sksamuel/'
+//                    url = 'http://www.github.com/kotlintest/kotlintest/'
+//                }
+//
+//                licenses {
+//                    license {
+//                        name = 'The Apache 2.0 License'
+//                        url = 'https://opensource.org/licenses/Apache-2.0'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id = 'sksamuel'
+//                        name = 'Stephen Samuel'
+//                        email = 'sam@sksamuel.com'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
+//
+//build {
+//    // afterReleaseBuild.dependsOn publish
+//}
+//
+//tasks.withType(Sign) {
+//    onlyIf { isReleaseVersion }
+//}
+//
+//tasks.withType(Javadoc) {
+//    onlyIf { isReleaseVersion }
+//}
+//
 signing {
     useGpgCmd()
     sign publishing.publications.mavenJava

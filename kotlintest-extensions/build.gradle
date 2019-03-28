@@ -2,8 +2,6 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
 kotlin {

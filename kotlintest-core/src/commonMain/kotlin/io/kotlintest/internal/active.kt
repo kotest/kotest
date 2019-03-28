@@ -7,6 +7,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestCaseFilter
 import io.kotlintest.TestFilterResult
+import io.kotlintest.hasFocusedTest
 
 /**
  * Returns true if the given [TestCase] is active.

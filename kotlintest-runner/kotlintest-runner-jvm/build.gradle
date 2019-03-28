@@ -2,8 +2,6 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
 dependencies {
@@ -15,5 +13,4 @@ dependencies {
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
 }
 
-
-// apply from: '../../publish.gradle'
+apply from: '../../publish.gradle'

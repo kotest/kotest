@@ -3,7 +3,7 @@ include 'kotlintest-core',
         'kotlintest-assertions:kotlintest-assertions-arrow',
 //        'kotlintest-assertions:kotlintest-assertions-json',
 //        'kotlintest-assertions:kotlintest-assertions-ktor',
-//        'kotlintest-runner:kotlintest-runner-jvm',
+        'kotlintest-runner:kotlintest-runner-jvm',
 //        'kotlintest-runner:kotlintest-runner-console',
 //        'kotlintest-runner:kotlintest-runner-junit4',
         'kotlintest-runner:kotlintest-runner-js',
@@ -17,3 +17,5 @@ include 'kotlintest-core',
 //        'kotlintest-tests:kotlintest-tests-junit4-assertions',
 //        'kotlintest-tests:kotlintest-tests-junit5',
 //        'kotlintest-tests:kotlintest-tests-parallelism'
+
+enableFeaturePreview('GRADLE_METADATA')

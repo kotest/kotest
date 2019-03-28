@@ -2,8 +2,6 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
 repositories {
@@ -58,3 +56,5 @@ kotlin.sourceSets.all {
         enableLanguageFeature('InlineClasses') // language feature name
     }
 }
+
+apply from: '../publish.gradle'
