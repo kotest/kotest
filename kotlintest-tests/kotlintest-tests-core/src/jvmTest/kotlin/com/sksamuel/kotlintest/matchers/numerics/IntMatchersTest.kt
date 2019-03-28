@@ -1,10 +1,33 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
-import io.kotlintest.*
-import io.kotlintest.matchers.*
-import io.kotlintest.matchers.numerics.*
+import io.kotlintest.matchers.integers.beEven
+import io.kotlintest.matchers.integers.beGreaterThan
+import io.kotlintest.matchers.integers.beGreaterThanOrEqualTo
+import io.kotlintest.matchers.integers.beInRange
+import io.kotlintest.matchers.integers.beLessThan
+import io.kotlintest.matchers.integers.beLessThanOrEqualTo
+import io.kotlintest.matchers.integers.beOdd
+import io.kotlintest.matchers.integers.between
+import io.kotlintest.matchers.integers.lt
+import io.kotlintest.matchers.integers.lte
+import io.kotlintest.matchers.integers.shouldBeBetween
+import io.kotlintest.matchers.integers.shouldBeGreaterThan
+import io.kotlintest.matchers.integers.shouldBeGreaterThanOrEqual
+import io.kotlintest.matchers.integers.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThanOrEqual
+import io.kotlintest.matchers.integers.shouldBeNegative
+import io.kotlintest.matchers.integers.shouldBePositive
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
-import io.kotlintest.tables.*
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.forNone
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
 
 class IntMatchersTest : StringSpec() {
   init {

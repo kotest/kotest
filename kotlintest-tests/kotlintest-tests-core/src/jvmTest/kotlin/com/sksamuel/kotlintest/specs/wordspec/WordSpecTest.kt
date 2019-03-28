@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.wordspec
 
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.integers.shouldBeGreaterThan
 import io.kotlintest.specs.WordSpec
 
 class WordSpecTest : WordSpec() {

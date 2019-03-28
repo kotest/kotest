@@ -5,8 +5,8 @@ import io.kotlintest.forExactly
 import io.kotlintest.forNone
 import io.kotlintest.forOne
 import io.kotlintest.forSome
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.integers.beGreaterThan
+import io.kotlintest.matchers.integers.beLessThan
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
