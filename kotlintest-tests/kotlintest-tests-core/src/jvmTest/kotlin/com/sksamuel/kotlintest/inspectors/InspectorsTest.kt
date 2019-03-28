@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.inspectors
 
-import io.kotlintest.forAll
 import io.kotlintest.forNone
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.inspectors.forAny
@@ -8,9 +7,9 @@ import io.kotlintest.inspectors.forExactly
 import io.kotlintest.inspectors.forNone
 import io.kotlintest.inspectors.forOne
 import io.kotlintest.inspectors.forSome
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.integers.beGreaterThan
+import io.kotlintest.matchers.integers.beLessThan
+import io.kotlintest.matchers.integers.shouldBeGreaterThan
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

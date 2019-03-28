@@ -1,18 +1,23 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.*
-import io.kotlintest.matchers.beLessThan
+import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.collections.containExactly
 import io.kotlintest.matchers.collections.shouldNotContainExactly
 import io.kotlintest.matchers.doubles.negative
 import io.kotlintest.matchers.doubles.positive
 import io.kotlintest.matchers.doubles.shouldBeNegative
 import io.kotlintest.matchers.haveKey
-import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.matchers.numerics.shouldBePositive
+import io.kotlintest.matchers.integers.beLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBePositive
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.endWith
 import io.kotlintest.matchers.string.shouldNotEndWith
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 
 class SoftAssertionsTest : FreeSpec({
