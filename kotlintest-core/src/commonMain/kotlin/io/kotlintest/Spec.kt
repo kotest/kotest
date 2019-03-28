@@ -38,8 +38,12 @@ interface Spec : TestListener {
    * Note: Not all spec types support allowing one instance
    * per test. This is due to implementation trickery required
    * with nested closures and junit test discovery.
+   *
+   * Will be removed in 4.1
    */
-  @Deprecated("Instead of this function, override isolationMode() which should return a IsolationMode value indicating how the isolation level should be set for this spec")
+  @Deprecated(
+      "Instead of this function, override isolationMode() which should return a IsolationMode value indicating how the isolation level should be set for this spec",
+      level = DeprecationLevel.ERROR)
   fun isInstancePerTest(): Boolean
 
   fun isolationMode(): IsolationMode? = null

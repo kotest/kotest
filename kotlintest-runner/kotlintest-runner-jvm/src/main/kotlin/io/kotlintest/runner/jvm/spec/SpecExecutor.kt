@@ -1,8 +1,12 @@
 package io.kotlintest.runner.jvm.spec
 
 import arrow.core.Try
-import io.kotlintest.*
+import io.kotlintest.Description
+import io.kotlintest.IsolationMode
+import io.kotlintest.Project
+import io.kotlintest.Spec
 import io.kotlintest.internal.topLevelTests
+import io.kotlintest.listenerInstances
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
@@ -79,10 +83,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
       IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
-      null -> when {
-        spec.isInstancePerTest() -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
-        else -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
-      }
+      null -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
     }
   }
 }
