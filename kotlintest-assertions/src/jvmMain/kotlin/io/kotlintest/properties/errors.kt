@@ -1,7 +1,7 @@
 package io.kotlintest.properties
 
-import convertValueToString
 import io.kotlintest.Failures
+import io.kotlintest.convertValueToString
 
 fun propertyTestFailureMessage(attempt: Int,
                                inputs: List<PropertyFailureInput<out Any?>>,

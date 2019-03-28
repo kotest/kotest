@@ -1,6 +1,6 @@
 package io.kotlintest.extensions.allure
 
-import io.kotlintest.matchers.haveLength
+import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.specs.WordSpec
 
 class AllureTest : WordSpec() {

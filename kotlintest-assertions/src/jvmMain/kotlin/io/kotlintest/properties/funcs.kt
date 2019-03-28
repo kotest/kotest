@@ -1,14 +1,5 @@
 import io.kotlintest.properties.PropertyContext
 
-fun convertValueToString(value: Any?): String = when (value) {
-  null -> "<null>"
-  "" -> "<empty string>"
-  else -> {
-    val str = value.toString()
-    if (str.isBlank()) str.replace("\n", "\\n").replace("\t", "\\t").replace(" ", "\\s") else str
-  }
-}
-
 fun exceptionToMessage(t: Throwable): String =
   when (t) {
     is AssertionError -> when (t.message) {

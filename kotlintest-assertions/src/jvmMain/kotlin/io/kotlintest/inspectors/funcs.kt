@@ -1,8 +1,8 @@
 package io.kotlintest.inspectors
 
-import convertValueToString
 import exceptionToMessage
 import io.kotlintest.Failures
+import io.kotlintest.convertValueToString
 
 fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
   return col.map {
