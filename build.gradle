@@ -2,7 +2,7 @@ buildscript {
     ext.kotlin_version = '1.3.21'
     ext.arrow_version = '0.9.0'
     ext.JUnitPlatformVersion = "1.4.0"
-    ext.dokkaVersion = '0.9.17'
+    ext.dokkaVersion = '0.9.18'
 
     ext.isTravis = System.getenv("TRAVIS") == "true"
     ext.travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
