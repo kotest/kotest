@@ -1,8 +1,5 @@
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.propertyAssertionError
-import io.kotlintest.properties.PropertyContext
-import io.kotlintest.properties.PropertyFailureInput
-import io.kotlintest.properties.PropertyTesting
+import io.kotlintest.convertValueToString
+import io.kotlintest.properties.*
 import io.kotlintest.properties.shrinking.Shrinker
 
 fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T = shrink2(t, gen.shrinker(), test)

@@ -1,10 +1,6 @@
 package io.kotlintest.matchers.string
 
-import convertValueToString
-import io.kotlintest.Result
-import io.kotlintest.neverNullMatcher
-import io.kotlintest.should
-import io.kotlintest.shouldNot
+import io.kotlintest.*
 import java.math.BigInteger
 import java.security.MessageDigest
 

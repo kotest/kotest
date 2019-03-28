@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.matchers
 
 import io.kotlintest.matchers.Diff
-import io.kotlintest.matchers.startWith
-import io.kotlintest.specs.WordSpec
+import io.kotlintest.matchers.string.startWith
 import io.kotlintest.shouldBe
+import io.kotlintest.specs.WordSpec
 
 class DiffTest : WordSpec() {
   init {

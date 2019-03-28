@@ -2,9 +2,9 @@ package com.sksamuel.kotlintest.matchers
 
 import io.kotlintest.matchers.doubles.exactly
 import io.kotlintest.matchers.doubles.plusOrMinus
-import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.file.haveExtension
-import io.kotlintest.matchers.startWith
+import io.kotlintest.matchers.string.endWith
+import io.kotlintest.matchers.string.startWith
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

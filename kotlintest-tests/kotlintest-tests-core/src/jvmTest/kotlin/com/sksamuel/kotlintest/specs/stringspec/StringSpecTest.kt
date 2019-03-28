@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.stringspec
 
-import io.kotlintest.matchers.haveLength
+import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec

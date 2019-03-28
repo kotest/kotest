@@ -154,3 +154,12 @@ internal fun stringRepr(obj: Any?): String = when (obj) {
 private fun recursiveRepr(root: Any, node: Any?): String {
   return if (root == node) "(this ${root::class.simpleName})" else stringRepr(node)
 }
+
+internal fun convertValueToString(value: Any?): String = when (value) {
+  null -> "<null>"
+  "" -> "<empty string>"
+  else -> {
+    val str = value.toString()
+    if (str.isBlank()) str.replace("\n", "\\n").replace("\t", "\\t").replace(" ", "\\s") else str
+  }
+}

@@ -1,19 +1,12 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.Matcher
-import io.kotlintest.Result
-import io.kotlintest.assertSoftly
+import io.kotlintest.*
 import io.kotlintest.matchers.beInstanceOf
-import io.kotlintest.matchers.haveLength
 import io.kotlintest.matchers.haveSameHashCodeAs
 import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.withClue
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import java.util.*
 import kotlin.collections.HashMap
