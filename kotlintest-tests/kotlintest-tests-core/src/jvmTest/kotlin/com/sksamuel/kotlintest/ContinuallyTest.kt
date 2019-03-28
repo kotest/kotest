@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.continually
-import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrowExactly

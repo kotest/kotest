@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.feature
 
-import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.specs.FeatureSpec
 
 class FeatureSpecTest : FeatureSpec() {

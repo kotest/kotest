@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.properties.shrinking
 
-import io.kotlintest.matchers.numerics.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldNotContain

@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest.properties.shrinking
 
 import io.kotlintest.matchers.doubles.lt
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.matchers.lte
-import io.kotlintest.matchers.numerics.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
