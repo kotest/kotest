@@ -1,18 +1,43 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
 }
 
-dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    api project(':kotlintest-core')
-    api project(':kotlintest-assertions')
-    //compile project(':kotlintest-runner:kotlintest-runner-jvm')
-    //compile project(':kotlintest-runner:kotlintest-runner-console')
-    api "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
-    api "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
-    api "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.6"
+                freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+            }
+        }
+    }
+
+    sourceSets {
+        jvmMain {
+            dependencies {
+                api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+                api project(':kotlintest-core')
+                api project(':kotlintest-assertions')
+                //compile project(':kotlintest-runner:kotlintest-runner-jvm')
+                //compile project(':kotlintest-runner:kotlintest-runner-console')
+                api "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+            }
+        }
+    }
+}
+
+kotlin.sourceSets.all {
+    languageSettings {
+        languageVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        apiVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        enableLanguageFeature('InlineClasses') // language feature name
+    }
 }
 
 apply from: '../../publish.gradle'

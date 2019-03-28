@@ -1,16 +1,41 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(":kotlintest-extensions")
-    compile 'io.github.classgraph:classgraph:4.8.1'
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compile "io.arrow-kt:arrow-core-extensions:$arrow_version"
-    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "1.6"
+                freeCompilerArgs += ["-Xuse-experimental=kotlin.Experimental"]
+            }
+        }
+    }
+
+    sourceSets {
+        jvmMain {
+            dependencies {
+                api project(':kotlintest-core')
+                api project(":kotlintest-extensions")
+                api 'io.github.classgraph:classgraph:4.8.1'
+                api 'org.slf4j:slf4j-api:1.7.25'
+                api "io.arrow-kt:arrow-core-extensions:$arrow_version"
+                api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+            }
+        }
+    }
+}
+
+kotlin.sourceSets.all {
+    languageSettings {
+        languageVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        apiVersion = '1.3' // possible values: '1.0', '1.1', '1.2', '1.3'
+        enableLanguageFeature('InlineClasses') // language feature name
+    }
 }
 
 apply from: '../../publish.gradle'
