@@ -47,9 +47,12 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
 
+            if (project.hasProperty("jvm")) {
+                from components.java
+            }
+
             if (isReleaseVersion) {
                 if (project.hasProperty("jvm")) {
-                    from components.java
                     artifact sourcesJar
                     artifact javadocJar
                 }
