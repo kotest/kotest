@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.shouldspec
 
-import io.kotlintest.matchers.integer.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.specs.ShouldSpec
 
 class ShouldSpecTest : ShouldSpec() {

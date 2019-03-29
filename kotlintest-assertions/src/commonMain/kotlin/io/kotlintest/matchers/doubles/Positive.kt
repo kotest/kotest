@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.double
+package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
