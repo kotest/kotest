@@ -8,7 +8,7 @@ apply plugin: 'kotlin'
 ext.jvm = true
 
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     api project(':kotlintest-core')
     api project(':kotlintest-assertions')
     //compile project(':kotlintest-runner:kotlintest-runner-jvm')
