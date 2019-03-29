@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.long
+package io.kotlintest.matchers.longs
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result

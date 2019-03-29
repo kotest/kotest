@@ -3,7 +3,7 @@ package com.sksamuel.kotlintest.specs.behavior
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
-import io.kotlintest.matchers.integer.shouldBeLessThan
+import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
