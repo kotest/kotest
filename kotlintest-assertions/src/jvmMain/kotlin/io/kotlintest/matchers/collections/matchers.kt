@@ -1,7 +1,18 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.*
-import io.kotlintest.matchers.*
+import io.kotlintest.Matcher
+import io.kotlintest.Result
+import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.beSorted
+import io.kotlintest.matchers.containAll
+import io.kotlintest.matchers.containsInOrder
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.singleElement
+import io.kotlintest.neverNullMatcher
+import io.kotlintest.should
+import io.kotlintest.shouldHave
+import io.kotlintest.shouldNot
+import io.kotlintest.stringRepr
 
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
@@ -181,6 +192,41 @@ infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleEl
 infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 infix fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size)
 infix fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
+
+/**
+ * Verifies this collection contains only one element
+ *
+ * This assertion is an alias to `collection shouldHaveSize 1`. This will pass if the collection have exactly one element
+ * (definition of a Singleton Collection)
+ *
+ * ```
+ * listOf(1).shouldBeSingleton()    // Assertion passes
+ * listOf(1, 2).shouldBeSingleton() // Assertion fails
+ * ```
+ *
+ * @see [shouldHaveSize]
+ * @see [shouldNotBeSingleton]
+ * @see [shouldHaveSingleElement]
+ */
+fun <T> Collection<T>.shouldBeSingleton() = this shouldHaveSize 1
+
+/**
+ * Verifies this collection doesn't contain only one element
+ *
+ * This assertion is an alias to `collection shouldNotHaveSize 1`. This will pass if the collection doesn't have exactly one element
+ * (definition of a Singleton Collection)
+ *
+ * ```
+ * listOf(1, 2).shouldNotBeSingleton()    // Assertion passes
+ * listOf<Int>().shouldNotBeSingleton()   // Assertion passes
+ * listOf(1).shouldNotBeSingleton()       // Assertion fails
+ * ```
+ *
+ * @see [shouldNotHaveSize]
+ * @see [shouldBeSingleton]
+ * @see [shouldNotHaveSingleElement]
+ */
+fun <T> Collection<T>.shouldNotBeSingleton() = this shouldNotHaveSize 1
 
 infix fun <T, U> Collection<T>.shouldBeLargerThan(other: Collection<U>) = this should beLargerThan(other)
 fun <T, U> beLargerThan(other: Collection<U>) = object : Matcher<Collection<T>> {

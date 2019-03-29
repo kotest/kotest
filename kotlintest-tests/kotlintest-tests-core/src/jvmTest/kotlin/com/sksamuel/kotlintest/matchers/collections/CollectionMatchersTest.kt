@@ -1,8 +1,73 @@
 package com.sksamuel.kotlintest.matchers.collections
 
-import io.kotlintest.*
-import io.kotlintest.matchers.*
-import io.kotlintest.matchers.collections.*
+import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.collections.atLeastSize
+import io.kotlintest.matchers.collections.atMostSize
+import io.kotlintest.matchers.collections.beLargerThan
+import io.kotlintest.matchers.collections.beSameSizeAs
+import io.kotlintest.matchers.collections.beSmallerThan
+import io.kotlintest.matchers.collections.contain
+import io.kotlintest.matchers.collections.containDuplicates
+import io.kotlintest.matchers.collections.containExactly
+import io.kotlintest.matchers.collections.containExactlyInAnyOrder
+import io.kotlintest.matchers.collections.containNoNulls
+import io.kotlintest.matchers.collections.containNull
+import io.kotlintest.matchers.collections.containOnlyNulls
+import io.kotlintest.matchers.collections.endWith
+import io.kotlintest.matchers.collections.haveElementAt
+import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.collections.shouldBeLargerThan
+import io.kotlintest.matchers.collections.shouldBeOneOf
+import io.kotlintest.matchers.collections.shouldBeSameSizeAs
+import io.kotlintest.matchers.collections.shouldBeSingleton
+import io.kotlintest.matchers.collections.shouldBeSmallerThan
+import io.kotlintest.matchers.collections.shouldBeSorted
+import io.kotlintest.matchers.collections.shouldBeSortedWith
+import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.matchers.collections.shouldContainAll
+import io.kotlintest.matchers.collections.shouldContainDuplicates
+import io.kotlintest.matchers.collections.shouldContainExactly
+import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.collections.shouldContainNoNulls
+import io.kotlintest.matchers.collections.shouldContainNull
+import io.kotlintest.matchers.collections.shouldContainOnlyNulls
+import io.kotlintest.matchers.collections.shouldEndWith
+import io.kotlintest.matchers.collections.shouldExist
+import io.kotlintest.matchers.collections.shouldHaveAtLeastSize
+import io.kotlintest.matchers.collections.shouldHaveAtMostSize
+import io.kotlintest.matchers.collections.shouldHaveElementAt
+import io.kotlintest.matchers.collections.shouldHaveSingleElement
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.collections.shouldNotBeEmpty
+import io.kotlintest.matchers.collections.shouldNotBeOneOf
+import io.kotlintest.matchers.collections.shouldNotBeSingleton
+import io.kotlintest.matchers.collections.shouldNotBeSorted
+import io.kotlintest.matchers.collections.shouldNotBeSortedWith
+import io.kotlintest.matchers.collections.shouldNotContainAll
+import io.kotlintest.matchers.collections.shouldNotContainDuplicates
+import io.kotlintest.matchers.collections.shouldNotContainExactly
+import io.kotlintest.matchers.collections.shouldNotContainExactlyInAnyOrder
+import io.kotlintest.matchers.collections.shouldNotContainNoNulls
+import io.kotlintest.matchers.collections.shouldNotContainNull
+import io.kotlintest.matchers.collections.shouldNotContainOnlyNulls
+import io.kotlintest.matchers.collections.shouldNotEndWith
+import io.kotlintest.matchers.collections.shouldNotHaveElementAt
+import io.kotlintest.matchers.collections.shouldNotHaveSize
+import io.kotlintest.matchers.collections.shouldNotStartWith
+import io.kotlintest.matchers.collections.shouldStartWith
+import io.kotlintest.matchers.collections.startWith
+import io.kotlintest.matchers.containAll
+import io.kotlintest.matchers.containsInOrder
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.singleElement
+import io.kotlintest.matchers.sorted
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldFail
+import io.kotlintest.shouldHave
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotHave
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -206,6 +271,37 @@ class CollectionMatchersTest : WordSpec() {
           listOf(1, 2, 3).shouldNotHaveSize(3)
         }.message.shouldBe("Collection should not have size 3")
 
+      }
+    }
+    
+    "should be singleton" should {
+      "pass for collection with a single element" {
+        listOf(1).shouldBeSingleton()
+      }
+      
+      "fail for collection with 0 elements" {
+        shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton() }
+      }
+      
+      "fail for collection with 2+ elements" {
+        shouldThrow<AssertionError> { listOf(1, 2).shouldBeSingleton() }
+        shouldThrow<AssertionError> { listOf(1, 2, 3, 4).shouldBeSingleton() }
+      }
+    }
+    
+    "should not be singleton" should {
+      "pass for collection with 0 elements" {
+        listOf<Int>().shouldNotBeSingleton()
+      }
+      
+      "pass for collection with 2+ elements" {
+        listOf(1, 2).shouldNotBeSingleton()
+        listOf(1, 2, 3, 4).shouldNotBeSingleton()
+      }
+      
+      "fail for collection with a single element" {
+        shouldThrow<AssertionError> { listOf(1).shouldNotBeSingleton() }
+        
       }
     }
 
