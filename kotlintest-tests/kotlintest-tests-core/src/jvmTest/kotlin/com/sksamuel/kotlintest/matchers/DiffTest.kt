@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.matchers.Diff
+import io.kotlintest.Diff
 import io.kotlintest.matchers.string.startWith
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
