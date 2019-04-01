@@ -6,10 +6,10 @@ import io.kotlintest.matchers.collections.shouldNotContainExactly
 import io.kotlintest.matchers.doubles.negative
 import io.kotlintest.matchers.doubles.positive
 import io.kotlintest.matchers.doubles.shouldBeNegative
-import io.kotlintest.matchers.haveKey
 import io.kotlintest.matchers.integers.beLessThan
 import io.kotlintest.matchers.integers.shouldBeLessThan
 import io.kotlintest.matchers.integers.shouldBePositive
+import io.kotlintest.matchers.maps.haveKey
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.endWith
 import io.kotlintest.matchers.string.shouldNotEndWith

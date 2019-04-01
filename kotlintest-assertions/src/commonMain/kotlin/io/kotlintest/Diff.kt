@@ -1,4 +1,4 @@
-package io.kotlintest.matchers
+package io.kotlintest
 
 sealed class Diff {
   abstract fun isEmpty(): Boolean
@@ -16,12 +16,12 @@ sealed class Diff {
           val missingKeys = ArrayList<Any?>()
           val extraKeys = ArrayList<Any?>()
           val differentValues = ArrayList<Diff>()
-          expected.forEach { k, v ->
+          expected.forEach { (k, v) ->
             if (!value.containsKey(k)) {
               missingKeys.add(k)
             } else if (value[k] != v) {
               differentValues.add(
-                  MapValues(k, create(value[k], v, ignoreExtraMapKeys = ignoreExtraMapKeys))
+                      MapValues(k, create(value[k], v, ignoreExtraMapKeys = ignoreExtraMapKeys))
               )
             }
           }
