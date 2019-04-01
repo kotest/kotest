@@ -163,3 +163,12 @@ internal fun convertValueToString(value: Any?): String = when (value) {
     if (str.isBlank()) str.replace("\n", "\\n").replace("\t", "\\t").replace(" ", "\\s") else str
   }
 }
+
+fun exceptionToMessage(t: Throwable): String =
+        when (t) {
+          is AssertionError -> when (t.message) {
+            null -> t.toString()
+            else -> t.message!!
+          }
+          else -> t.toString()
+        }
