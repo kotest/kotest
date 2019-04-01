@@ -221,7 +221,7 @@ You can also check the caught exception:
 val exception = shouldThrow<IllegalAccessException> {
   // code in here that you expect to throw an IllegalAccessException
 }
-exception.message should start with "Something went wrong"
+exception.message should startWith("Something went wrong")
 ```
 
 If you want to test that _exactly_ a type of exception is thrown, then use `shouldThrowExactly<E>`.
