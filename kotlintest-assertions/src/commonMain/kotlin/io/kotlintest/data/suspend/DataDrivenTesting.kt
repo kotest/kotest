@@ -1,7 +1,26 @@
 package io.kotlintest.data.suspend
 
-import io.kotlintest.data.*
-import io.kotlintest.tables.*
+import io.kotlintest.data.forall1
+import io.kotlintest.data.forall10
+import io.kotlintest.data.forall2
+import io.kotlintest.data.forall3
+import io.kotlintest.data.forall4
+import io.kotlintest.data.forall5
+import io.kotlintest.data.forall6
+import io.kotlintest.data.forall7
+import io.kotlintest.data.forall8
+import io.kotlintest.data.forall9
+import io.kotlintest.data.paramNames
+import io.kotlintest.tables.Row1
+import io.kotlintest.tables.Row10
+import io.kotlintest.tables.Row2
+import io.kotlintest.tables.Row3
+import io.kotlintest.tables.Row4
+import io.kotlintest.tables.Row5
+import io.kotlintest.tables.Row6
+import io.kotlintest.tables.Row7
+import io.kotlintest.tables.Row8
+import io.kotlintest.tables.Row9
 
 suspend fun <A> forall(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
   val params = testfn.paramNames
