@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest
 
+import io.kotlintest.matchers.collections.singleElement
 import io.kotlintest.matchers.integers.beGreaterThan
 import io.kotlintest.matchers.integers.beLessThan
-import io.kotlintest.matchers.singleElement
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldHave
