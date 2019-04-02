@@ -3,11 +3,11 @@ package com.sksamuel.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.assertSoftly
-import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.collections.haveSize
 import io.kotlintest.matchers.haveSameHashCodeAs
 import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.types.beInstanceOf
 import io.kotlintest.matchers.withClue
 import io.kotlintest.should
 import io.kotlintest.shouldBe

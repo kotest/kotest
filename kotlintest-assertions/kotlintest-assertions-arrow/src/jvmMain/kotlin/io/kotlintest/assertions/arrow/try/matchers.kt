@@ -4,7 +4,7 @@ import arrow.core.Success
 import arrow.core.Try
 import io.kotlintest.Matcher
 import io.kotlintest.Result
-import io.kotlintest.matchers.beInstanceOf2
+import io.kotlintest.matchers.types.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
