@@ -1,9 +1,18 @@
 package com.sksamuel.kotlintest.matchers.types
 
-import io.kotlintest.matchers.beInstanceOf
-import io.kotlintest.matchers.beOfType
-import io.kotlintest.matchers.beTheSameInstanceAs
-import io.kotlintest.matchers.types.*
+import io.kotlintest.matchers.types.beInstanceOf
+import io.kotlintest.matchers.types.beNull
+import io.kotlintest.matchers.types.beOfType
+import io.kotlintest.matchers.types.beTheSameInstanceAs
+import io.kotlintest.matchers.types.haveAnnotation
+import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.matchers.types.shouldBeNull
+import io.kotlintest.matchers.types.shouldBeSameInstanceAs
+import io.kotlintest.matchers.types.shouldBeTypeOf
+import io.kotlintest.matchers.types.shouldHaveAnnotation
+import io.kotlintest.matchers.types.shouldNotBeInstanceOf
+import io.kotlintest.matchers.types.shouldNotBeNull
+import io.kotlintest.matchers.types.shouldNotBeTypeOf
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot

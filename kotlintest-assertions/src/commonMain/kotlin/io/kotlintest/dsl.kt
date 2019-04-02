@@ -1,6 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.matchers.AssertionErrorCollector
+import kotlin.reflect.KClass
 
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
@@ -172,3 +173,7 @@ fun exceptionToMessage(t: Throwable): String =
           }
           else -> t.toString()
         }
+
+@PublishedApi
+@Deprecated("Using this method because Kotlin JS currently doesn't support qualified name on reflection.")
+internal expect val KClass<*>.platformQualifiedName: String

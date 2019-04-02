@@ -1,7 +1,5 @@
 package io.kotlintest
 
-import kotlin.reflect.KClass
-
 /**
  * Verifies that a block of code throws any [Throwable]
  *
@@ -94,8 +92,3 @@ inline fun shouldNotThrowAny(block: () -> Unit) {
   
   throw Failures.failure("No exception expected, but a ${thrownException::class.simpleName} was thrown.", thrownException)
 }
-
-
-@PublishedApi
-@Deprecated("Using this method because Kotlin JS currently doesn't support qualified name on reflection.")
-internal expect val KClass<*>.platformQualifiedName: String

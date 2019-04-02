@@ -3,7 +3,7 @@ package io.kotlintest.assertions.arrow.either
 import arrow.core.Either
 import io.kotlintest.Matcher
 import io.kotlintest.Result
-import io.kotlintest.matchers.beInstanceOf2
+import io.kotlintest.matchers.types.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
