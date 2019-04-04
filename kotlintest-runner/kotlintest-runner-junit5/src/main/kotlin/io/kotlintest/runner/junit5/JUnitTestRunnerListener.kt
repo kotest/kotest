@@ -203,11 +203,11 @@
 //  }
 //
 //  // returns the most important result for a given description
-//  // by searching all the results stored for that description and child descriptions
+//  // by searching all the results stored for that description in order of importnance
 //  private fun findResultFor(description: Description): TestResult? {
 //
 //    fun findByStatus(status: TestStatus): TestResult? = results
-//        .filter { it.testCase.description == description || description.isAncestorOf(it.testCase.description) }
+//        .filter { it.testCase.description == description }
 //        .filter { it.result.status == status }
 //        .map { it.result }
 //        .firstOrNull()
