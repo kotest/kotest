@@ -59,10 +59,11 @@ abstract class AbstractProjectConfig {
   /**
    * When set to true, failed specs are written to a file called spec_failures.
    * This file is used on subsequent test runs to run the failed specs first.
-   * To disable this feature, set this to false, or set the system property
-   * 'kotlintest.write.specfailures=false'
+   *
+   * To enable this feature, set this to true, or set the system property
+   * 'kotlintest.write.specfailures=true'
    */
-  open fun writeSpecFailureFile(): Boolean = true
+  open fun writeSpecFailureFile(): Boolean = false
 
   /**
    * Sets the order of top level tests in a spec.
