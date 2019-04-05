@@ -155,7 +155,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
 }
 ```
 
@@ -167,7 +167,7 @@ val test by tasks.getting(Test::class) {
 }
 
 dependencies {
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
 }
 ```
 
@@ -184,7 +184,7 @@ android {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
 }
 ```
 
@@ -213,7 +213,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotlintest</groupId>
     <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.2</version>
     <scope>test</scope>
 </dependency>
 ```
