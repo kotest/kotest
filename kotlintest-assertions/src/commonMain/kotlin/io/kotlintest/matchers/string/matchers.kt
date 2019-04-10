@@ -1,6 +1,11 @@
 package io.kotlintest.matchers.string
 
-import io.kotlintest.*
+import io.kotlintest.Matcher
+import io.kotlintest.Result
+import io.kotlintest.convertValueToString
+import io.kotlintest.neverNullMatcher
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 import kotlin.math.min
 
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
@@ -207,3 +212,61 @@ fun haveLength(length: Int) = neverNullMatcher<String> { value ->
 
 
 expect fun Char.isDigit(): Boolean
+
+/**
+ * Asserts that [this] is equal to [other] (ignoring case)
+ *
+ * Verifies that this string is equal to [other], ignoring case.
+ * Opposite of [shouldNotBeEqualIgnoringCase]
+ *
+ * ```
+ *  "foo" shouldBeEqualIgnoringCase "FoO"  // Assertion passes
+ *
+ *  "foo" shouldBeEqualIgnoringCase "BaR"  // Assertion fails
+ * ```
+ *
+ * @see [shouldNotBeEqualIgnoringCase]
+ * @see [beEqualIgnoringCase]
+ */
+infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(other)
+
+/**
+ * Asserts that [this] is NOT equal to [other] (ignoring case)
+ *
+ * Verifies that this string is NOT equal to [other], ignoring case.
+ * Opposite of [shouldBeEqualIgnoringCase]
+ *
+ * ```
+ * "foo" shouldNotBeEqualIgnoringCase "FoO" // Assertion fails
+ * "foo" shouldNotBeEqualIgnoringCase "foo" // Assertion fails
+ *
+ * "foo" shouldNotBeEqualIgnoringCase "bar" // Assertion passes
+ *
+ * ```
+ *
+ * @see [shouldBeEqualIgnoringCase]
+ * @see [beEqualIgnoringCase]
+ */
+infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(other)
+
+
+/**
+ * Matcher that matches strings that are equal when case is not considered
+ *
+ * Verifies that a specific String is equal to another String when case is not considered.
+ *
+ * ```
+ * "foo" should beEqualIgnoringCase("FoO")   // Assertion passes
+ *
+ * "bar shouldNot beEqualIgnoringCase("BoB") // Assertion passes
+ *
+ * ```
+ *
+ */
+fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
+  Result(
+          value.equals(other, ignoreCase = true),
+          "${convertValueToString(value)} should be equal ignoring case ${convertValueToString(other)}",
+          "${convertValueToString(value)} should not be equal ignoring case ${convertValueToString(other)}"
+  )
+}

@@ -1,6 +1,63 @@
 package com.sksamuel.kotlintest.matchers.string
 
-import io.kotlintest.matchers.string.*
+import io.kotlintest.matchers.string.beBlank
+import io.kotlintest.matchers.string.beEmpty
+import io.kotlintest.matchers.string.beLowerCase
+import io.kotlintest.matchers.string.beUpperCase
+import io.kotlintest.matchers.string.contain
+import io.kotlintest.matchers.string.containADigit
+import io.kotlintest.matchers.string.containIgnoringCase
+import io.kotlintest.matchers.string.containOnlyDigits
+import io.kotlintest.matchers.string.containOnlyOnce
+import io.kotlintest.matchers.string.containOnlyWhitespace
+import io.kotlintest.matchers.string.endWith
+import io.kotlintest.matchers.string.haveLength
+import io.kotlintest.matchers.string.haveLineCount
+import io.kotlintest.matchers.string.haveMaxLength
+import io.kotlintest.matchers.string.haveMinLength
+import io.kotlintest.matchers.string.haveSameLengthAs
+import io.kotlintest.matchers.string.haveSubstring
+import io.kotlintest.matchers.string.include
+import io.kotlintest.matchers.string.match
+import io.kotlintest.matchers.string.shouldBeBlank
+import io.kotlintest.matchers.string.shouldBeEmpty
+import io.kotlintest.matchers.string.shouldBeEqualIgnoringCase
+import io.kotlintest.matchers.string.shouldBeLowerCase
+import io.kotlintest.matchers.string.shouldBeUpperCase
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.string.shouldContainADigit
+import io.kotlintest.matchers.string.shouldContainIgnoringCase
+import io.kotlintest.matchers.string.shouldContainOnlyDigits
+import io.kotlintest.matchers.string.shouldContainOnlyOnce
+import io.kotlintest.matchers.string.shouldEndWith
+import io.kotlintest.matchers.string.shouldHaveLength
+import io.kotlintest.matchers.string.shouldHaveLineCount
+import io.kotlintest.matchers.string.shouldHaveMaxLength
+import io.kotlintest.matchers.string.shouldHaveMinLength
+import io.kotlintest.matchers.string.shouldHaveSameLengthAs
+import io.kotlintest.matchers.string.shouldInclude
+import io.kotlintest.matchers.string.shouldMatch
+import io.kotlintest.matchers.string.shouldNotBeBlank
+import io.kotlintest.matchers.string.shouldNotBeEmpty
+import io.kotlintest.matchers.string.shouldNotBeEqualIgnoringCase
+import io.kotlintest.matchers.string.shouldNotBeLowerCase
+import io.kotlintest.matchers.string.shouldNotBeUpperCase
+import io.kotlintest.matchers.string.shouldNotContain
+import io.kotlintest.matchers.string.shouldNotContainADigit
+import io.kotlintest.matchers.string.shouldNotContainIgnoringCase
+import io.kotlintest.matchers.string.shouldNotContainOnlyDigits
+import io.kotlintest.matchers.string.shouldNotContainOnlyOnce
+import io.kotlintest.matchers.string.shouldNotEndWith
+import io.kotlintest.matchers.string.shouldNotHaveLength
+import io.kotlintest.matchers.string.shouldNotHaveLineCount
+import io.kotlintest.matchers.string.shouldNotHaveMaxLength
+import io.kotlintest.matchers.string.shouldNotHaveMinLength
+import io.kotlintest.matchers.string.shouldNotHaveSameLengthAs
+import io.kotlintest.matchers.string.shouldNotInclude
+import io.kotlintest.matchers.string.shouldNotMatch
+import io.kotlintest.matchers.string.shouldNotStartWith
+import io.kotlintest.matchers.string.shouldStartWith
+import io.kotlintest.matchers.string.startWith
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -138,7 +195,7 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
       }
     }
-
+    
     "string should beEmpty()" - {
       "should test that a string has length 0" {
         "" should beEmpty()
@@ -657,6 +714,56 @@ class StringMatchersTest : FreeSpec() {
         shouldThrow<AssertionError> {
           null shouldNotHaveMaxLength 0
         }.message shouldBe "Expecting actual not to be null"
+      }
+    }
+    
+    "should be equal ignoring case" - {
+      "should match equal strings" {
+        "foo" shouldBeEqualIgnoringCase "foo"
+        "BAR" shouldBeEqualIgnoringCase "BAR"
+        "123" shouldBeEqualIgnoringCase "123"
+      }
+      
+      "Should match strings that are equal ignoring case" {
+        "FOO" shouldBeEqualIgnoringCase "fOo"
+        "BaR" shouldBeEqualIgnoringCase "bar"
+        "123aBC" shouldBeEqualIgnoringCase "123abc"
+      }
+      
+      "Should not match strings that are different, but in same case" {
+        shouldThrow<AssertionError> { "123" shouldBeEqualIgnoringCase "321" }
+        shouldThrow<AssertionError> { "FOO" shouldBeEqualIgnoringCase "FOOO" }
+        shouldThrow<AssertionError> { "bar" shouldBeEqualIgnoringCase "baar" }
+      }
+      
+      "Should not match strings that are different, but in different case" {
+          shouldThrow<AssertionError> { "FOO" shouldBeEqualIgnoringCase "fooo" }
+          shouldThrow<AssertionError> { "bar" shouldBeEqualIgnoringCase "BAAR" }
+      }
+    }
+  
+    "should not be equal ignoring case" - {
+      "should not match equal strings" {
+        shouldThrow<AssertionError> { "foo" shouldNotBeEqualIgnoringCase "foo" }
+        shouldThrow<AssertionError> { "BAR" shouldNotBeEqualIgnoringCase "BAR" }
+        shouldThrow<AssertionError> { "123" shouldNotBeEqualIgnoringCase "123" }
+      }
+    
+      "Should not match strings that are equal ignoring case" {
+        shouldThrow<AssertionError> { "FOO" shouldNotBeEqualIgnoringCase "fOo" }
+        shouldThrow<AssertionError> { "BaR" shouldNotBeEqualIgnoringCase "bar" }
+        shouldThrow<AssertionError> { "123aBC" shouldNotBeEqualIgnoringCase "123abc" }
+      }
+    
+      "Should match strings that are different, but in same case" {
+        "123" shouldNotBeEqualIgnoringCase "321"
+        "FOO" shouldNotBeEqualIgnoringCase "FOOO"
+        "bar" shouldNotBeEqualIgnoringCase "baar"
+      }
+    
+      "Should match strings that are different, but in different case" {
+        "FOO" shouldNotBeEqualIgnoringCase "fooo"
+        "bar" shouldNotBeEqualIgnoringCase "BAAR"
       }
     }
   }
