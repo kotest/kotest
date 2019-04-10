@@ -111,7 +111,7 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldHaveLowerBound(element)` | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldHaveUpperBound(element)` | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldBeSmallerThan(col)` | Asserts that the collection is smaller than the other collection. |
-| `collection.shouldBeLargerThen(col)` | Asserts that the collection is larger than the other collection. |
+| `collection.shouldBeLargerThan(col)` | Asserts that the collection is larger than the other collection. |
 | `collection.shouldBeSameSizeAs(col)` | Asserts that the collection has the same size as the other collection. |
 | `collection.shouldHaveAtLeastSize(n)` | Asserts that the collection has at least size n. |
 | `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
