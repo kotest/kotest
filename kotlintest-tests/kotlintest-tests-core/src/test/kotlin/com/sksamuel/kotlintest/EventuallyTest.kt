@@ -38,11 +38,18 @@ class EventuallyTest : WordSpec() {
         }
         result shouldBe 1
       }
-      "pass tests that completed within the time allowed, custom exception"  {
+      "pass tests that completed within the time allowed, AssertionError"  {
         val end = System.currentTimeMillis() + 2000
-        eventually(Duration.ofDays(5), AssertionError::class.java) {
+        eventually(Duration.ofDays(5)) {
           if (System.currentTimeMillis() < end)
             assert(false)
+        }
+      }
+      "pass tests that completed within the time allowed, custom exception"  {
+        val end = System.currentTimeMillis() + 2000
+        eventually(Duration.ofSeconds(5), FileNotFoundException::class.java) {
+          if (System.currentTimeMillis() < end)
+            throw FileNotFoundException()
         }
       }
       "fail tests throw unexpected exception type"  {
@@ -74,7 +81,7 @@ class EventuallyTest : WordSpec() {
       }
       "display the underlying assertion failure" {
         shouldThrow<AssertionError> {
-          eventually(Duration.ofMillis(10), AssertionError::class.java) {
+          eventually(Duration.ofMillis(10)) {
             1 shouldBe 2
           }
         }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")

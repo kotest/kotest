@@ -1,6 +1,5 @@
 package io.kotlintest
 
-import java.lang.Exception
 import java.time.Duration
 
 fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class.java, f)
@@ -13,7 +12,7 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
     try {
       return f()
     } catch (e: Throwable) {
-      if (!exceptionClass.isAssignableFrom(e.javaClass)) {
+      if (!exceptionClass.isAssignableFrom(e.javaClass) && !AssertionError::class.java.isAssignableFrom(e.javaClass)) {
         // Not the kind of exception we were prepared to tolerate
         throw e
       }
