@@ -45,6 +45,13 @@ class EventuallyTest : WordSpec() {
             assert(false)
         }
       }
+      "pass tests that completed within the time allowed, custom exception"  {
+        val end = System.currentTimeMillis() + 2000
+        eventually(Duration.ofSeconds(5), FileNotFoundException::class.java) {
+          if (System.currentTimeMillis() < end)
+            throw FileNotFoundException()
+        }
+      }
       "fail tests throw unexpected exception type"  {
         shouldThrow<KotlinNullPointerException> {
           eventually(Duration.ofSeconds(2), IOException::class.java) {
