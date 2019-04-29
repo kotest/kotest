@@ -8,12 +8,14 @@ import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
+import io.kotlintest.matchers.collections.shouldHaveAtMostSize
 import io.kotlintest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.doubles.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.floats.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.floats.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
@@ -473,6 +475,65 @@ class GenTest : WordSpec() {
       
       "Be the default generator for Duration" {
         assertAll(10) { it: Period -> /* No use. Won't reach here if unsupported */ }
+      }
+    }
+    "Gen.list(maxSize)" should {
+      "Generate lists of length up to 100 by default" {
+        assertAll(10_000, Gen.list(Gen.double())) {
+          it.shouldHaveAtMostSize(100)
+        }
+      }
+      "Generate lists up to the given length" {
+        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+          assertAll(1000, Gen.list(Gen.double(), size)) {
+            it.shouldHaveAtMostSize(size)
+          }
+        }
+      }
+    }
+    "Gen.set(maxSize)" should {
+      "Generate sets of length up to 100 by default" {
+        assertAll(10_000, Gen.set(Gen.double())) {
+          it.shouldHaveAtMostSize(100)
+        }
+      }
+      "Generate sets up to the given length" {
+        assertAll(100, Gen.choose(0, 500)) { size: Int ->
+          assertAll(1000, Gen.set(Gen.double(), size)) {
+            it.shouldHaveAtMostSize(size)
+          }
+        }
+      }
+    }
+    "Gen.map(keyGen, valueGen, maxSize)" should {
+      val keyGen = Gen.int()
+      val valueGen = Gen.double()
+      "Generate maps of up to 100 elements by default" {
+        assertAll(10_000, Gen.map(keyGen, valueGen)) {
+          it.size.shouldBeLessThanOrEqual(100)
+        }
+      }
+      "Generate maps of up to the given size" {
+        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+          assertAll(1000, Gen.map(keyGen, valueGen, size)) {
+            it.size.shouldBeLessThanOrEqual(size)
+          }
+        }
+      }
+    }
+    "Gen.map(keyValueGen, maxSize)" should {
+      val keyValueGen = Gen.int().map { Pair(it, it.toString()) }
+      "Generate maps of up to 100 elements by default" {
+        assertAll(10_000, Gen.map(keyValueGen)) {
+          it.size.shouldBeLessThanOrEqual(100)
+        }
+      }
+      "Generate maps of up to the given size" {
+        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+          assertAll(1000, Gen.map(keyValueGen, size)) {
+            it.size.shouldBeLessThanOrEqual(size)
+          }
+        }
       }
     }
   }
