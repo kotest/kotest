@@ -167,3 +167,62 @@ infix fun String?.shouldEndWith(suffix: String) = this should endWith(suffix)
 infix fun String?.shouldNotEndWith(suffix: String) = this shouldNot endWith(suffix)
 infix fun String?.shouldStartWith(prefix: String) = this should startWith(prefix)
 infix fun String?.shouldNotStartWith(prefix: String) = this shouldNot startWith(prefix)
+
+
+/**
+ * Asserts that [this] is equal to [other] (ignoring case)
+ *
+ * Verifies that this string is equal to [other], ignoring case.
+ * Opposite of [shouldNotBeEqualIgnoringCase]
+ *
+ * ```
+ *  "foo" shouldBeEqualIgnoringCase "FoO"  // Assertion passes
+ *
+ *  "foo" shouldBeEqualIgnoringCase "BaR"  // Assertion fails
+ * ```
+ *
+ * @see [shouldNotBeEqualIgnoringCase]
+ * @see [beEqualIgnoringCase]
+ */
+infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(other)
+
+/**
+ * Asserts that [this] is NOT equal to [other] (ignoring case)
+ *
+ * Verifies that this string is NOT equal to [other], ignoring case.
+ * Opposite of [shouldBeEqualIgnoringCase]
+ *
+ * ```
+ * "foo" shouldNotBeEqualIgnoringCase "FoO" // Assertion fails
+ * "foo" shouldNotBeEqualIgnoringCase "foo" // Assertion fails
+ *
+ * "foo" shouldNotBeEqualIgnoringCase "bar" // Assertion passes
+ *
+ * ```
+ *
+ * @see [shouldBeEqualIgnoringCase]
+ * @see [beEqualIgnoringCase]
+ */
+infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(other)
+
+
+/**
+ * Matcher that matches strings that are equal when case is not considered
+ *
+ * Verifies that a specific String is equal to another String when case is not considered.
+ *
+ * ```
+ * "foo" should beEqualIgnoringCase("FoO")   // Assertion passes
+ *
+ * "bar shouldNot beEqualIgnoringCase("BoB") // Assertion passes
+ *
+ * ```
+ *
+ */
+fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
+  Result(
+          value.equals(other, ignoreCase = true),
+          "${convertValueToString(value)} should be equal ignoring case ${convertValueToString(other)}",
+          "${convertValueToString(value)} should not be equal ignoring case ${convertValueToString(other)}"
+  )
+}

@@ -154,7 +154,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       then(mock).should(times(1)).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
     }
 
-    "propagate nested failure to parent test" {
+    "nested failure should not affect test" {
       val rootDescriptor = EngineDescriptor(UniqueId.forEngine("engine-test"), "engine-test")
 
       val mock = mock<EngineExecutionListener> {}
@@ -176,7 +176,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
-      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
+      then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]" }, argThat { this.status == TestExecutionResult.Status.SUCCESSFUL })
     }
 
     "mark inactive test as skipped" {
