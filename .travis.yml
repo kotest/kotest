@@ -17,6 +17,6 @@ cache:
 
 install: "/bin/true"
 
-script: "./gradlew build"
+script: "./gradlew test"
 
 after_success: "./snapshot_deploy.sh"
