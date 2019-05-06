@@ -687,6 +687,30 @@ interface Gen<T> : GenOf<T> {
   fun nextPrintableString(length: Int): String {
     return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
   }
+
+  /**
+   * Draws [amount] values from this generator
+   *
+   * This method will draw values from the generator until it generates [amount] values. This first draws from the
+   * [constants] pool, and if necessary starts drawing from the [random] pool.
+   *
+   * This is useful if you want the generated values, but don't want to execute a property test over them (for example,
+   * by using [assertAll] or [forAll]
+   *
+   * ```
+   * val gen = Gen.string()
+   * val generatedValues: List<String> = gen.take(20)
+   * ```
+   */
+  fun take(amount: Int): List<T> {
+    require(amount > 0) { "Amount must be > 0, but was $amount" }
+
+    val generatedValues = (constants() + random().take(amount)).take(amount)
+    val generatedSize = generatedValues.size
+
+    check(generatedSize == amount) { "Gen could only generate $generatedSize values while you requested $amount." }
+    return generatedValues
+  }
 }
 
 // need some supertype that types a type param so it gets baked into the class file
