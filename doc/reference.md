@@ -846,7 +846,14 @@ If you use `kotlintest.tags.include` and `kotlintest.tags.exclude` in combinatio
 `kotlintest.tags.include` but not tagged with a tag from `kotlintest.tags.exclude` are run. If you use only `kotlintest.tags.exclude`
 all tests but the tests tagged with the given tags are are run.
 
+Tags can also be included/excluded in runtime (for example, if you're running a project configuration instead of properties) through the `RuntimeTagExtension`:
 
+```kotlin
+RuntimeTagExtension.included += MyTag
+RuntimeTagExtension.excluded += MyOtherTag
+```
+
+Everything else will work like the described above.
 
 
 
