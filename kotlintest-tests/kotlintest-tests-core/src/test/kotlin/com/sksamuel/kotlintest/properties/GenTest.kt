@@ -484,7 +484,7 @@ class GenTest : WordSpec() {
         }
       }
       "Generate lists up to the given length" {
-        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+        assertAll(50, Gen.choose(1, 500)) { size: Int ->
           assertAll(1000, Gen.list(Gen.double(), size)) {
             it.shouldHaveAtMostSize(size)
           }
@@ -498,7 +498,7 @@ class GenTest : WordSpec() {
         }
       }
       "Generate sets up to the given length" {
-        assertAll(100, Gen.choose(0, 500)) { size: Int ->
+        assertAll(50, Gen.choose(1, 500)) { size: Int ->
           assertAll(1000, Gen.set(Gen.double(), size)) {
             it.shouldHaveAtMostSize(size)
           }
@@ -514,7 +514,7 @@ class GenTest : WordSpec() {
         }
       }
       "Generate maps of up to the given size" {
-        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+        assertAll(50, Gen.choose(1, 500)) { size: Int ->
           assertAll(1000, Gen.map(keyGen, valueGen, size)) {
             it.size.shouldBeLessThanOrEqual(size)
           }
@@ -529,7 +529,7 @@ class GenTest : WordSpec() {
         }
       }
       "Generate maps of up to the given size" {
-        assertAll(10, Gen.choose(0, 500)) { size: Int ->
+        assertAll(50, Gen.choose(1, 500)) { size: Int ->
           assertAll(1000, Gen.map(keyValueGen, size)) {
             it.size.shouldBeLessThanOrEqual(size)
           }

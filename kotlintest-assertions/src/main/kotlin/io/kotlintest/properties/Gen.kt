@@ -547,6 +547,7 @@ interface Gen<T> : GenOf<T> {
      */
     @JvmOverloads
     fun <T> set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object : Gen<Set<T>> {
+      init {require(maxSize >= 0) {"maxSize must be positive"}}
       override fun constants(): Iterable<Set<T>> = listOf(gen.constants().take(maxSize).toSet())
       override fun random(): Sequence<Set<T>> = generateSequence {
         val size = Random.nextInt(maxSize)
@@ -560,6 +561,7 @@ interface Gen<T> : GenOf<T> {
      */
     @JvmOverloads
     fun <T> list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = object : Gen<List<T>> {
+      init {require(maxSize >= 0) {"maxSize must be positive"}}
       override fun constants(): Iterable<List<T>> = listOf(gen.constants().take(maxSize).toList())
       override fun random(): Sequence<List<T>> = generateSequence {
         val size = Random.nextInt(maxSize)
@@ -601,6 +603,7 @@ interface Gen<T> : GenOf<T> {
      */
     @JvmOverloads
     fun <K, V> map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
+      init {require(maxSize >= 0) {"maxSize must be positive"}}
       override fun constants(): Iterable<Map<K, V>> = emptyList()
       override fun random(): Sequence<Map<K, V>> = generateSequence {
         val size = Random.nextInt(maxSize)
@@ -609,6 +612,7 @@ interface Gen<T> : GenOf<T> {
     }
 
     fun <K, V> map(gen: Gen<Pair<K,V>>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
+      init {require(maxSize >= 0) {"maxSize must be positive"}}
       override fun constants(): Iterable<Map<K, V>> = emptyList()
       override fun random(): Sequence<Map<K, V>> = generateSequence {
         val size = Random.nextInt(maxSize)
