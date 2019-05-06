@@ -2,7 +2,7 @@
 
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.forAll
+import io.kotlintest.*
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
@@ -18,21 +18,23 @@ import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
+import io.kotlintest.properties.generateInfiniteSequence
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
-import org.junit.jupiter.api.assertAll
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
+import java.time.*
 import java.util.Random
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.Set
+import kotlin.collections.last
+import kotlin.collections.listOf
+import kotlin.collections.mutableSetOf
+import kotlin.collections.plusAssign
+import kotlin.collections.setOf
+import kotlin.collections.toList
+import kotlin.collections.toSet
 
 class GenTest : WordSpec() {
   init {
@@ -473,6 +475,44 @@ class GenTest : WordSpec() {
       
       "Be the default generator for Duration" {
         assertAll(10) { it: Period -> /* No use. Won't reach here if unsupported */ }
+      }
+      
+    }
+  
+    "Gen.take(n)" should {
+      val mockedGen = object : Gen<Int> {
+        override fun constants() = listOf(1, 2)
+        override fun random() = generateInfiniteSequence { 3 }
+      }
+      
+      val mockedGen2 = object : Gen<String> {
+        override fun constants() = listOf("1", "2", "3", "4")
+        override fun random() = generateInfiniteSequence { "42" }
+      }
+      
+      "Take constants first" {
+        mockedGen.take(2) shouldBe listOf(1, 2)
+        mockedGen2.take(4) shouldBe listOf("1", "2", "3", "4")
+      }
+      
+      "Populate with constants + random values if constants are not enough" {
+        mockedGen.take(5) shouldBe listOf(1, 2, 3, 3, 3)
+        mockedGen2.take(8) shouldBe listOf("1", "2", "3", "4", "42", "42", "42", "42")
+      }
+
+      "Throw exception if the generator can't generate the amount requested" {
+        val smallGen = object : Gen<String> {
+          override fun constants() = listOf("1", "2", "3", "4")
+          override fun random() = sequenceOf("42")
+        }
+
+        val thrown = shouldThrow<IllegalStateException> { smallGen.take(10) }
+        thrown.message shouldBe "Gen could only generate 5 values while you requested 10."
+      }
+
+      "Throw exception if amount <= 0" {
+        shouldThrow<IllegalArgumentException> { mockedGen.take(0) }
+        shouldThrow<IllegalArgumentException> { mockedGen.take(-1) }
       }
     }
   }
