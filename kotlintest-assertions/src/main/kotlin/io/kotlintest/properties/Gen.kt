@@ -711,6 +711,31 @@ interface Gen<T> : GenOf<T> {
     check(generatedSize == amount) { "Gen could only generate $generatedSize values while you requested $amount." }
     return generatedValues
   }
+
+  /**
+   * Draws a random value from this generator
+   *
+   * This method will draw a single value from the [random] values, that matches [predicate] (defaults to every
+   * value)
+   *
+   * This expects that [random] will return an infinite, random sequence. Due to this, a call to [Sequence.first] is
+   * made. As usually random is infinite, this should always return a different value. For fixed sequences, this will
+   * always return the first value of the sequence.
+   *
+   * This is useful if you want a randomized value, but don't want to execute a property test over them (for example, by
+   * using [assertAll] or [forAll]).
+   *
+   * IMPORTANT: This will not draw from the [constants] pool. Only [random] values.
+   *
+   * ```
+   * val gen = Gen.string()
+   * val generatedValue: String = gen.next()
+   * val filteredValue: String = gen.next { it != "hello" }
+   * ```
+   */
+  fun next(predicate: (T) -> Boolean = { true }): T {
+    return random().first(predicate)
+  }
 }
 
 // need some supertype that types a type param so it gets baked into the class file
