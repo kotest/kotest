@@ -515,6 +515,32 @@ class GenTest : WordSpec() {
         shouldThrow<IllegalArgumentException> { mockedGen.take(-1) }
       }
     }
+
+    "Gen.next(predicate)" should {
+
+      val mockedGen = object : Gen<Int> {
+        override fun constants() = listOf(1, 2)
+        val seq = listOf(3, 4, 5, 6)
+        override fun random() = generateInfiniteSequence { seq.random() }
+      }
+
+      "Take a random value straight from random() by default" {
+        val accumulatedValues = mutableSetOf<Int>()
+        repeat(1000) {
+          accumulatedValues.add(mockedGen.next())
+        }
+        accumulatedValues shouldBe setOf(3, 4, 5, 6)
+      }
+
+      "Allows to specify a predicate to filter on the value" {
+        val accumulatedValues = mutableSetOf<Int>()
+        repeat(1000) {
+          accumulatedValues.add(mockedGen.next { it > 4 })
+        }
+
+        accumulatedValues shouldBe setOf(5, 6)
+      }
+    }
   }
 }
 
