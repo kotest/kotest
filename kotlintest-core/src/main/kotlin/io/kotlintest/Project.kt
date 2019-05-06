@@ -2,15 +2,7 @@
 
 package io.kotlintest
 
-import io.kotlintest.extensions.ConstructorExtension
-import io.kotlintest.extensions.DiscoveryExtension
-import io.kotlintest.extensions.ProjectExtension
-import io.kotlintest.extensions.ProjectLevelExtension
-import io.kotlintest.extensions.SpecExtension
-import io.kotlintest.extensions.SystemPropertyTagExtension
-import io.kotlintest.extensions.TagExtension
-import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.extensions.TestListener
+import io.kotlintest.extensions.*
 
 /**
  * Internal class used to hold project wide configuration.
@@ -55,7 +47,7 @@ object Project {
     }
   }
 
-  private val _extensions = mutableListOf<ProjectLevelExtension>().apply { add(SystemPropertyTagExtension) }
+  private val _extensions: MutableList<ProjectLevelExtension> = mutableListOf(SystemPropertyTagExtension, RuntimeTagExtension)
   private val _listeners = mutableListOf<TestListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
