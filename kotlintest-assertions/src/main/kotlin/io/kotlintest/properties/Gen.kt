@@ -319,6 +319,20 @@ interface Gen<T> : GenOf<T> {
 
     /**
      * Returns a stream of values where each value is a randomly
+     * chosen [Short]. The values always returned include
+     * the following edge cases: [Short.MIN_VALUE, Short.MAX_VALUE, 0]
+     */
+    fun short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS).toShort() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [Byte]. The values always returned include
+     * the following edge cases: [Byte.MIN_VALUE, Byte.MAX_VALUE, 0]
+     */
+    fun byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
      * chosen positive value. The values returned always include
      * the following edge cases: [Int.MAX_VALUE]
      */
@@ -634,6 +648,10 @@ interface Gen<T> : GenOf<T> {
         "kotlin.String" -> string()
         "java.lang.Integer" -> int()
         "kotlin.Int" -> int()
+        "java.lang.Short" -> short()
+        "kotlin.Short" -> short()
+        "java.lang.Byte" -> byte()
+        "kotlin.Byte" -> byte()
         "java.lang.Long" -> long()
         "kotlin.Long" -> long()
         "java.lang.Boolean" -> bool()
