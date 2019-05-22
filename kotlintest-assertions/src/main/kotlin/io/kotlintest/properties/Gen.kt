@@ -319,6 +319,48 @@ interface Gen<T> : GenOf<T> {
 
     /**
      * Returns a stream of values where each value is a randomly
+     * chosen [UInt]. The values always returned include
+     * the following edge cases: [UInt.MIN_VALUE, UInt.MAX_VALUE]
+     */
+    @ExperimentalUnsignedTypes
+    fun uint() =  object : Gen<UInt> {
+      val literals = listOf(UInt.MIN_VALUE, UInt.MAX_VALUE)
+      override fun constants(): Iterable<UInt> = literals
+      override fun random(): Sequence<UInt> = generateSequence { Random.nextInt().toUInt() }
+    }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [Short]. The values always returned include
+     * the following edge cases: [Short.MIN_VALUE, Short.MAX_VALUE, 0]
+     */
+    fun short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS).toShort() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [UShort]. The values always returned include
+     * the following edge cases: [UShort.MIN_VALUE, UShort.MAX_VALUE]
+     */
+    @ExperimentalUnsignedTypes
+    fun ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [Byte]. The values always returned include
+     * the following edge cases: [Byte.MIN_VALUE, Byte.MAX_VALUE, 0]
+     */
+    fun byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [UByte]. The values always returned include
+     * the following edge cases: [UByte.MIN_VALUE, UByte.MAX_VALUE]
+     */
+    @ExperimentalUnsignedTypes
+    fun ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS).toByte() }
+
+    /**
+     * Returns a stream of values where each value is a randomly
      * chosen positive value. The values returned always include
      * the following edge cases: [Int.MAX_VALUE]
      */
@@ -357,6 +399,18 @@ interface Gen<T> : GenOf<T> {
       val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
       override fun constants(): Iterable<Long> = literals
       override fun random(): Sequence<Long> = generateSequence { Math.abs(Random.nextLong()) }
+    }
+
+    /**
+     * Returns a stream of values where each value is a randomly
+     * chosen [ULong]. The values returned always include
+     * the following edge cases: [ULong.MIN_VALUE, ULong.MAX_VALUE]
+     */
+    @ExperimentalUnsignedTypes
+    fun ulong(): Gen<ULong> = object : Gen<ULong> {
+      val literals = listOf(ULong.MIN_VALUE, ULong.MAX_VALUE)
+      override fun constants(): Iterable<ULong> = literals
+      override fun random(): Sequence<ULong> = generateSequence {Random.nextLong().toULong() }
     }
 
     /**
@@ -630,18 +684,14 @@ interface Gen<T> : GenOf<T> {
 
     fun forClassName(className: String): Gen<*> {
       return when (className) {
-        "java.lang.String" -> string()
-        "kotlin.String" -> string()
-        "java.lang.Integer" -> int()
-        "kotlin.Int" -> int()
-        "java.lang.Long" -> long()
-        "kotlin.Long" -> long()
-        "java.lang.Boolean" -> bool()
-        "kotlin.Boolean" -> bool()
-        "java.lang.Float" -> float()
-        "kotlin.Float" -> float()
-        "java.lang.Double" -> double()
-        "kotlin.Double" -> double()
+        "java.lang.String", "kotlin.String" -> string()
+        "java.lang.Integer", "kotlin.Int" -> int()
+        "java.lang.Short", "kotlin.Short" -> short()
+        "java.lang.Byte", "kotlin.Byte" -> byte()
+        "java.lang.Long", "kotlin.Long" -> long()
+        "java.lang.Boolean", "kotlin.Boolean" -> bool()
+        "java.lang.Float", "kotlin.Float" -> float()
+        "java.lang.Double", "kotlin.Double" -> double()
         "java.util.UUID" -> uuid()
         "java.io.File" -> file()
         "java.time.LocalDate" -> localDate()
