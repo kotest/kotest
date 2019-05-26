@@ -4,13 +4,16 @@ package io.kotlintest.matchers
 
 import io.kotlintest.*
 
-fun withClue(clue: String, thunk: () -> Any) {
-  val currentClue = ErrorCollector.clueContext.get()
+fun <ReturnType> withClue(clue: Any, thunk: () -> ReturnType): ReturnType {
+    return clue.asClue { thunk() }
+}
+
+fun <ClueType, ReturnType> ClueType.asClue(body: (ClueType) -> ReturnType): ReturnType {
   try {
-    ErrorCollector.clueContext.set("$clue ")
-    thunk()
+    ErrorCollector.clueContext.get().push(this)
+    return body(this)
   } finally {
-    ErrorCollector.clueContext.set(currentClue)
+    ErrorCollector.clueContext.get().pop()
   }
 }
 
