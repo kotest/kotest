@@ -12,6 +12,8 @@ dependencies {
     compile 'org.springframework:spring-test:4.3.14.RELEASE'
     compile 'org.springframework:spring-context:4.3.14.RELEASE'
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE')
 }
 
 test {
