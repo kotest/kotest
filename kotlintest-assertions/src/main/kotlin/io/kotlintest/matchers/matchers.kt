@@ -4,13 +4,30 @@ package io.kotlintest.matchers
 
 import io.kotlintest.*
 
-fun withClue(clue: String, thunk: () -> Any) {
-  val currentClue = ErrorCollector.clueContext.get()
+/**
+ * Add [clue] as additional info to the assertion error message in case an assertion fails.
+ * Can be nested, the error message will contain all available clues.
+ *
+ * @param thunk the code with assertions to be executed
+ * @return the return value of the supplied [thunk]
+ */
+fun <ReturnType> withClue(clue: Any, thunk: () -> ReturnType): ReturnType {
+    return clue.asClue { thunk() }
+}
+
+/**
+ * Similar to `let`, but will add `this` as a clue to the assertion error message in case an assertion fails.
+ * Can be nested, the error message will contain all available clues.
+ *
+ * @param block the code with assertions to be executed
+ * @return the return value of the supplied [block]
+ */
+fun <ClueType, ReturnType> ClueType.asClue(block: (ClueType) -> ReturnType): ReturnType {
   try {
-    ErrorCollector.clueContext.set("$clue ")
-    thunk()
+    ErrorCollector.clueContext.get().push(this)
+    return block(this)
   } finally {
-    ErrorCollector.clueContext.set(currentClue)
+    ErrorCollector.clueContext.get().pop()
   }
 }
 

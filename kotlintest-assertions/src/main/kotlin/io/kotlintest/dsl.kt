@@ -110,7 +110,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContext.get() + result.failureMessage))
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage))
   }
 }
 
@@ -125,7 +125,7 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 internal fun equalsError(expected: Any?, actual: Any?): Throwable {
 
   val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual))
-  val message = ErrorCollector.clueContext.get() + equalsErrorMessage(expectedRepr, actualRepr)
+  val message = ErrorCollector.clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
 
   val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)
