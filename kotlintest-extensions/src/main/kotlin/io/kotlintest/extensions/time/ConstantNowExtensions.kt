@@ -6,10 +6,12 @@ import io.kotlintest.extensions.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import java.time.*
 import java.time.temporal.Temporal
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.staticFunctions
+import kotlin.reflect.jvm.javaType
 
 /**
  * Simulate the value of now() while executing [block]
@@ -44,6 +46,16 @@ internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
 @PublishedApi
 internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<Time>): KFunction<*> {
   return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
+}
+
+@PublishedApi
+internal fun <Time : Temporal> getZoneIdNowFunction(klass: KClass<Time>): KFunction<*>? {
+  val functions =  klass.staticFunctions.filter { it.name == "now" && it.parameters.size == 1 && it.parameters[0].type.javaType == ZoneId::class.java}
+  return if (functions.isNotEmpty()) {
+    functions[0]
+  } else {
+    null
+  }
 }
 
 @PublishedApi
