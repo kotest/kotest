@@ -5,6 +5,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.extensions.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.unmockkStatic
 import java.time.*
 import java.time.temporal.Temporal
@@ -41,6 +42,25 @@ inline fun <T, reified Time : Temporal> withConstantNow(now: Time, block: () -> 
 internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
   mockkStatic(klass)
   every { getNoParameterNowFunction(klass).call() } returns value
+
+  val slot = slot<ZoneId>()
+  val zoneIdNowFunction = getZoneIdNowFunction(klass)
+  if (zoneIdNowFunction != null) {
+    every { zoneIdNowFunction.call(capture(slot)) } answers {
+      val zoneId = slot.captured
+      when (klass.java) {
+        ZonedDateTime::class.java ->
+          ZonedDateTime.ofInstant((value as ZonedDateTime).toInstant(), zoneId)
+        OffsetDateTime::class.java ->
+          OffsetDateTime.ofInstant((value as OffsetDateTime).toInstant(), zoneId)
+        LocalDateTime::class.java -> {
+          val offset = Clock.systemDefaultZone().zone.rules.getOffset(value as LocalDateTime)
+          LocalDateTime.ofInstant( (value as LocalDateTime).toInstant(offset), zoneId)
+        }
+        else -> value
+      }
+    }
+  }
 }
 
 @PublishedApi

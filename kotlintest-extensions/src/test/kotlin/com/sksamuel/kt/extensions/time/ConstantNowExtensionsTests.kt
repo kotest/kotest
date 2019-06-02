@@ -1,8 +1,6 @@
 package com.sksamuel.kt.extensions.time
 
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
+import io.kotlintest.*
 import io.kotlintest.extensions.time.ConstantNowTestListener
 import io.kotlintest.extensions.time.withConstantNow
 import io.kotlintest.matchers.types.shouldBeSameInstanceAs
@@ -88,12 +86,15 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
       }
     }
     describe("The ConstantNow extension function (LocalDateTime)") {
-    
+
       val now = LocalDateTime.now()
-    
-      it("Should replace the LocalDateTime.now() with my own dateTime") {
+      val zoneOffset = Clock.systemDefaultZone().zone.rules.getOffset(now)
+      val zoneId = ZoneId.of("Europe/Paris")
+
+      it("Should convert the LocalDateTime.now() to my own dateTime in corresponding zoneId") {
         withConstantNow(now) {
           LocalDateTime.now() shouldBeSameInstanceAs now
+          LocalDateTime.now(zoneId) shouldBe LocalDateTime.ofInstant(now.toInstant(zoneOffset), zoneId)
         }
       }
     
@@ -102,6 +103,8 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
         delay(10)
       
         LocalDateTime.now() shouldNotBeSameInstanceAs now
+        LocalDateTime.now(zoneId) shouldNotBe LocalDateTime.ofInstant(now.toInstant(zoneOffset), zoneId)
+
       }
     }
     describe("The ConstantNow extension function (LocalTime)") {
@@ -141,18 +144,26 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
     describe("The ConstantNow extension function (OffsetDateTime)") {
     
       val now = OffsetDateTime.now()
-    
+      val zoneId = ZoneId.of("Europe/Paris")
+
       it("Should replace the OffsetDateTime.now() with my own dateTime") {
         withConstantNow(now) {
           OffsetDateTime.now() shouldBeSameInstanceAs now
         }
       }
-    
+
+      it("Should convert the OffsetDateTime.now(zoneId) to my own dateTime in corresponding zone") {
+        withConstantNow(now) {
+          OffsetDateTime.now(zoneId) shouldBe OffsetDateTime.ofInstant(now.toInstant(), zoneId)
+        }
+      }
+
       it("Should reverse to default behavior after execution") {
         withConstantNow(now) { }
         delay(10)
       
         OffsetDateTime.now() shouldNotBeSameInstanceAs now
+        OffsetDateTime.now(zoneId) shouldNotBe OffsetDateTime.ofInstant(now.toInstant(), zoneId)
       }
     }
     describe("The ConstantNow extension function (OffsetTime)") {
@@ -226,18 +237,27 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
     describe("The ConstantNow extension function (ZonedDateTime)") {
     
       val now = ZonedDateTime.now()
+      val zoneId = ZoneId.of("Europe/Paris")
     
       it("Should replace the ZonedDateTime.now() with my own dateTime") {
         withConstantNow(now) {
           ZonedDateTime.now() shouldBeSameInstanceAs now
         }
       }
-    
+
+      it("Should convert the ZonedDateTime.now(zoneId) to my own dateTime in corresponding zone") {
+        withConstantNow(now) {
+          ZonedDateTime.now(zoneId) shouldBe ZonedDateTime.ofInstant(now.toInstant(), zoneId)
+        }
+      }
+
+
       it("Should reverse to default behavior after execution") {
         withConstantNow(now) { }
         delay(10)
       
         ZonedDateTime.now() shouldNotBeSameInstanceAs now
+        ZonedDateTime.now(zoneId) shouldNotBe ZonedDateTime.ofInstant(now.toInstant(), zoneId)
       }
     }
   }
