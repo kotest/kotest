@@ -43,6 +43,17 @@ internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
   mockkStatic(klass)
   every { getNoParameterNowFunction(klass).call() } returns value
 
+  val dateTimeClass = listOf(
+          ZonedDateTime::class.java,
+          OffsetDateTime::class.java,
+          LocalDateTime::class.java)
+  
+  if (klass.java in dateTimeClass) { 
+    mockZonedIdNowForDateTimeClass(klass, value)
+  }
+}
+
+private fun <Time : Temporal> mockZonedIdNowForDateTimeClass(klass: KClass<Time>, value: Time) {
   val slot = slot<ZoneId>()
   val zoneIdNowFunction = getZoneIdNowFunction(klass)
   if (zoneIdNowFunction != null) {
@@ -55,7 +66,7 @@ internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
           OffsetDateTime.ofInstant((value as OffsetDateTime).toInstant(), zoneId)
         LocalDateTime::class.java -> {
           val offset = Clock.systemDefaultZone().zone.rules.getOffset(value as LocalDateTime)
-          LocalDateTime.ofInstant( (value as LocalDateTime).toInstant(offset), zoneId)
+          LocalDateTime.ofInstant((value as LocalDateTime).toInstant(offset), zoneId)
         }
         else -> value
       }
