@@ -1,40 +1,9 @@
 package com.sksamuel.kotlintest.matchers.doubles
 
-import io.kotlintest.matchers.doubles.beGreaterThan
-import io.kotlintest.matchers.doubles.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.doubles.beLessThan
-import io.kotlintest.matchers.doubles.beLessThanOrEqualTo
-import io.kotlintest.matchers.doubles.between
-import io.kotlintest.matchers.doubles.exactly
-import io.kotlintest.matchers.doubles.gt
-import io.kotlintest.matchers.doubles.gte
-import io.kotlintest.matchers.doubles.lt
-import io.kotlintest.matchers.doubles.lte
-import io.kotlintest.matchers.doubles.negative
-import io.kotlintest.matchers.doubles.positive
-import io.kotlintest.matchers.doubles.shouldBeBetween
-import io.kotlintest.matchers.doubles.shouldBeExactly
-import io.kotlintest.matchers.doubles.shouldBeGreaterThan
-import io.kotlintest.matchers.doubles.shouldBeGreaterThanOrEqual
-import io.kotlintest.matchers.doubles.shouldBeLessThan
-import io.kotlintest.matchers.doubles.shouldBeLessThanOrEqual
-import io.kotlintest.matchers.doubles.shouldBeNegative
-import io.kotlintest.matchers.doubles.shouldBePositive
-import io.kotlintest.matchers.doubles.shouldNotBeBetween
-import io.kotlintest.matchers.doubles.shouldNotBeExactly
-import io.kotlintest.matchers.doubles.shouldNotBeGreaterThan
-import io.kotlintest.matchers.doubles.shouldNotBeGreaterThanOrEqual
-import io.kotlintest.matchers.doubles.shouldNotBeLessThan
-import io.kotlintest.matchers.doubles.shouldNotBeLessThanOrEqual
-import io.kotlintest.matchers.doubles.shouldNotBeNegative
-import io.kotlintest.matchers.doubles.shouldNotBePositive
+import io.kotlintest.*
+import io.kotlintest.matchers.doubles.*
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import kotlin.Double.Companion.MAX_VALUE
 import kotlin.Double.Companion.MIN_VALUE
@@ -772,8 +741,97 @@ class DoubleMatchersTest : FreeSpec() {
         }
       }
     }
+
+    "NaN matcher" - {
+      "Every numeric double" - {
+        "Should not be NaN" {
+          assertAll(numericDoubles) {
+            it.shouldNotMatchNaN()
+          }
+        }
+      }
+
+      "The non-numeric double" - {
+        "NaN" - {
+          "Should match NaN" {
+            NaN.shouldMatchNaN()
+          }
+        }
+
+        "Positive Infinity" - {
+          "Should not match NaN" {
+            POSITIVE_INFINITY.shouldNotMatchNaN()
+          }
+        }
+
+        "Negative Infinity" - {
+          "Should not match NaN" {
+            NEGATIVE_INFINITY.shouldNotMatchNaN()
+          }
+        }
+      }
+    }
+
+    "Positive Infinity matcher" - {
+      "Any numeric double" - {
+        "Should not match positive infinity" {
+          assertAll(numericDoubles) {
+            it.shouldNotMatchPositiveInfinity()
+          }
+        }
+      }
+
+      "The non-numeric double" - {
+        "Positive Infinity" - {
+          "Should match positive infinity" {
+            POSITIVE_INFINITY.shouldMatchPositiveInfinity()
+          }
+        }
+
+        "Negative Infinity" - {
+          "Should not match positive infinity" {
+            NEGATIVE_INFINITY.shouldNotMatchPositiveInfinity()
+          }
+        }
+
+        "NaN" - {
+          "Should not match positive infinity" {
+            NaN.shouldNotMatchPositiveInfinity()
+          }
+        }
+      }
+    }
+
     
-    
+    "Negative Infinity matcher" - {
+      "Any numeric double" - {
+        "Should not match negative infinity" {
+          assertAll(numericDoubles) {
+            it.shouldNotMatchNegativeInfinity()
+          }
+        }
+      }
+
+      "The non-numeric double" - {
+        "Negative Infinity" - {
+          "Should match negative infinity" {
+            NEGATIVE_INFINITY.shouldMatchNegativeInfinity()
+          }
+        }
+
+        "Positive Infinity" - {
+          "Should not match negative infinity" {
+            POSITIVE_INFINITY.shouldNotMatchNegativeInfinity()
+          }
+        }
+
+        "NaN" - {
+          "Should not match negative infinity" {
+            NaN.shouldNotMatchNegativeInfinity()
+          }
+        }
+      }
+    }
   }
   
   
@@ -1057,11 +1115,90 @@ class DoubleMatchersTest : FreeSpec() {
     
     this shouldThrowExceptionOnGreaterThanOrEqual (x)
   }
-  
+
   private infix fun Double.shouldThrowExceptionOnGreaterThanOrEqual(x: Double) {
     shouldThrowAssertionError("$this should be >= $x",
                               { this should beGreaterThanOrEqualTo(x) },
                               { this shouldBe gte(x) },
                               { this shouldBeGreaterThanOrEqual x })
+  }
+
+  private fun Double.shouldMatchNaN() {
+    this should beNaN()
+    this.shouldBeNaN()
+
+    this.shouldThrowExceptionOnNotBeNaN()
+  }
+
+  private fun Double.shouldThrowExceptionOnNotBeNaN() {
+    shouldThrowAssertionError("$this should not be NaN",
+                              { this.shouldNotBeNaN() },
+                              { this shouldNot beNaN() })
+  }
+
+  private fun Double.shouldNotMatchNaN() {
+    this shouldNot beNaN()
+    this.shouldNotBeNaN()
+
+    this.shouldThrowExceptionOnBeNaN()
+  }
+
+  private fun Double.shouldThrowExceptionOnBeNaN() {
+    shouldThrowAssertionError("$this should be NaN",
+                              { this.shouldBeNaN() },
+                              { this should beNaN() })
+  }
+
+  private fun Double.shouldMatchPositiveInfinity() {
+    this should bePositiveInfinity()
+    this.shouldBePositiveInfinity()
+
+    this.shouldThrowExceptionOnNotBePositiveInfinity()
+  }
+
+  private fun Double.shouldThrowExceptionOnNotBePositiveInfinity() {
+    shouldThrowAssertionError("$this should not be POSITIVE_INFINITY",
+                              { this shouldNot bePositiveInfinity() },
+                              { this.shouldNotBePositiveInfinity() })
+  }
+
+  private fun Double.shouldNotMatchPositiveInfinity() {
+    this shouldNot bePositiveInfinity()
+    this.shouldNotBePositiveInfinity()
+
+    this.shouldThrowExceptionOnBePositiveInfinity()
+  }
+
+  private fun Double.shouldThrowExceptionOnBePositiveInfinity() {
+    shouldThrowAssertionError("$this should be POSITIVE_INFINITY",
+                              { this should bePositiveInfinity() },
+                              { this.shouldBePositiveInfinity() })
+  }
+
+
+  private fun Double.shouldMatchNegativeInfinity() {
+    this should beNegativeInfinity()
+    this.shouldBeNegativeInfinity()
+
+    this.shouldThrowExceptionOnNotBeNegativeInfinity()
+  }
+
+  private fun Double.shouldThrowExceptionOnNotBeNegativeInfinity() {
+    shouldThrowAssertionError("$this should not be NEGATIVE_INFINITY",
+            { this shouldNot beNegativeInfinity() },
+            { this.shouldNotBeNegativeInfinity() })
+  }
+
+  private fun Double.shouldNotMatchNegativeInfinity() {
+    this shouldNot beNegativeInfinity()
+    this.shouldNotBeNegativeInfinity()
+
+    this.shouldThrowExceptionOnBeNegativeInfinity()
+  }
+
+  private fun Double.shouldThrowExceptionOnBeNegativeInfinity() {
+    shouldThrowAssertionError("$this should be NEGATIVE_INFINITY",
+            { this should beNegativeInfinity() },
+            { this.shouldBeNegativeInfinity() })
   }
 }
