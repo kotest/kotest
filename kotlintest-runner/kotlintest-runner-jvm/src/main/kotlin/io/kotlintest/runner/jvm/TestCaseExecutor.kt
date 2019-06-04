@@ -191,6 +191,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private fun buildTestResult(error: Throwable?, metadata: Map<String, Any?>): TestResult = when (error) {
     null -> TestResult(TestStatus.Success, null, null, metadata)
     is AssertionError -> TestResult(TestStatus.Failure, error, null, metadata)
+    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, metadata)
     else -> TestResult(TestStatus.Error, error, null, metadata)
   }
 
