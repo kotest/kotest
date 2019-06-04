@@ -787,6 +787,22 @@ class BangExample : StringSpec({
 })
 ```
 
+### SkipTestException
+Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, KotlinTest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
+
+```kotlin
+class SkipTestExceptionExample : StringSpec({
+   
+  "Test should be skipped" {
+    if(isLocalEnvironment()) {
+      throw SkipTestException("Cannot run this test in local environment.")
+    }
+  }
+
+})
+```
+
+`SkipTestException` is an open class, so you may extend it and customize it if you need it.
 
 
 Grouping Tests with Tags
