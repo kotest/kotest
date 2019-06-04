@@ -1,11 +1,6 @@
 package io.kotlintest.runner.console
 
-import io.kotlintest.Description
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.TestStatus
-import io.kotlintest.TestType
+import io.kotlintest.*
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
@@ -97,6 +92,13 @@ class TeamCityConsoleWriter : ConsoleWriter {
         }
         println(msg)
       }
+    }
+  }
+
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    if(result.status == TestStatus.Error || result.status == TestStatus.Failure) {
+      errors = true
+      insertDummyFailure(testCase.description, result.error)
     }
   }
 }

@@ -3,18 +3,13 @@ package com.sksamuel.kotlintest
 import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
-import io.kotlintest.Description
-import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
-import io.kotlintest.TestStatus
-import io.kotlintest.TestType
-import io.kotlintest.milliseconds
+import io.kotlintest.*
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
+import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.FunSpec
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.GlobalScope
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.Executors
@@ -307,6 +302,52 @@ class TestCaseExecutorTest : FunSpec() {
 
       then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Failure })
     }
+
+    test("test with failure at beforeTest should complete with TestStatus.Failure after starting the test") {
+
+      val listenerExecutor = Executors.newSingleThreadExecutor()
+      val listener = mockk<TestEngineListener>(relaxed = true)
+      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+
+      val testCase = TestCase.test(Description.spec("wibble"), object : FreeSpec() {
+        override fun beforeTest(testCase: TestCase) {
+          throw RuntimeException("Failure!")
+        }
+      }) {
+        "this" shouldBe "this"
+      }
+
+      val context = object : TestContext(GlobalScope.coroutineContext) {
+        override suspend fun registerTestCase(testCase: TestCase) {}
+        override fun description(): Description = Description.spec("wibble")
+      }
+      executor.execute(testCase, context)
+
+      verify { listener.invokingTestCase(match { it.description == Description.spec("wibble") }, 1) }
+      verify { listener.exitTestCase(match { it.description == Description.spec("wibble") }, match { it.status == TestStatus.Error }) }
+    }
+
+    test("test with failure at afterTest should complete with TestStatus.Failure") {
+
+      val listenerExecutor = Executors.newSingleThreadExecutor()
+      val listener = mock<TestEngineListener> {}
+      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+
+      val testCase = TestCase.test(Description.spec("wibble"), object : FreeSpec() {
+        override fun afterTest(testCase: TestCase, result: TestResult) {
+          throw RuntimeException("Failure!")
+        }
+      }) {
+        "this" shouldBe "this"
+      }
+
+      val context = object : TestContext(GlobalScope.coroutineContext) {
+        override suspend fun registerTestCase(testCase: TestCase) {}
+        override fun description(): Description = Description.spec("wibble")
+      }
+      executor.execute(testCase, context)
+
+      then(listener).should().exitTestCase(argThat { description == Description.spec("wibble") }, argThat { status == TestStatus.Error })
+    }
   }
 }
-
