@@ -8,25 +8,44 @@ import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
-fun Validated<Any, Any>.shouldBeValid() = this should beValid()
-fun Validated<Any, Any>.shouldNotBeValid() = this shouldNot beValid()
+fun Validated<*, *>.shouldBeValid() = this should beValid()
+fun Validated<*, *>.shouldNotBeValid() = this shouldNot beValid()
 
-fun <T> Validated<Any, T>.shouldBeValid(value: T) = this should beValid(value)
-fun <T> Validated<Any, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
+fun <T> Validated<*, T>.shouldBeValid(value: T) = this should beValid(value)
+fun <T> Validated<*, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
 
-fun <A> beValid() = object : Matcher<Validated<Any, A>> {
-  override fun test(value: Validated<Any, A>): Result =
+fun <T> Validated<*, T>.shouldBeValid(fn: (Valid<T>) -> Unit) {
+  this.shouldBeValid()
+  fn(this as Valid<T>)
+}
+
+fun <A> beValid() = object : Matcher<Validated<*, A>> {
+  override fun test(value: Validated<*, A>): Result =
       Result(value is Valid, "$value should be Valid", "$value should not be Valid")
 }
 
-fun <A> beValid(a: A) = object : Matcher<Validated<Any, A>> {
-  override fun test(value: Validated<Any, A>): Result =
+fun <A> beValid(a: A) = object : Matcher<Validated<*, A>> {
+  override fun test(value: Validated<*, A>): Result =
       Result(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
 }
 
-fun Validated<Any, Any>.shouldBeInvalid() = this should beInvalid()
-fun Validated<Any, Any>.shouldNotBeInvalid() = this shouldNot beInvalid()
-fun <A> beInvalid() = object : Matcher<Validated<Any, A>> {
-  override fun test(value: Validated<Any, A>): Result =
+fun Validated<*, *>.shouldBeInvalid() = this should beInvalid()
+fun Validated<*, *>.shouldNotBeInvalid() = this shouldNot beInvalid()
+
+fun <T> Validated<*, T>.shouldBeInvalid(value: T) = this should beInvalid(value)
+fun <T> Validated<*, T>.shouldNotBeInvalid(value: T) = this shouldNot beInvalid(value)
+
+fun <T> Validated<T, *>.shouldBeInvalid(fn: (Invalid<T>) -> Unit) {
+  this.shouldBeInvalid()
+  fn(this as Invalid<T>)
+}
+
+fun <A> beInvalid() = object : Matcher<Validated<*, A>> {
+  override fun test(value: Validated<*, A>): Result =
       Result(value is Invalid, "$value should be Invalid", "$value should not be Invalid")
+}
+
+fun <A> beInvalid(a: A) = object : Matcher<Validated<*, A>> {
+  override fun test(value: Validated<*, A>): Result =
+      Result(value == Invalid(a), "$value should be Invalid(a=$a)", "$value should not be Invalid(a=$a)")
 }
