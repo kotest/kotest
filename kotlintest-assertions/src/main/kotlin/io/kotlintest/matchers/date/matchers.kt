@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZonedDateTime
+import java.time.temporal.Temporal
 import java.time.temporal.TemporalAmount
 
 /**
@@ -2183,9 +2184,43 @@ fun OffsetDateTime.shouldNotBeBetween(a: OffsetDateTime, b: OffsetDateTime) = th
  * @see OffsetDateTime.shouldBeBetween
  * @see OffsetDateTime.shouldNotBeBetween
  */
-fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result {
-    val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
-  }
-}
+fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> =
+    object : Matcher<OffsetDateTime> {
+        override fun test(value: OffsetDateTime): Result {
+            val passed = value.isAfter(a) && value.isBefore(b)
+            return Result(
+                passed,
+                "$value should be after $a and before $b",
+                "$value should not be be after $a and before $b"
+            )
+        }
+    }
+
+/**
+ * Matcher that checks if the Temporal is today.
+ *
+ * It does this by checking it against LocalDate.now(), so if you are not using constant now listeners,
+ * using this might fail if test run exactly on a date change.
+ *
+ * ```
+ *     val date = LocalDateTime.now()
+ *
+ *     date.shouldBeToday() // Assertion passes
+ *
+ *
+ *     val date = LocalDate.of(2018,1,1)
+ *
+ *     date.shouldBeToday() // Assertion fails
+ * ```
+ */
+inline fun <reified Time : Temporal> Time.shouldBeToday() =
+    this should object : Matcher<Time> {
+        override fun test(value: Time): Result {
+            val passed = LocalDate.from(value) == LocalDate.now()
+            return Result(
+                passed,
+                "$value should be today",
+                "$value should not be today"
+            )
+        }
+    }

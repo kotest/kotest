@@ -7,32 +7,37 @@ import io.kotlintest.matchers.date.haveSameMonth
 import io.kotlintest.matchers.date.haveSameYear
 import io.kotlintest.matchers.date.shouldBeAfter
 import io.kotlintest.matchers.date.shouldBeBefore
+import io.kotlintest.matchers.date.shouldBeBetween
+import io.kotlintest.matchers.date.shouldBeToday
 import io.kotlintest.matchers.date.shouldBeWithin
 import io.kotlintest.matchers.date.shouldHaveSameDayAs
 import io.kotlintest.matchers.date.shouldHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldHaveSameYearAs
-import io.kotlintest.matchers.date.shouldBeBetween
 import io.kotlintest.matchers.date.shouldNotBeAfter
 import io.kotlintest.matchers.date.shouldNotBeBefore
+import io.kotlintest.matchers.date.shouldNotBeBetween
 import io.kotlintest.matchers.date.shouldNotBeWithin
 import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
 import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
 import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
-import io.kotlintest.matchers.date.shouldNotBeBetween
 import io.kotlintest.matchers.date.within
 import io.kotlintest.should
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldFail
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.Month
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.chrono.JapaneseDate
+import java.time.chrono.JapaneseEra
 
 class DateMatchersTest : StringSpec() {
   init {
@@ -260,6 +265,46 @@ class DateMatchersTest : StringSpec() {
     "OffsetDateTime shouldBe between" {
       OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldBeBetween(OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
       OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeBetween(OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
+    }
+
+    "LocalDate.shouldBeToday() should match today" {
+      LocalDate.now().shouldBeToday()
+    }
+
+    "LocalDateTime.shouldBeToday() should match today" {
+      LocalDateTime.now().shouldBeToday()
+    }
+
+    "JapaneseDate.now().shouldBeToday() should match today" {
+      JapaneseDate.now().shouldBeToday()
+    }
+
+    "LocalDate.shouldBeToday() should not match the past" {
+      shouldFail {
+        LocalDate.of(2002, Month.APRIL, 1).shouldBeToday()
+      }
+    }
+
+    "LocalDateTime.shouldBeToday() should not match the past" {
+      shouldFail {
+        LocalDateTime.of(2002, Month.APRIL, 1, 5, 2).shouldBeToday()
+      }
+      shouldFail {
+        LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withDayOfMonth(
+          LocalDateTime.now().dayOfMonth - 1
+        ).shouldBeToday()
+      }
+      shouldFail {
+        LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withDayOfMonth(
+          LocalDateTime.now().dayOfMonth + 1
+        ).shouldBeToday()
+      }
+    }
+
+    "JapaneseDate.shouldBeToday() should not match the past" {
+      shouldFail {
+        JapaneseDate.of(JapaneseEra.SHOWA,3, 2, 5).shouldBeToday()
+      }
     }
   }
 }
