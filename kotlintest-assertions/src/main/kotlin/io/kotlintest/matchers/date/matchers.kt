@@ -2184,17 +2184,12 @@ fun OffsetDateTime.shouldNotBeBetween(a: OffsetDateTime, b: OffsetDateTime) = th
  * @see OffsetDateTime.shouldBeBetween
  * @see OffsetDateTime.shouldNotBeBetween
  */
-fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> =
-    object : Matcher<OffsetDateTime> {
-        override fun test(value: OffsetDateTime): Result {
-            val passed = value.isAfter(a) && value.isBefore(b)
-            return Result(
-                passed,
-                "$value should be after $a and before $b",
-                "$value should not be be after $a and before $b"
-            )
-        }
+fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
+    override fun test(value: OffsetDateTime): Result {
+        val passed = value.isAfter(a) && value.isBefore(b)
+        return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
     }
+}
 
 /**
  * Matcher that checks if the Temporal is today.
