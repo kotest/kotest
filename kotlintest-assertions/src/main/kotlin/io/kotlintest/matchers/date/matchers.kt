@@ -11,7 +11,6 @@ import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZonedDateTime
-import java.time.temporal.Temporal
 import java.time.temporal.TemporalAmount
 
 /**
@@ -2192,7 +2191,7 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
 }
 
 /**
- * Matcher that checks if the Temporal is today.
+ * Matcher that checks if a LocalDateTime has a Date component of today
  *
  * It does this by checking it against LocalDate.now(), so if you are not using constant now listeners,
  * using this might fail if test run exactly on a date change.
@@ -2200,22 +2199,85 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
  * ```
  *     val date = LocalDateTime.now()
  *
- *     date.shouldBeToday() // Assertion passes
+ *     date should beInToday() // Assertion passes
+ *
+ *
+ *     val date = LocalDateTime.of(2018, Month.APRIL, 1, 3, 5)
+ *
+ *     date should beInToday() // Assertion fails
+ * ```
+ */
+fun beInToday() = object : Matcher<LocalDateTime> {
+  override fun test(value: LocalDateTime): Result {
+    val passed = value.toLocalDate() == LocalDate.now()
+    return Result(
+      passed,
+      "$value should be today",
+      "$value should not be today"
+    )
+  }
+}
+
+/**
+ * Matcher that checks if a LocalDate is today
+ *
+ * It does this by checking it against LocalDate.now(), so if you are not using constant now listeners,
+ * using this might fail if test run exactly on a date change.
+ *
+ * ```
+ *     val date = LocalDate.now()
+ *
+ *     date should beToday() // Assertion passes
  *
  *
  *     val date = LocalDate.of(2018,1,1)
  *
- *     date.shouldBeToday() // Assertion fails
+ *     date should beToday() // Assertion fails
  * ```
  */
-inline fun <reified Time : Temporal> Time.shouldBeToday() =
-  this should object : Matcher<Time> {
-    override fun test(value: Time): Result {
-      val passed = LocalDate.from(value) == LocalDate.now()
-      return Result(
-        passed,
-        "$value should be today",
-        "$value should not be today"
-      )
-    }
+fun beToday() = object : Matcher<LocalDate> {
+  override fun test(value: LocalDate): Result {
+    val passed = value == LocalDate.now()
+    return Result(
+      passed,
+      "$value should be today",
+      "$value should not be today"
+    )
   }
+}
+
+/**
+ * Asserts that the LocalDateTime has a date component of today
+ *
+ * ```
+ *      LocalDateTime.now().shouldBeToday() // Assertion passes
+ * ```
+ */
+fun LocalDateTime.shouldBeToday() = this should beInToday()
+
+/**
+ * Asserts that the LocalDate is today
+ *
+ * ```
+ *      LocalDate.now().shouldBeToday() // Assertion passes
+ * ```
+ */
+fun LocalDate.shouldBeToday() = this should beToday()
+
+/**
+ * Asserts that the LocalDateTime does not have a date component of today
+ *
+ * ```
+ *      LocalDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
+ * ```
+ */
+fun LocalDateTime.shouldNotBeToday() = this shouldNot beInToday()
+
+/**
+ * Asserts that the LocalDate is not today
+ *
+ * ```
+ *      LocalDate.of(2009, Month.APRIL, 2).shouldNotBeToday() // Assertion passes
+ * ```
+ */
+fun LocalDate.shouldNotBeToday() = this shouldNot beToday()

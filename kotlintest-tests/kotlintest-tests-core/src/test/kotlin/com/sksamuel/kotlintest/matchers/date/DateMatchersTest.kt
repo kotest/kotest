@@ -16,6 +16,7 @@ import io.kotlintest.matchers.date.shouldHaveSameYearAs
 import io.kotlintest.matchers.date.shouldNotBeAfter
 import io.kotlintest.matchers.date.shouldNotBeBefore
 import io.kotlintest.matchers.date.shouldNotBeBetween
+import io.kotlintest.matchers.date.shouldNotBeToday
 import io.kotlintest.matchers.date.shouldNotBeWithin
 import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
 import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
@@ -36,8 +37,6 @@ import java.time.Period
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.time.chrono.JapaneseDate
-import java.time.chrono.JapaneseEra
 
 class DateMatchersTest : StringSpec() {
   init {
@@ -275,10 +274,6 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.now().shouldBeToday()
     }
 
-    "JapaneseDate.now().shouldBeToday() should match today" {
-      JapaneseDate.now().shouldBeToday()
-    }
-
     "LocalDate.shouldBeToday() should not match the past" {
       shouldFail {
         LocalDate.of(2002, Month.APRIL, 1).shouldBeToday()
@@ -301,9 +296,17 @@ class DateMatchersTest : StringSpec() {
       }
     }
 
-    "JapaneseDate.shouldBeToday() should not match the past" {
+    "LocalDateTime.shouldNotBeToday()" {
+      LocalDateTime.of(2002, Month.APRIL, 1, 5, 2).shouldNotBeToday()
       shouldFail {
-        JapaneseDate.of(JapaneseEra.SHOWA,3, 2, 5).shouldBeToday()
+        LocalDateTime.now().shouldNotBeToday()
+      }
+    }
+
+    "LocalDate.shouldNotBeToday()" {
+      LocalDate.of(2002, Month.APRIL, 2).shouldNotBeToday()
+      shouldFail {
+        LocalDateTime.now().shouldNotBeToday()
       }
     }
   }
