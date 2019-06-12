@@ -10,8 +10,8 @@ dependencies {
     testCompile project(':kotlintest-core')
     testCompile project(':kotlintest-assertions')
     testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
-    testCompile 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
-    testCompile 'org.jdom:jdom2:2.0.6'
+    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+    testImplementation 'org.jdom:jdom2:2.0.6'
 }
 
 test {
