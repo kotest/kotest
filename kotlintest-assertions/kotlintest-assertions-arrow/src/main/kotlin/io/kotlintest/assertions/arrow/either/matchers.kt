@@ -15,7 +15,7 @@ fun <T> Either<T, Any?>.shouldBeLeft() = this should beLeft()
 fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
 fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
 
-fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
+inline fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
   this should beRight()
   fn((this as Either.Right<B>).b)
 }
@@ -38,7 +38,7 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
   }
 }
 
-fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
+inline fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
   this should beLeft()
   fn((this as Either.Left<A>).a)
 }
