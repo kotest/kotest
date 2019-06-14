@@ -15,6 +15,11 @@ fun <T> Either<T, Any?>.shouldBeLeft() = this should beLeft()
 fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
 fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
 
+fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
+  this should beRight()
+  fn((this as Either.Right<B>).b)
+}
+
 fun <B> Either<Any?, B>.shouldBeRight(b: B) = this should beRight(b)
 fun <B> Either<Any?, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
 fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
@@ -31,6 +36,11 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
       }
     }
   }
+}
+
+fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
+  this should beRight()
+  fn((this as Either.Left<A>).a)
 }
 
 fun <A> Either<A, Any?>.shouldBeLeft(a: A) = this should beLeft(a)
@@ -64,7 +74,9 @@ inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any?, Any?>> {
         if (valueA is A)
           Result(true, "Either should be Left<${A::class.qualifiedName}>", "Either should not be Left")
         else
-          Result(false, "Either should be Left<${A::class.qualifiedName}> but was Left<${if (valueA == null) "Null" else valueA::class.qualifiedName}>", "Either should not be Left")
+          Result(false,
+              "Either should be Left<${A::class.qualifiedName}> but was Left<${if (valueA == null) "Null" else valueA::class.qualifiedName}>",
+              "Either should not be Left")
       }
     }
   }
