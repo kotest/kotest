@@ -39,7 +39,7 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
 }
 
 fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
-  this should beRight()
+  this should beLeft()
   fn((this as Either.Left<A>).a)
 }
 
