@@ -23,6 +23,16 @@ class EitherMatchersTest : WordSpec() {
       }
     }
 
+    "Either should beRight(fn)" should {
+      "test that the either is of type right" {
+        data class Person(val name: String, val location: String)
+        Either.right(Person("sam", "chicago")).shouldBeRight {
+          it.name shouldBe "sam"
+          it.location shouldBe "chicago"
+        }
+      }
+    }
+
     "Either should beRight(value)" should {
       "test that an either is a right with the given value" {
 
@@ -46,6 +56,16 @@ class EitherMatchersTest : WordSpec() {
       "test that the either is of type left" {
         Either.left("boo").shouldBeLeft()
         Either.right("boo").shouldNotBeLeft()
+      }
+    }
+
+    "Either should beLeft(fn)" should {
+      "test that the either is of type right" {
+        data class Person(val name: String, val location: String)
+        Either.left(Person("sam", "chicago")).shouldBeLeft {
+          it.name shouldBe "sam"
+          it.location shouldBe "chicago"
+        }
       }
     }
 
