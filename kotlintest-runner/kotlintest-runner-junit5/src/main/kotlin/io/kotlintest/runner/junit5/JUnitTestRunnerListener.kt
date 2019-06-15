@@ -84,12 +84,12 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   private val results = HashSet<ResultState>()
 
   override fun engineStarted(classes: List<KClass<out Spec>>) {
-    logger.debug("Engine started; classes=[$classes]")
+    logger.trace("Engine started; classes=[$classes]")
     listener.executionStarted(root)
   }
 
   override fun engineFinished(t: Throwable?) {
-    logger.debug("Engine finished; throwable=[$t]")
+    logger.trace("Engine finished; throwable=[$t]")
 
     val failures = results
         .filter { it.result.status == TestStatus.Failure || it.result.status == TestStatus.Error }
@@ -112,7 +112,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     val dir = Paths.get(".kotlintest")
     dir.toFile().mkdirs()
     val path = dir.resolve("spec_failures").toAbsolutePath()
-    logger.debug("Writing report to $path")
+    logger.trace("Writing report to $path")
     val content = failures.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
     Files.write(path, content.toByteArray())
   }

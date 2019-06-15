@@ -9,6 +9,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicReference
 
@@ -38,6 +39,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
 
+    val start = System.currentTimeMillis()
     try {
 
       // invoke the "before" callbacks here on the main executor
@@ -50,7 +52,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
           Project.testCaseExtensions()
 
       // get active status here in case calling this function is expensive
-      runExtensions(testCase, context, extensions) { result ->
+      runExtensions(testCase, context, start, extensions) { result ->
         // invoke the "after" callbacks here on the main executor
         context.launch(executor.asCoroutineDispatcher()) {
           after(testCase, result)
@@ -60,36 +62,37 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     } catch (t: Throwable) {
       t.printStackTrace()
-      listener.exitTestCase(testCase, TestResult.error(t))
+      listener.exitTestCase(testCase, TestResult.error(t, Duration.ofMillis(System.currentTimeMillis() - start)))
     }
   }
 
   private suspend fun runExtensions(testCase: TestCase,
                                     context: TestContext,
+                                    start: Long,
                                     remaining: List<TestCaseExtension>,
                                     onComplete: suspend (TestResult) -> Unit) {
     when {
       remaining.isEmpty() -> {
-        val result = executeTestIfActive(testCase, context)
+        val result = executeTestIfActive(testCase, context, start)
         onComplete(result)
       }
       else -> {
         remaining.first().intercept(
             testCase,
-            { test, callback -> runExtensions(test, context, remaining.drop(1), callback) },
+            { test, callback -> runExtensions(test, context, start, remaining.drop(1), callback) },
             { onComplete(it) }
         )
       }
     }
   }
 
-  private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext): TestResult {
+  private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext, start: Long): TestResult {
     val active = isActive(testCase)
-    return if (active) executeTest(testCase, context) else TestResult.Ignored
+    return if (active) executeTest(testCase, context, start) else TestResult.Ignored
   }
 
   // exectues the test case or if the test is not active then returns a ignored test result
-  private suspend fun executeTest(testCase: TestCase, context: TestContext): TestResult {
+  private suspend fun executeTest(testCase: TestCase, context: TestContext, start: Long): TestResult {
     listener.beforeTestCaseExecution(testCase)
 
     // if we have more than one requested thread, we run the tests inside a clean executor;
@@ -151,7 +154,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       executor.shutdown()
     }
 
-    val result = buildTestResult(error.get(), context.metaData())
+    val result = buildTestResult(error.get(), context.metaData(), Duration.ofMillis(System.currentTimeMillis() - start))
 
     listener.afterTestCaseExecution(testCase, result)
     return result
@@ -188,11 +191,13 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     listener.exitTestCase(testCase, result)
   }
 
-  private fun buildTestResult(error: Throwable?, metadata: Map<String, Any?>): TestResult = when (error) {
-    null -> TestResult(TestStatus.Success, null, null, metadata)
-    is AssertionError -> TestResult(TestStatus.Failure, error, null, metadata)
-    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, metadata)
-    else -> TestResult(TestStatus.Error, error, null, metadata)
+  private fun buildTestResult(error: Throwable?,
+                              metadata: Map<String, Any?>,
+                              duration: Duration): TestResult = when (error) {
+    null -> TestResult(TestStatus.Success, null, null, duration, metadata)
+    is AssertionError -> TestResult(TestStatus.Failure, error, null, duration, metadata)
+    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, duration, metadata)
+    else -> TestResult(TestStatus.Error, error, null, duration, metadata)
   }
 
 }

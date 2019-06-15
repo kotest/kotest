@@ -96,7 +96,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
     if (discovered.contains(testCase.description))
       throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
     discovered.add(testCase.description)
-    logger.debug("Enqueuing test ${testCase.description.fullName()}")
+    logger.trace("Enqueuing test ${testCase.description.fullName()}")
     queue.add(Enqueued(testCase, topLevel, count = counter.getAndIncrement()))
   }
 
@@ -113,7 +113,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
    * can be registered back with the stack for execution later.
    */
   private fun execute(testCase: TestCase) {
-    logger.debug("Executing $testCase")
+    logger.trace("Executing $testCase")
     instantiateSpec(testCase.spec::class).let {
       when (it) {
         is Failure -> throw it.exception

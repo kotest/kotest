@@ -80,13 +80,13 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   }
 
   private fun enqueue(testCase: TestCase) {
-    logger.debug("Enqueuing test ${testCase.description.fullName()}")
+    logger.trace("Enqueuing test ${testCase.description.fullName()}")
     queue.add(Enqueued(testCase, counter.getAndIncrement()))
   }
 
   // starts executing an enqueued test case
   private fun execute(testCase: TestCase) {
-    logger.debug("Executing $testCase")
+    logger.trace("Executing $testCase")
     // we need to execute on a separate instance of the spec class
     // so we must instantiate a new spec, locate the test we're trying to run, and then run it
     instantiateSpec(testCase.spec::class).let { specOrFailure ->

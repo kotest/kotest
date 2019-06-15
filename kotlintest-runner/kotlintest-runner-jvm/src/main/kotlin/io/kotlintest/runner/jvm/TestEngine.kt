@@ -41,14 +41,14 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   }
 
   private fun submitAll() = Try {
-    logger.debug("Submitting ${classes.size} specs")
+    logger.trace("Submitting ${classes.size} specs")
 
     // the classes are ordered using an instance of SpecExecutionOrder before
     // being submitted in the order returned
     Project.specExecutionOrder().sort(classes).forEach { submitSpec(it) }
     executor.shutdown()
 
-    logger.debug("Waiting for spec execution to terminate")
+    logger.trace("Waiting for spec execution to terminate")
     try {
       executor.awaitTermination(1, TimeUnit.DAYS)
     } catch (t: InterruptedException) {

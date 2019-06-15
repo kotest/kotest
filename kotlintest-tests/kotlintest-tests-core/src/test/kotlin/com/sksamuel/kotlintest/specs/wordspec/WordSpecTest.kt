@@ -25,7 +25,7 @@ class WordSpecTest : WordSpec() {
           2.shouldBeGreaterThan(1)
         }
         "have a test with config".config(invocations = 2) {
-          2.shouldBeGreaterThan(1)
+          2.shouldBeGreaterThan(3)
         }
       }
 
