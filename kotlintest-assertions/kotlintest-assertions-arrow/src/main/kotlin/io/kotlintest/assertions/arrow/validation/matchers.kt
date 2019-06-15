@@ -7,9 +7,18 @@ import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
-fun Validated<*, *>.shouldBeValid() = this should beValid()
-fun Validated<*, *>.shouldNotBeValid() = this shouldNot beValid()
+@UseExperimental(ExperimentalContracts::class)
+fun Validated<*, *>.shouldBeValid() {
+  contract {
+    returns() implies (this@shouldBeValid is Valid<*>)
+  }
+  this should beValid()
+}
+
+fun <T> Validated<*, T>.shouldNotBeValid() = this shouldNot beValid()
 
 fun <T> Validated<*, T>.shouldBeValid(value: T) = this should beValid(value)
 fun <T> Validated<*, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
@@ -29,7 +38,13 @@ fun <A> beValid(a: A) = object : Matcher<Validated<*, A>> {
       Result(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
 }
 
-fun Validated<*, *>.shouldBeInvalid() = this should beInvalid()
+@UseExperimental(ExperimentalContracts::class)
+fun Validated<*, *>.shouldBeInvalid() {
+  contract {
+    returns() implies (this@shouldBeInvalid is Invalid<*>)
+  }
+  this should beInvalid()
+}
 fun Validated<*, *>.shouldNotBeInvalid() = this shouldNot beInvalid()
 
 fun <T> Validated<*, T>.shouldBeInvalid(value: T) = this should beInvalid(value)
