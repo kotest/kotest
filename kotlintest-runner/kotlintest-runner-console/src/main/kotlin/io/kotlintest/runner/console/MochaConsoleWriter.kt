@@ -133,12 +133,12 @@ class MochaConsoleWriter(private val slow: Int = 1000,
     val specDistinctCount = specs.distinct().size
 
     println()
-    println("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
-    println("Specs: completed $specDistinctCount, tests ${failed.size + passed.size + ignored.size}")
-    println("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
+    println("${margin}KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
+    println("${margin}Specs: completed $specDistinctCount, tests ${failed.size + passed.size + ignored.size}")
+    println("${margin}Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
     if (failed.isNotEmpty()) {
-      println(term.red("*** ${failed.size} TESTS FAILED ***"))
-      println("Specs with failing tests:")
+      println(term.red("$margin*** ${failed.size} TESTS FAILED ***"))
+      println("${margin}Specs with failing tests:")
       failed.map { it.key.spec() }
           .distinct()
           .sortedBy { it.name }
