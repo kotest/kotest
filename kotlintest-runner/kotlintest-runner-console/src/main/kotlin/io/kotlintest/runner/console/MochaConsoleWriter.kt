@@ -32,6 +32,7 @@ class MochaConsoleWriter(private val slow: Int = 1000,
                          private val verySlow: Int = 3000) : ConsoleWriter {
 
   private val term = TermColors(TermColors.Level.ANSI256)
+  private val margin = "  "
 
   private val tests = mutableListOf<TestCase>()
   private val results = mutableMapOf<Description, TestResult>()
@@ -58,7 +59,7 @@ class MochaConsoleWriter(private val slow: Int = 1000,
       TestType.Test -> durationMillis(result.duration)
       else -> ""
     }
-    return "${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
+    return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
   }
 
   private fun durationMillis(duration: Duration): String {
@@ -69,15 +70,20 @@ class MochaConsoleWriter(private val slow: Int = 1000,
     }
   }
 
+  private fun cause(testCase: TestCase, message: String?): String {
+    return term.brightRed("$margin\tcause: $message (${testCase.source.fileName}:${testCase.source.lineNumber})")
+  }
+
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
 
     n += 1
     val specDesc = Description.spec(klass)
 
     if (t == null) {
-      println("  $n) " + term.brightWhite(klass.qualifiedName!!))
+      println("$margin$n) " + term.brightWhite(klass.qualifiedName!!))
     } else {
       errors = true
+      print(margin)
       println(term.red(specDesc.name + " *** FAILED ***"))
       println(term.red("  \tcause: ${t.message})"))
     }
@@ -90,10 +96,12 @@ class MochaConsoleWriter(private val slow: Int = 1000,
         println(line)
         when (result.status) {
           TestStatus.Error, TestStatus.Failure -> {
-            result.error?.message?.apply {
-              println(term.brightRed(it.description.indent() + "  \tcause: $this (${it.source.fileName}:${it.source.lineNumber})"))
-            }
+            errors = true
+            println()
+            println(cause(it, result.error?.message))
+            println()
           }
+          else -> {}
         }
       }
     }
@@ -111,5 +119,32 @@ class MochaConsoleWriter(private val slow: Int = 1000,
 
   override fun exitTestCase(testCase: TestCase, result: TestResult) {
     results[testCase.description] = result
+  }
+
+  override fun engineFinished(t: Throwable?) {
+
+    val duration = Duration.ofMillis(System.currentTimeMillis() - start)
+
+    val ignored = results.filter { it.value.status == TestStatus.Ignored }
+    val failed = results.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
+    val passed = results.filter { it.value.status == TestStatus.Success }
+
+    val specs = tests.map { it.spec.description() }.distinct()
+    val specDistinctCount = specs.distinct().size
+
+    println()
+    println("KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
+    println("Specs: completed $specDistinctCount, tests ${failed.size + passed.size + ignored.size}")
+    println("Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
+    if (failed.isNotEmpty()) {
+      println(term.red("*** ${failed.size} TESTS FAILED ***"))
+      println("Specs with failing tests:")
+      failed.map { it.key.spec() }
+          .distinct()
+          .sortedBy { it.name }
+          .forEach {
+            println(term.red(" - ${it.name}"))
+          }
+    }
   }
 }

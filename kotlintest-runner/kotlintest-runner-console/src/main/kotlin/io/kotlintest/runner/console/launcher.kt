@@ -20,7 +20,10 @@ fun main(args: Array<String>) {
   val runner = KotlinTestConsoleRunner(writer)
   runner.execute(spec, test)
 
-  if (writer.hasErrors()) System.exit(-1)
+  // there could be threads in the background that will stop the launcher shutting down
+  // for example if a test keeps a thread running
+  // so we must force the exit
+  if (writer.hasErrors()) System.exit(-1) else System.exit(0)
 }
 
 // returns a console writer appropriate for the environment when none was specified
