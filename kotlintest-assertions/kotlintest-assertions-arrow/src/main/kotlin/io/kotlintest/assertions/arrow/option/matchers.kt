@@ -43,7 +43,7 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
 
 fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
   this.shouldBeSome()
-  fn((this as T))
+  fn((this.t as T))
 }
 
 fun Option<Any>.shouldBeNone() = this should beNone()
