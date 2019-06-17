@@ -93,8 +93,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
           // will add a placeholder spec so we can see the error in intellij/gradle
           // otherwise it won't appear
           { t ->
-            listener.beforeSpecClass(klass)
-            listener.afterSpecClass(klass, t)
+            listener.specInitialisationFailed(klass, t)
             error.compareAndSet(null, t)
             executor.shutdownNow()
           },
