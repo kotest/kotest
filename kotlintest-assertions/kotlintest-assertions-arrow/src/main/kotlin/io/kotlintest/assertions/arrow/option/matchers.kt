@@ -3,7 +3,6 @@ package io.kotlintest.assertions.arrow.option
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
-import arrow.data.Validated
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
@@ -40,6 +39,11 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
       }
     }
   }
+}
+
+fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
+  this.shouldBeSome()
+  fn((this as T))
 }
 
 fun Option<Any>.shouldBeNone() = this should beNone()
