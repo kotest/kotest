@@ -3,10 +3,26 @@ package io.kotlintest.assertions.arrow.option
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.data.Validated
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+
+@UseExperimental(ExperimentalContracts::class)
+fun Option<*>.shouldBeSome() {
+  contract {
+    returns() implies (this@shouldBeSome is Some<*>)
+  }
+  this should beSome()
+}
+
+fun beSome() = object : Matcher<Option<*>> {
+  override fun test(value: Option<*>): Result =
+      Result(value is Some, "$value should be Some", "$value should not be Some")
+}
 
 fun <T> Option<T>.shouldBeSome(t: T) = this should beSome(t)
 fun <T> Option<T>.shouldNotBeSome(t: T) = this shouldNot beSome(t)

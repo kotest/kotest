@@ -23,4 +23,11 @@ dependencies {
     testCompile project(":kotlintest-runner:kotlintest-runner-junit5")
 }
 
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+
 apply from: '../../publish.gradle'

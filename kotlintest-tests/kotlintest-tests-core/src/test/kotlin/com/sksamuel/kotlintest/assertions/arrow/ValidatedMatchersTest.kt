@@ -2,6 +2,8 @@ package com.sksamuel.kotlintest.assertions.arrow
 
 import arrow.data.Invalid
 import arrow.data.Valid
+import arrow.data.invalid
+import arrow.data.valid
 import io.kotlintest.assertions.arrow.validation.beInvalid
 import io.kotlintest.assertions.arrow.validation.beValid
 import io.kotlintest.assertions.arrow.validation.shouldBeInvalid
@@ -33,6 +35,12 @@ class ValidatedMatchersTest : StringSpec({
     }.message shouldBe "Invalid(e=error) should be Valid(a=error)"
   }
 
+  "Validated should use contracts to smart cast Valids" {
+    val e = "boo".valid()
+    e.shouldBeValid()
+    e.a shouldBe "boo"
+  }
+
   "Validated shouldBe Invalid" {
 
     shouldThrow<AssertionError> {
@@ -41,5 +49,11 @@ class ValidatedMatchersTest : StringSpec({
 
     Invalid("error") should beInvalid()
     Invalid("error").shouldBeInvalid()
+  }
+
+  "use contracts to smart cast Invalids" {
+    val e = "boo".invalid()
+    e.shouldBeInvalid()
+    e.e shouldBe "boo"
   }
 })
