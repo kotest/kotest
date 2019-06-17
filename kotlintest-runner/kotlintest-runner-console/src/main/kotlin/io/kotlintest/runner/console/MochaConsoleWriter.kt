@@ -28,10 +28,10 @@ object IgnoredSymbol : Symbol {
   override fun print(term: TermColors): String = term.gray("-")
 }
 
-class MochaConsoleWriter(private val slow: Int = 1000,
+class MochaConsoleWriter(private val term: TermColors,
+                         private val slow: Int = 1000,
                          private val verySlow: Int = 3000) : ConsoleWriter {
 
-  private val term = TermColors(TermColors.Level.ANSI256)
   private val margin = "  "
 
   private val tests = mutableListOf<TestCase>()
@@ -48,7 +48,7 @@ class MochaConsoleWriter(private val slow: Int = 1000,
     val name = when (result.status) {
       TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.name + " *** FAILED ***")
       TestStatus.Success -> testCase.name
-      TestStatus.Ignored -> term.gray(testCase.name)
+      TestStatus.Ignored -> term.gray(testCase.name + " ??? IGNORED ???")
     }
     val symbol = when (result.status) {
       TestStatus.Success -> SuccessSymbol

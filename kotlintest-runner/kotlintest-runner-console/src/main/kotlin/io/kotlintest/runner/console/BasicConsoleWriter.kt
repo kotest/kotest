@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 /**
  * Writes to the console.
  */
-class DefaultConsoleWriter : ConsoleWriter {
+class BasicConsoleWriter : ConsoleWriter {
 
   private var errors = false
   private val term = TermColors(TermColors.Level.ANSI256)
