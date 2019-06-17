@@ -31,6 +31,12 @@ class SynchronizedTestEngineListener(val listener: TestEngineListener) : TestEng
     }
   }
 
+  override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
+    synchronized(listener) {
+      listener.specInitialisationFailed(klass, t)
+    }
+  }
+
   override fun enterTestCase(testCase: TestCase) {
     synchronized(listener) {
       listener.enterTestCase(testCase)

@@ -28,8 +28,7 @@ class TestEngineTest : WordSpec({
       val listener = mock<TestEngineListener> {}
       val engine = TestEngine(listOf(InitErrorSpec::class), emptyList(), 1, listener)
       engine.execute()
-      then(listener).should().beforeSpecClass(argThat { jvmName == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" })
-      then(listener).should().afterSpecClass(any(), any<InvocationTargetException>())
+      then(listener).should().specInitialisationFailed(argThat { jvmName == "com.sksamuel.kotlintest.runner.jvm.InitErrorSpec" }, any<InvocationTargetException>())
       then(listener).should().engineFinished(any<InvocationTargetException>())
     }
 
