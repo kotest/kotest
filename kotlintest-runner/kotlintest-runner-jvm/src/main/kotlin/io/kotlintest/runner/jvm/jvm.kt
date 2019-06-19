@@ -11,8 +11,8 @@ fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> = Try {
 
   val nullSpec: Spec? = null
 
-  val instance = Project.constructorExtensions().fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) }
-      ?: clazz.createInstance()
+  val instance = Project.constructorExtensions()
+      .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: clazz.createInstance()
 
   // after the class is created we no longer allow new top level tests to be added
   if (instance is AbstractSpec) {
