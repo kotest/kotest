@@ -903,7 +903,7 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in
+Resources that should be closed this way must implement [`java.lang.AutoCloseable`](https://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html). Closing is performed in
 reversed order of declaration after the return of the last spec interceptor.
 
 
