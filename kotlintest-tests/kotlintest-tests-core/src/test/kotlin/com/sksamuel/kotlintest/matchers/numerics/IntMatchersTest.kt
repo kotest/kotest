@@ -128,5 +128,12 @@ class IntMatchersTest : StringSpec() {
         3 shouldBe between(a, b)
       }
     }
+
+    "shouldBeZero" {
+      0.shouldBeZero()
+      1.shouldNotBeZero()
+      Int.MIN_VALUE.shouldNotBeZero()
+      Int.MAX_VALUE.shouldNotBeZero()
+    }
   }
 }

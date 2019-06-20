@@ -7,6 +7,8 @@ import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
 import io.kotlintest.matchers.lt
 import io.kotlintest.matchers.lte
+import io.kotlintest.matchers.shouldBeExactly
+import io.kotlintest.matchers.shouldNotBeExactly
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -50,3 +52,6 @@ infix fun Int.shouldNotBeGreaterThan(x: Int) = this shouldNotBe gt(x)
 
 infix fun Int.shouldBeGreaterThanOrEqual(x: Int) = this shouldBe gte(x)
 infix fun Int.shouldNotBeGreaterThanOrEqual(x: Int) = this shouldNotBe gte(x)
+
+fun Int.shouldBeZero() = this shouldBeExactly 0
+fun Int.shouldNotBeZero() = this shouldNotBeExactly 0
