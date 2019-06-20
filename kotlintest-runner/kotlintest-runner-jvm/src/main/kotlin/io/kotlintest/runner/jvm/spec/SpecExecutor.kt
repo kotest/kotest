@@ -1,6 +1,9 @@
 package io.kotlintest.runner.jvm.spec
 
 import arrow.core.Try
+import arrow.core.getOrElse
+import arrow.core.orElse
+import arrow.core.toOption
 import io.kotlintest.*
 import io.kotlintest.internal.topLevelTests
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -75,14 +78,13 @@ class SpecExecutor(private val engineListener: TestEngineListener,
   // which is undesirable in some situations, see
   // https://github.com/kotlintest/kotlintest/issues/447
   private fun runner(spec: Spec, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
-    return when (spec.isolationMode()) {
+    val mode = spec.isolationMode().toOption().orElse { Project.isolationMode().toOption() }.getOrElse {
+      if (spec.isInstancePerTest()) IsolationMode.InstancePerTest else IsolationMode.SingleInstance
+    }
+    return when (mode) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
       IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
-      null -> when {
-        spec.isInstancePerTest() -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
-        else -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
-      }
     }
   }
 }

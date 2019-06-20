@@ -47,6 +47,11 @@ abstract class AbstractProjectConfig {
   open fun specExecutionOrder(): SpecExecutionOrder = LexicographicSpecExecutionOrder
 
   /**
+   * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
+   */
+  fun isolationMode(): IsolationMode? = null
+
+  /**
    * Override this function and return a number greater than 1 if you wish to
    * enable parallel execution of tests. The number returned is the number of
    * concurrently executing specs.

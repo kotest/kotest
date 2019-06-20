@@ -120,4 +120,5 @@ object Project {
   }
 
   fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
+  fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
 }
