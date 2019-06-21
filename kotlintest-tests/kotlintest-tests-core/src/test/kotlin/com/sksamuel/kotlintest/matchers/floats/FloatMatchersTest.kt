@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.matchers.floats
 
-import io.kotlintest.matchers.doubles.shouldNotBeLessThanOrEqual
 import io.kotlintest.matchers.floats.*
 import io.kotlintest.specs.StringSpec
 
