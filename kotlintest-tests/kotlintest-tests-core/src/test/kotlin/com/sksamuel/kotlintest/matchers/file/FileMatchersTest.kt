@@ -13,11 +13,13 @@ import io.kotlintest.matchers.file.shouldBeLarger
 import io.kotlintest.matchers.file.shouldBeRelative
 import io.kotlintest.matchers.file.shouldBeSmaller
 import io.kotlintest.matchers.file.shouldContainFile
+import io.kotlintest.matchers.file.shouldContainFileDeep
 import io.kotlintest.matchers.file.shouldExist
 import io.kotlintest.matchers.file.shouldHaveExtension
 import io.kotlintest.matchers.file.shouldNotBeADirectory
 import io.kotlintest.matchers.file.shouldNotBeAFile
 import io.kotlintest.matchers.file.shouldNotContainFile
+import io.kotlintest.matchers.file.shouldNotContainFileDeep
 import io.kotlintest.matchers.file.shouldNotExist
 import io.kotlintest.matchers.file.shouldNotHaveExtension
 import io.kotlintest.matchers.file.shouldStartWithPath
@@ -164,6 +166,29 @@ class FileMatchersTest : FunSpec() {
       shouldThrow<AssertionError> {
         dir.resolve("b").shouldBeLarger(dir.resolve("a"))
       }.message shouldBe "File ${dir.resolve("b")} (2 bytes) should be larger than ${dir.resolve("a")} (3 bytes)"
+    }
+
+    test("containsFileDeep should find file deep") {
+      val rootFileName = "super_dooper_hyper_file_root"
+      val innerFileName = "super_dooper_hyper_file_inner"
+      val nonExistentFileName = "super_dooper_hyper_non_existent_file"
+
+      val rootDir = Files.createTempDirectory("testdir")
+      val innerDir = Files.createDirectories(rootDir.resolve("innerfolder"))
+
+      Files.write(rootDir.resolve(rootFileName), byteArrayOf(1, 2, 3))
+      Files.write(innerDir.resolve(innerFileName), byteArrayOf(1, 2, 3))
+
+      rootDir.shouldContainFileDeep(rootFileName)
+      rootDir.shouldContainFileDeep(innerFileName)
+
+      shouldThrow<AssertionError> {
+        rootDir.shouldContainFileDeep(nonExistentFileName)
+      }.message shouldBe "File $nonExistentFileName should exist in $rootDir"
+
+      shouldThrow<AssertionError> {
+        rootDir.shouldNotContainFileDeep(rootFileName)
+      }.message shouldBe "File $rootFileName should not exist in $rootDir"
     }
   }
 }

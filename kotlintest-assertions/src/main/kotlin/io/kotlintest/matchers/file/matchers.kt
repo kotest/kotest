@@ -223,3 +223,13 @@ infix fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot star
 infix fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
 infix fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
 
+infix fun Path.shouldContainFileDeep(name: String) = this should containFileDeep(name)
+infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFileDeep(name)
+fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
+  private fun fileExists(dir: File): Boolean =
+      dir.list().contains(name) || dir.listFiles { file -> file.isDirectory }.any(::fileExists)
+
+  override fun test(value: Path): Result = Result(
+      fileExists(value.toFile()), "File $name should exist in $value", "File $name should not exist in $value"
+  )
+}
