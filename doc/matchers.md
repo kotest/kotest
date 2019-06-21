@@ -70,6 +70,8 @@ For the extension function style, each function has an equivalent negated versio
 | `int.shouldBeEven()` | Asserts that the integer is even. |
 | `int.shouldBeOdd()` | Asserts that the integer is odd. |
 | `int.shouldBeInRange(range)` | Asserts that the integer is included in the given range. |
+| `int.shouldBeExactly(n)` | Asserts that the integer is equal to the given value n |
+| `int.shouldBeZero()` | Asserts that the integer is zero |
 
 | Longs ||
 | -------- | ---- |
@@ -81,6 +83,8 @@ For the extension function style, each function has an equivalent negated versio
 | `long.shouldBeInRange(range)` | Asserts that the long is included in the given range. |
 | `long.shouldBeEven()` | Asserts that the long is even. |
 | `long.shouldBeOdd()` | Asserts that the long is odd. |
+| `long.shouldBeExactly(n)` | Asserts that the long is equal to the given value n |
+| `long.shouldBeZero()` | Asserts that the long is zero |
 
 | Doubles or Floats ||
 | -------- | ---- |
@@ -93,6 +97,8 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeGreaterThanOrEqual(n)` | Asserts that the double is greater than or equal to the given value n |
 | `double.shouldBePositive()` | Asserts that the double is positive |
 | `double.shouldBeNegative()` | Asserts that the double is negative |
+| `double.shouldBeExactly(n)` | Asserts that the double is equal to the given value n |
+| `double.shouldBeZero()` | Asserts that the double is zero |
 
 | Collections ||
 | -------- | ---- |
