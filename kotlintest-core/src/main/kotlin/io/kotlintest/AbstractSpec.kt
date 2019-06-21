@@ -1,7 +1,7 @@
 package io.kotlintest
 
 import org.junit.platform.commons.annotation.Testable
-import java.io.Closeable
+import java.lang.AutoCloseable
 import java.util.*
 
 @Testable
@@ -26,12 +26,12 @@ abstract class AbstractSpec : Spec {
     rootTestCases.add(createTestCase(name, test, config, type))
   }
 
-  private val closeablesInReverseOrder = LinkedList<Closeable>()
+  private val closeablesInReverseOrder = LinkedList<AutoCloseable>()
 
   /**
    * Registers a field for auto closing after all tests have run.
    */
-  protected fun <T : Closeable> autoClose(closeable: T): T {
+  protected fun <T : AutoCloseable> autoClose(closeable: T): T {
     closeablesInReverseOrder.addFirst(closeable)
     return closeable
   }
