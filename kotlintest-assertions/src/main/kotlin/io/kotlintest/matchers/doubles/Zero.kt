@@ -13,7 +13,7 @@ package io.kotlintest.matchers.doubles
  * -0.1 shouldBeZero()   // Assertion fails
  * ```
  */
-fun Double.shouldBeZero() = this shouldBeExactly(0.0)
+fun Double.shouldBeZero() = this shouldBeExactly 0.0
 
 /**
  * Asserts that this [Double] is not zero
@@ -28,4 +28,4 @@ fun Double.shouldBeZero() = this shouldBeExactly(0.0)
  * 0.0 shouldNotBeZero()   // Assertion fails
  * ```
  */
-fun Double.shouldNotBeZero() = this shouldNotBeExactly(0.0)
+fun Double.shouldNotBeZero() = this shouldNotBeExactly 0.0
