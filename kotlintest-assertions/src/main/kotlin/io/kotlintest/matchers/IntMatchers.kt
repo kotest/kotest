@@ -3,9 +3,7 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.Result
 import io.kotlintest.should
-import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
 
 fun beBetween(a: Int, b: Int) = between(a, b)
 fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
@@ -43,8 +41,6 @@ fun beInRange(range: IntRange) = object : Matcher<Int> {
       )
 }
 
-infix fun Int.shouldBeExactly(x: Int) = this shouldBe exactly(x)
-infix fun Int.shouldNotBeExactly(x: Int) = this shouldNotBe exactly(x)
 fun exactly(x: Int) = object : Matcher<Int> {
   override fun test(value: Int) = Result(
       value == x,
