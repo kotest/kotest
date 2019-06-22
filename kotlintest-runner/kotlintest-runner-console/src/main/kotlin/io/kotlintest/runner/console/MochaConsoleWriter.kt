@@ -32,7 +32,7 @@ class MochaConsoleWriter(private val term: TermColors,
                          private val slow: Int = 1000,
                          private val verySlow: Int = 3000) : ConsoleWriter {
 
-  private val margin = "  "
+  private val margin = " ".repeat(2)
 
   private val tests = mutableListOf<TestCase>()
   private val results = mutableMapOf<Description, TestResult>()
@@ -85,9 +85,9 @@ class MochaConsoleWriter(private val term: TermColors,
       errors = true
       print(margin)
       println(term.red(specDesc.name + " *** FAILED ***"))
-      println(term.red("  \tcause: ${t.message})"))
+      println(term.red("$margin\tcause: ${t.message})"))
     }
-    println(" ")
+    println()
 
     tests.filter { it.spec::class.qualifiedName == klass.qualifiedName }.forEach {
       val result = results[it.description]
@@ -106,11 +106,23 @@ class MochaConsoleWriter(private val term: TermColors,
       }
     }
 
-    println(" ")
+    println()
   }
 
   override fun engineStarted(classes: List<KClass<out Spec>>) {
     start = System.currentTimeMillis()
+  }
+
+  override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
+
+    n += 1
+    val specDesc = Description.spec(klass)
+    errors = true
+
+    print(margin)
+    println(term.red(specDesc.name + " *** FAILED ***"))
+    println(term.red("$margin\tcause: ${t.message})"))
+    println()
   }
 
   override fun enterTestCase(testCase: TestCase) {
@@ -120,6 +132,8 @@ class MochaConsoleWriter(private val term: TermColors,
   override fun exitTestCase(testCase: TestCase, result: TestResult) {
     results[testCase.description] = result
   }
+
+  private fun padNewLines(str: String, pad: String): String = str.lines().joinToString("\n") { "$pad$it" }
 
   override fun engineFinished(t: Throwable?) {
 
@@ -133,18 +147,28 @@ class MochaConsoleWriter(private val term: TermColors,
     val specDistinctCount = specs.distinct().size
 
     println()
-    println("${margin}KotlinTest completed in ${duration.seconds} seconds, ${duration.toMillis()} millis")
-    println("${margin}Specs: completed $specDistinctCount, tests ${failed.size + passed.size + ignored.size}")
-    println("${margin}Tests: passed ${passed.size}, failed ${failed.size}, ignored ${ignored.size}")
+    println(term.brightWhite("${margin}KotlinTest completed in ${duration.seconds} seconds / ${duration.toMillis()} milliseconds"))
+    println("${margin}Executed $specDistinctCount specs containing ${failed.size + passed.size + ignored.size} tests")
+    println("$margin${passed.size} passed, ${failed.size} failed, ${ignored.size} ignored")
     if (failed.isNotEmpty()) {
-      println(term.red("$margin*** ${failed.size} TESTS FAILED ***"))
-      println("${margin}Specs with failing tests:")
-      failed.map { it.key.spec() }
-          .distinct()
-          .sortedBy { it.name }
-          .forEach {
-            println(term.red(" - ${it.name}"))
+      println()
+      println(term.brightWhite("$margin----------------------------- ${failed.size} FAILURES -----------------------------"))
+      failed.forEach {
+        println()
+        println("$margin${term.brightRed(if (isWindows) "X" else "✘")} ${term.brightWhite(it.key.fullName())}")
+        println()
+        val error = it.value.error
+        if (error != null) {
+          val msg = error.message
+          val stackTrace = error.stackTrace.joinToString("\n")
+          if (msg != null) {
+            println(term.brightRed(padNewLines(msg, margin)))
+            println()
           }
+          println(margin + term.red(error.javaClass.name))
+          println(term.red(padNewLines(stackTrace, margin.repeat(2))))
+        }
+      }
     }
   }
 }

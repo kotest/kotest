@@ -43,10 +43,7 @@ interface TestEngineListener {
   /**
    * Is invoked if a [Spec] throws an exception during initialisation
    */
-  fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
-    beforeSpecClass(klass)
-    afterSpecClass(klass, t)
-  }
+  fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {}
 
   /**
    * Invoked each time a [TestCase] has been entered from a parent test.
