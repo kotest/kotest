@@ -1,29 +1,6 @@
 package com.sksamuel.kotlintest.matchers.file
 
-import io.kotlintest.matchers.file.aDirectory
-import io.kotlintest.matchers.file.aFile
-import io.kotlintest.matchers.file.beAbsolute
-import io.kotlintest.matchers.file.beRelative
-import io.kotlintest.matchers.file.exist
-import io.kotlintest.matchers.file.haveExtension
-import io.kotlintest.matchers.file.shouldBeADirectory
-import io.kotlintest.matchers.file.shouldBeAFile
-import io.kotlintest.matchers.file.shouldBeAbsolute
-import io.kotlintest.matchers.file.shouldBeLarger
-import io.kotlintest.matchers.file.shouldBeRelative
-import io.kotlintest.matchers.file.shouldBeSmaller
-import io.kotlintest.matchers.file.shouldContainFile
-import io.kotlintest.matchers.file.shouldContainFileDeep
-import io.kotlintest.matchers.file.shouldExist
-import io.kotlintest.matchers.file.shouldHaveExtension
-import io.kotlintest.matchers.file.shouldNotBeADirectory
-import io.kotlintest.matchers.file.shouldNotBeAFile
-import io.kotlintest.matchers.file.shouldNotContainFile
-import io.kotlintest.matchers.file.shouldNotContainFileDeep
-import io.kotlintest.matchers.file.shouldNotExist
-import io.kotlintest.matchers.file.shouldNotHaveExtension
-import io.kotlintest.matchers.file.shouldStartWithPath
-import io.kotlintest.matchers.file.startWithPath
+import io.kotlintest.matchers.file.*
 import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.matchers.string.shouldMatch
 import io.kotlintest.should
@@ -189,6 +166,33 @@ class FileMatchersTest : FunSpec() {
       shouldThrow<AssertionError> {
         rootDir.shouldNotContainFileDeep(rootFileName)
       }.message shouldBe "File $rootFileName should not exist in $rootDir"
+    }
+
+    test("shouldContainFiles should check if files exists") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      Files.write(testDir.resolve("a.txt"), byteArrayOf(1, 2, 3))
+      Files.write(testDir.resolve("b.gif"), byteArrayOf(1, 2, 3))
+      Files.write(testDir.resolve("c.doc"), byteArrayOf(1, 2, 3))
+
+      testDir.shouldContainFiles("a.txt", "b.gif", "c.doc")
+      testDir.shouldNotContainFiles("d.txt", "e.gif", "f.doc")
+
+      shouldThrow<AssertionError> {
+        testDir.shouldContainFiles("d.txt")
+      }.message shouldBe "File d.txt should exist in $testDir"
+
+      shouldThrow<AssertionError> {
+        testDir.shouldContainFiles("d.txt", "e.gif")
+      }.message shouldBe "Files d.txt, e.gif should exist in $testDir"
+
+      shouldThrow<AssertionError> {
+        testDir.shouldNotContainFiles("a.txt")
+      }.message shouldBe "File a.txt should not exist in $testDir"
+
+      shouldThrow<AssertionError> {
+        testDir.shouldNotContainFiles("a.txt", "b.gif")
+      }.message shouldBe "Files a.txt, b.gif should not exist in $testDir"
     }
   }
 }

@@ -233,3 +233,24 @@ fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
       fileExists(value.toFile()), "File $name should exist in $value", "File $name should not exist in $value"
   )
 }
+
+fun Path.shouldContainFiles(vararg files: String) = this should containsAllFiles(files.asList())
+fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containsAllFiles(files.asList())
+fun containsAllFiles(files: List<String>) = object : Matcher<Path> {
+  override fun test(value: Path): Result {
+    val existingFiles = files.intersect(value.toFile().list().asIterable())
+    val nonExistingFiles = files.subtract(existingFiles)
+
+    val fileString = if (nonExistingFiles.size > 1) "Files" else "File"
+    val fileList = nonExistingFiles.sorted().joinToString(", ")
+
+    val fileStringForNegative = if (existingFiles.size > 1) "Files" else "File"
+    val fileListForNegative = existingFiles.joinToString(", ")
+
+    return Result(
+        nonExistingFiles.isEmpty(),
+        "$fileString $fileList should exist in ${value}",
+        "$fileStringForNegative $fileListForNegative should not exist in ${value}"
+    )
+  }
+}

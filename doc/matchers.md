@@ -156,6 +156,8 @@ For the extension function style, each function has an equivalent negated versio
 | `file.shouldHaveName(name)` | Asserts that the file's name matches the given name. |
 | `file.shouldHavePath(path)` | Asserts that the file's path matches the given path. |
 | `file.shouldStartWithPath(prefix)` | Asserts that the file's path starts with the given prefix. |
+| `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
+| `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
 
 | Dates ||
 | -------- | ---- |
