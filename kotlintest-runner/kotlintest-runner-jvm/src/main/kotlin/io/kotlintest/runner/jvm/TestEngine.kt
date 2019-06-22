@@ -9,7 +9,6 @@ import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
 class TestEngine(val classes: List<KClass<out Spec>>,
@@ -18,7 +17,6 @@ class TestEngine(val classes: List<KClass<out Spec>>,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val error = AtomicReference<Throwable?>(null)
 
   // the main executor is used to parallelize the execution of specs
   // inside a spec, tests themselves are executed as coroutines
@@ -41,26 +39,26 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   }
 
   private fun submitAll() = Try {
-    logger.debug("Submitting ${classes.size} specs")
+    logger.trace("Submitting ${classes.size} specs")
 
     // the classes are ordered using an instance of SpecExecutionOrder before
     // being submitted in the order returned
     Project.specExecutionOrder().sort(classes).forEach { submitSpec(it) }
     executor.shutdown()
 
-    logger.debug("Waiting for spec execution to terminate")
-    try {
+    logger.trace("Waiting for spec execution to terminate")
+    val error = try {
       executor.awaitTermination(1, TimeUnit.DAYS)
+      null
     } catch (t: InterruptedException) {
-      error.compareAndSet(null, t)
+      t
     }
 
     // the executor may have terminated early because it was shutdown immediately
     // by an error in a submission. This will be reflected in the error reference
     // being set to a non null value
-    val t = error.get()
-    if (t != null)
-      throw t
+    if (error != null)
+      throw error
   }
 
   private fun end(t: Throwable?) = Try {
@@ -89,17 +87,14 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun submitSpec(klass: KClass<out Spec>) {
     executor.submit {
       createSpec(klass).fold(
-          // if there is an error creating the spec then we
-          // will add a placeholder spec so we can see the error in intellij/gradle
-          // otherwise it won't appear
           { t ->
             listener.specInitialisationFailed(klass, t)
-            error.compareAndSet(null, t)
             executor.shutdownNow()
           },
           { spec ->
             specExecutor.execute(spec).onFailure { t ->
-              error.compareAndSet(null, t)
+              // todo move this to a new listener method like specFailed(klass, t)
+              listener.specInitialisationFailed(klass, t)
               executor.shutdownNow()
             }
           }

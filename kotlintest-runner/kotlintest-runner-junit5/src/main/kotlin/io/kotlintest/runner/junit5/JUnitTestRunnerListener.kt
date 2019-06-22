@@ -152,6 +152,13 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     results.add(ResultState(testCase, result))
   }
 
+  override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
+    logger.trace("specInitialisationFailed $klass $t")
+    // we must "start" the spec to get it to show
+    beforeSpecClass(klass)
+    afterSpecClass(klass, t)
+  }
+
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     logger.trace("afterSpecClass [$klass]")
 
