@@ -234,23 +234,26 @@ fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
   )
 }
 
-fun Path.shouldContainFiles(vararg files: String) = this should containsAllFiles(files.asList())
-fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containsAllFiles(files.asList())
-fun containsAllFiles(files: List<String>) = object : Matcher<Path> {
+fun Path.shouldContainFiles(vararg files: String) = this should containFiles(files.asList())
+fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFiles(files.asList())
+fun containFiles(names: List<String>) = object : Matcher<Path> {
   override fun test(value: Path): Result {
-    val existingFiles = files.intersect(value.toFile().list().asIterable())
-    val nonExistingFiles = files.subtract(existingFiles)
+    val files = value.toFile().list()?.asIterable() ?: emptyList()
 
-    val fileString = if (nonExistingFiles.size > 1) "Files" else "File"
-    val fileList = nonExistingFiles.sorted().joinToString(", ")
-
-    val fileStringForNegative = if (existingFiles.size > 1) "Files" else "File"
-    val fileListForNegative = existingFiles.joinToString(", ")
+    val existingFiles = names.intersect(files)
+    val nonExistingFiles = names.subtract(existingFiles)
 
     return Result(
         nonExistingFiles.isEmpty(),
-        "$fileString $fileList should exist in ${value}",
-        "$fileStringForNegative $fileListForNegative should not exist in ${value}"
+        buildMessage(value, nonExistingFiles, false),
+        buildMessage(value, existingFiles, true)
     )
+  }
+
+  private fun buildMessage(path: Path, fileList: Set<String>, isNegative: Boolean): String {
+    val fileString = if (fileList.size > 1) "Files" else "File"
+    val negativeWord = if (isNegative) " not" else ""
+    val filesString = fileList.sorted().joinToString(", ")
+    return "$fileString $filesString should$negativeWord exist in $path"
   }
 }
