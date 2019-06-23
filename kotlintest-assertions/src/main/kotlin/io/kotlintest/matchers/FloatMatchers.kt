@@ -5,10 +5,6 @@ import io.kotlintest.Result
 
 infix fun Float.plusOrMinus(tolerance: Float): FloatToleranceMatcher = FloatToleranceMatcher(this, tolerance)
 
-fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
-  override fun test(value: Float) = Result(value == d, "$value is not equal to expected value $d", "$value should not be equal to $d")
-}
-
 class FloatToleranceMatcher(val expected: Float, val tolerance: Float) : Matcher<Float> {
 
   override fun test(value: Float): Result {

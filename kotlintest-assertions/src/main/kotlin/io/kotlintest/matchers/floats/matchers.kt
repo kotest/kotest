@@ -2,8 +2,16 @@ package io.kotlintest.matchers.floats
 
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.gte
+import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.lte
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
+
+fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
+  override fun test(value: Float) = Result(value == d, "$value is not equal to expected value $d", "$value should not be equal to $d")
+}
 
 fun lt(x: Float) = beLessThan(x)
 fun beLessThan(x: Float) = object : Matcher<Float> {
@@ -25,14 +33,20 @@ fun beGreaterThanOrEqualTo(x: Float) = object : Matcher<Float> {
   override fun test(value: Float) = Result(value >= x, "$value should be >= $x", "$value should not be >= $x")
 }
 
-infix fun Float.shouldBeLessThan(x: Float) = this shouldBe io.kotlintest.matchers.lt(x)
-infix fun Float.shouldNotBeLessThan(x: Float) = this shouldNotBe io.kotlintest.matchers.lt(x)
+infix fun Float.shouldBeLessThan(x: Float) = this shouldBe lt(x)
+infix fun Float.shouldNotBeLessThan(x: Float) = this shouldNotBe lt(x)
 
-infix fun Float.shouldBeLessThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.lte(x)
-infix fun Float.shouldNotBeLessThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.lte(x)
+infix fun Float.shouldBeLessThanOrEqual(x: Float) = this shouldBe lte(x)
+infix fun Float.shouldNotBeLessThanOrEqual(x: Float) = this shouldNotBe lte(x)
 
-infix fun Float.shouldBeGreaterThan(x: Float) = this shouldBe io.kotlintest.matchers.gt(x)
-infix fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe io.kotlintest.matchers.gt(x)
+infix fun Float.shouldBeGreaterThan(x: Float) = this shouldBe gt(x)
+infix fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe gt(x)
 
-infix fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe io.kotlintest.matchers.gte(x)
-infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe io.kotlintest.matchers.gte(x)
+infix fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe gte(x)
+infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe gte(x)
+
+infix fun Float.shouldBeExactly(x: Float) = this shouldBe exactly(x)
+infix fun Float.shouldNotBeExactly(x: Float) = this shouldNotBe exactly(x)
+
+fun Float.shouldBeZero() = this shouldBeExactly 0f
+fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f

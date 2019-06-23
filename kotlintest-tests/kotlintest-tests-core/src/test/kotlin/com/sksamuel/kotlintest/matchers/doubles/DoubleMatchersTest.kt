@@ -832,6 +832,17 @@ class DoubleMatchersTest : FreeSpec() {
         }
       }
     }
+
+    "shouldBeZero" {
+      (0.0).shouldBeZero()
+      (-0.1).shouldNotBeZero()
+      (0.1).shouldNotBeZero()
+      Double.MIN_VALUE.shouldNotBeZero()
+      Double.MAX_VALUE.shouldNotBeZero()
+      Double.NaN.shouldNotBeZero()
+      Double.POSITIVE_INFINITY.shouldNotBeZero()
+      Double.NEGATIVE_INFINITY.shouldNotBeZero()
+    }
   }
   
   
