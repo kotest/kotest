@@ -48,7 +48,7 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  * from across the entire integer range.
  */
 @higherkind
-interface Gen<T> : GenOf<T> {
+interface Gen<T> {
 
   /**
    * Returns the values that should always be used
@@ -83,16 +83,16 @@ interface Gen<T> : GenOf<T> {
 
   fun filterNot(f: (T) -> Boolean): Gen<T> = filter { !f(it) }
 
-  /**
-   * Create a new [Gen] by mapping the output of this gen.
-   */
-  fun <U> flatMap(f: (T) -> GenOf<U>): Gen<U> {
-    val outer = this
-    return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).fix().constants() }
-      override fun random(): Sequence<U> = outer.random().flatMap { f(it).fix().random() }
-    }
-  }
+//  /**
+//   * Create a new [Gen] by mapping the output of this gen.
+//   */
+//  fun <U> flatMap(f: (T) -> GenOf<U>): Gen<U> {
+//    val outer = this
+//    return object : Gen<U> {
+//      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).fix().constants() }
+//      override fun random(): Sequence<U> = outer.random().flatMap { f(it).fix().random() }
+//    }
+//  }
 
   /**
    * Create a new [Gen] by mapping the output of this gen.
