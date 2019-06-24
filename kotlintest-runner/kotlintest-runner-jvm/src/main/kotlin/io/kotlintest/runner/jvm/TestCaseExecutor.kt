@@ -44,8 +44,16 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     try {
 
       // invoke the "before" callbacks here on the main executor
-      withContext(context.coroutineContext + executor.asCoroutineDispatcher()) {
-        before(testCase)
+      try {
+        withContext(context.coroutineContext + executor.asCoroutineDispatcher()) {
+          before(testCase)
+        }
+        // an exception in the before block means the "invokingTestCase" listener will never be invoked
+        // we should do so here to ensure junit is happy as it requires tests to be started or skipped
+        // todo this functionality should be handled by the junit listener when we refactor for 4.0
+      } catch (t: Throwable) {
+        listener.invokingTestCase(testCase, 1)
+        throw t
       }
 
       val extensions = testCase.config.extensions +
