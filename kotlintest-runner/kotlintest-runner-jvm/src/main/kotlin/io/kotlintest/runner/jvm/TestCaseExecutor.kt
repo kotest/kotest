@@ -8,6 +8,7 @@ import io.kotlintest.internal.unwrapIfReflectionCall
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.util.concurrent.*
@@ -43,9 +44,9 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     try {
 
       // invoke the "before" callbacks here on the main executor
-      context.launch(executor.asCoroutineDispatcher()) {
+      withContext(context.coroutineContext + executor.asCoroutineDispatcher()) {
         before(testCase)
-      }.join()
+      }
 
       val extensions = testCase.config.extensions +
           testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
@@ -54,9 +55,9 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       // get active status here in case calling this function is expensive
       runExtensions(testCase, context, start, extensions) { result ->
         // invoke the "after" callbacks here on the main executor
-        context.launch(executor.asCoroutineDispatcher()) {
+        withContext(context.coroutineContext + executor.asCoroutineDispatcher()) {
           after(testCase, result)
-        }.join()
+        }
         onResult(result)
       }
 
