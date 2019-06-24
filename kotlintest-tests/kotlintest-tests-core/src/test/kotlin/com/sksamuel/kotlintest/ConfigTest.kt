@@ -33,7 +33,7 @@ class ConfigTest : WordSpec() {
         fail("shouldn't run")
       }
 
-      // If we have 100 threads, and each one sleeps for 100 milliseconds, then the total time
+      // If we have 100 threads, and each one sle`eps for 100 milliseconds, then the total time
       // should still be approx 100 ms as each of our threads will block for 100ms.
       // So we set the timeout an order of magnitude higher to account for a bit of thread
       // context switching and it should never hit.
