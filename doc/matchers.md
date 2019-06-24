@@ -193,3 +193,12 @@ For the extension function style, each function has an equivalent negated versio
 | `thread.shouldBeDaemon()` | Asserts that the thread is a daemon thread. |
 | `thread.shouldBeAlive()` | Asserts that the thread is alive. |
 | `thread.shouldBeTerminated()` | Asserts that the thread has been terminated. |
+
+| Result | |
+| ------ | --- |
+| `result.shouldBeSuccess()` | Asserts that the result is success |
+| `result.shouldBeSuccess(value)` | Asserts that the result is a success and the value is the same of the given one. |
+| `result.shouldBeSuccess(block)` | Asserts that the result is success and then, runs the block with the result value. |
+| `result.shouldBeFailure()` | Asserts that the result is failure |
+| `result.shouldBeFailureOfType<Type : Throwable>()` | Asserts that the result is a failure and the exception class is equals the same of the given one. |
+| `result.shouldBeFailure(block)` | Asserts that the result is failure and then, runs the block with the exception. |

@@ -4,7 +4,10 @@ import io.kotlintest.Matcher
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
-fun <T> Result<T>.shouldBeSuccess() = this should beSuccess()
+fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null) {
+  this should beSuccess()
+  block?.invoke(getOrNull()!!)
+}
 fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 fun <T> beSuccess() = object : Matcher<Result<T>> {
   override fun test(value: Result<T>) = io.kotlintest.Result(
@@ -29,7 +32,10 @@ fun <T> beSuccess(expected: T) = object : Matcher<Result<T>> {
   }
 }
 
-fun <T> Result<T>.shouldBeFailure() = this should beFailure()
+fun <T> Result<T>.shouldBeFailure(block: ((Throwable) -> Unit)? = null) {
+  this should beFailure()
+  block?.invoke(exceptionOrNull()!!)
+}
 fun <T> Result<T>.shouldNotBeFailure() = this shouldNot beFailure()
 fun <T> beFailure() = object : Matcher<Result<T>> {
   override fun test(value: Result<T>) = io.kotlintest.Result(
