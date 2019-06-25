@@ -1,13 +1,8 @@
 import io.kotlintest.properties.PropertyContext
+import io.kotlintest.show.show
 
-fun convertValueToString(value: Any?): String = when (value) {
-  null -> "<null>"
-  "" -> "<empty string>"
-  else -> {
-    val str = value.toString()
-    if (str.isBlank()) str.replace("\n", "\\n").replace("\t", "\\t").replace(" ", "\\s") else str
-  }
-}
+@Deprecated("Use the Show typeclass directly", ReplaceWith("value.show()", "io.kotlintest.show.Show"))
+fun convertValueToString(value: Any?): String = value.show()
 
 fun exceptionToMessage(t: Throwable): String =
   when (t) {
