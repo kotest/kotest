@@ -197,4 +197,4 @@ For the extension function style, each function has an equivalent negated versio
 | `throwable.shouldHaveCause()` | Asserts that the throwable have a cause. |
 | `throwable.shouldHaveCause { block }` | Asserts that the throwable have a cause, and pass it as parameter to the block |
 | `throwable.shouldHaveCauseInstanceOf<T>()` | Asserts that the throwable have a cause and it is of type T. |
-| `throwable.shouldHaveCauseOfType<T>()` | Asserts that the throwable have a cause and it is **exaclty** of type T. |
+| `throwable.shouldHaveCauseOfType<T>()` | Asserts that the throwable have a cause and it is **exactly** of type T. |
