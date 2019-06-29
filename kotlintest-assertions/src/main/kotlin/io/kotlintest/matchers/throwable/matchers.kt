@@ -47,7 +47,8 @@ inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwabl
   }
 }
 
-fun resultForThrowable(value: Throwable?) = Result(
+@PublishedApi
+internal fun resultForThrowable(value: Throwable?) = Result(
         value != null,
         "Throwable should have a cause",
         "Throwable should not have a cause"
