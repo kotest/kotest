@@ -34,9 +34,10 @@ class StringSpecEngineKitTest : FunSpec({
         .selectors(selectClass(StringSpecExceptionInInit::class.java))
         .execute()
 
+    results.all().list().size shouldBe 5
+
     results.all().list().apply {
       assertSoftly {
-        size shouldBe 5
 
         this[0].type shouldBe EventType.STARTED
         this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
@@ -74,10 +75,10 @@ class StringSpecEngineKitTest : FunSpec({
         .selectors(selectClass(StringSpecExceptionInBeforeSpec::class.java))
         .execute()
 
+    results.all().list().size shouldBe 5
+
     results.all().list().apply {
       assertSoftly {
-        size shouldBe 5
-
         this[0].type shouldBe EventType.STARTED
         this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
         this[2].type shouldBe EventType.STARTED
@@ -115,10 +116,10 @@ class StringSpecEngineKitTest : FunSpec({
         .selectors(selectClass(StringSpecExceptionInAfterSpec::class.java))
         .execute()
 
+    results.all().list().size shouldBe 11
+
     results.all().list().apply {
       assertSoftly {
-        size shouldBe 11
-
         this[0].type shouldBe EventType.STARTED
         this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
         this[2].type shouldBe EventType.STARTED
@@ -138,8 +139,8 @@ class StringSpecEngineKitTest : FunSpec({
         this[4].testDescriptor.displayName shouldBe "a failing test"
         this[5].testDescriptor.displayName shouldBe "a passing test"
         this[6].testDescriptor.displayName shouldBe "a passing test"
-        this[7].testDescriptor.displayName shouldBe "a passing test"
-        this[8].testDescriptor.displayName shouldBe "a failing test"
+        this[7].testDescriptor.displayName shouldBe "a failing test"
+        this[8].testDescriptor.displayName shouldBe "a passing test"
         this[9].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInAfterSpec"
         this[10].testDescriptor.displayName shouldBe "KotlinTest"
       }
@@ -157,6 +158,111 @@ class StringSpecEngineKitTest : FunSpec({
       assertSoftly {
         size shouldBe 2
         this[0].testDescriptor.displayName shouldBe "a passing test"
+        this[1].testDescriptor.displayName shouldBe "KotlinTest"
+      }
+    }
+  }
+
+  test("exception in before test") {
+
+    val results = EngineTestKit
+        .engine("kotlintest")
+        .selectors(selectClass(StringSpecExceptionInBeforeTest::class.java))
+        .execute()
+
+    results.all().list().size shouldBe 9
+
+    results.all().list().apply {
+      assertSoftly {
+
+        this[0].type shouldBe EventType.STARTED
+        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[2].type shouldBe EventType.STARTED
+        this[3].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[4].type shouldBe EventType.FINISHED
+        this[5].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[6].type shouldBe EventType.FINISHED
+        this[7].type shouldBe EventType.FINISHED
+        this[8].type shouldBe EventType.FINISHED
+
+        this[0].testDescriptor.displayName shouldBe "KotlinTest"
+        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInBeforeTest"
+        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInBeforeTest"
+        this[3].testDescriptor.displayName shouldBe "a failing test"
+        this[4].testDescriptor.displayName shouldBe "a failing test"
+        this[5].testDescriptor.displayName shouldBe "a passing test"
+        this[6].testDescriptor.displayName shouldBe "a passing test"
+        this[7].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInBeforeTest"
+        this[8].testDescriptor.displayName shouldBe "KotlinTest"
+      }
+    }
+
+    results.all().failed().list().apply {
+      assertSoftly {
+        size shouldBe 2
+        this[0].testDescriptor.displayName shouldBe "a failing test"
+        this[1].testDescriptor.displayName shouldBe "a passing test"
+      }
+    }
+
+    results.all().succeeded().list().apply {
+      assertSoftly {
+        size shouldBe 2
+        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInBeforeTest"
+        this[1].testDescriptor.displayName shouldBe "KotlinTest"
+      }
+    }
+  }
+
+  test("exception in after test") {
+
+    val results = EngineTestKit
+        .engine("kotlintest")
+        .selectors(selectClass(StringSpecExceptionInAfterTest::class.java))
+        .execute()
+
+    results.all().list().size shouldBe 11
+
+    results.all().list().apply {
+      assertSoftly {
+        this[0].type shouldBe EventType.STARTED
+        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[2].type shouldBe EventType.STARTED
+        this[3].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[4].type shouldBe EventType.STARTED
+        this[5].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
+        this[6].type shouldBe EventType.STARTED
+        this[7].type shouldBe EventType.FINISHED
+        this[8].type shouldBe EventType.FINISHED
+        this[9].type shouldBe EventType.FINISHED
+        this[10].type shouldBe EventType.FINISHED
+
+        this[0].testDescriptor.displayName shouldBe "KotlinTest"
+        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInAfterTest"
+        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInAfterTest"
+        this[3].testDescriptor.displayName shouldBe "a failing test"
+        this[4].testDescriptor.displayName shouldBe "a failing test"
+        this[5].testDescriptor.displayName shouldBe "a passing test"
+        this[6].testDescriptor.displayName shouldBe "a passing test"
+        this[7].testDescriptor.displayName shouldBe "a failing test"
+        this[8].testDescriptor.displayName shouldBe "a passing test"
+        this[9].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInAfterTest"
+        this[10].testDescriptor.displayName shouldBe "KotlinTest"
+      }
+    }
+
+    results.all().failed().list().apply {
+      assertSoftly {
+        size shouldBe 2
+        this[0].testDescriptor.displayName shouldBe "a failing test"
+        this[1].testDescriptor.displayName shouldBe "a passing test"
+      }
+    }
+
+    results.all().succeeded().list().apply {
+      assertSoftly {
+        size shouldBe 2
+        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotlintest.junit5.StringSpecExceptionInAfterTest"
         this[1].testDescriptor.displayName shouldBe "KotlinTest"
       }
     }
