@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.3.40'
     ext.isTravis = System.getenv("TRAVIS") == "true"
     ext.travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
     ext.isReleaseVersion = !isTravis
@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.40'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
