@@ -99,4 +99,11 @@ class TeamCityConsoleWriter : ConsoleWriter {
       }
     }
   }
+
+  override fun exitTestCase(testCase: TestCase, result: TestResult) {
+    if(result.status == TestStatus.Error || result.status == TestStatus.Failure) {
+      errors = true
+      insertDummyFailure(testCase.description, result.error)
+    }
+  }
 }
