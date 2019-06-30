@@ -123,49 +123,30 @@ object Project {
   fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
 
   private fun printConfigs() {
-    println("Discovered theses project configurations")
-    println()
-
-    buildOutput("Paralellism")
-    buildOutput(parallelism.plurals("%d thread", "%d threads"), 1)
-    println()
-
-    buildOutput("Test order")
-    buildOutput(_specExecutionOrder::class.java.simpleName, 1)
-    println()
-
-    buildOutput("Soft assertations")
-    buildOutput(_globalAssertSoftly.stringify(), 1)
-    println()
-
-    buildOutput("Write spec failure file")
-    buildOutput(writeSpecFailureFile.stringify(), 1)
-    println()
-
-    buildOutput("Fail on ignored tests")
-    buildOutput(failOnIgnoredTests.stringify(), 1)
-    println()
+    println("~~~ Discovered theses project configurations ~~~")
+    buildOutput("Paralellism", parallelism.plurals("%d thread", "%d threads"))
+    buildOutput("Test order", _specExecutionOrder::class.java.simpleName)
+    buildOutput("Soft assertations", _globalAssertSoftly.toString().capitalize())
+    buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
+    buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
 
     buildOutput("Extensions")
     _extensions.forEach {
-      buildOutput(it::class.java.canonicalName, 1)
+      buildOutput(it::class.java.canonicalName, indentation = 1)
     }
-    println()
 
     buildOutput("Listeners")
     _listeners.forEach {
-      buildOutput(it::class.java.canonicalName, 1)
+      buildOutput(it::class.java.canonicalName, indentation = 1)
     }
-    println()
 
     buildOutput("Filters")
     _filters.forEach {
-      buildOutput(it::class.java.canonicalName, 1)
+      buildOutput(it::class.java.canonicalName, indentation = 1)
     }
-    println()
   }
 
-  private fun buildOutput(value: String, indentation: Int = 0) {
+  private fun buildOutput(key: String, value: String? = null, indentation: Int = 0) {
     StringBuilder().apply {
       if (indentation == 0) {
         append("-> ")
@@ -175,11 +156,10 @@ object Project {
         }
         append("- ")
       }
-      append(value)
+      append(key)
+      value?.let { append(": $it") }
     }.also { println(it.toString()) }
   }
-
-  private fun Boolean.stringify() = if (this) "Yes" else "No"
 
   private fun Int.plurals(singular: String, plural: String, zero: String = plural) = if (this == 0)
     zero.format(this)
