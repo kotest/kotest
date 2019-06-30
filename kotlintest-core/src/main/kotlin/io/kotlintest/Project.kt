@@ -123,8 +123,8 @@ object Project {
   fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
 
   private fun printConfigs() {
-    println("~~~ Discovered theses project configurations ~~~")
-    buildOutput("Paralellism", parallelism.plurals("%d thread", "%d threads"))
+    println("~~~ Discovered this project configurations ~~~")
+    buildOutput("Parallelism", parallelism.plurals("%d thread", "%d threads"))
     buildOutput("Test order", _specExecutionOrder::class.java.simpleName)
     buildOutput("Soft assertations", _globalAssertSoftly.toString().capitalize())
     buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
