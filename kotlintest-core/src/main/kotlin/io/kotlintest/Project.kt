@@ -131,18 +131,18 @@ object Project {
     buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
 
     buildOutput("Extensions")
-    _extensions.forEach {
-      buildOutput(it::class.java.canonicalName, indentation = 1)
+    _extensions.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
     }
 
     buildOutput("Listeners")
-    _listeners.forEach {
-      buildOutput(it::class.java.canonicalName, indentation = 1)
+    _listeners.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
     }
 
     buildOutput("Filters")
-    _filters.forEach {
-      buildOutput(it::class.java.canonicalName, indentation = 1)
+    _filters.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
     }
   }
 
@@ -167,5 +167,8 @@ object Project {
     singular.format(this)
   else
     plural.format(this)
+
+  private fun mapClassName(any: Any) =
+      any::class.java.canonicalName ?: any::class.java.name
 
 }
