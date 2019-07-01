@@ -3,6 +3,7 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.*
+import java.lang.StringBuilder
 
 /**
  * Internal class used to hold project wide configuration.
@@ -68,7 +69,7 @@ object Project {
   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
-  var failOnIgnoredTests: Boolean = System.getProperty("kotlintest.build.fail-on-ignore") == "true"
+  var failOnIgnoredTests: Boolean = false
 
   fun tags(): Tags {
     val tags = tagExtensions().map { it.tags() }
@@ -83,15 +84,14 @@ object Project {
     _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
     writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
-    if (it.failOnIgnoredTests) {
-      this.failOnIgnoredTests = true
-    }
+    failOnIgnoredTests = System.getProperty("kotlintest.build.fail-on-ignore") == "true" || it.failOnIgnoredTests
   }
 
   fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
   fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
   fun beforeAll() {
+    printConfigs()
     projectExtensions().forEach { extension -> extension.beforeAll() }
     projectConfig?.beforeAll()
     listeners().forEach { it.beforeProject() }
@@ -121,4 +121,54 @@ object Project {
 
   fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
   fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
+
+  private fun printConfigs() {
+    println("~~~ Discovered this project configurations ~~~")
+    buildOutput("Parallelism", parallelism.plurals("%d thread", "%d threads"))
+    buildOutput("Test order", _specExecutionOrder::class.java.simpleName)
+    buildOutput("Soft assertations", _globalAssertSoftly.toString().capitalize())
+    buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
+    buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
+
+    buildOutput("Extensions")
+    _extensions.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
+    }
+
+    buildOutput("Listeners")
+    _listeners.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
+    }
+
+    buildOutput("Filters")
+    _filters.map(::mapClassName).forEach {
+      buildOutput(it, indentation = 1)
+    }
+  }
+
+  private fun buildOutput(key: String, value: String? = null, indentation: Int = 0) {
+    StringBuilder().apply {
+      if (indentation == 0) {
+        append("-> ")
+      } else {
+        for (i in 0 until indentation) {
+          append("  ")
+        }
+        append("- ")
+      }
+      append(key)
+      value?.let { append(": $it") }
+    }.also { println(it.toString()) }
+  }
+
+  private fun Int.plurals(singular: String, plural: String, zero: String = plural) = if (this == 0)
+    zero.format(this)
+  else if (this in listOf(-1, 1))
+    singular.format(this)
+  else
+    plural.format(this)
+
+  private fun mapClassName(any: Any) =
+      any::class.java.canonicalName ?: any::class.java.name
+
 }
