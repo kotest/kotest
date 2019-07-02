@@ -17,5 +17,12 @@ class BigDecimalMatchersTest : StringSpec() {
             10.1.toBigDecimal() shouldHavePrecision 3
             BigDecimal.ZERO shouldHavePrecision 1
         }
+        "shouldHaveScale" {
+            BigDecimal(10).setScale(3) shouldHaveScale  3
+            BigDecimal(10.1) shouldHaveScale 49
+            10.444.toBigDecimal() shouldHaveScale 3
+            0.toBigDecimal() shouldHaveScale 0
+            BigDecimal.ZERO shouldHaveScale 0
+        }
     }
 }
