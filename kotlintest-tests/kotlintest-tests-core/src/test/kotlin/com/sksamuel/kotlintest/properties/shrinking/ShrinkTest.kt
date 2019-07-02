@@ -87,7 +87,7 @@ class ShrinkTest : StringSpec({
       assertAll(gen) { a ->
         a.shouldHaveLength(10)
       }
-    }.message shouldBe "Property failed for\nArg 0: <empty string> (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
+    }.message shouldBe "Property failed for\nArg 0: <empty string> (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10, but instead was 28"
   }
 
   "should shrink strings to min failing size" {
@@ -100,6 +100,6 @@ class ShrinkTest : StringSpec({
       assertAll(gen) { a ->
         a.padEnd(10, '*').shouldHaveLength(10)
       }
-    }.message shouldBe "Property failed for\nArg 0: aaaaaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10"
+    }.message shouldBe "Property failed for\nArg 0: aaaaaaaaaaaaaa (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10, but instead was 28"
   }
 })
