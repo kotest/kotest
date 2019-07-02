@@ -24,11 +24,17 @@ class BigDecimalMatchersTest : StringSpec() {
             0.toBigDecimal() shouldHaveScale 0
             BigDecimal.ZERO shouldHaveScale 0
         }
-        "the big decimal should be positive" {
+        "shouldBePositive" {
             BigDecimal(10).shouldBePositive()
             BigDecimal.ZERO.shouldBePositive()
             BigDecimal(0.1).shouldBePositive()
             0.1.toBigDecimal().shouldBePositive()
+        }
+        "shouldBeNegative" {
+            BigDecimal(-1).shouldBeNegative()
+            (-1).toBigDecimal().shouldBeNegative()
+            BigDecimal(-0.1).shouldBeNegative()
+            BigDecimal(1).minus(BigDecimal(2)).shouldBeNegative()
         }
     }
 }
