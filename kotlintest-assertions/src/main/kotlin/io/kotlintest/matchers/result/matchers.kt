@@ -6,9 +6,9 @@ import io.kotlintest.should
 import io.kotlintest.shouldNot
 import kotlin.Result
 
-fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)? = null) {
+fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
   BeSuccess<T>().test(this)
-  block?.invoke(getOrNull()!!)
+  block?.invoke(getOrNull())
 }
 
 fun <T> Result<T>.shouldNotBeSuccess() = test(inverse = true) { BeSuccess<T>().test(this) }
@@ -32,9 +32,9 @@ class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
       io.kotlintest.Result(passed, "Result should be a success.", "Result should not be a success")
 }
 
-fun Result<Any>.shouldBeFailure(block: ((Throwable) -> Unit)? = null) {
+fun Result<Any>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
   test { BeFailure().test(this) }
-  block?.invoke(exceptionOrNull()!!)
+  block?.invoke(exceptionOrNull())
 }
 
 fun Result<Any>.shouldNotBeFailure() = test(inverse = true) { BeFailure().test(this) }
