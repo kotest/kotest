@@ -168,6 +168,8 @@ For the extension function style, each function has an equivalent negated versio
 | `file.shouldStartWithPath(prefix)` | Asserts that the file's path starts with the given prefix. |
 | `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
 | `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
+| `file.shouldBeSymbolicLink()` | Asserts that the file is a symbolic link. |
+| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name | 
 
 | Dates ||
 | -------- | ---- |

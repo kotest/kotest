@@ -194,5 +194,36 @@ class FileMatchersTest : FunSpec() {
         testDir.shouldNotContainFiles("a.txt", "b.gif")
       }.message shouldBe "Files a.txt, b.gif should not exist in $testDir"
     }
+
+    test("shouldBeSymbolicLink should check if file is symbolic link") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      val existingFile = Files.write(testDir.resolve("original.txt"), byteArrayOf(1, 2, 3, 4))
+      val existingFileAsFile = existingFile.toFile()
+      val link = Files.createSymbolicLink(testDir.resolve("a.txt"), existingFile)
+      val linkAsFile = link.toFile()
+
+      link.shouldBeSymbolicLink()
+      linkAsFile.shouldBeSymbolicLink()
+
+      existingFile.shouldNotBeSymbolicLink()
+      existingFileAsFile.shouldNotBeSymbolicLink()
+    }
+
+    test("shouldHaveParent should check if file has any parent with given name") {
+      val testDir = Files.createTempDirectory("testdir")
+
+      val subdir = Files.createDirectory(testDir.resolve("sub_testdir"))
+      val file = Files.write(subdir.resolve("a.txt"), byteArrayOf(1, 2, 3, 4))
+      val fileAsFile =  file.toFile()
+
+      file.shouldHaveParent(testDir.toFile().name)
+      file.shouldHaveParent(subdir.toFile().name)
+      file.shouldNotHaveParent("super_hyper_long_random_file_name")
+
+      fileAsFile.shouldHaveParent(testDir.toFile().name)
+      fileAsFile.shouldHaveParent(subdir.toFile().name)
+      fileAsFile.shouldNotHaveParent("super_hyper_long_random_file_name")
+    }
   }
 }
