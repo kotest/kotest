@@ -518,13 +518,13 @@ class StringMatchersTest : FreeSpec() {
         "hello" shouldHaveLength 5
         shouldThrow<AssertionError> {
           "" should haveLength(3)
-        }.message shouldBe "<empty string> should have length 3"
+        }.message shouldBe "<empty string> should have length 3, but instead was 0"
         shouldThrow<AssertionError> {
           "" shouldHaveLength 3
-        }.message shouldBe "<empty string> should have length 3"
+        }.message shouldBe "<empty string> should have length 3, but instead was 0"
         shouldThrow<AssertionError> {
           "hello" shouldHaveLength 3
-        }.message shouldBe "hello should have length 3"
+        }.message shouldBe "hello should have length 3, but instead was 5"
         shouldThrow<AssertionError> {
           "hello" shouldNotHaveLength 5
         }.message shouldBe "hello should not have length 5"
