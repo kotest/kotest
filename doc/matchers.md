@@ -96,6 +96,14 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeNegative()` | Asserts that the double is negative |
 | `double.shouldBeZero()` | Asserts that the double is zero |
 
+| BigDecimal ||
+| -------- | ---- |
+| `bigDecimal.shouldHavePrecision(n)` | Asserts that the bigDecimal precision is equals than the given value n |
+| `bigDecimal.shouldHaveScale(n)` | Asserts that the bigDecimal scale is equals than the given value n |
+| `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
+| `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
+| `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
+
 | Collections ||
 | -------- | ---- |
 | `collection.shouldBeEmpty()` | Asserts that the collections has zero elements. |
