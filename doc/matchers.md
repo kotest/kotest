@@ -96,6 +96,14 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeNegative()` | Asserts that the double is negative |
 | `double.shouldBeZero()` | Asserts that the double is zero |
 
+| BigDecimal ||
+| -------- | ---- |
+| `bigDecimal.shouldHavePrecision(n)` | Asserts that the bigDecimal precision is equals than the given value n |
+| `bigDecimal.shouldHaveScale(n)` | Asserts that the bigDecimal scale is equals than the given value n |
+| `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
+| `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
+| `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
+
 | Collections ||
 | -------- | ---- |
 | `collection.shouldBeEmpty()` | Asserts that the collections has zero elements. |
@@ -160,6 +168,8 @@ For the extension function style, each function has an equivalent negated versio
 | `file.shouldStartWithPath(prefix)` | Asserts that the file's path starts with the given prefix. |
 | `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
 | `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
+| `file.shouldBeSymbolicLink()` | Asserts that the file is a symbolic link. |
+| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name | 
 
 | Dates ||
 | -------- | ---- |
@@ -190,7 +200,6 @@ For the extension function style, each function has an equivalent negated versio
 | `thread.shouldBeAlive()` | Asserts that the thread is alive. |
 | `thread.shouldBeTerminated()` | Asserts that the thread has been terminated. |
 
-
 | Throwables / Exceptions | |
 | ---- | --- |
 | `throwable.shouldHaveMessage(message)` | Asserts that the throwable message is the same of the given one. |
@@ -198,3 +207,13 @@ For the extension function style, each function has an equivalent negated versio
 | `throwable.shouldHaveCause { block }` | Asserts that the throwable have a cause, and pass it as parameter to the block |
 | `throwable.shouldHaveCauseInstanceOf<T>()` | Asserts that the throwable have a cause and it is of type T or a subclass of T. |
 | `throwable.shouldHaveCauseOfType<T>()` | Asserts that the throwable have a cause and it is **exactly** of type T. |
+
+| Result | |
+| ------ | --- |
+| `result.shouldBeSuccess()` | Asserts that the result is success |
+| `result.shouldBeSuccess(value)` | Asserts that the result is a success and the value is the same of the given one. |
+| `result.shouldBeSuccess(block)` | Asserts that the result is success and then, runs the block with the result value. |
+| `result.shouldBeFailure()` | Asserts that the result is failure |
+| `result.shouldBeFailureOfType<Type : Throwable>()` | Asserts that the result is a failure and the exception class is equals the same of the given one. |
+| `result.shouldBeFailure(block)` | Asserts that the result is failure and then, runs the block with the exception. |
+

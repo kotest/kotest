@@ -22,8 +22,28 @@ fun matchJson(json: String) = object : Matcher<String> {
 
     return Result(
         actualJson == expectedJson,
-        "",
-        ""
+        "Expected $expectedJson but was $actualJson",
+        "Value should not be $expectedJson"
+    )
+  }
+}
+
+fun String.shouldMatchJsonResource(resource: String) = this should matchJsonResource(resource)
+fun String.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
+
+fun matchJsonResource(resource: String) = object : Matcher<String> {
+
+  val mapper = ObjectMapper().registerModule(KotlinModule())
+
+  override fun test(value: String): Result {
+
+    val actualJson = mapper.readTree(value)
+    val expectedJson = mapper.readTree(this.javaClass.getResourceAsStream(resource))
+
+    return Result(
+        actualJson == expectedJson,
+        "Expected $expectedJson but was $actualJson",
+        "Value should not be $expectedJson"
     )
   }
 }

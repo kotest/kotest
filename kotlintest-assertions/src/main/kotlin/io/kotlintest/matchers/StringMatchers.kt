@@ -45,6 +45,6 @@ fun strlen(length: Int): Matcher<String?> = haveLength(length)
 fun haveLength(length: Int) = neverNullMatcher<String> { value ->
   Result(
       value.length == length,
-      "${convertValueToString(value)} should have length $length",
+      "${convertValueToString(value)} should have length $length, but instead was ${value.length}",
       "${convertValueToString(value)} should not have length $length")
 }
