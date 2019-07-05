@@ -130,19 +130,25 @@ object Project {
     buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
     buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
 
-    buildOutput("Extensions")
-    _extensions.map(::mapClassName).forEach {
-      buildOutput(it, indentation = 1)
+    if (_extensions.isNotEmpty()) {
+      buildOutput("Extensions")
+      _extensions.map(::mapClassName).forEach {
+        buildOutput(it, indentation = 1)
+      }
     }
 
-    buildOutput("Listeners")
-    _listeners.map(::mapClassName).forEach {
-      buildOutput(it, indentation = 1)
+    if (_listeners.isNotEmpty()) {
+      buildOutput("Listeners")
+      _listeners.map(::mapClassName).forEach {
+        buildOutput(it, indentation = 1)
+      }
     }
 
-    buildOutput("Filters")
-    _filters.map(::mapClassName).forEach {
-      buildOutput(it, indentation = 1)
+    if (_filters.isNotEmpty()) {
+      buildOutput("Filters")
+      _filters.map(::mapClassName).forEach {
+        buildOutput(it, indentation = 1)
+      }
     }
   }
 
