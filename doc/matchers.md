@@ -200,6 +200,14 @@ For the extension function style, each function has an equivalent negated versio
 | `thread.shouldBeAlive()` | Asserts that the thread is alive. |
 | `thread.shouldBeTerminated()` | Asserts that the thread has been terminated. |
 
+| Throwables / Exceptions | |
+| ---- | --- |
+| `throwable.shouldHaveMessage(message)` | Asserts that the throwable message is the same of the given one. |
+| `throwable.shouldHaveCause()` | Asserts that the throwable have a cause. |
+| `throwable.shouldHaveCause { block }` | Asserts that the throwable have a cause, and pass it as parameter to the block |
+| `throwable.shouldHaveCauseInstanceOf<T>()` | Asserts that the throwable have a cause and it is of type T or a subclass of T. |
+| `throwable.shouldHaveCauseOfType<T>()` | Asserts that the throwable have a cause and it is **exactly** of type T. |
+
 | Result | |
 | ------ | --- |
 | `result.shouldBeSuccess()` | Asserts that the result is success |
@@ -208,3 +216,4 @@ For the extension function style, each function has an equivalent negated versio
 | `result.shouldBeFailure()` | Asserts that the result is failure |
 | `result.shouldBeFailureOfType<Type : Throwable>()` | Asserts that the result is a failure and the exception class is equals the same of the given one. |
 | `result.shouldBeFailure(block)` | Asserts that the result is failure and then, runs the block with the exception. |
+
