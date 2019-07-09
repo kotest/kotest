@@ -226,7 +226,14 @@ For the extension function style, each function has an equivalent negated versio
 | `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name | 
 | `kclass.shouldHaveFunction(name) { block }` | Asserts that the class have a function with the given name, and then, runs the block with the function |
 | `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name | 
-| `kclass.shouldHaveMemberProperty(name) { block }` | Asserts that the class have a member property with the given name, and then, runs the block with the function | 
+| `kclass.shouldHaveMemberProperty(name) { block }` | Asserts that the class have a member property with the given name, and then, runs the block with the function |
+| `kclass.shouldBeSubtypeOf<T>()` | Asserts that the class is a subtype of T |
+| `kclass.shouldBeSupertypeOf<T>()` | Asserts that the class is a supertype of T |
+| `kclass.shouldBeData()` | Asserts that the class is a data class |
+| `kclass.shouldBeSealed()` | Asserts that the class is a sealed class | 
+| `kclass.shouldBeCompanion()` | Asserts that the class is a companion object | 
+| `kclass.shouldHavePrimaryConstructor()` | Asserts that the class has a primary constructor |
+| `kclass.shouldHaveVisibility(visibility)` | Asserts that the class has the given visibility | 
 | `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation | 
 | `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation | 
 | `kfunction.shouldBeAnnotatedWith<T>()` | Asserts that the function is annotated with the given type |

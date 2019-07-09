@@ -5,6 +5,8 @@ import com.sksamuel.kotlintest.matchers.reflection.annotations.Fancy
 @Fancy(cost = 500)
 open class FancyItem {
 
+  data class FancyData(val someString: String, val someBoolean: Boolean)
+
   open val name: String = "Fancy Item Name"
   open protected val value: Int = 100
   private val otherField: Long = 10
