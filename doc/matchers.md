@@ -217,3 +217,22 @@ For the extension function style, each function has an equivalent negated versio
 | `result.shouldBeFailureOfType<Type : Throwable>()` | Asserts that the result is a failure and the exception class is equals the same of the given one. |
 | `result.shouldBeFailure(block)` | Asserts that the result is failure and then, runs the block with the exception. |
 
+| Reflection |     |
+| ---------- | --- |
+| `kclass.shouldHaveAnnotations()` | Asserts that the class has some annotation | 
+| `kclass.shouldHaveAnnotations(n)` | Asserts that the class has exactly N annotation | 
+| `kclass.shouldBeAnnotatedWith<T>()` | Asserts that the class is annotated with the given type |
+| `kclass.shouldBeAnnotatedWith<T> { block }` | Asserts that the class is annotated with the given type, and then, runs the block with the annotation | 
+| `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name | 
+| `kclass.shouldHaveFunction(name) { block }` | Asserts that the class have a function with the given name, and then, runs the block with the function |
+| `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name | 
+| `kclass.shouldHaveMemberProperty(name) { block }` | Asserts that the class have a member property with the given name, and then, runs the block with the function | 
+| `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation | 
+| `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation | 
+| `kfunction.shouldBeAnnotatedWith<T>()` | Asserts that the function is annotated with the given type |
+| `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation | 
+| `kfunction.shouldHaveReturnType<T>()` | Asserts that the function returns the given type |
+| `kproperty.shouldBeOfType<T>()` | Asserts that the property is of the given type |
+| `kcallable.shouldHaveVisibility(visibility)` | Asserts that the member have the given visibility |
+| `kcallable.shouldBeFinal()` | Asserts that the member is final |
+| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
