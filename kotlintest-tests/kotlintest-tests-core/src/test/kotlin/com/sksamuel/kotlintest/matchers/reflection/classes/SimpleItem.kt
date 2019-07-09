@@ -3,7 +3,7 @@ package com.sksamuel.kotlintest.matchers.reflection.classes
 class SimpleItem(val isReallySimple: Boolean = true) {
 
   companion object {
-    val id = 1
+    const val id = 1
   }
 
   sealed class Action {
@@ -13,5 +13,13 @@ class SimpleItem(val isReallySimple: Boolean = true) {
 
   fun simpleFunction(): Int {
     return 1
+  }
+
+  inline fun run(block: () -> Unit) {
+    block()
+  }
+
+  infix fun sum(num: Int) {
+
   }
 }

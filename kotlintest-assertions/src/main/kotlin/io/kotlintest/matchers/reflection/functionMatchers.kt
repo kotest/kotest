@@ -43,3 +43,23 @@ inline fun <reified T : Annotation> beAnnotatedWith() = object : Matcher<KFuncti
 
 inline fun <reified T> KFunction<*>.shouldHaveReturnType() = this.returnType.shouldBeOfType<T>()
 inline fun <reified T> KFunction<*>.shouldNotHaveReturnType() = this.returnType.shouldNotBeOfType<T>()
+
+fun KFunction<*>.shouldBeInline() = this should beInline()
+fun KFunction<*>.shouldNotBeInline() = this shouldNot beInline()
+fun beInline() = object : Matcher<KFunction<*>> {
+  override fun test(value: KFunction<*>) = Result(
+      value.isInline,
+      "Function $value should be inline",
+      "Function $value should not be inline"
+  )
+}
+
+fun KFunction<*>.shouldBeInfix() = this should beInfix()
+fun KFunction<*>.shouldNotBeInfix() = this shouldNot beInfix()
+fun beInfix() = object : Matcher<KFunction<*>> {
+  override fun test(value: KFunction<*>) = Result(
+      value.isInfix,
+      "Function $value should be infix",
+      "Function $value should not be infix"
+  )
+}

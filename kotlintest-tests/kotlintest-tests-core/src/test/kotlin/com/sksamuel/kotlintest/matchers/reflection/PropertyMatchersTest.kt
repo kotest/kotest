@@ -1,9 +1,8 @@
 package com.sksamuel.kotlintest.matchers.reflection
 
 import com.sksamuel.kotlintest.matchers.reflection.classes.FancyItem
-import io.kotlintest.matchers.reflection.shouldBeOfType
-import io.kotlintest.matchers.reflection.shouldHaveMemberProperty
-import io.kotlintest.matchers.reflection.shouldNotBeOfType
+import com.sksamuel.kotlintest.matchers.reflection.classes.SimpleItem
+import io.kotlintest.matchers.reflection.*
 import io.kotlintest.specs.FreeSpec
 
 class PropertyMatchersTest : FreeSpec() {
@@ -17,6 +16,16 @@ class PropertyMatchersTest : FreeSpec() {
           it.shouldBeOfType<Int>()
         }
       }
+      "be const" {
+        SimpleItem.Companion::class.shouldHaveMemberProperty("id") {
+          it.shouldBeConst()
+        }
+      }
+      "be late init" {
+        FancyItem::class.shouldHaveMemberProperty("youLate") {
+          it.shouldBeLateInit()
+        }
+      }
     }
     "should not" - {
       "be of type" {
@@ -25,6 +34,16 @@ class PropertyMatchersTest : FreeSpec() {
         }
         FancyItem::class.shouldHaveMemberProperty("value") {
           it.shouldNotBeOfType<String>()
+        }
+      }
+      "be const" {
+        FancyItem::class.shouldHaveMemberProperty("name") {
+          it.shouldNotBeConst()
+        }
+      }
+      "be late init" {
+        FancyItem::class.shouldHaveMemberProperty("name") {
+          it.shouldNotBeLateInit()
         }
       }
     }

@@ -41,7 +41,7 @@ inline fun <reified T : Annotation> beClassAnnotatedWith() = object : Matcher<KC
   )
 }
 
-fun KClass<*>.shouldHaveFunction(name: String, block: (KFunction<*>) -> Unit = {}) {
+fun KClass<*>.shouldHaveFunction(name: String, block: (KFunction<*>) -> Unit) {
   this should haveFunction(name)
   findFunction(name)?.let(block)
 }

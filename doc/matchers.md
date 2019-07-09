@@ -239,7 +239,18 @@ For the extension function style, each function has an equivalent negated versio
 | `kfunction.shouldBeAnnotatedWith<T>()` | Asserts that the function is annotated with the given type |
 | `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation | 
 | `kfunction.shouldHaveReturnType<T>()` | Asserts that the function returns the given type |
+| `kfunction.shouldBeInline()` | Asserts that the function is inline |
+| `kfunction.shouldBeInfix()` | Asserts that the function is infix |
 | `kproperty.shouldBeOfType<T>()` | Asserts that the property is of the given type |
+| `kproperty.shouldBeConst()` | Asserts that the property is a const | 
+| `kproperty.shouldBeLateInit()` | Asserts that the property is a late init var | 
 | `kcallable.shouldHaveVisibility(visibility)` | Asserts that the member have the given visibility |
 | `kcallable.shouldBeFinal()` | Asserts that the member is final |
+| `kcallable.shouldBeOpen()` | Asserts that the member is open |
+| `kcallable.shouldBeAbstract()` | Asserts that the member is abstract |
+| `kcallable.shouldBeSuspendable()` | Asserts that the member is suspendable |
+| `kcallable.shouldAcceptParameters(parameters)` | Asserts that the member can be called with the parameters (check the types) |
+| `kcallable.shouldAcceptParameters(parameters) { block }` | Asserts that the member can be called with the parameters (check the types), and then, runs the block with the annotation |
+| `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
+| `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 

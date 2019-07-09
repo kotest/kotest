@@ -42,6 +42,16 @@ class FunctionMatchersTest : FreeSpec() {
           it.shouldHaveReturnType<String>()
         }
       }
+      "be inline" {
+        SimpleItem::class.shouldHaveFunction("run") {
+          it.shouldBeInline()
+        }
+      }
+      "be infix" {
+        SimpleItem::class.shouldHaveFunction("sum") {
+          it.shouldBeInfix()
+        }
+      }
     }
     "should not" - {
       "have annotations" {
@@ -68,6 +78,16 @@ class FunctionMatchersTest : FreeSpec() {
         }
         FancyItem::class.shouldHaveFunction("fancyFunctionWithString") {
           it.shouldNotHaveReturnType<Int>()
+        }
+      }
+      "be inline" {
+        SimpleItem::class.shouldHaveFunction("sum") {
+          it.shouldNotBeInline()
+        }
+      }
+      "be infix" {
+        SimpleItem::class.shouldHaveFunction("run") {
+          it.shouldNotBeInfix()
         }
       }
     }
