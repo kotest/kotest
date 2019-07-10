@@ -2,104 +2,76 @@ package com.sksamuel.kt.extensions.system
 
 import io.kotlintest.*
 import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.extensions.system.OverrideMode
 import io.kotlintest.extensions.system.SystemPropertyTestListener
 import io.kotlintest.extensions.system.withSystemProperties
 import io.kotlintest.extensions.system.withSystemProperty
+import io.kotlintest.inspectors.forAll
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.WordSpec
+import io.mockk.every
+import io.mockk.mockk
 import java.util.*
 
-class SystemPropertiesSuspendTest : FreeSpec() {
-  
+class SystemPropertiesExtensionsTest : FreeSpec() {
+
+  private val key = "SystemPropertiesExtensionsTestFoo"
+  private val value = "SystemPropertiesExtensionsTestBar"
+
+  private val mode: OverrideMode = mockk {
+    every { override(any(), any()) } answers { firstArg<Map<String, String>>().plus(secondArg<Map<String,String>>()).toMutableMap() }
+  }
+
   init {
-    "The system properties function" - {
-      "Must accept a suspend block" - {
-        
-        val suspendBlock: suspend () -> Unit = {  }
-        
-        "Key Value overload" {
-            withSystemProperty("Key", "Value") {
-              suspendBlock()
-          }
-        }
-        
-        "Properties value overload" {
-          withSystemProperties(Properties()) {
-            suspendBlock()
-          }
-        }
-  
-        "Map value overload" {
-          withSystemProperties(mapOf("Key" to "Value")) {
-            suspendBlock()
-          }
-        }
+    "Should set properties to specific map" - {
+      executeOnAllPropertyOverloads {
+        System.getProperty(key) shouldBe value
+      }
+    }
+
+    "Should return original properties to their place after execution" - {
+      val before = System.getProperties()
+
+      executeOnAllPropertyOverloads {
+        System.getProperties() shouldNotBe before
+      }
+
+      System.getProperties() shouldBe before
+
+    }
+
+    "Should return the computed value" - {
+      val results = executeOnAllPropertyOverloads { "RETURNED" }
+
+      results.forAll {
+        it shouldBe "RETURNED"
       }
     }
   }
+
+  private suspend fun <T> FreeSpecScope.executeOnAllPropertyOverloads(block: suspend () -> T): List<T> {
+    val results = mutableListOf<T>()
+
+    "String String overload" {
+      results += withSystemProperty(key, value, mode) { block() }
+    }
+
+    "Pair overload" {
+      results += withSystemProperties(key to value, mode) { block() }
+    }
+
+    "Properties Overload" {
+      results += withSystemProperties(Properties().apply { put(key, value) }) { block() }
+    }
+
+    "Map overload" {
+      results += withSystemProperties(mapOf(key to value), mode) { block() }
+    }
+
+    return results
+  }
+
 }
-
-class SystemPropertyFunctionTest : FunSpec({
-
-  test("withSystemProperty should set and then restore sys property when null") {
-    System.getProperty("wibblewobble") shouldBe null
-    withSystemProperty("wibblewobble", "dibble") {
-      System.getProperty("wibblewobble") shouldBe "dibble"
-    }
-    System.getProperty("wibblewobble") shouldBe null
-  }
-
-  test("withSystemProperty should set and then restore sys property when not null") {
-    System.setProperty("fib", "fab")
-    System.getProperty("fib") shouldBe "fab"
-    withSystemProperty("fib", "fob") {
-      System.getProperty("fib") shouldBe "fob"
-    }
-    System.getProperty("fib") shouldBe "fab"
-  }
-
-  test("withSystemProperties from pairs should set and then restore all props") {
-    System.setProperty("a", "foo")
-    System.getProperty("a") shouldBe "foo"
-    System.getProperty("b") shouldBe null
-    withSystemProperties(mapOf("a" to "y", "b" to "z")) {
-      System.getProperty("a") shouldBe "y"
-      System.getProperty("b") shouldBe "z"
-    }
-    System.getProperty("a") shouldBe "foo"
-    System.getProperty("b") shouldBe null
-  }
-
-  test("withSystemProperties from Properties should set and then restore all props") {
-    System.setProperty("a", "foo")
-    System.getProperty("a") shouldBe "foo"
-    System.getProperty("b") shouldBe null
-
-    val props = Properties()
-    props.setProperty("a", "m")
-    props.setProperty("b", "n")
-  
-    withSystemProperties(props) {
-      System.getProperty("a") shouldBe "m"
-      System.getProperty("b") shouldBe "n"
-    }
-    System.getProperty("a") shouldBe "foo"
-    System.getProperty("b") shouldBe null
-  }
-
-  test("an error in the thunk should restore properties") {
-    System.setProperty("wibblewobble", "dobble")
-    System.getProperty("wibblewobble") shouldBe "dobble"
-    shouldThrowAny {
-      withSystemProperty("wibblewobble", "dibble") {
-        System.getProperty("wibblewobble") shouldBe "dibble"
-        throw RuntimeException()
-      }
-    }
-    System.getProperty("wibblewobble") shouldBe "dobble"
-  }
-})
 
 class SystemPropertyListenerTest : WordSpec() {
 
