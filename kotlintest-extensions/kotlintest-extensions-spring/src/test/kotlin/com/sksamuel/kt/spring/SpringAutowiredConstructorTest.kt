@@ -1,4 +1,4 @@
-package io.kotlintest.spring
+package com.sksamuel.kt.spring
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec

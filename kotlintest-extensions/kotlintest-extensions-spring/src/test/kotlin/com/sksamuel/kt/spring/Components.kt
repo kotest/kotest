@@ -1,4 +1,4 @@
-package io.kotlintest.spring
+package com.sksamuel.kt.spring
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
