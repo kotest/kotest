@@ -4,6 +4,8 @@ import arrow.core.Try
 import io.kotlintest.assertions.arrow.`try`.beFailure
 import io.kotlintest.assertions.arrow.`try`.beFailureOfType
 import io.kotlintest.assertions.arrow.`try`.beSuccess
+import io.kotlintest.assertions.arrow.`try`.shouldBeFailure
+import io.kotlintest.assertions.arrow.`try`.shouldBeSuccess
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -28,6 +30,11 @@ class TryMatchersTest : WordSpec() {
 
         Try.Success("foo") should beSuccess("foo")
       }
+      "use contracts to expose Success<*>" {
+        val t = Try { "boo" }
+        t.shouldBeSuccess()
+        t.value shouldBe "boo"
+      }
     }
 
     "Try shouldBe Failure" should {
@@ -51,6 +58,11 @@ class TryMatchersTest : WordSpec() {
         Try.Failure(RuntimeException()) should beFailureOfType<RuntimeException>()
         Try.Failure(RuntimeException()) should beFailureOfType<Exception>()
         Try.Failure(Exception()) shouldNot beFailureOfType<RuntimeException>()
+      }
+      "use contracts to expose Failure" {
+        val t = Try.Failure(RuntimeException("boo"))
+        t.shouldBeFailure()
+        t.exception shouldBe RuntimeException("boo")
       }
     }
   }

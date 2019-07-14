@@ -7,8 +7,17 @@ import io.kotlintest.Result
 import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
-fun <T> Try<T>.shouldBeSuccess() = this should beSuccess()
+@UseExperimental(ExperimentalContracts::class)
+fun <T> Try<T>.shouldBeSuccess() {
+  contract {
+    returns() implies (this@shouldBeSuccess is Try.Success<*>)
+  }
+  this should beSuccess()
+}
+
 fun <T> Try<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 fun <T> beSuccess() = beInstanceOf2<Try<T>, Success<T>>()
 
@@ -28,7 +37,14 @@ fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   }
 }
 
-fun Try<Any>.shouldBeFailure() = this should beFailure()
+@UseExperimental(ExperimentalContracts::class)
+fun Try<Any>.shouldBeFailure() {
+  contract {
+    returns() implies (this@shouldBeFailure is Try.Failure)
+  }
+  this should beFailure()
+}
+
 fun Try<Any>.shouldNotBeFailure() = this shouldNot beFailure()
 fun beFailure() = object : Matcher<Try<Any>> {
   override fun test(value: Try<Any>): Result {
