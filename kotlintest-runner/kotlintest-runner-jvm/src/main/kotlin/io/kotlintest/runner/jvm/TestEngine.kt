@@ -1,26 +1,26 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
+import io.kotlintest.DoNotParallelize
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCaseFilter
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+
 
 class TestEngine(val classes: List<KClass<out Spec>>,
                  filters: List<TestCaseFilter>,
-                 parallelism: Int,
+                 val parallelism: Int,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
-
-  // the main executor is used to parallelize the execution of specs
-  // inside a spec, tests themselves are executed as coroutines
-  private val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
 
   // the scheduler executor is used for notifications on when a test case timeout has been reached
   private val scheduler = Executors.newSingleThreadScheduledExecutor()
@@ -41,9 +41,23 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   private fun submitAll() = Try {
     logger.trace("Submitting ${classes.size} specs")
 
-    // the classes are ordered using an instance of SpecExecutionOrder before
-    // being submitted in the order returned
-    Project.specExecutionOrder().sort(classes).forEach { submitSpec(it) }
+    // the classes are ordered using an instance of SpecExecutionOrder
+    val specs = Project.specExecutionOrder().sort(classes)
+
+    // if parallelize is enabled, then we must order the specs into two sets, depending on if they
+    // are thread safe or not.
+    val (single, parallel) = if (parallelism == 1)
+      specs to emptyList()
+    else
+      specs.partition { it.isDoNotParallelize() }
+
+    submitBatch(parallel, parallelism)
+    submitBatch(single, 1)
+  }
+
+  private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
+    val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
+    specs.forEach { submitSpec(it, executor) }
     executor.shutdown()
 
     logger.trace("Waiting for spec execution to terminate")
@@ -54,9 +68,6 @@ class TestEngine(val classes: List<KClass<out Spec>>,
       t
     }
 
-    // the executor may have terminated early because it was shutdown immediately
-    // by an error in a submission. This will be reflected in the error reference
-    // being set to a non null value
     if (error != null)
       throw error
   }
@@ -84,7 +95,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     )
   }
 
-  private fun submitSpec(klass: KClass<out Spec>) {
+  private fun submitSpec(klass: KClass<out Spec>, executor: ExecutorService) {
     executor.submit {
       createSpec(klass).fold(
           { t ->
@@ -110,3 +121,5 @@ class TestEngine(val classes: List<KClass<out Spec>>,
         }
       }
 }
+
+fun KClass<*>.isDoNotParallelize(): Boolean = findAnnotation<DoNotParallelize>() != null
