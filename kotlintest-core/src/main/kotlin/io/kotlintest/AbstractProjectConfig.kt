@@ -2,6 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.ProjectLevelExtension
+import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -28,6 +29,11 @@ abstract class AbstractProjectConfig {
    * List of project wide [TestListener] instances.
    */
   open fun listeners(): List<TestListener> = emptyList()
+
+  /**
+   * List of project wide [ProjectListener] instances.
+   */
+  open fun projectListeners(): List<ProjectListener> = emptyList()
 
   /**
    * List of project wide [TestCaseFilter] instances.

@@ -12,11 +12,13 @@ interface TestListener {
   /**
    * Is invoked once the Test Engine is started.
    */
+  @Deprecated("Prefer using ProjectListeners over TestListener for project before/after", ReplaceWith("ProjectListener"))
   fun beforeProject(): Unit = Unit
 
   /**
    * Is invoked once the Test Engine has finished.
    */
+  @Deprecated("Prefer using ProjectListeners over TestListener for project before/after", ReplaceWith("ProjectListener"))
   fun afterProject(): Unit = Unit
 
   /**

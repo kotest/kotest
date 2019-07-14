@@ -50,6 +50,7 @@ object Project {
 
   private val _extensions: MutableList<ProjectLevelExtension> = mutableListOf(SystemPropertyTagExtension, RuntimeTagExtension)
   private val _listeners = mutableListOf<TestListener>()
+  private val _projectlisteners = mutableListOf<ProjectListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
   private var writeSpecFailureFile: Boolean = true
@@ -59,6 +60,7 @@ object Project {
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
   private fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
+  private fun projectListeners(): List<ProjectListener> = _projectlisteners
   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
   fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
@@ -79,6 +81,7 @@ object Project {
   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.also {
     _extensions.addAll(it.extensions())
     _listeners.addAll(it.listeners())
+    _projectlisteners.addAll(it.projectListeners())
     _filters.addAll(it.filters())
     _specExecutionOrder = it.specExecutionOrder()
     _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
@@ -92,7 +95,8 @@ object Project {
 
   fun beforeAll() {
     printConfigs()
-    projectExtensions().forEach { extension -> extension.beforeAll() }
+    projectExtensions().forEach { it.beforeAll() }
+    projectListeners().forEach { it.beforeProject() }
     projectConfig?.beforeAll()
     listeners().forEach { it.beforeProject() }
   }
@@ -100,6 +104,7 @@ object Project {
   fun afterAll() {
     listeners().forEach { it.afterProject() }
     projectConfig?.afterAll()
+    projectListeners().forEach { it.afterProject() }
     projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
 
