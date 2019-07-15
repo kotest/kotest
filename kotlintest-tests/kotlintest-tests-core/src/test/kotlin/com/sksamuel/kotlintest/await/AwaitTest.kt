@@ -2,8 +2,10 @@ package com.sksamuel.kotlintest.await
 
 import io.kotlintest.await.await
 import io.kotlintest.await.awaitListener
+import io.kotlintest.eventually.fibonacciInterval
 import io.kotlintest.eventually.fixedInterval
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import java.time.Duration
 import java.util.concurrent.CountDownLatch
@@ -49,5 +51,25 @@ class AwaitTest : FunSpec({
     }
     latch.await(15, TimeUnit.SECONDS) shouldBe true
     result shouldBe "xxxxxxxxxxx"
+  }
+
+  test("fail tests that fail a predicate") {
+    shouldThrow<AssertionError> {
+      await(Duration.ofSeconds(1), { it == 2 }) {
+        1
+      }
+    }
+  }
+
+  test("support fibonacci intervals") {
+    var t = ""
+    val latch = CountDownLatch(5)
+    val listener = awaitListener<String> { latch.countDown() }
+    val result = await(Duration.ofSeconds(10), fibonacciInterval(Duration.ofMillis(200)), { t == "xxxxxx" }, listener) {
+      t += "x"
+      t
+    }
+    latch.await(10, TimeUnit.SECONDS) shouldBe true
+    result shouldBe "xxxxxx"
   }
 })

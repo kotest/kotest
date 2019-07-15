@@ -1,15 +1,14 @@
 package io.kotlintest.eventually
 
 import java.time.Duration
-import java.time.temporal.ChronoUnit
 
 /**
  * Create an instance of the [FibonacciPollInterval] with a supplied time unit.
  *
- * @param offset   The fibonacci offset. For example if offset is 5 and poll count is 1 then the returned duration will be 8 (since  `fib(6)` is equal to 8).
- * @param unit The time unit
+ * @param offset   The fibonacci offset. Eg if offset is 5 and poll count is 1 then the duration will be base * fib(6).
+ * @param base The duration that is multiplied by the fibonacci value
  */
-open class FibonacciPollInterval(private val offset: Int, private val unit: ChronoUnit) : PollInterval {
+class FibonacciPollInterval(private val base: Duration, private val offset: Int) : PollInterval {
 
   init {
     if (offset <= -1) {
@@ -17,9 +16,7 @@ open class FibonacciPollInterval(private val offset: Int, private val unit: Chro
     }
   }
 
-  override fun next(count: Int): Duration {
-    return Duration.of(fibonacci(offset + count).toLong(), unit)
-  }
+  override fun next(count: Int): Duration = base.multipliedBy(fibonacci(offset + count).toLong())
 
   private fun fibonacci(value: Int): Int = fib(value, 1, 0)
 
@@ -32,3 +29,6 @@ open class FibonacciPollInterval(private val offset: Int, private val unit: Chro
     return fib(value - 1, current + previous, current)
   }
 }
+
+fun fibonacciInterval(base: Duration) = FibonacciPollInterval(base, 0)
+fun fibonacciInterval(offset: Int, base: Duration) = FibonacciPollInterval(base, offset)

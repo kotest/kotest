@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest
+package com.sksamuel.kotlintest.eventually
 
 import io.kotlintest.eventually.eventually
 import io.kotlintest.matchers.string.shouldEndWith

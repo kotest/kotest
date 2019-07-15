@@ -10,3 +10,5 @@ class ExponentialPollInterval(private val base: Int, private val unit: ChronoUni
     return Duration.of(amount, unit)
   }
 }
+
+fun exponentialInterval(base: Int, unit: ChronoUnit) = ExponentialPollInterval(base, unit)
