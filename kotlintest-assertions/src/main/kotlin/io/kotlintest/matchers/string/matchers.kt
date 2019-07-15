@@ -86,7 +86,8 @@ infix fun String?.shouldNotHaveLineCount(count: Int) = this shouldNot haveLineCo
  * This will count both "\n" and "\r\n", and so is not dependant on the system line separator.
  */
 fun haveLineCount(count: Int) = neverNullMatcher<String> { value ->
-  val lines = value.count { it == '\n' }
+  // plus one because we always have one more line than the new line character
+  val lines = if (value.isEmpty()) 0 else value.count { it == '\n' } + 1
   Result(lines == count,
       "${value.show()} should have $count lines but had $lines",
       "${value.show()} should not have $count lines")

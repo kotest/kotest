@@ -639,10 +639,14 @@ class StringMatchersTest : FreeSpec() {
     "should have line count" - {
       "should count all newlines" {
         "" should haveLineCount(0)
-        "\n" should haveLineCount(1)
-        "\r\n" should haveLineCount(1)
-        "a\nb\nc" should haveLineCount(2)
-        "\r\n" shouldNotHaveLineCount 2
+        "".shouldHaveLineCount(0)
+        "\n" should haveLineCount(2)
+        "\n" shouldHaveLineCount (2)
+        "\r\n" should haveLineCount(2)
+        "\r\n".shouldHaveLineCount(2)
+        "a\nb\nc" should haveLineCount(3)
+        "\r\n" shouldNotHaveLineCount 1
+        "\r\n".shouldNotHaveLineCount(3)
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -799,7 +803,7 @@ class StringMatchersTest : FreeSpec() {
       }
 
       "should throw error when x > y" {
-        shouldThrow<AssertionError> { "FOO".shouldHaveLengthBetween(11, 10) }
+        shouldThrow<IllegalArgumentException> { "FOO".shouldHaveLengthBetween(11, 10) }
       }
     }
   }
