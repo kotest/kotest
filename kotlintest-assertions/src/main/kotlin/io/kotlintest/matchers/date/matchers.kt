@@ -6,11 +6,7 @@ import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.Period
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.temporal.TemporalAmount
 
 /**
@@ -2185,39 +2181,39 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
     val passed = value.isAfter(a) && value.isBefore(b)
     return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
-
-
-  /**
-   * Asserts that the day of month inputted is equaled the date day
-   *
-   * ```
-   *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
-   *
-   *    date.shouldHaveDayOfMonth(15) // Assertion passes
-   * ```
-   */
-  fun OffsetDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldBe day
-
-  /**
-   * Asserts that the day of year inputted is equaled the date day
-   *
-   * ```
-   *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
-   *
-   *    date.shouldHaveDayOfYear(46) // Assertion passes
-   * ```
-   */
-  fun OffsetDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe day
-
-  /**
-   * Asserts that the day of year inputted is equaled the date day
-   *
-   * ```
-   *    val date = OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
-   *
-   *    date.shouldHaveDayOfWeek(FRIDAY) // Assertion passes
-   *    date.shouldHaveDayOfWeek(5) // Assertion passes
-   * ```
-   */
-  fun OffsetDateTime.shouldHaveDayOfWeek(day: Int) = this.dayOfWeek.value shouldBe day
 }
+
+/**
+ * Asserts that the day of month inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldHaveDayOfMonth(15) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldBe day
+
+/**
+ * Asserts that the day of year inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldHaveDayOfYear(46) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe day
+
+/**
+ * Asserts that the day of year inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldHaveDayOfWeek(FRIDAY) // Assertion passes
+ *    date.shouldHaveDayOfWeek(5) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfWeek(day: Int) = this.dayOfWeek.value shouldBe day
+infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek shouldBe day

@@ -4,6 +4,7 @@ import io.kotlintest.*
 import io.kotlintest.matchers.date.*
 import io.kotlintest.specs.StringSpec
 import java.time.*
+import java.time.DayOfWeek.SATURDAY
 
 class DateMatchersTest : StringSpec() {
   init {
@@ -326,6 +327,19 @@ class DateMatchersTest : StringSpec() {
       shouldFail {
         LocalDateTime.now().shouldNotBeToday()
       }
+    }
+
+    "LocalDateTime should have day of month (day)" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfMonth 16
+    }
+
+    "LocalDateTime should have day of week (day)" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfWeek  SATURDAY
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfWeek  6
+    }
+
+    "LocalDateTime should have day of year (day)" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfYear  47
     }
   }
 }
