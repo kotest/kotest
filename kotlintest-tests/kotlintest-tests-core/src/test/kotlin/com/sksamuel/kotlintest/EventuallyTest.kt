@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.eventually
+import io.kotlintest.eventually.eventually
 import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
