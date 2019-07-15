@@ -3,22 +3,34 @@ package com.sksamuel.kotlintest.matchers.date
 import io.kotlintest.matchers.date.after
 import io.kotlintest.matchers.date.before
 import io.kotlintest.matchers.date.haveSameDay
+import io.kotlintest.matchers.date.haveSameHours
+import io.kotlintest.matchers.date.haveSameMinutes
 import io.kotlintest.matchers.date.haveSameMonth
+import io.kotlintest.matchers.date.haveSameNanos
+import io.kotlintest.matchers.date.haveSameSeconds
 import io.kotlintest.matchers.date.haveSameYear
 import io.kotlintest.matchers.date.shouldBeAfter
 import io.kotlintest.matchers.date.shouldBeBefore
+import io.kotlintest.matchers.date.shouldBeBetween
 import io.kotlintest.matchers.date.shouldBeWithin
 import io.kotlintest.matchers.date.shouldHaveSameDayAs
+import io.kotlintest.matchers.date.shouldHaveSameHoursAs
+import io.kotlintest.matchers.date.shouldHaveSameMinutesAs
 import io.kotlintest.matchers.date.shouldHaveSameMonthAs
+import io.kotlintest.matchers.date.shouldHaveSameNanosAs
+import io.kotlintest.matchers.date.shouldHaveSameSecondsAs
 import io.kotlintest.matchers.date.shouldHaveSameYearAs
-import io.kotlintest.matchers.date.shouldBeBetween
 import io.kotlintest.matchers.date.shouldNotBeAfter
 import io.kotlintest.matchers.date.shouldNotBeBefore
+import io.kotlintest.matchers.date.shouldNotBeBetween
 import io.kotlintest.matchers.date.shouldNotBeWithin
 import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
+import io.kotlintest.matchers.date.shouldNotHaveSameHoursAs
+import io.kotlintest.matchers.date.shouldNotHaveSameMinutesAs
 import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
+import io.kotlintest.matchers.date.shouldNotHaveSameNanosAs
+import io.kotlintest.matchers.date.shouldNotHaveSameSecondsAs
 import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
-import io.kotlintest.matchers.date.shouldNotBeBetween
 import io.kotlintest.matchers.date.within
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -28,14 +40,43 @@ import io.kotlintest.specs.StringSpec
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 class DateMatchersTest : StringSpec() {
   init {
+
+    "LocalTime should have same nanos ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameNanos(LocalTime.of(5, 6, 7, 4))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameNanos(LocalTime.of(1, 2, 3, 8))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameNanosAs(LocalTime.of(5, 6, 7, 4))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameNanosAs(LocalTime.of(1, 2, 3, 8))
+    }
+
+    "LocalTime should have same seconds ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameSeconds(LocalTime.of(5, 6, 3, 4))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameSeconds(LocalTime.of(1, 2, 5, 4))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameSecondsAs(LocalTime.of(5, 6, 3, 4))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameSecondsAs(LocalTime.of(1, 2, 5, 4))
+    }
+
+    "LocalTime should have same minutes ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameMinutes(LocalTime.of(5, 2, 7, 8))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameMinutes(LocalTime.of(1, 5, 3, 4))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameMinutesAs(LocalTime.of(5, 2, 7, 8))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameMinutesAs(LocalTime.of(1, 5, 3, 4))
+    }
+
+    "LocalTime should have same hours ignoring other fields" {
+      LocalTime.of(12, 1, 2, 7777) should haveSameHours(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(3, 59, 58, 9999) shouldNot haveSameHours(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(12, 1, 2, 7777).shouldHaveSameHoursAs(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(3, 59, 58, 9999).shouldNotHaveSameHoursAs(LocalTime.of(12, 59, 58, 9999))
+    }
 
     "LocalDate should have same year ignoring other fields" {
       LocalDate.of(2014, 1, 2) should haveSameYear(LocalDate.of(2014, 5, 6))
@@ -49,8 +90,6 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNot haveSameYear(LocalDateTime.of(2018, 5, 6, 3, 2, 1))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).shouldHaveSameYearAs(LocalDateTime.of(2014, 5, 6, 3, 2, 1))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).shouldNotHaveSameYearAs(LocalDateTime.of(2018, 5, 6, 3, 2, 1))
-  
-  
     }
 
     "ZonedDateTime should have same year ignoring other fields" {
@@ -72,7 +111,6 @@ class DateMatchersTest : StringSpec() {
       LocalDate.of(2014, 1, 2) shouldNot haveSameMonth(LocalDate.of(2018, 4, 6))
       LocalDate.of(2014, 1, 2).shouldHaveSameMonthAs(LocalDate.of(2016, 1, 6))
       LocalDate.of(2014, 1, 2).shouldNotHaveSameMonthAs(LocalDate.of(2018, 4, 6))
-  
     }
 
     "LocalDateTime should have same month ignoring other fields" {
@@ -101,7 +139,6 @@ class DateMatchersTest : StringSpec() {
       LocalDate.of(2014, 1, 2) shouldNot haveSameDay(LocalDate.of(2014, 4, 6))
       LocalDate.of(2014, 1, 2).shouldHaveSameDayAs(LocalDate.of(2014, 1, 2))
       LocalDate.of(2014, 1, 2).shouldNotHaveSameDayAs(LocalDate.of(2014, 4, 6))
-  
     }
 
     "LocalDateTime should have same day ignoring other fields" {
@@ -123,6 +160,13 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNot haveSameDay(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC).shouldHaveSameDayAs(LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotHaveSameDayAs(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
+    }
+
+    "LocalTime shouldBe before" {
+      LocalTime.of(1, 2, 3, 1000) shouldBe before(LocalTime.of(1, 10, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000) shouldNotBe before(LocalTime.of(1, 1, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000).shouldBeBefore(LocalTime.of(5, 2, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000).shouldNotBeBefore(LocalTime.of(0, 2, 3, 1000))
     }
 
     "LocalDate shouldBe before" {
@@ -153,6 +197,13 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeBefore(LocalDateTime.of(2012, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
 
+    "LocalTime shouldBe after" {
+      LocalTime.of(1, 2, 3, 9999) shouldBe after(LocalTime.of(1, 2, 3, 1111))
+      LocalTime.of(1, 2, 3, 1000) shouldNotBe after(LocalTime.of(1, 2, 10, 1000))
+      LocalTime.of(1, 2, 3, 9999).shouldBeAfter(LocalTime.of(1, 2, 3, 1111))
+      LocalTime.of(1, 2, 3, 1000).shouldNotBeAfter(LocalTime.of(1, 2, 10, 1000))
+    }
+
     "LocalDate shouldBe after" {
       LocalDate.of(2014, 1, 2) shouldBe after(LocalDate.of(2013, 1, 3))
       LocalDate.of(2014, 1, 2) shouldNotBe after(LocalDate.of(2014, 1, 3))
@@ -181,16 +232,14 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeAfter(LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
 
-
     "LocalDate shouldBe within(period, date)" {
       LocalDate.of(2014, 1, 2) shouldBe within(Period.ofDays(3), LocalDate.of(2014, 1, 1))
       LocalDate.of(2014, 1, 2) shouldBe within(Period.ofDays(3), LocalDate.of(2014, 1, 5))
       LocalDate.of(2014, 1, 2) shouldNotBe within(Period.ofDays(3), LocalDate.of(2014, 1, 6))
       LocalDate.of(2014, 1, 2).shouldBeWithin(Period.ofDays(3), LocalDate.of(2014, 1, 5))
       LocalDate.of(2014, 1, 2).shouldNotBeWithin(Period.ofDays(3), LocalDate.of(2014, 1, 6))
-  
     }
-    
+
     "LocalDateTime shouldBe within(period, date)" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2) shouldBe within(Period.ofDays(1), LocalDateTime.of(2014, 1, 2, 9, 3, 2))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNotBe within(Period.ofDays(1), LocalDateTime.of(2014, 1, 3, 3, 2, 2))
@@ -204,21 +253,21 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe within(Period.ofDays(1), LocalDateTime.of(2014, 1, 2, 9, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe within(Period.ofDays(1), LocalDateTime.of(2014, 1, 3, 3, 2, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe within(Period.ofDays(1), LocalDateTime.of(2014, 1, 1, 3, 2, 0).atZone(ZoneId.of("Z")))
-  
+
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 1, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 2, 9, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")).shouldNotBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 3, 3, 2, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")).shouldNotBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 1, 3, 2, 0).atZone(ZoneId.of("Z")))
     }
-    
+
     "ZonedDateTime shouldBe within(duration, date)" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 1, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")) shouldBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 2, 9, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 3, 3, 2, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 1, 3, 2, 0).atZone(ZoneId.of("Z")))
-  
+
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 1, 1, 4, 3, 2).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 1, 2, 9, 3, 2).atZone(ZoneId.of("Z")))
@@ -232,12 +281,17 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC).shouldBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeWithin(Period.ofDays(1), LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
-    
+
     "OffsetDateTime shouldBe within(duration, date)" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) shouldBe within(Duration.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNotBe within(Duration.ofDays(1), LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC).shouldBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 1, 3, 4, 3, 2).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
+    }
+
+    "LocalTime shouldBe between" {
+      LocalTime.of(14, 20, 50, 1000).shouldBeBetween(LocalTime.of(14, 20, 49), LocalTime.of(14, 20, 51))
+      LocalTime.of(14, 20, 50, 1000).shouldNotBeBetween(LocalTime.of(14, 20, 51), LocalTime.of(14, 20, 52))
     }
 
     "LocalDate shouldBe between" {

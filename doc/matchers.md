@@ -182,6 +182,16 @@ For the extension function style, each function has an equivalent negated versio
 | `date.shouldBeWithin(duration, otherDate)` | Asserts that the date is within the duration of the given date. |
 | `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate. |
 
+| Times ||
+| -------- | ---- |
+| `time.shouldHaveSameHoursAs(otherTime)` | Asserts that the time has the same hours as the given time. |
+| `time.shouldHaveSameMinutesAs(otherTime)` | Asserts that the time has the same minutes as the given time. |
+| `time.shouldHaveSameSecondsAs(otherTime)` | Asserts that the time has the same seconds as the given time. |
+| `time.shouldHaveSameNanosAs(otherTime)` | Asserts that the time has the same nanos as the given time. |
+| `time.shouldBeBefore(otherTime)` | Asserts that the time is before the given time. |
+| `time.shouldBeAfter(otherTime)` | Asserts that the time is after the given time. |
+| `time.shouldBeBetween(firstTime, secondTime)` | Asserts that the time is between firstTime and secondTime. |
+
 | Concurrent ||
 | -------- | ---- |
 | `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration. |
