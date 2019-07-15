@@ -2,11 +2,8 @@ package io.kotlintest.assertions.arrow.`try`
 
 import arrow.core.Success
 import arrow.core.Try
-import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.*
 import io.kotlintest.matchers.beInstanceOf2
-import io.kotlintest.should
-import io.kotlintest.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -21,7 +18,8 @@ fun <T> Try<T>.shouldBeSuccess() {
 fun <T> Try<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
 fun <T> beSuccess() = beInstanceOf2<Try<T>, Success<T>>()
 
-fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
+infix fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
+
 fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)
 fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   override fun test(value: Try<A>): Result {
@@ -33,6 +31,17 @@ fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
         else
           Result(false, "Try should be Success($a) but was Success(${value.value})", "")
       }
+    }
+  }
+}
+
+infix fun <T> Try<T>.shouldBeSuccess(valueTest: (T) -> Unit): Unit = this should beSuccess(valueTest)
+fun <A> beSuccess(valueTest: (A) -> Unit): Matcher<Try<A>> = object : Matcher<Try<A>> {
+  override fun test(value: Try<A>) = when (value) {
+    is Try.Failure -> Result(passed = false, failureMessage = "Try should be a Success but was a Failure", negatedFailureMessage = "Try should not be a Success")
+    is Try.Success<A> -> {
+      valueTest(value.value)
+      Result(passed = true, failureMessage = "", negatedFailureMessage = "")
     }
   }
 }
@@ -51,6 +60,26 @@ fun beFailure() = object : Matcher<Try<Any>> {
     return when (value) {
       is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")
       is Try.Failure -> Result(true, "Try should be a Failure", "Try should not be Failure")
+    }
+  }
+}
+
+
+infix fun Try<Any>.shouldBeFailure(expectedFailure: Throwable) = this should beFailure(expectedFailure)
+fun beFailure(expectedFailure: Throwable): Matcher<Try<Any>> = object : Matcher<Try<Any>> {
+  override fun test(value: Try<Any>): Result = when (value) {
+    is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "")
+    is Try.Failure -> equalityMatcher(expectedFailure).test(value.exception)
+  }
+}
+
+infix fun Try<Any>.shouldBeFailure(throwableTest: (Throwable) -> Unit) = this should beFailure(throwableTest)
+fun beFailure(throwableTest: (Throwable) -> Unit): Matcher<Try<Any>> = object : Matcher<Try<Any>> {
+  override fun test(value: Try<Any>): Result = when (value) {
+    is Try.Success<*> -> Result(false, "Try should be a Failure but was Success(${value.value})", "Try should not be a Failure")
+    is Try.Failure -> {
+      throwableTest(value.exception)
+      Result(true, "", "")
     }
   }
 }

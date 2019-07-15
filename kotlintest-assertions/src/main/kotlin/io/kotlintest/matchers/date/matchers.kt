@@ -548,7 +548,7 @@ fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
  *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
- 
+
  * ```
  */
 infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this should haveSameYear(date)
@@ -565,7 +565,7 @@ infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this shoul
  * ```
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTime.of(1999, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- 
+
  *     firstDate shouldNotHaveSameYearAs secondDate    // Assertion passes
  *
  *
@@ -1240,9 +1240,9 @@ infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
  *    firstDate shouldNotBeBefore secondDate    // Assertion passes
- 
- 
- 
+
+
+
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
