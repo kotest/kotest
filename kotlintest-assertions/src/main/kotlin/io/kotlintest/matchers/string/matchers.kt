@@ -178,6 +178,19 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<String?> {
 }
 
 
+fun String?.shouldHaveLengthIn(range: IntRange) = this should haveLengthIn(range)
+fun String?.shouldNotHaveLengthIn(range: IntRange) = this shouldNot haveLengthIn(range)
+
+fun haveLengthIn(range: IntRange): Matcher<String?> {
+  return neverNullMatcher { value ->
+    Result(
+      value.length in range,
+      "${value.show()} should have length in $range but was ${value.length}",
+      "${value.show()} should not have length between $range")
+  }
+}
+
+
 
 infix fun String?.shouldHaveLength(length: Int) = this should haveLength(length)
 infix fun String?.shouldNotHaveLength(length: Int) = this shouldNot haveLength(length)

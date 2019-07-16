@@ -34,6 +34,7 @@ import io.kotlintest.matchers.string.shouldContainOnlyOnce
 import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldHaveLengthBetween
+import io.kotlintest.matchers.string.shouldHaveLengthIn
 import io.kotlintest.matchers.string.shouldHaveLineCount
 import io.kotlintest.matchers.string.shouldHaveMaxLength
 import io.kotlintest.matchers.string.shouldHaveMinLength
@@ -54,6 +55,7 @@ import io.kotlintest.matchers.string.shouldNotContainOnlyOnce
 import io.kotlintest.matchers.string.shouldNotEndWith
 import io.kotlintest.matchers.string.shouldNotHaveLength
 import io.kotlintest.matchers.string.shouldNotHaveLengthBetween
+import io.kotlintest.matchers.string.shouldNotHaveLengthIn
 import io.kotlintest.matchers.string.shouldNotHaveLineCount
 import io.kotlintest.matchers.string.shouldNotHaveMaxLength
 import io.kotlintest.matchers.string.shouldNotHaveMinLength
@@ -804,6 +806,20 @@ class StringMatchersTest : FreeSpec() {
 
       "should throw error when x > y" {
         shouldThrow<IllegalArgumentException> { "FOO".shouldHaveLengthBetween(11, 10) }
+      }
+    }
+
+    "should have length in range" - {
+      "should work for range" {
+        "hello".shouldHaveLengthIn(5..5)
+        "hello".shouldHaveLengthIn(3..10)
+        "hello".shouldHaveLengthIn(5..10)
+        "hello".shouldNotHaveLengthIn(10..12)
+        "hello".shouldNotHaveLengthIn(1..4)
+      }
+
+      "should fail when outside range" {
+        shouldThrow<AssertionError> { "FOO".shouldHaveLengthIn(9..10) }
       }
     }
   }
