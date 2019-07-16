@@ -1,29 +1,27 @@
-package io.kotlintest.await
+package io.kotlintest.until
 
 import io.kotlintest.Failures
-import io.kotlintest.eventually.PollInterval
-import io.kotlintest.eventually.fixedInterval
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
-interface AwaitListener<in T> {
+interface UntilListener<in T> {
   fun onEval(t: T)
 
   companion object {
-    val noop = object : AwaitListener<Any?> {
+    val noop = object : UntilListener<Any?> {
       override fun onEval(t: Any?) {}
     }
   }
 }
 
-fun <T> awaitListener(f: (T) -> Unit) = object : AwaitListener<T> {
+fun <T> untilListener(f: (T) -> Unit) = object : UntilListener<T> {
   override fun onEval(t: T) {
     f(t)
   }
 }
 
-fun await(duration: Duration,
-          interval: PollInterval = fixedInterval(Duration.of(1, ChronoUnit.SECONDS)),
+fun until(duration: Duration,
+          interval: Delay = fixedDelay(Duration.ofSeconds(1)),
           f: () -> Boolean) {
   val end = System.nanoTime() + duration.toNanos()
   var count = 0
@@ -37,31 +35,31 @@ fun await(duration: Duration,
   throw Failures.failure("Test failed after ${duration.seconds} seconds; attempted $count times")
 }
 
-fun <T> await(duration: Duration,
+fun <T> until(duration: Duration,
               predicate: (T) -> Boolean,
-              f: () -> T): T = await(
+              f: () -> T): T = until(
     duration,
-    fixedInterval(Duration.of(1, ChronoUnit.SECONDS)),
+    fixedDelay(Duration.of(1, ChronoUnit.SECONDS)),
     predicate = predicate,
-    listener = AwaitListener.noop,
+    listener = UntilListener.noop,
     f = f
 )
 
-fun <T> await(duration: Duration,
-              interval: PollInterval,
+fun <T> until(duration: Duration,
+              interval: Delay,
               predicate: (T) -> Boolean,
-              f: () -> T): T = await(
+              f: () -> T): T = until(
     duration,
     interval,
     predicate = predicate,
-    listener = AwaitListener.noop,
+    listener = UntilListener.noop,
     f = f
 )
 
-fun <T> await(duration: Duration,
-              interval: PollInterval,
+fun <T> until(duration: Duration,
+              interval: Delay,
               predicate: (T) -> Boolean,
-              listener: AwaitListener<T>,
+              listener: UntilListener<T>,
               f: () -> T): T {
   val end = System.nanoTime() + duration.toNanos()
   var count = 0

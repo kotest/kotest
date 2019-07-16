@@ -1,14 +1,14 @@
-package io.kotlintest.eventually
+package io.kotlintest.until
 
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 import kotlin.math.pow
 
-class ExponentialPollInterval(private val base: Int, private val unit: ChronoUnit) : PollInterval {
+class ExponentialDelay(private val base: Int, private val unit: ChronoUnit) : Delay {
   override fun next(count: Int): Duration {
     val amount = base.toDouble().pow(count.toDouble()).toLong()
     return Duration.of(amount, unit)
   }
 }
 
-fun exponentialInterval(base: Int, unit: ChronoUnit) = ExponentialPollInterval(base, unit)
+fun exponentialDelay(base: Int, unit: ChronoUnit) = ExponentialDelay(base, unit)

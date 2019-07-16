@@ -1,8 +1,8 @@
-package io.kotlintest.eventually
+package io.kotlintest
 
-import io.kotlintest.Failures
-import io.kotlintest.await.AwaitListener
-import io.kotlintest.await.await
+import io.kotlintest.until.UntilListener
+import io.kotlintest.until.until
+import io.kotlintest.until.fixedDelay
 import java.time.Duration
 
 fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class.java, f)
@@ -31,10 +31,10 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
 
 @Deprecated("To use eventually with a predicate, use await()", ReplaceWith("await(duration, interval, predicate, f)"))
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T =
-    await(
+    until(
         duration = duration,
-        interval = fixedInterval(Duration.ofMillis(500)),
-        listener = AwaitListener.noop,
+        interval = fixedDelay(Duration.ofMillis(500)),
+        listener = UntilListener.noop,
         predicate = predicate,
         f = f
     )
