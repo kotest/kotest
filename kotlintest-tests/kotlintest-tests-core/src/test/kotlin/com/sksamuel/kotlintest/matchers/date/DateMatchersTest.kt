@@ -1,55 +1,9 @@
 package com.sksamuel.kotlintest.matchers.date
 
-import io.kotlintest.matchers.date.after
-import io.kotlintest.matchers.date.before
-import io.kotlintest.matchers.date.haveSameDay
-import io.kotlintest.matchers.date.haveSameHours
-import io.kotlintest.matchers.date.haveSameMinutes
-import io.kotlintest.matchers.date.haveSameMonth
-import io.kotlintest.matchers.date.haveSameNanos
-import io.kotlintest.matchers.date.haveSameSeconds
-import io.kotlintest.matchers.date.haveSameYear
-import io.kotlintest.matchers.date.shouldBeAfter
-import io.kotlintest.matchers.date.shouldBeBefore
-import io.kotlintest.matchers.date.shouldBeBetween
-import io.kotlintest.matchers.date.shouldBeToday
-import io.kotlintest.matchers.date.shouldBeWithin
-import io.kotlintest.matchers.date.shouldHaveSameDayAs
-import io.kotlintest.matchers.date.shouldHaveSameHoursAs
-import io.kotlintest.matchers.date.shouldHaveSameMinutesAs
-import io.kotlintest.matchers.date.shouldHaveSameMonthAs
-import io.kotlintest.matchers.date.shouldHaveSameNanosAs
-import io.kotlintest.matchers.date.shouldHaveSameSecondsAs
-import io.kotlintest.matchers.date.shouldHaveSameYearAs
-import io.kotlintest.matchers.date.shouldNotBeAfter
-import io.kotlintest.matchers.date.shouldNotBeBefore
-import io.kotlintest.matchers.date.shouldNotBeBetween
-import io.kotlintest.matchers.date.shouldNotBeToday
-import io.kotlintest.matchers.date.shouldNotBeWithin
-import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
-import io.kotlintest.matchers.date.shouldNotHaveSameHoursAs
-import io.kotlintest.matchers.date.shouldNotHaveSameMinutesAs
-import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
-import io.kotlintest.matchers.date.shouldNotHaveSameNanosAs
-import io.kotlintest.matchers.date.shouldNotHaveSameSecondsAs
-import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
-import io.kotlintest.matchers.date.within
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
+import io.kotlintest.*
+import io.kotlintest.matchers.date.*
 import io.kotlintest.specs.StringSpec
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Month
-import java.time.OffsetDateTime
-import java.time.Period
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.*
 
 class DateMatchersTest : StringSpec() {
   init {
@@ -192,6 +146,16 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")) shouldNotBe before(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atZone(ZoneId.of("Z")).shouldBeBefore(LocalDateTime.of(2014, 1, 3, 3, 2, 1).atZone(ZoneId.of("Z")))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")).shouldNotBeBefore(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atZone(ZoneId.of("Z")))
+    }
+
+    "ZonedDateTime shouldBe equal" {
+      ZonedDateTime.of(2019, 12, 10, 10, 0, 0, 0, ZoneOffset.UTC) shouldBe
+        ZonedDateTime.of(2019, 12, 10, 4, 0, 0, 0, ZoneId.of("America/Chicago")).atSameZone()
+
+      shouldThrow<AssertionError> {
+        ZonedDateTime.of(2019, 12, 10, 10, 0, 0, 0, ZoneOffset.UTC) shouldBe
+          ZonedDateTime.of(2019, 12, 10, 4, 1, 0, 0, ZoneId.of("America/Chicago")).atSameZone()
+      }.message shouldBe "expected: 2019-12-10T10:01Z but was: 2019-12-10T10:00Z"
     }
 
     "OffsetDateTime shouldBe before" {
