@@ -2187,7 +2187,7 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
  * Asserts that the day of month inputted is equaled the date day
  *
  * ```
- *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
  *
  *    date.shouldHaveDayOfMonth(15) // Assertion passes
  * ```
@@ -2198,7 +2198,7 @@ infix fun LocalDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldB
  * Asserts that the day of year inputted is equaled the date day
  *
  * ```
- *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
  *
  *    date.shouldHaveDayOfYear(46) // Assertion passes
  * ```
@@ -2209,7 +2209,7 @@ infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe 
  * Asserts that the day of year inputted is equaled the date day
  *
  * ```
- *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
  *
  *    date.shouldHaveDayOfWeek(FRIDAY) // Assertion passes
  *    date.shouldHaveDayOfWeek(5) // Assertion passes
@@ -2217,3 +2217,16 @@ infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe 
  */
 infix fun LocalDateTime.shouldHaveDayOfWeek(day: Int) = this.dayOfWeek.value shouldBe day
 infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek shouldBe day
+
+/**
+ * Asserts that the month inputted is equaled the date month
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
+ *
+ *    date.shouldHaveMonth(2) // Assertion passes
+ *    date.shouldHaveMonth(FEBRUARY) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveMonth(month: Int) = this.month.value shouldBe month
+infix fun LocalDateTime.shouldHaveMonth(month: Month) = this.month shouldBe month
