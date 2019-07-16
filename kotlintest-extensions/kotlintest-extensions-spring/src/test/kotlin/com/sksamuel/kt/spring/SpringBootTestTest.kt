@@ -1,7 +1,8 @@
-package io.kotlintest.spring
+package com.sksamuel.kt.spring
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
+import io.kotlintest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
