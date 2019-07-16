@@ -2,8 +2,8 @@ package com.sksamuel.kotlintest.until
 
 import io.kotlintest.until.until
 import io.kotlintest.until.untilListener
-import io.kotlintest.until.fibonacciDelay
-import io.kotlintest.until.fixedDelay
+import io.kotlintest.until.fibonacciInterval
+import io.kotlintest.until.fixedInterval
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
@@ -20,7 +20,7 @@ class UntilTest : FunSpec({
   }
 
   test("until with boolean predicate and interval") {
-    until(Duration.ofSeconds(5), fixedDelay(Duration.ofSeconds(1))) {
+    until(Duration.ofSeconds(5), fixedInterval(Duration.ofSeconds(1))) {
       System.currentTimeMillis() > 0
     }
   }
@@ -34,7 +34,7 @@ class UntilTest : FunSpec({
 
   test("until with T predicate and interval") {
     var t = ""
-    val result = until(Duration.ofSeconds(5), fixedDelay(Duration.ofMillis(250)), { t == "xxxxxxxxxxx" }) {
+    val result = until(Duration.ofSeconds(5), fixedInterval(Duration.ofMillis(250)), { t == "xxxxxxxxxxx" }) {
       t += "x"
       t
     }
@@ -46,7 +46,7 @@ class UntilTest : FunSpec({
     val latch = CountDownLatch(5)
     val listener = untilListener<String> { latch.countDown() }
     val result = until(Duration.ofSeconds(5),
-        fixedDelay(Duration.ofMillis(250)), { t == "xxxxxxxxxxx" }, listener) {
+        fixedInterval(Duration.ofMillis(250)), { t == "xxxxxxxxxxx" }, listener) {
       t += "x"
       t
     }
@@ -67,7 +67,7 @@ class UntilTest : FunSpec({
     val latch = CountDownLatch(5)
     val listener = untilListener<String> { latch.countDown() }
     val result = until(Duration.ofSeconds(10),
-        fibonacciDelay(Duration.ofMillis(200)), { t == "xxxxxx" }, listener) {
+        fibonacciInterval(Duration.ofMillis(200)), { t == "xxxxxx" }, listener) {
       t += "x"
       t
     }

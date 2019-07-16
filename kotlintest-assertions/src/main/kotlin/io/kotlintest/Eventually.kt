@@ -2,7 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.until.UntilListener
 import io.kotlintest.until.until
-import io.kotlintest.until.fixedDelay
+import io.kotlintest.until.fixedInterval
 import java.time.Duration
 
 fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class.java, f)
@@ -33,7 +33,7 @@ fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: Class<E>, 
 fun <T> eventually(duration: Duration, predicate: (T) -> Boolean, f: () -> T): T =
     until(
         duration = duration,
-        interval = fixedDelay(Duration.ofMillis(500)),
+        interval = fixedInterval(Duration.ofMillis(500)),
         listener = UntilListener.noop,
         predicate = predicate,
         f = f

@@ -4,7 +4,7 @@ import io.kotlintest.until.fibonacci
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
-class FibonacciDelayTest : FunSpec() {
+class FibonacciIntervalTest : FunSpec() {
 
   init {
     test("fib correctness") {

@@ -21,7 +21,7 @@ fun <T> untilListener(f: (T) -> Unit) = object : UntilListener<T> {
 }
 
 fun until(duration: Duration,
-          interval: Delay = fixedDelay(Duration.ofSeconds(1)),
+          interval: Interval = fixedInterval(Duration.ofSeconds(1)),
           f: () -> Boolean) {
   val end = System.nanoTime() + duration.toNanos()
   var count = 0
@@ -39,14 +39,14 @@ fun <T> until(duration: Duration,
               predicate: (T) -> Boolean,
               f: () -> T): T = until(
     duration,
-    fixedDelay(Duration.of(1, ChronoUnit.SECONDS)),
+    fixedInterval(Duration.of(1, ChronoUnit.SECONDS)),
     predicate = predicate,
     listener = UntilListener.noop,
     f = f
 )
 
 fun <T> until(duration: Duration,
-              interval: Delay,
+              interval: Interval,
               predicate: (T) -> Boolean,
               f: () -> T): T = until(
     duration,
@@ -57,7 +57,7 @@ fun <T> until(duration: Duration,
 )
 
 fun <T> until(duration: Duration,
-              interval: Delay,
+              interval: Interval,
               predicate: (T) -> Boolean,
               listener: UntilListener<T>,
               f: () -> T): T {

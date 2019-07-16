@@ -12,7 +12,7 @@ import java.time.Duration
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
  */
-class FibonacciDelay(private val base: Duration, private val offset: Int) : Delay {
+class FibonacciInterval(private val base: Duration, private val offset: Int) : Interval {
 
   init {
     require(offset >= 0) { "Offset must be greater than or equal to 0" }
@@ -22,8 +22,8 @@ class FibonacciDelay(private val base: Duration, private val offset: Int) : Dela
 
 }
 
-fun fibonacciDelay(base: Duration) = FibonacciDelay(base, 0)
-fun fibonacciDelay(offset: Int, base: Duration) = FibonacciDelay(base, offset)
+fun fibonacciInterval(base: Duration) = FibonacciInterval(base, 0)
+fun fibonacciInterval(offset: Int, base: Duration) = FibonacciInterval(base, offset)
 
 fun fibonacci(n: Int): Int {
   tailrec fun fib(k: Int, current: Int, previous: Int): Int = when (k) {

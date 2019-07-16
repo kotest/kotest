@@ -3,9 +3,9 @@ package io.kotlintest.until
 import java.time.Duration
 
 /**
- * A [Delay] determines how often KotlinTest will invoke the predicate function for an [until] block.
+ * A [Interval] determines how often KotlinTest will invoke the predicate function for an [until] block.
  */
-interface Delay {
+interface Interval {
 
   /**
    * Returns the next delay as a [Duration].
