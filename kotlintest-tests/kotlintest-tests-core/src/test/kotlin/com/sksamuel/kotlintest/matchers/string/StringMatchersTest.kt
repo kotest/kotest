@@ -24,6 +24,7 @@ import io.kotlintest.matchers.string.shouldBeBlank
 import io.kotlintest.matchers.string.shouldBeEmpty
 import io.kotlintest.matchers.string.shouldBeEqualIgnoringCase
 import io.kotlintest.matchers.string.shouldBeLowerCase
+import io.kotlintest.matchers.string.shouldBeSingleLine
 import io.kotlintest.matchers.string.shouldBeUpperCase
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.string.shouldContainADigit
@@ -32,6 +33,8 @@ import io.kotlintest.matchers.string.shouldContainOnlyDigits
 import io.kotlintest.matchers.string.shouldContainOnlyOnce
 import io.kotlintest.matchers.string.shouldEndWith
 import io.kotlintest.matchers.string.shouldHaveLength
+import io.kotlintest.matchers.string.shouldHaveLengthBetween
+import io.kotlintest.matchers.string.shouldHaveLengthIn
 import io.kotlintest.matchers.string.shouldHaveLineCount
 import io.kotlintest.matchers.string.shouldHaveMaxLength
 import io.kotlintest.matchers.string.shouldHaveMinLength
@@ -42,6 +45,7 @@ import io.kotlintest.matchers.string.shouldNotBeBlank
 import io.kotlintest.matchers.string.shouldNotBeEmpty
 import io.kotlintest.matchers.string.shouldNotBeEqualIgnoringCase
 import io.kotlintest.matchers.string.shouldNotBeLowerCase
+import io.kotlintest.matchers.string.shouldNotBeSingleLine
 import io.kotlintest.matchers.string.shouldNotBeUpperCase
 import io.kotlintest.matchers.string.shouldNotContain
 import io.kotlintest.matchers.string.shouldNotContainADigit
@@ -50,6 +54,8 @@ import io.kotlintest.matchers.string.shouldNotContainOnlyDigits
 import io.kotlintest.matchers.string.shouldNotContainOnlyOnce
 import io.kotlintest.matchers.string.shouldNotEndWith
 import io.kotlintest.matchers.string.shouldNotHaveLength
+import io.kotlintest.matchers.string.shouldNotHaveLengthBetween
+import io.kotlintest.matchers.string.shouldNotHaveLengthIn
 import io.kotlintest.matchers.string.shouldNotHaveLineCount
 import io.kotlintest.matchers.string.shouldNotHaveMaxLength
 import io.kotlintest.matchers.string.shouldNotHaveMinLength
@@ -635,10 +641,14 @@ class StringMatchersTest : FreeSpec() {
     "should have line count" - {
       "should count all newlines" {
         "" should haveLineCount(0)
-        "\n" should haveLineCount(1)
-        "\r\n" should haveLineCount(1)
-        "a\nb\nc" should haveLineCount(2)
-        "\r\n" shouldNotHaveLineCount 2
+        "".shouldHaveLineCount(0)
+        "\n" should haveLineCount(2)
+        "\n" shouldHaveLineCount (2)
+        "\r\n" should haveLineCount(2)
+        "\r\n".shouldHaveLineCount(2)
+        "a\nb\nc" should haveLineCount(3)
+        "\r\n" shouldNotHaveLineCount 1
+        "\r\n".shouldNotHaveLineCount(3)
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -716,55 +726,100 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "Expecting actual not to be null"
       }
     }
-  
-  
+
+
     "should be equal ignoring case" - {
       "should match equal strings" {
         "foo" shouldBeEqualIgnoringCase "foo"
         "BAR" shouldBeEqualIgnoringCase "BAR"
         "123" shouldBeEqualIgnoringCase "123"
       }
-    
+
       "Should match strings that are equal ignoring case" {
         "FOO" shouldBeEqualIgnoringCase "fOo"
         "BaR" shouldBeEqualIgnoringCase "bar"
         "123aBC" shouldBeEqualIgnoringCase "123abc"
       }
-    
+
       "Should not match strings that are different, but in same case" {
         shouldThrow<AssertionError> { "123" shouldBeEqualIgnoringCase "321" }
         shouldThrow<AssertionError> { "FOO" shouldBeEqualIgnoringCase "FOOO" }
         shouldThrow<AssertionError> { "bar" shouldBeEqualIgnoringCase "baar" }
       }
-    
+
       "Should not match strings that are different, but in different case" {
         shouldThrow<AssertionError> { "FOO" shouldBeEqualIgnoringCase "fooo" }
         shouldThrow<AssertionError> { "bar" shouldBeEqualIgnoringCase "BAAR" }
       }
     }
-  
+
     "should not be equal ignoring case" - {
       "should not match equal strings" {
         shouldThrow<AssertionError> { "foo" shouldNotBeEqualIgnoringCase "foo" }
         shouldThrow<AssertionError> { "BAR" shouldNotBeEqualIgnoringCase "BAR" }
         shouldThrow<AssertionError> { "123" shouldNotBeEqualIgnoringCase "123" }
       }
-    
+
       "Should not match strings that are equal ignoring case" {
         shouldThrow<AssertionError> { "FOO" shouldNotBeEqualIgnoringCase "fOo" }
         shouldThrow<AssertionError> { "BaR" shouldNotBeEqualIgnoringCase "bar" }
         shouldThrow<AssertionError> { "123aBC" shouldNotBeEqualIgnoringCase "123abc" }
       }
-    
+
       "Should match strings that are different, but in same case" {
         "123" shouldNotBeEqualIgnoringCase "321"
         "FOO" shouldNotBeEqualIgnoringCase "FOOO"
         "bar" shouldNotBeEqualIgnoringCase "baar"
       }
-    
+
       "Should match strings that are different, but in different case" {
         "FOO" shouldNotBeEqualIgnoringCase "fooo"
         "bar" shouldNotBeEqualIgnoringCase "BAAR"
+      }
+    }
+
+    "should have single line" - {
+      "should work for single lines" {
+        "hello".shouldBeSingleLine()
+        shouldThrow<AssertionError> { "FOO".shouldNotBeSingleLine() }
+      }
+      "should fail for multi lines" {
+        "hello\nworld".shouldNotBeSingleLine()
+        shouldThrow<AssertionError> { "hello\nworld".shouldBeSingleLine() }
+      }
+    }
+
+    "should have length between x and y" - {
+      "should work when x == y" {
+        "hello".shouldHaveLengthBetween(5, 5)
+        "hello".shouldNotHaveLengthBetween(10, 12)
+      }
+
+      "should work when x != y" {
+        "hello".shouldHaveLengthBetween(3, 7)
+      }
+
+      "should throw error when invalid" {
+        shouldThrow<AssertionError> { "FOO".shouldHaveLengthBetween(9, 10) }
+        shouldThrow<AssertionError> { "FOO".shouldNotHaveLengthBetween(2, 5) }
+      }
+
+      "should throw error when x > y" {
+        shouldThrow<IllegalArgumentException> { "FOO".shouldHaveLengthBetween(11, 10) }
+      }
+    }
+
+    "should have length in range" - {
+      "should work for range" {
+        "hello".shouldHaveLengthIn(5..5)
+        "hello".shouldHaveLengthIn(3..10)
+        "hello".shouldHaveLengthIn(5..10)
+        "hello".shouldNotHaveLengthIn(10..12)
+        "hello".shouldNotHaveLengthIn(1..4)
+      }
+
+      "should fail when outside range" {
+        shouldThrow<AssertionError> { "FOO".shouldHaveLengthIn(9..10) }
       }
     }
   }
