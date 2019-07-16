@@ -583,7 +583,6 @@ infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this shou
  */
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
 
-
 /**
  * Matcher that compares months of OffsetDateTimes
  *
@@ -684,7 +683,6 @@ fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDat
   override fun test(value: LocalDate): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
-
 
 /**
  * Asserts that this day is the same as [date]'s day
@@ -1302,7 +1300,6 @@ fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
-
 
 /**
  * Asserts that this is after [date]
