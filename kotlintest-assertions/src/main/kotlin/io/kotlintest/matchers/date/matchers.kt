@@ -2230,3 +2230,47 @@ infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek sho
  */
 infix fun LocalDateTime.shouldHaveMonth(month: Int) = this.month.value shouldBe month
 infix fun LocalDateTime.shouldHaveMonth(month: Month) = this.month shouldBe month
+
+/**
+ * Asserts that the hour inputted is equaled the date time hour
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 0)
+ *
+ *    date.shouldHaveHour(12) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveHour(hour: Int) = this.hour shouldBe hour
+
+/**
+ * Asserts that the minute inputted is equaled the date time minute
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 0)
+ *
+ *    date.shouldHaveMinute(10) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveMinute(minute: Int) = this.minute shouldBe minute
+
+/**
+ * Asserts that the second inputted is equaled the date time second
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 11, 0)
+ *
+ *    date.shouldHaveSecond(11) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe second
+
+/**
+ * Asserts that the nano inputted is equaled the date time nano
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 12)
+ *
+ *    date.shouldHaveNano(10) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano

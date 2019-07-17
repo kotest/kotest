@@ -349,5 +349,17 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveMonth 2
       LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveMonth Month.FEBRUARY
     }
+    "LocalDateTime should have hour" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 0) shouldHaveHour 12
+    }
+    "LocalDateTime should have minute" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 0) shouldHaveMinute 10
+    }
+    "LocalDateTime should have second" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 13, 0) shouldHaveSecond  13
+    }
+    "LocalDateTime should have nano" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
+    }
   }
 }
