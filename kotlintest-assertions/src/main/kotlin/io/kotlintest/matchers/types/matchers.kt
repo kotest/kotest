@@ -6,6 +6,9 @@ import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.jvm.jvmName
 
 /**
  * Verifies that this is instanceof T
@@ -208,4 +211,21 @@ fun beNull() = object : Matcher<Any?> {
     return Result(passed, "Expected value to be null, but was not-null.", "Expected value to not be null, but was null.")
   }
 
+}
+
+inline fun <reified B> KClass<*>.shouldBeAssignableTo() = this should beAssignableTo<B>()
+inline fun <reified B> KClass<*>.shouldNotBeAssignableTo() = this shouldNot beAssignableTo<B>()
+
+inline fun <reified B> beAssignableTo() = object : Matcher<KClass<*>> {
+  private val b = B::class
+  private val bName = b.qualifiedName ?: b.simpleName ?: b.jvmName
+  override fun test(value: KClass<*>): Result {
+    val aName = value.qualifiedName ?: value.simpleName ?: value.jvmName
+    val passed = value.isSubclassOf(b)
+    return Result(
+      passed,
+      "$aName should be assignable to $bName",
+      "$aName should not be assignable to $bName"
+    )
+  }
 }

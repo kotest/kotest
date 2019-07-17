@@ -11,6 +11,9 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
+interface Animal
+abstract class Pasta
+
 @Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
 
@@ -21,6 +24,22 @@ class TypeMatchersTest : WordSpec() {
   class Wibble
 
   init {
+
+    "shouldBeAssignableTo" should {
+      "verify that a type is assignable to an interface" {
+        class Cat : Animal
+        Cat::class.shouldBeAssignableTo<Animal>()
+        Thread::class.shouldNotBeAssignableTo<Animal>()
+
+        shouldThrow<AssertionError> {
+          Animal::class.shouldBeAssignableTo<Cat>()
+        }.message shouldBe "com.sksamuel.kotlintest.matchers.types.Animal should be assignable to Cat"
+
+        shouldThrow<AssertionError> {
+          Cat::class.shouldNotBeAssignableTo<Animal>()
+        }.message shouldBe "Cat should not be assignable to com.sksamuel.kotlintest.matchers.types.Animal"
+      }
+    }
 
     "typeOf" should {
       "test for exact type" {
@@ -60,7 +79,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list = arrayListOf(1, 2, 3)
         
-        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
+        list.shouldBeInstanceOf<ArrayList<Int>> {
           it shouldBeSameInstanceAs list
         }
       }
@@ -92,7 +111,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list: Any = arrayListOf(1, 2, 3)
         
-        list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
+        list.shouldBeTypeOf<ArrayList<Int>> {
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1
         }
