@@ -181,6 +181,15 @@ For the extension function style, each function has an equivalent negated versio
 | `date.shouldBeWithin(period, otherDate)` | Asserts that the date is within the period of the given date. |
 | `date.shouldBeWithin(duration, otherDate)` | Asserts that the date is within the duration of the given date. |
 | `date.shouldBeBetween(firstDate, secondDate)` | Asserts that the date is between firstdate and seconddate. |
+| `date.shouldHaveYear(year)` | Asserts that the date have correct year. |
+| `date.shouldHaveMonth(month)` | Asserts that the date have correct month. |
+| `date.shouldHaveDayOfYear(day)` | Asserts that the date have correct day of year. |
+| `date.shouldHaveDayOfMonth(day)` | Asserts that the date have correct day of month. |
+| `date.shouldHaveDayOfWeek(day)` | Asserts that the date have correct day of week. |
+| `date.shouldHaveHour(hour)` | Asserts that the date have correct hour. |
+| `date.shouldHaveMinute(Minute)` | Asserts that the date have correct minute. |
+| `date.shouldHaveSecond(second)` | Asserts that the date have correct second. |
+| `date.shouldHaveNano(nao)` | Asserts that the date have correct nano second. |
 
 | Times ||
 | -------- | ---- |
