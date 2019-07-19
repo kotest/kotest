@@ -1,10 +1,6 @@
 package io.kotlintest.specs
 
-import io.kotlintest.AbstractSpec
-import io.kotlintest.Tag
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
-import io.kotlintest.TestType
+import io.kotlintest.*
 import io.kotlintest.extensions.TestCaseExtension
 import java.time.Duration
 
@@ -45,6 +41,9 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
 
     suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) =
         context.registerTestCase(createTestName("Context: ", name), this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
+
+    suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) =
+            context.registerTestCase(createTestName("Describe: ", name), this@AbstractDescribeSpec, { this@AbstractDescribeSpec.DescribeScope(this).test() }, this@AbstractDescribeSpec.defaultTestCaseConfig, TestType.Container)
   }
 
   fun describe(name: String, test: suspend DescribeScope.() -> Unit) =
