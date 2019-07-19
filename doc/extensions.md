@@ -95,6 +95,33 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
 }
 ```
 
+### Koin
+
+The [Koin DI Framework](https://insert-koin.io/) can be used with KotlinTest through the `KoinListener` test listener and its own interface `KoinTest`.
+
+To add the listener to your project, add the depency to your project:
+```groovy
+testImplementation("io.kotlintest:kotlintest-extensions-koin:${kotlinTestVersion}")
+```
+
+With the dependency added, we can use Koin in our tests!
+
+```kotlin
+class KotlinTestAndKoin : FunSpec(), KoinTest {
+
+    override fun listeners() = listOf(KoinListener(myKoinModule))
+    
+    val userService by inject<UserService>()
+    
+    init {
+      test("Use user service") {
+        userService.getUser().username shouldBe "Kerooker"
+      }
+    }
+
+}
+```
+
 
 ### System Extensions
 
