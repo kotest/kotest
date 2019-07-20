@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.date
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -77,8 +77,12 @@ infix fun LocalTime.shouldNotHaveSameHoursAs(time: LocalTime) = this shouldNot h
  * @see [LocalTime.shouldNotHaveSameHoursAs]
  */
 fun haveSameHours(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.hour == time.hour, "$value should have hours ${time.hour}", "$value should not have hours ${time.hour}")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(
+      value.hour == time.hour,
+      { "$value should have hours ${time.hour}" },
+      { "$value should not have hours ${time.hour}" }
+    )
 }
 
 /**
@@ -150,8 +154,11 @@ infix fun LocalTime.shouldNotHaveSameMinutesAs(time: LocalTime) = this shouldNot
  * @see [LocalTime.shouldNotHaveSameMinutesAs]
  */
 fun haveSameMinutes(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.minute == time.minute, "$value should have minutes ${time.minute}", "$value should not have minutes ${time.minute}")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(value.minute == time.minute,
+      { "$value should have minutes ${time.minute}" },
+      { "$value should not have minutes ${time.minute}" }
+    )
 }
 
 /**
@@ -223,8 +230,11 @@ infix fun LocalTime.shouldNotHaveSameSecondsAs(time: LocalTime) = this shouldNot
  * @see [LocalTime.shouldNotHaveSameSecondsAs]
  */
 fun haveSameSeconds(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.second == time.second, "$value should have seconds ${time.second}", "$value should not have seconds ${time.second}")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(value.second == time.second,
+      { "$value should have seconds ${time.second}" },
+      { "$value should not have seconds ${time.second}" }
+    )
 }
 
 /**
@@ -296,8 +306,12 @@ infix fun LocalTime.shouldNotHaveSameNanosAs(time: LocalTime) = this shouldNot h
  * @see [LocalTime.shouldNotHaveSameNanosAs]
  */
 fun haveSameNanos(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.nano == time.nano, "$value should have nanos ${time.nano}", "$value should not have nanos ${time.nano}")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(
+      value.nano == time.nano,
+      { "$value should have nanos ${time.nano}" },
+      { "$value should not have nanos ${time.nano}" }
+    )
 }
 
 /**
@@ -373,8 +387,12 @@ infix fun LocalTime.shouldNotBeBefore(time: LocalTime) = this shouldNot before(t
  * @see LocalTime.shouldNotBeBefore
  */
 fun before(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.isBefore(time), "$value should be before $time", "$value should not be before $time")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(
+      value.isBefore(time),
+      { "$value should be before $time" },
+      { "$value should not be before $time" }
+    )
 }
 
 /**
@@ -450,8 +468,12 @@ infix fun LocalTime.shouldNotBeAfter(time: LocalTime) = this shouldNot after(tim
  * @see LocalTime.shouldNotBeAfter
  */
 fun after(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result =
-    Result(value.isAfter(time), "$value should be after $time", "$value should not be after $time")
+  override fun test(value: LocalTime): MatcherResult =
+    MatcherResult(
+      value.isAfter(time),
+      { "$value should be after $time" },
+      { "$value should not be after $time" }
+    )
 }
 
 /**
@@ -531,8 +553,12 @@ fun LocalTime.shouldNotBeBetween(a: LocalTime, b: LocalTime) = this shouldNotBe 
  * @see LocalTime.shouldNotBeBetween
  */
 fun between(a: LocalTime, b: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
-  override fun test(value: LocalTime): Result {
+  override fun test(value: LocalTime): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+    return MatcherResult(
+      passed,
+      { "$value should be after $a and before $b" },
+      { "$value should not be be after $a and before $b" }
+    )
   }
 }

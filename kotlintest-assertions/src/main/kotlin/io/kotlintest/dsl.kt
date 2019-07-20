@@ -34,10 +34,14 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
 
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
-  override fun test(value: T): Result {
+  override fun test(value: T): MatcherResult {
     val expectedRepr = stringRepr(expected)
     val valueRepr = stringRepr(value)
-    return Result(expected == value, equalsErrorMessage(expectedRepr, valueRepr), "$expectedRepr should not equal $valueRepr")
+    return MatcherResult(
+      expected == value,
+      { equalsErrorMessage(expectedRepr, valueRepr) },
+      { "$expectedRepr should not equal $valueRepr" }
+    )
   }
 }
 
@@ -110,8 +114,8 @@ infix fun <T> T.shouldNotBe(any: Any?) {
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
-  if (!result.passed) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage))
+  if (!result.passed()) {
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage()))
   }
 }
 

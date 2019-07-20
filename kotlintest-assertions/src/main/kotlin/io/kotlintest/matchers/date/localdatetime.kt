@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.date
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 import java.time.LocalDate
@@ -25,9 +25,9 @@ import java.time.LocalDateTime
  * ```
  */
 fun beInToday() = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result {
+  override fun test(value: LocalDateTime): MatcherResult {
     val passed = value.toLocalDate() == LocalDate.now()
-    return Result(
+    return MatcherResult(
       passed,
       "$value should be today",
       "$value should not be today"
@@ -53,9 +53,9 @@ fun beInToday() = object : Matcher<LocalDateTime> {
  * ```
  */
 fun beToday() = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result {
+  override fun test(value: LocalDate): MatcherResult {
     val passed = value == LocalDate.now()
-    return Result(
+    return MatcherResult(
       passed,
       "$value should be today",
       "$value should not be today"

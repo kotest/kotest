@@ -1,8 +1,7 @@
 package io.kotlintest.matchers
 
-import convertValueToString
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.matchers.string.include
 import io.kotlintest.neverNullMatcher
 import io.kotlintest.show.show
@@ -20,20 +19,20 @@ fun startWith(prefix: String) = neverNullMatcher<String> { value ->
       }
     }
   }
-  Result(ok, msg, notmsg)
+  MatcherResult(ok, msg, notmsg)
 }
 
 fun haveSubstring(substr: String) = include(substr)
 
 fun endWith(suffix: String) = neverNullMatcher<String> { value ->
-  Result(
+  MatcherResult(
       value.endsWith(suffix),
       "${value.show()} should end with $suffix",
       "${value.show()} should not end with $suffix")
 }
 
 fun match(regex: Regex) = neverNullMatcher<String> { value ->
-  Result(
+  MatcherResult(
       value.matches(regex),
       "${value.show()} should match regex $regex",
       "${value.show()} should not match regex $regex")
@@ -44,7 +43,7 @@ fun match(regex: String): Matcher<String?> = match(regex.toRegex())
 fun strlen(length: Int): Matcher<String?> = haveLength(length)
 
 fun haveLength(length: Int) = neverNullMatcher<String> { value ->
-  Result(
+  MatcherResult(
       value.length == length,
       "${value.show()} should have length $length, but instead was ${value.length}",
       "${value.show()} should not have length $length")

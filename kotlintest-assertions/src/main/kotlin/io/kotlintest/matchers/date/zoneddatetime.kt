@@ -4,9 +4,9 @@ import io.kotlintest.*
 import java.time.ZonedDateTime
 
 fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result {
+  override fun test(value: ZonedDateTime): MatcherResult {
     val passed = value.toLocalDate() == ZonedDateTime.now().toLocalDate()
-    return Result(
+    return MatcherResult(
       passed,
       "$value should be today",
       "$value should not be today"
@@ -42,5 +42,5 @@ fun ZonedDateTime.shouldBeToday() = this should beInTodayZDT()
  * ```
  */
 fun ZonedDateTime.atSameZone() = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result = equalityMatcher(withZoneSameInstant(value.zone)).test(value)
+  override fun test(value: ZonedDateTime): MatcherResult = equalityMatcher(withZoneSameInstant(value.zone)).test(value)
 }

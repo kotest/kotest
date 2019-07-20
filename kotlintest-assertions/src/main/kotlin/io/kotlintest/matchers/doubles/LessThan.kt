@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 
@@ -40,5 +40,5 @@ infix fun Double.shouldNotBeLessThan(x: Double) = this shouldNotBe lt(x)
 
 fun lt(x: Double) = beLessThan(x)
 fun beLessThan(x: Double) = object : Matcher<Double> {
-  override fun test(value: Double) = Result(value < x, "$value should be < $x", "$value should not be < $x")
+  override fun test(value: Double) = MatcherResult(value < x, "$value should be < $x", "$value should not be < $x")
 }

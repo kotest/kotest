@@ -4,7 +4,7 @@ import arrow.data.Invalid
 import arrow.data.Valid
 import arrow.data.Validated
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 import kotlin.contracts.ExperimentalContracts
@@ -29,13 +29,13 @@ fun <T> Validated<*, T>.shouldBeValid(fn: (Valid<T>) -> Unit) {
 }
 
 fun <A> beValid() = object : Matcher<Validated<*, A>> {
-  override fun test(value: Validated<*, A>): Result =
-      Result(value is Valid, "$value should be Valid", "$value should not be Valid")
+  override fun test(value: Validated<*, A>): MatcherResult =
+      MatcherResult(value is Valid, "$value should be Valid", "$value should not be Valid")
 }
 
 fun <A> beValid(a: A) = object : Matcher<Validated<*, A>> {
-  override fun test(value: Validated<*, A>): Result =
-      Result(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
+  override fun test(value: Validated<*, A>): MatcherResult =
+      MatcherResult(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
 }
 
 @UseExperimental(ExperimentalContracts::class)
@@ -56,11 +56,11 @@ fun <T> Validated<T, *>.shouldBeInvalid(fn: (Invalid<T>) -> Unit) {
 }
 
 fun <A> beInvalid() = object : Matcher<Validated<*, A>> {
-  override fun test(value: Validated<*, A>): Result =
-      Result(value is Invalid, "$value should be Invalid", "$value should not be Invalid")
+  override fun test(value: Validated<*, A>): MatcherResult =
+      MatcherResult(value is Invalid, "$value should be Invalid", "$value should not be Invalid")
 }
 
 fun <A> beInvalid(a: A) = object : Matcher<Validated<*, A>> {
-  override fun test(value: Validated<*, A>): Result =
-      Result(value == Invalid(a), "$value should be Invalid(a=$a)", "$value should not be Invalid(a=$a)")
+  override fun test(value: Validated<*, A>): MatcherResult =
+      MatcherResult(value == Invalid(a), "$value should be Invalid(a=$a)", "$value should not be Invalid(a=$a)")
 }

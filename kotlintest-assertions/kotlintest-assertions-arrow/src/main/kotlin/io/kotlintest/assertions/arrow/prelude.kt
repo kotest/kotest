@@ -3,7 +3,7 @@ package io.kotlintest.assertions.arrow
 import arrow.Kind
 import arrow.typeclasses.ApplicativeError
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import kotlin.random.Random
 
 internal fun <A> matcher(
@@ -12,7 +12,7 @@ internal fun <A> matcher(
   negatedFailureMsg: String = msg
 ): Matcher<A> =
   object : Matcher<A> {
-    override fun test(value: A): Result = Result(passed, msg, negatedFailureMsg)
+    override fun test(value: A): MatcherResult = MatcherResult(passed, msg, negatedFailureMsg)
   }
 
 /**

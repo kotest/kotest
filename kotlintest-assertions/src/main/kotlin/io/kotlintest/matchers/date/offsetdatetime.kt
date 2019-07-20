@@ -1,15 +1,15 @@
 package io.kotlintest.matchers.date
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 import java.time.OffsetDateTime
 
 fun beInTodayODT() = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result {
+  override fun test(value: OffsetDateTime): MatcherResult {
     val passed = value.toLocalDate() == OffsetDateTime.now().toLocalDate()
-    return Result(
+    return MatcherResult(
       passed,
       "$value should be today",
       "$value should not be today"

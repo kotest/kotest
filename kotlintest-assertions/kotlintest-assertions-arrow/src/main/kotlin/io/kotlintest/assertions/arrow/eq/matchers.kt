@@ -4,7 +4,6 @@ import arrow.typeclasses.Eq
 import io.kotlintest.Matcher
 import io.kotlintest.assertions.arrow.matcher
 import io.kotlintest.should
-import io.kotlintest.Result as KTResult
 
 /**
  * Provides assertions for [Eq]

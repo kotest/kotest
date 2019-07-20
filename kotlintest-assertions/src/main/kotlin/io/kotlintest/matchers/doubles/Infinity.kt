@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
@@ -42,7 +42,7 @@ fun Double.shouldNotBePositiveInfinity() = this shouldNot bePositiveInfinity()
  * ```
  */
 fun bePositiveInfinity() = object : Matcher<Double> {
-  override fun test(value: Double) = Result(
+  override fun test(value: Double) = MatcherResult(
           value == Double.POSITIVE_INFINITY,
           "$value should be POSITIVE_INFINITY",
           "$value should not be POSITIVE_INFINITY"
@@ -89,7 +89,7 @@ fun Double.shouldNotBeNegativeInfinity() = this shouldNot beNegativeInfinity()
  * ```
  */
 fun beNegativeInfinity() = object : Matcher<Double> {
-  override fun test(value: Double) = Result(
+  override fun test(value: Double) = MatcherResult(
           value == Double.NEGATIVE_INFINITY,
           "$value should be NEGATIVE_INFINITY",
           "$value should not be NEGATIVE_INFINITY"
