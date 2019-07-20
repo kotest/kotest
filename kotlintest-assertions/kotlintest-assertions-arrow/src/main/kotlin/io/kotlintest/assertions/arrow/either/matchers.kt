@@ -6,14 +6,25 @@ import io.kotlintest.Result
 import io.kotlintest.matchers.beInstanceOf2
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
-fun <T> Either<Any?, T>.shouldBeRight() = this should beRight()
+@UseExperimental(ExperimentalContracts::class)
+fun <T> Either<*, T>.shouldBeRight() {
+  contract {
+    returns() implies (this@shouldBeRight is Either.Right<*>)
+  }
+  this should beRight()
+}
+
 fun <T> Either<Any?, T>.shouldNotBeRight() = this shouldNot beRight()
 fun <T> beRight() = beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
 
-fun <T> Either<T, Any?>.shouldBeLeft() = this should beLeft()
-fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
-fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
+
+inline fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
+  this should beRight()
+  fn((this as Either.Right<B>).b)
+}
 
 fun <B> Either<Any?, B>.shouldBeRight(b: B) = this should beRight(b)
 fun <B> Either<Any?, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
@@ -31,6 +42,22 @@ fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
       }
     }
   }
+}
+
+@UseExperimental(ExperimentalContracts::class)
+fun <T> Either<T, Any?>.shouldBeLeft() {
+  contract {
+    returns() implies (this@shouldBeLeft is Either.Left<*>)
+  }
+  this should beLeft()
+}
+
+fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
+fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
+
+inline fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
+  this should beLeft()
+  fn((this as Either.Left<A>).a)
 }
 
 fun <A> Either<A, Any?>.shouldBeLeft(a: A) = this should beLeft(a)
@@ -64,7 +91,9 @@ inline fun <reified A> beLeftOfType() = object : Matcher<Either<Any?, Any?>> {
         if (valueA is A)
           Result(true, "Either should be Left<${A::class.qualifiedName}>", "Either should not be Left")
         else
-          Result(false, "Either should be Left<${A::class.qualifiedName}> but was Left<${if (valueA == null) "Null" else valueA::class.qualifiedName}>", "Either should not be Left")
+          Result(false,
+              "Either should be Left<${A::class.qualifiedName}> but was Left<${if (valueA == null) "Null" else valueA::class.qualifiedName}>",
+              "Either should not be Left")
       }
     }
   }

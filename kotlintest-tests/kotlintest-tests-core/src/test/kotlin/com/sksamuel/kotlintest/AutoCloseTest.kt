@@ -4,31 +4,38 @@ import io.kotlintest.extensions.TestListener
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.StringSpec
 import java.io.Closeable
+import java.lang.AutoCloseable
 
 // this is here to test for github issue #294
 internal object Resources
 
 class AutoCloseTest : StringSpec() {
 
-  private val resourceA = autoClose(Closeable2)
-  private val resourceB = autoClose(Closeable1)
+  private val resourceA = autoClose(AutoCloseable4)
+  private val resourceB = autoClose(Closeable3)
+  private val resourceC = autoClose(Closeable2)
+  private val resourceD = autoClose(AutoCloseable1)
 
   init {
     "should close resources in reverse order" {
       resourceA.closed = false
       resourceB.closed = false
+      resourceC.closed = false
+      resourceD.closed = false
     }
   }
 }
 
 object AutoCloseListener : TestListener {
   override fun afterProject() {
-    Closeable1.closed.shouldBeTrue()
+    AutoCloseable1.closed.shouldBeTrue()
     Closeable2.closed.shouldBeTrue()
+    Closeable3.closed.shouldBeTrue()
+    AutoCloseable4.closed.shouldBeTrue()
   }
 }
 
-object Closeable1 : Closeable {
+object AutoCloseable1 : AutoCloseable {
 
   var closed = true
 
@@ -42,7 +49,27 @@ object Closeable2 : Closeable {
   var closed = true
 
   override fun close() {
-    assert(Closeable1.closed)
+    assert(AutoCloseable1.closed)
+    closed = true
+  }
+}
+
+object Closeable3 : Closeable {
+
+  var closed = true
+
+  override fun close() {
+    assert(Closeable2.closed)
+    closed = true
+  }
+}
+
+object AutoCloseable4 : AutoCloseable {
+
+  var closed = true
+
+  override fun close() {
+    assert(Closeable3.closed)
     closed = true
   }
 }

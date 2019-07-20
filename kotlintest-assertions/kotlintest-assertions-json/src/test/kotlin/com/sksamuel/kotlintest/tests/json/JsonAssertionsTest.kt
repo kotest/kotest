@@ -3,9 +3,11 @@ package com.sksamuel.kotlintest.tests.json
 import io.kotlintest.assertions.json.shouldContainJsonKey
 import io.kotlintest.assertions.json.shouldContainJsonKeyValue
 import io.kotlintest.assertions.json.shouldMatchJson
+import io.kotlintest.assertions.json.shouldMatchJsonResource
 import io.kotlintest.assertions.json.shouldNotContainJsonKey
 import io.kotlintest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotlintest.assertions.json.shouldNotMatchJson
+import io.kotlintest.assertions.json.shouldNotMatchJsonResource
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
@@ -76,5 +78,18 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {... should contain the element ${'$'}.store.book[1].author = JK Rowling"""
+  }
+
+  "test json match by resource" {
+
+    val json1 = """ { "name" : "sam", "location" : "chicago" } """
+    val json2 = """ { "name" : "sam", "location" : "london" } """
+
+    json1.shouldMatchJsonResource("/json1.json")
+    json2.shouldNotMatchJsonResource("/json1.json")
+
+    shouldThrow<AssertionError> {
+      json2.shouldMatchJsonResource("/json1.json")
+    }
   }
 })

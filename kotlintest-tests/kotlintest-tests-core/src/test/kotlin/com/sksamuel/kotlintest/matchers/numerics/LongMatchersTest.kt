@@ -7,6 +7,8 @@ import io.kotlintest.matchers.beLessThanOrEqualTo
 import io.kotlintest.matchers.between
 import io.kotlintest.matchers.numerics.shouldBeNegative
 import io.kotlintest.matchers.numerics.shouldBePositive
+import io.kotlintest.matchers.numerics.shouldBeZero
+import io.kotlintest.matchers.numerics.shouldNotBeZero
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -109,6 +111,13 @@ class LongMatchersTest : StringSpec() {
       forNone(table) { a, b ->
         3 shouldBe between(a, b)
       }
+    }
+
+    "shouldBeZero" {
+      (0L).shouldBeZero()
+      (1L).shouldNotBeZero()
+      Long.MIN_VALUE.shouldNotBeZero()
+      Long.MAX_VALUE.shouldNotBeZero()
     }
   }
 }

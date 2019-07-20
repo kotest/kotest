@@ -6,11 +6,7 @@ import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.Period
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.temporal.TemporalAmount
 
 /**
@@ -255,7 +251,7 @@ fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher
  *    val secondDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
  *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
- 
+
  * ```
  */
 infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this should haveSameYear(date)
@@ -272,7 +268,7 @@ infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this shoul
  * ```
  *     val firstDate = OffsetDateTime.of(1998, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
  *     val secondDate = OffsetDateTime.of(1999, 2, 9, 10, 0, 0, 0, ZoneOffset.ofHours(-3))
- 
+
  *     firstDate shouldNotHaveSameYearAs secondDate    // Assertion passes
  *
  *
@@ -583,7 +579,6 @@ infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this shou
  */
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
 
-
 /**
  * Matcher that compares months of OffsetDateTimes
  *
@@ -684,7 +679,6 @@ fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDat
   override fun test(value: LocalDate): Result =
       Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
-
 
 /**
  * Asserts that this day is the same as [date]'s day
@@ -949,9 +943,9 @@ infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
  *    val secondDate = LocalDate.of(1998, 2, 9)
  *
  *    firstDate shouldNotBeBefore secondDate    // Assertion passes
- 
- 
- 
+
+
+
  *    val firstDate = LocalDate.of(1998, 2, 9)
  *    val secondDate = LocalDate.of(1998, 2, 10)
  *
@@ -1302,7 +1296,6 @@ fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): Result =
       Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
-
 
 /**
  * Asserts that this is after [date]
@@ -2189,3 +2182,95 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
     return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
+
+/**
+ * Asserts that the day of month inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
+ *
+ *    date.shouldHaveDayOfMonth(15) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldBe day
+
+/**
+ * Asserts that the day of year inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
+ *
+ *    date.shouldHaveDayOfYear(46) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe day
+
+/**
+ * Asserts that the day of year inputted is equaled the date day
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
+ *
+ *    date.shouldHaveDayOfWeek(FRIDAY) // Assertion passes
+ *    date.shouldHaveDayOfWeek(5) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveDayOfWeek(day: Int) = this.dayOfWeek.value shouldBe day
+infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek shouldBe day
+
+/**
+ * Asserts that the month inputted is equaled the date month
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 0, 0, 0)
+ *
+ *    date.shouldHaveMonth(2) // Assertion passes
+ *    date.shouldHaveMonth(FEBRUARY) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveMonth(month: Int) = this.month.value shouldBe month
+infix fun LocalDateTime.shouldHaveMonth(month: Month) = this.month shouldBe month
+
+/**
+ * Asserts that the hour inputted is equaled the date time hour
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 0)
+ *
+ *    date.shouldHaveHour(12) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveHour(hour: Int) = this.hour shouldBe hour
+
+/**
+ * Asserts that the minute inputted is equaled the date time minute
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 0)
+ *
+ *    date.shouldHaveMinute(10) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveMinute(minute: Int) = this.minute shouldBe minute
+
+/**
+ * Asserts that the second inputted is equaled the date time second
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 11, 0)
+ *
+ *    date.shouldHaveSecond(11) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe second
+
+/**
+ * Asserts that the nano inputted is equaled the date time nano
+ *
+ * ```
+ *    val date = LocalDateTime.of(2019, 2, 15, 12, 10, 0, 12)
+ *
+ *    date.shouldHaveNano(10) // Assertion passes
+ * ```
+ */
+infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano

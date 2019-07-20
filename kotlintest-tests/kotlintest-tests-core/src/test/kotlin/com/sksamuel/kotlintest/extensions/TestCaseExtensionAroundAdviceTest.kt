@@ -5,6 +5,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.StringSpec
+import java.time.Duration
 
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
@@ -17,7 +18,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
         testCase.description.name == "test1" -> complete(TestResult.Ignored)
         testCase.description.name == "test2" -> execute(testCase) {
           when (it.error) {
-            is WibbleException -> complete(TestResult.Success)
+            is WibbleException -> complete(TestResult.success(Duration.ZERO))
             else -> complete(it)
           }
         }

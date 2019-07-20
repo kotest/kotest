@@ -41,6 +41,16 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
+  override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
+    if (runningSpec.compareAndSet(null, Description.spec(klass))) {
+      listener.specInitialisationFailed(klass, t)
+    } else {
+      queue {
+        specInitialisationFailed(klass, t)
+      }
+    }
+  }
+
   override fun beforeSpecClass(klass: KClass<out Spec>) {
     if (runningSpec.get() == Description.spec(klass)) {
       listener.beforeSpecClass(klass)

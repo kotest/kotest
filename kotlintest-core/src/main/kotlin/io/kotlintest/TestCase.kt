@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import java.time.Duration
+
 /**
  * A [TestCase] describes an actual block of code that will be tested.
  * It contains a reference back to the [Spec] instance in which it
@@ -76,13 +78,14 @@ enum class TestStatus {
 data class TestResult(val status: TestStatus,
                       val error: Throwable?,
                       val reason: String?,
+                      val duration: Duration,
                       val metaData: Map<String, Any?> = emptyMap()) {
   companion object {
-    val Success = TestResult(TestStatus.Success, null, null)
-    val Ignored = TestResult(TestStatus.Ignored, null, null)
-    fun failure(e: AssertionError) = TestResult(TestStatus.Failure, e, null)
-    fun error(t: Throwable) = TestResult(TestStatus.Error, t, null)
-    fun ignored(reason: String?) = TestResult(TestStatus.Ignored, null, reason)
+    fun success(duration: Duration) = TestResult(TestStatus.Success, null, null, duration)
+    val Ignored = TestResult(TestStatus.Ignored, null, null, Duration.ZERO)
+    fun failure(e: AssertionError, duration: Duration) = TestResult(TestStatus.Failure, e, null, duration)
+    fun error(t: Throwable, duration: Duration) = TestResult(TestStatus.Error, t, null, duration)
+    fun ignored(reason: String?) = TestResult(TestStatus.Ignored, null, reason, Duration.ZERO)
   }
 }
 
@@ -92,3 +95,19 @@ fun sourceRef(): SourceRef {
     it.className.startsWith("io.kotlintest")
   }[0].run { SourceRef(lineNumber, fileName) }
 }
+
+/**
+ * Exception to mark a test as ignored while it is already running
+ *
+ * The SkipTestException may be thrown inside a test case to skip it (mark it as ignored). Any subclass of this class
+ * may be used, in case you want to use your specific exception.
+ *
+ * ```
+ * class FooTest : StringSpec({
+ *    "Ignore this test!" {
+ *        throw SkipTestException("I want to ignore this test!")
+ *    }
+ * })
+ * ```
+ */
+open class SkipTestException(val reason: String? = null): RuntimeException(reason)

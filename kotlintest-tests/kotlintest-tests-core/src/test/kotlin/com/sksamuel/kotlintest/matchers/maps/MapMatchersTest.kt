@@ -14,6 +14,7 @@ import io.kotlintest.matchers.maps.shouldContainKey
 import io.kotlintest.matchers.maps.shouldContainKeys
 import io.kotlintest.matchers.maps.shouldContainValue
 import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldNotContain
 import io.kotlintest.matchers.maps.shouldNotContainAll
 import io.kotlintest.matchers.maps.shouldNotContainKey
 import io.kotlintest.matchers.maps.shouldNotContainValue
@@ -67,6 +68,9 @@ class MapMatchersTest : WordSpec() {
         val map = mapOf(Pair(1, "a"), Pair(2, "b"))
         map should contain(1, "a")
         map.shouldContain(2, "b")
+        map.shouldNotContain(3, "A")
+        map shouldContain (1 to "a")
+        map shouldNotContain (3 to "A")
         shouldThrow<AssertionError> {
           map should contain(2, "a")
         }

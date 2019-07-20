@@ -5,7 +5,6 @@ import io.kotlintest.Spec
 import io.kotlintest.description
 import io.kotlintest.runner.jvm.IsolationTestEngineListener
 import io.kotlintest.runner.jvm.SpecFilter
-import io.kotlintest.runner.jvm.SynchronizedTestEngineListener
 import io.kotlintest.runner.jvm.TestDiscovery
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
@@ -37,25 +36,25 @@ class KotlinTestEngine : TestEngine {
   override fun getId(): String = EngineId
 
   override fun execute(request: ExecutionRequest) {
-    logger.debug("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
+    logger.trace("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
     val root = request.rootTestDescriptor as KotlinTestEngineDescriptor
-    val listener = SynchronizedTestEngineListener(IsolationTestEngineListener(JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root)))
+    val listener = IsolationTestEngineListener(JUnitTestRunnerListener(SynchronizedEngineExecutionListener(request.engineExecutionListener), root))
     val runner = io.kotlintest.runner.jvm.TestEngine(root.classes, emptyList(), Project.parallelism(), listener)
     runner.execute()
   }
 
   override fun discover(request: EngineDiscoveryRequest,
                         uniqueId: UniqueId): KotlinTestEngineDescriptor {
-    logger.debug("configurationParameters=" + request.configurationParameters)
-    logger.debug("uniqueId=$uniqueId")
+    logger.trace("configurationParameters=" + request.configurationParameters)
+    logger.trace("uniqueId=$uniqueId")
 
     val postFilters = when (request) {
       is LauncherDiscoveryRequest -> {
-        logger.debug(request.string())
+        logger.trace(request.string())
         request.postDiscoveryFilters.toList()
       }
       else -> {
-        logger.debug(request.string())
+        logger.trace(request.string())
         emptyList()
       }
     }

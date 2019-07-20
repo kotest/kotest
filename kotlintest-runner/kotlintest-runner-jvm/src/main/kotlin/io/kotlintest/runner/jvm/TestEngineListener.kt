@@ -41,6 +41,11 @@ interface TestEngineListener {
   fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {}
 
   /**
+   * Is invoked if a [Spec] throws an exception during initialisation
+   */
+  fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {}
+
+  /**
    * Invoked each time a [TestCase] has been entered from a parent test.
    *
    * If a parent test has been configured with multiple invocations, then this

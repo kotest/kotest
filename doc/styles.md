@@ -11,9 +11,9 @@ There is no functional difference between these styles. All allow the same types
 
 ```kotlin
 class MyTests : StringSpec({
-    "strings.length should return size of string" {
-      "hello".length shouldBe 5
-    }
+	"strings.length should return size of string" {
+		"hello".length shouldBe 5
+	}
 })
 ```
 
@@ -24,10 +24,10 @@ and then the test itself as a lambda.
 
 ```kotlin
 class MyTests : FunSpec({
-    test("String length should return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-    }
+	test("String length should return the length of the string") {
+		"sammy".length shouldBe 5
+		"".length shouldBe 0
+	}
 })
 ```
 
@@ -35,12 +35,12 @@ You can also next these tests inside `context` blocks like this:
 
 ```kotlin
 class MyTests : FunSpec({
-    context("a test group") {
-        test("String length should return the length of the string") {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-        }
-    }
+	context("a test group") {
+		test("String length should return the length of the string") {
+			"sammy".length shouldBe 5
+			"".length shouldBe 0
+		}
+	}
 })
 ```
 
@@ -50,10 +50,10 @@ class MyTests : FunSpec({
 
 ```kotlin
 class MyTests : ShouldSpec({
-    should("return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-    }
+	should("return the length of the string") {
+		"sammy".length shouldBe 5
+		"".length shouldBe 0
+	}
 })
 ```
 
@@ -61,12 +61,12 @@ This can be nested in context strings too, eg
 
 ```kotlin
 class MyTests : ShouldSpec({
-    "String.length" {
-        should("return the length of the string") {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-      }
-    }
+	"String.length" {
+		should("return the length of the string") {
+			"sammy".length shouldBe 5
+			"".length shouldBe 0
+		}
+	}
 })
 ```
 
@@ -76,12 +76,12 @@ class MyTests : ShouldSpec({
 
 ```kotlin
 class MyTests : WordSpec({
-    "String.length" should {
-        "return the length of the string" {
-            "sammy".length shouldBe 5
-            "".length shouldBe 0
-      }
-    }
+	"String.length" should {
+		"return the length of the string" {
+			"sammy".length shouldBe 5
+			"".length shouldBe 0
+		}
+	}
 })
 ```
 
@@ -89,19 +89,18 @@ It also supports the keyword `When` allowing to add another level of nesting.
 
 ```kotlin
 class MyTests : WordSpec({
-    "Hello" When {
-        "asked for length" should {
-            "return 5" {
-                "Hello".length shouldBe 5
-            }
-        }
-        "appended to Bob" should {
-            "return Hello Bob" {
-                "Hello " + "Bob" shouldBe "Hello Bob"
-            }
-        }
-    }
-    
+	"Hello" When {
+		"asked for length" should {
+			"return 5" {
+				"Hello".length shouldBe 5
+			}
+		}
+		"appended to Bob" should {
+			"return Hello Bob" {
+				"Hello " + "Bob" shouldBe "Hello Bob"
+			}
+		}
+	}
 })
 ```
 
@@ -112,14 +111,14 @@ Although not intended to be exactly the same as cucumber, the keywords mimic the
 
 ```kotlin
 class MyTests : FeatureSpec({
-    feature("the can of coke") {
-        scenario("should be fizzy when I shake it") {
-          // test here
-        }
-        scenario("and should be tasty") {
-          // test heree
-        }
-    }
+	feature("the can of coke") {
+		scenario("should be fizzy when I shake it") {
+			// test here
+		}
+		scenario("and should be tasty") {
+			// test here
+		}
+	}
 })
 ```
 ### Behavior Spec
@@ -130,14 +129,13 @@ Popular with people who like to write tests in the _BDD_ style, `BehaviorSpec` a
 class MyTests : BehaviorSpec({
     given("a broomstick") {
         `when`("I sit on it") {
-                then("I should be able to fly") {
-                  // test code
-                }
+            then("I should be able to fly") {
+                // test code
             }
+        }
         `when`("I throw it away") {
-                then("it should come back") {
-                  // test code
-                }
+            then("it should come back") {
+                // test code
             }
         }
     }
@@ -155,14 +153,14 @@ class MyTests : BehaviorSpec({
         and("a witch") {
             `when`("The witch sits on it") {
                 and("she laughs hysterically") {
-                     then("She should be able to fly") {
-                     }
-                 }
+                    then("She should be able to fly") {
+                        // test code
+                    }
+                }
             }
         }
     }
 })
-
 ```
 
 Note: `Then` scope doesn't have an `and` scope due to a gradle bug. For more information, see #594
@@ -184,10 +182,10 @@ class MyTests : FreeSpec({
             "yet another container" - {
                 "finally a real test" {
                     1 + 1 shouldBe 2
-                }   
+                }
             }
         }
-    }    
+    }
 })
 ```
 
@@ -209,9 +207,9 @@ class MyTests : DescribeSpec({
             it("carries strike to the next frame") {
                 // test here
             }
-       }
-   }
-}
+        }
+    }
+})
 ```
 ### Expect Spec
 
@@ -248,19 +246,19 @@ If you want to ignore a test, use `@Ignore`
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {
 
-  @BeforeEach
-  fun beforeTest() {
-    println("Before each test")
-  }
+    @BeforeEach
+    fun beforeTest() {
+        println("Before each test")
+    }
 
-  @Test
-  fun test1() {
-    1 shouldBe 1
-  }
+    @Test
+    fun test1() {
+        1 shouldBe 1
+    }
 
-  @Test
-  fun test2() {
-    3 shouldBe 3
-  }
+    @Test
+    fun test2() {
+        3 shouldBe 3
+    }
 }
 ```

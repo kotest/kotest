@@ -18,6 +18,9 @@ fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
 fun <K, V> Map<K, V>.shouldContain(key: K, value: V) = this should mapcontain(key, value)
 fun <K, V> Map<K, V>.shouldNotContain(key: K, value: V) = this shouldNot mapcontain(key, value)
 
+infix fun <K, V> Map<K, V>.shouldContain(entry: Pair<K, V>) = this should mapcontain(entry.first, entry.second)
+infix fun <K, V> Map<K, V>.shouldNotContain(entry: Pair<K, V>) = this shouldNot mapcontain(entry.first, entry.second)
+
 infix fun <K, V> Map<K, V>.shouldContainExactly(expected: Map<K, V>) = this should containExactly(expected)
 infix fun <K, V> Map<K, V>.shouldNotContainExactly(expected: Map<K, V>) = this shouldNot containExactly(expected)
 

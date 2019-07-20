@@ -7,6 +7,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 
 fun File.shouldBeNonEmptyDirectory() = this should beNonEmptyDirectory()
@@ -187,6 +188,22 @@ fun startWithPath(prefix: String) = object : Matcher<File> {
   override fun test(value: File): Result = Result(value.toString().startsWith(prefix), "File $value should start with $prefix", "File $value should not start with $prefix")
 }
 
+fun File.shouldBeSymbolicLink() = this.toPath() should beSymbolicLink()
+fun File.shouldNotBeSymbolicLink() = this.toPath() shouldNot beSymbolicLink()
+
+infix fun File.shouldHaveParent(name: String) = this should haveParent(name)
+infix fun File.shouldNotHaveParent(name: String) = this shouldNot haveParent(name)
+fun haveParent(name: String) = object : Matcher<File> {
+  private fun isParentEqualExpected(parent: File?): Boolean =
+      parent != null && (parent.name == name || isParentEqualExpected(parent.parentFile))
+
+  override fun test(value: File) = Result(
+      isParentEqualExpected(value.parentFile),
+      "File $value should have parent $name",
+      "File $value should not have parent $name"
+  )
+}
+
 fun Path.shouldExist() = this.toFile() should exist()
 fun Path.shouldNotExist() = this.toFile() shouldNot exist()
 
@@ -223,3 +240,50 @@ infix fun Path.shouldNotStartWithPath(file: File) = this.toFile() shouldNot star
 infix fun Path.shouldStartWithPath(prefix: String) = this.toFile() should startWithPath(prefix)
 infix fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot startWithPath(prefix)
 
+infix fun Path.shouldContainFileDeep(name: String) = this should containFileDeep(name)
+infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFileDeep(name)
+fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
+  private fun fileExists(dir: File): Boolean =
+      dir.list().contains(name) || dir.listFiles { file -> file.isDirectory }.any(::fileExists)
+
+  override fun test(value: Path): Result = Result(
+      fileExists(value.toFile()), "File $name should exist in $value", "File $name should not exist in $value"
+  )
+}
+
+fun Path.shouldContainFiles(vararg files: String) = this should containFiles(files.asList())
+fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFiles(files.asList())
+fun containFiles(names: List<String>) = object : Matcher<Path> {
+  override fun test(value: Path): Result {
+    val files = value.toFile().list()?.asIterable() ?: emptyList()
+
+    val existingFiles = names.intersect(files)
+    val nonExistingFiles = names.subtract(existingFiles)
+
+    return Result(
+        nonExistingFiles.isEmpty(),
+        buildMessage(value, nonExistingFiles, false),
+        buildMessage(value, existingFiles, true)
+    )
+  }
+
+  private fun buildMessage(path: Path, fileList: Set<String>, isNegative: Boolean): String {
+    val fileString = if (fileList.size > 1) "Files" else "File"
+    val negativeWord = if (isNegative) " not" else ""
+    val filesString = fileList.sorted().joinToString(", ")
+    return "$fileString $filesString should$negativeWord exist in $path"
+  }
+}
+
+fun Path.shouldBeSymbolicLink() = this should beSymbolicLink()
+fun Path.shouldNotBeSymbolicLink() = this shouldNot beSymbolicLink()
+fun beSymbolicLink() = object : Matcher<Path> {
+  override fun test(value: Path) = Result(
+      Files.isSymbolicLink(value),
+      "File $value should be a symbolic link",
+      "File $value should not be a symbolic link"
+  )
+}
+
+infix fun Path.shouldHaveParent(name: String) = this.toFile() should haveParent(name)
+infix fun Path.shouldNotHaveParent(name: String) = this.toFile() shouldNot haveParent(name)

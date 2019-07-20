@@ -13,6 +13,14 @@ class OptionMatchersTest : WordSpec() {
 
   init {
 
+    "Option.shouldBeSome()" should {
+      "use contracts" {
+        val o = Option("foo")
+        o.shouldBeSome()
+        o.t shouldBe "foo"
+      }
+    }
+
     "Option shouldBe some(value)" should {
       "test that an option is a Some with the given value" {
 

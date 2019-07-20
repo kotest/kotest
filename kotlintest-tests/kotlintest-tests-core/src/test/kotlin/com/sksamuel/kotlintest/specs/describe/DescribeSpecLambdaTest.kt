@@ -35,5 +35,19 @@ class DescribeSpecLambdaTest : DescribeSpec({
     it("name should still be the last value which was koo") {
       name shouldBe "koo"
     }
+
+  }
+  describe("Should allow nested describe scope") {
+    describe("Nested") {
+      it("runs") {
+
+      }
+
+      context("Runs context") {
+        it("Runs") {
+
+        }
+      }
+    }
   }
 })

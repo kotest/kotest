@@ -105,8 +105,7 @@ interface Spec : TestListener {
  * cannot share the same name.
  */
 fun Class<out Spec>.displayName(): String {
-  val displayName = annotations.find { it is DisplayName }
-  return when (displayName) {
+  return when (val displayName = annotations.find { it is DisplayName }) {
     is DisplayName -> displayName.name
     else -> canonicalName
   }

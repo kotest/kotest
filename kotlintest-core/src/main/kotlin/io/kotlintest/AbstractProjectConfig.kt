@@ -2,6 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.ProjectLevelExtension
+import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
 
 /**
@@ -30,6 +31,11 @@ abstract class AbstractProjectConfig {
   open fun listeners(): List<TestListener> = emptyList()
 
   /**
+   * List of project wide [ProjectListener] instances.
+   */
+  open fun projectListeners(): List<ProjectListener> = emptyList()
+
+  /**
    * List of project wide [TestCaseFilter] instances.
    */
   open fun filters(): List<ProjectLevelFilter> = emptyList()
@@ -45,6 +51,11 @@ abstract class AbstractProjectConfig {
    *  - [RandomSpecExecutionOrder]
    */
   open fun specExecutionOrder(): SpecExecutionOrder = LexicographicSpecExecutionOrder
+
+  /**
+   * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
+   */
+  fun isolationMode(): IsolationMode? = null
 
   /**
    * Override this function and return a number greater than 1 if you wish to
