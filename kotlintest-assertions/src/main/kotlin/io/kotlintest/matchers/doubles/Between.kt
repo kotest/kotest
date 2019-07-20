@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import kotlin.math.abs
@@ -69,18 +69,18 @@ fun Double.shouldNotBeBetween(a: Double, b: Double, tolerance: Double) = this sh
  * @see [Double.shouldNotBeBetween]
  */
 fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object : Matcher<Double> {
-  override fun test(value: Double): Result {
+  override fun test(value: Double): MatcherResult {
     val differenceToMinimum = value - a
     val differenceToMaximum = b - value
     
     if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
-      return Result(false, "$value should be bigger than $a", "$value should not be bigger than $a")
+      return MatcherResult(false, "$value should be bigger than $a", "$value should not be bigger than $a")
     }
     
     if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
-      return Result(false, "$value should be smaller than $b", "$value should not be smaller than $b")
+      return MatcherResult(false, "$value should be smaller than $b", "$value should not be smaller than $b")
     }
     
-    return Result(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller than $b and should not be bigger than $a")
+    return MatcherResult(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller than $b and should not be bigger than $a")
   }
 }

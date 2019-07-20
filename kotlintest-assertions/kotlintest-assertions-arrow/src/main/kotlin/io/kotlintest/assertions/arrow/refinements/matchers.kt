@@ -29,7 +29,7 @@ fun <F, A> A.beRefinedBy(refinement: Refinement<F, A>): Matcher<A> =
  */
 fun <F, A> forAll(GA: Gen<A>, refinement: Refinement<F, A>, f: (A) -> Boolean): Unit =
   refinement.applicativeError().run {
-    val genA: Gen<A> = GA.filter { it.beRefinedBy(refinement).test(it).passed }
+    val genA: Gen<A> = GA.filter { it.beRefinedBy(refinement).test(it).passed() }
     val property: PropertyContext.(A) -> Boolean = { f(it) }
     io.kotlintest.properties.forAll(genA, property)
   }

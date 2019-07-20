@@ -4,8 +4,8 @@ package io.kotlintest
  * A [Matcher] is the main abstraction in the assertions library.
  *
  * Implementations contain a single function, called 'test', which
- * accepts a value of type T and returns an instance of [Result].
- * This [Result] return value contains the state of the assertion
+ * accepts a value of type T and returns an instance of [MatcherResult].
+ * This [MatcherResult] return value contains the state of the assertion
  * after it has been evaluted.
  *
  * A matcher will typically be invoked when used with the `should`
@@ -14,27 +14,27 @@ package io.kotlintest
  */
 interface Matcher<T> {
 
-  fun test(value: T): Result
+  fun test(value: T): MatcherResult
 
   fun <U> contramap(f: (U) -> T): Matcher<U> = object : Matcher<U> {
-    override fun test(value: U): Result = this@Matcher.test(f(value))
+    override fun test(value: U): MatcherResult = this@Matcher.test(f(value))
   }
 
   fun invert(): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): Result {
+    override fun test(value: T): MatcherResult {
       val result = this@Matcher.test(value)
-      return Result(!result.passed, result.negatedFailureMessage, result.failureMessage)
+      return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
     }
   }
 
   infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
-    override fun test(value: U): Result = this@Matcher.test(fn(value))
+    override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
   }
 
   infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): Result {
+    override fun test(value: T): MatcherResult {
       val r = this@Matcher.test(value)
-      return if (!r.passed)
+      return if (!r.passed())
         r
       else
         other.test(value)
@@ -42,9 +42,9 @@ interface Matcher<T> {
   }
 
   infix fun or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): Result {
+    override fun test(value: T): MatcherResult {
       val r = this@Matcher.test(value)
-      return if (r.passed)
+      return if (r.passed())
         r
       else
         other.test(value)
@@ -59,43 +59,72 @@ interface Matcher<T> {
  * should fail on `null` values, whether called with `should` or `shouldNot`.
  */
 internal abstract class NeverNullMatcher<T : Any> : Matcher<T?> {
-  final override fun test(value: T?): Result {
-    return if (value == null) Result(false, "Expecting actual not to be null", "")
+  final override fun test(value: T?): MatcherResult {
+    return if (value == null) MatcherResult(false, "Expecting actual not to be null", "")
     else testNotNull(value)
   }
 
   override fun invert(): Matcher<T?> = object : NeverNullMatcher<T>() {
-    override fun testNotNull(value: T): Result {
+    override fun testNotNull(value: T): MatcherResult {
       val result = this@NeverNullMatcher.testNotNull(value)
-      return Result(!result.passed, result.negatedFailureMessage, result.failureMessage)
+      return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
     }
   }
 
-  abstract fun testNotNull(value: T): Result
+  abstract fun testNotNull(value: T): MatcherResult
 }
 
-internal inline fun <T : Any> neverNullMatcher(crossinline test: (T) -> Result): Matcher<T?> {
+internal inline fun <T : Any> neverNullMatcher(crossinline test: (T) -> MatcherResult): Matcher<T?> {
   return object : NeverNullMatcher<T>() {
-    override fun testNotNull(value: T): Result {
+    override fun testNotNull(value: T): MatcherResult {
       return test(value)
     }
   }
 }
 
 /**
- * The [Result] class contains the result of an evaluation of a matcher.
- *
- * @param passed set to true if the matcher indicated this was a valid
- * value and false if the matcher indicated an invalid value
- *
- * @param failureMessage a message indicating why the evaluation failed
- * for when this matcher is used in the positive sense. For example,
- * if a size matcher was used like `mylist should haveSize(5)` then
- * an appropriate error message would be "list should be size 5".
- *
- * @param negatedFailureMessage a message indicating why the evaluation
- * failed for when this matcher is used in the negative sense. For example,
- * if a size matcher was used like `mylist shouldNot haveSize(5)` then
- * an appropriate negated failure would be "List should not have size 5".
+ * An instance of [MatcherResult] contains the result of an evaluation of a [Matcher].
  */
-data class Result(val passed: Boolean, val failureMessage: String, val negatedFailureMessage: String)
+interface MatcherResult {
+
+  /**
+   * Returns true if the matcher indicated this was a valid
+   * value and false if the matcher indicated an invalid value.
+   */
+  fun passed(): Boolean
+
+  /**
+   * Returns a message indicating why the evaluation failed
+   * for when this matcher is used in the positive sense. For example,
+   * if a size matcher was used like `mylist should haveSize(5)` then
+   * an appropriate error message would be "list should be size 5".
+   */
+  fun failureMessage(): String
+
+  /**
+   * Returns a message indicating why the evaluation
+   * failed for when this matcher is used in the negative sense. For example,
+   * if a size matcher was used like `mylist shouldNot haveSize(5)` then
+   * an appropriate negated failure would be "List should not have size 5".
+   */
+  fun negatedFailureMessage(): String
+
+  companion object {
+
+    operator fun invoke(passed: Boolean,
+                        failureMessage: String,
+                        negatedFailureMessage: String) = object : MatcherResult {
+      override fun passed(): Boolean = passed
+      override fun failureMessage(): String = failureMessage
+      override fun negatedFailureMessage(): String = negatedFailureMessage
+    }
+
+    operator fun invoke(passed: Boolean,
+                        failureMessageFn: () -> String,
+                        negatedFailureMessageFn: () -> String) = object : MatcherResult {
+      override fun passed(): Boolean = passed
+      override fun failureMessage(): String = failureMessageFn()
+      override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+    }
+  }
+}

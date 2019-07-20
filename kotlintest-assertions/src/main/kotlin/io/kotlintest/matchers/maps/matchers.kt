@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.maps
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.matchers.containAll
 import io.kotlintest.matchers.containExactly
 import io.kotlintest.matchers.haveKey
@@ -12,7 +12,7 @@ import io.kotlintest.should
 import io.kotlintest.shouldNot
 
 fun <K, V> mapcontain(key: K, v: V) = object : Matcher<Map<K, V>> {
-  override fun test(value: Map<K, V>) = Result(value[key] == v, "Map should contain mapping $key=$v but was $value", "Map should not contain mapping $key=$v but was $value")
+  override fun test(value: Map<K, V>) = MatcherResult(value[key] == v, "Map should contain mapping $key=$v but was $value", "Map should not contain mapping $key=$v but was $value")
 }
 
 fun <K, V> Map<K, V>.shouldContain(key: K, value: V) = this should mapcontain(key, value)

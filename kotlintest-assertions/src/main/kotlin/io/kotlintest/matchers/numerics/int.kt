@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.numerics
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.matchers.between
 import io.kotlintest.matchers.gt
 import io.kotlintest.matchers.gte
@@ -15,26 +15,26 @@ import io.kotlintest.shouldNotBe
 
 fun Int.shouldBePositive() = this shouldBe positive()
 fun positive() = object : Matcher<Int> {
-  override fun test(value: Int) = Result(value > 0, "$value should be > 0", "$value should not be > 0")
+  override fun test(value: Int) = MatcherResult(value > 0, "$value should be > 0", "$value should not be > 0")
 }
 
 fun Int.shouldBeNegative() = this shouldBe negative()
 fun negative() = object : Matcher<Int> {
-  override fun test(value: Int) = Result(value < 0, "$value should be < 0", "$value should not be < 0")
+  override fun test(value: Int) = MatcherResult(value < 0, "$value should be < 0", "$value should not be < 0")
 }
 
 fun Int.shouldBeEven() = this should beEven()
 fun Int.shouldNotBeEven() = this shouldNot beEven()
 fun beEven() = object : Matcher<Int> {
-  override fun test(value: Int): Result =
-      Result(value % 2 == 0, "$value should be even", "$value should be odd")
+  override fun test(value: Int): MatcherResult =
+      MatcherResult(value % 2 == 0, "$value should be even", "$value should be odd")
 }
 
 fun Int.shouldBeOdd() = this should beOdd()
 fun Int.shouldNotBeOdd() = this shouldNot beOdd()
 fun beOdd() = object : Matcher<Int> {
-  override fun test(value: Int): Result =
-      Result(value % 2 == 1, "$value should be odd", "$value should be even")
+  override fun test(value: Int): MatcherResult =
+      MatcherResult(value % 2 == 1, "$value should be odd", "$value should be even")
 }
 
 fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)

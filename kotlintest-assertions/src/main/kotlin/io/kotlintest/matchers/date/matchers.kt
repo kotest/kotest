@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.date
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
@@ -78,8 +78,8 @@ infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot ha
  * @see [LocalDate.shouldNotHaveSameYearAs]
  */
 fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result =
-      Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
+  override fun test(value: LocalDate): MatcherResult =
+      MatcherResult(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
 /**
@@ -151,8 +151,8 @@ infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shou
  * @see [LocalDateTime.shouldNotHaveSameYearAs]
  */
 fun haveSameYear(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result =
-      Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
+  override fun test(value: LocalDateTime): MatcherResult =
+      MatcherResult(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
 /**
@@ -227,8 +227,8 @@ infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shou
  * @see [ZonedDateTime.shouldNotHaveSameYearAs]
  */
 fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result =
-      Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
+  override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
 /**
@@ -305,8 +305,8 @@ infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this sh
  * @see [OffsetDateTime.shouldNotHaveSameYearAs]
  */
 fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result =
-      Result(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
+  override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(value.year == date.year, "$value should have year ${date.year}", "$value should not have year ${date.year}")
 }
 
 /**
@@ -378,8 +378,8 @@ infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot h
  * @see [LocalDate.shouldNotHaveSameMonthAs]
  */
 fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result =
-      Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
+  override fun test(value: LocalDate): MatcherResult =
+      MatcherResult(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
 /**
@@ -451,8 +451,8 @@ infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this sho
  * @see [LocalDateTime.shouldNotHaveSameMonthAs]
  */
 fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result =
-      Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
+  override fun test(value: LocalDateTime): MatcherResult =
+      MatcherResult(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
 /**
@@ -527,8 +527,8 @@ infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this sho
  * @see [ZonedDateTime.shouldNotHaveSameMonthAs]
  */
 fun haveSameMonth(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result =
-      Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
+  override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
 /**
@@ -603,8 +603,8 @@ infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this s
  * @see [OffsetDateTime.shouldNotHaveSameMonthAs]
  */
 fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result =
-      Result(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
+  override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(value.month == date.month, "$value should have month ${date.month}", "$value should not have month ${date.month}")
 }
 
 /**
@@ -676,8 +676,8 @@ infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot hav
  * @see [LocalDate.shouldNotHaveSameDayAs]
  */
 fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+  override fun test(value: LocalDate): MatcherResult =
+      MatcherResult(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 /**
@@ -749,8 +749,8 @@ infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shoul
  * @see [LocalDateTime.shouldNotHaveSameDayAs]
  */
 fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+  override fun test(value: LocalDateTime): MatcherResult =
+      MatcherResult(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 /**
@@ -825,8 +825,8 @@ infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shoul
  * @see [ZonedDateTime.shouldNotHaveSameDayAs]
  */
 fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+  override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 /**
@@ -901,8 +901,8 @@ infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this sho
  * @see [OffsetDateTime.shouldNotHaveSameDayAs]
  */
 fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result =
-      Result(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
+  override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(value.dayOfMonth == date.dayOfMonth, "$value should have day ${date.dayOfMonth} but had ${value.dayOfMonth}", "$value should not have day ${date.dayOfMonth}")
 }
 
 /**
@@ -979,8 +979,8 @@ infix fun LocalDate.shouldNotBeBefore(date: LocalDate) = this shouldNot before(d
  * @see LocalDate.shouldNotBeBefore
  */
 fun before(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result =
-      Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
+  override fun test(value: LocalDate): MatcherResult =
+      MatcherResult(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
 /**
@@ -1056,8 +1056,8 @@ infix fun LocalDateTime.shouldNotBeBefore(date: LocalDateTime) = this shouldNot 
  * @see LocalDateTime.shouldNotBeBefore
  */
 fun before(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result =
-      Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
+  override fun test(value: LocalDateTime): MatcherResult =
+      MatcherResult(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
 /**
@@ -1136,8 +1136,8 @@ infix fun ZonedDateTime.shouldNotBeBefore(date: ZonedDateTime) = this shouldNot 
  * @see ZonedDateTime.shouldNotBeBefore
  */
 fun before(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result =
-      Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
+  override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
 /**
@@ -1216,8 +1216,8 @@ infix fun OffsetDateTime.shouldNotBeBefore(date: OffsetDateTime) = this shouldNo
  * @see OffsetDateTime.shouldNotBeBefore
  */
 fun before(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result =
-      Result(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
+  override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(value.isBefore(date), "$value should be before $date", "$value should not be before $date")
 }
 
 /**
@@ -1293,8 +1293,8 @@ infix fun LocalDate.shouldNotBeAfter(date: LocalDate) = this shouldNot after(dat
  * @see LocalDate.shouldNotBeAfter
  */
 fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result =
-      Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
+  override fun test(value: LocalDate): MatcherResult =
+      MatcherResult(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
 /**
@@ -1370,8 +1370,8 @@ infix fun LocalDateTime.shouldNotBeAfter(date: LocalDateTime) = this shouldNot a
  * @see LocalDateTime.shouldNotBeAfter
  */
 fun after(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result =
-      Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
+  override fun test(value: LocalDateTime): MatcherResult =
+      MatcherResult(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
 /**
@@ -1450,8 +1450,8 @@ infix fun ZonedDateTime.shouldNotBeAfter(date: ZonedDateTime) = this shouldNot a
  * @see ZonedDateTime.shouldNotBeAfter
  */
 fun after(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result =
-      Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
+  override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
 /**
@@ -1530,8 +1530,8 @@ infix fun OffsetDateTime.shouldNotBeAfter(date: OffsetDateTime) = this shouldNot
  * @see OffsetDateTime.shouldNotBeAfter
  */
 fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result =
-      Result(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
+  override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(value.isAfter(date), "$value should be after $date", "$value should not be after $date")
 }
 
 /**
@@ -1603,11 +1603,11 @@ fun LocalDate.shouldNotBeWithin(period: Period, date: LocalDate) = this shouldNo
  * @see [LocalDate.shouldNotBeWithin]
  */
 fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result {
+  override fun test(value: LocalDate): MatcherResult {
     val start = date.minus(period)
     val end = date.plus(period)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
+    return MatcherResult(passed, "$value should be within $period of $date", "$value should not be within $period of $date")
   }
 }
 
@@ -1681,11 +1681,11 @@ fun LocalDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: LocalD
  * @see [LocalDateTime.shouldNotBeWithin]
  */
 fun within(temporalAmount: TemporalAmount, date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result {
+  override fun test(value: LocalDateTime): MatcherResult {
     val start = date.minus(temporalAmount)
     val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
+    return MatcherResult(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
 
@@ -1761,11 +1761,11 @@ fun ZonedDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: ZonedD
  * @see [ZonedDateTime.shouldNotBeWithin]
  */
 fun within(temporalAmount: TemporalAmount, date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result {
+  override fun test(value: ZonedDateTime): MatcherResult {
     val start = date.minus(temporalAmount)
     val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
+    return MatcherResult(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
 
@@ -1841,11 +1841,11 @@ fun OffsetDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: Offse
  * @see [OffsetDateTime.shouldNotBeWithin]
  */
 fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result {
+  override fun test(value: OffsetDateTime): MatcherResult {
     val start = date.minus(temporalAmount)
     val end = date.plus(temporalAmount)
     val passed = start == value || end == value || start.isBefore(value) && end.isAfter(value)
-    return Result(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
+    return MatcherResult(passed, "$value should be within $temporalAmount of $date", "$value should not be within $temporalAmount of $date")
   }
 }
 
@@ -1926,9 +1926,9 @@ fun LocalDate.shouldNotBeBetween(a: LocalDate, b: LocalDate) = this shouldNotBe 
  * @see LocalDate.shouldNotBeBetween
  */
 fun between(a: LocalDate, b: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
-  override fun test(value: LocalDate): Result {
+  override fun test(value: LocalDate): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+    return MatcherResult(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
 
@@ -2009,9 +2009,9 @@ fun LocalDateTime.shouldNotBeBetween(a: LocalDateTime, b: LocalDateTime) = this 
  * @see LocalDateTime.shouldNotBeBetween
  */
 fun between(a: LocalDateTime, b: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalDateTime> {
-  override fun test(value: LocalDateTime): Result {
+  override fun test(value: LocalDateTime): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+    return MatcherResult(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
 
@@ -2093,9 +2093,9 @@ fun ZonedDateTime.shouldNotBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this 
  * @see ZonedDateTime.shouldNotBeBetween
  */
 fun between(a: ZonedDateTime, b: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): Result {
+  override fun test(value: ZonedDateTime): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+    return MatcherResult(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
 
@@ -2177,9 +2177,9 @@ fun OffsetDateTime.shouldNotBeBetween(a: OffsetDateTime, b: OffsetDateTime) = th
  * @see OffsetDateTime.shouldNotBeBetween
  */
 fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<OffsetDateTime> {
-  override fun test(value: OffsetDateTime): Result {
+  override fun test(value: OffsetDateTime): MatcherResult {
     val passed = value.isAfter(a) && value.isBefore(b)
-    return Result(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
+    return MatcherResult(passed, "$value should be after $a and before $b", "$value should not be be after $a and before $b")
   }
 }
 

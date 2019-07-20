@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
@@ -49,7 +49,7 @@ fun Double.shouldNotBeNaN() = this shouldNot beNaN()
  * @see [Double.shouldNotBeNaN]
  */
 fun beNaN() = object : Matcher<Double> {
-  override fun test(value: Double) = Result(
+  override fun test(value: Double) = MatcherResult(
     value.isNaN(),
           "$value should be NaN",
           "$value should not be NaN"

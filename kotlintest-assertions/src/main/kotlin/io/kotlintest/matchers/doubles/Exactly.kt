@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 
@@ -33,5 +33,5 @@ infix fun Double.shouldBeExactly(other: Double) = this shouldBe exactly(other)
  */
 infix fun Double.shouldNotBeExactly(other: Double) = this shouldNotBe exactly(other)
 fun exactly(d: Double): Matcher<Double> = object : Matcher<Double> {
-  override fun test(value: Double) = Result(value == d, "$value is not equal to expected value $d", "$value should not equal $d")
+  override fun test(value: Double) = MatcherResult(value == d, "$value is not equal to expected value $d", "$value should not equal $d")
 }

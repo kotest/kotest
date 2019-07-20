@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.matchers
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.*
 import io.kotlintest.matchers.string.shouldContain
@@ -18,7 +18,7 @@ class MatchersTest : FreeSpec({
 
   "withClue()" - {
     fun withClueEcho(other: String) = object : Matcher<String> {
-      override fun test(value: String)= Result(false,
+      override fun test(value: String)= MatcherResult(false,
               "Should have the details of '$value' and $other",
               "Should have the details of '$value' and $other")
     }
