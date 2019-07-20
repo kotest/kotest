@@ -100,7 +100,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     return if (active) executeTest(testCase, context, start) else TestResult.Ignored
   }
 
-  // exectues the test case or if the test is not active then returns a ignored test result
+  // exectues the test case or if the test is not active then returns an ignored test result
   private suspend fun executeTest(testCase: TestCase, context: TestContext, start: Long): TestResult {
     listener.beforeTestCaseExecution(testCase)
 
@@ -146,10 +146,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     }
 
     // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-    if (testCase.config.timeout.nano > 0) {
+    if (testCase.config.timeout().toNanos() > 0) {
       scheduler.schedule({
-        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout}"))
-      }, testCase.config.timeout.toMillis(), TimeUnit.MILLISECONDS)
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout().toMillis()}ms"))
+      }, testCase.config.timeout().toNanos(), TimeUnit.NANOSECONDS)
     }
 
     supervisorJob.invokeOnCompletion { e ->
