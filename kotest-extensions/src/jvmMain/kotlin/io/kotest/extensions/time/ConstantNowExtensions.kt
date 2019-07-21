@@ -7,6 +7,11 @@ import io.kotest.core.listeners.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import java.time.*
+import java.time.chrono.HijrahDate
+import java.time.chrono.JapaneseDate
+import java.time.chrono.MinguoDate
+import java.time.chrono.ThaiBuddhistDate
 import java.time.temporal.Temporal
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -42,8 +47,38 @@ internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
    every { getNoParameterNowFunction(klass).call() } returns value
 }
 
+private val ClassesExtendTemporal =  mapOf(
+  Instant::class to ZonedDateTime::toInstant,
+  LocalDate::class to ZonedDateTime::toLocalDate,
+  LocalDateTime::class to ZonedDateTime::toLocalDateTime,
+  LocalTime::class to ZonedDateTime::toLocalTime,
+  OffsetDateTime::class to ZonedDateTime::toOffsetDateTime,
+  OffsetTime::class to ZonedDateTime::toOffsetTime,
+  Year::class to ZonedDateTime::getYear,
+  YearMonth::class to ZonedDateTime::toYearMonth,
+  ZonedDateTime::class to ZonedDateTime::self,
+  HijrahDate::class to ZonedDateTime::toHijrahDate,
+  JapaneseDate::class to ZonedDateTime::toJapaneseDate,
+  MinguoDate::class to ZonedDateTime::toMinguoDate,
+  ThaiBuddhistDate::class to ZonedDateTime::toThaiBuddhistDate
+)
+
+private fun ZonedDateTime.toThaiBuddhistDate() = ThaiBuddhistDate.of(year, monthValue, dayOfMonth)
+
+private fun ZonedDateTime.toMinguoDate() = MinguoDate.of(year, monthValue, dayOfMonth)
+
+private fun ZonedDateTime.toJapaneseDate() = JapaneseDate.of(year, monthValue, dayOfMonth)
+
+private fun ZonedDateTime.toHijrahDate() = HijrahDate.of(year, monthValue, dayOfMonth)
+
+private fun ZonedDateTime.self() = this
+
+private fun ZonedDateTime.toYearMonth() = YearMonth.of(year, month)
+
+private fun ZonedDateTime.toOffsetTime() = toOffsetDateTime().toOffsetTime()
+
 @PublishedApi
-internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<Time>): KFunction<*> {
+internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<in Time>): KFunction<*> {
    return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
 }
 
