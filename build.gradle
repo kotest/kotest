@@ -9,7 +9,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    
+
     dependencies {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
     }
@@ -22,6 +22,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'net.researchgate.release' version '2.8.0'
+    id "io.kotlintest" version "1.1.0"
 }
 
 allprojects {
@@ -37,7 +38,7 @@ allprojects {
     group = "io.kotlintest"
 
     if (isTravis) {
-        version "3.4.0." + travisBuildNumber + "-SNAPSHOT"
+        version "3.4.1." + travisBuildNumber + "-SNAPSHOT"
     }
 
     release {
