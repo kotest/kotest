@@ -4,6 +4,7 @@ import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
+import java.time.Duration
 
 /**
  * Project-wide configuration. Extensions returned by an
@@ -55,7 +56,13 @@ abstract class AbstractProjectConfig {
   /**
    * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
    */
-  fun isolationMode(): IsolationMode? = null
+  open fun isolationMode(): IsolationMode? = null
+
+  /**
+   * A global timeout that is applied to all tests if not null.
+   * Tests which define their own timeout will override this.
+   */
+  open val timeout: Duration? = null
 
   /**
    * Override this function and return a number greater than 1 if you wish to

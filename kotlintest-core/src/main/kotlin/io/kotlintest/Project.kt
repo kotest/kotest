@@ -4,6 +4,7 @@ package io.kotlintest
 
 import io.kotlintest.extensions.*
 import java.lang.StringBuilder
+import java.time.Duration
 
 /**
  * Internal class used to hold project wide configuration.
@@ -30,14 +31,14 @@ object Project {
   }
 
   private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
+  private val timeoutDefault = Duration.ofSeconds(600)
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
       val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config")
           ?: defaultProjectConfigFullyQualifiedName
       val clas = Class.forName(projectConfigFullyQualifiedName)
-      val field = clas.declaredFields.find { it.name == "INSTANCE" }
-      when (field) {
+      when (val field = clas.declaredFields.find { it.name == "INSTANCE" }) {
         // if the static field for an object cannot be found, then instantiate
         null -> clas.newInstance() as AbstractProjectConfig
         // if the static field can be found then use it
@@ -56,6 +57,7 @@ object Project {
   private var writeSpecFailureFile: Boolean = true
   private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
+  private var _timeout: Duration? = null
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
@@ -71,6 +73,8 @@ object Project {
   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
+  fun timeout(): Duration = _timeout ?: timeoutDefault
+
   var failOnIgnoredTests: Boolean = false
 
   fun tags(): Tags {
@@ -85,6 +89,7 @@ object Project {
     _filters.addAll(it.filters())
     _specExecutionOrder = it.specExecutionOrder()
     _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
+    _timeout = it.timeout
     parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
     writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
     failOnIgnoredTests = System.getProperty("kotlintest.build.fail-on-ignore") == "true" || it.failOnIgnoredTests

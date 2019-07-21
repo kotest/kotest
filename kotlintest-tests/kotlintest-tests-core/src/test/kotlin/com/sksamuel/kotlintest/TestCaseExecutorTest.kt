@@ -8,7 +8,6 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestStatus
-import io.kotlintest.TestType
 import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -237,7 +236,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       then(listener).should().exitTestCase(
           argThat { description == Description.spec("wibble") },
-          argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.1S" }
+          argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than 100ms" }
       )
     }
 
@@ -258,11 +257,12 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.spec("wibble")
       }
+
       executor.execute(testCase, context)
 
       then(listener).should().exitTestCase(
           argThat { description == Description.spec("wibble") },
-          argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than PT0.125S" }
+          argThat { status == TestStatus.Error && this.error?.message == "Execution of test took longer than 125ms" }
       )
     }
 
@@ -293,11 +293,11 @@ class TestCaseExecutorTest : FunSpec() {
       val listener = mock<TestEngineListener> {}
       val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
 
-      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest, {
+      val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         while (true) {
           "this" shouldBe "that"
         }
-      }).copy(config = TestCaseConfig(true, invocations = 2, threads = 1))
+      }.copy(config = TestCaseConfig(true, invocations = 2, threads = 1))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}

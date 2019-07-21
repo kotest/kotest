@@ -70,11 +70,6 @@ interface Spec : TestListener {
    */
   fun testCases(): List<TestCase>
 
-  /**
-   * Returns the focused tests for this Spec. Can be empty if no test is marked as focused.
-   */
-  fun focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }
-
   fun hasFocusedTest(): Boolean = focused().isNotEmpty()
 
   fun closeResources()
@@ -125,3 +120,8 @@ private class LazyWithReceiver<This, Return>(val initializer: This.() -> Return)
     return values.getOrPut(thisRef) { thisRef.initializer() }
   }
 }
+
+/**
+ * Returns the focused tests for this Spec. Can be empty if no test is marked as focused.
+ */
+fun Spec.focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }
