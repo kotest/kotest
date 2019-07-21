@@ -191,7 +191,7 @@ class MyTests : FreeSpec({
 
 ### Describe Spec
 
-`DescribeSpec` offers functionality familar to those who are coming from a Ruby background, as this testing style
+`DescribeSpec` offers functionality familiar to those who are coming from a Ruby background, as this testing style
  mimics the popular ruby test framework [rspec](http://rspec.info/). The scopes available are `describe`, `context`, and `it`.
 
 ```kotlin
@@ -207,6 +207,12 @@ class MyTests : DescribeSpec({
             it("carries strike to the next frame") {
                 // test here
             }
+        }
+        
+        describe("for the opposite team") {
+          it("Should negate one score") {
+            // test here
+          }
         }
     }
 })
