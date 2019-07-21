@@ -3,9 +3,6 @@ buildscript {
         mavenCentral()
         mavenLocal()
     }
-    dependencies {
-        //    classpath "io.kotlintest:kotlintest-gradle-plugin:1.0.3-LOCAL"
-    }
 }
 
 plugins {
@@ -16,8 +13,6 @@ plugins {
     id 'signing'
     id "io.kotlintest"
 }
-
-//apply plugin: "io.kotlintest"
 
 repositories {
     mavenCentral()

@@ -4,7 +4,9 @@ import arrow.core.Try
 import io.kotlintest.DoNotParallelize
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.Tag
 import io.kotlintest.TestCaseFilter
+import io.kotlintest.extensions.SpecifiedTagsTagExtension
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
@@ -14,10 +16,11 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
-
 class TestEngine(val classes: List<KClass<out Spec>>,
                  filters: List<TestCaseFilter>,
                  val parallelism: Int,
+                 includedTags: Set<Tag>,
+                 excludedTags: Set<Tag>,
                  val listener: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -29,6 +32,8 @@ class TestEngine(val classes: List<KClass<out Spec>>,
 
   init {
     Project.registerTestCaseFilter(filters)
+    if (includedTags.isNotEmpty() || excludedTags.isNotEmpty())
+      Project.registerExtension(SpecifiedTagsTagExtension(includedTags, excludedTags))
   }
 
   private fun afterAll() = Try { Project.afterAll() }

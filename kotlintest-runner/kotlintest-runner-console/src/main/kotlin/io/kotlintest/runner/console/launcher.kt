@@ -1,6 +1,8 @@
 package io.kotlintest.runner.console
 
 import com.github.ajalt.mordant.TermColors
+import io.kotlintest.StringTag
+import io.kotlintest.Tag
 import net.sourceforge.argparse4j.ArgumentParsers
 import kotlin.system.exitProcess
 
@@ -14,14 +16,20 @@ fun main(args: Array<String>) {
   parser.addArgument("--source").help("Optional string describing how the launcher was invoked")
   parser.addArgument("--slow-duration").help("Optional time in millis controlling when a test is marked as slow")
   parser.addArgument("--very-slow-duration").help("Optional time in millis controlling when a test is marked as very slow")
+  // parser.addArgument("--max-test-duration").help("Optional time in millis controlling when the duration of a test should be marked as an error")
+  parser.addArgument("--include-tags").help("Optional string setting which tags to be included")
+  parser.addArgument("--exclude-tags").help("Optional string setting which tags to be excluded")
   val ns = parser.parseArgs(args)
 
   val writerClass: String? = ns.getString("writer")
   val spec: String? = ns.getString("spec")
   val test: String? = ns.getString("test")
   val source: String? = ns.getString("source")
+  val includeTags: Set<Tag> = ns.getString("include-tags")?.split(',')?.map { StringTag(it) }?.toSet() ?: emptySet()
+  val excludeTags: Set<Tag> = ns.getString("exclude-tags")?.split(',')?.map { StringTag(it) }?.toSet() ?: emptySet()
   val slowDuration: Int = ns.getString("slow-duration")?.toInt() ?: 1000
   val verySlowDuration: Int = ns.getString("very-slow-duration")?.toInt() ?: 3000
+  // val maxTestDuration: Int = ns.getString("max-test-duration")?.toInt() ?: 0
 
   val term = if (source == "kotlintest-gradle-plugin") TermColors(TermColors.Level.ANSI256) else TermColors()
 
@@ -32,7 +40,7 @@ fun main(args: Array<String>) {
   }
 
   val runner = KotlinTestConsoleRunner(writer)
-  runner.execute(spec, test)
+  runner.execute(spec, test, includeTags, excludeTags)
 
   // there could be threads in the background that will stop the launcher shutting down
   // for example if a test keeps a thread running

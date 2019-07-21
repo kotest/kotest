@@ -26,12 +26,16 @@ interface TagExtension : ProjectLevelExtension {
   fun tags(): Tags
 }
 
+/**
+ * This [TagExtension] includes and excludes tags using the system properties
+ * 'kotlintest.tags.include' and 'kotlintest.tags.exclude'
+ */
 object SystemPropertyTagExtension : TagExtension {
 
   override fun tags(): Tags {
 
     fun readTagsProperty(name: String): List<Tag> =
-        (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map { StringTag(it.trim()) }
+      (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map { StringTag(it.trim()) }
 
     val includedTags = readTagsProperty("kotlintest.tags.include")
     val excludedTags = readTagsProperty("kotlintest.tags.exclude")
@@ -55,4 +59,10 @@ object RuntimeTagExtension : TagExtension {
     return Tags(included, excluded)
   }
 
+}
+
+class SpecifiedTagsTagExtension(private val included: Set<Tag>, private val excluded: Set<Tag>) : TagExtension {
+  override fun tags(): Tags {
+    return Tags(included, excluded)
+  }
 }

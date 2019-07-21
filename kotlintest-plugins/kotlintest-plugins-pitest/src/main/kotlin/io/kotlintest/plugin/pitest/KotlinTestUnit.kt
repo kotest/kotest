@@ -37,7 +37,7 @@ class KotlinTestUnit(val klass: KClass<out Spec>) : TestUnit {
       }
     }
 
-    val engine = TestEngine(listOf(klass), emptyList(), 1, listener)
+    val engine = TestEngine(listOf(klass), emptyList(), 1, emptySet(), emptySet(), listener)
     engine.execute()
   }
 }

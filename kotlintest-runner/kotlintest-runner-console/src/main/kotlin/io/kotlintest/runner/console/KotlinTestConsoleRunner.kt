@@ -4,6 +4,7 @@ package io.kotlintest.runner.console
 
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.Tag
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.TestDiscovery
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -13,7 +14,7 @@ class KotlinTestConsoleRunner(private val writer: TestEngineListener) {
 
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
-  fun execute(specFQN: String?, test: String?) {
+  fun execute(specFQN: String?, test: String?, includeTags: Set<Tag>, excludeTags: Set<Tag>) {
 
     val (specs, filter) = if (specFQN == null) {
       val result = TestDiscovery.discover(DiscoveryRequest(emptyList()))
@@ -25,10 +26,12 @@ class KotlinTestConsoleRunner(private val writer: TestEngineListener) {
     }
 
     val runner = io.kotlintest.runner.jvm.TestEngine(
-        specs,
-        if (filter == null) emptyList() else listOf(filter),
-        Project.parallelism(),
-        writer
+      specs,
+      if (filter == null) emptyList() else listOf(filter),
+      Project.parallelism(),
+      includeTags,
+      excludeTags,
+      writer
     )
     runner.execute()
   }

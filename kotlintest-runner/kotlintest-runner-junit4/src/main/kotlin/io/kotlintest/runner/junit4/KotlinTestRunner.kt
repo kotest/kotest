@@ -14,7 +14,14 @@ class KotlinTestRunner(private val testClass: Class<out Spec>) : Runner() {
 
   override fun run(notifier: RunNotifier) {
     val listener = JUnitTestRunnerListener(notifier)
-    val runner = TestEngine(listOf(testClass.kotlin), emptyList(), Project.parallelism(), listener)
+    val runner = TestEngine(
+      listOf(testClass.kotlin),
+      emptyList(),
+      Project.parallelism(),
+      emptySet(),
+      emptySet(),
+      listener
+    )
     runner.execute()
   }
 
