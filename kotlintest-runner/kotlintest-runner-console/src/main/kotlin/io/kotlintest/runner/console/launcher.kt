@@ -11,17 +11,21 @@ fun main(args: Array<String>) {
   parser.addArgument("--spec").help("Specify the fully qualified name of the spec class which contains the test to execute")
   parser.addArgument("--writer").help("Specify the name of console writer implementation. Defaults TeamCity")
   parser.addArgument("--source").help("Optional string describing how the launcher was invoked")
+  parser.addArgument("--slow-duration").help("Optional time in millis controlling when a test is marked as slow")
+  parser.addArgument("--very-slow-duration").help("Optional time in millis controlling when a test is marked as very slow")
   val ns = parser.parseArgs(args)
 
   val writerClass: String? = ns.getString("writer")
   val spec: String? = ns.getString("spec")
   val test: String? = ns.getString("test")
   val source: String? = ns.getString("source")
+  val slowDuration: Int = ns.getString("slow-duration")?.toInt() ?: 1000
+  val verySlowDuration: Int = ns.getString("very-slow-duration")?.toInt() ?: 3000
 
   val term = if (source == "kotlintest-gradle-plugin") TermColors(TermColors.Level.ANSI256) else TermColors()
 
   val writer = when (writerClass) {
-    "mocha" -> MochaConsoleWriter(term)
+    "mocha" -> MochaConsoleWriter(term, slowDuration, verySlowDuration)
     "basic" -> BasicConsoleWriter()
     else -> TeamCityConsoleWriter()
   }
