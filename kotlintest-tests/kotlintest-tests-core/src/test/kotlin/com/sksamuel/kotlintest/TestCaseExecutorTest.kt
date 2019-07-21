@@ -257,6 +257,7 @@ class TestCaseExecutorTest : FunSpec() {
         override suspend fun registerTestCase(testCase: TestCase) {}
         override fun description(): Description = Description.spec("wibble")
       }
+
       executor.execute(testCase, context)
 
       then(listener).should().exitTestCase(
