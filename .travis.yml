@@ -24,7 +24,7 @@ jobs:
       script: "./gradlew test"
     - stage: test
       name: "kotlintest gradle plugin"
-      script: "./gradlew compile kotlintest"
+      script: "./gradlew compileKotlin kotlintest"
     - stage: deploy
       name: "deploy maven snapshot"
       script: "./snapshot_deploy.sh"
