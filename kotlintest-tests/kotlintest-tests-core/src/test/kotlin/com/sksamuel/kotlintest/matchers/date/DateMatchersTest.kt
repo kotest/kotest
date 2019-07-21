@@ -1,41 +1,41 @@
 package com.sksamuel.kotlintest.matchers.date
 
-import io.kotlintest.matchers.date.after
-import io.kotlintest.matchers.date.before
-import io.kotlintest.matchers.date.haveSameDay
-import io.kotlintest.matchers.date.haveSameMonth
-import io.kotlintest.matchers.date.haveSameYear
-import io.kotlintest.matchers.date.shouldBeAfter
-import io.kotlintest.matchers.date.shouldBeBefore
-import io.kotlintest.matchers.date.shouldBeWithin
-import io.kotlintest.matchers.date.shouldHaveSameDayAs
-import io.kotlintest.matchers.date.shouldHaveSameMonthAs
-import io.kotlintest.matchers.date.shouldHaveSameYearAs
-import io.kotlintest.matchers.date.shouldBeBetween
-import io.kotlintest.matchers.date.shouldNotBeAfter
-import io.kotlintest.matchers.date.shouldNotBeBefore
-import io.kotlintest.matchers.date.shouldNotBeWithin
-import io.kotlintest.matchers.date.shouldNotHaveSameDayAs
-import io.kotlintest.matchers.date.shouldNotHaveSameMonthAs
-import io.kotlintest.matchers.date.shouldNotHaveSameYearAs
-import io.kotlintest.matchers.date.shouldNotBeBetween
-import io.kotlintest.matchers.date.within
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
+import io.kotlintest.*
+import io.kotlintest.matchers.date.*
 import io.kotlintest.specs.StringSpec
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.time.OffsetDateTime
-import java.time.Period
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
+import java.time.DayOfWeek.SATURDAY
 
 class DateMatchersTest : StringSpec() {
   init {
+
+    "LocalTime should have same nanos ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameNanos(LocalTime.of(5, 6, 7, 4))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameNanos(LocalTime.of(1, 2, 3, 8))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameNanosAs(LocalTime.of(5, 6, 7, 4))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameNanosAs(LocalTime.of(1, 2, 3, 8))
+    }
+
+    "LocalTime should have same seconds ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameSeconds(LocalTime.of(5, 6, 3, 4))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameSeconds(LocalTime.of(1, 2, 5, 4))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameSecondsAs(LocalTime.of(5, 6, 3, 4))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameSecondsAs(LocalTime.of(1, 2, 5, 4))
+    }
+
+    "LocalTime should have same minutes ignoring other fields" {
+      LocalTime.of(1, 2, 3, 4) should haveSameMinutes(LocalTime.of(5, 2, 7, 8))
+      LocalTime.of(1, 2, 3, 4) shouldNot haveSameMinutes(LocalTime.of(1, 5, 3, 4))
+      LocalTime.of(1, 2, 3, 4).shouldHaveSameMinutesAs(LocalTime.of(5, 2, 7, 8))
+      LocalTime.of(1, 2, 3, 4).shouldNotHaveSameMinutesAs(LocalTime.of(1, 5, 3, 4))
+    }
+
+    "LocalTime should have same hours ignoring other fields" {
+      LocalTime.of(12, 1, 2, 7777) should haveSameHours(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(3, 59, 58, 9999) shouldNot haveSameHours(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(12, 1, 2, 7777).shouldHaveSameHoursAs(LocalTime.of(12, 59, 58, 9999))
+      LocalTime.of(3, 59, 58, 9999).shouldNotHaveSameHoursAs(LocalTime.of(12, 59, 58, 9999))
+    }
 
     "LocalDate should have same year ignoring other fields" {
       LocalDate.of(2014, 1, 2) should haveSameYear(LocalDate.of(2014, 5, 6))
@@ -49,8 +49,6 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1) shouldNot haveSameYear(LocalDateTime.of(2018, 5, 6, 3, 2, 1))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).shouldHaveSameYearAs(LocalDateTime.of(2014, 5, 6, 3, 2, 1))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).shouldNotHaveSameYearAs(LocalDateTime.of(2018, 5, 6, 3, 2, 1))
-  
-  
     }
 
     "ZonedDateTime should have same year ignoring other fields" {
@@ -72,7 +70,6 @@ class DateMatchersTest : StringSpec() {
       LocalDate.of(2014, 1, 2) shouldNot haveSameMonth(LocalDate.of(2018, 4, 6))
       LocalDate.of(2014, 1, 2).shouldHaveSameMonthAs(LocalDate.of(2016, 1, 6))
       LocalDate.of(2014, 1, 2).shouldNotHaveSameMonthAs(LocalDate.of(2018, 4, 6))
-  
     }
 
     "LocalDateTime should have same month ignoring other fields" {
@@ -125,6 +122,13 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotHaveSameDayAs(LocalDateTime.of(2014, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
 
+    "LocalTime shouldBe before" {
+      LocalTime.of(1, 2, 3, 1000) shouldBe before(LocalTime.of(1, 10, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000) shouldNotBe before(LocalTime.of(1, 1, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000).shouldBeBefore(LocalTime.of(5, 2, 3, 1000))
+      LocalTime.of(1, 2, 3, 1000).shouldNotBeBefore(LocalTime.of(0, 2, 3, 1000))
+    }
+
     "LocalDate shouldBe before" {
       LocalDate.of(2014, 1, 2) shouldBe before(LocalDate.of(2014, 1, 3))
       LocalDate.of(2014, 1, 2) shouldNotBe before(LocalDate.of(2014, 1, 1))
@@ -146,11 +150,28 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atZone(ZoneId.of("Z")).shouldNotBeBefore(LocalDateTime.of(2014, 1, 1, 3, 2, 1).atZone(ZoneId.of("Z")))
     }
 
+    "ZonedDateTime shouldBe equal" {
+      ZonedDateTime.of(2019, 12, 10, 10, 0, 0, 0, ZoneOffset.UTC) shouldBe
+        ZonedDateTime.of(2019, 12, 10, 4, 0, 0, 0, ZoneId.of("America/Chicago")).atSameZone()
+
+      shouldThrow<AssertionError> {
+        ZonedDateTime.of(2019, 12, 10, 10, 0, 0, 0, ZoneOffset.UTC) shouldBe
+          ZonedDateTime.of(2019, 12, 10, 4, 1, 0, 0, ZoneId.of("America/Chicago")).atSameZone()
+      }.message shouldBe "expected: 2019-12-10T10:01Z but was: 2019-12-10T10:00Z"
+    }
+
     "OffsetDateTime shouldBe before" {
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC) shouldBe before(LocalDateTime.of(2016, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC) shouldNotBe before(LocalDateTime.of(2012, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 4, 3, 2).atOffset(ZoneOffset.UTC).shouldBeBefore(LocalDateTime.of(2016, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC))
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeBefore(LocalDateTime.of(2012, 2, 6, 3, 2, 1).atOffset(ZoneOffset.UTC))
+    }
+
+    "LocalTime shouldBe after" {
+      LocalTime.of(1, 2, 3, 9999) shouldBe after(LocalTime.of(1, 2, 3, 1111))
+      LocalTime.of(1, 2, 3, 1000) shouldNotBe after(LocalTime.of(1, 2, 10, 1000))
+      LocalTime.of(1, 2, 3, 9999).shouldBeAfter(LocalTime.of(1, 2, 3, 1111))
+      LocalTime.of(1, 2, 3, 1000).shouldNotBeAfter(LocalTime.of(1, 2, 10, 1000))
     }
 
     "LocalDate shouldBe after" {
@@ -240,6 +261,11 @@ class DateMatchersTest : StringSpec() {
       LocalDateTime.of(2014, 1, 2, 3, 2, 1).atOffset(ZoneOffset.UTC).shouldNotBeWithin(Duration.ofDays(1), LocalDateTime.of(2014, 2, 1, 3, 2, 1).atOffset(ZoneOffset.UTC))
     }
 
+    "LocalTime shouldBe between" {
+      LocalTime.of(14, 20, 50, 1000).shouldBeBetween(LocalTime.of(14, 20, 49), LocalTime.of(14, 20, 51))
+      LocalTime.of(14, 20, 50, 1000).shouldNotBeBetween(LocalTime.of(14, 20, 51), LocalTime.of(14, 20, 52))
+    }
+
     "LocalDate shouldBe between" {
       LocalDate.of(2019, 2, 16).shouldBeBetween(LocalDate.of(2019, 2, 15), LocalDate.of(2019, 2, 17))
       LocalDate.of(2019, 2, 16).shouldNotBeBetween(LocalDate.of(2019, 2, 17), LocalDate.of(2019, 2, 18))
@@ -260,6 +286,80 @@ class DateMatchersTest : StringSpec() {
     "OffsetDateTime shouldBe between" {
       OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldBeBetween(OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
       OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeBetween(OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
+    }
+
+    "LocalDate.shouldBeToday() should match today" {
+      LocalDate.now().shouldBeToday()
+    }
+
+    "LocalDateTime.shouldBeToday() should match today" {
+      LocalDateTime.now().shouldBeToday()
+    }
+
+    "LocalDate.shouldBeToday() should not match the past" {
+      shouldFail {
+        LocalDate.of(2002, Month.APRIL, 1).shouldBeToday()
+      }
+    }
+
+    "LocalDateTime.shouldBeToday() should not match the past" {
+      shouldFail {
+        LocalDateTime.of(2002, Month.APRIL, 1, 5, 2).shouldBeToday()
+      }
+      shouldFail {
+        LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withDayOfMonth(
+          LocalDateTime.now().dayOfMonth - 1
+        ).shouldBeToday()
+      }
+      shouldFail {
+        LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withDayOfMonth(
+          LocalDateTime.now().dayOfMonth + 1
+        ).shouldBeToday()
+      }
+    }
+
+    "LocalDateTime.shouldNotBeToday()" {
+      LocalDateTime.of(2002, Month.APRIL, 1, 5, 2).shouldNotBeToday()
+      shouldFail {
+        LocalDateTime.now().shouldNotBeToday()
+      }
+    }
+
+    "LocalDate.shouldNotBeToday()" {
+      LocalDate.of(2002, Month.APRIL, 2).shouldNotBeToday()
+      shouldFail {
+        LocalDateTime.now().shouldNotBeToday()
+      }
+    }
+
+    "LocalDateTime should have day of month (day)" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfMonth 16
+    }
+
+    "LocalDateTime should have day of week" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfWeek  SATURDAY
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfWeek  6
+    }
+
+    "LocalDateTime should have day of year" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveDayOfYear  47
+    }
+
+    "LocalDateTime should have month" {
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveMonth 2
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0, 0) shouldHaveMonth Month.FEBRUARY
+    }
+    "LocalDateTime should have hour" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 0) shouldHaveHour 12
+    }
+    "LocalDateTime should have minute" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 0) shouldHaveMinute 10
+    }
+    "LocalDateTime should have second" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 13, 0) shouldHaveSecond  13
+    }
+    "LocalDateTime should have nano" {
+      LocalDateTime.of(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
     }
   }
 }

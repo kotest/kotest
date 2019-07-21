@@ -14,21 +14,50 @@ Plus it means that your test will sit around waiting on the timeout even if the 
 Another common approach is to use countdown latches and this works fine if you are able to inject the latches in the appropriate places.
 
 As an alternative, KotlinTest provides the `eventually` function which will repeatedly
-test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code. For example:
+test the code until it either passes, or the timeout is reached. This is perfect for nondeterministic code.
+
+
+### Examples
+
+#### Simple example
+
+Let's assume that we send a message to an asynchronous service. After the message is processed, a new row is inserted into user table.
+
+We can check this behaviour with our `eventually` function. 
 
 ```kotlin
 class MyTests : ShouldSpec() {
   init {
-    should("do something") {
+    should("check if user repository has one row") {
       eventually(5.seconds) {
-        // code in here that might fail at first, but will succeed within the given duration of 5 seconds.
+        userRepository.size() shouldBe 1 
       }
     }
   }
 }
 ```
 
-Continually <a name="eventually"></a>
+#### Exceptions
+
+By default, `eventually` will ignore any exception that is thrown inside the function. If you want to be more specific, you can tell `eventually` to ignore specific exceptions until the required assertion passes.
+
+Let's assume that our userRepository throws an UserNotFoundException if it was not found into the database. It will eventually return the user when the message is processed by the system.
+
+In this scenario, we can skip the exception doing so:
+```kotlin
+class MyTests : ShouldSpec() {
+  init {
+    should("check if user repository has one row") {
+      eventually(5.seconds, UserNotFoundException::class.java) {
+        userRepository.findBy(1) shouldNotBe null 
+      }
+    }
+  }
+}
+```
+
+
+Continually <a name="continually"></a>
 -------------------------------
 
 As the dual of eventually, `continually` allows you to assert that a block of code suceeds, and continues to succeed, for a period of time.

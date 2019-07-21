@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+dependencies {
+    compile project(':kotlintest-core')
+    implementation "org.koin:koin-core:2.0.1"
+    implementation("org.koin:koin-test:2.0.1") {
+      exclude group: "junit", module: "junit"
+    }
+
+    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
+}
+
+apply from: '../../publish.gradle'

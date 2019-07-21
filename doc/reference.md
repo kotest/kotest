@@ -35,13 +35,6 @@ For maven you must configure the surefire plugin for junit tests.
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
     <version>2.22.1</version>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-    </dependencies>
 </plugin>
 ```
 
@@ -787,6 +780,22 @@ class BangExample : StringSpec({
 })
 ```
 
+### SkipTestException
+Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, KotlinTest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
+
+```kotlin
+class SkipTestExceptionExample : StringSpec({
+   
+  "Test should be skipped" {
+    if(isLocalEnvironment()) {
+      throw SkipTestException("Cannot run this test in local environment.")
+    }
+  }
+
+})
+```
+
+`SkipTestException` is an open class, so you may extend it and customize it if you need it.
 
 
 Grouping Tests with Tags
@@ -896,7 +905,7 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-Resources that should be closed this way must implement [`java.io.Closeable`](http://docs.oracle.com/javase/6/docs/api/java/io/Closeable.html). Closing is performed in
+Resources that should be closed this way must implement [`java.lang.AutoCloseable`](https://docs.oracle.com/javase/7/docs/api/java/lang/AutoCloseable.html). Closing is performed in
 reversed order of declaration after the return of the last spec interceptor.
 
 

@@ -1,22 +1,30 @@
 language: java
 
 jdk:
-- openjdk11
+  - openjdk11
 
 sudo: false
 
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/.m2/repository/"
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
+    - "$HOME/.m2/repository/"
 
 install: "/bin/true"
 
-script: "./gradlew test"
-
-after_success: "./snapshot_deploy.sh"
+jobs:
+  include:
+    - stage: test
+      name: "junit gradle plugin"
+      script: "./gradlew test"
+    - stage: test
+      name: "kotlintest gradle plugin"
+      script: "./gradlew compileKotlin kotlintest"
+    - stage: deploy
+      name: "deploy maven snapshot"
+      script: "./snapshot_deploy.sh"

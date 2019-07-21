@@ -4,6 +4,7 @@ import com.github.difflib.DiffUtils
 import com.github.difflib.patch.Chunk
 import com.github.difflib.patch.Delta
 import com.github.difflib.patch.DeltaType
+import kotlin.math.max
 
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
@@ -33,10 +34,14 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
 
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
-  override fun test(value: T): Result {
+  override fun test(value: T): MatcherResult {
     val expectedRepr = stringRepr(expected)
     val valueRepr = stringRepr(value)
-    return Result(expected == value, equalsErrorMessage(expectedRepr, valueRepr), "$expectedRepr should not equal $valueRepr")
+    return MatcherResult(
+      expected == value,
+      { equalsErrorMessage(expectedRepr, valueRepr) },
+      { "$expectedRepr should not equal $valueRepr" }
+    )
   }
 }
 
@@ -109,8 +114,8 @@ infix fun <T> T.shouldNotBe(any: Any?) {
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
-  if (!result.passed) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage))
+  if (!result.passed()) {
+    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage()))
   }
 }
 
@@ -124,7 +129,9 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 internal fun equalsError(expected: Any?, actual: Any?): Throwable {
 
-  val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual))
+  val largeStringDiffMinSize = System.getProperty("kotlintest.assertions.multi-line-diff-size", "50").toInt()
+
+  val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual), largeStringDiffMinSize)
   val message = ErrorCollector.clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
 
   val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
@@ -155,7 +162,7 @@ fun diffLargeString(expected: String, actual: String, minSizeForDiff: Int = 50):
     return deltas.joinToString("\n\n") { delta ->
       val chunk = chunker(delta)
       // include a line before and after to give some context on deletes
-      val snippet = lines.drop(Math.max(chunk.position - 1, 0)).take(chunk.position + chunk.size()).joinToString("\n")
+      val snippet = lines.drop(max(chunk.position - 1, 0)).take(chunk.position + chunk.size()).joinToString("\n")
       "[${typeString(delta.type)} at line ${chunk.position}] $snippet"
     }
   }

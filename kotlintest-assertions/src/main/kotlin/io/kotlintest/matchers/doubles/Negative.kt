@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.doubles
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 
@@ -38,5 +38,5 @@ fun Double.shouldBeNegative() = this shouldBe negative()
 fun Double.shouldNotBeNegative() = this shouldNotBe negative()
 
 fun negative() = object : Matcher<Double> {
-  override fun test(value: Double) = Result(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
+  override fun test(value: Double) = MatcherResult(value < 0.0, "$value should be < 0.0", "$value should not be < 0.0")
 }

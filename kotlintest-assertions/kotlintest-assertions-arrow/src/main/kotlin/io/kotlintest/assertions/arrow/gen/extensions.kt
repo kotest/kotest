@@ -24,13 +24,13 @@ interface GenSemigroup<A> : Semigroup<Gen<A>> {
   fun SA(): Semigroup<A>
 
   override fun Gen<A>.combine(b: Gen<A>): Gen<A> =
-    SA().run {
-      flatMap { x ->
-        b.map { y ->
-          x.combine(y)
+      SA().run {
+        flatMap { x ->
+          b.map { y ->
+            x.combine(y)
+          }
         }
       }
-    }
 }
 
 /**
@@ -61,7 +61,7 @@ interface GenMonoid<A> : Monoid<Gen<A>>, GenSemigroup<A> {
 @extension
 interface GenFunctor : Functor<ForGen> {
   override fun <A, B> GenOf<A>.map(f: (A) -> B): Gen<B> =
-    fix().map(f)
+      fix().map(f)
 }
 
 /**
@@ -78,13 +78,13 @@ interface GenFunctor : Functor<ForGen> {
 @extension
 interface GenApplicative : Applicative<ForGen>, GenFunctor {
   override fun <A, B> GenOf<A>.ap(ff: Kind<ForGen, (A) -> B>): Gen<B> =
-    ff.fix().flatMap { this.fix().map(it) }
+      ff.fix().flatMap { this.fix().map(it) }
 
   override fun <A, B> GenOf<A>.map(f: (A) -> B): Gen<B> =
-    fix().map(f)
+      fix().map(f)
 
   override fun <A> just(a: A): Gen<A> =
-    Gen.constant(a)
+      Gen.constant(a)
 }
 
 /**
@@ -97,25 +97,25 @@ interface GenApplicative : Applicative<ForGen>, GenFunctor {
 @extension
 interface GenMonad : Monad<ForGen>, GenApplicative {
   override fun <A, B> GenOf<A>.ap(ff: Kind<ForGen, (A) -> B>): Gen<B> =
-    fix().ap(ff)
+      fix().ap(ff)
 
   override fun <A, B> GenOf<A>.flatMap(f: (A) -> GenOf<B>): Gen<B> =
-    fix().flatMap(f)
+      fix().flatMap(f)
 
 
   override fun <A, B> tailRecM(a: A, f: (A) -> GenOf<Either<A, B>>): Gen<B> =
-    f(a).fix().flatMap { x ->
-      when (x) {
-        is Either.Left -> tailRecM(x.a, f)
-        is Either.Right -> Gen.constant(x.b)
+      f(a).fix().flatMap { x ->
+        when (x) {
+          is Either.Left -> tailRecM(x.a, f)
+          is Either.Right -> Gen.constant(x.b)
+        }
       }
-    }
 
   override fun <A, B> GenOf<A>.map(f: (A) -> B): Gen<B> =
-    fix().map(f)
+      fix().map(f)
 
   override fun <A> just(a: A): Gen<A> =
-    Gen.constant(a)
+      Gen.constant(a)
 }
 
 /**

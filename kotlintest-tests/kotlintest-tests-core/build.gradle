@@ -1,9 +1,27 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        //    classpath "io.kotlintest:kotlintest-gradle-plugin:1.0.3-LOCAL"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id "io.kotlintest"
+}
+
+//apply plugin: "io.kotlintest"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {

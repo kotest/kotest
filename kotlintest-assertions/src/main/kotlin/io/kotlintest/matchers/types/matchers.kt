@@ -105,9 +105,9 @@ inline fun <A, reified T : Annotation> Class<A>.shouldHaveAnnotation(klass: Clas
 @Suppress("UNUSED_PARAMETER")
 inline fun <A, reified T : Annotation> haveAnnotation(klass: Class<T>) = object : Matcher<Class<A>> {
   val className = T::class.qualifiedName
-  override fun test(value: Class<A>): Result {
+  override fun test(value: Class<A>): MatcherResult {
     val passed = value.annotations.any { it.annotationClass.qualifiedName == className }
-    return Result(passed, "Class $value should contain annotation $className", "Class $value should not contain annotation $className")
+    return MatcherResult(passed, "Class $value should contain annotation $className", "Class $value should not contain annotation $className")
   }
 }
 
@@ -202,10 +202,10 @@ fun Any?.shouldNotBeNull() {
  */
 fun beNull() = object : Matcher<Any?> {
 
-  override fun test(value: Any?): Result {
+  override fun test(value: Any?): MatcherResult {
     val passed = value == null
 
-    return Result(passed, "Expected value to be null, but was not-null.", "Expected value to not be null, but was null.")
+    return MatcherResult(passed, "Expected value to be null, but was not-null.", "Expected value to not be null, but was null.")
   }
 
 }

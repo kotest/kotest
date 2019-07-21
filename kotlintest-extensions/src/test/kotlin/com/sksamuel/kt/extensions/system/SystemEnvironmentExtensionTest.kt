@@ -1,94 +1,88 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
+import io.kotlintest.*
+import io.kotlintest.extensions.TopLevelTest
+import io.kotlintest.extensions.system.OverrideMode
 import io.kotlintest.extensions.system.SystemEnvironmentTestListener
 import io.kotlintest.extensions.system.withEnvironment
 import io.kotlintest.inspectors.forAll
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFreeSpec
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.specs.WordSpec
+import io.mockk.every
+import io.mockk.mockk
 
-class SystemEnvironmentExtensionFunctionTest : FreeSpec() {
-  
+class SystemEnvironmentExtensionTest : FreeSpec() {
+
+  private val key = "SystemEnvironmentExtensionTestFoo"
+  private val value = "SystemEnvironmentExtensionTestBar"
+
+  private val mode: OverrideMode = mockk {
+    every { override(any(), any()) } answers { firstArg<Map<String, String>>().plus(secondArg<Map<String,String>>()).toMutableMap() }
+  }
+
   init {
-    "The system environment configured with a custom value" - {
-      "Should contain the custom variable" - {
-        val allResults = executeOnAllSystemEnvironmentOverloads("foo", "bar") {
-          System.getenv("foo") shouldBe "bar"
-          "RETURNED"
-        }
-        
-        allResults.forAll { it shouldBe "RETURNED" }
+    "Should set environment to specific map" - {
+      executeOnAllEnvironmentOverloads {
+        System.getenv(key) shouldBe value
       }
     }
-    
-    "The system environment already with a specified value" - {
-      "Should become null when I set it to null" - {
-        System.getenv("foo") shouldBe null  // Enforcing pre conditions
-        
-        withEnvironment("foo", "booz") {
-          val allResults = executeOnAllSystemEnvironmentOverloads("foo", null) {
-            System.getenv("foo") shouldBe null
-            "RETURNED"
-          }
-  
-          allResults.forAll { it shouldBe "RETURNED" }
-  
-        }
+
+    "Should return original environment to its place after execution" - {
+      val before = System.getenv().toMap()
+
+      executeOnAllEnvironmentOverloads {
+        System.getenv() shouldNotBe before
+      }
+      System.getenv() shouldBe before
+
+    }
+
+    "Should return the computed value" - {
+      val results = executeOnAllEnvironmentOverloads { "RETURNED" }
+
+      results.forAll {
+        it shouldBe "RETURNED"
       }
     }
   }
-  
-  override fun afterSpec(spec: Spec) {
-    verifyFooIsUnset()
+
+  private suspend fun <T> FreeSpecScope.executeOnAllEnvironmentOverloads(block: suspend () -> T): List<T> {
+    val results = mutableListOf<T>()
+
+    "String String overload" {
+      results += withEnvironment(key, value, mode) { block() }
+    }
+
+    "Pair overload" {
+      results += withEnvironment(key to value, mode) { block() }
+    }
+
+    "Map overload" {
+      results += withEnvironment(mapOf(key to value), mode) { block() }
+    }
+
+    return results
   }
-  
+
 }
 
-private suspend fun AbstractFreeSpec.FreeSpecScope.executeOnAllSystemEnvironmentOverloads(key: String, value: String?, block: suspend () -> String): List<String> {
-  val results = mutableListOf<String>()
-  
-  "String String overload" {
-    results += withEnvironment(key, value) {
-      block()
-    }
-  }
-  
-  "Pair overload" {
-    results += withEnvironment(key to value) { block() }
-  }
-  
-  "Map overload" {
-    results += withEnvironment(mapOf(key to value)) { block() }
-  }
-  
-  return results
-}
+class SystemEnvironmentTestListenerTest : WordSpec() {
 
-class SystemEnvironmentTestListenerTest : ShouldSpec() {
-  
-  override fun listeners() = listOf(SystemEnvironmentTestListener("foo", "bar"))
-  
-  init {
-    should("Get extra extension from environment") {
-      verifyFooIsBar()
-    }
+  override fun listeners() = listOf(SystemEnvironmentTestListener("wibble", "wobble"))
+
+  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+    System.getenv("wibble") shouldBe null
   }
-  
+
   override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
-    // The environment must be reset afterwards
-    verifyFooIsUnset()
+    System.getenv("wibble") shouldBe null
   }
-  
-}
 
-private fun verifyFooIsBar() {
-  System.getenv("foo") shouldBe "bar"
-}
-
-private fun verifyFooIsUnset() {
-  System.getenv("foo") shouldBe null
+  init {
+    "sys environment extension" should {
+      "set environment variable" {
+        System.getenv("wibble") shouldBe "wobble"
+      }
+    }
+  }
 }

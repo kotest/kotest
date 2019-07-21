@@ -42,13 +42,13 @@ object TestDiscovery {
   fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
     val fromClassNames = loadClasses(request.classNames)
-    logger.debug("Loaded ${fromClassNames.size} classes from classnames...")
+    logger.trace("Loaded ${fromClassNames.size} classes from classnames...")
 
     val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty()) emptyList() else scanUris(request.uris)
-    logger.debug("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
+    logger.trace("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
     val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
-    logger.debug("Scan discovered ${fromClassPaths.size} classes by package...")
+    logger.trace("Scan discovered ${fromClassPaths.size} classes by package...")
 
     val filtered = (fromClassNames + fromClassPaths + fromPackages)
         .asSequence()
@@ -62,12 +62,12 @@ object TestDiscovery {
         .filter { it.objectInstance == null }
         .toList()
 
-    logger.debug("After filters there are ${filtered.size} spec classes")
+    logger.trace("After filters there are ${filtered.size} spec classes")
 
     val afterExtensions = Project.discoveryExtensions()
         .fold(filtered) { cl, ext -> ext.afterScan(cl) }
         .sortedBy { it.simpleName }
-    logger.debug("After discovery extensions there are ${filtered.size} spec classes")
+    logger.trace("After discovery extensions there are ${filtered.size} spec classes")
 
     DiscoveryResult(afterExtensions)
   }

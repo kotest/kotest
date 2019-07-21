@@ -1,7 +1,7 @@
 package io.kotlintest.matchers.equality
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
+import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 import kotlin.reflect.KProperty
@@ -84,7 +84,7 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): Result {
+  override fun test(value: T): MatcherResult {
 
     val failed = fields.mapNotNull {
       val actual = it.getter.call(value)
@@ -96,7 +96,7 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
 
     val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
-    return Result(
+    return MatcherResult(
         failed.isEmpty(),
         "$value should be equal to $other using fields $fieldsString; Failed for $failed",
         "$value should not be equal to $other using fields $fieldsString"
@@ -178,7 +178,7 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KP
  */
 fun <T : Any> beEqualToIgnoringFields(other: T,
                                       vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): Result {
+  override fun test(value: T): MatcherResult {
 
     val fieldNames = fields.map { it.name }
     val failed = value::class.memberProperties.filterNot { fieldNames.contains(it.name) }.mapNotNull {
@@ -191,7 +191,7 @@ fun <T : Any> beEqualToIgnoringFields(other: T,
 
     val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
-    return Result(
+    return MatcherResult(
         failed.isEmpty(),
         "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
         "$value should not be equal to $other ignoring fields $fieldsString"

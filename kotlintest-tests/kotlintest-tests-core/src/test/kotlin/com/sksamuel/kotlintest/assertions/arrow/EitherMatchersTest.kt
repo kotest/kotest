@@ -21,6 +21,21 @@ class EitherMatchersTest : WordSpec() {
         Either.right("boo").shouldBeRight()
         Either.left("boo").shouldNotBeRight()
       }
+      "use contracts to expose Right<*>" {
+        val e = Either.right("boo")
+        e.shouldBeRight()
+        e.b shouldBe "boo"
+      }
+    }
+
+    "Either should beRight(fn)" should {
+      "test that the either is of type right" {
+        data class Person(val name: String, val location: String)
+        Either.right(Person("sam", "chicago")).shouldBeRight {
+          it.name shouldBe "sam"
+          it.location shouldBe "chicago"
+        }
+      }
     }
 
     "Either should beRight(value)" should {
@@ -46,6 +61,21 @@ class EitherMatchersTest : WordSpec() {
       "test that the either is of type left" {
         Either.left("boo").shouldBeLeft()
         Either.right("boo").shouldNotBeLeft()
+      }
+      "use contracts to expose Left<*>" {
+        val e = Either.left("boo")
+        e.shouldBeLeft()
+        e.a shouldBe "boo"
+      }
+    }
+
+    "Either should beLeft(fn)" should {
+      "test that the either is of type right" {
+        data class Person(val name: String, val location: String)
+        Either.left(Person("sam", "chicago")).shouldBeLeft {
+          it.name shouldBe "sam"
+          it.location shouldBe "chicago"
+        }
       }
     }
 
