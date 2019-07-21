@@ -6,6 +6,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.unmockkStatic
 import java.time.*
 import java.time.chrono.HijrahDate
@@ -15,6 +16,7 @@ import java.time.chrono.ThaiBuddhistDate
 import java.time.temporal.Temporal
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KFunction1
 import kotlin.reflect.full.staticFunctions
 import kotlin.reflect.jvm.javaType
 
@@ -42,10 +44,40 @@ inline fun <T, reified Time : Temporal> withConstantNow(now: Time, block: () -> 
    }
 }
 
+inline fun <T> newWithConstantNow(now: ZonedDateTime, block: () -> T): T {
+  mockNowForTimeClasses(now)
+  try {
+    return block()
+  } finally {
+    unmockNowForTimeClasses()
+  }
+}
+
 @PublishedApi
 internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
    mockkStatic(klass)
    every { getNoParameterNowFunction(klass).call() } returns value
+}
+
+@PublishedApi
+internal fun mockNowForTimeClasses(value: ZonedDateTime) {
+  ClassesExtendTemporal.forEach { (klass, toSpecificTimeClass) ->
+    mockkStatic(klass)
+    every { getNoParameterNowFunction(klass).call() } returns toSpecificTimeClass(value)
+
+    mockNowFunctionWithParameterZoneId(klass, toSpecificTimeClass, value)
+  }
+}
+
+@PublishedApi
+internal fun mockNowFunctionWithParameterZoneId(klass: KClass<out Any>, toSpecificTimeClass: KFunction1<ZonedDateTime, Any>, value: ZonedDateTime) {
+  val zoneIdSlot = slot<ZoneId>()
+  val nowFunctionWithParameterZonedId = getNowFunctionWithParameterZoneId(klass)
+  if (nowFunctionWithParameterZonedId != null) {
+    every { nowFunctionWithParameterZonedId.call(capture(zoneIdSlot)) } answers {
+      toSpecificTimeClass(value.withZoneSameInstant(zoneIdSlot.captured))
+    }
+  }
 }
 
 private val ClassesExtendTemporal =  mapOf(
@@ -83,7 +115,7 @@ internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<in Time>)
    return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
 }
 @PublishedApi
-internal fun <Time : Temporal> getNowFunctionWithParameterZoneId(klass: KClass<Time>): KFunction<*>? {
+internal fun <Time : Temporal> getNowFunctionWithParameterZoneId(klass: KClass<in Time>): KFunction<*>? {
   return klass.staticFunctions.firstOrNull {
     it.name == "now" && it.parameters.size == 1 && it.parameters[0].type.javaType == ZoneId::class.java }
 }
@@ -91,6 +123,13 @@ internal fun <Time : Temporal> getNowFunctionWithParameterZoneId(klass: KClass<T
 @PublishedApi
 internal fun <Time : Temporal> unmockNow(klass: KClass<Time>) {
    unmockkStatic(klass)
+}
+
+@PublishedApi
+internal fun unmockNowForTimeClasses() {
+  ClassesExtendTemporal.keys.forEach { klass ->
+    unmockkStatic(klass)
+  }
 }
 
 abstract class ConstantNowListener<Time : Temporal>(private val now: Time) {
