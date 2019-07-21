@@ -15,6 +15,7 @@ import java.time.temporal.Temporal
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.staticFunctions
+import kotlin.reflect.jvm.javaType
 
 /**
  * Simulate the value of now() while executing [block]
@@ -79,6 +80,11 @@ private fun ZonedDateTime.toOffsetTime() = toOffsetDateTime().toOffsetTime()
 @PublishedApi
 internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<in Time>): KFunction<*> {
   return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
+}
+@PublishedApi
+internal fun <Time : Temporal> getNowFunctionWithParameterZoneId(klass: KClass<Time>): KFunction<*>? {
+  return klass.staticFunctions.firstOrNull {
+    it.name == "now" && it.parameters.size == 1 && it.parameters[0].type.javaType == ZoneId::class.java }
 }
 
 @PublishedApi
