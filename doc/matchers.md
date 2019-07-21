@@ -94,6 +94,9 @@ For the extension function style, each function has an equivalent negated versio
 | `double.shouldBeGreaterThanOrEqual(n)` | Asserts that the double is greater than or equal to the given value n |
 | `double.shouldBePositive()` | Asserts that the double is positive |
 | `double.shouldBeNegative()` | Asserts that the double is negative |
+| `double.shouldBePositiveInfinity()` | Asserts that the double is positive infinity |
+| `double.shouldBeNegativeInfinity()` | Asserts that the double is negative infinity |
+| `double.shouldBeNaN()` | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()` | Asserts that the double is zero |
 
 | BigDecimal ||
