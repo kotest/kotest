@@ -59,6 +59,7 @@ For the extension function style, each function has an equivalent negated versio
 | `str.shouldHaveSameLengthAs(length)` | Asserts that the string has the same length as another string. |
 | `str.shouldMatch(regex)` | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
+| `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
 
 | Integers ||
 | -------- | ---- |
