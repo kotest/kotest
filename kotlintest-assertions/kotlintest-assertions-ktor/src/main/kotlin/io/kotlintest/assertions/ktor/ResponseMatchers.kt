@@ -4,10 +4,13 @@ import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.should
 import io.kotlintest.shouldNot
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.ApplicationResponse
 import io.ktor.server.testing.TestApplicationResponse
 
+fun TestApplicationResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldHaveStatus(httpStatusCode.value)
 fun TestApplicationResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
+fun TestApplicationResponse.shouldNotHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldNotHaveStatus(httpStatusCode.value)
 fun TestApplicationResponse.shouldNotHaveStatus(code: Int) = this shouldNot haveStatus(code)
 fun haveStatus(code: Int) = object : Matcher<ApplicationResponse> {
   override fun test(value: ApplicationResponse): MatcherResult {
