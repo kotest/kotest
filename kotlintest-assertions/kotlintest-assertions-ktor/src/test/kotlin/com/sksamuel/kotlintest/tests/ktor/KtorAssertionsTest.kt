@@ -9,6 +9,7 @@ import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.request.uri
 import io.ktor.response.header
 import io.ktor.response.respondText
@@ -31,6 +32,14 @@ class KtorAssertionsTest : StringSpec({
     withTestApplication({ testableModule() }) {
       handleRequest(HttpMethod.Get, "/").apply {
         response.shouldHaveStatus(200)
+      }
+    }
+  }
+
+  "test status code matcher (enum version)" {
+    withTestApplication({ testableModule() }) {
+      handleRequest(HttpMethod.Get, "/").apply {
+        response.shouldHaveStatus(HttpStatusCode.OK)
       }
     }
   }
