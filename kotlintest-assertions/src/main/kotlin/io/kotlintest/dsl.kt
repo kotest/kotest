@@ -38,7 +38,7 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
     val expectedRepr = stringRepr(expected)
     val valueRepr = stringRepr(value)
     return MatcherResult(
-      expected == value,
+      compare(expected, value),
       { equalsErrorMessage(expectedRepr, valueRepr) },
       { "$expectedRepr should not equal $valueRepr" }
     )
@@ -219,8 +219,13 @@ internal fun stringRepr(obj: Any?): String = when (obj) {
   is Char -> "'$obj'"
   is String -> "\"$obj\""
   is Array<*> -> obj.map { recursiveRepr(obj, it) }.toString()
+  is BooleanArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is IntArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is ShortArray -> obj.map { recursiveRepr(obj, it) }.toString()
   is FloatArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is DoubleArray -> obj.map { recursiveRepr(obj, it) }.toString()
   is LongArray -> obj.map { recursiveRepr(obj, it) }.toString()
+  is ByteArray -> obj.map { recursiveRepr(obj, it) }.toString()
   is CharArray -> obj.map { recursiveRepr(obj, it) }.toString()
   is Iterable<*> -> obj.map { recursiveRepr(obj, it) }.toString()
   is Map<*, *> -> obj.map { (k, v) -> recursiveRepr(obj, k) to recursiveRepr(obj, v) }.toMap().toString()

@@ -1,15 +1,8 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.Matcher
-import io.kotlintest.MatcherResult
-import io.kotlintest.assertSoftly
+import io.kotlintest.*
 import io.kotlintest.matchers.*
 import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.should
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import java.util.*
 import kotlin.collections.HashMap
@@ -165,8 +158,14 @@ class MatchersTest : FreeSpec({
         longArrayOf(1L) shouldBe longArrayOf(2L)
       }.message shouldBe "expected: [2L] but was: [1L]"
       shouldThrow<AssertionError> {
+        intArrayOf(1) shouldBe intArrayOf(2)
+      }.message shouldBe "expected: [2] but was: [1]"
+      shouldThrow<AssertionError> {
         charArrayOf('a') shouldBe charArrayOf('b')
       }.message shouldBe "expected: ['b'] but was: ['a']"
+      shouldThrow<AssertionError> {
+        byteArrayOf(1.toByte(), 35.toByte()) shouldBe byteArrayOf(12.toByte(), 13.toByte())
+      }.message shouldBe "expected: [12, 13] but was: [1, 35]"
       shouldThrow<AssertionError> {
         listOf('a') shouldBe listOf('b')
       }.message shouldBe "expected: ['b'] but was: ['a']"
@@ -200,6 +199,9 @@ class MatchersTest : FreeSpec({
       }
     }
 
+    "Should fail for equal primitive type" {
+      shouldThrow<AssertionError> { byteArrayOf(1, 2, 3) shouldNotBe byteArrayOf(1, 2, 3) }
+    }
     "should support (not) matching null with non-null" {
       "a" shouldNotBe null
     }
