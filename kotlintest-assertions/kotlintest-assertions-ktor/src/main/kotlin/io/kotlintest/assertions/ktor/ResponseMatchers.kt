@@ -12,12 +12,12 @@ fun TestApplicationResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = t
 fun TestApplicationResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
 fun TestApplicationResponse.shouldNotHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldNotHaveStatus(httpStatusCode.value)
 fun TestApplicationResponse.shouldNotHaveStatus(code: Int) = this shouldNot haveStatus(code)
-fun haveStatus(code: Int) = object : Matcher<ApplicationResponse> {
-  override fun test(value: ApplicationResponse): MatcherResult {
+fun haveStatus(code: Int) = object : Matcher<TestApplicationResponse> {
+  override fun test(value: TestApplicationResponse): MatcherResult {
     return MatcherResult(
         value.status()?.value == code,
-        "Response should have status $code but had status ${value.status()?.value}",
-        "Response should not have status $code"
+        "Response should have status $code but had status ${value.status()?.value}. Response body: ${value.content}",
+        "Response should not have status $code. Response body: ${value.content}"
     )
   }
 }
