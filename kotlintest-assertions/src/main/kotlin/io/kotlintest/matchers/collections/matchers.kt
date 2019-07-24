@@ -221,6 +221,11 @@ infix fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSor
 infix fun <T> Array<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = asList().shouldNotBeSortedWith(cmp)
 infix fun <T> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith(cmp)
 
+fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyIncreasing() = this should beMonotonicallyIncreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing() = asList().shouldBeMonotonicallyIncreasing()
+fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing() = this shouldNot beMonotonicallyIncreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyIncreasing() = asList().shouldNotBeMonotonicallyIncreasing()
+
 infix fun <T> Array<T>.shouldHaveSingleElement(t: T) = asList().shouldHaveSingleElement(t)
 infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
