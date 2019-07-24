@@ -78,3 +78,20 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
     )
   }
 }
+
+fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
+fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
+  override fun test(value: List<T>): MatcherResult {
+    val failure = value.zipWithNext().withIndex().find { (_, pair) -> pair.first > pair.second }
+    val snippet = value.joinToString(",", limit = 10)
+    val elementMessage = when (failure) {
+      null -> ""
+      else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
+    }
+    return MatcherResult(
+      failure == null,
+      { "List [$snippet] should be monotonically increasing$elementMessage" },
+      { "List [$snippet] should not be monotonically increasing" }
+    )
+  }
+}
