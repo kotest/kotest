@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.matchers.beEmpty
+import io.kotlintest.matchers.monotonicallyDecreasing
 import io.kotlintest.matchers.monotonicallyIncreasing
 import io.kotlintest.matchers.collections.atLeastSize
 import io.kotlintest.matchers.collections.atMostSize
@@ -18,6 +19,7 @@ import io.kotlintest.matchers.collections.endWith
 import io.kotlintest.matchers.collections.haveElementAt
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeLargerThan
+import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasing
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasing
 import io.kotlintest.matchers.collections.shouldBeOneOf
 import io.kotlintest.matchers.collections.shouldBeSameSizeAs
@@ -41,6 +43,7 @@ import io.kotlintest.matchers.collections.shouldHaveElementAt
 import io.kotlintest.matchers.collections.shouldHaveSingleElement
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
+import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasing
 import io.kotlintest.matchers.collections.shouldNotBeOneOf
 import io.kotlintest.matchers.collections.shouldNotBeSingleton
@@ -179,6 +182,15 @@ class CollectionMatchersTest : WordSpec() {
         listOf(6, 5) shouldNotBe monotonicallyIncreasing<Int>()
         listOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
         listOf(6, 5).shouldNotBeMonotonicallyIncreasing()
+      }
+    }
+
+    "shouldBeDecreasing" should {
+      "test that a collection is monotonically decreasing" {
+        listOf(3, 2, 2, -4) shouldBe monotonicallyDecreasing<Int>()
+        listOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
+        listOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
+        listOf(5, 6).shouldNotBeMonotonicallyDecreasing()
       }
     }
 
