@@ -54,7 +54,7 @@ object Project {
   private val _projectlisteners = mutableListOf<ProjectListener>()
   private val _filters = mutableListOf<ProjectLevelFilter>()
   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
-  private var writeSpecFailureFile: Boolean = true
+  private var writeSpecFailureFile: Boolean = false
   private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
   private var _timeout: Duration? = null
