@@ -3,6 +3,8 @@ package com.sksamuel.kotlintest.matchers.collections
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.monotonicallyDecreasing
 import io.kotlintest.matchers.monotonicallyIncreasing
+import io.kotlintest.matchers.strictlyDecreasing
+import io.kotlintest.matchers.strictlyIncreasing
 import io.kotlintest.matchers.collections.atLeastSize
 import io.kotlintest.matchers.collections.atMostSize
 import io.kotlintest.matchers.collections.beLargerThan
@@ -27,6 +29,8 @@ import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.collections.shouldBeSmallerThan
 import io.kotlintest.matchers.collections.shouldBeSorted
 import io.kotlintest.matchers.collections.shouldBeSortedWith
+import io.kotlintest.matchers.collections.shouldBeStrictlyDecreasing
+import io.kotlintest.matchers.collections.shouldBeStrictlyIncreasing
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldContainDuplicates
@@ -49,6 +53,8 @@ import io.kotlintest.matchers.collections.shouldNotBeOneOf
 import io.kotlintest.matchers.collections.shouldNotBeSingleton
 import io.kotlintest.matchers.collections.shouldNotBeSorted
 import io.kotlintest.matchers.collections.shouldNotBeSortedWith
+import io.kotlintest.matchers.collections.shouldNotBeStrictlyDecreasing
+import io.kotlintest.matchers.collections.shouldNotBeStrictlyIncreasing
 import io.kotlintest.matchers.collections.shouldNotContainAll
 import io.kotlintest.matchers.collections.shouldNotContainDuplicates
 import io.kotlintest.matchers.collections.shouldNotContainExactly
@@ -183,6 +189,14 @@ class CollectionMatchersTest : WordSpec() {
         listOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
         listOf(6, 5).shouldNotBeMonotonicallyIncreasing()
       }
+      "test that a collection is strictly increasing" {
+        listOf(1, 2, 3) shouldBe strictlyIncreasing<Int>()
+        listOf(1, 2, 2, 3) shouldNotBe strictlyIncreasing<Int>()
+        listOf(6, 5) shouldNotBe strictlyIncreasing<Int>()
+        listOf(1, 2, 3).shouldBeStrictlyIncreasing()
+        listOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasing()
+        listOf(6, 5).shouldNotBeStrictlyIncreasing()
+      }
     }
 
     "shouldBeDecreasing" should {
@@ -191,6 +205,14 @@ class CollectionMatchersTest : WordSpec() {
         listOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
         listOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
         listOf(5, 6).shouldNotBeMonotonicallyDecreasing()
+      }
+      "test that a collection is strictly decreasing" {
+        listOf(3, 2, -4) shouldBe strictlyDecreasing<Int>()
+        listOf(3, 2, 2, -4) shouldNotBe strictlyDecreasing<Int>()
+        listOf(5, 6) shouldNotBe strictlyDecreasing<Int>()
+        listOf(3, 2, -4).shouldBeStrictlyDecreasing()
+        listOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
+        listOf(5, 6).shouldNotBeStrictlyDecreasing()
       }
     }
 

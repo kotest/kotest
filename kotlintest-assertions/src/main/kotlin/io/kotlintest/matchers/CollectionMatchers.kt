@@ -112,3 +112,38 @@ fun <T : Comparable<T>> monotonicallyDecreasing(): Matcher<List<T>> = object : M
     )
   }
 }
+
+fun <T : Comparable<T>> beStrictlyIncreasing(): Matcher<List<T>> = strictlyIncreasing()
+fun <T : Comparable<T>> strictlyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
+  override fun test(value: List<T>): MatcherResult {
+    val failure = value.zipWithNext().withIndex().find { (_, pair) -> pair.first >= pair.second }
+    val snippet = value.joinToString(",", limit = 10)
+    val elementMessage = when (failure) {
+      null -> ""
+      else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly increased from previous element."
+    }
+    return MatcherResult(
+      failure == null,
+      { "List [$snippet] should be strictly increasing$elementMessage" },
+      { "List [$snippet] should not be strictly increasing" }
+    )
+  }
+}
+
+fun <T : Comparable<T>> beStrictlyDecreasing(): Matcher<List<T>> = strictlyDecreasing()
+fun <T : Comparable<T>> strictlyDecreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
+  override fun test(value: List<T>): MatcherResult {
+    val failure = value.zipWithNext().withIndex().find { (_, pair) -> pair.first <= pair.second }
+    val snippet = value.joinToString(",", limit = 10)
+    val elementMessage = when (failure) {
+      null -> ""
+      else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly decreased from previous element."
+    }
+    return MatcherResult(
+      failure == null,
+      { "List [$snippet] should be strictly decreasing$elementMessage" },
+      { "List [$snippet] should not be strictly decreasing" }
+    )
+  }
+}
+

@@ -231,6 +231,16 @@ fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyDecreasing() = asList().sh
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyDecreasing() = this shouldNot beMonotonicallyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyDecreasing() = asList().shouldNotBeMonotonicallyDecreasing()
 
+fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing() = this should beStrictlyIncreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing() = asList().shouldBeStrictlyIncreasing()
+fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyIncreasing() = this shouldNot beStrictlyIncreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyIncreasing() = asList().shouldNotBeStrictlyIncreasing()
+
+fun <T : Comparable<T>> List<T>.shouldBeStrictlyDecreasing() = this should beStrictlyDecreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldBeStrictlyDecreasing() = asList().shouldBeStrictlyDecreasing()
+fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyDecreasing() = this shouldNot beStrictlyDecreasing<T>()
+fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyDecreasing() = asList().shouldNotBeStrictlyDecreasing()
+
 infix fun <T> Array<T>.shouldHaveSingleElement(t: T) = asList().shouldHaveSingleElement(t)
 infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
