@@ -235,6 +235,10 @@ fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyDecreasing() = this should 
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyDecreasing() = asList().shouldBeMonotonicallyDecreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyDecreasing() = this shouldNot beMonotonicallyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyDecreasing() = asList().shouldNotBeMonotonicallyDecreasing()
+fun <T> List<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = this should beMonotonicallyDecreasingWith(comparator)
+fun <T> Array<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = asList().shouldBeMonotonicallyDecreasingWith(comparator)
+fun <T> List<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = this shouldNot beMonotonicallyDecreasingWith(comparator)
+fun <T> Array<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeMonotonicallyDecreasingWith(comparator)
 
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing() = this should beStrictlyIncreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing() = asList().shouldBeStrictlyIncreasing()

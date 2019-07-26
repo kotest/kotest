@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.monotonicallyDecreasing
+import io.kotlintest.matchers.monotonicallyDecreasingWith
 import io.kotlintest.matchers.monotonicallyIncreasing
 import io.kotlintest.matchers.monotonicallyIncreasingWith
 import io.kotlintest.matchers.strictlyDecreasing
@@ -23,6 +24,7 @@ import io.kotlintest.matchers.collections.haveElementAt
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeLargerThan
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasing
+import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasingWith
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasing
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasingWith
 import io.kotlintest.matchers.collections.shouldBeOneOf
@@ -50,6 +52,7 @@ import io.kotlintest.matchers.collections.shouldHaveSingleElement
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasing
+import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasing
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
 import io.kotlintest.matchers.collections.shouldNotBeOneOf
@@ -215,6 +218,13 @@ class CollectionMatchersTest : WordSpec() {
         listOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
         listOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
         listOf(5, 6).shouldNotBeMonotonicallyDecreasing()
+      }
+      "test that a collection is monotonically decreasing according to comparator" {
+        val comparator = Comparator(desc)
+        listOf(-4, 2, 2, 3) shouldBe monotonicallyDecreasingWith(comparator)
+        listOf(6, 5) shouldNotBe monotonicallyDecreasingWith(comparator)
+        listOf(-4, 2, 2, 3).shouldBeMonotonicallyDecreasingWith(comparator)
+        listOf(6, 5).shouldNotBeMonotonicallyDecreasingWith(comparator)
       }
       "test that a collection is strictly decreasing" {
         listOf(3, 2, -4) shouldBe strictlyDecreasing<Int>()
