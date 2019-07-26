@@ -6,7 +6,9 @@ import io.kotlintest.matchers.monotonicallyDecreasingWith
 import io.kotlintest.matchers.monotonicallyIncreasing
 import io.kotlintest.matchers.monotonicallyIncreasingWith
 import io.kotlintest.matchers.strictlyDecreasing
+import io.kotlintest.matchers.strictlyDecreasingWith
 import io.kotlintest.matchers.strictlyIncreasing
+import io.kotlintest.matchers.strictlyIncreasingWith
 import io.kotlintest.matchers.collections.atLeastSize
 import io.kotlintest.matchers.collections.atMostSize
 import io.kotlintest.matchers.collections.beLargerThan
@@ -34,7 +36,9 @@ import io.kotlintest.matchers.collections.shouldBeSmallerThan
 import io.kotlintest.matchers.collections.shouldBeSorted
 import io.kotlintest.matchers.collections.shouldBeSortedWith
 import io.kotlintest.matchers.collections.shouldBeStrictlyDecreasing
+import io.kotlintest.matchers.collections.shouldBeStrictlyDecreasingWith
 import io.kotlintest.matchers.collections.shouldBeStrictlyIncreasing
+import io.kotlintest.matchers.collections.shouldBeStrictlyIncreasingWith
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldContainDuplicates
@@ -60,7 +64,9 @@ import io.kotlintest.matchers.collections.shouldNotBeSingleton
 import io.kotlintest.matchers.collections.shouldNotBeSorted
 import io.kotlintest.matchers.collections.shouldNotBeSortedWith
 import io.kotlintest.matchers.collections.shouldNotBeStrictlyDecreasing
+import io.kotlintest.matchers.collections.shouldNotBeStrictlyDecreasingWith
 import io.kotlintest.matchers.collections.shouldNotBeStrictlyIncreasing
+import io.kotlintest.matchers.collections.shouldNotBeStrictlyIncreasingWith
 import io.kotlintest.matchers.collections.shouldNotContainAll
 import io.kotlintest.matchers.collections.shouldNotContainDuplicates
 import io.kotlintest.matchers.collections.shouldNotContainExactly
@@ -210,6 +216,15 @@ class CollectionMatchersTest : WordSpec() {
         listOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasing()
         listOf(6, 5).shouldNotBeStrictlyIncreasing()
       }
+      "test that a collection is strictly increasing according to comparator" {
+        val comparator = Comparator(desc)
+        listOf(3, 2, 1) shouldBe strictlyIncreasingWith(comparator)
+        listOf(3, 2, 2, 1) shouldNotBe strictlyIncreasingWith(comparator)
+        listOf(5, 6) shouldNotBe strictlyIncreasingWith(comparator)
+        listOf(3, 2, 1).shouldBeStrictlyIncreasingWith(comparator)
+        listOf(3, 2, 2, 1).shouldNotBeStrictlyIncreasingWith(comparator)
+        listOf(5, 6).shouldNotBeStrictlyIncreasingWith(comparator)
+      }
     }
 
     "shouldBeDecreasing" should {
@@ -233,6 +248,15 @@ class CollectionMatchersTest : WordSpec() {
         listOf(3, 2, -4).shouldBeStrictlyDecreasing()
         listOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
         listOf(5, 6).shouldNotBeStrictlyDecreasing()
+      }
+      "test that a collection is strictly decreasing according to comparator" {
+        val comparator = Comparator(desc)
+        listOf(-4, 2, 3) shouldBe strictlyDecreasingWith(comparator)
+        listOf(-4, 2, 2, 3) shouldNotBe strictlyDecreasingWith(comparator)
+        listOf(6, 5) shouldNotBe strictlyDecreasingWith(comparator)
+        listOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
+        listOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
+        listOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
       }
     }
 
