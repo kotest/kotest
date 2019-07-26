@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest.matchers.collections
 import io.kotlintest.matchers.beEmpty
 import io.kotlintest.matchers.monotonicallyDecreasing
 import io.kotlintest.matchers.monotonicallyIncreasing
+import io.kotlintest.matchers.monotonicallyIncreasingWith
 import io.kotlintest.matchers.strictlyDecreasing
 import io.kotlintest.matchers.strictlyIncreasing
 import io.kotlintest.matchers.collections.atLeastSize
@@ -23,6 +24,7 @@ import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeLargerThan
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasing
 import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasing
+import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasingWith
 import io.kotlintest.matchers.collections.shouldBeOneOf
 import io.kotlintest.matchers.collections.shouldBeSameSizeAs
 import io.kotlintest.matchers.collections.shouldBeSingleton
@@ -49,6 +51,7 @@ import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.collections.shouldNotBeEmpty
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasing
 import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasing
+import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
 import io.kotlintest.matchers.collections.shouldNotBeOneOf
 import io.kotlintest.matchers.collections.shouldNotBeSingleton
 import io.kotlintest.matchers.collections.shouldNotBeSorted
@@ -188,6 +191,13 @@ class CollectionMatchersTest : WordSpec() {
         listOf(6, 5) shouldNotBe monotonicallyIncreasing<Int>()
         listOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
         listOf(6, 5).shouldNotBeMonotonicallyIncreasing()
+      }
+      "test that a collection is monotonically increasing according to comparator" {
+        val comparator = Comparator(desc)
+        listOf(3, 2, 2, 1) shouldBe monotonicallyIncreasingWith(comparator)
+        listOf(5, 6) shouldNotBe monotonicallyIncreasingWith(comparator)
+        listOf(3, 2, 2, 1).shouldBeMonotonicallyIncreasingWith(comparator)
+        listOf(5, 6).shouldNotBeMonotonicallyIncreasingWith(comparator)
       }
       "test that a collection is strictly increasing" {
         listOf(1, 2, 3) shouldBe strictlyIncreasing<Int>()

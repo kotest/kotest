@@ -82,18 +82,27 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
 fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
 fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
-    val failure = value.zipWithNext().withIndex().find { (_, pair) -> pair.first > pair.second }
-    val snippet = value.joinToString(",", limit = 10)
-    val elementMessage = when (failure) {
-      null -> ""
-      else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
-    }
-    return MatcherResult(
-      failure == null,
-      { "List [$snippet] should be monotonically increasing$elementMessage" },
-      { "List [$snippet] should not be monotonically increasing" }
-    )
+    return testMonotonicallyIncreasingWith(value, Comparator{ a, b -> a.compareTo(b) })
   }
+}
+fun <T> beMonotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = monotonicallyIncreasingWith(comparator)
+fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
+  override fun test(value: List<T>): MatcherResult {
+    return testMonotonicallyIncreasingWith(value, comparator)
+  }
+}
+private fun<T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
+  val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
+  val snippet = value.joinToString(",", limit = 10)
+  val elementMessage = when (failure) {
+    null -> ""
+    else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
+  }
+  return MatcherResult(
+    failure == null,
+    { "List [$snippet] should be monotonically increasing$elementMessage" },
+    { "List [$snippet] should not be monotonically increasing" }
+  )
 }
 
 fun <T : Comparable<T>> beMonotonicallyDecreasing(): Matcher<List<T>> = monotonicallyDecreasing()
