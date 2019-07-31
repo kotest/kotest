@@ -16,22 +16,29 @@ fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
 }
 
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): String {
-
   val passed = results.filterIsInstance<ElementPass<T>>()
   val failed = results.filterIsInstance<ElementFail<T>>()
+  val maxOutputResult = 10
 
   val builder = StringBuilder(msg)
   builder.append("\n\nThe following elements passed:\n")
   if (passed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(passed.map { it.value }.joinToString("\n"))
+    builder.append(passed.take(maxOutputResult).map { it.value }.joinToString("\n"))
+    if (passed.size > maxOutputResult) {
+      builder.append("\n... and ${passed.size - maxOutputResult} more passed elements")
+    }
   }
+
   builder.append("\n\nThe following elements failed:\n")
   if (failed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(failed.joinToString("\n") { convertValueToString(it.value) + " => " + exceptionToMessage(it.error) })
+    builder.append(failed.take(maxOutputResult).joinToString("\n") { convertValueToString(it.value) + " => " + exceptionToMessage(it.error) })
+    if (failed.size > maxOutputResult) {
+      builder.append("\n... and ${failed.size - maxOutputResult} more failed elements")
+    }
   }
   throw Failures.failure(builder.toString())
 }
