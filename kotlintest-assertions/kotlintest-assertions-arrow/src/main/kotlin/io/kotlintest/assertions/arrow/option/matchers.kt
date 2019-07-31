@@ -23,8 +23,8 @@ fun beSome() = object : Matcher<Option<*>> {
       MatcherResult(value is Some, "$value should be Some", "$value should not be Some")
 }
 
-fun <T> Option<T>.shouldBeSome(t: T) = this should beSome(t)
-fun <T> Option<T>.shouldNotBeSome(t: T) = this shouldNot beSome(t)
+infix fun <T> Option<T>.shouldBeSome(t: T) = this should beSome(t)
+infix fun <T> Option<T>.shouldNotBeSome(t: T) = this shouldNot beSome(t)
 fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   override fun test(value: Option<T>): MatcherResult {
     return when (value) {
@@ -41,7 +41,7 @@ fun <T> beSome(t: T) = object : Matcher<Option<T>> {
   }
 }
 
-fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
+infix fun <T> Option<T>.shouldBeSome(fn: (T) -> Unit) {
   this.shouldBeSome()
   fn((this.t as T))
 }

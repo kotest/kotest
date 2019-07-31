@@ -57,8 +57,8 @@ class ArrowAssertionsTests : StringSpec({
     OrderAssertions(Int.order()) {
       0 shouldBeEqvTo 0
       0 shouldNotBeEqvTo -1
-      0 shouldBeGreatherThan -1
-      0 shouldBeGreatherThanOrEqual 0
+      0 shouldBeGreaterThan -1
+      0 shouldBeGreaterThanOrEqual 0
       0 shouldBeSmallerThan 1
       0 shouldBeSmallerThanOrEqual 0
     }

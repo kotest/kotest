@@ -20,7 +20,7 @@ fun <T> beSuccess() = beInstanceOf2<Try<T>, Success<T>>()
 
 infix fun <T> Try<T>.shouldBeSuccess(t: T) = this should beSuccess(t)
 
-fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)
+infix fun <T> Try<T>.shouldNotBeSuccess(t: T) = this shouldNot beSuccess(t)
 fun <A> beSuccess(a: A) = object : Matcher<Try<A>> {
   override fun test(value: Try<A>): MatcherResult {
     return when (value) {
