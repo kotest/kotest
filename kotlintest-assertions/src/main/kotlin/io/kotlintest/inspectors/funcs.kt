@@ -18,7 +18,7 @@ fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): String {
   val passed = results.filterIsInstance<ElementPass<T>>()
   val failed = results.filterIsInstance<ElementFail<T>>()
-  val maxOutputResult = 10
+  val maxOutputResult = System.getProperty("kotlintest.assertions.maxOutputResult")?.toInt() ?: 10
 
   val builder = StringBuilder(msg)
   builder.append("\n\nThe following elements passed:\n")
