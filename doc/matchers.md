@@ -107,6 +107,11 @@ For the extension function style, each function has an equivalent negated versio
 | `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
 | `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
+| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n | 
+| `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equ
+| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n | 
+| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n | 
+| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range | 
 
 | Collections ||
 | -------- | ---- |
