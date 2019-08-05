@@ -70,6 +70,52 @@ class InspectorsTest : WordSpec() {
             "4 => java.lang.NullPointerException\n" +
             "5 => java.lang.NullPointerException"
       }
+      "failed results are truncated when failed array size is over 10" {
+        shouldThrowAny {
+          arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
+            if (true) throw NullPointerException()
+          }
+        }.message shouldBe "0 elements passed but expected 12\n" +
+          "\n" +
+          "The following elements passed:\n" +
+          "--none--\n" +
+          "\n" +
+          "The following elements failed:\n" +
+          "1 => java.lang.NullPointerException\n" +
+          "2 => java.lang.NullPointerException\n" +
+          "3 => java.lang.NullPointerException\n" +
+          "4 => java.lang.NullPointerException\n" +
+          "5 => java.lang.NullPointerException\n" +
+          "6 => java.lang.NullPointerException\n" +
+          "7 => java.lang.NullPointerException\n" +
+          "8 => java.lang.NullPointerException\n" +
+          "9 => java.lang.NullPointerException\n" +
+          "10 => java.lang.NullPointerException\n" +
+          "... and 2 more failed elements"
+      }
+      "failed results are truncated when failed list length is over 10" {
+        shouldThrowAny {
+          listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
+            if (true) throw NullPointerException()
+          }
+        }.message shouldBe "0 elements passed but expected 12\n" +
+          "\n" +
+          "The following elements passed:\n" +
+          "--none--\n" +
+          "\n" +
+          "The following elements failed:\n" +
+          "1 => java.lang.NullPointerException\n" +
+          "2 => java.lang.NullPointerException\n" +
+          "3 => java.lang.NullPointerException\n" +
+          "4 => java.lang.NullPointerException\n" +
+          "5 => java.lang.NullPointerException\n" +
+          "6 => java.lang.NullPointerException\n" +
+          "7 => java.lang.NullPointerException\n" +
+          "8 => java.lang.NullPointerException\n" +
+          "9 => java.lang.NullPointerException\n" +
+          "10 => java.lang.NullPointerException\n" +
+          "... and 2 more failed elements"
+      }
     }
 
     "forNone" should {
