@@ -24,10 +24,11 @@ class ValidatedMatchersTest : StringSpec({
 
     Valid("ok") should beValid()
     Valid("ok").shouldBeValid()
-    Valid("ok").shouldBeValid("ok")
+    Valid("ok") shouldBeValid "ok"
+    Valid("ok") shouldBeValid { it.a == "ok" }
 
     shouldThrow<AssertionError> {
-      Valid("ok").shouldNotBeValid("ok")
+      Valid("ok") shouldNotBeValid "ok"
     }.message shouldBe "Valid(a=ok) should not be Valid(a=ok)"
 
     shouldThrow<AssertionError> {
@@ -49,6 +50,9 @@ class ValidatedMatchersTest : StringSpec({
 
     Invalid("error") should beInvalid()
     Invalid("error").shouldBeInvalid()
+    Invalid("error") shouldBeInvalid "error"
+    Invalid("error") shouldBeInvalid { it.e == "error" }
+    Invalid("error").shouldNotBeValid()
   }
 
   "use contracts to smart cast Invalids" {

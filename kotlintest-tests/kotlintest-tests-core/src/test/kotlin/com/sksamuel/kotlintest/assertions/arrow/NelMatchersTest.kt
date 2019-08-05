@@ -8,19 +8,27 @@ import io.kotlintest.assertions.arrow.nel.containNoNulls
 import io.kotlintest.assertions.arrow.nel.containNull
 import io.kotlintest.assertions.arrow.nel.containOnlyNulls
 import io.kotlintest.assertions.arrow.nel.haveDuplicates
+import io.kotlintest.assertions.arrow.nel.haveElementAt
 import io.kotlintest.assertions.arrow.nel.haveSize
 import io.kotlintest.assertions.arrow.nel.shouldBeSingleElement
 import io.kotlintest.assertions.arrow.nel.shouldBeSorted
 import io.kotlintest.assertions.arrow.nel.shouldBeUnique
 import io.kotlintest.assertions.arrow.nel.shouldContain
 import io.kotlintest.assertions.arrow.nel.shouldContainAll
+import io.kotlintest.assertions.arrow.nel.shouldContainElementAt
 import io.kotlintest.assertions.arrow.nel.shouldContainNoNulls
 import io.kotlintest.assertions.arrow.nel.shouldContainNull
 import io.kotlintest.assertions.arrow.nel.shouldContainOnlyNulls
 import io.kotlintest.assertions.arrow.nel.shouldHaveDuplicates
 import io.kotlintest.assertions.arrow.nel.shouldHaveSize
+import io.kotlintest.assertions.arrow.nel.shouldNotBeSingleElement
+import io.kotlintest.assertions.arrow.nel.shouldNotBeSorted
 import io.kotlintest.assertions.arrow.nel.shouldNotBeUnique
 import io.kotlintest.assertions.arrow.nel.shouldNotContain
+import io.kotlintest.assertions.arrow.nel.shouldNotContainAll
+import io.kotlintest.assertions.arrow.nel.shouldNotContainElementAt
+import io.kotlintest.assertions.arrow.nel.shouldNotContainNoNulls
+import io.kotlintest.assertions.arrow.nel.shouldNotContainNull
 import io.kotlintest.assertions.arrow.nel.shouldNotContainOnlyNulls
 import io.kotlintest.assertions.arrow.nel.shouldNotHaveDuplicates
 import io.kotlintest.assertions.arrow.nel.shouldNotHaveSize
@@ -42,6 +50,15 @@ class NelMatchersTest : WordSpec() {
         NonEmptyList.of(1, 2) shouldNot containNull()
 
         NonEmptyList.of(null).shouldContainNull()
+        NonEmptyList.of(1).shouldNotContainNull()
+      }
+    }
+
+    "haveElementAt()" should {
+      "test that a nel contains an element at the right position" {
+        NonEmptyList.of(1, 2, null) should haveElementAt<Int?>(1, 2)
+        NonEmptyList.of(1, 2, null).shouldContainElementAt(1, 2)
+        NonEmptyList.of(1, 2, null).shouldNotContainElementAt(0, 42)
       }
     }
 
@@ -52,6 +69,11 @@ class NelMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           NonEmptyList.of(2, 1) should beSorted<Int>()
         }
+      }
+
+      "test that a collection is not sorted" {
+        NonEmptyList.of(3, 2, 1, 4) shouldNot beSorted<Int>()
+        NonEmptyList.of(5, 2, 3, 4).shouldNotBeSorted()
       }
     }
 
@@ -81,15 +103,19 @@ class NelMatchersTest : WordSpec() {
           NonEmptyList.of(1, 2) shouldBe singleElement(2)
         }
 
-        NonEmptyList.of(1).shouldBeSingleElement(1)
+        NonEmptyList.of(1) shouldBeSingleElement 1
+      }
+
+      "test that a collection does not contain a single element"  {
+        NonEmptyList.of(1, 2) shouldNotBeSingleElement 1
       }
     }
 
     "should contain element" should {
       "test that a collection contains an element"  {
         NonEmptyList.of(1, 2, 3) should contain(2)
-        NonEmptyList.of(1, 2, 3).shouldContain(2)
-        NonEmptyList.of(1, 2, 3).shouldNotContain(4)
+        NonEmptyList.of(1, 2, 3) shouldContain 2
+        NonEmptyList.of(1, 2, 3) shouldNotContain 4
         shouldThrow<AssertionError> {
           NonEmptyList.of(1, 2, 3) should contain(4)
         }
@@ -99,8 +125,8 @@ class NelMatchersTest : WordSpec() {
     "haveSize" should {
       "test that a collection has a certain size" {
         NonEmptyList.of(1, 2, 3) should haveSize(3)
-        NonEmptyList.of(1, 2, 3).shouldHaveSize(3)
-        NonEmptyList.of(1, 2, 3).shouldNotHaveSize(2)
+        NonEmptyList.of(1, 2, 3) shouldHaveSize 3
+        NonEmptyList.of(1, 2, 3) shouldNotHaveSize 2
         shouldThrow<AssertionError> {
           NonEmptyList.of(1, 2, 3) should haveSize(2)
         }
@@ -113,6 +139,7 @@ class NelMatchersTest : WordSpec() {
         NonEmptyList.of(1, 2, 3).shouldContainNoNulls()
         NonEmptyList.of(null, null, null) shouldNot containNoNulls()
         NonEmptyList.of(1, null, null) shouldNot containNoNulls()
+        NonEmptyList.of(1, null, null).shouldNotContainNoNulls()
       }
     }
 
@@ -141,6 +168,7 @@ class NelMatchersTest : WordSpec() {
         col.shouldContainAll(1, 2, 3, 4, 5)
         col.shouldContainAll(3, 2, 1)
         col.shouldContainAll(5, 4, 3, 2, 1)
+        col shouldContainAll listOf(1, 2, 3, 4)
 
         shouldThrow<AssertionError> {
           col should containAll(1, 2, 6)
@@ -157,6 +185,15 @@ class NelMatchersTest : WordSpec() {
         shouldThrow<AssertionError> {
           col should containAll(3, 2, 0)
         }
+      }
+
+      "test that a collection shouldNot containAll elements" {
+        val col = NonEmptyList.of(1, 2, 3, 4, 5)
+
+        col shouldNot containAll(99, 88, 77)
+
+        col.shouldNotContainAll(99,88,77)
+        col shouldNotContainAll listOf(99, 88, 77)
       }
     }
   }

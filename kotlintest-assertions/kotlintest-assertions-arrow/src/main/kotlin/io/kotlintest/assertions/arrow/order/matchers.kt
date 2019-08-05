@@ -14,8 +14,8 @@ import io.kotlintest.should
  * Int.order().assert {
  *   0 shouldBeEqvTo 0
  *   0 shouldNotBeEqvTo -1
- *   0 shouldBeGreatherThan -1
- *   0 shouldBeGreatherThanOrEqual 0
+ *   0 shouldBeGreaterThan -1
+ *   0 shouldBeGreaterThanOrEqual 0
  *   0 shouldBeSmallerThan 1
  *   0 shouldBeSmallerThanOrEqual 0
  * }
@@ -27,11 +27,11 @@ interface OrderAssertions<A> : EqAssertions<A> {
 
   override fun EQA(): Eq<A> = OA()
 
-  infix fun A.shouldBeGreatherThan(b: A): Unit =
-    this should beGreatherThan(b)
+  infix fun A.shouldBeGreaterThan(b: A): Unit =
+    this should beGreaterThan(b)
 
-  infix fun A.shouldBeGreatherThanOrEqual(b: A): Unit =
-    this should beGreatherThanOrEqual(b)
+  infix fun A.shouldBeGreaterThanOrEqual(b: A): Unit =
+    this should beGreaterThanOrEqual(b)
 
   infix fun A.shouldBeSmallerThan(b: A): Unit =
     this should beSmallerThan(b)
@@ -39,11 +39,11 @@ interface OrderAssertions<A> : EqAssertions<A> {
   infix fun A.shouldBeSmallerThanOrEqual(b: A): Unit =
     this should beSmallerThanOrEqual(b)
 
-  fun A.beGreatherThan(b: A): Matcher<A> =
-    OA().run { matcher(gt(b), "value ${this@beGreatherThan} not greather than $b") }
+  fun A.beGreaterThan(b: A): Matcher<A> =
+    OA().run { matcher(gt(b), "value ${this@beGreaterThan} not greater than $b") }
 
-  fun A.beGreatherThanOrEqual(b: A): Matcher<A> =
-    OA().run { matcher(gte(b), "value ${this@beGreatherThanOrEqual} not greather or equal than $b") }
+  fun A.beGreaterThanOrEqual(b: A): Matcher<A> =
+    OA().run { matcher(gte(b), "value ${this@beGreaterThanOrEqual} not greater or equal than $b") }
 
   fun A.beSmallerThan(b: A): Matcher<A> =
     OA().run { matcher(lt(b), "value ${this@beSmallerThan} not smaller than $b") }
