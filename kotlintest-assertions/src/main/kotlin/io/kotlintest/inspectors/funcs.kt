@@ -15,6 +15,16 @@ fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
   }
 }
 
+/**
+ * Build assertion error message.
+ * Show 10 passed and failed results by default. You can change the number of output results by setting the system property `kotlintest.assertions.maxOutputResult`.
+ *
+ * E.g.:
+ *
+ * ```
+ *     -Dkotlintest.assertions.maxOutputResult=20
+ * ```
+ */
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): String {
   val passed = results.filterIsInstance<ElementPass<T>>()
   val failed = results.filterIsInstance<ElementFail<T>>()
