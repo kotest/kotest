@@ -1,13 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import arrow.core.Try
-import io.kotlintest.Description
-import io.kotlintest.Project
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.TestStatus
-import io.kotlintest.TestType
+import io.kotlintest.*
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -109,9 +103,9 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   }
 
   private fun writeSpecFailures(failures: List<ResultState>): Try<Any> = Try {
-    val dir = Paths.get(".kotlintest")
-    dir.toFile().mkdirs()
-    val path = dir.resolve("spec_failures").toAbsolutePath()
+    val kotlintestBuildDirectory = Paths.get("build/.kotlintest")
+    kotlintestBuildDirectory.toFile().mkdirs()
+    val path = kotlintestBuildDirectory.resolve("spec_failures").toAbsolutePath()
     logger.trace("Writing report to $path")
     val content = failures.map { it.testCase.spec.javaClass.canonicalName }.distinct().joinToString("\n")
     Files.write(path, content.toByteArray())
