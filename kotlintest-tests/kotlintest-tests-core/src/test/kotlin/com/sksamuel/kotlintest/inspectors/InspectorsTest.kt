@@ -11,6 +11,7 @@ import io.kotlintest.inspectors.forSome
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -35,6 +36,20 @@ class InspectorsTest : WordSpec() {
         list.forAll {
           it.shouldBeGreaterThan(0)
         }
+      }
+      "passed results are truncated when passed list length is over 10" {
+        shouldThrowAny {
+          (1..13).toList().forAll {
+            it.shouldBeLessThanOrEqual(12)
+          }
+        }.message shouldBe "12 elements passed but expected 13\n" +
+          "\n" +
+          "The following elements passed:\n" +
+          "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n" +
+          "... and 2 more passed elements\n" +
+          "\n" +
+          "The following elements failed:\n" +
+          "13 => 13 should be <= 12"
       }
       "fail when an exception is thrown inside an array" {
         shouldThrowAny {
@@ -73,29 +88,6 @@ class InspectorsTest : WordSpec() {
       "failed results are truncated when failed array size is over 10" {
         shouldThrowAny {
           arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
-            if (true) throw NullPointerException()
-          }
-        }.message shouldBe "0 elements passed but expected 12\n" +
-          "\n" +
-          "The following elements passed:\n" +
-          "--none--\n" +
-          "\n" +
-          "The following elements failed:\n" +
-          "1 => java.lang.NullPointerException\n" +
-          "2 => java.lang.NullPointerException\n" +
-          "3 => java.lang.NullPointerException\n" +
-          "4 => java.lang.NullPointerException\n" +
-          "5 => java.lang.NullPointerException\n" +
-          "6 => java.lang.NullPointerException\n" +
-          "7 => java.lang.NullPointerException\n" +
-          "8 => java.lang.NullPointerException\n" +
-          "9 => java.lang.NullPointerException\n" +
-          "10 => java.lang.NullPointerException\n" +
-          "... and 2 more failed elements"
-      }
-      "failed results are truncated when failed list length is over 10" {
-        shouldThrowAny {
-          listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forAll {
             if (true) throw NullPointerException()
           }
         }.message shouldBe "0 elements passed but expected 12\n" +
