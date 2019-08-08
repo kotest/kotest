@@ -24,7 +24,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
-import java.util.LinkedList
+import java.util.*
 
 class MapMatchersTest : WordSpec() {
 
@@ -247,6 +247,29 @@ class MapMatchersTest : WordSpec() {
           |but equals
           |
         """.trimMargin()
+      }
+    }
+    "be empty" should {
+      "Work on an empty map" {
+        emptyMap<String, String>().shouldBeEmpty()
+      }
+
+      "Fail on a non empty map" {
+        shouldThrow<AssertionError> {
+          mapOf("Foo" to "Bar").shouldBeEmpty()
+        }
+      }
+    }
+
+    "Not be empty" should {
+      "Fail on an empty map" {
+        shouldThrow<AssertionError> {
+          emptyMap<String, String>().shouldNotBeEmpty()
+        }
+      }
+
+      "Pass on a non empty map" {
+        mapOf("Foo" to "Bar").shouldNotBeEmpty()
       }
     }
   }
