@@ -10,6 +10,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    compile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
     compile project(":kotlintest-assertions")
 }
 
