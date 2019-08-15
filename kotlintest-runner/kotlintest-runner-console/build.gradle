@@ -1,17 +1,69 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-runner:kotlintest-runner-jvm')
-    compile 'net.sourceforge.argparse4j:argparse4j:0.8.1'
-    compile 'com.github.ajalt:mordant:1.2.1'
-    testImplementation project(":kotlintest-runner:kotlintest-runner-junit5")
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                api project(":kotlintest-assertions")
+                implementation project(':kotlintest-core')
+                implementation kotlin("stdlib-common")
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation 'net.sourceforge.argparse4j:argparse4j:0.8.1'
+                implementation 'com.github.ajalt:mordant:1.2.1'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileTestKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 apply from: '../../publish.gradle'

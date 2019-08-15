@@ -1,20 +1,71 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    implementation project(':kotlintest-core')
-    implementation project(':kotlintest-assertions')
-    implementation 'commons-io:commons-io:2.6'
-    implementation "io.mockk:mockk:1.9.1"
+repositories {
+    mavenCentral()
+}
 
-    testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
-    testImplementation 'log4j:log4j:1.2.17'
-    testImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+                api project(":kotlintest-assertions")
+                implementation project(':kotlintest-core')
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation 'commons-io:commons-io:2.6'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation 'org.mockito:mockito-core:2.24.0'
+                implementation "com.nhaarman:mockito-kotlin:1.6.0"
+                implementation "io.mockk:mockk:1.9.1"
+                implementation 'log4j:log4j:1.2.17'
+                implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileTestKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {

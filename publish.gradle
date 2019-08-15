@@ -1,4 +1,6 @@
 apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 dokka {
     outputFormat = 'javadoc'
@@ -8,13 +10,13 @@ dokka {
 dokka.dependsOn javadoc
 
 task javadocJar(type: Jar, dependsOn: dokka) {
-//task javadocJar(type: Jar) {
+    // task javadocJar(type: Jar) {
     from javadoc.destinationDir
     archiveClassifier = 'javadoc'
 }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.kotlin
+    // from sourceSets.main.kotlin
     archiveClassifier = 'sources'
 }
 
