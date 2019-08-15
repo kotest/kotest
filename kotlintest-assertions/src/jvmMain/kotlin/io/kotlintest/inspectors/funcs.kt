@@ -25,13 +25,13 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Strin
   if (passed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(passed.map { it.value }.joinToString("\n"))
+    builder.append(passed.map { it.t }.joinToString("\n"))
   }
   builder.append("\n\nThe following elements failed:\n")
   if (failed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(failed.joinToString("\n") { convertValueToString(it.value) + " => " + exceptionToMessage(it.error) })
+    builder.append(failed.joinToString("\n") { convertValueToString(it.t) + " => " + exceptionToMessage(it.error) })
   }
   throw Failures.failure(builder.toString())
 }
