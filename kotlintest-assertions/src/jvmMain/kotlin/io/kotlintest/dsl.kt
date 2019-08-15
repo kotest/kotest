@@ -6,32 +6,6 @@ import com.github.difflib.patch.Delta
 import com.github.difflib.patch.DeltaType
 import kotlin.math.max
 
-/**
- * Run multiple assertions and throw a single error after all are executed if any fail
- *
- * This method will run all the assertions inside [assertions] block, and will collect all failures that may happen.
- * It then compact all of them in a single throwable and throw it instead, or nothing if no assertion fail.
- *
- * ```
- *     // All assertions below are going to be executed, even when one or multiple fail.
- *     // All the failures are then collected and thrown in one single throwable.
- *     assertSoftly {
- *         "foo" shouldBe "bar"
- *         "foo" shouldBe "foo
- *         "foo" shouldBe "baz"
- *     }
- * ```
- */
-inline fun <T> assertSoftly(assertions: () -> T): T {
-  // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
-  // outermost verifyAll block
-  if (ErrorCollector.shouldCollectErrors.get()) return assertions()
-  ErrorCollector.shouldCollectErrors.set(true)
-  return assertions().apply {
-    ErrorCollector.throwCollectedErrors()
-  }
-}
-
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
   override fun test(value: T): MatcherResult {
@@ -44,86 +18,6 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
     )
   }
 }
-
-fun fail(msg: String): Nothing = throw Failures.failure(msg)
-
-// -- equality functions
-
-private fun compare(a: Any?, b: Any?): Boolean {
-  return when (a) {
-    is Int -> when (b) {
-      is Long -> a.toLong() == b
-      is Double -> a.toDouble() == b
-      else -> a == b
-    }
-    is Float -> when (b) {
-      is Double -> a.toDouble() == b
-      else -> a == b
-    }
-    is Double -> when (b) {
-      is Float -> a == b.toDouble()
-      else -> a == b
-    }
-    is Long -> when (b) {
-      is Int -> a == b.toLong()
-      else -> a == b
-    }
-    else -> makeComparable(a) == makeComparable(b)
-  }
-}
-
-private fun makeComparable(any: Any?): Any? {
-  return when (any) {
-    is BooleanArray -> any.asList()
-    is IntArray -> any.asList()
-    is ShortArray -> any.asList()
-    is FloatArray -> any.asList()
-    is DoubleArray -> any.asList()
-    is LongArray -> any.asList()
-    is ByteArray -> any.asList()
-    is CharArray -> any.asList()
-    is Array<*> -> any.asList()
-    else -> any
-  }
-}
-
-@Suppress("UNCHECKED_CAST")
-infix fun <T, U : T> T.shouldBe(any: U?) {
-  when (any) {
-    is Matcher<*> -> should(any as Matcher<T>)
-    else -> {
-      if (this == null && any != null) {
-        ErrorCollector.collectOrThrow(equalsError(any, this))
-      } else if (!compare(this, any)) {
-        ErrorCollector.collectOrThrow(equalsError(any, this))
-      }
-    }
-  }
-}
-
-@Suppress("UNCHECKED_CAST")
-infix fun <T> T.shouldNotBe(any: Any?) {
-  when (any) {
-    is Matcher<*> -> shouldNot(any as Matcher<T>)
-    else -> shouldNot(equalityMatcher(any))
-  }
-}
-
-// -- matcher functions
-
-infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
-infix fun <T> T.should(matcher: Matcher<T>) {
-  val result = matcher.test(this)
-  if (!result.passed()) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage()))
-  }
-}
-
-infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
-infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
-
-infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
-
 
 // -- specialized overrides of shouldBe --
 

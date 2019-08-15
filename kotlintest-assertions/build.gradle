@@ -30,6 +30,7 @@ kotlin {
 
         jsMain {
             dependencies {
+                implementation kotlin('stdlib-js')
             }
         }
 

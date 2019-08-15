@@ -28,5 +28,5 @@ package io.kotlintest
  * @author Hannes Thaller
  */
 fun <K, T> extracting(col: Collection<K>, extractor: K.() -> T): List<T> {
-    return col.map(extractor)
+  return col.map(extractor)
 }
