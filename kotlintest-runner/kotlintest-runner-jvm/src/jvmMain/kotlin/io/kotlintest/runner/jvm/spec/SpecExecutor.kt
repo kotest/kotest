@@ -82,9 +82,15 @@ class SpecExecutor(private val engineListener: TestEngineListener,
       if (spec.isInstancePerTest()) IsolationMode.InstancePerTest else IsolationMode.SingleInstance
     }
     return when (mode) {
-      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
-      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
-      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
+      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener,
+        listenerExecutor,
+        scheduler)
+      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener,
+        listenerExecutor,
+        scheduler)
+      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener,
+        listenerExecutor,
+        scheduler)
     }
   }
 }

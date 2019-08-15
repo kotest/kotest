@@ -97,7 +97,9 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
       throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
     discovered.add(testCase.description)
     logger.trace("Enqueuing test ${testCase.description.fullName()}")
-    queue.add(Enqueued(testCase, topLevel, count = counter.getAndIncrement()))
+    queue.add(Enqueued(testCase,
+      topLevel,
+      count = counter.getAndIncrement()))
   }
 
   /**

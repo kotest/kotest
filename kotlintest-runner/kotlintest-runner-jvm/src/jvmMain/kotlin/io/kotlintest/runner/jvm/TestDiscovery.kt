@@ -25,11 +25,6 @@ data class DiscoveryRequest(val uris: List<URI>,
                             val packageFilters: List<Predicate<String>> = emptyList())
 
 /**
- * Contains [Spec] classes discovered as part of a discovery request scan.
- */
-data class DiscoveryResult(val classes: List<KClass<out Spec>>)
-
-/**
  * Scans for tests as specified by a [DiscoveryRequest].
  * [DiscoveryExtension] `afterScan` functions are applied after the scan is complete to
  * optionally filter the returned classes.
@@ -44,10 +39,12 @@ object TestDiscovery {
     val fromClassNames = loadClasses(request.classNames)
     logger.trace("Loaded ${fromClassNames.size} classes from classnames...")
 
-    val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty()) emptyList() else scanUris(request.uris)
+    val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty()) emptyList() else scanUris(
+      request.uris)
     logger.trace("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
-    val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
+    val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(
+      request.packages)
     logger.trace("Scan discovered ${fromClassPaths.size} classes by package...")
 
     val filtered = (fromClassNames + fromClassPaths + fromPackages)

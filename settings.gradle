@@ -1,3 +1,5 @@
+enableFeaturePreview('GRADLE_METADATA')
+
 include 'kotlintest-core',
         'kotlintest-assertions',
         'kotlintest-assertions:kotlintest-assertions-arrow',

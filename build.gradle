@@ -6,6 +6,7 @@ buildscript {
     ext.isReleaseVersion = !isTravis
     ext.JUnitPlatformVersion = "1.4.0"
     ext.dokkaVersion = '0.9.17'
+    ext.coroutinesVersion = "1.3.0-RC2"
     repositories {
         mavenCentral()
         mavenLocal()

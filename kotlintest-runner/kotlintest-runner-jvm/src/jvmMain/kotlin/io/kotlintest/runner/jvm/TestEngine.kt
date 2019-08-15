@@ -10,6 +10,7 @@ import io.kotlintest.extensions.SpecifiedTagsTagExtension
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory
+import java.util.Collections.emptyList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -61,7 +62,8 @@ class TestEngine(val classes: List<KClass<out Spec>>,
   }
 
   private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
-    val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotlintest-engine-%d"))
+    val executor = Executors.newFixedThreadPool(parallelism,
+      NamedThreadFactory("kotlintest-engine-%d"))
     specs.forEach { submitSpec(it, executor) }
     executor.shutdown()
 
