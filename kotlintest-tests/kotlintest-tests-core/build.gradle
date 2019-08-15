@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     testImplementation project(':kotlintest-core')
-    testImplementation project(':kotlintest-assertions')
+    testImplementation project(':kotlintest-assertions-jvm')
     testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
     testImplementation project(':kotlintest-assertions:kotlintest-assertions-arrow')
     testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
