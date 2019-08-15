@@ -21,7 +21,10 @@ interface Show<in A> {
     operator fun <T> invoke(t: T): Show<T> = when (t) {
       null -> NullShow as Show<T>
       is String -> StringShow as Show<T>
-      else -> fromServiceLoader(t) as Show<T>
+      else -> {
+        val showt = fromServiceLoader(t)
+        if (showt == null) AnyShow else showt as Show<T>
+      }
     }
   }
 }
