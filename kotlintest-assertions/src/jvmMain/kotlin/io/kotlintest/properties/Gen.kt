@@ -10,6 +10,7 @@ import java.math.BigInteger
 import java.time.*
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.math.abs
 import kotlin.random.Random
 
 class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
@@ -48,7 +49,7 @@ class BigIntegerGen(maxNumBits: Int) : Gen<BigInteger> {
  * from across the entire integer range.
  */
 @higherkind
-interface Gen<T> : GenOf<T> {
+interface Gen<T> {
 
   /**
    * Returns the values that should always be used
@@ -86,11 +87,11 @@ interface Gen<T> : GenOf<T> {
   /**
    * Create a new [Gen] by mapping the output of this gen.
    */
-  fun <U> flatMap(f: (T) -> GenOf<U>): Gen<U> {
+  fun <U> flatMap(f: (T) -> Gen<U>): Gen<U> {
     val outer = this
     return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).fix().constants() }
-      override fun random(): Sequence<U> = outer.random().flatMap { f(it).fix().random() }
+      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
+      override fun random(): Sequence<U> = outer.random().flatMap { f(it).random() }
     }
   }
 
@@ -398,7 +399,7 @@ interface Gen<T> : GenOf<T> {
     fun long(): Gen<Long> = object : Gen<Long> {
       val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
       override fun constants(): Iterable<Long> = literals
-      override fun random(): Sequence<Long> = generateSequence { Math.abs(Random.nextLong()) }
+      override fun random(): Sequence<Long> = generateSequence { abs(Random.nextLong()) }
     }
 
     /**
