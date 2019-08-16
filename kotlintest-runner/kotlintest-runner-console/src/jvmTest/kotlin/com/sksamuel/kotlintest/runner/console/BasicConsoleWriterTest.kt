@@ -3,9 +3,10 @@ package com.sksamuel.kotlintest.runner.console
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.system.captureStandardOut
+import io.kotlintest.matchers.string.shouldContain
+import io.kotlintest.matchers.string.shouldContainInOrder
 import io.kotlintest.runner.console.BasicConsoleWriter
 import io.kotlintest.specs.FunSpec
-import java.time.Duration
 
 class BasicConsoleWriterTest : FunSpec() {
 
@@ -24,15 +25,15 @@ class BasicConsoleWriterTest : FunSpec() {
         writer.engineStarted(emptyList())
         writer.beforeSpecClass(this@BasicConsoleWriterTest::class)
         writer.enterTestCase(test1)
-        writer.exitTestCase(test1, TestResult.success(Duration.ZERO))
+        writer.exitTestCase(test1, TestResult.success(0))
         writer.enterTestCase(test2)
-        writer.exitTestCase(test2, TestResult.error(RuntimeException("wibble boom"), Duration.ZERO))
+        writer.exitTestCase(test2, TestResult.error(RuntimeException("wibble boom"), 0))
         writer.enterTestCase(test3)
-        writer.exitTestCase(test3, TestResult.failure(AssertionError("wobble vablam"), Duration.ZERO))
+        writer.exitTestCase(test3, TestResult.failure(AssertionError("wobble vablam"), 0))
         writer.enterTestCase(test4)
         writer.exitTestCase(test4, TestResult.ignored("don't like it"))
         writer.enterTestCase(test5)
-        writer.exitTestCase(test5, TestResult.success(Duration.ZERO))
+        writer.exitTestCase(test5, TestResult.success(0))
         writer.afterSpecClass(this@BasicConsoleWriterTest::class, null)
         writer.engineFinished(null)
       }
@@ -69,12 +70,12 @@ class BasicConsoleWriterTest : FunSpec() {
         writer.enterTestCase(test1)
         writer.enterTestCase(test2)
         writer.enterTestCase(test3)
-        writer.exitTestCase(test3, TestResult.failure(AssertionError("wobble vablam"), Duration.ZERO))
-        writer.exitTestCase(test2, TestResult.error(RuntimeException("wibble boom"), Duration.ZERO))
-        writer.exitTestCase(test1, TestResult.success(Duration.ZERO))
+        writer.exitTestCase(test3, TestResult.failure(AssertionError("wobble vablam"), 0))
+        writer.exitTestCase(test2, TestResult.error(RuntimeException("wibble boom"), 0))
+        writer.exitTestCase(test1, TestResult.success(0))
         writer.enterTestCase(test4)
         writer.enterTestCase(test5)
-        writer.exitTestCase(test5, TestResult.success(Duration.ZERO))
+        writer.exitTestCase(test5, TestResult.success(0))
         writer.exitTestCase(test4, TestResult.ignored("don't like it"))
         writer.afterSpecClass(this@BasicConsoleWriterTest::class, null)
         writer.engineFinished(null)

@@ -12,10 +12,10 @@ import io.kotlintest.extensions.system.captureStandardOut
 import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
 import io.kotlintest.assertions.shouldFail
+import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.sourceRef
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.tables.row
-import java.time.Duration
 import kotlin.reflect.KClass
 
 class TeamCityConsoleWriterTest : FunSpec() {
@@ -77,7 +77,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
     test("after test should write testSuiteFinished for container success") {
       captureStandardOut {
-        TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.success(Duration.ZERO))
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.success(0))
       } shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
     }
 
@@ -85,7 +85,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
       captureStandardErr {
         captureStandardOut {
           TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer,
-              TestResult.error(AssertionError("wibble"), Duration.ZERO))
+              TestResult.error(AssertionError("wibble"), 0))
         } shouldBe "\n" +
           "##teamcity[testStarted name='my test container <init>']\n" +
           "##teamcity[testFailed name='my test container <init>' message='wibble']\n" +
@@ -102,7 +102,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
     test("after test should write testFinished for test success") {
       captureStandardOut {
-        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.success(Duration.ZERO))
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.success(0))
       } shouldBe "\n##teamcity[testFinished name='my test case']\n"
     }
 
@@ -110,7 +110,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
       captureStandardOut {
         captureStandardErr {
           TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest,
-              TestResult.error(AssertionError("wibble"), Duration.ZERO)
+              TestResult.error(AssertionError("wibble"), 0)
           )
         } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
             "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriter"
@@ -122,7 +122,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
         captureStandardErr {
           TeamCityConsoleWriter().afterTestCaseExecution(
               testCaseTest,
-              TestResult.failure(AssertionError("wibble"), Duration.ZERO)
+              TestResult.failure(AssertionError("wibble"), 0)
           )
         } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
             "\tat com.sksamuel.kotlintest.runner.console.TeamCityConsoleWriter"
@@ -142,12 +142,12 @@ class TeamCityConsoleWriterTest : FunSpec() {
           row(2, 3, 1),
           row(0, 2, 0)
         ) { a, b, max ->
-          Math.max(a, b) shouldBe max
+          kotlin.math.max(a, b) shouldBe max
         }
       }
 
       captureStandardOut {
-        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(error, Duration.ZERO))
+        TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(error, 0))
       } shouldBe "\n##teamcity[testFailed name='my test case' message='Test failed']\n"
     }
   }
