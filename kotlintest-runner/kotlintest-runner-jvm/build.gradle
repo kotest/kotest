@@ -1,21 +1,76 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(":kotlintest-extensions")
-    compile 'io.github.classgraph:classgraph:4.8.1'
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compile "io.arrow-kt:arrow-core-extensions:$arrow_version"
-    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+repositories {
+    mavenCentral()
 }
+
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                api project(":kotlintest-assertions")
+                implementation project(':kotlintest-core')
+                implementation kotlin("stdlib-common")
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation kotlin("reflect")
+                implementation project(":kotlintest-extensions")
+                implementation 'io.github.classgraph:classgraph:4.8.1'
+                implementation 'org.slf4j:slf4j-api:1.7.25'
+                implementation "io.arrow-kt:arrow-core-extensions:$arrow_version"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileTestKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+apply from: '../../publish-mpp.gradle'
 
 test {
     useJUnitPlatform()
@@ -32,4 +87,4 @@ test {
     }
 }
 
-apply from: '../../publish.gradle'
+

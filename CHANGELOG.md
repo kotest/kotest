@@ -1,6 +1,54 @@
 Changelog
 =========
 
+#### 3.4.0
+
+* Feature: Support for running tests with Koin #907
+* Feature: Global timeout option can be applied across all tests #858
+* Feature: Introduced await as a more feature rich version of eventually #888 #793
+* Feature: Array overloads for all matchers #904
+* Feature: Support Spring's Test Listeners #887
+* Feature: Limit Parallelism for some specs #786
+* Feature: Added new project listener #859
+* Feature: Change System extensions to support different modes #843
+* Feature: Print project configurations #841 #866
+* Feature: New date matcher variations for month, time units, day of week, etc #899
+* Feature: Multi line diff min line config option #706
+* Feature: Allow nested describe scope in DescribeSpec #905
+* Feature: Add matcher for Dates to ignore timezone #891
+* Feature: Reflection matchers #614 #894
+* Feature: Added string matchers for single line and size between #853
+* Feature: Added contracts and lambda variations of matchers for arrow types #802 #890 #834
+* Feature: Added matchers for LocalTime #889
+* Feature: Added Zoned and Offset date time variants of shouldBeToday #820
+* Feature: Add new throwable matchers #864
+* Feature: Added matchers for Result #836 #861
+* Feature: Added big decimal matchers #875
+* Feature: Added shouldBeSymbolicLink and shouldHaveParent matchers for files #871
+* Feature: Json Matchers from resources #873
+* Feature: Added shouldBeZero and shouldNotBeZero matcher for number types #819 #848
+* Feature: Added shouldContainFiles matcher for path #854
+* Feature: The URI matchers should also work on URLs. #818
+* Feature: Allow setting isolation mode in project config #842
+* Feature: Added containFileDeep File matcher #846
+* Feature: Implements SkipTestException #805
+* Feature: Implements Infinity and NaN Double Matchers #801
+* Feature: Add asClue helper function #784
+* Feature: Add infix map matchers using Pair #792
+* Feature: Add Short and Btyte primitive gens #773
+* Feature: Implement Gen.take(n) function #758
+* Feature: Implement Gen.next(predicate) function #759
+* Feature: Add support to change sizes of generated lists, sets, maps #757
+* Feature: Allow exclusion/inclusion tags at runtime #761
+* Bugfix: Added missing part of shouldHaveLength message #870)
+* Bugfix: Updated json matchers to include actual json in the error 
+* Bugfix: Fix for before/after test listeners not failing tests #842 #865
+* Bugfix: Changed autoClose to accept an AutoCloseable #847
+* Bugfix: Fixed left vs right issue #612
+* Bugfix: Ensure specs that fail in initialisation fail a Maven build #832
+* Bugfix: Fixed test engine reporting when there is an exception in either the init block, beforeSpec or the afterSpec method #771
+* Internal: io.kotlintest.Result renamed to io.kotlintest.MatcherResult to avoid conflict with new Kotlin class kotlin.Result #898
+
 #### 3.3.0
 
 * Feature: Intellij Plugin now available!

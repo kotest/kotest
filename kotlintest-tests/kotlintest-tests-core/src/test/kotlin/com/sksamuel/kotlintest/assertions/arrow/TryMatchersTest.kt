@@ -27,6 +27,8 @@ class TryMatchersTest : WordSpec() {
 
         Try.Success("foo") shouldBeSuccess "foo"
         Try.Success("foo") shouldBeSuccess { it shouldBe "foo" }
+
+        Try.Success("foo").shouldNotBeFailure()
       }
 
       "use contracts to expose Success<*>" {
@@ -45,6 +47,7 @@ class TryMatchersTest : WordSpec() {
         }.message shouldBe "Try should be a Failure but was Success(foo)"
 
         Try.Failure(RuntimeException()) should beFailure()
+        Try.Failure(RuntimeException()).shouldNotBeSuccess()
       }
 
       "test that a try is a Failure with a given throwable" {
@@ -61,6 +64,7 @@ class TryMatchersTest : WordSpec() {
         Try.Failure(Exception()) shouldNot beFailureOfType<RuntimeException>()
 
         Try.Failure(Failure("boo")) shouldBeFailure Failure("boo")
+        Try.Failure(RuntimeException()) shouldNotBeSuccess Failure("boo")
         Try.Failure(Failure("boo")) shouldBeFailure { it.message shouldBe "boo" }
       }
       "use contracts to expose Failure" {

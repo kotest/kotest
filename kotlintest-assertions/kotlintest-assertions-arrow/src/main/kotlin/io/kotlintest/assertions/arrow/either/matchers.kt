@@ -20,14 +20,13 @@ fun <T> Either<*, T>.shouldBeRight() {
 fun <T> Either<Any?, T>.shouldNotBeRight() = this shouldNot beRight()
 fun <T> beRight() = beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
 
-
-inline fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
+inline infix fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
   this should beRight()
   fn((this as Either.Right<B>).b)
 }
 
-fun <B> Either<Any?, B>.shouldBeRight(b: B) = this should beRight(b)
-fun <B> Either<Any?, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
+infix fun <B> Either<Any?, B>.shouldBeRight(b: B) = this should beRight(b)
+infix fun <B> Either<Any?, B>.shouldNotBeRight(b: B) = this shouldNot beRight(b)
 fun <B> beRight(b: B) = object : Matcher<Either<Any?, B>> {
   override fun test(value: Either<Any?, B>): MatcherResult {
     return when (value) {
@@ -55,13 +54,14 @@ fun <T> Either<T, Any?>.shouldBeLeft() {
 fun <T> Either<T, Any?>.shouldNotBeLeft() = this shouldNot beLeft()
 fun <T> beLeft() = beInstanceOf2<Either<T, Any?>, Either.Left<T>>()
 
-inline fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
+inline infix fun <A> Either<A, *>.shouldBeLeft(fn: (A) -> Unit) {
   this should beLeft()
   fn((this as Either.Left<A>).a)
 }
 
-fun <A> Either<A, Any?>.shouldBeLeft(a: A) = this should beLeft(a)
-fun <A> Either<A, Any?>.shouldNotBeLeft(a: A) = this shouldNot beLeft(a)
+
+infix fun <A> Either<A, Any?>.shouldBeLeft(a: A) = this should beLeft(a)
+infix fun <A> Either<A, Any?>.shouldNotBeLeft(a: A) = this shouldNot beLeft(a)
 fun <A> beLeft(a: A) = object : Matcher<Either<A, Any?>> {
   override fun test(value: Either<A, Any?>): MatcherResult {
     return when (value) {

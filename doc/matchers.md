@@ -61,6 +61,13 @@ For the extension function style, each function has an equivalent negated versio
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
 
+| JSON ||
+| -------- | ---- |
+| `str.shouldMatchJson(json)` | Asserts that the JSON is equal to another JSON ignoring properties' order and formatting. |
+| `str.shouldContainJsonKey("$.key")` | Asserts that the JSON contains a `key`. |
+| `str.shouldContainJsonKeyValue("$.key", "value")` | Asserts that the JSON contains a `key` with a specific `value`. |
+| `str.shouldMatchJsonResource("/file.json")` | Asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting. |
+
 | Integers ||
 | -------- | ---- |
 | `int.shouldBeBetween(x, y)` | Asserts that the integer is between x and y, inclusive on both x and y |
@@ -107,6 +114,11 @@ For the extension function style, each function has an equivalent negated versio
 | `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
 | `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
+| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n | 
+| `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equ
+| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n | 
+| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n | 
+| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range | 
 
 | Collections ||
 | -------- | ---- |

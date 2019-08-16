@@ -20,10 +20,10 @@ fun Validated<*, *>.shouldBeValid() {
 
 fun <T> Validated<*, T>.shouldNotBeValid() = this shouldNot beValid()
 
-fun <T> Validated<*, T>.shouldBeValid(value: T) = this should beValid(value)
-fun <T> Validated<*, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
+infix fun <T> Validated<*, T>.shouldBeValid(value: T) = this should beValid(value)
+infix fun <T> Validated<*, T>.shouldNotBeValid(value: T) = this shouldNot beValid(value)
 
-fun <T> Validated<*, T>.shouldBeValid(fn: (Valid<T>) -> Unit) {
+infix fun <T> Validated<*, T>.shouldBeValid(fn: (Valid<T>) -> Unit) {
   this.shouldBeValid()
   fn(this as Valid<T>)
 }
@@ -45,12 +45,14 @@ fun Validated<*, *>.shouldBeInvalid() {
   }
   this should beInvalid()
 }
+
+@Deprecated("use shouldBeValid() instead")
 fun Validated<*, *>.shouldNotBeInvalid() = this shouldNot beInvalid()
-
-fun <T> Validated<*, T>.shouldBeInvalid(value: T) = this should beInvalid(value)
+@Deprecated("use shouldBeValid() instead")
 fun <T> Validated<*, T>.shouldNotBeInvalid(value: T) = this shouldNot beInvalid(value)
+infix fun <T> Validated<*, T>.shouldBeInvalid(value: T) = this should beInvalid(value)
 
-fun <T> Validated<T, *>.shouldBeInvalid(fn: (Invalid<T>) -> Unit) {
+infix fun <T> Validated<T, *>.shouldBeInvalid(fn: (Invalid<T>) -> Unit) {
   this.shouldBeInvalid()
   fn(this as Invalid<T>)
 }

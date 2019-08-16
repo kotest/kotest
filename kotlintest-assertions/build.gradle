@@ -1,30 +1,67 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-apply plugin: 'kotlin-kapt'
+// apply plugin: 'kotlin-kapt'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile "io.arrow-kt:arrow-core-data:$arrow_version"
-    kapt "io.arrow-kt:arrow-meta:$arrow_version"
-    compile 'com.univocity:univocity-parsers:2.8.1'
-    compile group: 'com.github.wumpz', name: 'diffutils', version: '2.2'
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '0.11.91.1'
+//    kapt "io.arrow-kt:arrow-meta:$arrow_version"
+    //  compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '0.11.91.1'
 }
 
-compileKotlin {
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation kotlin("reflect")
+                api 'com.github.wumpz:diffutils:2.2'
+                api 'com.univocity:univocity-parsers:2.8.3'
+                api "io.arrow-kt:arrow-core-data:$arrow_version"
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileTestKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
     kotlinOptions {
         freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
     }
 }
 
-apply from: '../publish.gradle'
+apply from: '../publish-mpp.gradle'
