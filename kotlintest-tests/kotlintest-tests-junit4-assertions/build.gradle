@@ -1,17 +1,45 @@
-plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'java-library'
-    id 'maven-publish'
-    id 'signing'
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
-dependencies {
-    testCompile project(':kotlintest-assertions')
-    testCompile 'junit:junit:4.12'
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-assertions')
+                implementation 'junit:junit:4.12'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {
+    useJUnitPlatform()
+
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
 
@@ -20,6 +48,7 @@ test {
 
     testLogging {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat = 'full'
     }
 }
 
