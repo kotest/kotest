@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.Failures
 import io.kotlintest.until.UntilListener
 import io.kotlintest.until.until
 import io.kotlintest.until.fixedInterval

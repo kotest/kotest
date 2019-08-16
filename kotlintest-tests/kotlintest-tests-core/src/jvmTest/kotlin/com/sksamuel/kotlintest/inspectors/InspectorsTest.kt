@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest.inspectors
 
-import io.kotlintest.forAll
 import io.kotlintest.forNone
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.inspectors.forAny

@@ -1,5 +1,10 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.ErrorCollector
+import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.clueContextAsString
+import io.kotlintest.assertions.collectOrThrow
+
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
   when (any) {
@@ -28,7 +33,7 @@ infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
   val result = matcher.test(this)
   if (!result.passed()) {
-    ErrorCollector.collectOrThrow(Failures.failure(ErrorCollector.clueContextAsString() + result.failureMessage()))
+    ErrorCollector.collectOrThrow(Failures.failure(clueContextAsString() + result.failureMessage()))
   }
 }
 

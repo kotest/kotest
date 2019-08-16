@@ -3,9 +3,6 @@ package com.sksamuel.kt.extensions.system
 import io.kotlintest.extensions.system.OverrideMode
 import io.kotlintest.extensions.system.OverrideMode.*
 import io.kotlintest.extensions.system.OverrideMode.SetOrError.IllegalOverrideException
-import io.kotlintest.inspectors.forAll
-import io.kotlintest.matchers.throwable.shouldHaveMessage
-import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 

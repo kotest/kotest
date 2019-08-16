@@ -30,7 +30,7 @@ class GlobalTimeoutTest : StringSpec() {
                                    complete: suspend (TestResult) -> Unit) {
       execute(testCase) {
         when (it.status) {
-          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(Duration.ofSeconds(1)))
+          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000))
           else -> throw RuntimeException("This should not occur")
         }
       }

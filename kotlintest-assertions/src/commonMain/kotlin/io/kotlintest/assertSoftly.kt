@@ -1,5 +1,9 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.ErrorCollectionMode
+import io.kotlintest.assertions.ErrorCollector
+import io.kotlintest.assertions.throwCollectedErrors
+
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
  *
@@ -19,8 +23,8 @@ package io.kotlintest
 inline fun <T> assertSoftly(assertions: () -> T): T {
   // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
   // outermost verifyAll block
-  if (ErrorCollector.shouldCollectErrors.get()) return assertions()
-  ErrorCollector.shouldCollectErrors.set(true)
+  if (ErrorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
+  ErrorCollector.setCollectionMode(ErrorCollectionMode.Soft)
   return assertions().apply {
     ErrorCollector.throwCollectedErrors()
   }

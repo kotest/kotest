@@ -1,7 +1,10 @@
 package io.kotlintest.matchers.result
 
 import io.kotlintest.*
-import io.kotlintest.ErrorCollector
+import io.kotlintest.assertions.ErrorCollector
+import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.clueContextAsString
+import io.kotlintest.assertions.collectOrThrow
 import kotlin.Result
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
@@ -71,7 +74,7 @@ internal fun test(inverse: Boolean = false, block: () -> MatcherResult) {
   val result = block()
   if ((inverse && result.passed()) || (!inverse && !result.passed())) {
     ErrorCollector.collectOrThrow(
-      Failures.failure(ErrorCollector.clueContextAsString() + if (inverse) result.negatedFailureMessage() else result.failureMessage())
+      Failures.failure(clueContextAsString() + if (inverse) result.negatedFailureMessage() else result.failureMessage())
     )
   }
 }

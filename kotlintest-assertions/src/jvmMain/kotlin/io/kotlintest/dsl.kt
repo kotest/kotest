@@ -4,6 +4,8 @@ import com.github.difflib.DiffUtils
 import com.github.difflib.patch.Chunk
 import com.github.difflib.patch.Delta
 import com.github.difflib.patch.DeltaType
+import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.clueContextAsString
 import kotlin.math.max
 
 fun <T> be(expected: T) = equalityMatcher(expected)
@@ -26,7 +28,7 @@ internal fun equalsError(expected: Any?, actual: Any?): Throwable {
   val largeStringDiffMinSize = System.getProperty("kotlintest.assertions.multi-line-diff-size", "50").toInt()
 
   val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual), largeStringDiffMinSize)
-  val message = ErrorCollector.clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
+  val message = clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
 
   val throwable = junit5AssertionFailedError(message, expectedRepr, actualRepr)
       ?: junit4comparisonFailure(expectedRepr, actualRepr)

@@ -5,7 +5,7 @@ import io.kotlintest.matchers.gte
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
+import io.kotlintest.assertions.shouldFail
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 

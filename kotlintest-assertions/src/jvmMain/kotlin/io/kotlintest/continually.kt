@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.Failures
 import java.time.Duration
 
 fun <T> continually(duration: Duration, f: () -> T): T? {

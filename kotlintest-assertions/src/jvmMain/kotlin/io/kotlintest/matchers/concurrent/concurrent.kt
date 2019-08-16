@@ -1,6 +1,6 @@
 package io.kotlintest.matchers.concurrent
 
-import io.kotlintest.Failures
+import io.kotlintest.assertions.Failures
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference

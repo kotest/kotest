@@ -1,11 +1,11 @@
 package com.sksamuel.kotlintest
 
 import com.sksamuel.kotlintest.throwablehandling.catchThrowable
-import io.kotlintest.Failures
+import io.kotlintest.assertions.Failures
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
+import io.kotlintest.assertions.shouldFail
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.FreeSpec
 

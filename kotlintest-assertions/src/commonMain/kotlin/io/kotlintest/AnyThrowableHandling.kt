@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.Failures
+
 /**
  * Verifies that a block of code throws any [Throwable]
  *

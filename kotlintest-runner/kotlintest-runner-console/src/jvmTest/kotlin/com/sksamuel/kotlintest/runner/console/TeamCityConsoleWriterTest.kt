@@ -11,7 +11,7 @@ import io.kotlintest.extensions.system.captureStandardErr
 import io.kotlintest.extensions.system.captureStandardOut
 import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
+import io.kotlintest.assertions.shouldFail
 import io.kotlintest.sourceRef
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.tables.row
@@ -139,8 +139,8 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
       val error = shouldFail {
         forall(
-            row(2, 3, 1),
-            row(0, 2, 0)
+          row(2, 3, 1),
+          row(0, 2, 0)
         ) { a, b, max ->
           Math.max(a, b) shouldBe max
         }

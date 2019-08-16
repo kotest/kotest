@@ -1,4 +1,4 @@
-package io.kotlintest.tables
+package io.kotlintest.matchers
 
 /** An error that bundles multiple other [Throwable]s together */
 class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessage(errors)) {
@@ -15,13 +15,12 @@ class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessag
 
       for ((i, err) in errors.withIndex()) {
         append(i + 1).append(") ").append(err.message).append("\n")
-        val location = (err.cause ?: err).stackTrace?.firstOrNull {
-          !it.className.startsWith("io.kotlintest")
-        }
-        if (location != null) {
-          append("\tat ").append(location).append("\n")
+        if (err.throwableLocation() != null) {
+          append("\tat ").append(err.throwableLocation()).append("\n")
         }
       }
     }
   }
 }
+
+expect fun Throwable.throwableLocation(): String?

@@ -1,6 +1,6 @@
 package io.kotlintest.until
 
-import io.kotlintest.Failures
+import io.kotlintest.assertions.Failures
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 

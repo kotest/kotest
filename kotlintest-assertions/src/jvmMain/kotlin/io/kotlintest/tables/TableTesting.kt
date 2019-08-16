@@ -1,7 +1,8 @@
 @file:JvmName("TableTestingKt")
 package io.kotlintest.tables
 
-import io.kotlintest.Failures
+import io.kotlintest.matchers.MultiAssertionError
+import io.kotlintest.assertions.Failures
 
 fun headers(a: String) = Headers1(a)
 fun headers(a: String, b: String) = Headers2(a, b)

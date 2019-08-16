@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.Failures
+
 
 /**
  * Verifies if a block of code throw a Throwable of type [T] or subtypes
@@ -91,10 +93,10 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
   } catch (thrown: Throwable) { thrown }
 
   return when (thrownThrowable) {
-    null -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but no exception was thrown.")
+    null -> throw Failures.failure("Expected exception ${expectedExceptionClass.classname()} but no exception was thrown.")
     is T -> thrownThrowable               // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
     is AssertionError -> throw thrownThrowable
-    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.qualifiedName} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
+    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.classname()} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
   }
 }
 

@@ -87,7 +87,7 @@ import io.kotlintest.matchers.singleElement
 import io.kotlintest.matchers.sorted
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldFail
+import io.kotlintest.assertions.shouldFail
 import io.kotlintest.shouldHave
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldNotBe
@@ -364,35 +364,35 @@ class CollectionMatchersTest : WordSpec() {
 
       }
     }
-    
+
     "should be singleton" should {
       "pass for collection with a single element" {
         listOf(1).shouldBeSingleton()
       }
-      
+
       "fail for collection with 0 elements" {
         shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton() }
       }
-      
+
       "fail for collection with 2+ elements" {
         shouldThrow<AssertionError> { listOf(1, 2).shouldBeSingleton() }
         shouldThrow<AssertionError> { listOf(1, 2, 3, 4).shouldBeSingleton() }
       }
     }
-    
+
     "should not be singleton" should {
       "pass for collection with 0 elements" {
         listOf<Int>().shouldNotBeSingleton()
       }
-      
+
       "pass for collection with 2+ elements" {
         listOf(1, 2).shouldNotBeSingleton()
         listOf(1, 2, 3, 4).shouldNotBeSingleton()
       }
-      
+
       "fail for collection with a single element" {
         shouldThrow<AssertionError> { listOf(1).shouldNotBeSingleton() }
-        
+
       }
     }
 
@@ -702,70 +702,70 @@ class CollectionMatchersTest : WordSpec() {
         }.message shouldBe "List should end with [1L, 3L]"
       }
     }
-  
+
     "Be one of" should {
       "Pass when the element instance is in the list" {
         val foo = Foo("Bar")
         val list = listOf(foo)
-  
+
         foo shouldBeOneOf list
       }
-      
+
       "Fail when the element instance is not in the list" {
         val foo1 = Foo("Bar")
         val foo2 = Foo("Booz")
-        
+
         val list = listOf(foo1)
         shouldThrow<AssertionError> { foo2.shouldBeOneOf(list) }
       }
-      
+
       "Fail when there's an equal element, but not the same instance in the list" {
         val foo1 = Foo("Bar")
         val foo2 = Foo("Bar")
-        
+
         val list = listOf(foo1)
         shouldThrow<AssertionError> { foo2 shouldBeOneOf list }
       }
-      
+
       "Fail when the list is empty" {
         val foo = Foo("Bar")
-        
+
         val list = emptyList<Foo>()
         shouldThrow<AssertionError> { foo shouldBeOneOf list }
       }
     }
-    
+
     "Be one of (negative)" should {
       "Fail when the element instance is in the list" {
         val foo = Foo("Bar")
         val list = listOf(foo)
-        
+
         shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
       }
-  
+
       "Pass when the element instance is not in the list" {
         val foo1 = Foo("Bar")
         val foo2 = Foo("Booz")
-    
+
         val list = listOf(foo1)
         foo2.shouldNotBeOneOf(list)
       }
-  
+
       "Pass when there's an equal element, but not the same instance in the list" {
         val foo1 = Foo("Bar")
         val foo2 = Foo("Bar")
-    
+
         val list = listOf(foo1)
         foo2 shouldNotBeOneOf list
       }
-  
+
       "Fail when the list is empty" {
         val foo = Foo("Bar")
-    
+
         val list = emptyList<Foo>()
         shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
       }
-    
+
     }
   }
 }

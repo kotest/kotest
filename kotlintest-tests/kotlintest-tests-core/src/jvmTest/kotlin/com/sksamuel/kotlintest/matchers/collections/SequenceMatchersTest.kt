@@ -2,7 +2,7 @@ package com.sksamuel.kotlintest.matchers.collections
 
 import io.kotlintest.matchers.sequences.*
 import io.kotlintest.specs.WordSpec
-import io.kotlintest.shouldFail
+import io.kotlintest.assertions.shouldFail
 import io.kotlintest.shouldThrow
 
 class SequenceMatchersTest : WordSpec() {
@@ -13,7 +13,7 @@ class SequenceMatchersTest : WordSpec() {
     }
 
 	private suspend fun WordScope.succeed(name: String, test: suspend FinalTestContext.() -> Unit) = pass(name, test)
-	
+
 	fun WordScope.fail(msg: String):Nothing = io.kotlintest.fail(msg)
 	suspend fun WordScope.fail(name: String, test: () -> Any?) {
 		("fail $name") { shouldFail(test) }
@@ -34,7 +34,7 @@ class SequenceMatchersTest : WordSpec() {
 	val countdown = (10 downTo 0).asSequence()
 	val unique = sequenceOf(3, 2, 1)
 	val repeating = sequenceOf(1, 2, 3, 1, 2, 3)
-	
+
 	val asc = { a:Int, b:Int -> a - b }
 	val desc = { a:Int, b:Int -> b - a }
 
@@ -58,7 +58,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty") {
 				empty.shouldNotBeEmpty()
 			}
-			
+
 			succeed("for single") {
 				single.shouldNotBeEmpty()
 			}
@@ -99,7 +99,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty when non-zero") {
 				empty.shouldNotHaveCount(0)
 			}
-			
+
 			succeed("for empty when non-zero") {
 				empty.shouldNotHaveCount(1)
 			}
@@ -125,7 +125,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty") {
 				empty.shouldBeLargerThan(single)
 			}
-			
+
 			succeed("with empty") {
 				single.shouldBeLargerThan(empty)
 			}
@@ -147,7 +147,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for empty") {
 				empty.shouldBeSmallerThan(single)
 			}
-			
+
 			fail("with empty") {
 				single.shouldBeSmallerThan(empty)
 			}
@@ -155,11 +155,11 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for smaller") {
 				nulls.shouldBeSmallerThan(countup)
 			}
-			
+
 			fail("for same count") {
 				countup.shouldBeSmallerThan(countdown)
 			}
-			
+
 			fail("for larger") {
 				countup.shouldBeSmallerThan(nulls)
 			}
@@ -181,7 +181,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("with same count") {
 				countup.shouldBeSameCountAs(countdown)
 			}
-						
+
 			fail("for larger") {
 				countup.shouldBeSmallerThan(nulls)
 			}
@@ -250,11 +250,11 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for empty") {
 				empty.shouldContainOnlyNulls()
 			}
-			
+
 			fail("for single") {
 				single.shouldContainOnlyNulls()
 			}
-			
+
 			succeed("for nulls") {
 				nulls.shouldContainOnlyNulls()
 			}
@@ -268,11 +268,11 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty") {
 				empty.shouldNotContainOnlyNulls()
 			}
-			
+
 			"fail for single" {
 				single.shouldNotContainOnlyNulls()
 			}
-			
+
 			fail("for nulls") {
 				nulls.shouldNotContainOnlyNulls()
 			}
@@ -288,9 +288,9 @@ class SequenceMatchersTest : WordSpec() {
 			}
 
 			fail("for non-nulls") {
-				single.shouldContainNull()				
+				single.shouldContainNull()
 			}
-			
+
 			succeed("for nulls") {
 				nulls.shouldContainNull()
 			}
@@ -342,9 +342,9 @@ class SequenceMatchersTest : WordSpec() {
 			}
 
 			fail("for non-nulls") {
-				single.shouldNotContainNoNulls()				
+				single.shouldNotContainNoNulls()
 			}
-			
+
 			succeed("for nulls") {
 				nulls.shouldNotContainNoNulls()
 			}
@@ -353,7 +353,7 @@ class SequenceMatchersTest : WordSpec() {
 				sparse.shouldNotContainNoNulls()
 			}
 		}
-		
+
 		/** single-value */
 		"single element" should {
 			fail("for empty") {
@@ -368,7 +368,7 @@ class SequenceMatchersTest : WordSpec() {
 				nulls.shouldHaveSingleElement(null)
 			}
 		}
-		
+
 		"have element at" should {
 			abort<IndexOutOfBoundsException>("for empty") {
 				empty.shouldHaveElementAt(empty.count(), 0)
@@ -413,7 +413,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("when the sequence contains the value") {
 				countup.shouldContain(2)
 			}
-			
+
 			fail("when the sequence doesn't contain the value") {
 				sparse.shouldContain(2)
 			}
@@ -427,7 +427,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("when the sequence contains the value") {
 				countup.shouldNotContain(2)
 			}
-			
+
 			succeed("when the sequence doesn't contain the value") {
 				sparse.shouldNotContain(2)
 			}
@@ -437,19 +437,19 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty") {
 				empty.shouldExist { true }
 			}
-			
+
 			succeed("when always true") {
 				single.shouldExist { true }
 			}
-			
+
 			fail("when always false") {
 				countup.shouldExist { false }
 			}
-			
+
 			succeed("when matches at least one") {
 				countdown.shouldExist { it % 5 == 4 }
 			}
-			
+
 			fail("when matches none") {
 				countdown.shouldExist { it > 20 }
 			}
@@ -460,7 +460,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for empty with empty") {
 				empty.shouldContainAll(empty)
 			}
-			
+
 			succeed("for empty with empty (variadic)") {
 				empty.shouldContainAll()
 			}
@@ -509,7 +509,7 @@ class SequenceMatchersTest : WordSpec() {
 				unique.shouldContainAll(1, 2, 3, 1, 2, 3)
 			}
 		}
-		
+
 		"contain exactly empty" should {
 			succeed("for empty") {
 				empty.shouldContainExactly(sequenceOf<Int>())
@@ -538,7 +538,7 @@ class SequenceMatchersTest : WordSpec() {
 
 		"contain exactly non-empty" should {
 			val nonempty = sparse;
-			
+
 			fail("for empty") {
 				empty.shouldContainExactly(nonempty)
 			}
@@ -562,7 +562,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for another of different size (variadic)") {
 				countup.shouldContainExactly(*nonempty.toList().toTypedArray())
 			}
-			
+
 			fail("for another of same size") {
 				nulls.shouldContainExactly(nonempty)
 			}
@@ -570,16 +570,16 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for another of same size (variadic)") {
 				nulls.shouldContainExactly(*nonempty.toList().toTypedArray())
 			}
-		
+
 			fail("for same elements but different order") {
 				repeating.shouldContainExactly(unique + unique)
 			}
-			
+
 			fail("for same elements but different order (variadic)") {
 				repeating.shouldContainExactly(1, 1, 2, 2, 3, 3)
 			}
 		}
-		
+
 		"not contain exactly empty" should {
 			fail("for empty") {
 				empty.shouldNotContainExactly(sequenceOf<Int>())
@@ -596,7 +596,7 @@ class SequenceMatchersTest : WordSpec() {
 
 		"not contain exactly non-empty" should {
 			val nonempty = sparse;
-			
+
 			succeed("for empty") {
 				empty.shouldNotContainExactly(nonempty)
 			}
@@ -608,7 +608,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for another of different size") {
 				countup.shouldNotContainExactly(nonempty)
 			}
-			
+
 			succeed("for another of same size") {
 				nulls.shouldNotContainExactly(nonempty)
 			}
@@ -616,7 +616,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for same elements but different order") {
 				repeating.shouldNotContainExactly(unique + unique)
 			}
-			
+
 			succeed("for same elements but different order (variadic)") {
 				repeating.shouldNotContainExactly(1, 1, 2, 2, 3, 3)
 			}
@@ -626,7 +626,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for empty with empty") {
 				empty.shouldContainExactlyInAnyOrder(empty)
 			}
-			
+
 			fail("for empty with any other") {
 				empty.shouldContainExactlyInAnyOrder(nulls)
 			}
@@ -638,7 +638,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for overlapping sequence") {
 				countup.shouldContainExactlyInAnyOrder((5..15).asSequence())
 			}
-			
+
 			succeed("for subset, same count with nulls") {
 				sparse.shouldContainExactlyInAnyOrder(nulls)
 			}
@@ -654,7 +654,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for subset, different count with nulls") {
 				sparse.shouldContainExactlyInAnyOrder(sparse.toSet().asSequence())
 			}
-			
+
 			fail("for same, different count") {
 				repeating.shouldContainExactlyInAnyOrder(unique)
 			}
@@ -664,7 +664,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty with empty") {
 				empty.shouldNotContainExactlyInAnyOrder(empty)
 			}
-			
+
 			succeed("for empty with any other") {
 				empty.shouldNotContainExactlyInAnyOrder(nulls)
 			}
@@ -692,7 +692,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for subset, different count with nulls") {
 				sparse.shouldNotContainExactlyInAnyOrder(sparse.toSet().asSequence())
 			}
-			
+
 			succeed("for same, different count") {
 				repeating.shouldNotContainExactlyInAnyOrder(unique)
 			}
@@ -702,7 +702,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("with empty") {
 				countup.shouldContainInOrder(empty)
 			}
-			
+
 			fail("with empty (variadic)") {
 				countup.shouldContainInOrder()
 			}
@@ -748,7 +748,7 @@ class SequenceMatchersTest : WordSpec() {
 			}
 		}
 
-		
+
 		/** unique */
 		"unique" should {
 			succeed("for empty") {
@@ -844,31 +844,31 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for empty") {
 				empty.shouldHaveLowerBound(Int.MAX_VALUE)
 			}
-			
+
 			succeed("for single") {
 				single.shouldHaveLowerBound(0)
 			}
-			
+
 			fail("for single with wrong bound") {
 				single.shouldHaveLowerBound(1)
 			}
-			
+
 			succeed("for multiple") {
 				countup.shouldHaveLowerBound(countup.min() ?: Int.MIN_VALUE)
 			}
-			
+
 			fail("for multiple with wrong bound") {
 				countup.shouldHaveLowerBound((countup.min() ?: Int.MIN_VALUE) + 1)
 			}
 		}
 
-		
+
 		/** sort */
 		"sorted" should  {
 			succeed("for empty") {
 				empty.shouldBeSorted()
 			}
-			
+
 			succeed("for single") {
 				single.shouldBeSorted()
 			}
@@ -876,11 +876,11 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for repeating") {
 				repeating.shouldBeSorted()
 			}
-			
+
 			succeed("for count-up") {
 				countup.shouldBeSorted()
 			}
-			
+
 			fail("for count-down") {
 				countdown.shouldBeSorted()
 			}
@@ -890,11 +890,11 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for empty") {
 				empty.shouldNotBeSorted()
 			}
-			
+
 			fail("for single") {
 				single.shouldNotBeSorted()
 			}
-			
+
 			succeed("for repeating") {
 				repeating.shouldNotBeSorted()
 			}
@@ -902,15 +902,15 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for count-up") {
 				countup.shouldNotBeSorted()
 			}
-			
+
 			succeed("for count-down") {
 				countdown.shouldNotBeSorted()
 			}
 		}
-		
+
 		"sorted ascending" should {
 			val dir = asc
-			
+
 			succeed("for empty") {
 				empty.shouldBeSortedWith(dir)
 			}
@@ -918,15 +918,15 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for single") {
 				single.shouldBeSortedWith(dir)
 			}
-			
+
 			fail("for repeating") {
 				repeating.shouldBeSortedWith(dir)
 			}
-			
+
 			succeed("for count-up") {
 				countup.shouldBeSortedWith(dir)
 			}
-			
+
 			fail("for count-down") {
 				countdown.shouldBeSortedWith(dir)
 			}
@@ -935,7 +935,7 @@ class SequenceMatchersTest : WordSpec() {
 
 		"sorted descending" should {
 			val dir = desc
-			
+
 			succeed("for empty") {
 				empty.shouldBeSortedWith(dir)
 			}
@@ -943,7 +943,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for single") {
 				single.shouldBeSortedWith(dir)
 			}
-			
+
 			fail("for repeating") {
 				repeating.shouldBeSortedWith(dir)
 			}
@@ -951,7 +951,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for count-up") {
 				countup.shouldBeSortedWith(dir)
 			}
-			
+
 			succeed("for count-down") {
 				countdown.shouldBeSortedWith(dir)
 			}
@@ -967,7 +967,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for single") {
 				single.shouldNotBeSortedWith(dir)
 			}
-			
+
 			succeed("for repeating") {
 				repeating.shouldNotBeSortedWith(dir)
 			}
@@ -975,7 +975,7 @@ class SequenceMatchersTest : WordSpec() {
 			fail("for count-up") {
 				countup.shouldNotBeSortedWith(dir)
 			}
-			
+
 			succeed("for count-down") {
 				countdown.shouldNotBeSortedWith(dir)
 			}
@@ -983,15 +983,15 @@ class SequenceMatchersTest : WordSpec() {
 
 		"not sorted descending" should {
 			val dir = desc
-			
+
 			fail("for empty") {
 				empty.shouldNotBeSortedWith(dir)
 			}
-			
+
 			fail("for single") {
 				single.shouldNotBeSortedWith(dir)
 			}
-			
+
 			succeed("for repeating") {
 				repeating.shouldNotBeSortedWith(dir)
 			}
@@ -999,7 +999,7 @@ class SequenceMatchersTest : WordSpec() {
 			succeed("for count-up") {
 				countup.shouldNotBeSortedWith(dir)
 			}
-			
+
 			fail("for count-down") {
 				countdown.shouldNotBeSortedWith(dir)
 			}
