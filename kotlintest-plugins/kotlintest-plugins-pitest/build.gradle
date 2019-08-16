@@ -17,6 +17,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-core')
                 implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation 'org.pitest:pitest:1.4.5'
             }
