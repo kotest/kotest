@@ -16,23 +16,8 @@ repositories {
 kotlin {
 
     jvm()
-    js()
 
     sourceSets {
-
-        commonMain {
-            dependencies {
-                implementation kotlin("stdlib-common")
-                api project(":kotlintest-assertions")
-                implementation project(':kotlintest-core')
-            }
-        }
-
-        jsMain {
-            dependencies {
-                implementation kotlin('stdlib-js')
-            }
-        }
 
         jvmMain {
             dependencies {
@@ -47,18 +32,6 @@ kotlin {
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
             }
         }
-    }
-}
-
-compileKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
-    }
-}
-
-compileTestKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
     }
 }
 

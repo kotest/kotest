@@ -16,7 +16,6 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation project(':kotlintest-core')
                 implementation project(":kotlintest-assertions")
                 implementation "io.arrow-kt:arrow-extras-extensions:$arrow_version"
                 api "io.arrow-kt:arrow-validation:$arrow_version"
