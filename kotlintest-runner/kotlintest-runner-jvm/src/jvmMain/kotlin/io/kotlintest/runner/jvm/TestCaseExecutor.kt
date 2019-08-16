@@ -10,7 +10,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
-import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicReference
 
@@ -71,7 +70,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     } catch (t: Throwable) {
       t.printStackTrace()
-      listener.exitTestCase(testCase, TestResult.error(t, Duration.ofMillis(System.currentTimeMillis() - start)))
+      listener.exitTestCase(testCase, TestResult.error(t, System.currentTimeMillis() - start))
     }
   }
 
@@ -163,7 +162,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       executor.shutdown()
     }
 
-    val result = buildTestResult(error.get(), context.metaData(), Duration.ofMillis(System.currentTimeMillis() - start))
+    val result = buildTestResult(error.get(), context.metaData(), System.currentTimeMillis() - start)
 
     listener.afterTestCaseExecution(testCase, result)
     return result
@@ -202,11 +201,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private fun buildTestResult(error: Throwable?,
                               metadata: Map<String, Any?>,
-                              duration: Duration): TestResult = when (error) {
-    null -> TestResult(TestStatus.Success, null, null, duration, metadata)
-    is AssertionError -> TestResult(TestStatus.Failure, error, null, duration, metadata)
-    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, duration, metadata)
-    else -> TestResult(TestStatus.Error, error, null, duration, metadata)
+                              durationMs: Long): TestResult = when (error) {
+    null -> TestResult(TestStatus.Success, null, null, durationMs, metadata)
+    is AssertionError -> TestResult(TestStatus.Failure, error, null, durationMs, metadata)
+    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, durationMs, metadata)
+    else -> TestResult(TestStatus.Error, error, null, durationMs, metadata)
   }
 
 }

@@ -9,8 +9,6 @@ abstract class AbstractSpec : Spec {
 
   var acceptingTopLevelRegistration = true
 
-  override fun isInstancePerTest(): Boolean = false
-
   private val rootTestCases = mutableListOf<TestCase>()
 
   override fun testCases(): List<TestCase> = rootTestCases.toList()

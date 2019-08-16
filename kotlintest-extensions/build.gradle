@@ -32,7 +32,6 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation 'commons-io:commons-io:2.6'
             }
         }

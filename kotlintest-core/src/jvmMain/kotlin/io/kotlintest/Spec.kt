@@ -29,21 +29,6 @@ import kotlin.reflect.KProperty
  */
 interface Spec : TestListener {
 
-  /**
-   * Returns true if this spec should use a new instance for
-   * each test case. This is the default behavior in jUnit.
-   *
-   * If however you want a single instance to be shared for
-   * all tests in the same class, like ScalaTest, then
-   * this method should return false.
-   *
-   * Note: Not all spec types support allowing one instance
-   * per test. This is due to implementation trickery required
-   * with nested closures and junit test discovery.
-   */
-  @Deprecated("Instead of this function, override isolationMode() which should return a IsolationMode value indicating how the isolation level should be set for this spec")
-  fun isInstancePerTest(): Boolean
-
   fun isolationMode(): IsolationMode? = null
 
   /**
@@ -112,7 +97,7 @@ val Spec.listenerInstances by LazyWithReceiver<Spec, List<TestListener>> { this.
 
 private class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
   private val values = WeakHashMap<This, Return>()
-  
+
   @Suppress("UNCHECKED_CAST")
   operator fun getValue(thisRef: Any, property: KProperty<*>): Return = synchronized(values)
   {

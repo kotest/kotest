@@ -1,7 +1,5 @@
 package io.kotlintest
 
-import java.time.Duration
-
 /**
  * A [TestCase] describes an actual block of code that will be tested.
  * It contains a reference back to the [Spec] instance in which it
@@ -78,14 +76,14 @@ enum class TestStatus {
 data class TestResult(val status: TestStatus,
                       val error: Throwable?,
                       val reason: String?,
-                      val duration: Duration,
+                      val durationMs: Long,
                       val metaData: Map<String, Any?> = emptyMap()) {
   companion object {
-    fun success(duration: Duration) = TestResult(TestStatus.Success, null, null, duration)
-    val Ignored = TestResult(TestStatus.Ignored, null, null, Duration.ZERO)
-    fun failure(e: AssertionError, duration: Duration) = TestResult(TestStatus.Failure, e, null, duration)
-    fun error(t: Throwable, duration: Duration) = TestResult(TestStatus.Error, t, null, duration)
-    fun ignored(reason: String?) = TestResult(TestStatus.Ignored, null, reason, Duration.ZERO)
+    fun success(durationMs: Long) = TestResult(TestStatus.Success, null, null, durationMs)
+    val Ignored = TestResult(TestStatus.Ignored, null, null, 0)
+    fun failure(e: AssertionError, durationMs: Long) = TestResult(TestStatus.Failure, e, null, durationMs)
+    fun error(t: Throwable, durationMs: Long) = TestResult(TestStatus.Error, t, null, durationMs)
+    fun ignored(reason: String?) = TestResult(TestStatus.Ignored, null, reason, 0)
   }
 }
 
