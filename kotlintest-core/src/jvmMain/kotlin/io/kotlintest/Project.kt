@@ -12,8 +12,8 @@ import java.lang.StringBuilder
  * [AbstractProjectConfig] located at the package io.kotlintest.provided.ProjectConfig.
  *
  * If such an object exists, it will be instantiated and then
- * any extensions, such as [ProjectExtension], [SpecExtension] or
- * [TestCaseExtension]s will be registered with this class.
+ * any extensions, such as [SpecExtension] or [TestCaseExtension]
+ * will be registered with this class.
  *
  * In addition, extensions can be programatically added to this class
  * by invoking the `registerExtension` functions.
@@ -30,7 +30,7 @@ object Project {
   }
 
   private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
-  private val timeoutDefaultMs = 600 * 1000L
+  private const val timeoutDefaultMs = 600 * 1000L
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
@@ -60,7 +60,6 @@ object Project {
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
-  private fun projectExtensions(): List<ProjectExtension> = _extensions.filterIsInstance<ProjectExtension>()
   private fun projectListeners(): List<ProjectListener> = _projectlisteners
   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
@@ -99,7 +98,6 @@ object Project {
 
   fun beforeAll() {
     printConfigs()
-    projectExtensions().forEach { it.beforeAll() }
     projectListeners().forEach { it.beforeProject() }
     projectConfig?.beforeAll()
     listeners().forEach { it.beforeProject() }
@@ -109,7 +107,6 @@ object Project {
     listeners().forEach { it.afterProject() }
     projectConfig?.afterAll()
     projectListeners().forEach { it.afterProject() }
-    projectExtensions().reversed().forEach { extension -> extension.afterAll() }
   }
 
   fun registerTestCaseFilter(filters: List<TestCaseFilter>) = _filters.addAll(filters)
@@ -176,12 +173,11 @@ object Project {
     }.also { println(it.toString()) }
   }
 
-  private fun Int.plurals(singular: String, plural: String, zero: String = plural) = if (this == 0)
-    zero.format(this)
-  else if (this in listOf(-1, 1))
-    singular.format(this)
-  else
-    plural.format(this)
+  private fun Int.plurals(singular: String, plural: String, zero: String = plural) = when {
+    this == 0 -> zero.format(this)
+    this in listOf(-1, 1) -> singular.format(this)
+    else -> plural.format(this)
+  }
 
   private fun mapClassName(any: Any) =
       any::class.java.canonicalName ?: any::class.java.name

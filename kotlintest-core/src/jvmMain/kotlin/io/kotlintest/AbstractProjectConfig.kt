@@ -1,6 +1,5 @@
 package io.kotlintest
 
-import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
@@ -108,13 +107,13 @@ abstract class AbstractProjectConfig {
 
   /**
    * Executed before the first test of the project, but after the
-   * [ProjectExtension.beforeAll] methods.
+   * [ProjectListener.beforeProject] methods.
    */
   open fun beforeAll() {}
 
   /**
    * Executed after the last test of the project, but before the
-   * [ProjectExtension.afterAll] methods.
+   * [ProjectListener.afterProject] methods.
    */
   open fun afterAll() {}
 }
