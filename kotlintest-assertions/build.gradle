@@ -64,4 +64,4 @@ compileKotlinJvm {
     }
 }
 
-apply from: '../publish-mpp.gradle'
+apply from: '../publish.gradle'
