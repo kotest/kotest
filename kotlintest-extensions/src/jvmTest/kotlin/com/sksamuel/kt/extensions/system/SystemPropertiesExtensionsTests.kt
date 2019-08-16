@@ -9,6 +9,7 @@ import io.kotlintest.extensions.system.withSystemProperty
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.WordSpec
+import io.mockk.every
 import io.mockk.mockk
 import java.util.*
 
