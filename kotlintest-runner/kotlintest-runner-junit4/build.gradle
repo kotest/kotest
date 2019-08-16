@@ -17,6 +17,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
+                implementation project(':kotlintest-core')
                 implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation 'junit:junit:4.12'
                 implementation 'net.sourceforge.argparse4j:argparse4j:0.8.1'
