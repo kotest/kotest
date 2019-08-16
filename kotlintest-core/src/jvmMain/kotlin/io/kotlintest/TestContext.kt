@@ -20,7 +20,7 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
   infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-    throw RuntimeException("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
+    throw Exception("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
   }
 
   /**

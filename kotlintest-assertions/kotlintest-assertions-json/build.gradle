@@ -28,8 +28,8 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
-                implementation 'org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE'
             }
         }
     }

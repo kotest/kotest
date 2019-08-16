@@ -17,21 +17,14 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation project(':kotlintest-core')
-                implementation project(':kotlintest-runner:kotlintest-runner-console')
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                api project(':kotlintest-core')
+                api project(':kotlintest-runner:kotlintest-runner-console')
+                api project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+                implementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
                 implementation 'org.slf4j:slf4j-api:1.7.25'
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
-                implementation 'org.mockito:mockito-core:2.24.0'
-                implementation "com.nhaarman:mockito-kotlin:1.6.0"
             }
         }
     }
