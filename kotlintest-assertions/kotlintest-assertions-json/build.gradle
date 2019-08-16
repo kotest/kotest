@@ -4,24 +4,68 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id "io.kotlintest"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
-dependencies {
-    compile project(':kotlintest-assertions')
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
-    compile 'com.jayway.jsonpath:json-path:2.4.0'
-    testCompile project(':kotlintest-core')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+                api project(":kotlintest-assertions")
+                implementation project(':kotlintest-core')
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation project(':kotlintest-assertions')
+                implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+                implementation 'com.jayway.jsonpath:json-path:2.4.0'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation 'org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE'
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileTestKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 apply from: '../../publish.gradle'

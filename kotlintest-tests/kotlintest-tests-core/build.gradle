@@ -11,7 +11,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-    id "io.kotlintest"
 }
 
 repositories {
