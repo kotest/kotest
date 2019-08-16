@@ -6,7 +6,6 @@ import io.kotlintest.description
 import io.kotlintest.runner.jvm.IsolationTestEngineListener
 import io.kotlintest.runner.jvm.SpecFilter
 import io.kotlintest.runner.jvm.TestDiscovery
-import org.junit.platform.commons.logging.LoggerFactory
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestDescriptor
