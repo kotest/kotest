@@ -35,18 +35,6 @@ kotlin {
     }
 }
 
-compileKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
-    }
-}
-
-compileTestKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
-    }
-}
-
 compileKotlinJvm {
     kotlinOptions {
         freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'

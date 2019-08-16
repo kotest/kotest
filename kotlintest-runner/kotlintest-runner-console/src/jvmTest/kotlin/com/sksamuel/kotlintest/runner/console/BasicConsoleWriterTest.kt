@@ -3,8 +3,6 @@ package com.sksamuel.kotlintest.runner.console
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.system.captureStandardOut
-import io.kotlintest.matchers.string.shouldContain
-import io.kotlintest.matchers.string.shouldContainInOrder
 import io.kotlintest.runner.console.BasicConsoleWriter
 import io.kotlintest.specs.FunSpec
 import java.time.Duration

@@ -8,7 +8,6 @@ import io.kotlintest.extensions.system.withEnvironment
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.WordSpec
-import io.mockk.every
 import io.mockk.mockk
 
 class SystemEnvironmentExtensionTest : FreeSpec() {

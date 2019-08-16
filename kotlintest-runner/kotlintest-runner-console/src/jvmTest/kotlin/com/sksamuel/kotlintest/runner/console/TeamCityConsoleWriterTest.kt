@@ -9,7 +9,6 @@ import io.kotlintest.TestType
 import io.kotlintest.data.forall
 import io.kotlintest.extensions.system.captureStandardErr
 import io.kotlintest.extensions.system.captureStandardOut
-import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.runner.console.TeamCityConsoleWriter
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldFail
