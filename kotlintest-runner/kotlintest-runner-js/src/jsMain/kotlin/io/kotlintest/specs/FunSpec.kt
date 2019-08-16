@@ -19,6 +19,6 @@ open class FunSpec(body: FunSpec.() -> Unit) {
   data class TestCase(val name: String, val suite: Boolean, val test: () -> Unit)
 
   fun test(name: String, test: () -> Unit) {
-    describe(name, test)
+    it(name, test)
   }
 }

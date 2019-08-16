@@ -19,6 +19,6 @@ open class StringSpec(body: StringSpec.() -> Unit) {
   data class TestCase(val name: String, val suite: Boolean, val test: () -> Unit)
 
   operator fun String.invoke(test: () -> Unit) {
-    describe(this, test)
+    it(this, test)
   }
 }
