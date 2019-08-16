@@ -7,24 +7,38 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
     id 'maven-publish'
-    id 'signing'
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
-dependencies {
-    testCompile project(':kotlintest-core')
-    testImplementation project(':kotlintest-assertions')
-    testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
-    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
-    testCompile "com.nhaarman:mockito-kotlin:1.6.0"
-    testImplementation 'org.mockito:mockito-core:2.24.0'
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-assertions')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+                implementation "com.nhaarman:mockito-kotlin:1.6.0"
+                implementation 'org.mockito:mockito-core:2.24.0'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {
