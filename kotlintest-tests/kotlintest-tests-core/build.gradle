@@ -19,7 +19,6 @@ repositories {
 kotlin {
 
     jvm()
-    js()
 
     sourceSets {
 
@@ -37,18 +36,6 @@ kotlin {
                 implementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
             }
         }
-    }
-}
-
-compileKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
-    }
-}
-
-compileTestKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
     }
 }
 
