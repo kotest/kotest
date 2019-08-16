@@ -3,7 +3,6 @@ package io.kotlintest
 import io.kotlintest.specs.KotlinTestDsl
 import kotlinx.coroutines.CoroutineScope
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -21,23 +20,8 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
   private val logger = LoggerFactory.getLogger(this.javaClass)
 
   infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
-    throw java.lang.RuntimeException("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
+    throw RuntimeException("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
   }
-
-  // needs to be thread safe as a context can be shared amongst many executing instances of the same scope
-  private val metadata = ConcurrentHashMap<String, Any?>()
-
-  /**
-   * Adds a value to this [TestContext] meta data.
-   */
-  fun putMetaData(key: String, value: Any?) {
-    metadata[key] = value
-  }
-
-  /**
-   * Returns all the metadata associated with this [TestContext]
-   */
-  fun metaData() = metadata.toMap()
 
   /**
    * Returns the [Description] of the [TestCase] that is attached to this [TestContext].

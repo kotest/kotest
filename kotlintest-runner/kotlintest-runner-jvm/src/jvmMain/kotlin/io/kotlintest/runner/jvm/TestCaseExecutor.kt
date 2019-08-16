@@ -162,7 +162,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       executor.shutdown()
     }
 
-    val result = buildTestResult(error.get(), context.metaData(), System.currentTimeMillis() - start)
+    val result = buildTestResult(error.get(), emptyMap(), System.currentTimeMillis() - start)
 
     listener.afterTestCaseExecution(testCase, result)
     return result

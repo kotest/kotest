@@ -28,16 +28,16 @@ package io.kotlintest
  */
 data class TestCase(
     // the description contains the names of all parents, plus the name of this test case
-    val description: Description,
+  val description: Description,
     // the spec that contains this testcase
-    val spec: Spec,
+  val spec: Spec,
     // a closure of the test function
-    val test: suspend TestContext.() -> Unit,
-    val source: SourceRef,
-    val type: TestType,
+  val test: suspend TestContext.() -> Unit,
+  val source: SourceRef,
+  val type: TestType,
     // config used when running the test, such as number of
     // invocations, threads, etc
-    val config: TestCaseConfig) {
+  val config: TestCaseConfig) {
 
   val name = description.name
   fun isFocused() = name.startsWith("f:")
@@ -56,31 +56,14 @@ data class TestCase(
   }
 }
 
-data class SourceRef(val lineNumber: Int, val fileName: String)
-
 enum class TestType {
   Container, Test
 }
 
-fun sourceRef(): SourceRef {
+actual fun sourceRef(): SourceRef {
   val stack = Throwable().stackTrace
   return stack.dropWhile {
     it.className.startsWith("io.kotlintest")
   }[0].run { SourceRef(lineNumber, fileName) }
 }
 
-/**
- * Exception to mark a test as ignored while it is already running
- *
- * The SkipTestException may be thrown inside a test case to skip it (mark it as ignored). Any subclass of this class
- * may be used, in case you want to use your specific exception.
- *
- * ```
- * class FooTest : StringSpec({
- *    "Ignore this test!" {
- *        throw SkipTestException("I want to ignore this test!")
- *    }
- * })
- * ```
- */
-open class SkipTestException(val reason: String? = null): RuntimeException(reason)

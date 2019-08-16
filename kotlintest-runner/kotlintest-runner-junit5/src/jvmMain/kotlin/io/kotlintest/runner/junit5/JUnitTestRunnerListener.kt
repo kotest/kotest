@@ -1,6 +1,7 @@
 package io.kotlintest.runner.junit5
 
 import arrow.core.Try
+import io.kotlintest.Description
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
