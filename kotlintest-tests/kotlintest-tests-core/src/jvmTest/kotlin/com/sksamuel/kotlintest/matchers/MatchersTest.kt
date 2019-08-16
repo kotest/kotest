@@ -1,6 +1,8 @@
 package com.sksamuel.kotlintest.matchers
 
 import io.kotlintest.*
+import io.kotlintest.assertions.asClue
+import io.kotlintest.assertions.withClue
 import io.kotlintest.matchers.*
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.specs.FreeSpec

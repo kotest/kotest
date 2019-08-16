@@ -5,8 +5,6 @@ import io.kotlintest.specs.WordSpec
 
 class WordSpecSharedInstanceDuplicateNameTest : WordSpec() {
 
-  override fun isInstancePerTest(): Boolean = false
-
   override val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig(invocations = 2)
 
   init {

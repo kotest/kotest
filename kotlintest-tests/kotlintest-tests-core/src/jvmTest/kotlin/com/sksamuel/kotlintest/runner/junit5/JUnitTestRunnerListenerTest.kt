@@ -17,7 +17,6 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
-import java.time.Duration
 
 class JUnitTestRunnerListenerTest : WordSpec({
 
@@ -51,7 +50,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
       listener.invokingTestCase(tc, 1)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
@@ -71,7 +70,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
       listener.invokingTestCase(tc, 1)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
@@ -91,7 +90,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc)
       listener.invokingTestCase(tc, 1)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       rootDescriptor.children.first().children.size.shouldBe(1)
@@ -115,7 +114,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       then(mock).should(never()).executionStarted(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:my test]" })
 
       listener.invokingTestCase(tc, 1)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
 
       // no finished notifications until complete spec is called
       then(mock).should(never()).executionFinished(any(), any())
@@ -135,19 +134,19 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase.container(spec.description().append("my test"), spec) { }
-          .copy(config = TestCaseConfig(invocations = 3, timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(invocations = 3, timeout = 120000))
 
       listener.beforeSpecClass(spec::class)
 
       listener.enterTestCase(tc)
       listener.invokingTestCase(tc, 1)
       listener.invokingTestCase(tc, 2)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
 
       listener.enterTestCase(tc)
       listener.invokingTestCase(tc, 1)
       listener.invokingTestCase(tc, 2)
-      listener.exitTestCase(tc, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc, TestResult.success(0))
 
       listener.afterSpecClass(spec::class, null)
 
@@ -162,17 +161,17 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase.container(spec.description().append("test1"), spec) { }
-          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(timeout = 200))
       val tc2 = TestCase.container(tc1.description.append("test2"), spec) { }
-          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(timeout = 200))
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)
       listener.invokingTestCase(tc1, 1)
       listener.enterTestCase(tc2)
       listener.invokingTestCase(tc2, 1)
-      listener.exitTestCase(tc2, TestResult.error(RuntimeException("boom"), Duration.ZERO))
-      listener.exitTestCase(tc1, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc2, TestResult.error(RuntimeException("boom"), 0))
+      listener.exitTestCase(tc1, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should().executionFinished(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, argThat { this.status == TestExecutionResult.Status.FAILED })
@@ -212,7 +211,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.invokingTestCase(tc1, 1)
       listener.enterTestCase(tc2)
       listener.exitTestCase(tc2, TestResult.Ignored)
-      listener.exitTestCase(tc1, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc1, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
@@ -235,7 +234,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.invokingTestCase(tc1, 1)
       listener.enterTestCase(tc2)
       listener.exitTestCase(tc2, TestResult.Ignored)
-      listener.exitTestCase(tc1, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc1, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionSkipped(argThat { this.uniqueId.toString() == "[engine:engine-test]/[spec:com.sksamuel.kotlintest.runner.junit5.JUnitTestRunnerListenerTest]/[test:test1]/[test:test2]" }, any())
@@ -266,8 +265,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.invokingTestCase(tc1, 1)
       listener.invokingTestCase(tc2, 1)
 
-      listener.exitTestCase(tc1, TestResult.success(Duration.ZERO))
-      listener.exitTestCase(tc2, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc1, TestResult.success(0))
+      listener.exitTestCase(tc2, TestResult.success(0))
 
       listener.afterSpecClass(spec1::class, null)
       listener.afterSpecClass(spec2::class, null)
@@ -298,8 +297,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.enterTestCase(tc2)
       listener.invokingTestCase(tc1, 1)
       listener.invokingTestCase(tc2, 1)
-      listener.exitTestCase(tc1, TestResult.failure(AssertionError("boom"), Duration.ZERO))
-      listener.exitTestCase(tc2, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc1, TestResult.failure(AssertionError("boom"), 0))
+      listener.exitTestCase(tc2, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionFinished(
@@ -333,8 +332,8 @@ class JUnitTestRunnerListenerTest : WordSpec({
       listener.enterTestCase(tc2)
       listener.invokingTestCase(tc1, 1)
       listener.invokingTestCase(tc2, 1)
-      listener.exitTestCase(tc1, TestResult.error(RuntimeException("boom"), Duration.ZERO))
-      listener.exitTestCase(tc2, TestResult.success(Duration.ZERO))
+      listener.exitTestCase(tc1, TestResult.error(RuntimeException("boom"), 0))
+      listener.exitTestCase(tc2, TestResult.success(0))
       listener.afterSpecClass(spec::class, null)
 
       then(mock).should(times(1)).executionFinished(

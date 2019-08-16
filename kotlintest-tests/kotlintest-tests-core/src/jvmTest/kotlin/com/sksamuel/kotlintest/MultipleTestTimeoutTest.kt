@@ -1,6 +1,5 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.milliseconds
 import io.kotlintest.specs.FreeSpec
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -15,31 +14,31 @@ class MultipleTestTimeoutTest : FreeSpec() {
   init {
     // 100 millis sleep will "accumulate" between tests. If the context is still shared, one of them will fail
     // due to timeout.
-    "Test 1".config(timeout = 300.milliseconds) {
+    "Test 1".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 2".config(timeout = 300.milliseconds) {
+    "Test 2".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 3".config(timeout = 300.milliseconds) {
+    "Test 3".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 4".config(timeout = 300.milliseconds) {
+    "Test 4".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 5".config(timeout = 300.milliseconds) {
+    "Test 5".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 6".config(timeout = 300.milliseconds) {
+    "Test 6".config(timeout = 300) {
       Thread.sleep(100)
     }
 
-    "Test 7".config(timeout = 300.milliseconds) {
+    "Test 7".config(timeout = 300) {
       Thread.sleep(100)
     }
   }

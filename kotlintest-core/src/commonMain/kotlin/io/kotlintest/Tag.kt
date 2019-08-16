@@ -1,5 +1,7 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.classname
+
 
 /**
  * Base class for all tags. The simple name (without packages) of the singleton derived from this

@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.specs.freespec
 
 import io.kotlintest.IsolationMode
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 import io.kotlintest.specs.FreeSpec
 
 class FreeSpecInstancePerTestDuplicateNameTest : FreeSpec() {

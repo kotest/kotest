@@ -1,4 +1,4 @@
-package io.kotlintest
+package io.kotlintest.assertions
 
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName

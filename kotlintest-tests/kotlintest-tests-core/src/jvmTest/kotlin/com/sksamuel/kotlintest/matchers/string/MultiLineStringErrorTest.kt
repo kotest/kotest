@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.matchers.string
 
-import io.kotlintest.diffLargeString
+import io.kotlintest.assertions.diffLargeString
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

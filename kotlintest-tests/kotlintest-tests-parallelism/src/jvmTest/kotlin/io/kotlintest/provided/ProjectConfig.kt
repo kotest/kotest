@@ -1,7 +1,7 @@
 package io.kotlintest.provided
 
 import io.kotlintest.AbstractProjectConfig
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 
 object ProjectConfig : AbstractProjectConfig() {
 

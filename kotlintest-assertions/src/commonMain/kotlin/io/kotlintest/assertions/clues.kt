@@ -1,6 +1,4 @@
-package io.kotlintest.matchers
-
-import io.kotlintest.assertions.ErrorCollector
+package io.kotlintest.assertions
 
 /**
  * Add [clue] as additional info to the assertion error message in case an assertion fails.

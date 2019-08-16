@@ -8,7 +8,6 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestStatus
-import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe
@@ -226,7 +225,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         Thread.sleep(10000)
-      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -251,7 +250,7 @@ class TestCaseExecutorTest : FunSpec() {
         while (currentTimeMillis() < startTime + 1000) {
           "this" shouldNotBe "that"
         }
-      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125.milliseconds))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}

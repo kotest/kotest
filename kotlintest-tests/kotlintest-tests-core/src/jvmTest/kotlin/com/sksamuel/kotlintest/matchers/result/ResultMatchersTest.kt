@@ -4,7 +4,6 @@ import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.result.*
 import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldNot
 import io.kotlintest.specs.FreeSpec
 import java.io.IOException
 

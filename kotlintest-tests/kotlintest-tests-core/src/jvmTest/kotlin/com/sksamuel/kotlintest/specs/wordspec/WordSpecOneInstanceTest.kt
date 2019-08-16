@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.wordspec
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class WordSpecOneInstanceTest : WordSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

@@ -1,6 +1,7 @@
 package io.kotlintest.matchers.collections
 
 import io.kotlintest.*
+import io.kotlintest.assertions.stringRepr
 import io.kotlintest.matchers.*
 
 fun <T> Array<T>.shouldContainOnlyNulls() = asList().shouldContainOnlyNulls()

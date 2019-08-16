@@ -18,4 +18,6 @@ expect object Failures {
    * the stacktrace will be reduced to the user-code StackTrace only.
    */
   fun clean(throwable: Throwable): Throwable
+
+  fun failure(message: String, expectedRepr: String, actualRepr: String): Throwable
 }

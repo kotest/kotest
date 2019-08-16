@@ -1,6 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.classname
 
 
 /**

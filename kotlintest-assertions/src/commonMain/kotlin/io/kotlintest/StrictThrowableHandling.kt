@@ -1,6 +1,7 @@
 package io.kotlintest
 
 import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.classname
 
 /**
  * Verifies that a block of code throws a Throwable of type [T], not including subclasses of [T]

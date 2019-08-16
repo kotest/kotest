@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec

@@ -5,8 +5,6 @@ package com.sksamuel.kotlintest.properties
 import io.kotlintest.*
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.haveSize
-import io.kotlintest.matchers.singleElement
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.specs.StringSpec

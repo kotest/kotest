@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.describe
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.DescribeSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class DescribeSpecOneInstanceTest : DescribeSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

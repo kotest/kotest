@@ -1,10 +1,11 @@
 package com.sksamuel.kotlintest.specs.stringspec
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.specs.StringSpec
 
 class StringSpecInstancePerTestDuplicateNameTest : StringSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   init {
     "foo" {}

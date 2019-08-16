@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.behavior
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class BehaviorSpecOneInstanceTest : BehaviorSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

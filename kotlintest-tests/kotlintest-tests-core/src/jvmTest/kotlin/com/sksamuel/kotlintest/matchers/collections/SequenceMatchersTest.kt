@@ -14,7 +14,7 @@ class SequenceMatchersTest : WordSpec() {
 
 	private suspend fun WordScope.succeed(name: String, test: suspend FinalTestContext.() -> Unit) = pass(name, test)
 
-	fun WordScope.fail(msg: String):Nothing = io.kotlintest.fail(msg)
+	fun WordScope.fail(msg: String):Nothing = io.kotlintest.assertions.fail(msg)
 	suspend fun WordScope.fail(name: String, test: () -> Any?) {
 		("fail $name") { shouldFail(test) }
     }

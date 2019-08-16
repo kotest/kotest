@@ -1,11 +1,12 @@
 package com.sksamuel.kotlintest
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class OneInstancePerTestTest : FunSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   init {
     var count = 0

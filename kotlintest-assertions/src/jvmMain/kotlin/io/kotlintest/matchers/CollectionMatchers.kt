@@ -3,7 +3,7 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.neverNullMatcher
-import io.kotlintest.stringRepr
+import io.kotlintest.assertions.stringRepr
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =

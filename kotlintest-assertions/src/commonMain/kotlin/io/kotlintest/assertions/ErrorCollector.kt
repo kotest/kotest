@@ -1,7 +1,5 @@
 package io.kotlintest.assertions
 
-import io.kotlintest.matchers.MultiAssertionError
-
 enum class ErrorCollectionMode {
   Soft, Hard
 }

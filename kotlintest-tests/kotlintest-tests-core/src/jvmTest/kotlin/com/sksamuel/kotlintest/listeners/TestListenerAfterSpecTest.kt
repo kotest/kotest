@@ -1,10 +1,8 @@
 package com.sksamuel.kotlintest.listeners
 
-import io.kotlintest.Description
 import io.kotlintest.IsolationMode
 import io.kotlintest.Spec
-import io.kotlintest.extensions.TestListener
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 import io.kotlintest.specs.FunSpec
 import java.util.concurrent.atomic.AtomicInteger
 

@@ -3,7 +3,7 @@ package com.sksamuel.kotlintest.extensions
 import io.kotlintest.Spec
 import io.kotlintest.Tag
 import io.kotlintest.extensions.RuntimeTagExtension
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 import io.kotlintest.specs.StringSpec
 
 class RuntimeTagExtensionTest : StringSpec() {
@@ -13,7 +13,7 @@ class RuntimeTagExtensionTest : StringSpec() {
     init {
 
         "Test marked with a runtime excluded tag".config(tags = setOf(MyRuntimeExcludedTag)) {
-            fail("Should never execute (configured to be excluded in beforeSpec)")
+          fail("Should never execute (configured to be excluded in beforeSpec)")
         }
     }
 

@@ -7,7 +7,7 @@ import io.kotlintest.TestCaseOrder
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
-import io.kotlintest.fail
+import io.kotlintest.assertions.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
 import java.time.Duration
@@ -63,7 +63,7 @@ class AnnotationSpecTest : AnnotationSpec() {
 
       execute(testCase) {
         if (it.error !is AssertionError) {
-          complete(TestResult.failure(AssertionError("Expecting an assertion error!"), Duration.ZERO))
+          complete(TestResult.failure(AssertionError("Expecting an assertion error!"), 0))
         }
 
         val errorMessage = it.error!!.message
@@ -72,14 +72,14 @@ class AnnotationSpecTest : AnnotationSpec() {
 
         when (testCase.name) {
           "test4" -> if (errorMessage == wrongExceptionMessage) {
-            complete(TestResult.success(Duration.ZERO))
+            complete(TestResult.success(0))
           } else {
-            complete(TestResult.failure(AssertionError("Wrong message."), Duration.ZERO))
+            complete(TestResult.failure(AssertionError("Wrong message."), 0))
           }
           "test5" -> if (errorMessage == noExceptionMessage) {
-            complete(TestResult.success(Duration.ZERO))
+            complete(TestResult.success(0))
           } else {
-            complete(TestResult.failure(AssertionError("Wrong message."), Duration.ZERO))
+            complete(TestResult.failure(AssertionError("Wrong message."), 0))
           }
         }
       }
@@ -187,7 +187,7 @@ class AnnotationSpecFailureTest : AnnotationSpec() {
     override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       execute(testCase) {
         it.error shouldBe thrownException
-        complete(TestResult.success(Duration.ZERO))
+        complete(TestResult.success(0))
       }
     }
 

@@ -4,8 +4,6 @@ import io.kotlintest.specs.FreeSpec
 
 class FreeSpecSingleInstanceDuplicateNameTest : FreeSpec() {
 
-  override fun isInstancePerTest(): Boolean = false
-
   init {
 
     "wibble" { }

@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.feature
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class FeatureSpecOneInstanceTest : FeatureSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

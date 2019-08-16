@@ -1,12 +1,13 @@
 package com.sksamuel.kotlintest.specs.expect
 
+import io.kotlintest.IsolationMode
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.ExpectSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class ExpectSpecOneInstanceTest : ExpectSpec() {
 
-  override fun isInstancePerTest(): Boolean = true
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   val count = AtomicInteger(0)
 

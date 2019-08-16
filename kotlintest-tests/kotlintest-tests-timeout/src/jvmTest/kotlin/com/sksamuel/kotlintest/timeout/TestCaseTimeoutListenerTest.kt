@@ -7,13 +7,11 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestResult
-import io.kotlintest.milliseconds
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
-import java.time.Duration
 import java.util.concurrent.Executors
 
 @Suppress("BlockingMethodInNonBlockingContext")

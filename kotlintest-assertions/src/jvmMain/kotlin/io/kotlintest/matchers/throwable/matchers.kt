@@ -1,6 +1,7 @@
 package io.kotlintest.matchers.throwable
 
 import io.kotlintest.*
+import io.kotlintest.assertions.stringRepr
 
 infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage(message)
 infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)

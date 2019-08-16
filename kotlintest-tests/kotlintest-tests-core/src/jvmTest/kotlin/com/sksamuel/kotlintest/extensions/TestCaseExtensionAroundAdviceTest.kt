@@ -18,7 +18,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
         testCase.description.name == "test1" -> complete(TestResult.Ignored)
         testCase.description.name == "test2" -> execute(testCase) {
           when (it.error) {
-            is WibbleException -> complete(TestResult.success(Duration.ZERO))
+            is WibbleException -> complete(TestResult.success(0))
             else -> complete(it)
           }
         }

@@ -6,7 +6,7 @@ import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.FailureFirstSpecExecutionOrder
 import io.kotlintest.ProjectLevelFilter
 import io.kotlintest.SpecExecutionOrder
-import io.kotlintest.extensions.ProjectExtension
+import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.properties.PropertyTesting
 
@@ -17,9 +17,9 @@ object ProjectConfig : AbstractProjectConfig() {
 
   val intercepterLog = StringBuilder()
 
-  override fun extensions() = listOf(TestExtension)
-
   override fun listeners(): List<TestListener> = listOf(AutoCloseListener)
+
+  override fun projectListeners() = listOf(TestProjectListener)
 
   override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
 
@@ -34,14 +34,14 @@ object ProjectConfig : AbstractProjectConfig() {
   }
 }
 
-object TestExtension : ProjectExtension {
+object TestProjectListener : ProjectListener {
 
-  override fun beforeAll() {
+  override fun beforeProject() {
     ProjectConfig.intercepterLog.append("A1.")
     ProjectConfig.beforeAll++
   }
 
-  override fun afterAll() {
+  override fun afterProject() {
     ProjectConfig.afterAll++
   }
 }

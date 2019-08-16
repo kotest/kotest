@@ -24,6 +24,7 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation kotlin("reflect")
                 implementation project(':kotlintest-core')
                 implementation project(':kotlintest-assertions')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
@@ -34,6 +35,9 @@ kotlin {
                 // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
                 implementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
                 implementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
+                implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+                implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+                implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
             }
         }
     }

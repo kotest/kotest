@@ -1,68 +1,5 @@
 package io.kotlintest.assertions
 
-import io.kotlintest.shouldThrow
-
-/**
- * Verifies that [block] throws an [AssertionError]
- *
- * If [block] throws an [AssertionError], this method will pass. Otherwise, it will throw an error, as a failure was
- * expected.
- *
- * This should be used mainly to check that an assertion fails, for example:
- *
- * ```
- *     shouldFail {
- *        1 shouldBe 2  // This should fail
- *     }
- * ```
- *
- * @see shouldThrowAny
- * @see shouldThrow
- * @see shouldThrowExactly
- */
-fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
-
-private object UserStackTraceConverter {
-
-  fun getUserStacktrace(kotlintestStacktraces: Array<StackTraceElement>): Array<StackTraceElement> {
-    return kotlintestStacktraces.dropUntilUserClass()
-  }
-
-  /**
-   * Drops stacktraces until it finds a Kotlintest Stacktrace then drops stacktraces until it finds a non-Kotlintest stacktrace
-   *
-   * Sometimes, it's possible for the Stacktrace to contain classes that are not from Kotlintest,
-   * such as classes from sun.reflect or anything from Java. After clearing these classes, we'll be at Kotlintest
-   * stacktrace, which will contain exceptions from the Runners and some other classes
-   * After everything from Kotlintest we'll finally be at user classes, at which point the stacktrace is clean and is
-   * returned.
-   */
-  private fun Array<StackTraceElement>.dropUntilUserClass(): Array<StackTraceElement> {
-    return toList().dropUntilFirstKotlintestClass().dropUntilFirstNonKotlintestClass().toTypedArray()
-  }
-
-  private fun List<StackTraceElement>.dropUntilFirstKotlintestClass(): List<StackTraceElement> {
-    return dropWhile {
-      it.isNotKotlintestClass()
-    }
-  }
-
-  private fun List<StackTraceElement>.dropUntilFirstNonKotlintestClass(): List<StackTraceElement> {
-    return dropWhile {
-      it.isKotlintestClass()
-    }
-  }
-
-  private fun StackTraceElement.isKotlintestClass(): Boolean {
-    return className.startsWith("io.kotlintest")
-  }
-
-  private fun StackTraceElement.isNotKotlintestClass(): Boolean {
-    return !isKotlintestClass()
-  }
-
-}
-
 actual object Failures {
 
   /**
@@ -88,9 +25,7 @@ actual object Failures {
 
   actual fun failure(message: String): AssertionError = failure(message, null)
   actual fun failure(message: String, cause: Throwable?): AssertionError = AssertionError(message).apply {
-    if (shouldRemoveKotlintestElementsFromStacktrace) {
-      removeKotlintestElementsFromStacktrace(this)
-    }
+    clean(this)
     initCause(cause)
   }
 
@@ -98,12 +33,6 @@ actual object Failures {
    * Remove KotlinTest-related elements from the top of [throwable]'s stack trace.
    *
    * If no KotlinTest-related elements are present in the stack trace, it is unchanged.
-   */
-  fun removeKotlintestElementsFromStacktrace(throwable: Throwable) {
-    throwable.stackTrace = UserStackTraceConverter.getUserStacktrace(throwable.stackTrace)
-  }
-
-  /**
    * JVM only: If [shouldRemoveKotlintestElementsFromStacktrace] is `true`,
    * the stacktrace will be reduced to the user-code StackTrace only.
    */
@@ -111,5 +40,43 @@ actual object Failures {
     if (shouldRemoveKotlintestElementsFromStacktrace)
       throwable.stackTrace = UserStackTraceConverter.getUserStacktrace(throwable.stackTrace)
     return throwable
+  }
+
+  actual fun failure(message: String, expectedRepr: String, actualRepr: String): Throwable {
+
+    /**
+     * Create an instance of the class named [className], with the [args] of type [parameterTypes]
+     *
+     * The constructor must be public.
+     *
+     * @return The constructed object, or null if any error occurred.
+     */
+    fun callPublicConstructor(className: String, parameterTypes: Array<Class<*>>, args: Array<Any?>): Any? {
+      return try {
+        val targetType = Class.forName(className)
+        val constructor = targetType.getConstructor(*parameterTypes)
+        constructor.newInstance(*args)
+      } catch (t: Throwable) {
+        null
+      }
+    }
+
+    /** If JUnit5 is present, return an org.opentest4j.AssertionFailedError */
+    fun junit5AssertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
+      return callPublicConstructor("org.opentest4j.AssertionFailedError",
+        arrayOf(String::class.java, Object::class.java, Object::class.java),
+        arrayOf(message, expected, actual)) as? Throwable
+    }
+
+    /** If JUnit4 is present, return a org.junit.ComparisonFailure */
+    fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
+      return callPublicConstructor("org.junit.ComparisonFailure",
+        arrayOf(String::class.java, String::class.java, String::class.java),
+        arrayOf("", expected, actual)) as? Throwable
+    }
+
+    return junit5AssertionFailedError(message, expectedRepr, actualRepr)
+      ?: junit4comparisonFailure(expectedRepr, actualRepr)
+      ?: AssertionError(message)
   }
 }

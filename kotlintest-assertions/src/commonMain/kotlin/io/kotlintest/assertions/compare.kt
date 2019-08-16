@@ -1,4 +1,4 @@
-package io.kotlintest
+package io.kotlintest.assertions
 
 fun compare(a: Any?, b: Any?): Boolean {
   return when (a) {

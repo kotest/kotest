@@ -1,6 +1,8 @@
 package com.sksamuel.kotlintest.tables
 
 import io.kotlintest.*
+import io.kotlintest.assertions.fail
+import io.kotlintest.assertions.MultiAssertionError
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.types.shouldNotBeInstanceOf
 import io.kotlintest.specs.FreeSpec
@@ -208,13 +210,13 @@ class TableTestingTest : StringSpec() {
 }
 
 class TableTestingCoroutinesTests : FreeSpec() {
-  
+
   init {
     "Should allow suspend execution" {
       allFunctionsThatTakeALambda().shouldHaveTheInlineModifier()
     }
   }
-  
+
   private fun allFunctionsThatTakeALambda(): List<KFunction<*>> {
     return Class
             .forName("io.kotlintest.tables.TableTestingKt")
@@ -222,7 +224,7 @@ class TableTestingCoroutinesTests : FreeSpec() {
             .map { it.kotlinFunction!! }
             .filter { fn -> fn.parameters.any { it.type.isSubtypeOf(Function::class.starProjectedType) } }
   }
-  
+
   private fun List<KFunction<*>>.shouldHaveTheInlineModifier() {
     forEach {
       if (!it.isInline) {

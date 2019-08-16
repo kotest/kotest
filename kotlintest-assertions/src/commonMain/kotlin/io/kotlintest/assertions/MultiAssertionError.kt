@@ -1,4 +1,4 @@
-package io.kotlintest.matchers
+package io.kotlintest.assertions
 
 /** An error that bundles multiple other [Throwable]s together */
 class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessage(errors)) {
