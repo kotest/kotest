@@ -78,19 +78,13 @@ class SpecExecutor(private val engineListener: TestEngineListener,
   // which is undesirable in some situations, see
   // https://github.com/kotlintest/kotlintest/issues/447
   private fun runner(spec: Spec, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
-    val mode = spec.isolationMode().toOption().orElse { Project.isolationMode().toOption() }.getOrElse {
-      if (spec.isInstancePerTest()) IsolationMode.InstancePerTest else IsolationMode.SingleInstance
-    }
+    val mode = spec.isolationMode().toOption()
+      .orElse { Project.isolationMode().toOption() }
+      .getOrElse { IsolationMode.SingleInstance }
     return when (mode) {
-      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener,
-        listenerExecutor,
-        scheduler)
-      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener,
-        listenerExecutor,
-        scheduler)
-      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener,
-        listenerExecutor,
-        scheduler)
+      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
     }
   }
 }

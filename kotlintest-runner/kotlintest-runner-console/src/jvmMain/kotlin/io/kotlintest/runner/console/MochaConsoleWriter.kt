@@ -56,16 +56,16 @@ class MochaConsoleWriter(private val term: TermColors,
       TestStatus.Ignored -> IgnoredSymbol
     }
     val duration = when (testCase.type) {
-      TestType.Test -> durationMillis(result.duration)
+      TestType.Test -> durationString(result.durationMs)
       else -> ""
     }
     return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
   }
 
-  private fun durationMillis(duration: Duration): String {
+  private fun durationString(durationMs: Long): String {
     return when {
-      duration.toMillis() in slow..verySlow -> term.brightYellow("(${duration.toMillis()}ms)")
-      duration.toMillis() > verySlow -> term.brightRed("(${duration.toMillis()}ms)")
+      durationMs in slow..verySlow -> term.brightYellow("(${durationMs}ms)")
+      durationMs > verySlow -> term.brightRed("(${durationMs}ms)")
       else -> ""
     }
   }

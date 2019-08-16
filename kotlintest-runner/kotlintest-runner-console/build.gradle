@@ -32,8 +32,8 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
+                implementation kotlin('reflect')
                 implementation project(':kotlintest-core')
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation 'net.sourceforge.argparse4j:argparse4j:0.8.1'
                 implementation 'com.github.ajalt:mordant:1.2.1'
             }
