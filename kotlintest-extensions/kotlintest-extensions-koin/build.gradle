@@ -11,23 +11,8 @@ repositories {
 kotlin {
 
     jvm()
-    js()
 
     sourceSets {
-
-        commonMain {
-            dependencies {
-                implementation kotlin("stdlib-common")
-                api project(":kotlintest-assertions")
-                implementation project(':kotlintest-core')
-            }
-        }
-
-        jsMain {
-            dependencies {
-                implementation kotlin('stdlib-js')
-            }
-        }
 
         jvmMain {
             dependencies {
@@ -45,12 +30,6 @@ kotlin {
                 implementation 'org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE'
             }
         }
-    }
-}
-
-compileKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
     }
 }
 
