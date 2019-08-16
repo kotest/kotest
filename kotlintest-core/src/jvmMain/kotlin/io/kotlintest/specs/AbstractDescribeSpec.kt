@@ -2,7 +2,6 @@ package io.kotlintest.specs
 
 import io.kotlintest.*
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 
 abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -16,7 +15,7 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
     suspend fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Duration? = null,
+        timeout: Long? = null,
         parallelism: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,

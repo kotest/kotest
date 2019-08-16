@@ -2,7 +2,6 @@ package io.kotlintest.specs
 
 import io.kotlintest.*
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -38,7 +37,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
     suspend fun String.config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Duration? = null,
+        timeout: Long? = null,
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,

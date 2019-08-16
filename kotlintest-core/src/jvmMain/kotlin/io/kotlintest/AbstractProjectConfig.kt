@@ -4,7 +4,6 @@ import io.kotlintest.extensions.ProjectExtension
 import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
-import java.time.Duration
 
 /**
  * Project-wide configuration. Extensions returned by an
@@ -61,8 +60,9 @@ abstract class AbstractProjectConfig {
   /**
    * A global timeout that is applied to all tests if not null.
    * Tests which define their own timeout will override this.
+   * The value here is in millis
    */
-  open val timeout: Duration? = null
+  open val timeout: Long? = null
 
   /**
    * Override this function and return a number greater than 1 if you wish to

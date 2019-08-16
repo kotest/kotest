@@ -4,7 +4,6 @@ package io.kotlintest
 
 import io.kotlintest.extensions.*
 import java.lang.StringBuilder
-import java.time.Duration
 
 /**
  * Internal class used to hold project wide configuration.
@@ -31,7 +30,7 @@ object Project {
   }
 
   private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
-  private val timeoutDefault = Duration.ofSeconds(600)
+  private val timeoutDefaultMs = 600 * 1000L
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
@@ -57,7 +56,7 @@ object Project {
   private var writeSpecFailureFile: Boolean = false
   private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
-  private var _timeout: Duration? = null
+  private var _timeout: Long? = null
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
@@ -73,7 +72,7 @@ object Project {
   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
-  fun timeout(): Duration = _timeout ?: timeoutDefault
+  fun timeout(): Long = _timeout ?: timeoutDefaultMs
 
   var failOnIgnoredTests: Boolean = false
 

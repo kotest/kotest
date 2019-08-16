@@ -1,12 +1,12 @@
 package io.kotlintest
 
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 
 data class TestCaseConfig(
   val enabled: Boolean = true,
   val invocations: Int = 1,
-  val timeout: Duration? = null,
+  // max time of the test, in millis
+  val timeout: Long? = null,
     // provides for concurrent execution of the test case
     // only has an effect if invocations > 1
   val threads: Int = 1,
@@ -23,4 +23,4 @@ data class TestCaseConfig(
 /**
  * Returns the timeout for a [TestCase] taking into account global settings.
  */
-fun TestCaseConfig.timeout(): Duration = this.timeout ?: Project.timeout()
+fun TestCaseConfig.timeout(): Long = this.timeout ?: Project.timeout()

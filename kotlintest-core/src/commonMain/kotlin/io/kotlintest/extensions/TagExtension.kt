@@ -1,6 +1,5 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.StringTag
 import io.kotlintest.Tag
 import io.kotlintest.Tags
 
@@ -20,28 +19,10 @@ import io.kotlintest.Tags
  *
  * The default [RuntimeTagExtension] is automatically registered, which
  * allows to configure tags at runtime (for example, during a configuration procedure)
- * using the properties `included` and `excluded`
+ * using the properties `included` and `eKotlinTestEnginexcluded`
  */
 interface TagExtension : ProjectLevelExtension {
   fun tags(): Tags
-}
-
-/**
- * This [TagExtension] includes and excludes tags using the system properties
- * 'kotlintest.tags.include' and 'kotlintest.tags.exclude'
- */
-object SystemPropertyTagExtension : TagExtension {
-
-  override fun tags(): Tags {
-
-    fun readTagsProperty(name: String): List<Tag> =
-      (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map { StringTag(it.trim()) }
-
-    val includedTags = readTagsProperty("kotlintest.tags.include")
-    val excludedTags = readTagsProperty("kotlintest.tags.exclude")
-
-    return Tags(includedTags.toSet(), excludedTags.toSet())
-  }
 }
 
 /**

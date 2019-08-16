@@ -62,8 +62,6 @@ enum class TestType {
   Container, Test
 }
 
-
-
 fun sourceRef(): SourceRef {
   val stack = Throwable().stackTrace
   return stack.dropWhile {

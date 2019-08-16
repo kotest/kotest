@@ -6,7 +6,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 
 abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -18,7 +17,7 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
     fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Duration? = null,
+        timeout: Long? = null,
         parallelism: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
@@ -55,7 +54,7 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
       suspend fun config(
           invocations: Int? = null,
           enabled: Boolean? = null,
-          timeout: Duration? = null,
+          timeout: Long? = null,
           parallelism: Int? = null,
           tags: Set<Tag>? = null,
           extensions: List<TestCaseExtension>? = null,

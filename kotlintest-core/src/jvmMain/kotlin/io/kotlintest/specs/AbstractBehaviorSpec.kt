@@ -6,7 +6,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 
 @Suppress("FunctionName")
 abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpec() {
@@ -120,7 +119,7 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
     suspend fun config(
             invocations: Int? = null,
             enabled: Boolean? = null,
-            timeout: Duration? = null,
+            timeout: Long? = null,
             threads: Int? = null,
             tags: Set<Tag>? = null,
             extensions: List<TestCaseExtension>? = null,

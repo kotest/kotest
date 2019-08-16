@@ -19,7 +19,7 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
     suspend fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Duration? = null,
+        timeout: Long? = null,
         parallelism: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,

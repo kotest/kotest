@@ -6,7 +6,6 @@ import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestContext
 import io.kotlintest.TestType
 import io.kotlintest.extensions.TestCaseExtension
-import java.time.Duration
 
 /**
  * Example:
@@ -43,7 +42,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Duration? = null,
+        timeout: Long? = null,
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
@@ -72,7 +71,7 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
       suspend fun config(
           invocations: Int? = null,
           enabled: Boolean? = null,
-          timeout: Duration? = null,
+          timeout: Long? = null,
           threads: Int? = null,
           tags: Set<Tag>? = null,
           extensions: List<TestCaseExtension>? = null,
