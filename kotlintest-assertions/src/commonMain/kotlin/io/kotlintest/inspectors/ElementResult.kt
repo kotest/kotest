@@ -10,7 +10,7 @@ class ElementPass<out T>(val t: T) : ElementResult<T>() {
   override fun error(): Throwable? = null
 }
 
-class ElementFail<out T>(val t: T, val error: Throwable) : ElementResult<T>() {
+class ElementFail<out T>(val t: T, val throwable: Throwable) : ElementResult<T>() {
   override fun value(): T = t
-  override fun error(): Throwable? = error
+  override fun error(): Throwable? = throwable
 }

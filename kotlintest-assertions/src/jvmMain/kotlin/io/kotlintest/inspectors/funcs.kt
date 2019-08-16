@@ -31,7 +31,7 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Strin
   if (failed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(failed.joinToString("\n") { convertValueToString(it.t) + " => " + exceptionToMessage(it.error) })
+    builder.append(failed.joinToString("\n") { convertValueToString(it.t) + " => " + exceptionToMessage(it.throwable) })
   }
   throw Failures.failure(builder.toString())
 }

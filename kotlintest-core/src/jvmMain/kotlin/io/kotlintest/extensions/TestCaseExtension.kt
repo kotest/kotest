@@ -1,12 +1,7 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.AbstractProjectConfig
-import io.kotlintest.Description
-import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
-import io.kotlintest.TestStatus
 
 /**
  * Reusable extension that intercepts calls to a [TestCase].
