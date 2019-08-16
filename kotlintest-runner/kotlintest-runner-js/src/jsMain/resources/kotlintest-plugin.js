@@ -5,7 +5,7 @@ kotlin_test.setAdapter({
         if (name != "FunSpec") describe(name, fn)
     },
     test: function (name, ignored, fn) {
-        if (name == "kotlintestSpecSetup") {
+        if (name == "kotlintest_generate_tests") {
            fn()
         } else {
            it(name, fn)
