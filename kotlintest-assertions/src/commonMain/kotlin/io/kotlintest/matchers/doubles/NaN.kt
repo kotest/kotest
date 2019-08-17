@@ -51,7 +51,7 @@ fun Double.shouldNotBeNaN() = this shouldNot beNaN()
 fun beNaN() = object : Matcher<Double> {
   override fun test(value: Double) = MatcherResult(
     value.isNaN(),
-          "$value should be NaN",
-          "$value should not be NaN"
+    "$value should be NaN",
+    "$value should not be NaN"
   )
 }

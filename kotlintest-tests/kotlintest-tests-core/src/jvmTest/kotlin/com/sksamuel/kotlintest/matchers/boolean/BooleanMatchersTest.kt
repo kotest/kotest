@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.matchers.boolean
 
-import io.kotlintest.matchers.boolean.shouldNotBeFalse
-import io.kotlintest.matchers.boolean.shouldNotBeTrue
-import io.kotlintest.matchers.boolean.shouldBeFalse
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldNotBeFalse
+import io.kotlintest.matchers.booleans.shouldNotBeTrue
+import io.kotlintest.matchers.booleans.shouldBeFalse
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
@@ -12,7 +12,7 @@ import org.opentest4j.AssertionFailedError
 @Suppress("SimplifyBooleanWithConstants")
 class BooleanMatchersTest : FreeSpec() {
 
-    
+
     init {
         "Boolean shouldBeTrue should not fail for true booleans" {
             true.shouldBeTrue()

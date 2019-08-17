@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.specs.StringSpec
 import java.io.Closeable
 import java.lang.AutoCloseable

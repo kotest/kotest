@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.Spec
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.specs.WordSpec
 
 class FocusTest : WordSpec() {

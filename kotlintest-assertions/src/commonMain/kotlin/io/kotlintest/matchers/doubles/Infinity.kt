@@ -7,14 +7,14 @@ import io.kotlintest.shouldNot
 
 /**
  * Verifies that this double is [Double.POSITIVE_INFINITY]
- * 
+ *
  * Opposite of [shouldNotBePositiveInfinity]
- * 
+ *
  * ```
  * Double.POSITIVE_INFINITY.shouldBePositiveInfinity()    // Assertion passes
  * 1.0.shouldBePositiveInfinity()                         // Assertion fails
  * ```
- * 
+ *
  * @see [bePositiveInfinity]
  */
 fun Double.shouldBePositiveInfinity() = this should bePositiveInfinity()
@@ -35,7 +35,7 @@ fun Double.shouldNotBePositiveInfinity() = this shouldNot bePositiveInfinity()
 
 /**
  * Matcher that matches whether a double is [Double.POSITIVE_INFINITY] or not
- * 
+ *
  * ```
  * Double.POSITIVE_INFINITY should bePositiveInfinity()   // Assertion passes
  * 1.0 should bePositiveInfinity()                        // Assertion fails
@@ -43,13 +43,11 @@ fun Double.shouldNotBePositiveInfinity() = this shouldNot bePositiveInfinity()
  */
 fun bePositiveInfinity() = object : Matcher<Double> {
   override fun test(value: Double) = MatcherResult(
-          value == Double.POSITIVE_INFINITY,
-          "$value should be POSITIVE_INFINITY",
-          "$value should not be POSITIVE_INFINITY"
+    value == Double.POSITIVE_INFINITY,
+    "$value should be POSITIVE_INFINITY",
+    "$value should not be POSITIVE_INFINITY"
   )
 }
-
-
 
 
 /**
@@ -90,8 +88,8 @@ fun Double.shouldNotBeNegativeInfinity() = this shouldNot beNegativeInfinity()
  */
 fun beNegativeInfinity() = object : Matcher<Double> {
   override fun test(value: Double) = MatcherResult(
-          value == Double.NEGATIVE_INFINITY,
-          "$value should be NEGATIVE_INFINITY",
-          "$value should not be NEGATIVE_INFINITY"
+    value == Double.NEGATIVE_INFINITY,
+    "$value should be NEGATIVE_INFINITY",
+    "$value should not be NEGATIVE_INFINITY"
   )
 }

@@ -4,7 +4,7 @@ package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.*
 import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
@@ -375,11 +375,11 @@ class GenTest : WordSpec() {
         val leapYear = 2016
         Gen.localDate(leapYear, leapYear).constants().toList() shouldContain LocalDate.of(2016, 2, 29)
       }
-      
+
       "Contain the constants Feb 28, Jan 01 and Dec 31" {
         Gen.localDate(2019, 2020).constants().toList() shouldContainAll listOf(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31))
       }
-      
+
       "Be the default generator for LocalDate" {
         assertAll(10) { it: LocalDate -> /* No use. Won't reach here if unsupported */ }
       }
@@ -389,7 +389,7 @@ class GenTest : WordSpec() {
       "Generate valid LocalTimes(no exceptions)" {
         Gen.localTime().random().take(10_000).toList()
       }
-      
+
       "Be the default generator for LocalTime" {
         assertAll(10) { it: LocalTime -> /* No use. Won't reach here if unsupported */ }
       }
@@ -423,7 +423,7 @@ class GenTest : WordSpec() {
         hours shouldBe (0..23).toSet()
         minutes shouldBe (0..59).toSet()
       }
-      
+
       "Be the default generator for LocalDateTime" {
         assertAll(10) { it: LocalDateTime -> /* No use. Won't reach here if unsupported */ }
       }
@@ -432,79 +432,79 @@ class GenTest : WordSpec() {
     "Gen.duration(maxDuration)" should {
       "Generate only durations <= maxDuration" {
         val maxDuration = Duration.ofSeconds(120)
-        
+
         assertAll(10_000, Gen.duration(maxDuration)) {
           it <= maxDuration
         }
       }
-      
+
       "Generate all possible durations in the interval [0, maxDuration[" {
         val maxDuration = Duration.ofSeconds(120)
         val secondsList = mutableSetOf<Long>()
-  
+
         assertAll(10_000, Gen.duration(maxDuration)) {
           secondsList += it.seconds
         }
-        
+
         secondsList shouldBe (0L..119L).toSet()
       }
-      
+
       "Be the default generator for Duration" {
         assertAll(10) { it: Duration -> /* No use. Won't reach here if unsupported */ }
       }
     }
-    
+
     "Gen.period(maxYears)" should {
       "Generate only periods with years <= maxYears" {
         assertAll(10_000, Gen.period(2)) {
           it.years <= 2
         }
       }
-      
+
       "Generate all possible years in the interval [0, maxYears]" {
         val generated = mutableSetOf<Int>()
         assertAll(10_000, Gen.period(10)) {
           generated += it.years
         }
-        
+
         generated shouldBe (0..10).toSet()
       }
-      
+
       "Generate all possible intervals for Months and Days" {
         val generatedDays = mutableSetOf<Int>()
         val generatedMonths = mutableSetOf<Int>()
-        
+
         assertAll(10_000, Gen.period(10)) {
           generatedDays += it.days
           generatedMonths += it.months
         }
-        
+
         generatedDays shouldBe (0..31).toSet()
         generatedMonths shouldBe (0..11).toSet()
       }
-      
+
       "Be the default generator for Duration" {
         assertAll(10) { it: Period -> /* No use. Won't reach here if unsupported */ }
       }
-      
+
     }
-  
+
     "Gen.take(n)" should {
       val mockedGen = object : Gen<Int> {
         override fun constants() = listOf(1, 2)
         override fun random() = generateInfiniteSequence { 3 }
       }
-      
+
       val mockedGen2 = object : Gen<String> {
         override fun constants() = listOf("1", "2", "3", "4")
         override fun random() = generateInfiniteSequence { "42" }
       }
-      
+
       "Take constants first" {
         mockedGen.take(2) shouldBe listOf(1, 2)
         mockedGen2.take(4) shouldBe listOf("1", "2", "3", "4")
       }
-      
+
       "Populate with constants + random values if constants are not enough" {
         mockedGen.take(5) shouldBe listOf(1, 2, 3, 3, 3)
         mockedGen2.take(8) shouldBe listOf("1", "2", "3", "4", "42", "42", "42", "42")

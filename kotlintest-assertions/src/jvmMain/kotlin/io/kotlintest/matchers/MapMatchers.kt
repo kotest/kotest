@@ -3,12 +3,12 @@ package io.kotlintest.matchers
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 
-fun <K> haveKey(key: K): Matcher<Map<out K, *>> = object : Matcher<Map<out K, *>> {
-  override fun test(value: Map<out K, *>) = MatcherResult(value.containsKey(key), "Map should contain key $key", "Map should not contain key $key")
+fun <K, V> haveKey(key: K): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
+  override fun test(value: Map<K, V>) = MatcherResult(value.containsKey(key), "Map should contain key $key", "Map should not contain key $key")
 }
 
-fun <K> haveKeys(vararg keys: K): Matcher<Map<K, *>> = object : Matcher<Map<K, *>> {
-  override fun test(value: Map<K, *>): MatcherResult {
+fun <K, V> haveKeys(vararg keys: K): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
+  override fun test(value: Map<K, V>): MatcherResult {
     val passed = keys.all { value.containsKey(it) }
     return MatcherResult(passed, "Map did not contain the keys ${keys.joinToString(", ")}", "Map should not contain the keys ${keys.joinToString(", ")}")
   }

@@ -1,8 +1,8 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.Description
-import io.kotlintest.matchers.boolean.shouldBeFalse
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldBeFalse
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.assertions.fail
-import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.specs.WordSpec

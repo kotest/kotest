@@ -72,15 +72,17 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
   override fun test(value: Double): MatcherResult {
     val differenceToMinimum = value - a
     val differenceToMaximum = b - value
-    
+
     if (differenceToMinimum < 0 && abs(differenceToMinimum) > tolerance) {
       return MatcherResult(false, "$value should be bigger than $a", "$value should not be bigger than $a")
     }
-    
+
     if (differenceToMaximum < 0 && abs(differenceToMaximum) > tolerance) {
       return MatcherResult(false, "$value should be smaller than $b", "$value should not be smaller than $b")
     }
-    
-    return MatcherResult(true, "$value should be smaller than $b and bigger than $a", "$value should not be smaller than $b and should not be bigger than $a")
+
+    return MatcherResult(true,
+      "$value should be smaller than $b and bigger than $a",
+      "$value should not be smaller than $b and should not be bigger than $a")
   }
 }

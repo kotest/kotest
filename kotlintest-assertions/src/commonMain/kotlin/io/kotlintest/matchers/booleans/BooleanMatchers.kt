@@ -1,4 +1,4 @@
-package io.kotlintest.matchers.boolean
+package io.kotlintest.matchers.booleans
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
