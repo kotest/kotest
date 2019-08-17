@@ -1,9 +1,14 @@
 package io.kotlintest.matchers.types
 
-import io.kotlintest.*
+import io.kotlintest.Matcher
+import io.kotlintest.MatcherResult
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
+import io.kotlintest.should
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNot
+import io.kotlintest.shouldNotBe
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -100,7 +105,7 @@ inline fun <reified T : Any> Any?.shouldNotBeTypeOf() {
 infix fun Any?.shouldBeSameInstanceAs(ref: Any?) = this should beTheSameInstanceAs(ref)
 infix fun Any?.shouldNotBeSameInstanceAs(ref: Any?) = this shouldNotBe beTheSameInstanceAs(ref)
 
-inline fun <A, reified T : Annotation> Class<A>.shouldHaveAnnotation(klass: Class<T>) = this should haveAnnotation<A, T>(klass)
+inline fun <A, reified T : Annotation> Class<A>.shouldHaveAnnotation(klass: Class<T>) = this should haveAnnotation(klass)
 
 @Suppress("UNUSED_PARAMETER")
 inline fun <A, reified T : Annotation> haveAnnotation(klass: Class<T>) = object : Matcher<Class<A>> {

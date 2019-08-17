@@ -1,4 +1,4 @@
-package io.kotlintest.matchers
+package io.kotlintest.matchers.collections
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
@@ -36,7 +36,7 @@ fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher
 fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
 /** Assert that a collection contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
-  assert(subsequence.isNotEmpty()) { "expected values must not be empty" }
+  require(subsequence.isNotEmpty()) { "expected values must not be empty" }
 
   var subsequenceIndex = 0
   val actualIterator = actual.iterator()
@@ -82,10 +82,13 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
 fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
 fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyIncreasingWith(value, Comparator{ a, b -> a.compareTo(b) })
+    return testMonotonicallyIncreasingWith(value,
+      Comparator { a, b -> a.compareTo(b) })
   }
 }
-fun <T> beMonotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = monotonicallyIncreasingWith(comparator)
+
+fun <T> beMonotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
+  monotonicallyIncreasingWith(comparator)
 fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     return testMonotonicallyIncreasingWith(value, comparator)
@@ -108,10 +111,13 @@ private fun<T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Compa
 fun <T : Comparable<T>> beMonotonicallyDecreasing(): Matcher<List<T>> = monotonicallyDecreasing()
 fun <T : Comparable<T>> monotonicallyDecreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
-    return testMonotonicallyDecreasingWith(value, Comparator { a, b -> a.compareTo(b) })
+    return testMonotonicallyDecreasingWith(value,
+      Comparator { a, b -> a.compareTo(b) })
   }
 }
-fun <T> beMonotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = monotonicallyDecreasingWith(comparator)
+
+fun <T> beMonotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = monotonicallyDecreasingWith(
+  comparator)
 fun <T> monotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     return testMonotonicallyDecreasingWith(value, comparator)
@@ -137,7 +143,9 @@ fun <T : Comparable<T>> strictlyIncreasing(): Matcher<List<T>> = object : Matche
     return testStrictlyIncreasingWith(value, Comparator { a, b -> a.compareTo(b) })
   }
 }
-fun <T> beStrictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyIncreasingWith(comparator)
+
+fun <T> beStrictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyIncreasingWith(
+  comparator)
 fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     return testStrictlyIncreasingWith(value, comparator)
@@ -163,7 +171,9 @@ fun <T : Comparable<T>> strictlyDecreasing(): Matcher<List<T>> = object : Matche
     return testStrictlyDecreasingWith(value, Comparator { a, b -> a.compareTo(b) })
   }
 }
-fun <T> beStrictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyDecreasingWith(comparator)
+
+fun <T> beStrictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyDecreasingWith(
+  comparator)
 fun <T> strictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     return testStrictlyDecreasingWith(value, comparator)

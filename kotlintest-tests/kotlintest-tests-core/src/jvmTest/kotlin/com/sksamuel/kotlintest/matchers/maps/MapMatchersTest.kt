@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.matchers.maps
 
 import io.kotlintest.matchers.contain
-import io.kotlintest.matchers.containAll
+import io.kotlintest.matchers.collections.containAll
 import io.kotlintest.matchers.containExactly
 import io.kotlintest.matchers.haveKey
 import io.kotlintest.matchers.haveKeys
