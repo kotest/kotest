@@ -2,13 +2,14 @@ package io.kotlintest.matchers
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
+import kotlin.math.abs
 
 infix fun Float.plusOrMinus(tolerance: Float): FloatToleranceMatcher = FloatToleranceMatcher(this, tolerance)
 
-class FloatToleranceMatcher(val expected: Float, val tolerance: Float) : Matcher<Float> {
+class FloatToleranceMatcher(private val expected: Float, private val tolerance: Float) : Matcher<Float> {
 
   override fun test(value: Float): MatcherResult {
-    return if (Float.NaN == expected && Float.NaN == value) {
+    return if (expected.isNaN() && value.isNaN()) {
       println("[WARN] By design, Float.Nan != Float.Nan; see https://stackoverflow.com/questions/8819738/why-does-double-nan-double-nan-return-false/8819776#8819776")
       MatcherResult(
           false,
@@ -18,7 +19,7 @@ class FloatToleranceMatcher(val expected: Float, val tolerance: Float) : Matcher
     } else {
       if (tolerance == 0.0F)
         println("[WARN] When comparing Float consider using tolerance, eg: a shouldBe b plusOrMinus c")
-      val diff = Math.abs(value - expected)
+      val diff = abs(value - expected)
       MatcherResult(diff <= tolerance, "$value should be equal to $expected", "$value should not be equal to $expected")
     }
   }
