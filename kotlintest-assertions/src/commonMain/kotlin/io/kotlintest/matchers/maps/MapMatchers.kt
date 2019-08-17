@@ -1,43 +1,55 @@
-package io.kotlintest.matchers
+package io.kotlintest.matchers.maps
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
+import io.kotlintest.matchers.Diff
+import io.kotlintest.matchers.stringify
 
-fun <K, V> haveKey(key: K): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
-  override fun test(value: Map<K, V>) = MatcherResult(value.containsKey(key), "Map should contain key $key", "Map should not contain key $key")
+fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
+  override fun test(value: Map<K, Any?>) = MatcherResult(value.containsKey(key),
+    "Map should contain key $key",
+    "Map should not contain key $key")
 }
 
-fun <K, V> haveKeys(vararg keys: K): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
-  override fun test(value: Map<K, V>): MatcherResult {
+fun <K> haveKeys(vararg keys: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
+  override fun test(value: Map<K, Any?>): MatcherResult {
     val passed = keys.all { value.containsKey(it) }
-    return MatcherResult(passed, "Map did not contain the keys ${keys.joinToString(", ")}", "Map should not contain the keys ${keys.joinToString(", ")}")
+    return MatcherResult(passed,
+      "Map did not contain the keys ${keys.joinToString(", ")}",
+      "Map should not contain the keys ${keys.joinToString(", ")}")
   }
 }
 
 fun <V> haveValue(v: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
-  override fun test(value: Map<*, V>) = MatcherResult(value.containsValue(v), "Map should contain value $v", "Map should not contain value $v")
+  override fun test(value: Map<*, V>) = MatcherResult(value.containsValue(v),
+    "Map should contain value $v",
+    "Map should not contain value $v")
 }
 
 fun <V> haveValues(vararg values: V): Matcher<Map<*, V>> = object : Matcher<Map<*, V>> {
   override fun test(value: Map<*, V>): MatcherResult {
     val passed = values.all { value.containsValue(it) }
-    return MatcherResult(passed, "Map did not contain the values ${values.joinToString(", ")}", "Map should not contain the values ${values.joinToString(", ")}")
+    return MatcherResult(passed,
+      "Map did not contain the values ${values.joinToString(", ")}",
+      "Map should not contain the values ${values.joinToString(", ")}")
   }
 }
 
 fun <K, V> contain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K, V>> {
-  override fun test(value: Map<K, V>) = MatcherResult(value[key] == v, "Map should contain mapping $key=$v but was $value", "Map should not contain mapping $key=$v but was $value")
+  override fun test(value: Map<K, V>) = MatcherResult(value[key] == v,
+    "Map should contain mapping $key=$v but was $value",
+    "Map should not contain mapping $key=$v but was $value")
 }
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
-    MapContainsMatcher(expected, ignoreExtraKeys = true)
+  MapContainsMatcher(expected, ignoreExtraKeys = true)
 
 fun <K, V> containExactly(expected: Map<K, V>): Matcher<Map<K, V>> =
-    MapContainsMatcher(expected)
+  MapContainsMatcher(expected)
 
 class MapContainsMatcher<K, V>(
-    private val expected: Map<K, V>,
-    private val ignoreExtraKeys: Boolean = false
+  private val expected: Map<K, V>,
+  private val ignoreExtraKeys: Boolean = false
 ) : Matcher<Map<K, V>> {
   override fun test(value: Map<K, V>): MatcherResult {
     val diff = Diff.create(value, expected, ignoreExtraMapKeys = ignoreExtraKeys)
@@ -71,7 +83,7 @@ class MapContainsMatcher<K, V>(
       |
     """.trimMargin()
     return MatcherResult(
-        diff.isEmpty(), failureMsg, negatedFailureMsg
+      diff.isEmpty(), failureMsg, negatedFailureMsg
     )
   }
 }

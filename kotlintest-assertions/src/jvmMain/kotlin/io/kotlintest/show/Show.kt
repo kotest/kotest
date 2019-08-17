@@ -33,7 +33,15 @@ object StringShow : Show<String> {
   override fun supports(a: Any?): Boolean = a is String
   override fun show(a: String): String = when (a) {
     "" -> "<empty string>"
-    else -> if (a.isBlank()) a.replace("\n", "\\n").replace("\t", "\\t").replace(" ", "\\s") else a
+    else -> a
+      .replace("\\", "\\\\")
+      .replace("\"", "\\\"")
+      .replace("\'", "\\\'")
+      .replace("\t", "\\\t")
+      .replace("\b", "\\\b")
+      .replace("\n", "\\\n")
+      .replace("\r", "\\\r")
+      .replace("\$", "\\\$")
   }
 }
 

@@ -2,12 +2,6 @@ package io.kotlintest.matchers.maps
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
-import io.kotlintest.matchers.containAll
-import io.kotlintest.matchers.containExactly
-import io.kotlintest.matchers.haveKey
-import io.kotlintest.matchers.haveKeys
-import io.kotlintest.matchers.haveValue
-import io.kotlintest.matchers.haveValues
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 
@@ -27,14 +21,15 @@ infix fun <K, V> Map<K, V>.shouldNotContainExactly(expected: Map<K, V>) = this s
 infix fun <K, V> Map<K, V>.shouldContainAll(expected: Map<K, V>) = this should containAll(expected)
 infix fun <K, V> Map<K, V>.shouldNotContainAll(expected: Map<K, V>) = this shouldNot containAll(expected)
 
-infix fun <K, V> Map<K, V>.shouldContainKey(key: K) = this should haveKey<K, V>(key)
-infix fun <K, V> Map<K, V>.shouldNotContainKey(key: K) = this shouldNot haveKey<K, V>(key)
+infix fun <K, V : Any> Map<K, V>.shouldContainKey(key: K) = this should haveKey(key)
+infix fun <K, V : Any> Map<K, V>.shouldNotContainKey(key: K) = this shouldNot haveKey(key)
 
 infix fun <K, V> Map<K, V>.shouldContainValue(value: V) = this should haveValue<V>(value)
-infix fun <K, V> Map<K, V>.shouldNotContainValue(value: V) = this shouldNot haveValue<V>(value)
+infix fun <K, V> Map<K, V>.shouldNotContainValue(value: V) = this shouldNot haveValue<V>(
+  value)
 
-fun <K, V> Map<K, V>.shouldContainKeys(vararg keys: K) = this should haveKeys<K, V>(*keys)
-fun <K, V> Map<K, V>.shouldNotContainKeys(vararg keys: K) = this shouldNot haveKeys<K, V>(*keys)
+fun <K, V> Map<K, V>.shouldContainKeys(vararg keys: K) = this should haveKeys(*keys)
+fun <K, V> Map<K, V>.shouldNotContainKeys(vararg keys: K) = this shouldNot haveKeys(*keys)
 
 fun <K, V> Map<K, V>.shouldContainValues(vararg values: V) = this should haveValues(*values)
 fun <K, V> Map<K, V>.shouldNotContainValues(vararg values: V) = this shouldNot haveValues(*values)

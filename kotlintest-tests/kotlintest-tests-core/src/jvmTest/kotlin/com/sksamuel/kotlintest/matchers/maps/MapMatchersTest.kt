@@ -1,12 +1,12 @@
 package com.sksamuel.kotlintest.matchers.maps
 
-import io.kotlintest.matchers.contain
-import io.kotlintest.matchers.collections.containAll
-import io.kotlintest.matchers.containExactly
-import io.kotlintest.matchers.haveKey
-import io.kotlintest.matchers.haveKeys
-import io.kotlintest.matchers.haveValue
-import io.kotlintest.matchers.haveValues
+import io.kotlintest.matchers.maps.contain
+import io.kotlintest.matchers.maps.containAll
+import io.kotlintest.matchers.maps.containExactly
+import io.kotlintest.matchers.maps.haveKey
+import io.kotlintest.matchers.maps.haveKeys
+import io.kotlintest.matchers.maps.haveValue
+import io.kotlintest.matchers.maps.haveValues
 import io.kotlintest.matchers.maps.shouldContain
 import io.kotlintest.matchers.maps.shouldContainAll
 import io.kotlintest.matchers.maps.shouldContainExactly

@@ -2,7 +2,10 @@
 
 package io.kotlintest.matchers
 
-import io.kotlintest.*
+import io.kotlintest.Matcher
+import io.kotlintest.MatcherResult
+import io.kotlintest.should
+import io.kotlintest.shouldNot
 
 fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
 fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)

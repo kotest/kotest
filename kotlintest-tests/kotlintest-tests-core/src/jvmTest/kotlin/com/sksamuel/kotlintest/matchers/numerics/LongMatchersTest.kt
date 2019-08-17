@@ -4,11 +4,11 @@ import io.kotlintest.matchers.comparables.beGreaterThan
 import io.kotlintest.matchers.comparables.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.comparables.beLessThan
 import io.kotlintest.matchers.comparables.beLessThanOrEqualTo
-import io.kotlintest.matchers.ints.between
-import io.kotlintest.matchers.ints.shouldBeNegative
-import io.kotlintest.matchers.ints.shouldBePositive
-import io.kotlintest.matchers.ints.shouldBeZero
-import io.kotlintest.matchers.ints.shouldNotBeZero
+import io.kotlintest.matchers.longs.between
+import io.kotlintest.matchers.longs.shouldBeNegative
+import io.kotlintest.matchers.longs.shouldBePositive
+import io.kotlintest.matchers.longs.shouldBeZero
+import io.kotlintest.matchers.longs.shouldNotBeZero
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe

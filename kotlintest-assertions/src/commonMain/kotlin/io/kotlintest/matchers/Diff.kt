@@ -16,12 +16,11 @@ sealed class Diff {
           val missingKeys = ArrayList<Any?>()
           val extraKeys = ArrayList<Any?>()
           val differentValues = ArrayList<Diff>()
-          expected.forEach { k, v ->
+          expected.forEach { (k, v) ->
             if (!value.containsKey(k)) {
               missingKeys.add(k)
             } else if (value[k] != v) {
-              differentValues.add(
-                  MapValues(k, create(value[k], v, ignoreExtraMapKeys = ignoreExtraMapKeys))
+              differentValues.add(MapValues(k, create(value[k], v, ignoreExtraMapKeys = ignoreExtraMapKeys))
               )
             }
           }
@@ -42,9 +41,9 @@ sealed class Diff {
   }
 
   class Values(
-      private val value: Any?,
-      private val expected: Any?
-  ): Diff() {
+    private val value: Any?,
+    private val expected: Any?
+  ) : Diff() {
     override fun isEmpty(): Boolean = value == expected
 
     override fun toString(level: Int): String {
@@ -58,8 +57,8 @@ sealed class Diff {
   }
 
   class MapValues(
-      private val key: Any?,
-      private val valueDiff: Diff
+    private val key: Any?,
+    private val valueDiff: Diff
   ) : Diff() {
     override fun isEmpty(): Boolean = valueDiff.isEmpty()
 
@@ -72,14 +71,14 @@ sealed class Diff {
   }
 
   class Maps(
-      private val missingKeys: List<Any?>,
-      private val extraKeys: List<Any?>,
-      private val differentValues: List<Diff>
+    private val missingKeys: List<Any?>,
+    private val extraKeys: List<Any?>,
+    private val differentValues: List<Diff>
   ) : Diff() {
     override fun isEmpty(): Boolean {
       return missingKeys.isEmpty() &&
-          extraKeys.isEmpty() &&
-          differentValues.isEmpty()
+        extraKeys.isEmpty() &&
+        differentValues.isEmpty()
     }
 
     override fun toString(level: Int): String {
@@ -87,9 +86,9 @@ sealed class Diff {
         it.toString(level + 1)
       }
       return listOf(
-          "missing keys" to missingKeys.map { getIndent(level + 1) + stringify(it) },
-          "extra keys" to extraKeys.map { getIndent(level + 1) + stringify(it) },
-          "different values" to diffValues
+        "missing keys" to missingKeys.map { getIndent(level + 1) + stringify(it) },
+        "extra keys" to extraKeys.map { getIndent(level + 1) + stringify(it) },
+        "different values" to diffValues
       ).filter {
         it.second.isNotEmpty()
       }.joinToString("\n") {
@@ -102,7 +101,7 @@ sealed class Diff {
   }
 }
 
-internal fun stringify(value: Any?): String = when(value) {
+internal fun stringify(value: Any?): String = when (value) {
   null -> "null"
   is String -> "\"${escapeString(value)}\""
   is Int -> "$value"
@@ -136,12 +135,12 @@ private fun reprCollection(funcName: String, value: Collection<*>): String {
 
 private fun escapeString(s: String): String {
   return s
-      .replace("\\", "\\\\")
-      .replace("\"", "\\\"")
-      .replace("\'", "\\\'")
-      .replace("\t", "\\\t")
-      .replace("\b", "\\\b")
-      .replace("\n", "\\\n")
-      .replace("\r", "\\\r")
-      .replace("\$", "\\\$")
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+    .replace("\'", "\\\'")
+    .replace("\t", "\\\t")
+    .replace("\b", "\\\b")
+    .replace("\n", "\\\n")
+    .replace("\r", "\\\r")
+    .replace("\$", "\\\$")
 }
