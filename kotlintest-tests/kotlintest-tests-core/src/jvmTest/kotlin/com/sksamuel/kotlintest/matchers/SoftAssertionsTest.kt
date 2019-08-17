@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.matchers.beLessThan
+import io.kotlintest.matchers.comparables.beLessThan
 import io.kotlintest.matchers.collections.containExactly
 import io.kotlintest.matchers.collections.shouldNotContainExactly
 import io.kotlintest.matchers.doubles.negative
@@ -8,8 +8,8 @@ import io.kotlintest.matchers.doubles.positive
 import io.kotlintest.matchers.doubles.shouldBeNegative
 import io.kotlintest.matchers.endWith
 import io.kotlintest.matchers.haveKey
-import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.matchers.numerics.shouldBePositive
+import io.kotlintest.matchers.ints.shouldBeLessThan
+import io.kotlintest.matchers.ints.shouldBePositive
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.shouldNotEndWith
 import io.kotlintest.should

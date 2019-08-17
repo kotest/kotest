@@ -5,6 +5,7 @@ import io.kotlintest.assertions.stringRepr
 
 infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage(message)
 infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)
+
 fun haveMessage(message: String) = object : Matcher<Throwable> {
   override fun test(value: Throwable) = MatcherResult(
     value.message == message,
@@ -17,6 +18,7 @@ fun Throwable.shouldHaveCause(block: (Throwable) -> Unit = {}) {
   this should haveCause()
   block.invoke(cause!!)
 }
+
 fun Throwable.shouldNotHaveCause() = this shouldNot haveCause()
 fun haveCause() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = resultForThrowable(value.cause)

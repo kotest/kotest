@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.matchers.*
+import io.kotlintest.matchers.longs.gt
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll
@@ -66,9 +67,9 @@ class PropertyAssertAllTest : StringSpec({
     var attempts = 0
     assertAll(Gen.int()) { a ->
       attempts++
-      Math.abs((a / 2)) shouldBe gte(0)
+      Math.abs((a / 2)) shouldBe io.kotlintest.matchers.ints.gte(0)
     }
-    attempts shouldBe gt(900)
+    attempts shouldBe io.kotlintest.matchers.ints.gt(900)
   }
 
   "assertAll single explicit generator 20 attempts" {
@@ -84,7 +85,7 @@ class PropertyAssertAllTest : StringSpec({
     var attempts = 0
     assertAll(500, Gen.positiveIntegers()) { a ->
       attempts++
-      if (a != Integer.MAX_VALUE) a + 2 shouldBe gt(a)
+      if (a != Integer.MAX_VALUE) a + 2 shouldBe io.kotlintest.matchers.ints.gt(a)
     }
     attempts shouldBe 500
   }
@@ -94,7 +95,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.double()) {
         attempts++
-        attempts shouldBe lt(2)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(2)
       }
     }
   }
@@ -104,7 +105,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.string()) {
         attempts++
-        attempts shouldBe lt(300)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(300)
       }
     }
   }
@@ -124,7 +125,7 @@ class PropertyAssertAllTest : StringSpec({
       attempts++
       2 * a % 2 shouldBe 0
     }
-    attempts shouldBe gte(1000)
+    attempts shouldBe io.kotlintest.matchers.ints.gte(1000)
   }
 
   "assertAll: one generator explicit 200 attempts" {
@@ -180,7 +181,7 @@ class PropertyAssertAllTest : StringSpec({
       attempts++
       a * b shouldBe b * a
     }
-    attempts shouldBe gte(900)
+    attempts shouldBe io.kotlintest.matchers.ints.gte(900)
   }
 
   "pad" {
@@ -213,7 +214,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
-        attempts shouldBe lt(3)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(3)
       }
     }
   }
@@ -223,7 +224,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int()) { _, _, _ ->
         attempts++
-        attempts shouldBe lt(26)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(26)
       }
     }
   }
@@ -269,7 +270,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
         attempts++
-        attempts shouldBe lt(4)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(4)
       }
     }
   }
@@ -279,7 +280,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _ ->
         attempts++
-        attempts shouldBe lt(50)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(50)
       }
     }
   }
@@ -327,7 +328,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll: five explicit generators failed after 10 attempts" {
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
-        attempts() shouldBe lt(10)
+        attempts() shouldBe io.kotlintest.matchers.ints.lt(10)
       }
     }
   }
@@ -335,7 +336,7 @@ class PropertyAssertAllTest : StringSpec({
   "assertAll: five explicit generators failed after 50 attempts" {
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
-        attempts() shouldBe lt(50)
+        attempts() shouldBe io.kotlintest.matchers.ints.lt(50)
       }
     }
   }
@@ -385,7 +386,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
-        attempts shouldBe lt(40)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(40)
       }
     }
   }
@@ -395,7 +396,7 @@ class PropertyAssertAllTest : StringSpec({
     shouldThrow<AssertionError> {
       assertAll(Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _, _ ->
         attempts++
-        attempts shouldBe lt(500)
+        attempts shouldBe io.kotlintest.matchers.ints.lt(500)
       }
     }
   }

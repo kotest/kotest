@@ -1,15 +1,15 @@
 package com.sksamuel.kotlintest.matchers
 
 import io.kotlintest.forAll
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.beLessThanOrEqualTo
-import io.kotlintest.matchers.compareTo
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.gte
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.lte
+import io.kotlintest.matchers.comparables.beGreaterThan
+import io.kotlintest.matchers.comparables.beGreaterThanOrEqualTo
+import io.kotlintest.matchers.comparables.beLessThan
+import io.kotlintest.matchers.comparables.beLessThanOrEqualTo
+import io.kotlintest.matchers.comparables.compareTo
+import io.kotlintest.matchers.comparables.gt
+import io.kotlintest.matchers.comparables.gte
+import io.kotlintest.matchers.comparables.lt
+import io.kotlintest.matchers.comparables.lte
 import io.kotlintest.should
 import io.kotlintest.shouldNot
 import io.kotlintest.properties.assertAll

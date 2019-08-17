@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.comparables.gt
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forNone
 import io.kotlintest.specs.StringSpec

@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.lt
+import io.kotlintest.matchers.comparables.lt
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldHaveSameLengthAs
 import io.kotlintest.properties.assertAll

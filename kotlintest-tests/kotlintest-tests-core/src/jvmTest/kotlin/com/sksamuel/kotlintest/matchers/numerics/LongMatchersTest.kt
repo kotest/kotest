@@ -1,14 +1,14 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.beLessThanOrEqualTo
-import io.kotlintest.matchers.between
-import io.kotlintest.matchers.numerics.shouldBeNegative
-import io.kotlintest.matchers.numerics.shouldBePositive
-import io.kotlintest.matchers.numerics.shouldBeZero
-import io.kotlintest.matchers.numerics.shouldNotBeZero
+import io.kotlintest.matchers.comparables.beGreaterThan
+import io.kotlintest.matchers.comparables.beGreaterThanOrEqualTo
+import io.kotlintest.matchers.comparables.beLessThan
+import io.kotlintest.matchers.comparables.beLessThanOrEqualTo
+import io.kotlintest.matchers.ints.between
+import io.kotlintest.matchers.ints.shouldBeNegative
+import io.kotlintest.matchers.ints.shouldBePositive
+import io.kotlintest.matchers.ints.shouldBeZero
+import io.kotlintest.matchers.ints.shouldNotBeZero
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.should
 import io.kotlintest.shouldBe

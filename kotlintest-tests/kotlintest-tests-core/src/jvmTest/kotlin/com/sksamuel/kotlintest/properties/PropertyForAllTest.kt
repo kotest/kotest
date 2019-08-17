@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.gte
+import io.kotlintest.matchers.comparables.gt
+import io.kotlintest.matchers.comparables.gte
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe

@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.tables
 
 import com.univocity.parsers.csv.CsvFormat
-import io.kotlintest.matchers.gt
+import io.kotlintest.matchers.comparables.gt
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe

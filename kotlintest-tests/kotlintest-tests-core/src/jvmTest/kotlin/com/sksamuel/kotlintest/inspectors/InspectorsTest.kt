@@ -7,9 +7,9 @@ import io.kotlintest.inspectors.forExactly
 import io.kotlintest.inspectors.forNone
 import io.kotlintest.inspectors.forOne
 import io.kotlintest.inspectors.forSome
-import io.kotlintest.matchers.beGreaterThan
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.numerics.shouldBeGreaterThan
+import io.kotlintest.matchers.comparables.beGreaterThan
+import io.kotlintest.matchers.comparables.beLessThan
+import io.kotlintest.matchers.ints.shouldBeGreaterThan
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow

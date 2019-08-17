@@ -1,13 +1,11 @@
-package io.kotlintest.matchers.numerics
+package io.kotlintest.matchers.ints
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
-import io.kotlintest.matchers.between
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.gte
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.lte
-import io.kotlintest.matchers.exactly
+import io.kotlintest.matchers.comparables.gt
+import io.kotlintest.matchers.comparables.gte
+import io.kotlintest.matchers.comparables.lt
+import io.kotlintest.matchers.comparables.lte
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot

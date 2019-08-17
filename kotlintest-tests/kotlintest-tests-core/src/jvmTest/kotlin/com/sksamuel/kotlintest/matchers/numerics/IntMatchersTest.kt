@@ -1,8 +1,17 @@
 package com.sksamuel.kotlintest.matchers.numerics
 
 import io.kotlintest.*
-import io.kotlintest.matchers.*
-import io.kotlintest.matchers.numerics.*
+import io.kotlintest.matchers.ints.beEven
+import io.kotlintest.matchers.ints.beOdd
+import io.kotlintest.matchers.ints.shouldBeBetween
+import io.kotlintest.matchers.ints.shouldBeGreaterThan
+import io.kotlintest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotlintest.matchers.ints.shouldBeLessThan
+import io.kotlintest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotlintest.matchers.ints.shouldBeNegative
+import io.kotlintest.matchers.ints.shouldBePositive
+import io.kotlintest.matchers.ints.shouldBeZero
+import io.kotlintest.matchers.ints.shouldNotBeZero
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.*
 
@@ -55,46 +64,46 @@ class IntMatchersTest : StringSpec() {
     }
 
     "inRange" {
-      3 should beInRange(1..10)
-      3 should beInRange(3..10)
-      3 should beInRange(3..3)
-      4 shouldNot beInRange(3..3)
-      4 shouldNot beInRange(1..3)
+      3 should io.kotlintest.matchers.ints.beInRange(1..10)
+      3 should io.kotlintest.matchers.ints.beInRange(3..10)
+      3 should io.kotlintest.matchers.ints.beInRange(3..3)
+      4 shouldNot io.kotlintest.matchers.ints.beInRange(3..3)
+      4 shouldNot io.kotlintest.matchers.ints.beInRange(1..3)
     }
 
     "beGreaterThan" {
-      1 should beGreaterThan(0)
+      1 should io.kotlintest.matchers.ints.beGreaterThan(0)
       3.shouldBeGreaterThan(2)
 
       shouldThrow<AssertionError> {
-        2 should beGreaterThan(3)
+        2 should io.kotlintest.matchers.ints.beGreaterThan(3)
       }
     }
 
     "beLessThan" {
-      1 should beLessThan(2)
+      1 should io.kotlintest.matchers.ints.beLessThan(2)
       1.shouldBeLessThan(2)
 
       shouldThrow<AssertionError> {
-        2 shouldBe lt(1)
+        2 shouldBe io.kotlintest.matchers.ints.lt(1)
       }
     }
 
     "beLessThanOrEqualTo" {
-      1 should beLessThanOrEqualTo(2)
+      1 should io.kotlintest.matchers.ints.beLessThanOrEqualTo(2)
       2.shouldBeLessThanOrEqual(3)
 
       shouldThrow<AssertionError> {
-        2 shouldBe lte(1)
+        2 shouldBe io.kotlintest.matchers.ints.lte(1)
       }
     }
 
     "beGreaterThanOrEqualTo" {
-      1 should beGreaterThanOrEqualTo(0)
+      1 should io.kotlintest.matchers.ints.beGreaterThanOrEqualTo(0)
       3.shouldBeGreaterThanOrEqual(1)
 
       shouldThrow<AssertionError> {
-        2 should beGreaterThanOrEqualTo(3)
+        2 should io.kotlintest.matchers.ints.beGreaterThanOrEqualTo(3)
       }
     }
 
@@ -109,7 +118,7 @@ class IntMatchersTest : StringSpec() {
       )
 
       forAll(table) { a, b ->
-        1 shouldBe between(a, b)
+        1 shouldBe io.kotlintest.matchers.ints.between(a, b)
         1.shouldBeBetween(a, b)
       }
     }
@@ -125,7 +134,7 @@ class IntMatchersTest : StringSpec() {
       )
 
       forNone(table) { a, b ->
-        3 shouldBe between(a, b)
+        3 shouldBe io.kotlintest.matchers.ints.between(a, b)
       }
     }
 

@@ -3,7 +3,7 @@
 package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.*
-import io.kotlintest.matchers.beGreaterThan
+import io.kotlintest.matchers.comparables.beGreaterThan
 import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
 import io.kotlintest.matchers.collections.shouldContain
@@ -13,9 +13,9 @@ import io.kotlintest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.doubles.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.floats.shouldBeGreaterThanOrEqual
 import io.kotlintest.matchers.floats.shouldBeLessThanOrEqual
-import io.kotlintest.matchers.gte
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
+import io.kotlintest.matchers.comparables.gte
+import io.kotlintest.matchers.comparables.lt
+import io.kotlintest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll

@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.matchers
 
-import io.kotlintest.matchers.between
+import io.kotlintest.matchers.ints.between
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
@@ -42,7 +42,9 @@ class LogicalMatchOperatorsTest : StringSpec({
   }
 
   "should support multiple nested clauses" {
-    1 shouldBe ((between(1, 2) and between(1, 4)) or between(4, 5))
-    1 shouldBe ((between(5, 6) and between(7, 8)) or between(1, 5))
+    1 shouldBe ((between(1, 2) and between(1,
+      4)) or between(4, 5))
+    1 shouldBe ((between(5, 6) and between(7,
+      8)) or between(1, 5))
   }
 })
