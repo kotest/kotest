@@ -2,10 +2,6 @@ package io.kotlintest.matchers.floats
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
-import io.kotlintest.matchers.gt
-import io.kotlintest.matchers.gte
-import io.kotlintest.matchers.lt
-import io.kotlintest.matchers.lte
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 

@@ -1,21 +1,30 @@
 package io.kotlintest.matchers.result
 
-import io.kotlintest.*
+import io.kotlintest.Matcher
+import io.kotlintest.MatcherResult
 import io.kotlintest.assertions.ErrorCollector
 import io.kotlintest.assertions.Failures
 import io.kotlintest.assertions.clueContextAsString
 import io.kotlintest.assertions.collectOrThrow
 import kotlin.Result
+import kotlin.reflect.KClass
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
   BeSuccess<T>().test(this)
   block?.invoke(getOrNull())
 }
 
-fun <T> Result<T>.shouldNotBeSuccess() = test(inverse = true) { BeSuccess<T>().test(this) }
+fun <T> Result<T>.shouldNotBeSuccess() = test(inverse = true) {
+  BeSuccess<T>().test(this)
+}
 
-infix fun <T> Result<T>.shouldBeSuccess(expected: T) = test { BeSuccess<T>(expected).test(this) }
-infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = test(inverse = true) { BeSuccess<T>(expected).test(this) }
+infix fun <T> Result<T>.shouldBeSuccess(expected: T) = test {
+  BeSuccess<T>(expected).test(this)
+}
+
+infix fun <T> Result<T>.shouldNotBeSuccess(expected: T) = test(inverse = true) {
+  BeSuccess<T>(expected).test(this)
+}
 class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
   override fun test(value: Result<T>): MatcherResult {
     return when {
@@ -38,7 +47,9 @@ fun Result<Any>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
   block?.invoke(exceptionOrNull())
 }
 
-fun Result<Any>.shouldNotBeFailure() = test(inverse = true) { BeFailure().test(this) }
+fun Result<Any>.shouldNotBeFailure() = test(inverse = true) {
+  BeFailure().test(this)
+}
 class BeFailure : Matcher<Result<Any>> {
   override fun test(value: Result<Any>) = io.kotlintest.MatcherResult(
     value.isFailure,
@@ -47,12 +58,14 @@ class BeFailure : Matcher<Result<Any>> {
   )
 }
 
-inline fun <reified A : Throwable> Result<Any>.shouldBeFailureOfType() = test { BeFailureOfType(A::class.java).test(this) }
+inline fun <reified A : Throwable> Result<Any>.shouldBeFailureOfType() = test {
+  BeFailureOfType(A::class).test(this)
+}
 inline fun <reified A : Throwable> Result<Any>.shouldNotBeFailureOfType() = test(inverse = true) {
-  BeFailureOfType(A::class.java).test(this)
+  BeFailureOfType(A::class).test(this)
 }
 
-class BeFailureOfType<A : Throwable>(private val clazz: Class<A>) : Matcher<Result<Any>> {
+class BeFailureOfType<A : Throwable>(private val clazz: KClass<A>) : Matcher<Result<Any>> {
   override fun test(value: Result<Any>): MatcherResult {
     val error = value.exceptionOrNull()
     return when {
@@ -61,9 +74,7 @@ class BeFailureOfType<A : Throwable>(private val clazz: Class<A>) : Matcher<Resu
         "Result should be a Failure($clazz)",
         "Result should not be a Failure($clazz)")
       else -> {
-        MatcherResult(false,
-          "Result should be a Failure($clazz) but was Failure(${error!!::class})",
-          "")
+        MatcherResult(false, "Result should be a Failure($clazz) but was Failure(${error!!::class})", "")
       }
     }
   }
