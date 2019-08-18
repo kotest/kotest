@@ -3,6 +3,9 @@ package com.sksamuel.kotlintest.matchers.types
 import io.kotlintest.matchers.beInstanceOf
 import io.kotlintest.matchers.beOfType
 import io.kotlintest.matchers.beTheSameInstanceAs
+import io.kotlintest.matchers.nulls.beNull
+import io.kotlintest.matchers.nulls.shouldBeNull
+import io.kotlintest.matchers.nulls.shouldNotBeNull
 import io.kotlintest.matchers.types.*
 import io.kotlintest.should
 import io.kotlintest.shouldBe
@@ -56,10 +59,10 @@ class TypeMatchersTest : WordSpec() {
           arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
         }
       }
-      
+
       "Allow execution with a lambda" {
         val list = arrayListOf(1, 2, 3)
-        
+
         list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
           it shouldBeSameInstanceAs list
         }
@@ -88,10 +91,10 @@ class TypeMatchersTest : WordSpec() {
           arrayList should beOfType<List<Int>>()
         }
       }
-      
+
       "Allow execution with a lambda" {
         val list: Any = arrayListOf(1, 2, 3)
-        
+
         list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1

@@ -25,7 +25,7 @@ class SomeBehaviourSpec: BehaviorSpec({
 	Given("Big Brother says 2 + 2 = 5") {
 		When("I add 2 + 2") {
 			Then("I should get 5") {
-				2 + 2 shouldBe 5
+//				2 + 2 shouldBe 5
 			}
 		}
 	}
