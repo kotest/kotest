@@ -11,23 +11,8 @@ repositories {
 kotlin {
 
     jvm()
-    js()
 
     sourceSets {
-
-        commonMain {
-            dependencies {
-                implementation kotlin("stdlib-common")
-                api project(":kotlintest-assertions")
-                implementation project(':kotlintest-core')
-            }
-        }
-
-        jsMain {
-            dependencies {
-                implementation kotlin('stdlib-js')
-            }
-        }
 
         jvmMain {
             dependencies {
@@ -47,12 +32,6 @@ kotlin {
                 implementation 'org.slf4j:slf4j-log4j12:1.7.25'
             }
         }
-    }
-}
-
-compileKotlinJs.configure {
-    kotlinOptions {
-        moduleKind = 'commonjs'
     }
 }
 
