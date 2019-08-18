@@ -1,4 +1,4 @@
-package io.kotlintest
+package io.kotlintest.assertions
 
 /**
  * `extracting` pulls property values out of a list of objects for _typed_ bulk assertions on properties.
