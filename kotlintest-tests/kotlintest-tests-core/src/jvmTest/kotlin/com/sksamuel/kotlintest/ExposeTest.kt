@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest
 
-import io.kotlintest.extracting
+import io.kotlintest.assertions.extracting
+import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrowAny
 import io.kotlintest.specs.WordSpec

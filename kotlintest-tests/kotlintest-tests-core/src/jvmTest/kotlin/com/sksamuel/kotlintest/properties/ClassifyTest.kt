@@ -5,6 +5,8 @@ import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.assertNone
 import io.kotlintest.properties.forAll
 import io.kotlintest.properties.forNone
+import io.kotlintest.properties.int
+import io.kotlintest.properties.string
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

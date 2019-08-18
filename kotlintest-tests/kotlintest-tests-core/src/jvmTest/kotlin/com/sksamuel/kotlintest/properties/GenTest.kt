@@ -19,8 +19,34 @@ import io.kotlintest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
+import io.kotlintest.properties.bind
+import io.kotlintest.properties.choose
+import io.kotlintest.properties.constant
+import io.kotlintest.properties.create
+import io.kotlintest.properties.default
+import io.kotlintest.properties.double
+import io.kotlintest.properties.duration
 import io.kotlintest.properties.forAll
+import io.kotlintest.properties.forClassName
+import io.kotlintest.properties.from
 import io.kotlintest.properties.generateInfiniteSequence
+import io.kotlintest.properties.int
+import io.kotlintest.properties.list
+import io.kotlintest.properties.localDate
+import io.kotlintest.properties.localDateTime
+import io.kotlintest.properties.localTime
+import io.kotlintest.properties.map
+import io.kotlintest.properties.negativeIntegers
+import io.kotlintest.properties.next
+import io.kotlintest.properties.nextPrintableString
+import io.kotlintest.properties.numericDoubles
+import io.kotlintest.properties.numericFloats
+import io.kotlintest.properties.oneOf
+import io.kotlintest.properties.period
+import io.kotlintest.properties.positiveIntegers
+import io.kotlintest.properties.set
+import io.kotlintest.properties.string
+import io.kotlintest.properties.take
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
@@ -40,13 +66,13 @@ import kotlin.collections.toSet
 
 class GenTest : WordSpec() {
   init {
-    "Gen.string.nextPrintableString" should {
+    "nextPrintableString" should {
       "give out a argument long string".config(invocations = 100, threads = 8) {
         val random = Random()
         var rand = random.nextInt(10000)
         if (rand <= 0)
           rand = 0 - rand
-        val string = Gen.string().nextPrintableString(rand)
+        val string = nextPrintableString(rand)
 
         string.forEach {
           it.toInt() shouldBe gte(32)

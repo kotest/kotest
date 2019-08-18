@@ -1,6 +1,7 @@
 package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.enum
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 

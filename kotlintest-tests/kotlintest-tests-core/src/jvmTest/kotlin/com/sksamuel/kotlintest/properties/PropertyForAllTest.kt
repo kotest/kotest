@@ -6,18 +6,24 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
 import io.kotlintest.assertions.shouldFail
+import io.kotlintest.properties.double
+import io.kotlintest.properties.int
+import io.kotlintest.properties.long
+import io.kotlintest.properties.positiveIntegers
+import io.kotlintest.properties.string
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
+import kotlin.math.abs
 
 class PropertyForAllTest : StringSpec() {
   init {
 
     "startsWith" {
       var actualAttempts = 0
-      forAll(30, Gen.string(), Gen.string(), { a, b ->
+      forAll(30, Gen.string(), Gen.string()) { a, b ->
         actualAttempts++
         (a + b).startsWith(a)
-      })
+      }
       actualAttempts shouldBe 30
     }
 
@@ -40,9 +46,9 @@ class PropertyForAllTest : StringSpec() {
     }
 
     "explicitGenerators" {
-      forAll(Gen.string(), Gen.string(), Gen.string(), { a, b, c ->
+      forAll(Gen.string(), Gen.string(), Gen.string()) { a, b, c ->
         (a + b + c).contains(b)
-      })
+      }
     }
 
     "inferredGenerators" {
@@ -58,7 +64,7 @@ class PropertyForAllTest : StringSpec() {
       var attempts = 0
       forAll(Gen.int()) { a ->
         attempts++
-        Math.abs((a / 2)) >= 0
+        abs((a / 2)) >= 0
       }
       attempts shouldBe gt(900)
     }
@@ -83,9 +89,8 @@ class PropertyForAllTest : StringSpec() {
     }
 
     "forAll one explicit generator: test fails after second attempt" {
-      var element = 0.0
       shouldThrow<AssertionError> {
-        forAll(Gen.double()) { a ->
+        forAll(Gen.double()) {
           attempts() < 2
         }
       }
@@ -119,10 +124,10 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll: one generator explicit 200 attempts" {
       var attempts = 0
-      forAll(200, { a: Int ->
+      forAll(200) { a: Int ->
         attempts++
         2 * a % 2 == 0
-      })
+      }
       attempts shouldBe 200
     }
 
@@ -155,10 +160,10 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll: two implicit generators 30 attempts" {
       var attempts = 0
-      forAll(25, { a: String, b: String ->
+      forAll(25) { a: String, b: String ->
         attempts++
         (a + b).startsWith(a)
-      })
+      }
       attempts shouldBe 25
     }
 
@@ -214,10 +219,10 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll : Three implicit generators 1000 attempts" {
       var attempts = 0
-      forAll(1000, { a: Int, b: Int, c: Int ->
+      forAll(1000) { a: Int, b: Int, c: Int ->
         attempts++
         a + b + c == (a + b) + c
-      })
+      }
       attempts shouldBe 1000
     }
 
@@ -288,10 +293,10 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll: four implicit generators with 250 attempts" {
       var attempts = 0
-      forAll(250, { _: Int, _: Int, _: Int, _: Int ->
+      forAll(250) { _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
-      })
+      }
       attempts shouldBe 250
     }
 
@@ -323,10 +328,10 @@ class PropertyForAllTest : StringSpec() {
 
     "forAll five implicit generators with 7000 attempts" {
       var attempts = 0
-      forAll(7000, { _: Int, _: Int, _: Int, _: Int, _: Int ->
+      forAll(7000) { _: Int, _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
-      })
+      }
       attempts shouldBe 7000
     }
 

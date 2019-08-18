@@ -1,10 +1,11 @@
-import io.kotlintest.assertions.show.convertValueToString
+package io.kotlintest.properties.shrinking
+
+import io.kotlintest.assertions.show.show
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.propertyAssertionError
 import io.kotlintest.properties.PropertyContext
 import io.kotlintest.properties.PropertyFailureInput
 import io.kotlintest.properties.PropertyTesting
-import io.kotlintest.properties.shrinking.Shrinker
 
 fun <T> shrink(t: T, gen: Gen<T>, test: (T) -> Unit): T = shrink2(t, gen.shrinker(), test)
 
@@ -17,14 +18,14 @@ fun <T> shrink2(t: T, shrinker: Shrinker<T>?, test: (T) -> Unit): T {
 
 fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
   val sb = StringBuilder()
-  sb.append("Attempting to shrink failed arg ${convertValueToString(t)}\n")
+  sb.append("Attempting to io.kotlintest.properties.shrinking.shrink failed arg ${t.show()}\n")
   var candidate = t
   val tested = HashSet<T>()
   var count = 0
   while (true) {
     val candidates = shrinker.shrink(candidate).filterNot { tested.contains(it) }
     if (candidates.isEmpty()) {
-      sb.append("Shrink result => ${convertValueToString(candidate)}\n")
+      sb.append("Shrink result => ${candidate.show()}\n")
       if (PropertyTesting.shouldPrintShrinkSteps) {
         println(sb)
       }
@@ -35,15 +36,15 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
         count++
         try {
           test(it)
-          sb.append("Shrink #$count: ${convertValueToString(it)} pass\n")
+          sb.append("Shrink #$count: ${it.show()} pass\n")
           false
         } catch (t: Throwable) {
-          sb.append("Shrink #$count: ${convertValueToString(it)} fail\n")
+          sb.append("Shrink #$count: ${it.show()} fail\n")
           true
         }
       }
       if (next == null) {
-        sb.append("Shrink result => ${convertValueToString(candidate)}\n")
+        sb.append("Shrink result => ${candidate.show()}\n")
         if (PropertyTesting.shouldPrintShrinkSteps) {
           println(sb)
         }

@@ -3,9 +3,7 @@
 package io.kotlintest.properties
 
 import io.kotlintest.properties.shrinking.Shrinker
-import outputClassifications
-import shrink
-import testAndShrink
+import io.kotlintest.properties.shrinking.shrink
 
 data class Tuple4<out A, out B, out C, out D>(val a: A, val b: B, val c: C, val d: D) {
   override fun toString(): String {

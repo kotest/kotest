@@ -6,11 +6,17 @@ import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.matchers.string.startWith
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
+import io.kotlintest.properties.double
 import io.kotlintest.properties.forAll
+import io.kotlintest.properties.int
+import io.kotlintest.properties.long
+import io.kotlintest.properties.positiveIntegers
+import io.kotlintest.properties.string
 import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
+import kotlin.math.abs
 
 class PropertyAssertAllTest : StringSpec({
 
@@ -69,7 +75,7 @@ class PropertyAssertAllTest : StringSpec({
     var attempts = 0
     assertAll(Gen.int()) { a ->
       attempts++
-      Math.abs((a / 2)) shouldBe io.kotlintest.matchers.ints.gte(0)
+      abs((a / 2)) shouldBe io.kotlintest.matchers.ints.gte(0)
     }
     attempts shouldBe io.kotlintest.matchers.ints.gt(900)
   }

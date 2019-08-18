@@ -1,7 +1,5 @@
 package io.kotlintest.properties
 
-import java.util.concurrent.ConcurrentHashMap
-
 /**
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
@@ -10,7 +8,7 @@ class PropertyContext {
 
   private var values = mutableListOf<Any?>()
   private var attempts = 0
-  private val counts = ConcurrentHashMap<String, Int>()
+  private val counts = mutableMapOf<String, Int>()
 
   internal fun inc() {
     attempts++

@@ -2,6 +2,7 @@ package io.kotlintest.assertions.arrow.nel
 
 import arrow.data.NonEmptyList
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.int
 
 /**
  * [Gen] extension instance for [NonEmptyList].

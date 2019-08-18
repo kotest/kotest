@@ -1,7 +1,7 @@
 package io.kotlintest.properties
 
-import io.kotlintest.assertions.show.convertValueToString
 import io.kotlintest.assertions.Failures
+import io.kotlintest.assertions.show.show
 
 fun propertyTestFailureMessage(attempt: Int,
                                inputs: List<PropertyFailureInput<out Any?>>,
@@ -11,9 +11,9 @@ fun propertyTestFailureMessage(attempt: Int,
   sb.append("\n")
   inputs.withIndex().forEach {
     val input = if (it.value.shrunk == it.value.original) {
-      "Arg ${it.index}: ${convertValueToString(it.value.shrunk)}"
+      "Arg ${it.index}: ${it.value.shrunk.show()}"
     } else {
-      "Arg ${it.index}: ${convertValueToString(it.value.shrunk)} (shrunk from ${it.value.original})"
+      "Arg ${it.index}: ${it.value.shrunk.show()} (shrunk from ${it.value.original})"
     }
     sb.append(input)
     sb.append("\n")

@@ -8,9 +8,10 @@ import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.shrinking.StringShrinker
-import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import shrink
+import io.kotlintest.properties.shrinking.shrink
+import io.kotlintest.properties.string
+import io.kotlintest.shouldBe
 
 class StringShrinkerTest : StringSpec({
 
@@ -41,7 +42,7 @@ class StringShrinkerTest : StringSpec({
     }
   }
 
-  "StringShrinker should shrink to expected value" {
+  "StringShrinker should io.kotlintest.properties.shrinking.shrink to expected value" {
     assertAll { it: String ->
       val shrunk = shrink(it, Gen.string()) { it.shouldNotContain("#") }
       if (it.contains("#")) {

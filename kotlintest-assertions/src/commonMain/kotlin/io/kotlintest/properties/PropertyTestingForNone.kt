@@ -1,7 +1,6 @@
 package io.kotlintest.properties
 
 import io.kotlintest.assertions.Failures
-import outputClassifications
 
 inline fun <reified A> forNone(noinline fn: PropertyContext.(a: A) -> Boolean) = forNone(1000, fn)
 inline fun <reified A> forNone(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {

@@ -7,6 +7,12 @@ import io.kotlintest.matchers.comparables.beGreaterThan
 import io.kotlintest.matchers.comparables.beLessThan
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
+import io.kotlintest.properties.bind
+import io.kotlintest.properties.bool
+import io.kotlintest.properties.double
+import io.kotlintest.properties.negativeIntegers
+import io.kotlintest.properties.positiveIntegers
+import io.kotlintest.properties.string
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.matchers.doubles.beGreaterThan as gtd
 

@@ -6,6 +6,7 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
+import kotlin.math.max
 import io.kotlintest.data.suspend.forall as forallSuspendOverload
 
 class DataDrivenTestingTest : StringSpec() {
@@ -21,7 +22,7 @@ class DataDrivenTestingTest : StringSpec() {
       ) { root, square ->
         root * root shouldBe square
       }
-  
+
       forallSuspendOverload(
               row(2, 4),
               row(3, 9),
@@ -41,9 +42,9 @@ class DataDrivenTestingTest : StringSpec() {
           row(1, 0, 1),
           row(0, 0, 0)
       ) { a, b, max ->
-        Math.max(a, b) shouldBe max
+        max(a, b) shouldBe max
       }
-  
+
       forallSuspendOverload(
               row(1, 5, 5),
               row(5, 1, 5),
@@ -52,7 +53,7 @@ class DataDrivenTestingTest : StringSpec() {
               row(1, 0, 1),
               row(0, 0, 0)
       ) { a, b, max ->
-        Math.max(a, b) shouldBe max
+        max(a, b) shouldBe max
       }
     }
 
@@ -64,7 +65,7 @@ class DataDrivenTestingTest : StringSpec() {
       ) { a, b, c, d ->
         a + b + c shouldBe d
       }
-  
+
       forallSuspendOverload(
               row("a", "b", "c", "abc"),
               row("hel", "lo wo", "rld", "hello world"),
@@ -82,7 +83,7 @@ class DataDrivenTestingTest : StringSpec() {
           foo * bar * woo shouldBe 0
         }
       }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3) with error expected: 0 but was: 6"
-  
+
       shouldThrow<AssertionError> {
         forallSuspendOverload(
                 row(1, 2, 3)
@@ -100,7 +101,7 @@ class DataDrivenTestingTest : StringSpec() {
           foo * bar shouldBe 0
         }
       }.message shouldBe "Test failed for (foo, 2), (bar, 4) with error expected: 0 but was: 8"
-  
+
       shouldThrow<AssertionError> {
         forallSuspendOverload(
                 row(2, 4)
@@ -109,8 +110,8 @@ class DataDrivenTestingTest : StringSpec() {
         }
       }.message shouldBe "Test failed for (foo, 2), (bar, 4) with error expected: 0 but was: 8"
     }
-    
-    
+
+
 
     "row1 should detect header names from params" {
       shouldThrow<AssertionError> {
@@ -120,7 +121,7 @@ class DataDrivenTestingTest : StringSpec() {
           foo shouldBe 0
         }
       }.message shouldBe "Test failed for (foo, 2) with error expected: 0 but was: 2"
-  
+
       shouldThrow<AssertionError> {
         forallSuspendOverload(
                 row(2)
@@ -138,8 +139,8 @@ class DataDrivenTestingTest : StringSpec() {
           foo1 shouldBe 0
         }
       }.message shouldBe "Test failed for (foo1, 1), (foo2, 2), (foo3, 3), (foo4, 4), (foo5, 5), (foo6, 6), (foo7, 7), (foo8, 8), (foo9, 9) with error expected: 0 but was: 1"
-  
-  
+
+
       shouldThrow<AssertionError> {
         forallSuspendOverload(
                 row(1, 2, 3, 4, 5, 6, 7, 8, 9)
@@ -157,7 +158,7 @@ class DataDrivenTestingTest : StringSpec() {
           foo1 shouldBe 0
         }
       }.message shouldBe "Test failed for (foo1, 1), (foo2, 2), (foo3, 3), (foo4, 4), (foo5, 5), (foo6, 6), (foo7, 7), (foo8, 8), (foo9, 9), (foo10, 10) with error expected: 0 but was: 1"
-  
+
       shouldThrow<AssertionError> {
         forallSuspendOverload(
                 row(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
@@ -171,7 +172,7 @@ class DataDrivenTestingTest : StringSpec() {
 
 class DataDrivenTestingCoroutinesTest : FreeSpec() {
   init {
-    
+
     // Issue 707 test, that guarantees the lambda works with the suspended string invocation
     "operations test" - {
       forallSuspendOverload(

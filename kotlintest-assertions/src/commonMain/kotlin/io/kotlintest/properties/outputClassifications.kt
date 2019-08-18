@@ -1,8 +1,9 @@
-import io.kotlintest.properties.PropertyContext
+package io.kotlintest.properties
 
 fun outputClassifications(context: PropertyContext) {
   context.classificationCounts().entries.sortedByDescending { it.value }.forEach {
     val percentage = (it.value / context.attempts().toDouble() * 100)
-    println("${String.format("%.2f", percentage)}% ${it.key}")
+    val formatted = (percentage * 100).toInt() / 100.0
+    println("$formatted% ${it.key}")
   }
 }

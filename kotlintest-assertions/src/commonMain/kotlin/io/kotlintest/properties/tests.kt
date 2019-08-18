@@ -1,10 +1,11 @@
 @file:Suppress("RemoveExplicitTypeArguments")
 
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.propertyAssertionError
-import io.kotlintest.properties.PropertyContext
-import io.kotlintest.properties.PropertyFailureInput
+package io.kotlintest.properties
+
 import io.kotlintest.properties.shrinking.Shrinker
+import io.kotlintest.properties.shrinking.shrink
+import io.kotlintest.properties.shrinking.shrink2
+import io.kotlintest.properties.shrinking.shrinkInputs
 
 fun <A> testAndShrink(a: A, shrinkera: Shrinker<A>?, context: PropertyContext, fn: PropertyContext.(a: A) -> Unit) {
   context.inc()

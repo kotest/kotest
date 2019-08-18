@@ -2,7 +2,14 @@ package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.matchers.comparables.gt
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.double
 import io.kotlintest.properties.forNone
+import io.kotlintest.properties.int
+import io.kotlintest.properties.list
+import io.kotlintest.properties.long
+import io.kotlintest.properties.negativeIntegers
+import io.kotlintest.properties.positiveIntegers
+import io.kotlintest.properties.string
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -68,7 +75,7 @@ class PropertyForNoneTest : StringSpec() {
 
     "forNone: one explicit argument with 0 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(0, Gen.int()) { _ ->
+        forNone(0, Gen.int()) {
           false
         }
       }
@@ -77,7 +84,7 @@ class PropertyForNoneTest : StringSpec() {
 
     "forNone: one explicit argument with -100 attempts" {
       val exception = shouldThrow<IllegalArgumentException> {
-        forNone(-100, Gen.int()) { _ ->
+        forNone(-100, Gen.int()) {
           false
         }
       }
@@ -114,7 +121,7 @@ class PropertyForNoneTest : StringSpec() {
     "forNone: one explicit generator with one value and default attempts" {
         // 30 should be ignored as we have many always cases
         var attempts = 0
-        Gen.int().forNone { a ->
+        Gen.int().forNone { _ ->
           attempts++
           false
         }

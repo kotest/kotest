@@ -1,6 +1,6 @@
 package io.kotlintest.properties.shrinking
 
-import java.lang.Math.abs
+import kotlin.math.abs
 
 object IntShrinker : Shrinker<Int> {
   override fun shrink(failure: Int): List<Int> =

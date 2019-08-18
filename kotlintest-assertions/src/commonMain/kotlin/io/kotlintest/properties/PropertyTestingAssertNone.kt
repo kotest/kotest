@@ -1,7 +1,6 @@
 package io.kotlintest.properties
 
 import io.kotlintest.assertions.Failures
-import outputClassifications
 
 inline fun <reified A> assertNone(noinline fn: PropertyContext.(a: A) -> Unit) = assertNone(1000, fn)
 inline fun <reified A> assertNone(iterations: Int, noinline fn: PropertyContext.(a: A) -> Unit) {

@@ -3,7 +3,7 @@ package io.kotlintest.properties.shrinking
 class ChooseShrinker(val min: Int, val max: Int) : Shrinker<Int> {
   override fun shrink(failure: Int): List<Int> =
       when (failure) {
-      // can't shrink further than the min value !
+      // can't io.kotlintest.properties.shrinking.shrink further than the min value !
         min -> emptyList()
         else -> {
           val a = listOf(min, failure / 3, failure / 2, failure * 2 / 3)
