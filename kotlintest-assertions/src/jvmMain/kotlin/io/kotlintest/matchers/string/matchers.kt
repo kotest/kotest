@@ -9,7 +9,7 @@ import io.kotlintest.matchers.startWith
 import io.kotlintest.neverNullMatcher
 import io.kotlintest.should
 import io.kotlintest.shouldNot
-import io.kotlintest.show.show
+import io.kotlintest.assertions.show.show
 
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
 fun String?.shouldNotContainOnlyDigits() = this shouldNot containOnlyDigits()

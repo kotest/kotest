@@ -1,3 +1,4 @@
+import io.kotlintest.assertions.show.convertValueToString
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.propertyAssertionError
 import io.kotlintest.properties.PropertyContext

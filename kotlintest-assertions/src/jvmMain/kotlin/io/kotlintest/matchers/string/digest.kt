@@ -1,6 +1,6 @@
 package io.kotlintest.matchers.string
 
-import convertValueToString
+import io.kotlintest.assertions.show.convertValueToString
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.neverNullMatcher

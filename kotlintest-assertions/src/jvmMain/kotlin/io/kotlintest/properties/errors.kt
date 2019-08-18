@@ -1,6 +1,6 @@
 package io.kotlintest.properties
 
-import convertValueToString
+import io.kotlintest.assertions.show.convertValueToString
 import io.kotlintest.assertions.Failures
 
 fun propertyTestFailureMessage(attempt: Int,

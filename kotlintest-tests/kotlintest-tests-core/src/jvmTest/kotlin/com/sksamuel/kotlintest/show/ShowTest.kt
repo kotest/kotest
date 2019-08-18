@@ -1,8 +1,7 @@
 package com.sksamuel.kotlintest.show
 
-import io.kotlintest.shouldBe
-import io.kotlintest.show.Show
-import io.kotlintest.show.show
+import io.kotlintest.assertions.show.Show
+import io.kotlintest.assertions.show.show
 import io.kotlintest.specs.FunSpec
 
 class ShowTest : FunSpec() {

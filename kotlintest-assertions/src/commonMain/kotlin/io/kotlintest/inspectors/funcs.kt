@@ -1,19 +1,8 @@
 package io.kotlintest.inspectors
 
-import convertValueToString
-import exceptionToMessage
 import io.kotlintest.assertions.Failures
-
-fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
-  return col.map {
-    try {
-      f(it)
-      ElementPass(it)
-    } catch (e: Throwable) {
-      ElementFail(it, e)
-    }
-  }
-}
+import io.kotlintest.assertions.exceptionToMessage
+import io.kotlintest.assertions.show.show
 
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): String {
 
@@ -31,7 +20,9 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Strin
   if (failed.isEmpty()) {
     builder.append("--none--")
   } else {
-    builder.append(failed.joinToString("\n") { convertValueToString(it.t) + " => " + exceptionToMessage(it.throwable) })
+    builder.append(failed.joinToString("\n") {
+      it.t.show() + " => " + exceptionToMessage(it.throwable)
+    })
   }
   throw Failures.failure(builder.toString())
 }

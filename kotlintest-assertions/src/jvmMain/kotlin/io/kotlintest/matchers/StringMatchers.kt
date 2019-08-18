@@ -4,7 +4,7 @@ import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.matchers.string.include
 import io.kotlintest.neverNullMatcher
-import io.kotlintest.show.show
+import io.kotlintest.assertions.show.show
 import kotlin.math.min
 
 fun startWith(prefix: String) = neverNullMatcher<String> { value ->
