@@ -1,7 +1,9 @@
 package com.sksamuel.kotlintest.properties
 
-import io.kotlintest.matchers.*
 import io.kotlintest.matchers.longs.gt
+import io.kotlintest.matchers.string.endWith
+import io.kotlintest.matchers.string.haveLength
+import io.kotlintest.matchers.string.startWith
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.forAll

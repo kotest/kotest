@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.show
 
 import io.kotlintest.assertions.show.Show
 import io.kotlintest.assertions.show.show
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 
 class ShowTest : FunSpec() {
@@ -41,6 +42,5 @@ class ShowTest : FunSpec() {
 data class WibbleWobble(val a: String, val b: Int)
 
 class WibbleWobbleShow : Show<WibbleWobble> {
-  override fun supports(a: Any?): Boolean = a is WibbleWobble
   override fun show(a: WibbleWobble): String = "wibble ${a.a} wobble ${a.b}"
 }

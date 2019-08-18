@@ -1,10 +1,10 @@
 package com.sksamuel.kotlintest.matchers.string
 
-import io.kotlintest.matchers.endWith
-import io.kotlintest.matchers.haveLength
-import io.kotlintest.matchers.haveSubstring
-import io.kotlintest.matchers.match
-import io.kotlintest.matchers.startWith
+import io.kotlintest.matchers.string.endWith
+import io.kotlintest.matchers.string.haveLength
+import io.kotlintest.matchers.string.haveSubstring
+import io.kotlintest.matchers.string.match
+import io.kotlintest.matchers.string.startWith
 import io.kotlintest.matchers.string.beBlank
 import io.kotlintest.matchers.string.beEmpty
 import io.kotlintest.matchers.string.beLowerCase

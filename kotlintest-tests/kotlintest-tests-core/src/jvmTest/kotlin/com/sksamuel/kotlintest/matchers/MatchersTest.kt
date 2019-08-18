@@ -5,6 +5,7 @@ import io.kotlintest.assertions.asClue
 import io.kotlintest.assertions.withClue
 import io.kotlintest.matchers.*
 import io.kotlintest.matchers.collections.haveSize
+import io.kotlintest.matchers.string.haveLength
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.specs.FreeSpec
 import java.util.*

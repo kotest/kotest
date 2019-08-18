@@ -1,8 +1,7 @@
-package io.kotlintest.matchers
+package io.kotlintest.matchers.string
 
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
-import io.kotlintest.matchers.string.include
 import io.kotlintest.neverNullMatcher
 import io.kotlintest.assertions.show.show
 import kotlin.math.min

@@ -6,7 +6,7 @@ import io.kotlintest.matchers.collections.shouldNotContainExactly
 import io.kotlintest.matchers.doubles.negative
 import io.kotlintest.matchers.doubles.positive
 import io.kotlintest.matchers.doubles.shouldBeNegative
-import io.kotlintest.matchers.endWith
+import io.kotlintest.matchers.string.endWith
 import io.kotlintest.matchers.maps.haveKey
 import io.kotlintest.matchers.ints.shouldBeLessThan
 import io.kotlintest.matchers.ints.shouldBePositive
