@@ -18,8 +18,8 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
                 implementation kotlin('reflect')
-                implementation project(':kotlintest-core')
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation project(':kotlintest-core-jvm')
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm-jvm')
                 implementation 'net.sourceforge.argparse4j:argparse4j:0.8.1'
                 implementation 'com.github.ajalt:mordant:1.2.1'
             }
@@ -28,7 +28,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5-jvm')
             }
         }
     }

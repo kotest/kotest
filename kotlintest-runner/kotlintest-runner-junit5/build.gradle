@@ -17,9 +17,9 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                api project(':kotlintest-core')
-                api project(':kotlintest-runner:kotlintest-runner-console')
-                api project(':kotlintest-runner:kotlintest-runner-jvm')
+                api project(':kotlintest-core-jvm')
+                api project(':kotlintest-runner:kotlintest-runner-console-jvm')
+                api project(':kotlintest-runner:kotlintest-runner-jvm-jvm')
                 implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
