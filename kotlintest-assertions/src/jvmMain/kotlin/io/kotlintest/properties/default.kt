@@ -6,7 +6,7 @@ import java.lang.reflect.WildcardType
 
 @Suppress("UNCHECKED_CAST")
 actual inline fun <reified T> Gen.Companion.default(): Gen<T> {
-  return when (T::class.simpleName) {
+  return when (T::class.qualifiedName) {
     List::class.qualifiedName -> {
       val type = object : TypeReference<T>() {}.type as ParameterizedType
       val first = type.actualTypeArguments.first() as WildcardType

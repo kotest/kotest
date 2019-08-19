@@ -21,7 +21,7 @@ actual object Failures {
    * ```
    */
   var shouldRemoveKotlintestElementsFromStacktrace: Boolean =
-    System.getProperty("kotlintest.failures.stacktrace.clean") == "true"
+    System.getProperty("kotlintest.failures.stacktrace.clean", "true") == "true"
 
   actual fun failure(message: String): AssertionError = failure(message, null)
   actual fun failure(message: String, cause: Throwable?): AssertionError = AssertionError(message).apply {
