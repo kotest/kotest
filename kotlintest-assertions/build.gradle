@@ -29,12 +29,14 @@ kotlin {
         }
 
         jsMain {
+            dependsOn commonMain
             dependencies {
                 implementation kotlin('stdlib-js')
             }
         }
 
         jvmMain {
+            dependsOn commonMain
             dependencies {
                 implementation kotlin('stdlib-jdk8')
                 implementation kotlin("reflect")
