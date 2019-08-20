@@ -5,7 +5,6 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestType
 import io.kotlintest.core.specs.KotlinTestDsl
-import kotlinx.coroutines.CoroutineScope
 
 // used by intellij to detect junit 5 tests
 expect annotation class Junit5EnabledIfSystemProperty constructor(val named: String, val matches: String)
@@ -16,9 +15,13 @@ expect annotation class JsTest()
 
 // these functions call out to the jasmine runner
 // on the jvm these functions will be empty
-expect fun container(name: String, fn: suspend TestContext.() -> Unit)
+expect fun generateTests(rootTests: List<TestCase>)
 
-abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : Spec {
+abstract class SpecParent : Spec {
+  protected val rootTestCases = mutableListOf<TestCase>()
+}
+
+abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : SpecParent() {
 
   init {
     body()
@@ -30,13 +33,11 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : Spec {
   fun intellijMarkerStub() {
   }
 
-  // this is a dummy method, intercepted by the kotlin.js adapter to generate tests
+  // this is a dummy method, intercepted by the kotlin.js framework adapter to generate tests
   @JsTest
   fun kotlintestGenerateTests() {
-    rootTestCases.forEach { container(it.name, it.test) }
+    generateTests(rootTestCases.toList())
   }
-
-  private val rootTestCases = mutableListOf<TestCase>()
 
   override fun testCases(): List<TestCase> = rootTestCases
 
@@ -62,15 +63,3 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : Spec {
     }
   }
 }
-
-class MyTests : SuiteSpec() {
-  init {
-    suite("validate email") {
-      test("with @ sign") {
-
-      }
-    }
-  }
-}
-
-expect fun runTest(block: suspend (scope : CoroutineScope) -> Unit)

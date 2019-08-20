@@ -2,10 +2,9 @@ package io.kotlintest.core
 
 import io.kotlintest.Description
 import io.kotlintest.TestCase
-import kotlinx.coroutines.CoroutineScope
+import io.kotlintest.TestType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 actual annotation class Junit5TestFactory
@@ -14,10 +13,8 @@ actual annotation class Junit5EnabledIfSystemProperty constructor(actual val nam
 
 actual typealias JsTest = kotlin.test.Test
 
-actual fun runTest(block: suspend (scope : CoroutineScope) -> Unit): dynamic = GlobalScope.promise { block(this) }
-
-external fun describe(name: String, fn: () -> Unit)
-external fun it(name: String, fn: () -> Any?)
+external fun describe(name: String, test: () -> Unit)
+external fun it(name: String, test: () -> Any?)
 
 fun testContext(d: Description,
                 coroutineContext: CoroutineContext): TestContext = object : TestContext(coroutineContext) {
@@ -34,10 +31,21 @@ fun testContext(d: Description,
   override fun description(): Description = d
 }
 
-actual fun container(name: String, fn: suspend TestContext.() -> Unit) {
-  describe(name) {
+actual fun generateTests(rootTests: List<TestCase>) {
+  fun runner(testCase: TestCase) {
     GlobalScope.launch {
-      testContext(Description(emptyList(), name), coroutineContext)
+      val context = testContext(testCase.description, coroutineContext)
+      with(context) {
+        val test = testCase.test
+        test()
+      }
+    }
+  }
+
+  rootTests.forEach {
+    when (it.type) {
+      TestType.Container -> describe(it.name) { runner(it) }
+      TestType.Test -> it(it.name) { runner(it) }
     }
   }
 }
