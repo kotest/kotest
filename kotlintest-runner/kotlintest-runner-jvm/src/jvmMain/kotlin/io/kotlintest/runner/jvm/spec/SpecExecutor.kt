@@ -5,6 +5,7 @@ import arrow.core.getOrElse
 import arrow.core.orElse
 import arrow.core.toOption
 import io.kotlintest.*
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.internal.topLevelTests
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
@@ -46,7 +47,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
         logger.trace("Discovered top level tests $tests for spec $spec")
 
         userListeners.forEach {
-          it.beforeSpecStarted(Description.spec(spec::class), spec)
+          it.beforeSpecStarted(Description.fromSpecClass(spec::class), spec)
           it.beforeSpecClass(spec, tests.tests)
         }
 
@@ -55,16 +56,16 @@ class SpecExecutor(private val engineListener: TestEngineListener,
 
         userListeners.forEach {
           it.afterSpecClass(spec, results)
-          it.afterSpecCompleted(Description.spec(spec::class), spec)
+          it.afterSpecCompleted(Description.fromSpecClass(spec::class), spec)
         }
 
       }.fold(
           {
-            logger.trace("Completing spec ${Description.spec(spec::class)} with error $it")
+            logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with error $it")
             engineListener.afterSpecClass(spec.javaClass.kotlin, it)
           },
           {
-            logger.trace("Completing spec ${Description.spec(spec::class)} with success")
+            logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with success")
             engineListener.afterSpecClass(spec.javaClass.kotlin, null)
           }
       )

@@ -46,7 +46,7 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : SpecParent() {
   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
     rootTestCases.add(
       TestCase(
-        Description.spec(this::class).append(name),
+        Description.fromSpecClass(this::class).append(name),
         this,
         { SuiteScope(this).test() },
         sourceRef(),

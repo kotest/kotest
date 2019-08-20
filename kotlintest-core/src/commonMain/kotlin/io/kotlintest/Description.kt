@@ -18,7 +18,9 @@ import kotlin.reflect.KClass
 data class Description(val parents: List<String>, val name: String) {
 
   companion object {
-    fun spec(klass: KClass<out Any>): Description = spec(klass.simpleName ?: "<anon>")
+    /**
+     * Creates a Spec level description object for the given name.
+     */
     fun spec(name: String) = Description(emptyList(), name)
   }
 

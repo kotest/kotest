@@ -3,6 +3,7 @@ package io.kotlintest.plugin.pitest
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.runner.jvm.TestEngine
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.pitest.testapi.Description
@@ -12,7 +13,7 @@ import kotlin.reflect.KClass
 
 class KotlinTestUnit(val klass: KClass<out Spec>) : TestUnit {
 
-  override fun getDescription(): Description = Description(io.kotlintest.Description.spec(klass).fullName(), klass.java)
+  override fun getDescription(): Description = Description(io.kotlintest.Description.fromSpecClass(klass).fullName(), klass.java)
 
   override fun execute(rc: ResultCollector) {
 

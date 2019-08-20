@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.runner.console
 
 import io.kotlintest.Description
 import io.kotlintest.core.TestFilterResult
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.runner.console.SpecAwareTestFilter
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AbstractFeatureSpec
@@ -18,13 +19,13 @@ class SpecAwareTestFilterTest : FunSpec() {
   init {
 
     test("should detect style for spec with intermediate parents") {
-      val r = Description.spec(FeatureSpecs2::class)
+      val r = Description.fromSpecClass(FeatureSpecs2::class)
       SpecAwareTestFilter("Feature: a", FeatureSpecs2::class)
           .filter(r.append("Feature: a").append("Scenario: c")) shouldBe TestFilterResult.Include
     }
 
     test("should filter for fun specs") {
-      val r = Description.spec(FunSpecs::class)
+      val r = Description.fromSpecClass(FunSpecs::class)
       SpecAwareTestFilter("test a", FunSpecs::class).filter(r.append("test")) shouldBe TestFilterResult.Exclude
       SpecAwareTestFilter("test", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Exclude
       SpecAwareTestFilter("test a", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Include
@@ -32,7 +33,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for strings specs") {
-      val r = Description.spec(StringSpecs::class)
+      val r = Description.fromSpecClass(StringSpecs::class)
 
       SpecAwareTestFilter("test a", StringSpecs::class).filter(r.append("test")) shouldBe TestFilterResult.Exclude
       SpecAwareTestFilter("test", StringSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Exclude
@@ -41,7 +42,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for should specs") {
-      val r = Description.spec(ShouldSpecs::class)
+      val r = Description.fromSpecClass(ShouldSpecs::class)
 
       SpecAwareTestFilter("should test a", ShouldSpecs::class)
           .filter(r.append("should test")) shouldBe TestFilterResult.Exclude
@@ -54,7 +55,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for word specs") {
-      val r = Description.spec(WordSpecs::class)
+      val r = Description.fromSpecClass(WordSpecs::class)
 
       SpecAwareTestFilter("a should b", WordSpecs::class)
           .filter(r.append("a should")) shouldBe TestFilterResult.Include
@@ -73,7 +74,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for free specs") {
-      val r = Description.spec(FreeSpecs::class)
+      val r = Description.fromSpecClass(FreeSpecs::class)
 
       SpecAwareTestFilter("a", FreeSpecs::class)
           .filter(r.append("a")) shouldBe TestFilterResult.Include
@@ -116,7 +117,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for behavior specs") {
-      val r = Description.spec(BehaviorSpecs::class)
+      val r = Description.fromSpecClass(BehaviorSpecs::class)
 
       SpecAwareTestFilter("Given: a", BehaviorSpecs::class)
           .filter(r.append("Given: a")) shouldBe TestFilterResult.Include
@@ -151,7 +152,7 @@ class SpecAwareTestFilterTest : FunSpec() {
     }
 
     test("should filter for feature specs") {
-      val r = Description.spec(FeatureSpecs::class)
+      val r = Description.fromSpecClass(FeatureSpecs::class)
 
       SpecAwareTestFilter("Feature: a", FeatureSpecs::class)
           .filter(r.append("Feature: a")) shouldBe TestFilterResult.Include

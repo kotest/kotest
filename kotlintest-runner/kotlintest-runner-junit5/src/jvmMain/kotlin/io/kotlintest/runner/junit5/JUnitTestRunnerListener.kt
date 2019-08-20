@@ -8,6 +8,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -162,7 +163,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     logger.trace("afterSpecClass [$klass]")
 
-    val description = Description.spec(klass)
+    val description = Description.fromSpecClass(klass)
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
@@ -265,7 +266,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
 
     // the id must be completely unique, so we need to use the full class name of the spec, otherwise
     // if we have com.FooTest and org.FooTest gradle will throw a wobbly
-    val description = Description.spec(klass)
+    val description = Description.fromSpecClass(klass)
     val id = root.uniqueId.append("spec", description.name)
     val source = ClassSource.from(klass.java)
 

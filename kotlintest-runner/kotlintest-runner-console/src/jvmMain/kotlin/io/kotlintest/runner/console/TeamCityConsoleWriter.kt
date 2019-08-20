@@ -6,6 +6,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
+import io.kotlintest.core.fromSpecClass
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
@@ -39,12 +40,12 @@ class TeamCityConsoleWriter : ConsoleWriter {
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
     println()
-    println(TeamCityMessages.testSuiteStarted(Description.spec(klass).name))
+    println(TeamCityMessages.testSuiteStarted(Description.fromSpecClass(klass).name))
   }
 
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
     println()
-    val desc = Description.spec(klass)
+    val desc = Description.fromSpecClass(klass)
     if (t == null) {
       println(TeamCityMessages.testSuiteFinished(desc.name))
     } else {

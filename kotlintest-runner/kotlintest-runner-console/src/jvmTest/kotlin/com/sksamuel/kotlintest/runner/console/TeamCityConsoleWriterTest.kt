@@ -7,6 +7,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.TestType
 import io.kotlintest.assertions.shouldFail
 import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.data.forall
 import io.kotlintest.extensions.system.captureStandardErr
 import io.kotlintest.extensions.system.captureStandardOut
@@ -23,7 +24,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
   private val klass: KClass<out Spec> = TeamCityConsoleWriterTest::class
 
   private val testCaseContainer = TestCase(
-      Description.spec(klass).append("my context").append("my test container"),
+      Description.fromSpecClass(klass).append("my context").append("my test container"),
       this@TeamCityConsoleWriterTest,
       { },
       sourceRef(),

@@ -7,6 +7,7 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
+import io.kotlintest.core.fromSpecClass
 import java.time.Duration
 import kotlin.reflect.KClass
 
@@ -77,7 +78,7 @@ class MochaConsoleWriter(private val term: TermColors,
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
 
     n += 1
-    val specDesc = Description.spec(klass)
+    val specDesc = Description.fromSpecClass(klass)
 
     if (t == null) {
       println("$margin$n) " + term.brightWhite(klass.qualifiedName!!))
@@ -116,7 +117,7 @@ class MochaConsoleWriter(private val term: TermColors,
   override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
 
     n += 1
-    val specDesc = Description.spec(klass)
+    val specDesc = Description.fromSpecClass(klass)
     errors = true
 
     print(margin)

@@ -4,6 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.core.TestCaseFilter
 import io.kotlintest.core.TestFilterResult
+import io.kotlintest.core.fromSpecClass
 import kotlin.reflect.KClass
 import kotlin.reflect.full.allSuperclasses
 
@@ -30,7 +31,7 @@ class SpecAwareTestFilter(testPath: String, spec: KClass<out Spec>) : TestCaseFi
     }
   }
 
-  val test = parser.parse(Description.spec(spec), testPath)
+  val test = parser.parse(Description.fromSpecClass(spec), testPath)
 
   override fun filter(description: Description): TestFilterResult =
       if (description == test || test.isAncestorOf(description) || description.isAncestorOf(test)) TestFilterResult.Include else TestFilterResult.Exclude

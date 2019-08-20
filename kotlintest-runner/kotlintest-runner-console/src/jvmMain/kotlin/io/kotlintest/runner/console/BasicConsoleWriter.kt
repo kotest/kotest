@@ -6,6 +6,7 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
+import io.kotlintest.core.fromSpecClass
 import java.time.Duration
 import kotlin.reflect.KClass
 
@@ -47,7 +48,7 @@ class BasicConsoleWriter : ConsoleWriter {
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
 
     n += 1
-    val specDesc = Description.spec(klass)
+    val specDesc = Description.fromSpecClass(klass)
 
     if (t == null) {
       print("$n) ")

@@ -2,6 +2,7 @@ package io.kotlintest
 
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.core.sourceRef
 import org.junit.platform.commons.annotation.Testable
 import java.lang.AutoCloseable
@@ -17,7 +18,7 @@ abstract class AbstractSpec : Spec {
   override fun testCases(): List<TestCase> = rootTestCases.toList()
 
   protected fun createTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) =
-      TestCase(Description.spec(this::class).append(name), this, test, sourceRef(), type, config)
+      TestCase(Description.fromSpecClass(this::class).append(name), this, test, sourceRef(), type, config)
 
   protected fun addTestCase(name: String, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
     if (rootTestCases.any { it.name == name })
