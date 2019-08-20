@@ -236,7 +236,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     logger.trace("Creating test case descriptor $description/$type")
 
     val parentDescription = description.parent() ?: throw RuntimeException("All test cases must have a parent")
-    val parent = descriptors[parentDescription]!!
+    val parent = descriptors[parentDescription] ?: throw RuntimeException("Could not find $parentDescription in the list of descriptors")
     val id = parent.uniqueId.append("test", description.name)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name) {

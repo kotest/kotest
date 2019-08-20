@@ -31,14 +31,12 @@ fun testContext(d: Description,
   override fun description(): Description = d
 }
 
+// we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
 actual fun generateTests(rootTests: List<TestCase>) {
   fun runner(testCase: TestCase) {
     GlobalScope.launch {
-      val context = testContext(testCase.description, coroutineContext)
-      with(context) {
-        val test = testCase.test
-        test()
-      }
+      val t = testCase.test
+      testContext(testCase.description, coroutineContext).t()
     }
   }
 
