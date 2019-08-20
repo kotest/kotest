@@ -35,7 +35,7 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : Spec {
   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
     rootTestCases.add(
       TestCase(
-        Description.spec(this::class),
+        Description.spec(this::class).append(name),
         this,
         { SuiteScope(this).test() },
         sourceRef(),
@@ -47,8 +47,8 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : Spec {
 
   @KotlinTestDsl
   inner class SuiteScope(val context: TestContext) {
-    suspend fun test(name: String, test: () -> Unit) {
-      context.registerTestCase(name, this@SuiteSpec, { test() }, TestCaseConfig(), TestType.Test)
+    suspend fun test(name: String, test: suspend TestContext.() -> Unit) {
+      context.registerTestCase(name, this@SuiteSpec, test, TestCaseConfig(), TestType.Test)
     }
   }
 }
