@@ -53,13 +53,19 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
-    if (runningSpec.get() == Description.fromSpecClass(klass)) {
+    if (isRunning(klass)) {
       listener.beforeSpecClass(klass)
     } else {
       queue {
         beforeSpecClass(klass)
       }
     }
+  }
+
+  private fun isRunning(klass: KClass<out Spec>): Boolean {
+    val running = runningSpec.get()
+    val given = Description.fromSpecClass(klass)
+    return running == given
   }
 
   override fun enterTestCase(testCase: TestCase) {
