@@ -5,7 +5,9 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
+import kotlin.js.Promise
 
 actual annotation class Junit5TestFactory
 
@@ -13,15 +15,17 @@ actual annotation class Junit5EnabledIfSystemProperty constructor(actual val nam
 
 actual typealias JsTest = kotlin.test.Test
 
-external fun describe(name: String, test: () -> Unit)
-external fun it(name: String, test: () -> Any?)
+external fun describe(name: String, fn: () -> Unit)
+external fun xdescribe(name: String, fn: () -> Unit)
+external fun it(name: String, fn: () -> Any?)
+external fun xit(name: String, fn: () -> Any?)
 
 fun testContext(d: Description,
                 coroutineContext: CoroutineContext): TestContext = object : TestContext(coroutineContext) {
 
   override suspend fun registerTestCase(testCase: TestCase) {
     it(testCase.name) {
-      launch {
+      GlobalScope.promise {
         val t = testCase.test
         testContext(d.append(testCase.name), coroutineContext).t()
       }
@@ -33,11 +37,10 @@ fun testContext(d: Description,
 
 // we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
 actual fun generateTests(rootTests: List<TestCase>) {
-  fun runner(testCase: TestCase) {
-    GlobalScope.launch {
-      val t = testCase.test
-      testContext(testCase.description, coroutineContext).t()
-    }
+
+  fun runner(testCase: TestCase): Promise<Unit> = GlobalScope.promise {
+    val t = testCase.test
+    testContext(testCase.description, coroutineContext).t()
   }
 
   rootTests.forEach {
