@@ -1,6 +1,6 @@
 //apply plugin: 'org.jetbrains.dokka'
 //apply plugin: 'signing'
-
+apply plugin: 'maven-publish'
 //dokka {
 //    outputFormat = 'javadoc'
 //    outputDirectory = javadoc.destinationDir
