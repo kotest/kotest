@@ -1,6 +1,9 @@
 package io.kotlintest.specs
 
 import io.kotlintest.*
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
+import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.coroutines.CoroutineContext
 

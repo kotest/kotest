@@ -4,9 +4,7 @@ import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.Tag
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestCaseFilter
-import io.kotlintest.TestFilterResult
+import io.kotlintest.core.TestFilterResult
 
 /**
  * Returns true if the given [TestCase] is active.

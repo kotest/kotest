@@ -5,16 +5,16 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
 import io.kotlintest.Description
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
 import io.kotlintest.TestStatus
+import io.kotlintest.assertions.currentTimeMillis
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
-import java.lang.System.currentTimeMillis
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 

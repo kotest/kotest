@@ -10,7 +10,6 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.assertions.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
-import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 class AnnotationSpecTest : AnnotationSpec() {

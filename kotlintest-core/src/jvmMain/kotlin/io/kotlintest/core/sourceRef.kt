@@ -1,4 +1,4 @@
-package io.kotlintest
+package io.kotlintest.core
 
 actual fun sourceRef(): SourceRef {
   val stack = Throwable().stackTrace

@@ -1,4 +1,4 @@
-package io.kotlintest
+package io.kotlintest.core
 
 data class SourceRef(val lineNumber: Int, val fileName: String)
 

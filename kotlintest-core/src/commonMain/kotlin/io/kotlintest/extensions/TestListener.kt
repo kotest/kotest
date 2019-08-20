@@ -1,11 +1,11 @@
 package io.kotlintest.extensions
 
-import io.kotlintest.Description
 import io.kotlintest.IsolationMode.InstancePerLeaf
 import io.kotlintest.IsolationMode.InstancePerTest
-import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.Description
+import io.kotlintest.Spec
 
 interface TestListener {
 

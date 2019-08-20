@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.specs.stringspec
 
-import io.kotlintest.TestCaseConfig
 import io.kotlintest.IsolationMode
+import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.specs.StringSpec
 
 class StringSpecSingleInstanceDuplicateNameTest : StringSpec() {

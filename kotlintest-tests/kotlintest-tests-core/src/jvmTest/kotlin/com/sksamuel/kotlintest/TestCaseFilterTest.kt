@@ -2,10 +2,10 @@ package com.sksamuel.kotlintest
 
 import io.kotlintest.Description
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseFilter
-import io.kotlintest.TestFilterResult
 import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
+import io.kotlintest.core.TestCaseFilter
+import io.kotlintest.core.TestFilterResult
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

@@ -29,6 +29,7 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation project(':kotlintest-extensions')
             }
         }
     }

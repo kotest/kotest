@@ -5,6 +5,7 @@ package io.kotlintest.runner.console
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.Tag
+import io.kotlintest.core.TestCaseFilter
 import io.kotlintest.runner.jvm.DiscoveryRequest
 import io.kotlintest.runner.jvm.TestDiscovery
 import io.kotlintest.runner.jvm.TestEngineListener
@@ -27,7 +28,7 @@ class KotlinTestConsoleRunner(private val writer: TestEngineListener) {
 
     val runner = io.kotlintest.runner.jvm.TestEngine(
       specs,
-      if (filter == null) emptyList() else listOf(filter),
+      if (filter == null) emptyList<TestCaseFilter>() else listOf(filter),
       Project.parallelism(),
       includeTags,
       excludeTags,

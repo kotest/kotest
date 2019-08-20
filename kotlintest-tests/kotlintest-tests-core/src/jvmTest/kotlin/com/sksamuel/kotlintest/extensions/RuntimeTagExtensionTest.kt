@@ -2,8 +2,8 @@ package com.sksamuel.kotlintest.extensions
 
 import io.kotlintest.Spec
 import io.kotlintest.Tag
-import io.kotlintest.extensions.RuntimeTagExtension
 import io.kotlintest.assertions.fail
+import io.kotlintest.extensions.RuntimeTagExtension
 import io.kotlintest.specs.StringSpec
 
 class RuntimeTagExtensionTest : StringSpec() {

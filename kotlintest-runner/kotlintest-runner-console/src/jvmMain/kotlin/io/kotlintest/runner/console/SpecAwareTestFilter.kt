@@ -2,8 +2,8 @@ package io.kotlintest.runner.console
 
 import io.kotlintest.Description
 import io.kotlintest.Spec
-import io.kotlintest.TestCaseFilter
-import io.kotlintest.TestFilterResult
+import io.kotlintest.core.TestCaseFilter
+import io.kotlintest.core.TestFilterResult
 import kotlin.reflect.KClass
 import kotlin.reflect.full.allSuperclasses
 

@@ -1,5 +1,6 @@
-package io.kotlintest
+package io.kotlintest.core
 
+import io.kotlintest.Tag
 import io.kotlintest.extensions.TestCaseExtension
 
 data class TestCaseConfig(
@@ -23,4 +24,4 @@ data class TestCaseConfig(
 /**
  * Returns the timeout for a [TestCase] taking into account global settings.
  */
-fun TestCaseConfig.timeout(): Long = this.timeout ?: Project.timeout()
+expect fun TestCaseConfig.resolvedTimeout(): Long

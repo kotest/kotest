@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 data class Description(val parents: List<String>, val name: String) {
 
   companion object {
-    fun spec(klass: KClass<out Spec>) = spec(klass.qualifiedName!!)
+    fun spec(klass: KClass<out Any>): Description = spec(klass.simpleName ?: "<anon>")
     fun spec(name: String) = Description(emptyList(), name)
   }
 
@@ -31,7 +31,7 @@ data class Description(val parents: List<String>, val name: String) {
 
   fun isSpec(): Boolean = parents.isEmpty()
 
-  fun spec(): Description = Description.spec(parents.first())
+  fun spec(): Description = spec(parents.first())
 
   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(parents.drop(1), name)
 

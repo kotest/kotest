@@ -1,4 +1,4 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.wordspec
 
-import io.kotlintest.TestCaseConfig
+import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.specs.WordSpec
 
 class WordSpecSharedInstanceDuplicateNameTest : WordSpec() {

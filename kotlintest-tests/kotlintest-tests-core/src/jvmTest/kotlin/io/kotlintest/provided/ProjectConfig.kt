@@ -4,8 +4,8 @@ import com.sksamuel.kotlintest.AutoCloseListener
 import com.sksamuel.kotlintest.TestCaseFilterTestFilter
 import io.kotlintest.AbstractProjectConfig
 import io.kotlintest.FailureFirstSpecExecutionOrder
-import io.kotlintest.ProjectLevelFilter
 import io.kotlintest.SpecExecutionOrder
+import io.kotlintest.extensions.ProjectLevelFilter
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.properties.PropertyTesting

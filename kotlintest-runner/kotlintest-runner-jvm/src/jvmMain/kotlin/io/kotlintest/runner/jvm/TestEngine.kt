@@ -5,7 +5,7 @@ import io.kotlintest.DoNotParallelize
 import io.kotlintest.Project
 import io.kotlintest.Spec
 import io.kotlintest.Tag
-import io.kotlintest.TestCaseFilter
+import io.kotlintest.core.TestCaseFilter
 import io.kotlintest.extensions.SpecifiedTagsTagExtension
 import io.kotlintest.runner.jvm.internal.NamedThreadFactory
 import io.kotlintest.runner.jvm.spec.SpecExecutor

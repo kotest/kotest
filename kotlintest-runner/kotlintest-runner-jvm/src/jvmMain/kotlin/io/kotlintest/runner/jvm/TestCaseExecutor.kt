@@ -1,6 +1,8 @@
 package io.kotlintest.runner.jvm
 
 import io.kotlintest.*
+import io.kotlintest.core.TestContext
+import io.kotlintest.core.resolvedTimeout
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.internal.isActive
@@ -145,10 +147,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     }
 
     // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-    if (testCase.config.timeout() > 0) {
+    if (testCase.config.resolvedTimeout() > 0) {
       scheduler.schedule({
-        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.timeout()}ms"))
-      }, testCase.config.timeout(), TimeUnit.MILLISECONDS)
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.resolvedTimeout()}ms"))
+      }, testCase.config.resolvedTimeout(), TimeUnit.MILLISECONDS)
     }
 
     supervisorJob.invokeOnCompletion { e ->

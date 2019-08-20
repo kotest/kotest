@@ -1,8 +1,11 @@
-package io.kotlintest
+package io.kotlintest.core
 
-import io.kotlintest.specs.KotlinTestDsl
+import io.kotlintest.Description
+import io.kotlintest.Spec
+import io.kotlintest.TestCase
+import io.kotlintest.TestType
+import io.kotlintest.core.specs.KotlinTestDsl
 import kotlinx.coroutines.CoroutineScope
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -16,8 +19,6 @@ import kotlin.coroutines.CoroutineContext
  */
 @KotlinTestDsl
 abstract class TestContext(override val coroutineContext: CoroutineContext) : CoroutineScope {
-
-  private val logger = LoggerFactory.getLogger(this.javaClass)
 
   infix operator fun String.invoke(test: suspend TestContext.() -> Unit) {
     throw Exception("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")

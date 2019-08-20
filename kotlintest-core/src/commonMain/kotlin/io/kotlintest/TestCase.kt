@@ -1,5 +1,10 @@
 package io.kotlintest
 
+import io.kotlintest.core.SourceRef
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
+import io.kotlintest.core.sourceRef
+
 /**
  * A [TestCase] describes an actual block of code that will be tested.
  * It contains a reference back to the [Spec] instance in which it
@@ -40,8 +45,11 @@ data class TestCase(
   val config: TestCaseConfig) {
 
   val name = description.name
+
   fun isFocused() = name.startsWith("f:")
+
   fun isTopLevel(): Boolean = description.isTopLevel()
+
   fun isBang(): Boolean = name.startsWith("!")
 
   // for compatiblity with earlier plugins
@@ -56,6 +64,3 @@ data class TestCase(
   }
 }
 
-enum class TestType {
-  Container, Test
-}

@@ -5,9 +5,9 @@ import arrow.core.Success
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
+import io.kotlintest.core.TestContext
 import io.kotlintest.extensions.TopLevelTests
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener

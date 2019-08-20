@@ -5,7 +5,7 @@ import io.kotlintest.Project
 import io.kotlintest.StringTag
 import io.kotlintest.Tags
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
+import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.extensions.TagExtension
 import io.kotlintest.internal.isActive
 import io.kotlintest.shouldBe

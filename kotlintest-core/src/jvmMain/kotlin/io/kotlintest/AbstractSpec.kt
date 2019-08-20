@@ -1,5 +1,8 @@
 package io.kotlintest
 
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
+import io.kotlintest.core.sourceRef
 import org.junit.platform.commons.annotation.Testable
 import java.lang.AutoCloseable
 import java.util.*

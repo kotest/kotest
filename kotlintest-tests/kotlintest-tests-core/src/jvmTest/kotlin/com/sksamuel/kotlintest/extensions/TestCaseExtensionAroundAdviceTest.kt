@@ -5,7 +5,6 @@ import io.kotlintest.TestResult
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.StringSpec
-import java.time.Duration
 
 // this tests that we can manipulate the result of a test case from an extension
 class TestCaseExtensionAroundAdviceTest : StringSpec() {

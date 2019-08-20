@@ -3,12 +3,11 @@
 package com.sksamuel.kotlintest
 
 import io.kotlintest.Tag
-import io.kotlintest.TestCaseConfig
 import io.kotlintest.assertions.fail
+import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.provided.ProjectConfig
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import java.time.Duration
 import java.util.concurrent.atomic.AtomicInteger
 
 class ConfigTest : WordSpec() {

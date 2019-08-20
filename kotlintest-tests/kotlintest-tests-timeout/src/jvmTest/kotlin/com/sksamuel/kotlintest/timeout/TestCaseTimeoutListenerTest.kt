@@ -4,9 +4,9 @@ import com.nhaarman.mockito_kotlin.mock
 import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
 import io.kotlintest.TestResult
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
 import io.kotlintest.runner.jvm.TestCaseExecutor
 import io.kotlintest.runner.jvm.TestEngineListener
 import io.kotlintest.shouldBe

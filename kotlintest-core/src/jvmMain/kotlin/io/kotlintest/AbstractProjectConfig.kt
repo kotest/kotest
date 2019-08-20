@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.extensions.ProjectLevelFilter
 import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener

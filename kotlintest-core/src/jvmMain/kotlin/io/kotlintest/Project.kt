@@ -2,6 +2,8 @@
 
 package io.kotlintest
 
+import io.kotlintest.extensions.ProjectLevelFilter
+import io.kotlintest.core.TestCaseFilter
 import io.kotlintest.extensions.*
 import java.lang.StringBuilder
 

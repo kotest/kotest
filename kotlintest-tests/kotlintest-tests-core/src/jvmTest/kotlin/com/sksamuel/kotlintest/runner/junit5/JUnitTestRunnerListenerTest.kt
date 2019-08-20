@@ -7,8 +7,8 @@ import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.then
 import com.nhaarman.mockito_kotlin.times
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
 import io.kotlintest.TestResult
+import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.runner.junit5.JUnitTestRunnerListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec

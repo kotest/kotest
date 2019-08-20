@@ -3,10 +3,10 @@ package io.kotlintest.specs
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
 import io.kotlintest.TestResult
 import io.kotlintest.TestType
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
 import io.kotlintest.internal.unwrapIfReflectionCall
 import io.kotlintest.specs.AbstractAnnotationSpec.After
 import io.kotlintest.specs.AbstractAnnotationSpec.AfterAll

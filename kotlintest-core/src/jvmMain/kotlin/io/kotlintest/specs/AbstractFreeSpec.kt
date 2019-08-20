@@ -2,9 +2,9 @@ package io.kotlintest.specs
 
 import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
-import io.kotlintest.TestCaseConfig
-import io.kotlintest.TestContext
 import io.kotlintest.TestType
+import io.kotlintest.core.TestCaseConfig
+import io.kotlintest.core.TestContext
 import io.kotlintest.extensions.TestCaseExtension
 
 abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractSpec() {

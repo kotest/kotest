@@ -8,7 +8,6 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.StringSpec
 import kotlinx.coroutines.delay
 import java.lang.RuntimeException
-import java.time.Duration
 
 class GlobalTimeoutTest : StringSpec() {
 

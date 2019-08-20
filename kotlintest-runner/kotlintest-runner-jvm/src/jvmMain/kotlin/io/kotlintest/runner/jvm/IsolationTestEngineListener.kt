@@ -4,6 +4,7 @@ import io.kotlintest.Description
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
+import io.kotlintest.fromKlass
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
@@ -42,7 +43,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
-    if (runningSpec.compareAndSet(null, Description.spec(klass))) {
+    if (runningSpec.compareAndSet(null, Description.fromKlass(klass))) {
       listener.specInitialisationFailed(klass, t)
     } else {
       queue {
@@ -52,7 +53,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun beforeSpecClass(klass: KClass<out Spec>) {
-    if (runningSpec.get() == Description.spec(klass)) {
+    if (runningSpec.get() == Description.fromKlass(klass)) {
       listener.beforeSpecClass(klass)
     } else {
       queue {
@@ -102,7 +103,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
-    if (runningSpec.get() == Description.spec(klass)) {
+    if (runningSpec.get() == Description.fromKlass(klass)) {
       listener.afterSpecClass(klass, t)
       runningSpec.set(null)
       replay()
