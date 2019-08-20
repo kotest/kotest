@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.core.fromSpecClass
 import io.kotlintest.extensions.SpecLevelExtension
 import io.kotlintest.extensions.TestListener
 
@@ -71,7 +72,7 @@ interface Spec : TestListener {
    */
   fun tags(): Set<Tag> = emptySet()
 
-  fun description(): Description = Description.spec(this::class.simpleName ?: "<anon>")
+  fun description(): Description = Description.fromSpecClass(this::class)
 }
 
 /**
