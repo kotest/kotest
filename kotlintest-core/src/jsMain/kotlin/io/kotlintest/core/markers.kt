@@ -25,7 +25,7 @@ fun testContext(d: Description,
 
   override suspend fun registerTestCase(testCase: TestCase) {
     it(testCase.name) {
-      GlobalScope.promise {
+      promise {
         val t = testCase.test
         testContext(d.append(testCase.name), coroutineContext).t()
       }
