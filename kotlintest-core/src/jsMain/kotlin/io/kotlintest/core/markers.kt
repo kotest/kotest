@@ -18,19 +18,19 @@ external fun xdescribe(name: String, fn: () -> Unit)
 external fun it(name: String, fn: () -> Any?)
 external fun xit(name: String, fn: () -> Any?)
 
-fun testContext(d: Description,
+fun testContext(desc: Description,
                 coroutineContext: CoroutineContext): TestContext = object : TestContext(coroutineContext) {
 
   override suspend fun registerTestCase(testCase: TestCase) {
     it(testCase.name) {
       GlobalScope.promise {
         val t = testCase.test
-        testContext(d.append(testCase.name), coroutineContext).t()
+        testContext(desc.append(testCase.name), coroutineContext).t()
       }
     }
   }
 
-  override fun description(): Description = d
+  override fun description(): Description = desc
 }
 
 // we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
