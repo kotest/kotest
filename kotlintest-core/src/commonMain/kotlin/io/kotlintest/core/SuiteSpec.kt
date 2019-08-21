@@ -13,12 +13,46 @@ expect annotation class Junit5TestFactory()
 // used by the kotlin compiler to generate test methods, we use this for js impl
 expect annotation class JsTest()
 
-// these functions call out to the jasmine runner
+// these functions call out to the js test methods
 // on the jvm these functions will be empty
 expect fun generateTests(rootTests: List<TestCase>)
 
 abstract class SpecParent : Spec {
   protected val rootTestCases = mutableListOf<TestCase>()
+  override fun testCases(): List<TestCase> = rootTestCases
+  override fun closeResources() {}
+}
+
+abstract class QuickSpec(body: QuickSpec.() -> Unit = {}) : SpecParent() {
+
+  init {
+    body()
+  }
+
+  // this is a dummy method, so that the IDEs and compilers can "detect" this class as a test class
+  @Junit5EnabledIfSystemProperty("foo", "woo")
+  @Junit5TestFactory
+  fun intellijMarkerStub() {
+  }
+
+  // this is a dummy method, intercepted by the kotlin.js framework adapter to generate tests
+  @JsTest
+  fun kotlintestGenerateTests() {
+    generateTests(rootTestCases.toList())
+  }
+
+  fun t(name: String, test: suspend TestContext.() -> Unit) {
+    rootTestCases.add(
+      TestCase(
+        Description.fromSpecClass(this::class).append(name),
+        this,
+        test,
+        sourceRef(),
+        TestType.Test,
+        TestCaseConfig()
+      )
+    )
+  }
 }
 
 abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : SpecParent() {
@@ -38,10 +72,6 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : SpecParent() {
   fun kotlintestGenerateTests() {
     generateTests(rootTestCases.toList())
   }
-
-  override fun testCases(): List<TestCase> = rootTestCases
-
-  override fun closeResources() {}
 
   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
     rootTestCases.add(

@@ -4,10 +4,8 @@ import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.TestType
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
-import kotlin.js.Promise
 
 actual annotation class Junit5TestFactory
 
@@ -25,7 +23,7 @@ fun testContext(d: Description,
 
   override suspend fun registerTestCase(testCase: TestCase) {
     it(testCase.name) {
-      promise {
+      GlobalScope.promise {
         val t = testCase.test
         testContext(d.append(testCase.name), coroutineContext).t()
       }
@@ -38,7 +36,7 @@ fun testContext(d: Description,
 // we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
 actual fun generateTests(rootTests: List<TestCase>) {
 
-  fun runner(testCase: TestCase): Promise<Unit> = GlobalScope.promise {
+  fun runner(testCase: TestCase) = GlobalScope.promise {
     val t = testCase.test
     testContext(testCase.description, coroutineContext).t()
   }
