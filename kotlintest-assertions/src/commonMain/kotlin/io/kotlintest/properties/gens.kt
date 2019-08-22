@@ -22,14 +22,14 @@ import kotlin.random.Random
  * a UTF8 string.
  */
 @JvmOverloads
-fun Gen.Companion.string(maxSize: Int = 100): Gen<String> = object : Gen<String> {
+fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
   val literals = listOf("",
     "\n",
     "\nabc\n123\n",
     "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
 
   override fun constants(): Iterable<String> = literals
-  override fun random(): Sequence<String> = generateSequence { nextPrintableString(Random.nextInt(maxSize)) }
+  override fun random(): Sequence<String> = generateSequence { nextPrintableString(minSize + Random.nextInt(maxSize - minSize)) }
   override fun shrinker(): Shrinker<String>? = StringShrinker
 }
 
