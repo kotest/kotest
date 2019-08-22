@@ -58,7 +58,7 @@ abstract class QuickSpec(body: QuickSpec.() -> Unit = {}) : SpecParent() {
     body()
   }
 
-  fun t(name: String, test: suspend TestContext.() -> Unit) {
+  fun test(name: String, test: suspend TestContext.() -> Unit) {
     rootTestCases.add(
       TestCase(
         Description.fromSpecClass(this::class).append(name),
