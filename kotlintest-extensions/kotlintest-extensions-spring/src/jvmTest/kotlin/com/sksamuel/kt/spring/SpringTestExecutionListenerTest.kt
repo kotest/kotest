@@ -38,7 +38,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
     DummyTestExecutionListener.beforeTestMethod shouldBe 2
     DummyTestExecutionListener.beforeTestExecution shouldBe 2
-    DummyTestExecutionListener.prepareTestInstance shouldBe 2
+    DummyTestExecutionListener.prepareTestInstance shouldBe 1
     DummyTestExecutionListener.afterTestExecution shouldBe 2
     DummyTestExecutionListener.afterTestmethod shouldBe 2
     DummyTestExecutionListener.afterTestClass shouldBe 1
