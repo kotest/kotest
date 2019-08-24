@@ -141,3 +141,6 @@ inline fun <reified T : Enum<T>> Gen.Companion.enum(): Gen<T> = object : Gen<T> 
   override fun constants(): Iterable<T> = values
   override fun random(): Sequence<T> = from(values).random()
 }
+
+fun Gen.Companion.regex(regex: String) = RegexpGen(regex)
+fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
