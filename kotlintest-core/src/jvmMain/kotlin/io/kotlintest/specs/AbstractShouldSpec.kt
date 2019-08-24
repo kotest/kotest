@@ -7,6 +7,8 @@ import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Example:
@@ -39,25 +41,26 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
 
   fun should(name: String) = Testbuilder { test, config -> addTestCase(createTestName("should ", name), test, config, TestType.Test) }
 
-  inner class Testbuilder(val register: (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
-    fun config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Long? = null,
-        threads: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: suspend TestContext.() -> Unit) {
-      val config = TestCaseConfig(
-          enabled ?: defaultTestCaseConfig.enabled,
-          invocations ?: defaultTestCaseConfig.invocations,
-          timeout ?: defaultTestCaseConfig.timeout,
-          threads ?: defaultTestCaseConfig.threads,
-          tags ?: defaultTestCaseConfig.tags,
-          extensions ?: defaultTestCaseConfig.extensions)
-      register(test, config)
-    }
-  }
+   inner class Testbuilder(val register: (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
+      @UseExperimental(ExperimentalTime::class)
+      fun config(
+         invocations: Int? = null,
+         enabled: Boolean? = null,
+         timeout: Duration? = null,
+         threads: Int? = null,
+         tags: Set<Tag>? = null,
+         extensions: List<TestCaseExtension>? = null,
+         test: suspend TestContext.() -> Unit) {
+         val config = TestCaseConfig(
+            enabled ?: defaultTestCaseConfig.enabled,
+            invocations ?: defaultTestCaseConfig.invocations,
+            timeout ?: defaultTestCaseConfig.timeout,
+            threads ?: defaultTestCaseConfig.threads,
+            tags ?: defaultTestCaseConfig.tags,
+            extensions ?: defaultTestCaseConfig.extensions)
+         register(test, config)
+      }
+   }
 
   @KotlinTestDsl
   inner class ShouldScope(val context: TestContext) {
@@ -68,25 +71,26 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
     suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
         context.registerTestCase(createTestName("should ", name), this@AbstractShouldSpec, test, this@AbstractShouldSpec.defaultTestCaseConfig, TestType.Test)
 
-    inner class Testbuilder(val register: suspend (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
-      suspend fun config(
-          invocations: Int? = null,
-          enabled: Boolean? = null,
-          timeout: Long? = null,
-          threads: Int? = null,
-          tags: Set<Tag>? = null,
-          extensions: List<TestCaseExtension>? = null,
-          test: suspend TestContext.() -> Unit) {
-        val config = TestCaseConfig(
-            enabled ?: defaultTestCaseConfig.enabled,
-            invocations ?: defaultTestCaseConfig.invocations,
-            timeout ?: defaultTestCaseConfig.timeout,
-            threads ?: defaultTestCaseConfig.threads,
-            tags ?: defaultTestCaseConfig.tags,
-            extensions ?: defaultTestCaseConfig.extensions)
-        register(test, config)
-      }
-    }
+     inner class Testbuilder(val register: suspend (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
+        @UseExperimental(ExperimentalTime::class)
+        suspend fun config(
+           invocations: Int? = null,
+           enabled: Boolean? = null,
+           timeout: Duration? = null,
+           threads: Int? = null,
+           tags: Set<Tag>? = null,
+           extensions: List<TestCaseExtension>? = null,
+           test: suspend TestContext.() -> Unit) {
+           val config = TestCaseConfig(
+              enabled ?: defaultTestCaseConfig.enabled,
+              invocations ?: defaultTestCaseConfig.invocations,
+              timeout ?: defaultTestCaseConfig.timeout,
+              threads ?: defaultTestCaseConfig.threads,
+              tags ?: defaultTestCaseConfig.tags,
+              extensions ?: defaultTestCaseConfig.extensions)
+           register(test, config)
+        }
+     }
 
     suspend fun should(name: String) = Testbuilder { test, config -> context.registerTestCase(createTestName("should ", name), this@AbstractShouldSpec, test, config, TestType.Test) }
   }

@@ -7,6 +7,8 @@ import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 @Suppress("FunctionName")
 abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpec() {
@@ -115,27 +117,28 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
   @KotlinTestDsl
   inner class ThenContext(val context: TestContext)
 
-  @KotlinTestDsl
-  inner class TestScope(val name: String, val context: TestContext) {
-    suspend fun config(
-            invocations: Int? = null,
-            enabled: Boolean? = null,
-            timeout: Long? = null,
-            threads: Int? = null,
-            tags: Set<Tag>? = null,
-            extensions: List<TestCaseExtension>? = null,
-            test: TestContext.() -> Unit) {
-      val config = TestCaseConfig(
-              enabled ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.enabled,
-              invocations ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.invocations,
-              timeout ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.timeout,
-              threads ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.threads,
-              tags ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.tags,
-              extensions ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.extensions)
+   @KotlinTestDsl
+   inner class TestScope(val name: String, val context: TestContext) {
+      @UseExperimental(ExperimentalTime::class)
+      suspend fun config(
+         invocations: Int? = null,
+         enabled: Boolean? = null,
+         timeout: Duration? = null,
+         threads: Int? = null,
+         tags: Set<Tag>? = null,
+         extensions: List<TestCaseExtension>? = null,
+         test: TestContext.() -> Unit) {
+         val config = TestCaseConfig(
+            enabled ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.enabled,
+            invocations ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.invocations,
+            timeout ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.timeout,
+            threads ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.threads,
+            tags ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.tags,
+            extensions ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.extensions)
 
-      context.registerTestCase(name, this@AbstractBehaviorSpec, { test.invoke(this) }, config, TestType.Test)
-    }
-  }
+         context.registerTestCase(name, this@AbstractBehaviorSpec, { test.invoke(this) }, config, TestType.Test)
+      }
+   }
 
   private val thisSpec: AbstractBehaviorSpec
     get() = this@AbstractBehaviorSpec

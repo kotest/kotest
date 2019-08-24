@@ -7,6 +7,8 @@ import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -14,26 +16,27 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
     body()
   }
 
-  inner class TestBuilder(val context: TestContext, val name: String) {
+   inner class TestBuilder(val context: TestContext, val name: String) {
 
-    suspend fun config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Long? = null,
-        parallelism: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: suspend TestContext.() -> Unit) {
-      val config = TestCaseConfig(
-          enabled ?: defaultTestCaseConfig.enabled,
-          invocations ?: defaultTestCaseConfig.invocations,
-          timeout ?: defaultTestCaseConfig.timeout,
-          parallelism ?: defaultTestCaseConfig.threads,
-          tags ?: defaultTestCaseConfig.tags,
-          extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestCase(name, this@AbstractExpectSpec, test, config, TestType.Test)
-    }
-  }
+      @UseExperimental(ExperimentalTime::class)
+      suspend fun config(
+         invocations: Int? = null,
+         enabled: Boolean? = null,
+         timeout: Duration? = null,
+         parallelism: Int? = null,
+         tags: Set<Tag>? = null,
+         extensions: List<TestCaseExtension>? = null,
+         test: suspend TestContext.() -> Unit) {
+         val config = TestCaseConfig(
+            enabled ?: defaultTestCaseConfig.enabled,
+            invocations ?: defaultTestCaseConfig.invocations,
+            timeout ?: defaultTestCaseConfig.timeout,
+            parallelism ?: defaultTestCaseConfig.threads,
+            tags ?: defaultTestCaseConfig.tags,
+            extensions ?: defaultTestCaseConfig.extensions)
+         context.registerTestCase(name, this@AbstractExpectSpec, test, config, TestType.Test)
+      }
+   }
 
   @KotlinTestDsl
   inner class ExpectScope(val context: TestContext) {

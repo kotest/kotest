@@ -6,6 +6,9 @@ import io.kotlintest.extensions.ProjectLevelFilter
 import io.kotlintest.core.TestCaseFilter
 import io.kotlintest.extensions.*
 import java.lang.StringBuilder
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 /**
  * Internal class used to hold project wide configuration.
@@ -32,7 +35,8 @@ object Project {
   }
 
   private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
-  private const val timeoutDefaultMs = 600 * 1000L
+  @UseExperimental(ExperimentalTime::class)
+  private val defaultTimeout = 600.seconds
 
   private fun discoverProjectConfig(): AbstractProjectConfig? {
     return try {
@@ -58,7 +62,8 @@ object Project {
   private var writeSpecFailureFile: Boolean = false
   private var _globalAssertSoftly: Boolean = false
   private var parallelism: Int = 1
-  private var _timeout: Long? = null
+  @UseExperimental(ExperimentalTime::class)
+  private var _timeout: Duration? = null
 
   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
@@ -73,7 +78,8 @@ object Project {
   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
   fun parallelism() = parallelism
 
-  fun timeout(): Long = _timeout ?: timeoutDefaultMs
+  @UseExperimental(ExperimentalTime::class)
+  fun timeout(): Duration = _timeout ?: defaultTimeout
 
   var failOnIgnoredTests: Boolean = false
 

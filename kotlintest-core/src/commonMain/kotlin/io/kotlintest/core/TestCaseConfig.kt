@@ -2,12 +2,15 @@ package io.kotlintest.core
 
 import io.kotlintest.Tag
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
-data class TestCaseConfig(
+@UseExperimental(ExperimentalTime::class)
+data class TestCaseConfig constructor(
   val enabled: Boolean = true,
   val invocations: Int = 1,
   // max time of the test, in millis
-  val timeout: Long? = null,
+  val timeout: Duration? = null,
     // provides for concurrent execution of the test case
     // only has an effect if invocations > 1
   val threads: Int = 1,
@@ -24,4 +27,5 @@ data class TestCaseConfig(
 /**
  * Returns the timeout for a [TestCase] taking into account global settings.
  */
-expect fun TestCaseConfig.resolvedTimeout(): Long
+@UseExperimental(ExperimentalTime::class)
+expect fun TestCaseConfig.resolvedTimeout(): Duration

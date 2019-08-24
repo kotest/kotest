@@ -8,16 +8,19 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.StringSpec
 import kotlinx.coroutines.delay
 import java.lang.RuntimeException
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 class TimeoutTest : StringSpec() {
 
   init {
 
-    "a blocked thread should timeout a test".config(timeout = 250) {
+    "a blocked thread should timeout a test".config(timeout = 250.milliseconds) {
       Thread.sleep(1000)
     }
 
-    "a suspended coroutine should timeout a test".config(timeout = 250) {
+    "a suspended coroutine should timeout a test".config(timeout = 250.milliseconds) {
       delay(1000)
     }
   }
