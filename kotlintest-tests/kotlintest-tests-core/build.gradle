@@ -24,17 +24,18 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation kotlin("reflect")
                 implementation project(':kotlintest-core')
                 implementation project(':kotlintest-assertions')
+                // we use the internals of the JVM project in the tests
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
                 implementation project(':kotlintest-assertions:kotlintest-assertions-arrow')
-                implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+                implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
                 implementation "com.nhaarman:mockito-kotlin:1.6.0"
                 implementation 'org.mockito:mockito-core:2.24.0'
                 // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-                implementation 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
-                implementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
+                implementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+                implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
                 implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
                 implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"

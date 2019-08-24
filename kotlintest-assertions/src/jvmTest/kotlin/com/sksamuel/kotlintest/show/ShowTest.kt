@@ -33,9 +33,6 @@ class ShowTest : FunSpec() {
 - pennnant: R08
 )"""
     }
-    test("Detect show for arbitrary class via service loader") {
-      WibbleWobble("foo", 123).show() shouldBe "wibble foo wobble 123"
-    }
   }
 }
 

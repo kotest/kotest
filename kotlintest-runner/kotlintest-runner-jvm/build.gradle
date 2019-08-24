@@ -17,13 +17,13 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation kotlin("reflect")
+                api kotlin("reflect")
                 api project(":kotlintest-core")
                 api project(":kotlintest-extensions")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-                implementation 'io.github.classgraph:classgraph:4.8.1'
-                implementation 'org.slf4j:slf4j-api:1.7.25'
-                implementation "io.arrow-kt:arrow-core-extensions:$arrow_version"
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+                api "io.github.classgraph:classgraph:$classgraphVersion"
+                api 'org.slf4j:slf4j-api:1.7.25'
+                api "io.arrow-kt:arrow-core-extensions:$arrow_version"
             }
         }
 

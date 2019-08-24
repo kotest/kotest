@@ -22,13 +22,12 @@ kotlin {
             dependencies {
                 implementation project(':kotlintest-assertions')
                 implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
-                implementation 'com.jayway.jsonpath:json-path:2.4.0'
+                implementation "com.jayway.jsonpath:json-path:$jsonPathVersion"
             }
         }
 
         jvmTest {
             dependencies {
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
             }
         }

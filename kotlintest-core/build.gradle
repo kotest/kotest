@@ -36,10 +36,10 @@ kotlin {
             dependsOn commonMain
             dependencies {
                 api kotlin('stdlib-jdk8')
-                implementation "io.ktor:ktor-client-cio:$ktorVersion"
                 implementation kotlin("reflect")
                 api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-                api "org.slf4j:slf4j-api:1.7.25"
+                implementation "io.ktor:ktor-client-cio:$ktorVersion"
+                implementation "org.slf4j:slf4j-api:$slf4jVersion"
                 implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
                 implementation "io.arrow-kt:arrow-core-data:$arrow_version"
             }

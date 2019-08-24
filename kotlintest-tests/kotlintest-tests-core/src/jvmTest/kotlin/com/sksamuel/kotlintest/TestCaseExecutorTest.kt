@@ -17,7 +17,10 @@ import io.kotlintest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 @Suppress("BlockingMethodInNonBlockingContext")
 class TestCaseExecutorTest : FunSpec() {
 
@@ -225,7 +228,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         Thread.sleep(10000)
-      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 100.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -250,7 +253,7 @@ class TestCaseExecutorTest : FunSpec() {
         while (currentTimeMillis() < startTime + 1000) {
           "this" shouldNotBe "that"
         }
-      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125))
+      }.copy(config = TestCaseConfig(true, invocations = 1, threads = 1, timeout = 125.milliseconds))
 
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}

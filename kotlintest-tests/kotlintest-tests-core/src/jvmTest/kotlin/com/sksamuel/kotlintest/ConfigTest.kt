@@ -9,7 +9,10 @@ import io.kotlintest.provided.ProjectConfig
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@UseExperimental(ExperimentalTime::class)
 class ConfigTest : WordSpec() {
 
   object TagZ : Tag()
@@ -36,7 +39,7 @@ class ConfigTest : WordSpec() {
       // should still be approx 100 ms as each of our threads will block for 100ms.
       // So we set the timeout an order of magnitude higher to account for a bit of thread
       // context switching and it should never hit.
-      "support threads parameter".config(timeout = 2000, threads = 100, invocations = 100) {
+      "support threads parameter".config(timeout = 2000.milliseconds, threads = 100, invocations = 100) {
         // this test should not timeout
         Thread.sleep(100)
         threadCounter.incrementAndGet()
