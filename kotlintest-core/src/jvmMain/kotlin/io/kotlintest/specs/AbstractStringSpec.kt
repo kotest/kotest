@@ -6,6 +6,8 @@ import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Example:
@@ -20,14 +22,15 @@ abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : Ab
     body()
   }
 
+  @UseExperimental(ExperimentalTime::class)
   fun String.config(
-      invocations: Int? = null,
-      enabled: Boolean? = null,
-      timeout: Long? = null,
-      threads: Int? = null,
-      tags: Set<Tag>? = null,
-      extensions: List<TestCaseExtension>? = null,
-      test: suspend TestContext.() -> Unit) {
+     invocations: Int? = null,
+     enabled: Boolean? = null,
+     timeout: Duration? = null,
+     threads: Int? = null,
+     tags: Set<Tag>? = null,
+     extensions: List<TestCaseExtension>? = null,
+     test: suspend TestContext.() -> Unit) {
     val config = TestCaseConfig(
         enabled ?: defaultTestCaseConfig.enabled,
         invocations ?: defaultTestCaseConfig.invocations,

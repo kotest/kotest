@@ -5,6 +5,8 @@ import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -15,10 +17,11 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
   @KotlinTestDsl
   inner class TestBuilder(val context: TestContext, val name: String) {
 
+    @UseExperimental(ExperimentalTime::class)
     suspend fun config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Long? = null,
+        timeout: Duration? = null,
         parallelism: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,

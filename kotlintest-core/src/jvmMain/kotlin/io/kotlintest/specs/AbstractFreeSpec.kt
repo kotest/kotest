@@ -6,6 +6,8 @@ import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractSpec() {
 
@@ -19,23 +21,24 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
   infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTestCase(this, test, defaultTestCaseConfig, TestType.Test)
 
-  fun String.config(
+   @UseExperimental(ExperimentalTime::class)
+   fun String.config(
       invocations: Int? = null,
       enabled: Boolean? = null,
-      timeout: Long? = null,
+      timeout: Duration? = null,
       threads: Int? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
       test: suspend TestContext.() -> Unit) {
-    val config = TestCaseConfig(
-        enabled ?: defaultTestCaseConfig.enabled,
-        invocations ?: defaultTestCaseConfig.invocations,
-        timeout ?: defaultTestCaseConfig.timeout,
-        threads ?: defaultTestCaseConfig.threads,
-        tags ?: defaultTestCaseConfig.tags,
-        extensions ?: defaultTestCaseConfig.extensions)
-    addTestCase(this, test, config, TestType.Test)
-  }
+      val config = TestCaseConfig(
+         enabled ?: defaultTestCaseConfig.enabled,
+         invocations ?: defaultTestCaseConfig.invocations,
+         timeout ?: defaultTestCaseConfig.timeout,
+         threads ?: defaultTestCaseConfig.threads,
+         tags ?: defaultTestCaseConfig.tags,
+         extensions ?: defaultTestCaseConfig.extensions)
+      addTestCase(this, test, config, TestType.Test)
+   }
 
   inner class FreeSpecScope(val context: TestContext) {
 
@@ -45,22 +48,23 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
     suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractFreeSpec, test, defaultTestCaseConfig, TestType.Test)
 
-    suspend fun String.config(
+     @UseExperimental(ExperimentalTime::class)
+     suspend fun String.config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Long? = null,
+        timeout: Duration? = null,
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
         test: FreeSpecScope.() -> Unit) {
-      val config = TestCaseConfig(
-          enabled ?: defaultTestCaseConfig.enabled,
-          invocations ?: defaultTestCaseConfig.invocations,
-          timeout ?: defaultTestCaseConfig.timeout,
-          threads ?: defaultTestCaseConfig.threads,
-          tags ?: defaultTestCaseConfig.tags,
-          extensions ?: defaultTestCaseConfig.extensions)
-      context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, config, TestType.Test)
-    }
+        val config = TestCaseConfig(
+           enabled ?: defaultTestCaseConfig.enabled,
+           invocations ?: defaultTestCaseConfig.invocations,
+           timeout ?: defaultTestCaseConfig.timeout,
+           threads ?: defaultTestCaseConfig.threads,
+           tags ?: defaultTestCaseConfig.tags,
+           extensions ?: defaultTestCaseConfig.extensions)
+        context.registerTestCase(this, this@AbstractFreeSpec, { FreeSpecScope(this).test() }, config, TestType.Test)
+     }
   }
 }

@@ -4,6 +4,8 @@ import io.kotlintest.extensions.ProjectLevelFilter
 import io.kotlintest.extensions.ProjectLevelExtension
 import io.kotlintest.extensions.ProjectListener
 import io.kotlintest.extensions.TestListener
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
@@ -62,7 +64,8 @@ abstract class AbstractProjectConfig {
    * Tests which define their own timeout will override this.
    * The value here is in millis
    */
-  open val timeout: Long? = null
+  @UseExperimental(ExperimentalTime::class)
+  open val timeout: Duration? = null
 
   /**
    * Override this function and return a number greater than 1 if you wish to

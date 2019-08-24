@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.ExperimentalTime
 
 /**
  * The [TestCaseExecutor] is responsible for preparing and executing a single [TestCase].
@@ -102,6 +103,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   }
 
   // exectues the test case or if the test is not active then returns an ignored test result
+  @UseExperimental(ExperimentalTime::class)
   private suspend fun executeTest(testCase: TestCase, context: TestContext, start: Long): TestResult {
     listener.beforeTestCaseExecution(testCase)
 
@@ -147,10 +149,10 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     }
 
     // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-    if (testCase.config.resolvedTimeout() > 0) {
+    if (testCase.config.resolvedTimeout().toLongNanoseconds() > 0) {
       scheduler.schedule({
-        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.resolvedTimeout()}ms"))
-      }, testCase.config.resolvedTimeout(), TimeUnit.MILLISECONDS)
+        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.resolvedTimeout().toLongMilliseconds()}ms"))
+      }, testCase.config.resolvedTimeout().toLongMilliseconds(), TimeUnit.MILLISECONDS)
     }
 
     supervisorJob.invokeOnCompletion { e ->

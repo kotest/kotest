@@ -6,6 +6,8 @@ import io.kotlintest.core.TestContext
 import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Example:
@@ -37,23 +39,28 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   @KotlinTestDsl
   inner class WordScope(val context: TestContext) {
 
-    suspend fun String.config(
+     @UseExperimental(ExperimentalTime::class)
+     suspend fun String.config(
         invocations: Int? = null,
         enabled: Boolean? = null,
-        timeout: Long? = null,
+        timeout: Duration? = null,
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
         test: suspend FinalTestContext.() -> Unit) {
-      val config = TestCaseConfig(
-          enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
-          invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
-          timeout ?: this@AbstractWordSpec.defaultTestCaseConfig.timeout,
-          threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
-          tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
-          extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
-      context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this, coroutineContext).test() }, config, TestType.Test)
-    }
+        val config = TestCaseConfig(
+           enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
+           invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,
+           timeout ?: this@AbstractWordSpec.defaultTestCaseConfig.timeout,
+           threads ?: this@AbstractWordSpec.defaultTestCaseConfig.threads,
+           tags ?: this@AbstractWordSpec.defaultTestCaseConfig.tags,
+           extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
+        context.registerTestCase(this,
+           this@AbstractWordSpec,
+           { FinalTestContext(this, coroutineContext).test() },
+           config,
+           TestType.Test)
+     }
 
     suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
         context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this, coroutineContext).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
