@@ -1,15 +1,41 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-runner:kotlintest-runner-jvm')
-    compile 'org.pitest:pitest:1.4.5'
-    testCompile project(":kotlintest-runner:kotlintest-runner-junit5")
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation kotlin('reflect')
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation 'org.pitest:pitest:1.4.5'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {

@@ -1,23 +1,48 @@
-plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id "io.kotlintest"
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
-dependencies {
-    testImplementation project(':kotlintest-core')
-    testImplementation project(':kotlintest-assertions')
-    testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
-    testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-assertions')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+                implementation "com.nhaarman:mockito-kotlin:1.6.0"
+                implementation 'org.mockito:mockito-core:2.24.0'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {
     useJUnitPlatform()
-
-    scanForTestClasses = false
 
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
@@ -27,6 +52,7 @@ test {
 
     testLogging {
         events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat = 'full'
     }
 }
 

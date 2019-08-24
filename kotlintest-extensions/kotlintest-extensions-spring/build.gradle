@@ -1,19 +1,44 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    compile 'org.springframework:spring-test:5.1.7.RELEASE'
-    compile 'org.springframework:spring-context:5.1.7.RELEASE'
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+repositories {
+    mavenCentral()
+}
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE')
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation project(':kotlintest-core')
+                implementation project(':kotlintest-assertions')
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation kotlin('stdlib-jdk8')
+                implementation kotlin('reflect')
+                implementation 'org.springframework:spring-test:5.1.7.RELEASE'
+                implementation 'org.springframework:spring-context:5.1.7.RELEASE'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation 'org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 test {

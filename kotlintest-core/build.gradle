@@ -1,17 +1,62 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.25'
-    compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-    compile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.1'
-    compile project(":kotlintest-assertions")
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+    js()
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                api project(":kotlintest-assertions")
+                api kotlin("stdlib-common")
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutinesVersion"
+            }
+        }
+
+        jsMain {
+            dependsOn commonMain
+            dependencies {
+                api kotlin('stdlib-js')
+                api kotlin("test-js")
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutinesVersion"
+            }
+        }
+
+        jvmMain {
+            dependsOn commonMain
+            dependencies {
+                api kotlin('stdlib-jdk8')
+                implementation "io.ktor:ktor-client-cio:$ktorVersion"
+                implementation kotlin("reflect")
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+                api "org.slf4j:slf4j-api:1.7.25"
+                implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+                implementation "io.arrow-kt:arrow-core-data:$arrow_version"
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 sourceCompatibility = 1.6

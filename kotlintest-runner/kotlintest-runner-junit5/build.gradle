@@ -1,19 +1,39 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
 }
 
-dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    compile project(':kotlintest-runner:kotlintest-runner-jvm')
-    compile project(':kotlintest-runner:kotlintest-runner-console')
-    compile "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
-    compile "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
-    compile "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                api project(':kotlintest-core')
+                api project(':kotlintest-runner:kotlintest-runner-console')
+                api project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+                implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+                implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+                implementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+                implementation 'org.slf4j:slf4j-api:1.7.25'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 apply from: '../../publish.gradle'

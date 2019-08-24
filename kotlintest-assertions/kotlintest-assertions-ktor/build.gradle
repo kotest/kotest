@@ -1,36 +1,41 @@
-buildscript {
-    ext.ktor_version = '1.1.2'
-}
-
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id "io.kotlintest"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
     maven { url "https://dl.bintray.com/kotlin/ktor" }
 }
 
-dependencies {
-    compile project(':kotlintest-assertions')
-    compile "io.ktor:ktor-server-core:$ktor_version"
-    compile "io.ktor:ktor-server-test-host:$ktor_version"
-    testCompile project(':kotlintest-core')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation project(':kotlintest-assertions')
+                implementation "io.ktor:ktor-server-core:$ktorVersion"
+                implementation "io.ktor:ktor-server-test-host:$ktorVersion"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 apply from: '../../publish.gradle'

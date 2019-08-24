@@ -4,24 +4,41 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id "io.kotlintest"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
-dependencies {
-    compile project(':kotlintest-assertions')
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
-    compile 'com.jayway.jsonpath:json-path:2.4.0'
-    testCompile project(':kotlintest-core')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation project(':kotlintest-assertions')
+                implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+                implementation 'com.jayway.jsonpath:json-path:2.4.0'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
+                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
 }
 
 apply from: '../../publish.gradle'
