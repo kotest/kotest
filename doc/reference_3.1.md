@@ -603,6 +603,46 @@ class StringSpecExample : StringSpec({
 })
 ```
 
+It may be desrable to have each row of data parameters as an individual test. To generating such individual tests follow a similar pattern for each spec style. An example in the `FreeSpec` is below.
+
+```kotlin
+class IntegerMathSpec : FreeSpec({
+    "Addition" - {
+        listOf(
+            row("1 + 0", 1) { 1 + 0 },
+            row("1 + 1", 2) { 1 + 1 }
+        ).map { (description: String, expected: Int, math: () -> Int) ->
+            description {
+                math() shouldBe expected
+            }
+        }
+    }
+    // ...
+    "Complex Math" - {
+        listOf(
+            row("8/2(2+2)", 16) { 8 / 2 * (2 + 2) },
+            row("5/5 + 1*1 + 3-2", 3) { 5 / 5 + 1 * 1 + 3 - 2 }
+        ).map { (description: String, expected: Int, math: () -> Int) ->
+            description {
+                math() shouldBe expected
+            }
+        }
+    }
+})
+```
+
+Produces 4 tests and 2 parent descriptions:
+
+```txt
+IntegerMathSpec
+  ✓ Addition
+    ✓ 1 + 0
+    ✓ 1 + 1
+  ✓ Complex Math
+    ✓ 8/2(2+2)
+    ✓ 5/5 + 1*1 + 3-2
+```
+
 
 
 
