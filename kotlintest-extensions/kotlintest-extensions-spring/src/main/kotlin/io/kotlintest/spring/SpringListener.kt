@@ -5,37 +5,42 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.ConstructorExtension
 import io.kotlintest.extensions.TestListener
-import io.kotlintest.extensions.TopLevelTest
+import net.bytebuddy.ByteBuddy
+import net.bytebuddy.description.modifier.Visibility
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
+import net.bytebuddy.implementation.FixedValue
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR
 import org.springframework.test.context.TestContextManager
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 object SpringListener : TestListener {
+
+  private val logger = LoggerFactory.getLogger(SpringListener::class.java)
 
   // Each Spec needs its own context. However, this listener is a singleton, so we need
   // to keep this map to separate those contexts instead of making this class non-singleton, thus
   // breaking client code
   private val testContexts = mutableMapOf<Spec, TestContextManager>()
 
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
-    testContexts[spec] = TestContextManager(spec.javaClass)
-  }
-
   override fun beforeSpec(spec: Spec) {
+    testContexts[spec] = TestContextManager(spec.javaClass)
     spec.testContext.beforeTestClass()
+    spec.testContext.prepareTestInstance(spec)
   }
 
   override fun beforeTest(testCase: TestCase) {
-    testCase.spec.testContext.beforeTestMethod(testCase.spec, method)
-    testCase.spec.testContext.prepareTestInstance(testCase.spec)
-    testCase.spec.testContext.beforeTestExecution(testCase.spec, method)
+    testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
+    testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
 
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    testCase.spec.testContext.afterTestMethod(testCase.spec, method, null as Throwable?)
-    testCase.spec.testContext.afterTestExecution(testCase.spec, method, null as Throwable?)
+    testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
+    testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
   }
 
   override fun afterSpec(spec: Spec) {
@@ -45,9 +50,28 @@ object SpringListener : TestListener {
   private val Spec.testContext: TestContextManager
     get() = testContexts.getValue(this)
 
-  // We don't run methods, but we need to pass one to TestContextManager, so we'll pass any.
-  private val method = SpringListener::class.java.getMethod("hashCode")
+  // Check https://github.com/kotlintest/kotlintest/issues/950#issuecomment-524127221
+  // for a in-depth explanation. Too much to write here
+  private val Spec.method: Method
+    get() {
+      val klass = this::class.java
 
+
+      return if(Modifier.isFinal(klass.modifiers)) {
+        logger.warn("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+        this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java)
+      } else {
+        val fakeSpec = ByteBuddy()
+                .subclass(klass)
+                .defineMethod("kotlintestDummyMethod", String::class.java, Visibility.PUBLIC)
+                .intercept(FixedValue.value("Foo"))
+                .make()
+                .load(this::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST)
+                .loaded
+
+        fakeSpec.getMethod("kotlintestDummyMethod")
+      }
+    }
 }
 
 object SpringAutowireConstructorExtension : ConstructorExtension {
