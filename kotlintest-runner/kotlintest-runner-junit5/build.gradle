@@ -20,11 +20,11 @@ kotlin {
                 api project(':kotlintest-core')
                 api project(':kotlintest-runner:kotlintest-runner-console')
                 api project(':kotlintest-runner:kotlintest-runner-jvm')
-                implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
-                implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
-                implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
-                implementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-                implementation 'org.slf4j:slf4j-api:1.7.25'
+                api "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+                api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+                api 'org.slf4j:slf4j-api:1.7.25'
             }
         }
     }

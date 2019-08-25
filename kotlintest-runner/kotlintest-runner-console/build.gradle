@@ -17,19 +17,19 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation kotlin('reflect')
-                implementation project(':kotlintest-core')
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
-                implementation 'net.sourceforge.argparse4j:argparse4j:0.8.1'
-                implementation 'com.github.ajalt:mordant:1.2.1'
+               api kotlin('reflect')
+                api project(':kotlintest-core')
+                api project(':kotlintest-runner:kotlintest-runner-jvm')
+                api "net.sourceforge.argparse4j:argparse4j:$argparse4jVersion"
+                api "com.github.ajalt:mordant:$mordantVersion"
             }
         }
 
         jvmTest {
             dependencies {
                 implementation kotlin('stdlib-jdk8')
-                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
-                implementation project(':kotlintest-extensions')
+                api project(':kotlintest-runner:kotlintest-runner-junit5')
+                api project(':kotlintest-extensions')
             }
         }
     }

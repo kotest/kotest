@@ -8,8 +8,14 @@ buildscript {
     ext.junitJupiterVersion = "5.5.1"
     ext.dokkaVersion = '0.9.17'
     ext.coroutinesVersion = "1.3.0"
+    ext.argparse4jVersion = "0.8.1"
     ext.mockkVersion = "1.9.3"
     ext.ktorVersion = "1.2.3"
+    ext.mordantVersion = "1.2.1"
+    ext.log4jVersion = "2.12.1"
+    ext.slf4jVersion = "1.7.28"
+    ext.classgraphVersion = "4.8.46"
+    ext.jsonPathVersion = "2.4.0"
     repositories {
         mavenCentral()
         mavenLocal()

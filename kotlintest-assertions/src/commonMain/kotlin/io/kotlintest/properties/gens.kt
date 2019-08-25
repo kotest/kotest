@@ -496,13 +496,34 @@ fun Random.nextPrintableChar(): Char {
 }
 
 fun nextPrintableString(length: Int): String {
-  return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
+   return (0 until length).map { Random.nextPrintableChar() }.joinToString("")
 }
 
 /**
  * Returns a [[Gen]] which always returns the same value.
  */
 fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
-  override fun constants(): Iterable<T> = listOf(value)
-  override fun random(): Sequence<T> = generateInfiniteSequence { value }
+   override fun constants(): Iterable<T> = listOf(value)
+   override fun random(): Sequence<T> = generateInfiniteSequence { value }
+}
+
+fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
+
+   // 0 is a multiple of everything
+   override fun constants(): Iterable<Int> = listOf(0)
+
+   override fun random(): Sequence<Int> = generateSequence {
+      Random.nextInt(max / k) * k
+   }.filter { it >= 0 }
+}
+
+fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
+
+   // 1 is a factor of all ints
+   override fun constants(): Iterable<Int> = listOf(1)
+
+   override fun random(): Sequence<Int> = generateSequence {
+      Random.nextInt(k)
+   }.filter { it > 0 }
+    .filter { k % it == 0 }
 }

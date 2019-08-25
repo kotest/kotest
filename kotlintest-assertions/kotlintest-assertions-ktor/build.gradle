@@ -25,7 +25,6 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation project(':kotlintest-runner:kotlintest-runner-jvm')
                 implementation project(':kotlintest-runner:kotlintest-runner-junit5')
             }
         }
