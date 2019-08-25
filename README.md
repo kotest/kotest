@@ -206,14 +206,7 @@ For maven you must configure the surefire plugin for junit tests.
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.22.1</version>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-    </dependencies>
+    <version>2.22.2</version>
 </plugin>
 ```
 
