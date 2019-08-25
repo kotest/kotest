@@ -25,15 +25,15 @@ import io.kotlintest.properties.Gen
  * }
  * ```
  */
-fun <A, B: Throwable> Gen.Companion.`try`(GT: Gen<B>, GA: Gen<A>): Gen<Try<A>> =
-  object : Gen<Try<A>> {
-    override fun constants(): Iterable<Try<A>> =
-      GA.constants().map(::Success)
+fun <A, B : Throwable> Gen.Companion.`try`(GT: Gen<B>, GA: Gen<A>): Gen<Try<A>> =
+   object : Gen<Try<A>> {
+      override fun constants(): Iterable<Try<A>> =
+         GA.constants().map(::Success)
 
-    override fun random(): Sequence<Try<A>> =
-      Try.applicativeError().run {
-        generateSequence {
-          choose({ GT.random().iterator().next() }, { GA.random().iterator().next() }).fix()
-        }
-      }
-  }
+      override fun random(seed: Long?): Sequence<Try<A>> =
+         Try.applicativeError().run {
+            generateSequence {
+               choose({ GT.random(seed).iterator().next() }, { GA.random(seed).iterator().next() }).fix()
+            }
+         }
+   }

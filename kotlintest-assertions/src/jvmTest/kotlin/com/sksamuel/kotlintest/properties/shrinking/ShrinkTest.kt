@@ -74,7 +74,7 @@ class ShrinkTest : StringSpec({
     shouldThrowAny {
       assertAll(object : Gen<Int> {
         override fun constants(): Iterable<Int> = emptyList()
-        override fun random(): Sequence<Int> = generateSequence { 14 }
+        override fun random(seed: Long?): Sequence<Int> = generateSequence { 14 }
         override fun shrinker() = ChooseShrinker(5, 15)
       }) { a ->
         a shouldBe lte(10)
@@ -84,7 +84,7 @@ class ShrinkTest : StringSpec({
 
   "should io.kotlintest.properties.shrinking.shrink strings to empty string" {
     val gen = object : Gen<String> {
-      override fun random(): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
+      override fun random(seed: Long?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
       override fun constants(): Iterable<String> = emptyList()
       override fun shrinker(): Shrinker<String>? = StringShrinker
     }
@@ -97,7 +97,7 @@ class ShrinkTest : StringSpec({
 
   "should io.kotlintest.properties.shrinking.shrink strings to min failing size" {
     val gen = object : Gen<String> {
-      override fun random(): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
+      override fun random(seed: Long?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
       override fun constants(): Iterable<String> = emptyList()
       override fun shrinker(): Shrinker<String>? = StringShrinker
     }

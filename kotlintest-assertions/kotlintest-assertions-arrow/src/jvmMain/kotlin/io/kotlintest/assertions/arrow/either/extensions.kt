@@ -25,14 +25,14 @@ import io.kotlintest.assertions.arrow.choose
  * ```
  */
 fun <A, B> Gen.Companion.either(GA: Gen<A>, GB: Gen<B>): Gen<Either<A, B>> =
-  object : Gen<Either<A, B>> {
-    override fun constants(): Iterable<Either<A, B>> =
-      GA.constants().map(::Left) + GB.constants().map(::Right)
+   object : Gen<Either<A, B>> {
+      override fun constants(): Iterable<Either<A, B>> =
+         GA.constants().map(::Left) + GB.constants().map(::Right)
 
-    override fun random(): Sequence<Either<A, B>> =
-      Either.applicativeError<A>().run {
-        generateSequence {
-          choose({ GA.random().iterator().next() }, { GB.random().iterator().next() }).fix()
-        }
-      }
-  }
+      override fun random(seed: Long?): Sequence<Either<A, B>> =
+         Either.applicativeError<A>().run {
+            generateSequence {
+               choose({ GA.random(seed).iterator().next() }, { GB.random(seed).iterator().next() }).fix()
+            }
+         }
+   }

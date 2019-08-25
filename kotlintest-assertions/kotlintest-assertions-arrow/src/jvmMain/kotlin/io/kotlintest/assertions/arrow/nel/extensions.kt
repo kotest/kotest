@@ -19,14 +19,14 @@ import io.kotlintest.properties.int
  * ```
  */
 inline fun <reified A> Gen.Companion.nel(GA: Gen<A>, head: A): Gen<NonEmptyList<A>> =
-  object : Gen<NonEmptyList<A>> {
-    override fun constants(): Iterable<NonEmptyList<A>> =
-      listOf(NonEmptyList(head, GA.constants().toList()))
+   object : Gen<NonEmptyList<A>> {
+      override fun constants(): Iterable<NonEmptyList<A>> =
+         listOf(NonEmptyList(head, GA.constants().toList()))
 
-    override fun random(): Sequence<NonEmptyList<A>> =
-      generateSequence {
-        val size = Gen.int().random().iterator().next()
-        val tail = GA.random().take(size)
-        NonEmptyList.of(head, *tail.toList().toTypedArray())
-      }
-  }
+      override fun random(seed: Long?): Sequence<NonEmptyList<A>> =
+         generateSequence {
+            val size = Gen.int().random(seed).iterator().next()
+            val tail = GA.random(seed).take(size)
+            NonEmptyList.of(head, *tail.toList().toTypedArray())
+         }
+   }
