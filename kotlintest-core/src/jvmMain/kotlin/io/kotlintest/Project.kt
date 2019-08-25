@@ -34,75 +34,78 @@ object Project {
     }
   }
 
-  private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
-  @UseExperimental(ExperimentalTime::class)
-  private val defaultTimeout = 600.seconds
+   private const val defaultProjectConfigFullyQualifiedName = "io.kotlintest.provided.ProjectConfig"
+   @UseExperimental(ExperimentalTime::class)
+   private val defaultTimeout = 600.seconds
+   private val defaultAssertionMode = AssertionMode.None
 
-  private fun discoverProjectConfig(): AbstractProjectConfig? {
-    return try {
-      val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config")
-          ?: defaultProjectConfigFullyQualifiedName
-      val clas = Class.forName(projectConfigFullyQualifiedName)
-      when (val field = clas.declaredFields.find { it.name == "INSTANCE" }) {
-        // if the static field for an object cannot be found, then instantiate
-        null -> clas.newInstance() as AbstractProjectConfig
-        // if the static field can be found then use it
-        else -> field.get(null) as AbstractProjectConfig
+   private fun discoverProjectConfig(): AbstractProjectConfig? {
+      return try {
+         val projectConfigFullyQualifiedName = System.getProperty("kotlintest.project.config")
+            ?: defaultProjectConfigFullyQualifiedName
+         val clas = Class.forName(projectConfigFullyQualifiedName)
+         when (val field = clas.declaredFields.find { it.name == "INSTANCE" }) {
+            // if the static field for an object cannot be found, then instantiate
+            null -> clas.newInstance() as AbstractProjectConfig
+            // if the static field can be found then use it
+            else -> field.get(null) as AbstractProjectConfig
+         }
+      } catch (cnf: ClassNotFoundException) {
+         null
       }
-    } catch (cnf: ClassNotFoundException) {
-      null
-    }
   }
 
-  private val _extensions: MutableList<ProjectLevelExtension> = mutableListOf(SystemPropertyTagExtension, RuntimeTagExtension)
-  private val _listeners = mutableListOf<TestListener>()
-  private val _projectlisteners = mutableListOf<ProjectListener>()
-  private val _filters = mutableListOf<ProjectLevelFilter>()
-  private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
-  private var writeSpecFailureFile: Boolean = false
-  private var _globalAssertSoftly: Boolean = false
-  private var parallelism: Int = 1
-  @UseExperimental(ExperimentalTime::class)
-  private var _timeout: Duration? = null
+   private val _extensions: MutableList<ProjectLevelExtension> =
+      mutableListOf(SystemPropertyTagExtension, RuntimeTagExtension)
+   private val _listeners = mutableListOf<TestListener>()
+   private val _projectlisteners = mutableListOf<ProjectListener>()
+   private val _filters = mutableListOf<ProjectLevelFilter>()
+   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
+   private var writeSpecFailureFile: Boolean = false
+   private var _globalAssertSoftly: Boolean = false
+   private var parallelism: Int = 1
+   @UseExperimental(ExperimentalTime::class)
+   private var _timeout: Duration? = null
+   var failOnIgnoredTests: Boolean = false
+   private var _assertionMode: AssertionMode? = null
 
-  fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
-  fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
-  private fun projectListeners(): List<ProjectListener> = _projectlisteners
-  fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
-  fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
-  fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
+   fun discoveryExtensions(): List<DiscoveryExtension> = _extensions.filterIsInstance<DiscoveryExtension>()
+   fun constructorExtensions(): List<ConstructorExtension> = _extensions.filterIsInstance<ConstructorExtension>()
+   private fun projectListeners(): List<ProjectListener> = _projectlisteners
+   fun specExtensions(): List<SpecExtension> = _extensions.filterIsInstance<SpecExtension>()
+   fun testCaseExtensions(): List<TestCaseExtension> = _extensions.filterIsInstance<TestCaseExtension>()
+   fun tagExtensions(): List<TagExtension> = _extensions.filterIsInstance<TagExtension>()
 
-  fun listeners(): List<TestListener> = _listeners
-  fun testCaseFilters(): List<TestCaseFilter> = _filters.filterIsInstance<TestCaseFilter>()
+   fun listeners(): List<TestListener> = _listeners
+   fun testCaseFilters(): List<TestCaseFilter> = _filters.filterIsInstance<TestCaseFilter>()
 
-  fun globalAssertSoftly(): Boolean = _globalAssertSoftly
-  fun parallelism() = parallelism
+   fun globalAssertSoftly(): Boolean = _globalAssertSoftly
+   fun parallelism() = parallelism
 
-  @UseExperimental(ExperimentalTime::class)
-  fun timeout(): Duration = _timeout ?: defaultTimeout
+   @UseExperimental(ExperimentalTime::class)
+   fun timeout(): Duration = _timeout ?: defaultTimeout
 
-  var failOnIgnoredTests: Boolean = false
+   fun tags(): Tags {
+      val tags = tagExtensions().map { it.tags() }
+      return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
+   }
 
-  fun tags(): Tags {
-    val tags = tagExtensions().map { it.tags() }
-    return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
-  }
+   private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.also {
+      _extensions.addAll(it.extensions())
+      _listeners.addAll(it.listeners())
+      _projectlisteners.addAll(it.projectListeners())
+      _filters.addAll(it.filters())
+      _specExecutionOrder = it.specExecutionOrder()
+      _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
+      _timeout = it.timeout
+      parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
+      writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
+      failOnIgnoredTests = System.getProperty("kotlintest.build.fail-on-ignore") == "true" || it.failOnIgnoredTests
+      _assertionMode = it.assertionMode
+   }
 
-  private var projectConfig: AbstractProjectConfig? = discoverProjectConfig()?.also {
-    _extensions.addAll(it.extensions())
-    _listeners.addAll(it.listeners())
-    _projectlisteners.addAll(it.projectListeners())
-    _filters.addAll(it.filters())
-    _specExecutionOrder = it.specExecutionOrder()
-    _globalAssertSoftly = System.getProperty("kotlintest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
-    _timeout = it.timeout
-    parallelism = System.getProperty("kotlintest.parallelism")?.toInt() ?: it.parallelism()
-    writeSpecFailureFile = System.getProperty("kotlintest.write.specfailures") == "true" || it.writeSpecFailureFile()
-    failOnIgnoredTests = System.getProperty("kotlintest.build.fail-on-ignore") == "true" || it.failOnIgnoredTests
-  }
-
-  fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
-  fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
+   fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
+   fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
   fun beforeAll() {
     printConfigs()
@@ -133,8 +136,9 @@ object Project {
     _extensions.remove(extension)
   }
 
-  fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
-  fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
+   fun assertionMode(): AssertionMode = _assertionMode ?: defaultAssertionMode
+   fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
+   fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
 
   private fun printConfigs() {
     println("~~~ Project Configuration ~~~")
