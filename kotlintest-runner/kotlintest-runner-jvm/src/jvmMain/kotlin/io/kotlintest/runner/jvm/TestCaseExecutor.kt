@@ -1,6 +1,8 @@
 package io.kotlintest.runner.jvm
 
 import io.kotlintest.*
+import io.kotlintest.assertions.AssertionCounter
+import io.kotlintest.assertions.getAndReset
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.resolvedTimeout
 import io.kotlintest.extensions.TestCaseExtension
@@ -102,7 +104,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
     return if (active) executeTest(testCase, context, start) else TestResult.Ignored
   }
 
-  // exectues the test case or if the test is not active then returns an ignored test result
+   // executes the test case or if the test is not active then returns an ignored test result
   @UseExperimental(ExperimentalTime::class)
   private suspend fun executeTest(testCase: TestCase, context: TestContext, start: Long): TestResult {
     listener.beforeTestCaseExecution(testCase)
@@ -116,48 +118,64 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       else -> Executors.newFixedThreadPool(testCase.config.threads)!!
     }
 
-    val dispatcher = executor.asCoroutineDispatcher()
+      val dispatcher = executor.asCoroutineDispatcher()
 
-    // captures an error from the test case closures
-    val error = AtomicReference<Throwable?>(null)
+      // captures an error from the test case closures
+      val error = AtomicReference<Throwable?>(null)
 
-    val supervisorJob = context.launch {
+      val supervisorJob = context.launch {
 
-      val testCaseJobs = (0 until testCase.config.invocations).map {
-        // asynchronously disaptch the job and return any error
-        async(dispatcher) {
-          listener.invokingTestCase(testCase, 1)
-          try {
-            if (Project.globalAssertSoftly()) {
-              assertSoftly {
-                testCase.test(context)
-              }
-            } else {
-              testCase.test(context)
+         val testCaseJobs = (0 until testCase.config.invocations).map {
+            // asynchronously disaptch the job and return any error
+            async(dispatcher) {
+               listener.invokingTestCase(testCase, 1)
+
+               try {
+                  AssertionCounter.reset()
+                  if (Project.globalAssertSoftly()) {
+                     assertSoftly {
+                        testCase.test(context)
+                     }
+                  } else {
+                     testCase.test(context)
+                  }
+
+                  val warningMessage = "Test '${testCase.description.fullName()}' did not invoke any assertions"
+
+                  if (AssertionCounter.getAndReset() > 0) null else {
+                     when (testCase.spec.resolvedAssertionMode()) {
+                        AssertionMode.Error -> RuntimeException(warningMessage)
+                        AssertionMode.Warn -> {
+                           println("Warning: $warningMessage")
+                           null
+                        }
+                        AssertionMode.None -> null
+                     }
+                  }
+
+               } catch (t: Throwable) {
+                  t.unwrapIfReflectionCall()
+               }
             }
-            null
-          } catch (t: Throwable) {
-            t.unwrapIfReflectionCall()
-          }
-        }
+         }
+
+         testCaseJobs.forEach {
+            val testError = it.await()
+            error.compareAndSet(null, testError)
+         }
       }
 
-      testCaseJobs.forEach {
-        val testError = it.await()
-        error.compareAndSet(null, testError)
+      // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
+      val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
+      if (timeout > 0) {
+         scheduler.schedule({
+            error.compareAndSet(null, TimeoutException("Execution of test took longer than ${timeout}ms"))
+         }, timeout, TimeUnit.MILLISECONDS)
       }
-    }
 
-    // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
-    if (testCase.config.resolvedTimeout().toLongNanoseconds() > 0) {
-      scheduler.schedule({
-        error.compareAndSet(null, TimeoutException("Execution of test took longer than ${testCase.config.resolvedTimeout().toLongMilliseconds()}ms"))
-      }, testCase.config.resolvedTimeout().toLongMilliseconds(), TimeUnit.MILLISECONDS)
-    }
-
-    supervisorJob.invokeOnCompletion { e ->
-      error.compareAndSet(null, e)
-    }
+      supervisorJob.invokeOnCompletion { e ->
+         error.compareAndSet(null, e)
+      }
 
     supervisorJob.join()
 

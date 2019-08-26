@@ -28,51 +28,53 @@ import io.kotlintest.extensions.TestListener
  */
 interface Spec : TestListener {
 
-  fun isolationMode(): IsolationMode? = null
+   fun isolationMode(): IsolationMode? = null
 
-  /**
-   * Override this function to register extensions
-   * which will be invoked during execution of this spec.
-   *
-   * If you wish to register an extension across the project
-   * then use [AbstractProjectConfig.extensions].
-   */
-  fun extensions(): List<SpecLevelExtension> = listOf()
+   /**
+    * Override this function to register extensions
+    * which will be invoked during execution of this spec.
+    *
+    * If you wish to register an extension across the project
+    * then use [AbstractProjectConfig.extensions].
+    */
+   fun extensions(): List<SpecLevelExtension> = listOf()
 
-  /**
-   * Override this function to register instances of
-   * [TestListener] which will be notified of events during
-   * execution of this spec.
-   *
-   * If you wish to register a listener that will be notified
-   * for all specs, then use [AbstractProjectConfig.listeners].
-   */
-  fun listeners(): List<TestListener> = emptyList()
+   /**
+    * Override this function to register instances of
+    * [TestListener] which will be notified of events during
+    * execution of this spec.
+    *
+    * If you wish to register a listener that will be notified
+    * for all specs, then use [AbstractProjectConfig.listeners].
+    */
+   fun listeners(): List<TestListener> = emptyList()
 
-  /**
-   *  These are the top level [TestCase] instances for this Spec.
-   */
-  fun testCases(): List<TestCase>
+   /**
+    *  These are the top level [TestCase] instances for this Spec.
+    */
+   fun testCases(): List<TestCase>
 
-  fun hasFocusedTest(): Boolean = focused().isNotEmpty()
+   fun hasFocusedTest(): Boolean = focused().isNotEmpty()
 
-  fun closeResources()
+   fun closeResources()
 
-  /**
-   * Sets the order of top level [TestCase]s in this spec.
-   * If this function returns a null value, then the value set in
-   * the [AbstractProjectConfig] will be used.
-   */
-  fun testCaseOrder(): TestCaseOrder? = null
+   /**
+    * Sets the order of top level [TestCase]s in this spec.
+    * If this function returns a null value, then the value set in
+    * the [AbstractProjectConfig] will be used.
+    */
+   fun testCaseOrder(): TestCaseOrder? = null
 
-  /**
-   * Any tags added here will be in applied to all [TestCase]s defined
-   * in this [Spec] in addition to any defined on the individual
-   * tests themselves.
-   */
-  fun tags(): Set<Tag> = emptySet()
+   /**
+    * Any tags added here will be in applied to all [TestCase]s defined
+    * in this [Spec] in addition to any defined on the individual
+    * tests themselves.
+    */
+   fun tags(): Set<Tag> = emptySet()
 
-  fun description(): Description = Description.fromSpecClass(this::class)
+   fun description(): Description = Description.fromSpecClass(this::class)
+
+   val assertionMode: AssertionMode? get() = null
 }
 
 /**
