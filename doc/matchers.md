@@ -38,6 +38,7 @@ For the extension function style, each function has an equivalent negated versio
 | `map.shouldContainKeys(keys)` | Asserts that the map contains mappings for all the given keys. |
 | `map.shouldContainValue(value)` | Asserts that the map contains at least one mapping where the value is `value`. |
 | `map.shouldContainValues(values)` | Asserts that the map contains all the given values. |
+| `map.shouldBeEmpty()` | Asserts that this map is empty.\1 |
 
 | Strings ||
 | -------- | ---- |
