@@ -36,7 +36,7 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
@@ -52,12 +52,12 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
         val gen2 = object : Gen<Int> {
-          override fun random(seed: Long?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
+          override fun random(seed: Random?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
@@ -74,12 +74,12 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
         val gen2 = object : Gen<Int> {
-          override fun random(seed: Long?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
+          override fun random(seed: Random?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
@@ -97,12 +97,12 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
         val gen2 = object : Gen<Int> {
-          override fun random(seed: Long?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
+          override fun random(seed: Random?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
@@ -121,12 +121,12 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
         val gen2 = object : Gen<Int> {
-          override fun random(seed: Long?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
+          override fun random(seed: Random?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 
@@ -146,12 +146,12 @@ class PropertyAssertAllOutputTest : FunSpec() {
       captureStdout {
 
         val gen = object : Gen<String> {
-          override fun random(seed: Long?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
+          override fun random(seed: Random?): Sequence<String> = listOf("a", "b", "c", "d", "e").asSequence()
           override fun constants(): Iterable<String> = listOf("x", "y")
         }
 
         val gen2 = object : Gen<Int> {
-          override fun random(seed: Long?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
+          override fun random(seed: Random?): Sequence<Int> = listOf(1, 2, 3, 4, 5).asSequence()
           override fun constants(): Iterable<Int> = listOf(-1, -2)
         }
 

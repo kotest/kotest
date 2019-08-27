@@ -1,6 +1,7 @@
 package io.kotlintest.properties
 
 import io.kotlintest.properties.shrinking.Shrinker
+import kotlin.random.Random
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -42,7 +43,7 @@ interface Gen<T> {
    * Generate a random sequence of type T, that is compatible
    * with the constraints of this generator.
    */
-  fun random(seed: Long? = null): Sequence<T>
+  fun random(random: Random? = null): Sequence<T>
 
   fun shrinker(): Shrinker<T>? = null
 
@@ -53,7 +54,7 @@ interface Gen<T> {
      val outer = this
      return object : Gen<T> {
         override fun constants(): Iterable<T> = outer.constants().filter(pred)
-        override fun random(seed: Long?): Sequence<T> = outer.random(seed).filter(pred)
+        override fun random(random: Random?): Sequence<T> = outer.random(random).filter(pred)
         override fun shrinker(): Shrinker<T>? {
            val s = outer.shrinker()
            return if (s == null) null else object : Shrinker<T> {
@@ -72,7 +73,7 @@ interface Gen<T> {
      val outer = this
      return object : Gen<U> {
         override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
-        override fun random(seed: Long?): Sequence<U> = outer.random(seed).flatMap { f(it).random(seed) }
+        override fun random(random: Random?): Sequence<U> = outer.random(random).flatMap { f(it).random(random) }
      }
   }
 
@@ -83,7 +84,7 @@ interface Gen<T> {
       val outer = this
       return object : Gen<U> {
          override fun constants(): Iterable<U> = outer.constants().map(f)
-         override fun random(seed: Long?): Sequence<U> = outer.random(seed).map(f)
+         override fun random(random: Random?): Sequence<U> = outer.random(random).map(f)
       }
    }
 
@@ -94,7 +95,7 @@ interface Gen<T> {
       val outer = this
       return object : Gen<T?> {
          override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
-         override fun random(seed: Long?): Sequence<T?> = outer.random(seed)
+         override fun random(random: Random?): Sequence<T?> = outer.random(random)
          override fun shrinker(): Shrinker<T?>? {
             val s = outer.shrinker()
             return if (s == null) null else object : Shrinker<T?> {
@@ -113,7 +114,7 @@ interface Gen<T> {
     val outer = this
     return object : Gen<T> {
       override fun constants(): Iterable<T> = outer.constants() + gen.constants()
-       override fun random(seed: Long?): Sequence<T> = outer.random(seed).zip(gen.random(seed)).flatMap {
+       override fun random(random: Random?): Sequence<T> = outer.random(random).zip(gen.random(random)).flatMap {
           sequenceOf(it.first, it.second)
        }
     }
@@ -129,7 +130,7 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
    val outer = this
    return object : Gen<U> {
       override fun constants(): Iterable<U> = outer.constants().filterIsInstance<U>()
-      override fun random(seed: Long?): Sequence<U> = outer.random(seed).filterIsInstance<U>()
+      override fun random(random: Random?): Sequence<U> = outer.random(random).filterIsInstance<U>()
    }
 }
 
@@ -155,7 +156,7 @@ inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequenc
  * val generatedValues: List<String> = gen.take(20)
  * ```
  */
-fun <T> Gen<T>.take(amount: Int, seed: Long? = null): List<T> {
+fun <T> Gen<T>.take(amount: Int, seed: Random? = null): List<T> {
    require(amount > 0) { "Amount must be > 0, but was $amount" }
 
    val generatedValues = (constants() + random(seed).take(amount)).take(amount)
@@ -186,7 +187,7 @@ fun <T> Gen<T>.take(amount: Int, seed: Long? = null): List<T> {
  * val filteredValue: String = gen.next { it != "hello" }
  * ```
  */
-fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Long?): T {
+fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Random?): T {
    return random(seed).first(predicate)
 }
 

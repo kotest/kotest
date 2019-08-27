@@ -6,6 +6,7 @@ import arrow.core.fix
 import arrow.core.extensions.`try`.applicativeError.applicativeError
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
+import kotlin.random.Random
 
 
 /**
@@ -30,10 +31,10 @@ fun <A, B : Throwable> Gen.Companion.`try`(GT: Gen<B>, GA: Gen<A>): Gen<Try<A>> 
       override fun constants(): Iterable<Try<A>> =
          GA.constants().map(::Success)
 
-      override fun random(seed: Long?): Sequence<Try<A>> =
+      override fun random(random: Random?): Sequence<Try<A>> =
          Try.applicativeError().run {
             generateSequence {
-               choose({ GT.random(seed).iterator().next() }, { GA.random(seed).iterator().next() }).fix()
+               choose({ GT.random(random).iterator().next() }, { GA.random(random).iterator().next() }).fix()
             }
          }
    }

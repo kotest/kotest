@@ -3,6 +3,7 @@ package io.kotlintest.assertions.arrow.nel
 import arrow.data.NonEmptyList
 import io.kotlintest.properties.Gen
 import io.kotlintest.properties.int
+import kotlin.random.Random
 
 /**
  * [Gen] extension instance for [NonEmptyList].
@@ -23,10 +24,10 @@ inline fun <reified A> Gen.Companion.nel(GA: Gen<A>, head: A): Gen<NonEmptyList<
       override fun constants(): Iterable<NonEmptyList<A>> =
          listOf(NonEmptyList(head, GA.constants().toList()))
 
-      override fun random(seed: Long?): Sequence<NonEmptyList<A>> =
+      override fun random(random: Random?): Sequence<NonEmptyList<A>> =
          generateSequence {
-            val size = Gen.int().random(seed).iterator().next()
-            val tail = GA.random(seed).take(size)
+            val size = Gen.int().random(random).iterator().next()
+            val tail = GA.random(random).take(size)
             NonEmptyList.of(head, *tail.toList().toTypedArray())
          }
    }

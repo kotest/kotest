@@ -518,12 +518,12 @@ class GenTest : WordSpec() {
     "Gen.take(n)" should {
       val mockedGen = object : Gen<Int> {
         override fun constants() = listOf(1, 2)
-        override fun random(seed: Long?) = generateInfiniteSequence { 3 }
+        override fun random(seed: Random?) = generateInfiniteSequence { 3 }
       }
 
       val mockedGen2 = object : Gen<String> {
         override fun constants() = listOf("1", "2", "3", "4")
-        override fun random(seed: Long?) = generateInfiniteSequence { "42" }
+        override fun random(seed: Random?) = generateInfiniteSequence { "42" }
       }
 
       "Take constants first" {
@@ -539,7 +539,7 @@ class GenTest : WordSpec() {
       "Throw exception if the generator can't generate the amount requested" {
         val smallGen = object : Gen<String> {
           override fun constants() = listOf("1", "2", "3", "4")
-          override fun random(seed: Long?) = sequenceOf("42")
+          override fun random(seed: Random?) = sequenceOf("42")
         }
 
         val thrown = shouldThrow<IllegalStateException> { smallGen.take(10) }
@@ -557,7 +557,7 @@ class GenTest : WordSpec() {
       val mockedGen = object : Gen<Int> {
         override fun constants() = listOf(1, 2)
         val seq = listOf(3, 4, 5, 6)
-        override fun random(seed: Long?) = generateInfiniteSequence { seq.random() }
+        override fun random(seed: Random?) = generateInfiniteSequence { seq.random() }
       }
 
       "Take a random value straight from random() by default" {

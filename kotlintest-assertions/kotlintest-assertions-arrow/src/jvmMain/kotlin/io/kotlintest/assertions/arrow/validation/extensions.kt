@@ -8,6 +8,7 @@ import arrow.data.fix
 import arrow.typeclasses.Semigroup
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
+import kotlin.random.Random
 
 /**
  * [Gen] extension instance for [Validated].
@@ -31,10 +32,10 @@ fun <A, B> Gen.Companion.validated(GA: Gen<A>, GB: Gen<B>, SA: Semigroup<A>): Ge
       override fun constants(): Iterable<Validated<A, B>> =
          GA.constants().map(::Invalid) + GB.constants().map(::Valid)
 
-      override fun random(seed: Long?): Sequence<Validated<A, B>> =
+      override fun random(random: Random?): Sequence<Validated<A, B>> =
          Validated.applicativeError(SA).run {
             generateSequence {
-               choose({ GA.random(seed).iterator().next() }, { GB.random(seed).iterator().next() }).fix()
+               choose({ GA.random(random).iterator().next() }, { GB.random(random).iterator().next() }).fix()
             }
          }
    }
