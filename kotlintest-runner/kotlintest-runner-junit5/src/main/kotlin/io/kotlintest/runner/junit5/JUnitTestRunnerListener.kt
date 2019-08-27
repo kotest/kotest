@@ -216,11 +216,15 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   // by searching all the results stored for that description in order of importnance
   private fun findResultFor(description: Description): TestResult? {
 
+    // returns any results with the given status, for both ancestors and the test itself
     fun findByStatus(status: TestStatus): TestResult? = results
-        .filter { it.testCase.description == description }
-        .filter { it.result.status == status }
-        .map { it.result }
-        .firstOrNull()
+      .filter { it.testCase.description == description || description.isAncestorOf(it.testCase.description) }
+      .filter { it.result.status == status }
+      // the lowest level test should be what we pick
+      .sortedBy { it.testCase.description.depth() }
+      .reversed()
+      .map { it.result }
+      .firstOrNull()
 
     var result = findByStatus(TestStatus.Error)
     if (result == null)
