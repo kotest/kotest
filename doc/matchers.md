@@ -140,13 +140,14 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldBeLargerThan(col)` | Asserts that the collection is larger than the other collection. |
 | `collection.shouldBeSameSizeAs(col)` | Asserts that the collection has the same size as the other collection. |
 | `collection.shouldHaveAtLeastSize(n)` | Asserts that the collection has at least size n. |
-| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
+| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. | 
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
 | `value.shouldBeOneOf(collection)` | Asserts that a specific instance is contained in a collection. |
+| `collection.shouldContainAnyOf(collection)` | Asserts that the collection has at least one of the elements in `collection` |
 
 | URIs ||
 | -------- | ---- |
