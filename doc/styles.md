@@ -1,7 +1,7 @@
 Testing Styles
 ==============
 
-There is no functional difference between these styles. All allow the same types of configuration - threads, tags, etc -
+There is no functional difference between these styles. All allow the same types of configuration &mdash; threads, tags, etc &mdash;
  it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
 
 ### String Spec
@@ -31,7 +31,7 @@ class MyTests : FunSpec({
 })
 ```
 
-You can also next these tests inside `context` blocks like this:
+You can also nest these tests inside `context` blocks like this:
 
 ```kotlin
 class MyTests : FunSpec({
@@ -57,7 +57,7 @@ class MyTests : ShouldSpec({
 })
 ```
 
-This can be nested in context strings too, eg
+This can be nested in context strings too:
 
 ```kotlin
 class MyTests : ShouldSpec({
@@ -106,7 +106,7 @@ class MyTests : WordSpec({
 
 ### Feature Spec
 
-`FeatureSpec` allows you to use `feature` and `scenario`, which will be familar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/)
+`FeatureSpec` allows you to use `feature` and `scenario`, which will be familiar to those who have used [cucumber](http://docs.cucumber.io/gherkin/reference/).
 Although not intended to be exactly the same as cucumber, the keywords mimic the style.
 
 ```kotlin
@@ -142,7 +142,7 @@ class MyTests : BehaviorSpec({
 })
 ```
 
-Because `when` is a keyword in Kotlin, we must enclose with backticks. Alternatively, there are title case versions
+Because `when` is a keyword in Kotlin, we must enclose it with backticks. Alternatively, there are title case versions
 available if you don't like the use of backticks, eg, `Given`, `When`, `Then`.
 
 You can also use the `And` keyword in `Given` and `When` to add an extra depth to it:
@@ -163,11 +163,11 @@ class MyTests : BehaviorSpec({
 })
 ```
 
-Note: `Then` scope doesn't have an `and` scope due to a gradle bug. For more information, see #594
+Note: `Then` scope doesn't have an `and` scope due to a Gradle bug. For more information, see #594
 
 ### Free Spec
 
-`FreeSpec` allows you to nest arbitary levels of depth using the keyword `-` (minus), as such:
+`FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus), as such:
 
 ```kotlin
 class MyTests : FreeSpec({
@@ -192,7 +192,7 @@ class MyTests : FreeSpec({
 ### Describe Spec
 
 `DescribeSpec` offers functionality familiar to those who are coming from a Ruby background, as this testing style
- mimics the popular ruby test framework [rspec](http://rspec.info/). The scopes available are `describe`, `context`, and `it`.
+ mimics the popular Ruby test framework [rspec](http://rspec.info/). The scopes available are `describe`, `context`, and `it`.
 
 ```kotlin
 class MyTests : DescribeSpec({
@@ -236,7 +236,7 @@ class MyTests : ExpectSpec({
 
 ### Annotation Spec
 
-If you are hankering for the halycon days of JUnit then you can use a spec that uses annotations like JUnit 4/5.
+If you are hankering for the halcyon days of JUnit then you can use a spec that uses annotations like JUnit 4/5.
 Just add the `@Test` annotation to any function defined in the spec class.
 
 You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
@@ -247,7 +247,7 @@ You can also add annotations to execute something before tests/specs and after t
 @AfterEach / @After
 ```
 
-If you want to ignore a test, use `@Ignore`
+If you want to ignore a test, use `@Ignore`.
 
 ```kotlin
 class AnnotationSpecExample : AnnotationSpec() {
