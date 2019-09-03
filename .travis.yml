@@ -20,8 +20,8 @@ install: "/bin/true"
 jobs:
   include:
     - stage: test
-      name: "junit gradle plugin"
-      script: "./gradlew test"
+      name: "run MPP unit tests"
+      script: "./gradlew check"
 #    - stage: test
 #      name: "kotlintest gradle plugin"
 #      script: "./gradlew compileKotlin kotlintest"
