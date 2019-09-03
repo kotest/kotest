@@ -15,7 +15,7 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
-abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractStringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

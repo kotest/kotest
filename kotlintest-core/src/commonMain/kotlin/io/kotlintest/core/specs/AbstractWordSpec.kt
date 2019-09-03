@@ -22,7 +22,7 @@ import kotlin.time.ExperimentalTime
  *
  */
 @Suppress("FunctionName")
-abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

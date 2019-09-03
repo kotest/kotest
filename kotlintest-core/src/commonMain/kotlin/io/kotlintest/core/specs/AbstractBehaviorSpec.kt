@@ -9,7 +9,7 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @Suppress("FunctionName")
-abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

@@ -51,7 +51,7 @@ allprojects {
     group = "io.kotlintest"
 
     if (isTravis) {
-        version "4.0.0." + travisBuildNumber + "-SNAPSHOT"
+        version "4.0." + travisBuildNumber + "-SNAPSHOT"
     }
 
     release {
