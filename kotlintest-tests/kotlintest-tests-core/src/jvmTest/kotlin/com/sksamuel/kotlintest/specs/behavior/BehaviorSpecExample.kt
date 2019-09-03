@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.specs.behavior
 
-import io.kotlintest.specs.AbstractBehaviorSpec
+import io.kotlintest.core.specs.AbstractBehaviorSpec
 
 class BehaviorSpecExample : AbstractBehaviorSpec() {
 

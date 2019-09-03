@@ -1,6 +1,5 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
-import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig

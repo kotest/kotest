@@ -1,4 +1,4 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
 fun createTestName(prefix: String, name: String): String {
   return when {

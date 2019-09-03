@@ -1,6 +1,15 @@
 package io.kotlintest.specs
 
 import io.kotlintest.Matcher
+import io.kotlintest.core.specs.AbstractBehaviorSpec
+import io.kotlintest.core.specs.AbstractDescribeSpec
+import io.kotlintest.core.specs.AbstractExpectSpec
+import io.kotlintest.core.specs.AbstractFeatureSpec
+import io.kotlintest.core.specs.AbstractFreeSpec
+import io.kotlintest.core.specs.AbstractFunSpec
+import io.kotlintest.core.specs.AbstractShouldSpec
+import io.kotlintest.core.specs.AbstractStringSpec
+import io.kotlintest.core.specs.AbstractWordSpec
 import io.kotlintest.runner.junit4.KotlinTestRunner
 import org.junit.runner.RunWith
 import io.kotlintest.should as shouldMatch

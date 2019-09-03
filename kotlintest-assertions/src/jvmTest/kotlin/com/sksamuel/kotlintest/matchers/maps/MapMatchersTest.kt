@@ -7,6 +7,7 @@ import io.kotlintest.matchers.maps.haveKey
 import io.kotlintest.matchers.maps.haveKeys
 import io.kotlintest.matchers.maps.haveValue
 import io.kotlintest.matchers.maps.haveValues
+import io.kotlintest.matchers.maps.shouldBeEmpty
 import io.kotlintest.matchers.maps.shouldContain
 import io.kotlintest.matchers.maps.shouldContainAll
 import io.kotlintest.matchers.maps.shouldContainExactly
@@ -14,6 +15,7 @@ import io.kotlintest.matchers.maps.shouldContainKey
 import io.kotlintest.matchers.maps.shouldContainKeys
 import io.kotlintest.matchers.maps.shouldContainValue
 import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldNotBeEmpty
 import io.kotlintest.matchers.maps.shouldNotContain
 import io.kotlintest.matchers.maps.shouldNotContainAll
 import io.kotlintest.matchers.maps.shouldNotContainKey

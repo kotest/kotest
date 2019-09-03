@@ -1,9 +1,9 @@
 package io.kotlintest.runner.jvm
 
 import arrow.core.Try
-import io.kotlintest.AbstractSpec
 import io.kotlintest.Project
 import io.kotlintest.Spec
+import io.kotlintest.core.specs.AbstractSpec
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 

@@ -1,15 +1,16 @@
-package io.kotlintest.core
+package io.kotlintest.core.specs
 
 import io.kotlintest.Description
 import io.kotlintest.TestCase
 import io.kotlintest.TestType
+import io.kotlintest.core.TestContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 actual annotation class Junit5TestFactory
-
 actual annotation class Junit5EnabledIfSystemProperty constructor(actual val named: String, actual val matches: String)
+actual annotation class Testable
 
 actual typealias JsTest = kotlin.test.Test
 
@@ -48,3 +49,8 @@ actual fun generateTests(rootTests: List<TestCase>) {
     }
   }
 }
+
+actual interface AutoCloseable {
+   actual fun close()
+}
+
