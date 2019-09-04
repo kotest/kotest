@@ -1,12 +1,12 @@
 package io.kotlintest.specs
 
 import io.kotlintest.Matcher
-import io.kotlintest.core.specs.AbstractBehaviorSpec
+import io.kotlintest.core.specs.BehaviorSpec
 import io.kotlintest.core.specs.AbstractDescribeSpec
 import io.kotlintest.core.specs.AbstractExpectSpec
 import io.kotlintest.core.specs.AbstractFeatureSpec
 import io.kotlintest.core.specs.AbstractFreeSpec
-import io.kotlintest.core.specs.AbstractFunSpec
+import io.kotlintest.core.specs.FunSpec
 import io.kotlintest.core.specs.AbstractShouldSpec
 import io.kotlintest.core.specs.AbstractStringSpec
 import io.kotlintest.core.specs.AbstractWordSpec
@@ -18,7 +18,7 @@ import io.kotlintest.should as shouldMatch
 abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractAnnotationSpec(body)
 
 @RunWith(KotlinTestRunner::class)
-abstract class BehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractBehaviorSpec(body)
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : BehaviorSpec(body)
 
 @RunWith(KotlinTestRunner::class)
 abstract class DescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractDescribeSpec(body)
@@ -33,7 +33,7 @@ abstract class FeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : Abstract
 abstract class FreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractFreeSpec(body)
 
 @RunWith(KotlinTestRunner::class)
-abstract class FunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractFunSpec(body) {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : FunSpec(body) {
   @org.junit.Test
   @org.junit.Ignore
   fun primer() {}

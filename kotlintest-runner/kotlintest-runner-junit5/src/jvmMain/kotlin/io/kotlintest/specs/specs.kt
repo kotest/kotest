@@ -1,12 +1,10 @@
 package io.kotlintest.specs
 
 import io.kotlintest.Matcher
-import io.kotlintest.core.specs.AbstractBehaviorSpec
 import io.kotlintest.core.specs.AbstractDescribeSpec
 import io.kotlintest.core.specs.AbstractExpectSpec
 import io.kotlintest.core.specs.AbstractFeatureSpec
 import io.kotlintest.core.specs.AbstractFreeSpec
-import io.kotlintest.core.specs.AbstractFunSpec
 import io.kotlintest.core.specs.AbstractShouldSpec
 import io.kotlintest.core.specs.AbstractStringSpec
 import io.kotlintest.core.specs.AbstractWordSpec
@@ -22,7 +20,7 @@ interface IntelliMarker {
 }
 
 abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractAnnotationSpec(body), IntelliMarker
-abstract class BehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractBehaviorSpec(body), IntelliMarker
+
 abstract class DescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractDescribeSpec(body), IntelliMarker
 abstract class ExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractExpectSpec(body), IntelliMarker
 
@@ -30,7 +28,6 @@ abstract class FeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : Abstract
 
 abstract class FreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractFreeSpec(body), IntelliMarker
 
-abstract class FunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractFunSpec(body), IntelliMarker
 
 abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractShouldSpec(body), IntelliMarker {
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't

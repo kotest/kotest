@@ -13,7 +13,7 @@ import io.kotlintest.specs.FunSpec
 
 class AssertionCounterTest : FunSpec() {
 
-   override val assertionMode = AssertionMode.Error
+   override fun assertionMode() = AssertionMode.Error
 
    override fun extensions(): List<TestCaseExtension> = listOf(
       object : TestCaseExtension {

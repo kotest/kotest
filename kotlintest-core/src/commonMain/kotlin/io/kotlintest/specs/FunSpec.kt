@@ -1,14 +1,16 @@
-package io.kotlintest.core.specs
+package io.kotlintest.specs
 
 import io.kotlintest.Tag
 import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
+import io.kotlintest.core.specs.AbstractSpecDsl
+import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : AbstractSpecDsl() {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
    init {
       body()
@@ -45,7 +47,7 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
       suspend fun context(name: String, init: suspend ContextScope.() -> Unit) {
          context.registerTestCase(
             name,
-            this@AbstractFunSpec,
+            this@FunSpec,
             { ContextScope(this).init() },
             defaultTestCaseConfig,
             TestType.Container
@@ -69,14 +71,14 @@ abstract class AbstractFunSpec(body: AbstractFunSpec.() -> Unit = {}) : Abstract
                parallelism ?: defaultTestCaseConfig.threads,
                tags ?: defaultTestCaseConfig.tags,
                extensions ?: defaultTestCaseConfig.extensions)
-            context.registerTestCase(name, this@AbstractFunSpec, test, config, TestType.Test)
+            context.registerTestCase(name, this@FunSpec, test, config, TestType.Test)
          }
       }
 
       fun test(name: String) = TestBuilder(name)
 
       suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
-         context.registerTestCase(name, this@AbstractFunSpec, test, defaultTestCaseConfig, TestType.Test)
+         context.registerTestCase(name, this@FunSpec, test, defaultTestCaseConfig, TestType.Test)
    }
 
    fun test(name: String) = TestBuilder(name)
