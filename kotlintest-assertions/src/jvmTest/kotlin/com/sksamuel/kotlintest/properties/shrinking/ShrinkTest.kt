@@ -1,7 +1,7 @@
 package com.sksamuel.kotlintest.properties.shrinking
 
-import io.kotlintest.matchers.comparables.lte
 import io.kotlintest.matchers.doubles.lt
+import io.kotlintest.matchers.comparables.lte
 import io.kotlintest.matchers.ints.shouldBeLessThan
 import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.properties.Gen
@@ -40,7 +40,7 @@ class ShrinkTest : StringSpec({
          "Caused by: 2147483647 should be < 5"
    }
 
-   "should io.kotlintest.properties.shrinking.shrink arity 2 strings" {
+   "should shrink arity 2 strings" {
       shouldThrowAny {
          assertAll(Gen.string(), Gen.string()) { a, b ->
             (a.length + b.length).shouldBeLessThan(4)
@@ -55,7 +55,7 @@ class ShrinkTest : StringSpec({
          "Caused by: 9 should be < 4"
    }
 
-   "should io.kotlintest.properties.shrinking.shrink arity 3 positiveIntegers" {
+   "should shrink arity 3 positiveIntegers" {
       shouldThrowAny {
          assertAll(Gen.positiveIntegers(), Gen.positiveIntegers(), Gen.positiveIntegers()) { a, b, c ->
             a.toLong() + b.toLong() + c.toLong() shouldBe 4L
@@ -63,37 +63,18 @@ class ShrinkTest : StringSpec({
       }.message shouldBe "Property failed for\nArg 0: 1 (shrunk from 2147483647)\nArg 1: 1 (shrunk from 2147483647)\nArg 2: 1 (shrunk from 2147483647)\nafter 1 attempts\nCaused by: expected: 4L but was: 6442450941L"
    }
 
-  "should io.kotlintest.properties.shrinking.shrink Gen.choose" {
-    shouldThrowAny {
-      assertAll(object : Gen<Int> {
-        override fun constants(): Iterable<Int> = emptyList()
-        override fun random(seed: Random?): Sequence<Int> = generateSequence { 14 }
-        override fun shrinker() = ChooseShrinker(5, 15)
-      }) { a ->
-        a shouldBe lte(10)
-      }
-    }.message shouldBe "Property failed for\nArg 0: 11 (shrunk from 14)\nafter 1 attempts\nCaused by: 14 should be <= 10"
-  }
-
-  "should io.kotlintest.properties.shrinking.shrink strings to empty string" {
-    val gen = object : Gen<String> {
-      override fun random(seed: Random?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
-      override fun constants(): Iterable<String> = emptyList()
-      override fun shrinker(): Shrinker<String>? = StringShrinker
-    }
-    shouldThrowAny {
-      assertAll(gen) { a ->
-        a.shouldHaveLength(10)
-
-   "should io.kotlintest.properties.shrinking.shrink arity 4 negativeIntegers" {
+   "should shrink arity 4 negativeIntegers" {
       shouldThrowAny {
-         assertAll(Gen.negativeIntegers(), Gen.negativeIntegers(), Gen.negativeIntegers(), Gen.negativeIntegers()) { a, b, c, d ->
+         assertAll(Gen.negativeIntegers(),
+            Gen.negativeIntegers(),
+            Gen.negativeIntegers(),
+            Gen.negativeIntegers()) { a, b, c, d ->
             a + b + c + d shouldBe 4
          }
       }.message shouldBe "Property failed for\nArg 0: -1 (shrunk from -2147483648)\nArg 1: -1 (shrunk from -2147483648)\nArg 2: -1 (shrunk from -2147483648)\nArg 3: -1 (shrunk from -2147483648)\nafter 1 attempts\nCaused by: expected: 4 but was: 0"
    }
 
-   "should io.kotlintest.properties.shrinking.shrink arity 1 doubles" {
+   "should shrink arity 1 doubles" {
       shouldThrowAny {
          assertAll(Gen.double()) { a ->
             a shouldBe lt(3.0)
@@ -101,15 +82,36 @@ class ShrinkTest : StringSpec({
       }.message shouldBe "Property failed for\nArg 0: 3.0 (shrunk from 1.0E300)\nafter 4 attempts\nCaused by: 1.0E300 should be < 3.0"
    }
 
-  "should io.kotlintest.properties.shrinking.shrink strings to min failing size" {
-    val gen = object : Gen<String> {
-      override fun random(seed: Random?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
-      override fun constants(): Iterable<String> = emptyList()
-      override fun shrinker(): Shrinker<String>? = StringShrinker
-    }
-    shouldThrowAny {
-      assertAll(gen) { a ->
-        a.padEnd(10, '*').shouldHaveLength(10)
+   "should shrink Gen.choose" {
+      shouldThrowAny {
+         assertAll(object : Gen<Int> {
+            override fun constants(): Iterable<Int> = emptyList()
+            override fun random(seed: Long?): Sequence<Int> = generateSequence { 14 }
+            override fun shrinker() = ChooseShrinker(5, 15)
+         }) { a ->
+            a shouldBe lte(10)
+         }
+      }.message shouldBe "Property failed for\nArg 0: 11 (shrunk from 14)\nafter 1 attempts\nCaused by: 14 should be <= 10"
+   }
+
+   "should shrink strings to empty string" {
+      val gen = object : Gen<String> {
+         override fun random(seed: Long?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
+         override fun constants(): Iterable<String> = emptyList()
+         override fun shrinker(): Shrinker<String>? = StringShrinker
+      }
+      shouldThrowAny {
+         assertAll(gen) { a ->
+            a.shouldHaveLength(10)
+         }
+      }.message shouldBe "Property failed for\nArg 0: <empty string> (shrunk from asjfiojoqiwehuoahsuidhqweqwe)\nafter 1 attempts\nCaused by: asjfiojoqiwehuoahsuidhqweqwe should have length 10, but instead was 28"
+   }
+
+   "should shrink strings to min failing size" {
+      val gen = object : Gen<String> {
+         override fun random(seed: Long?): Sequence<String> = generateSequence { "asjfiojoqiwehuoahsuidhqweqwe" }
+         override fun constants(): Iterable<String> = emptyList()
+         override fun shrinker(): Shrinker<String>? = StringShrinker
       }
       shouldThrowAny {
          assertAll(gen) { a ->

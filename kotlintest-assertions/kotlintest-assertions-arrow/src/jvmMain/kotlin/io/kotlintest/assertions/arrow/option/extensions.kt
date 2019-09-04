@@ -6,7 +6,6 @@ import arrow.core.extensions.option.applicativeError.applicativeError
 import arrow.core.fix
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
-import kotlin.random.Random
 
 /**
  * [Gen] extension instance for [Option].
@@ -28,10 +27,10 @@ fun <A> Gen.Companion.option(GA: Gen<A>): Gen<Option<A>> =
       override fun constants(): Iterable<Option<A>> =
          GA.constants().map(::Some)
 
-      override fun random(random: Random?): Sequence<Option<A>> =
+      override fun random(seed: Long?): Sequence<Option<A>> =
          Option.applicativeError().run {
             generateSequence {
-               choose({ Unit }) { GA.random(random).iterator().next() }.fix()
+               choose({ Unit }) { GA.random(seed).iterator().next() }.fix()
             }
          }
    }
