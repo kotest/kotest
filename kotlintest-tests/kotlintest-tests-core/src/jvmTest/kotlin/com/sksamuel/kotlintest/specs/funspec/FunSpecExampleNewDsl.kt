@@ -17,7 +17,7 @@ class FunSpecExampleNewDsl : FunSpec({
    tags(linuxTag, jvmTag)
 
    set(IsolationMode.InstancePerLeaf)
-   set(AssertionMode.Error)
+   set(AssertionMode.Warn)
    set(TestCaseOrder.Random)
 
    listeners(LocaleTestListener(Locale.CANADA_FRENCH), TimeZoneTestListener(TimeZone.getTimeZone("GMT")))
