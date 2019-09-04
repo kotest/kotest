@@ -6,7 +6,6 @@ import io.kotlintest.core.specs.AbstractExpectSpec
 import io.kotlintest.core.specs.AbstractFeatureSpec
 import io.kotlintest.core.specs.AbstractFreeSpec
 import io.kotlintest.core.specs.AbstractShouldSpec
-import io.kotlintest.core.specs.AbstractStringSpec
 import io.kotlintest.core.specs.AbstractWordSpec
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty
@@ -34,8 +33,6 @@ abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractSh
   // clash with the other should method
   infix fun String.should(matcher: Matcher<String>) = this shouldMatch matcher
 }
-
-abstract class StringSpec(body: AbstractStringSpec.() -> Unit = {}) : AbstractStringSpec(body), IntelliMarker
 
 abstract class WordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractWordSpec(body), IntelliMarker {
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
