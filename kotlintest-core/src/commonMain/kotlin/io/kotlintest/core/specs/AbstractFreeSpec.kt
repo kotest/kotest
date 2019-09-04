@@ -1,6 +1,5 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
-import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
@@ -9,7 +8,7 @@ import io.kotlintest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

@@ -1,9 +1,11 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
-import io.kotlintest.*
+import io.kotlintest.Description
+import io.kotlintest.Tag
+import io.kotlintest.TestCase
+import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
-import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -20,7 +22,7 @@ import kotlin.time.ExperimentalTime
  *
  */
 @Suppress("FunctionName")
-abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

@@ -249,7 +249,7 @@ You can additionally enable extra test logging:
 test {
     useJUnitPlatform()
     testLogging {
-        events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
     }
 }
 ```

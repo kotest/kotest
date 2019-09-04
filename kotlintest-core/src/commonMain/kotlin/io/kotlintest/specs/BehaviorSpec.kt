@@ -1,17 +1,18 @@
 package io.kotlintest.specs
 
-import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
+import io.kotlintest.core.specs.AbstractSpecDsl
 import io.kotlintest.core.specs.KotlinTestDsl
+import io.kotlintest.core.specs.createTestName
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @Suppress("FunctionName")
-abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()
@@ -129,18 +130,18 @@ abstract class AbstractBehaviorSpec(body: AbstractBehaviorSpec.() -> Unit = {}) 
          extensions: List<TestCaseExtension>? = null,
          test: TestContext.() -> Unit) {
          val config = TestCaseConfig(
-            enabled ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.enabled,
-            invocations ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.invocations,
-            timeout ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.timeout,
-            threads ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.threads,
-            tags ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.tags,
-            extensions ?: this@AbstractBehaviorSpec.defaultTestCaseConfig.extensions)
+            enabled ?: this@BehaviorSpec.defaultTestCaseConfig.enabled,
+            invocations ?: this@BehaviorSpec.defaultTestCaseConfig.invocations,
+            timeout ?: this@BehaviorSpec.defaultTestCaseConfig.timeout,
+            threads ?: this@BehaviorSpec.defaultTestCaseConfig.threads,
+            tags ?: this@BehaviorSpec.defaultTestCaseConfig.tags,
+            extensions ?: this@BehaviorSpec.defaultTestCaseConfig.extensions)
 
-         context.registerTestCase(name, this@AbstractBehaviorSpec, { test.invoke(this) }, config, TestType.Test)
+         context.registerTestCase(name, this@BehaviorSpec, { test.invoke(this) }, config, TestType.Test)
       }
    }
 
-  private val thisSpec: AbstractBehaviorSpec
-    get() = this@AbstractBehaviorSpec
+  private val thisSpec: BehaviorSpec
+    get() = this@BehaviorSpec
 
 }

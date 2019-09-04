@@ -9,12 +9,12 @@ import io.kotlintest.specs.FunSpec
 class GenRegexTest : FunSpec({
 
    test("regex generation") {
-      val regex = "a.b.\\d{2}"
-      Gen.regex(regex).random().take(100).forAll { it.shouldMatch(regex) }
+      val regex = "a.b."
+      Gen.regex(regex).random().take(1000).forAll { it.shouldMatch(regex) }
    }
 
    test("regex generation 2") {
       val regex = "[a-z]-[0-9]abbc."
-      Gen.regex(regex).random().take(100).forAll { it.shouldMatch(regex) }
+      Gen.regex(regex).random().take(1000).forAll { it.shouldMatch(regex) }
    }
 })

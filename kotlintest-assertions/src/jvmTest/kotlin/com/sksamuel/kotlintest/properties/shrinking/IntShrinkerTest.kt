@@ -6,10 +6,20 @@ import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldHaveElementAt
 import io.kotlintest.matchers.collections.shouldHaveSingleElement
 import io.kotlintest.matchers.collections.shouldNotContain
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.shrinking.IntShrinker
 import io.kotlintest.specs.WordSpec
 
 class IntShrinkerTest : WordSpec({
+
+   beforeSpec {
+      PropertyTesting.shouldPrintShrinkSteps = false
+   }
+
+   afterSpec {
+      PropertyTesting.shouldPrintShrinkSteps = true
+   }
+
   "IntShrinker" should {
     "return empty list for zero" {
       IntShrinker.shrink(0).shouldBeEmpty()

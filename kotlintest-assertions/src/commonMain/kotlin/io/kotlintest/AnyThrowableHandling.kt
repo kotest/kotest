@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.AssertionCounter
 import io.kotlintest.assertions.Failures
 
 /**
@@ -58,12 +59,15 @@ inline fun shouldNotThrowAnyUnit(block: () -> Unit) = shouldNotThrowAny(block)
  * @see [shouldThrowAnyUnit]
  */
 inline fun shouldThrowAny(block: () -> Any?): Throwable {
-  val thrownException = try {
-    block()
-    null
-  } catch (e: Throwable) { e }
+   AssertionCounter.inc()
+   val thrownException = try {
+      block()
+      null
+   } catch (e: Throwable) {
+      e
+   }
 
-  return thrownException ?: throw Failures.failure("Expected a throwable, but nothing was thrown.")
+   return thrownException ?: throw Failures.failure("Expected a throwable, but nothing was thrown.")
 }
 
 
@@ -87,10 +91,15 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
  *
  */
 inline fun shouldNotThrowAny(block: () -> Unit) {
-  val thrownException = try {
-    block()
-    return
-  } catch (e: Throwable) { e }
+   AssertionCounter.inc()
 
-  throw Failures.failure("No exception expected, but a ${thrownException::class.simpleName} was thrown.", thrownException)
+   val thrownException = try {
+      block()
+      return
+   } catch (e: Throwable) {
+      e
+   }
+
+   throw Failures.failure("No exception expected, but a ${thrownException::class.simpleName} was thrown.",
+      thrownException)
 }

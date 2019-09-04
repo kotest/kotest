@@ -3,9 +3,9 @@ package com.sksamuel.kotlintest.runner.console
 import io.kotlintest.Description
 import io.kotlintest.core.TestFilterResult
 import io.kotlintest.core.fromSpecClass
+import io.kotlintest.core.specs.AbstractFeatureSpec
 import io.kotlintest.runner.console.SpecAwareTestFilter
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.AbstractFeatureSpec
 import io.kotlintest.specs.BehaviorSpec
 import io.kotlintest.specs.FeatureSpec
 import io.kotlintest.specs.FreeSpec

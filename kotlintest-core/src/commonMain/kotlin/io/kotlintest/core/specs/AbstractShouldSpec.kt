@@ -1,11 +1,9 @@
-package io.kotlintest.specs
+package io.kotlintest.core.specs
 
-import io.kotlintest.AbstractSpec
 import io.kotlintest.Tag
 import io.kotlintest.TestType
 import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
-import io.kotlintest.core.specs.KotlinTestDsl
 import io.kotlintest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -27,7 +25,7 @@ import kotlin.time.ExperimentalTime
  *    // test here
  *  }
  */
-abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractSpecDsl() {
 
   init {
     body()

@@ -1,5 +1,6 @@
 package io.kotlintest
 
+import io.kotlintest.assertions.AssertionCounter
 import io.kotlintest.assertions.Failures
 import io.kotlintest.assertions.classname
 
@@ -88,18 +89,22 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  * @see [shouldThrowExactly]
  */
 inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
-  val expectedExceptionClass = T::class
-  val thrownThrowable = try {
-    block()
-    null  // Can't throw Failures.failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
-  } catch (thrown: Throwable) { thrown  }
+   AssertionCounter.inc()
+   val expectedExceptionClass = T::class
+   val thrownThrowable = try {
+      block()
+      null  // Can't throw Failures.failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
+   } catch (thrown: Throwable) {
+      thrown
+   }
 
-  return when {
-    thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.classname()} but no exception was thrown.")
-    thrownThrowable::class == expectedExceptionClass -> thrownThrowable as T  // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
-    thrownThrowable is AssertionError -> throw thrownThrowable
-    else -> throw Failures.failure("Expected exception ${expectedExceptionClass.classname()} but a ${thrownThrowable::class.simpleName} was thrown instead.", thrownThrowable)
-  }
+   return when {
+      thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.classname()} but no exception was thrown.")
+      thrownThrowable::class == expectedExceptionClass -> thrownThrowable as T  // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
+      thrownThrowable is AssertionError -> throw thrownThrowable
+      else -> throw Failures.failure("Expected exception ${expectedExceptionClass.classname()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
+         thrownThrowable)
+   }
 }
 
 
@@ -134,11 +139,15 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  *
  */
 inline fun <reified T : Throwable> shouldNotThrowExactly(block: () -> Any?) {
-  val thrown = try {
-    block()
-    return
-  } catch(t: Throwable) { t }
+   AssertionCounter.inc()
+   val thrown = try {
+      block()
+      return
+   } catch (t: Throwable) {
+      t
+   }
 
-  if(thrown::class == T::class) throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
-  throw thrown
+   if (thrown::class == T::class) throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.",
+      thrown)
+   throw thrown
 }

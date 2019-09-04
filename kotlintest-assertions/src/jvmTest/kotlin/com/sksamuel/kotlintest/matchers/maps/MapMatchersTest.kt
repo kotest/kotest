@@ -7,6 +7,7 @@ import io.kotlintest.matchers.maps.haveKey
 import io.kotlintest.matchers.maps.haveKeys
 import io.kotlintest.matchers.maps.haveValue
 import io.kotlintest.matchers.maps.haveValues
+import io.kotlintest.matchers.maps.shouldBeEmpty
 import io.kotlintest.matchers.maps.shouldContain
 import io.kotlintest.matchers.maps.shouldContainAll
 import io.kotlintest.matchers.maps.shouldContainExactly
@@ -14,6 +15,7 @@ import io.kotlintest.matchers.maps.shouldContainKey
 import io.kotlintest.matchers.maps.shouldContainKeys
 import io.kotlintest.matchers.maps.shouldContainValue
 import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldNotBeEmpty
 import io.kotlintest.matchers.maps.shouldNotContain
 import io.kotlintest.matchers.maps.shouldNotContainAll
 import io.kotlintest.matchers.maps.shouldNotContainKey
@@ -24,7 +26,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
-import java.util.LinkedList
+import java.util.*
 
 class MapMatchersTest : WordSpec() {
 
@@ -247,6 +249,29 @@ class MapMatchersTest : WordSpec() {
           |but equals
           |
         """.trimMargin()
+      }
+    }
+    "be empty" should {
+      "Work on an empty map" {
+        emptyMap<String, String>().shouldBeEmpty()
+      }
+
+      "Fail on a non empty map" {
+        shouldThrow<AssertionError> {
+          mapOf("Foo" to "Bar").shouldBeEmpty()
+        }
+      }
+    }
+
+    "Not be empty" should {
+      "Fail on an empty map" {
+        shouldThrow<AssertionError> {
+          emptyMap<String, String>().shouldNotBeEmpty()
+        }
+      }
+
+      "Pass on a non empty map" {
+        mapOf("Foo" to "Bar").shouldNotBeEmpty()
       }
     }
   }

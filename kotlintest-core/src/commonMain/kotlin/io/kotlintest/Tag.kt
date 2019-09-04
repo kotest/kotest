@@ -16,15 +16,20 @@ import io.kotlintest.assertions.classname
  */
 abstract class Tag {
 
-  /**
-   * Simple name of the singleton/class derived from this class.
-   */
-  open val name: String = this::class.classname()
+   /**
+    * Simple name of the singleton/class derived from this class.
+    */
+   open val name: String = this::class.classname()
 
-  /**
-   * Same as [name].
-   */
-  override fun toString() = name
+   /**
+    * Same as [name].
+    */
+   override fun toString() = name
+
+   companion object {
+      operator fun invoke(name: String): StringTag = StringTag(name)
+   }
 }
+
 
 class StringTag(override val name: String) : Tag()
