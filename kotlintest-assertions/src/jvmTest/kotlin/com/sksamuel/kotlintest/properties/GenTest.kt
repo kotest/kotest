@@ -264,7 +264,7 @@ class GenTest : WordSpec() {
               }
             }
 
-        Gen.constant(5).orNull().random().take(1000).toList().toSet() shouldBe setOf(5, null)
+        Gen.constant(5).orNull().take(100).toList().toSet() shouldBe setOf(5, null)
       }
     }
 
