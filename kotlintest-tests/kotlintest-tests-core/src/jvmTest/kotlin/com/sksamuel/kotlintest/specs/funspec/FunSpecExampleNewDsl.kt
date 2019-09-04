@@ -6,6 +6,7 @@ import io.kotlintest.Tag
 import io.kotlintest.TestCaseOrder
 import io.kotlintest.extensions.locale.LocaleTestListener
 import io.kotlintest.extensions.locale.TimeZoneTestListener
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import java.util.*
 
@@ -17,7 +18,7 @@ class FunSpecExampleNewDsl : FunSpec({
    tags(linuxTag, jvmTag)
 
    set(IsolationMode.InstancePerLeaf)
-   set(AssertionMode.Warn)
+   set(AssertionMode.Error)
    set(TestCaseOrder.Random)
 
    listeners(LocaleTestListener(Locale.CANADA_FRENCH), TimeZoneTestListener(TimeZone.getTimeZone("GMT")))
@@ -39,10 +40,10 @@ class FunSpecExampleNewDsl : FunSpec({
    }
 
    test("this is a test") {
-      // test here
+      1 + 1 shouldBe 2
    }
 
    test("this test has config").config(invocations = 1, enabled = true) {
-      // test here
+      2 * 2 shouldBe 4
    }
 })
