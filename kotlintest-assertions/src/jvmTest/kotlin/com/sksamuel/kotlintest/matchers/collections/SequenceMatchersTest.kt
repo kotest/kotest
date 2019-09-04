@@ -17,7 +17,7 @@ class SequenceMatchersTest : WordSpec() {
 
    fun WordScope.fail(msg: String): Nothing = io.kotlintest.assertions.fail(msg)
    suspend fun WordScope.fail(name: String, test: () -> Any?) {
-      ("fail $name") { shouldFail(test) }
+      ("fail $name") { shouldThrowAny(test) }
    }
 
    suspend inline fun <reified E : Throwable> WordScope.abort(name: String, crossinline test: () -> Any?) {

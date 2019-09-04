@@ -68,14 +68,10 @@ fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
 }
 
 fun <T> Array<T>.shouldHaveElementAt(index: Int, element: T) = asList().shouldHaveElementAt(index, element)
-fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(
-  index,
-  element)
+fun <T> List<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
 
 fun <T> Array<T>.shouldNotHaveElementAt(index: Int, element: T) = asList().shouldNotHaveElementAt(index, element)
-fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(
-  index,
-  element)
+fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
@@ -111,17 +107,13 @@ fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
 }
 
 infix fun <T> Array<T>.shouldNotContainExactly(expected: Array<T>) = asList().shouldNotContainExactly(expected.asList())
-infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(
-  expected)
+infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
 
-fun <T, C : Collection<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(
-  *expected)
+fun <T, C : Collection<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
 infix fun <T> Array<T>.shouldContainExactly(expected: Array<T>) = asList().shouldContainExactly(expected)
-infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(
-  expected)
+infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
 
-fun <T, C : Collection<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(
-  *expected)
+fun <T, C : Collection<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
 fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(
   expected.asList())
@@ -135,50 +127,50 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
   )
 }
 
-infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>) = asList().shouldNotContainExactlyInAnyOrder(
-  expected.asList())
+infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>) =
+   asList().shouldNotContainExactlyInAnyOrder(expected.asList())
 
-infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) = this shouldNot containExactlyInAnyOrder(
-  expected)
+infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
+   this shouldNot containExactlyInAnyOrder(expected)
 
-fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) = this shouldNot containExactlyInAnyOrder(
-  *expected)
+fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
+   this shouldNot containExactlyInAnyOrder(*expected)
 
-infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>) = asList().shouldContainExactlyInAnyOrder(
-  expected.asList())
+infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>) =
+   asList().shouldContainExactlyInAnyOrder(expected.asList())
 
-infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: C) = this should containExactlyInAnyOrder(
-  expected)
+infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
+   this should containExactlyInAnyOrder(expected)
 
-fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) = this should containExactlyInAnyOrder(
-  *expected)
+fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
+   this should containExactlyInAnyOrder(*expected)
 
-fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> = containExactlyInAnyOrder(
-  expected.asList())
+fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
+   containExactlyInAnyOrder(expected.asList())
+
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-  val passed = value.size == expected.size && expected.all { value.contains(it) }
-  MatcherResult(
-    passed,
-    "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
-    "Collection should not contain exactly ${stringRepr(expected)} in any order"
-  )
+   val passed = value.size == expected.size && expected.all { value.contains(it) }
+   MatcherResult(
+      passed,
+      "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
+      "Collection should not contain exactly ${stringRepr(expected)} in any order"
+   )
 }
 
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T) = asList().shouldHaveUpperBound(t)
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(
-  t)
+infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
+
 fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T) = object : Matcher<C> {
-  override fun test(value: C) = MatcherResult(
-    value.all { it <= t },
-    "Collection should have upper bound $t",
-    "Collection should not have upper bound $t"
-  )
+   override fun test(value: C) = MatcherResult(
+      value.all { it <= t },
+      "Collection should have upper bound $t",
+      "Collection should not have upper bound $t"
+   )
 }
 
 infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(t: T) = asList().shouldHaveLowerBound(t)
-infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(
-  t)
+infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 fun <T : Comparable<T>, C : Collection<T>> haveLowerBound(t: T) = object : Matcher<C> {
   override fun test(value: C) = MatcherResult(
     value.all { t <= it },
@@ -212,8 +204,7 @@ fun <T> containDuplicates() = object : Matcher<Collection<T>> {
 }
 
 
-fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(
-  comparator)
+fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)
 fun <T> beSortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = sortedWith(cmp)
 fun <T> sortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith { a, b ->
   comparator.compare(a,
