@@ -15,7 +15,7 @@ class OverrideModeTest : WordSpec() {
 
   init {
 
-    "SetOrOverride" should  {
+    "SetOrOverride" should {
       val mode = SetOrOverride
 
       "Set value if not already set" {
