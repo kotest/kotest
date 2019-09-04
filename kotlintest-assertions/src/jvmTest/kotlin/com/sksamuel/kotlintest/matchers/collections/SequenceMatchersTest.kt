@@ -4,6 +4,7 @@ import io.kotlintest.matchers.sequences.*
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.assertions.shouldFail
 import io.kotlintest.shouldThrow
+import io.kotlintest.shouldThrowAny
 
 class SequenceMatchersTest : WordSpec() {
 
@@ -525,8 +526,10 @@ class SequenceMatchersTest : WordSpec() {
             single.shouldContainExactly(empty)
          }
 
-         fail("for single (variadic)") {
-            single.shouldContainExactly()
+         "fail for single (variadic)" {
+            shouldThrowAny {
+               single.shouldContainExactly()
+            }
          }
 
          fail("for multiple") {
@@ -701,8 +704,11 @@ class SequenceMatchersTest : WordSpec() {
       }
 
       "contain in order" should {
-         fail("with empty") {
-            countup.shouldContainInOrder(empty)
+
+         "with empty" {
+            shouldThrowAny {
+               countup.shouldContainInOrder(empty)
+            }
          }
 
          fail("with empty (variadic)") {
