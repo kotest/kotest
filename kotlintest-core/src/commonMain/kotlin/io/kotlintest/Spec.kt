@@ -74,7 +74,7 @@ interface Spec : TestListener {
 
    fun description(): Description = Description.fromSpecClass(this::class)
 
-   val assertionMode: AssertionMode? get() = null
+   fun assertionMode(): AssertionMode? = null
 }
 
 /**
