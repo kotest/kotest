@@ -8,6 +8,7 @@ import io.kotlintest.core.TestCaseConfig
 import io.kotlintest.core.TestContext
 import io.kotlintest.core.fromSpecClass
 import io.kotlintest.core.sourceRef
+import org.junit.platform.commons.annotation.Testable
 
 // these functions call out to the js test methods
 // on the jvm these functions will be empty
@@ -66,12 +67,6 @@ abstract class AbstractSpec : Spec {
     * Config applied to each test case if not overridden per test case.
     */
    protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
-
-   // this is a dummy method, so that the IDEs and compilers can "detect" this class as a test class
-   @Junit5EnabledIfSystemProperty("foo", "woo")
-   @Junit5TestFactory
-   fun intellijMarkerStub() {
-   }
 
    // this is a dummy method, intercepted by the kotlin.js framework adapter to generate tests
    @JsTest
