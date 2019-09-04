@@ -74,12 +74,12 @@ internal abstract class NeverNullMatcher<T : Any> : Matcher<T?> {
   abstract fun testNotNull(value: T): MatcherResult
 }
 
-internal inline fun <T : Any> neverNullMatcher(crossinline test: (T) -> MatcherResult): Matcher<T?> {
-  return object : NeverNullMatcher<T>() {
-    override fun testNotNull(value: T): MatcherResult {
-      return test(value)
-    }
-  }
+internal fun <T : Any> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T?> {
+   return object : NeverNullMatcher<T>() {
+      override fun testNotNull(value: T): MatcherResult {
+         return test(value)
+      }
+   }
 }
 
 /**
