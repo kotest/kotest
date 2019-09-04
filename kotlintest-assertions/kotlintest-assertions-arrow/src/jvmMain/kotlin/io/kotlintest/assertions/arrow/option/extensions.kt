@@ -4,9 +4,9 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.extensions.option.applicativeError.applicativeError
 import arrow.core.fix
-import arrow.data.NonEmptyList
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
+import kotlin.random.Random
 
 /**
  * [Gen] extension instance for [Option].
@@ -24,14 +24,14 @@ import io.kotlintest.properties.Gen
  * ```
  */
 fun <A> Gen.Companion.option(GA: Gen<A>): Gen<Option<A>> =
-  object : Gen<Option<A>> {
-    override fun constants(): Iterable<Option<A>> =
-      GA.constants().map(::Some)
+   object : Gen<Option<A>> {
+      override fun constants(): Iterable<Option<A>> =
+         GA.constants().map(::Some)
 
-    override fun random(): Sequence<Option<A>> =
-      Option.applicativeError().run {
-        generateSequence {
-          choose({ Unit }) { GA.random().iterator().next() }.fix()
-        }
-      }
-  }
+      override fun random(random: Random?): Sequence<Option<A>> =
+         Option.applicativeError().run {
+            generateSequence {
+               choose({ Unit }) { GA.random(random).iterator().next() }.fix()
+            }
+         }
+   }

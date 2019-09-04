@@ -25,11 +25,10 @@ import kotlin.random.Random
  * Days will always be in range [0..31]
  */
 fun Gen.Companion.period(maxYear: Int = 10): Gen<Period> = object : Gen<Period> {
-
-  override fun constants(): Iterable<Period> = listOf(Period.ZERO)
-  override fun random(): Sequence<Period> = generateSequence {
-    Period.of((0..maxYear).random(), (0..11).random(), (0..31).random())
-  }
+   override fun constants(): Iterable<Period> = listOf(Period.ZERO)
+   override fun random(random: Random?): Sequence<Period> = generateSequence {
+      Period.of((0..maxYear).random(), (0..11).random(), (0..31).random())
+   }
 }
 
 fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
@@ -40,8 +39,11 @@ fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigInteger
  * exist on disk.
  */
 fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
-  override fun constants(): Iterable<File> = emptyList()
-  override fun random(): Sequence<File> = generateSequence { File(nextPrintableString(Random.nextInt(100))) }
+   override fun constants(): Iterable<File> = emptyList()
+   override fun random(random: Random?): Sequence<File> {
+      val r = random ?: Random.Default
+      return generateSequence { File(r.nextPrintableString(r.nextInt(100))) }
+   }
 }
 
 /**
@@ -50,15 +52,20 @@ fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
  * This generator creates randomly generated Duration, of at most [maxDuration].
  */
 fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Duration> = object : Gen<Duration> {
-  private val maxDurationInSeconds = maxDuration.seconds
+   private val maxDurationInSeconds = maxDuration.seconds
 
-  override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
-  override fun random(): Sequence<Duration> = generateSequence { Duration.ofSeconds(Random.nextLong(maxDurationInSeconds)) }
+   override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
+   override fun random(random: Random?): Sequence<Duration> {
+      val r = random ?: Random.Default
+      return generateSequence {
+         Duration.ofSeconds(r.nextLong(maxDurationInSeconds))
+      }
+   }
 }
 
 fun Gen.Companion.uuid(): Gen<UUID> = object : Gen<UUID> {
-  override fun constants(): Iterable<UUID> = emptyList()
-  override fun random(): Sequence<UUID> = generateSequence { UUID.randomUUID() }
+   override fun constants(): Iterable<UUID> = emptyList()
+   override fun random(random: Random?): Sequence<UUID> = generateSequence { UUID.randomUUID() }
 }
 
 /**
@@ -83,13 +90,14 @@ fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<Local
     return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
   }
 
-  override fun random(): Sequence<LocalDate> = generateSequence {
-    val minDate = LocalDate.of(minYear, 1, 1)
-    val maxDate = LocalDate.of(maxYear, 12, 31)
-
-    val days = ChronoUnit.DAYS.between(minDate, maxDate)
-
-    minDate.plusDays(Random.Default.nextLong(days + 1))
+   override fun random(random: Random?): Sequence<LocalDate> {
+      val r = random ?: Random.Default
+      val minDate = LocalDate.of(minYear, 1, 1)
+      val maxDate = LocalDate.of(maxYear, 12, 31)
+      val days = ChronoUnit.DAYS.between(minDate, maxDate)
+      return generateSequence {
+         minDate.plusDays(r.nextLong(days + 1))
+      }
   }
 }
 
@@ -102,10 +110,13 @@ fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<Local
  * @see [localDate]
  */
 fun Gen.Companion.localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
-  override fun constants(): Iterable<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
-  override fun random(): Sequence<LocalTime> = generateSequence {
-    LocalTime.of(Random.nextInt(24), Random.nextInt(60), Random.nextInt(60))
-  }
+   override fun constants(): Iterable<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
+   override fun random(random: Random?): Sequence<LocalTime> {
+      val r = random ?: Random.Default
+      return generateSequence {
+         LocalTime.of(r.nextInt(24), r.nextInt(60), r.nextInt(60))
+      }
+   }
 }
 
 /**
@@ -121,25 +132,23 @@ fun Gen.Companion.localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
  */
 fun Gen.Companion.localDateTime(minYear: Int = 1970,
                                 maxYear: Int = 2030): Gen<LocalDateTime> = object : Gen<LocalDateTime> {
-  override fun constants(): Iterable<LocalDateTime> {
-    val localDates = localDate(minYear, maxYear).constants()
-    val times = localTime().constants()
+   override fun constants(): Iterable<LocalDateTime> {
+      val localDates = localDate(minYear, maxYear).constants()
+      val times = localTime().constants()
+      return localDates.flatMap { date -> times.map { date.atTime(it) } }
+   }
 
-    return localDates.flatMap { date -> times.map { date.atTime(it) } }
-  }
-
-  override fun random(): Sequence<LocalDateTime> {
-    val dateSequence = localDate(minYear, maxYear).random().iterator()
-    val timeSequence = localTime().random().iterator()
-
-    return generateSequence { dateSequence.next().atTime(timeSequence.next()) }
-  }
+   override fun random(random: Random?): Sequence<LocalDateTime> {
+      val dateSequence = localDate(minYear, maxYear).random().iterator()
+      val timeSequence = localTime().random(random).iterator()
+      return generateSequence { dateSequence.next().atTime(timeSequence.next()) }
+   }
 }
 
 inline fun <reified T : Enum<T>> Gen.Companion.enum(): Gen<T> = object : Gen<T> {
-  val values = T::class.java.enumConstants.toList()
-  override fun constants(): Iterable<T> = values
-  override fun random(): Sequence<T> = from(values).random()
+   val values = T::class.java.enumConstants.toList()
+   override fun constants(): Iterable<T> = values
+   override fun random(random: Random?): Sequence<T> = from(values).random()
 }
 
 fun Gen.Companion.regex(regex: String) = RegexpGen(regex)

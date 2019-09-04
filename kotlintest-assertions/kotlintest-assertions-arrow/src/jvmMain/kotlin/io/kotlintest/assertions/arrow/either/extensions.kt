@@ -7,6 +7,7 @@ import arrow.core.extensions.either.applicativeError.applicativeError
 import arrow.core.fix
 import io.kotlintest.properties.Gen
 import io.kotlintest.assertions.arrow.choose
+import kotlin.random.Random
 
 /**
  * [Gen] extension instance for [Either].
@@ -25,14 +26,14 @@ import io.kotlintest.assertions.arrow.choose
  * ```
  */
 fun <A, B> Gen.Companion.either(GA: Gen<A>, GB: Gen<B>): Gen<Either<A, B>> =
-  object : Gen<Either<A, B>> {
-    override fun constants(): Iterable<Either<A, B>> =
-      GA.constants().map(::Left) + GB.constants().map(::Right)
+   object : Gen<Either<A, B>> {
+      override fun constants(): Iterable<Either<A, B>> =
+         GA.constants().map(::Left) + GB.constants().map(::Right)
 
-    override fun random(): Sequence<Either<A, B>> =
-      Either.applicativeError<A>().run {
-        generateSequence {
-          choose({ GA.random().iterator().next() }, { GB.random().iterator().next() }).fix()
-        }
-      }
-  }
+      override fun random(random: Random?): Sequence<Either<A, B>> =
+         Either.applicativeError<A>().run {
+            generateSequence {
+               choose({ GA.random(random).iterator().next() }, { GB.random(random).iterator().next() }).fix()
+            }
+         }
+   }

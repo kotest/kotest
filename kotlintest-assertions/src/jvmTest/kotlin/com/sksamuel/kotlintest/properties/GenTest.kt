@@ -3,6 +3,7 @@
 package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.*
+import io.kotlintest.inspectors.forAll
 import io.kotlintest.matchers.comparables.beGreaterThan
 import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.matchers.collections.contain
@@ -45,7 +46,6 @@ import io.kotlintest.properties.oneOf
 import io.kotlintest.properties.period
 import io.kotlintest.properties.positiveIntegers
 import io.kotlintest.properties.set
-import io.kotlintest.properties.string
 import io.kotlintest.properties.take
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
@@ -68,11 +68,11 @@ class GenTest : WordSpec() {
   init {
     "nextPrintableString" should {
       "give out a argument long string".config(invocations = 100, threads = 8) {
-        val random = Random()
+        val random = kotlin.random.Random.Default
         var rand = random.nextInt(10000)
         if (rand <= 0)
           rand = 0 - rand
-        val string = nextPrintableString(rand)
+        val string = random.nextPrintableString(rand)
 
         string.forEach {
           it.toInt() shouldBe gte(32)
@@ -192,8 +192,8 @@ class GenTest : WordSpec() {
       "generate the defaults for list" {
 
         val gen = Gen.default<List<Int>>()
-        io.kotlintest.properties.forAll(10, gen) { inst ->
-          forAll(inst) { i ->
+        forAll(10, gen) { inst ->
+           inst.forAll { i ->
             (i is Int) shouldBe true
           }
           true
@@ -203,8 +203,8 @@ class GenTest : WordSpec() {
       "generate the defaults for set" {
 
         val gen = Gen.default<Set<String>>()
-        io.kotlintest.properties.forAll(gen) { inst ->
-          forAll(inst) { i ->
+        forAll(gen) { inst ->
+           inst.forAll { i ->
             (i is String) shouldBe true
           }
           true
@@ -247,7 +247,7 @@ class GenTest : WordSpec() {
 
     "ConstGen " should {
       "always generate the same thing" {
-        io.kotlintest.properties.forAll(Gen.constant(5)) {
+        forAll(Gen.constant(5)) {
           it == 5
         }
       }
@@ -270,7 +270,7 @@ class GenTest : WordSpec() {
 
     "Gen.filter " should {
       "prevent values from being generated" {
-        io.kotlintest.properties.forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
+        forAll(Gen.from(listOf(1, 2, 5)).filter { it != 2 }) {
           it != 2
         }
       }
@@ -278,7 +278,7 @@ class GenTest : WordSpec() {
 
     "Gen.map " should {
       "correctly transform the values" {
-        io.kotlintest.properties.forAll(Gen.constant(5).map { it + 7 }) {
+        forAll(Gen.constant(5).map { it + 7 }) {
           it == 12
         }
       }
@@ -295,7 +295,7 @@ class GenTest : WordSpec() {
 
     "Gen.constant" should {
       "handle null value" {
-        io.kotlintest.properties.forAll(Gen.constant(null as Int?)) {n ->
+        forAll(Gen.constant(null as Int?)) {n ->
           n == null
         }
       }
@@ -518,12 +518,12 @@ class GenTest : WordSpec() {
     "Gen.take(n)" should {
       val mockedGen = object : Gen<Int> {
         override fun constants() = listOf(1, 2)
-        override fun random() = generateInfiniteSequence { 3 }
+        override fun random(seed: Random?) = generateInfiniteSequence { 3 }
       }
 
       val mockedGen2 = object : Gen<String> {
         override fun constants() = listOf("1", "2", "3", "4")
-        override fun random() = generateInfiniteSequence { "42" }
+        override fun random(seed: Random?) = generateInfiniteSequence { "42" }
       }
 
       "Take constants first" {
@@ -539,7 +539,7 @@ class GenTest : WordSpec() {
       "Throw exception if the generator can't generate the amount requested" {
         val smallGen = object : Gen<String> {
           override fun constants() = listOf("1", "2", "3", "4")
-          override fun random() = sequenceOf("42")
+          override fun random(seed: Random?) = sequenceOf("42")
         }
 
         val thrown = shouldThrow<IllegalStateException> { smallGen.take(10) }
@@ -557,7 +557,7 @@ class GenTest : WordSpec() {
       val mockedGen = object : Gen<Int> {
         override fun constants() = listOf(1, 2)
         val seq = listOf(3, 4, 5, 6)
-        override fun random() = generateInfiniteSequence { seq.random() }
+        override fun random(seed: Random?) = generateInfiniteSequence { seq.random() }
       }
 
       "Take a random value straight from random() by default" {

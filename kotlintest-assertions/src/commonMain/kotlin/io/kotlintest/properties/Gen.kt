@@ -43,7 +43,7 @@ interface Gen<T> {
    * Generate a random sequence of type T, that is compatible
    * with the constraints of this generator.
    */
-  fun random(): Sequence<T>
+  fun random(random: Random? = null): Sequence<T>
 
   fun shrinker(): Shrinker<T>? = null
 
@@ -51,17 +51,17 @@ interface Gen<T> {
    * Create a new [Gen] by filtering the output of this gen.
    */
   fun filter(pred: (T) -> Boolean): Gen<T> {
-    val outer = this
-    return object : Gen<T> {
-      override fun constants(): Iterable<T> = outer.constants().filter(pred)
-      override fun random(): Sequence<T> = outer.random().filter(pred)
-      override fun shrinker(): Shrinker<T>? {
-        val s = outer.shrinker()
-        return if (s == null) null else object : Shrinker<T> {
-          override fun shrink(failure: T): List<T> = s.shrink(failure).filter(pred)
+     val outer = this
+     return object : Gen<T> {
+        override fun constants(): Iterable<T> = outer.constants().filter(pred)
+        override fun random(random: Random?): Sequence<T> = outer.random(random).filter(pred)
+        override fun shrinker(): Shrinker<T>? {
+           val s = outer.shrinker()
+           return if (s == null) null else object : Shrinker<T> {
+              override fun shrink(failure: T): List<T> = s.shrink(failure).filter(pred)
+           }
         }
-      }
-    }
+     }
   }
 
   fun filterNot(f: (T) -> Boolean): Gen<T> = filter { !f(it) }
@@ -70,40 +70,40 @@ interface Gen<T> {
    * Create a new [Gen] by mapping the output of this gen.
    */
   fun <U> flatMap(f: (T) -> Gen<U>): Gen<U> {
-    val outer = this
-    return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
-      override fun random(): Sequence<U> = outer.random().flatMap { f(it).random() }
-    }
+     val outer = this
+     return object : Gen<U> {
+        override fun constants(): Iterable<U> = outer.constants().flatMap { f(it).constants() }
+        override fun random(random: Random?): Sequence<U> = outer.random(random).flatMap { f(it).random(random) }
+     }
   }
 
-  /**
-   * Create a new [Gen] by mapping the output of this gen.
-   */
-  fun <U> map(f: (T) -> U): Gen<U> {
-    val outer = this
-    return object : Gen<U> {
-      override fun constants(): Iterable<U> = outer.constants().map(f)
-      override fun random(): Sequence<U> = outer.random().map(f)
-    }
-  }
-
-  /**
-   * Create a new [Gen] which will return the values of this gen plus null.
-   */
-  fun orNull(): Gen<T?> {
-    val outer = this
-    return object : Gen<T?> {
-      override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
-      override fun random(): Sequence<T?> = outer.random().map { if (Random.nextBoolean()) null else it }
-      override fun shrinker(): Shrinker<T?>? {
-        val s = outer.shrinker()
-        return if (s == null) null else object : Shrinker<T?> {
-          override fun shrink(failure: T?): List<T?> = if (failure == null) emptyList() else s.shrink(failure)
-        }
+   /**
+    * Create a new [Gen] by mapping the output of this gen.
+    */
+   fun <U> map(f: (T) -> U): Gen<U> {
+      val outer = this
+      return object : Gen<U> {
+         override fun constants(): Iterable<U> = outer.constants().map(f)
+         override fun random(random: Random?): Sequence<U> = outer.random(random).map(f)
       }
-    }
-  }
+   }
+
+   /**
+    * Create a new [Gen] which will return the values of this gen plus null.
+    */
+   fun orNull(): Gen<T?> {
+      val outer = this
+      return object : Gen<T?> {
+         override fun constants(): Iterable<T?> = outer.constants() + listOf(null)
+         override fun random(random: Random?): Sequence<T?> = outer.random(random)
+         override fun shrinker(): Shrinker<T?>? {
+            val s = outer.shrinker()
+            return if (s == null) null else object : Shrinker<T?> {
+               override fun shrink(failure: T?): List<T?> = if (failure == null) emptyList() else s.shrink(failure)
+            }
+         }
+      }
+   }
 
   /**
    * Returns a new [[Gen]] which will return the values from this gen and the values of
@@ -114,7 +114,9 @@ interface Gen<T> {
     val outer = this
     return object : Gen<T> {
       override fun constants(): Iterable<T> = outer.constants() + gen.constants()
-      override fun random(): Sequence<T> = outer.random().zip(gen.random()).flatMap { sequenceOf(it.first, it.second) }
+       override fun random(random: Random?): Sequence<T> = outer.random(random).zip(gen.random(random)).flatMap {
+          sequenceOf(it.first, it.second)
+       }
     }
   }
 }
@@ -125,11 +127,11 @@ interface Gen<T> {
  * a particular subtype.
  */
 inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
-  val outer = this
-  return object : Gen<U> {
-    override fun constants(): Iterable<U> = outer.constants().filterIsInstance<U>()
-    override fun random(): Sequence<U> = outer.random().filterIsInstance<U>()
-  }
+   val outer = this
+   return object : Gen<U> {
+      override fun constants(): Iterable<U> = outer.constants().filterIsInstance<U>()
+      override fun random(random: Random?): Sequence<U> = outer.random(random).filterIsInstance<U>()
+   }
 }
 
 inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequence<T> =
@@ -154,14 +156,14 @@ inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequenc
  * val generatedValues: List<String> = gen.take(20)
  * ```
  */
-fun <T> Gen<T>.take(amount: Int): List<T> {
-  require(amount > 0) { "Amount must be > 0, but was $amount" }
+fun <T> Gen<T>.take(amount: Int, seed: Random? = null): List<T> {
+   require(amount > 0) { "Amount must be > 0, but was $amount" }
 
-  val generatedValues = (constants() + random().take(amount)).take(amount)
-  val generatedSize = generatedValues.size
+   val generatedValues = (constants() + random(seed).take(amount)).take(amount)
+   val generatedSize = generatedValues.size
 
-  check(generatedSize == amount) { "Gen could only generate $generatedSize values while you requested $amount." }
-  return generatedValues
+   check(generatedSize == amount) { "Gen could only generate $generatedSize values while you requested $amount." }
+   return generatedValues
 }
 
 /**
@@ -185,6 +187,8 @@ fun <T> Gen<T>.take(amount: Int): List<T> {
  * val filteredValue: String = gen.next { it != "hello" }
  * ```
  */
-fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T {
-  return random().first(predicate)
+fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Random?): T {
+   return random(seed).first(predicate)
 }
+
+fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, null)
