@@ -8,7 +8,10 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.specs.StringSpec
 import kotlinx.coroutines.delay
 import java.lang.RuntimeException
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 class GlobalTimeoutTest : StringSpec() {
 
   init {
@@ -29,7 +32,7 @@ class GlobalTimeoutTest : StringSpec() {
                                    complete: suspend (TestResult) -> Unit) {
       execute(testCase) {
         when (it.status) {
-          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000))
+          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000.milliseconds))
           else -> throw RuntimeException("This should not occur")
         }
       }

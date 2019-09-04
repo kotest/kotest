@@ -8,8 +8,9 @@ import io.kotlintest.TestResult
 import io.kotlintest.TestStatus
 import io.kotlintest.TestType
 import io.kotlintest.core.fromSpecClass
-import java.time.Duration
 import kotlin.reflect.KClass
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 private val isWindows = System.getProperty("os.name").contains("win")
 
@@ -45,6 +46,7 @@ class MochaConsoleWriter(private val term: TermColors,
 
   override fun hasErrors(): Boolean = errors
 
+  @UseExperimental(ExperimentalTime::class)
   private fun testLine(testCase: TestCase, result: TestResult): String {
     val name = when (result.status) {
       TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.name + " *** FAILED ***")
@@ -57,7 +59,7 @@ class MochaConsoleWriter(private val term: TermColors,
       TestStatus.Ignored -> IgnoredSymbol
     }
     val duration = when (testCase.type) {
-      TestType.Test -> durationString(result.durationMs)
+      TestType.Test -> durationString(result.duration.toLongMilliseconds())
       else -> ""
     }
     return "$margin${testCase.description.indent()} ${symbol.print(term)} $name $duration".padEnd(80, ' ')
@@ -136,9 +138,10 @@ class MochaConsoleWriter(private val term: TermColors,
 
   private fun padNewLines(str: String, pad: String): String = str.lines().joinToString("\n") { "$pad$it" }
 
+  @UseExperimental(ExperimentalTime::class)
   override fun engineFinished(t: Throwable?) {
 
-    val duration = Duration.ofMillis(System.currentTimeMillis() - start)
+    val duration = (System.currentTimeMillis() - start).milliseconds
 
     val ignored = results.filter { it.value.status == TestStatus.Ignored }
     val failed = results.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
@@ -148,7 +151,7 @@ class MochaConsoleWriter(private val term: TermColors,
     val specDistinctCount = specs.distinct().size
 
     println()
-    println(term.brightWhite("${margin}KotlinTest completed in ${duration.seconds} seconds / ${duration.toMillis()} milliseconds"))
+    println(term.brightWhite("${margin}KotlinTest completed in ${duration.toLongMilliseconds()} seconds / ${duration.toLongMilliseconds()} milliseconds"))
     println("${margin}Executed $specDistinctCount specs containing ${failed.size + passed.size + ignored.size} tests")
     println("$margin${passed.size} passed, ${failed.size} failed, ${ignored.size} ignored")
     if (failed.isNotEmpty()) {

@@ -16,7 +16,9 @@ import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 /**
  * The [TestCaseExecutor] is responsible for preparing and executing a single [TestCase].
@@ -36,6 +38,7 @@ import kotlin.time.ExperimentalTime
  *
  * The executor can be shared between multiple tests as it is thread safe.
  */
+@UseExperimental(ExperimentalTime::class)
 class TestCaseExecutor(private val listener: TestEngineListener,
                        private val executor: ExecutorService,
                        private val scheduler: ScheduledExecutorService) {
@@ -75,7 +78,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
     } catch (t: Throwable) {
       t.printStackTrace()
-      listener.exitTestCase(testCase, TestResult.error(t, System.currentTimeMillis() - start))
+      listener.exitTestCase(testCase, TestResult.error(t, (System.currentTimeMillis() - start).milliseconds))
     }
   }
 
@@ -184,7 +187,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
       executor.shutdown()
     }
 
-    val result = buildTestResult(error.get(), emptyMap(), System.currentTimeMillis() - start)
+    val result = buildTestResult(error.get(), emptyMap(), (System.currentTimeMillis() - start).milliseconds)
 
     listener.afterTestCaseExecution(testCase, result)
     return result
@@ -223,11 +226,11 @@ class TestCaseExecutor(private val listener: TestEngineListener,
 
   private fun buildTestResult(error: Throwable?,
                               metadata: Map<String, Any?>,
-                              durationMs: Long): TestResult = when (error) {
-    null -> TestResult(TestStatus.Success, null, null, durationMs, metadata)
-    is AssertionError -> TestResult(TestStatus.Failure, error, null, durationMs, metadata)
-    is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, durationMs, metadata)
-    else -> TestResult(TestStatus.Error, error, null, durationMs, metadata)
+                              duration: Duration): TestResult = when (error) {
+     null -> TestResult(TestStatus.Success, null, null, duration, metadata)
+     is AssertionError -> TestResult(TestStatus.Failure, error, null, duration, metadata)
+     is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, duration, metadata)
+     else -> TestResult(TestStatus.Error, error, null, duration, metadata)
   }
 
 }

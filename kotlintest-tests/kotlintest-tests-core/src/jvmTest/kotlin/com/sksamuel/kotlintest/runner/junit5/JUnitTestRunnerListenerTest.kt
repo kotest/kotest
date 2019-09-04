@@ -17,8 +17,9 @@ import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.milliseconds
+import kotlin.time.minutes
 
 @ExperimentalTime
 class JUnitTestRunnerListenerTest : WordSpec({
@@ -137,7 +138,7 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc = TestCase.container(spec.description().append("my test"), spec) { }
-          .copy(config = TestCaseConfig(invocations = 3, timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(invocations = 3, timeout = 2.minutes))
 
       listener.beforeSpecClass(spec::class)
 
@@ -164,9 +165,9 @@ class JUnitTestRunnerListenerTest : WordSpec({
 
       val spec = JUnitTestRunnerListenerTest()
       val tc1 = TestCase.container(spec.description().append("test1"), spec) { }
-          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(timeout = 2.minutes))
       val tc2 = TestCase.container(tc1.description.append("test2"), spec) { }
-          .copy(config = TestCaseConfig(timeout = Duration.ofMinutes(2)))
+          .copy(config = TestCaseConfig(timeout = 2.minutes))
 
       listener.beforeSpecClass(spec::class)
       listener.enterTestCase(tc1)

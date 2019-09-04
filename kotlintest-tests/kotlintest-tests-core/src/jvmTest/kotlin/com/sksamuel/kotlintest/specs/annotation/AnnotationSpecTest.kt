@@ -11,79 +11,84 @@ import io.kotlintest.assertions.fail
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@ExperimentalTime
 class AnnotationSpecTest : AnnotationSpec() {
 
-  private class FooException : RuntimeException()
-  private class BarException : RuntimeException()
+   private class FooException : RuntimeException()
+   private class BarException : RuntimeException()
 
-  private var count = 0
+   private var count = 0
 
-  @Test
-  fun test1() {
-    count += 1
-  }
+   @Test
+   fun test1() {
+      count += 1
+   }
 
-  @Test
-  fun test2() {
-    count += 1
-  }
+   @Test
+   fun test2() {
+      count += 1
+   }
 
-  @Test
-  fun `!bangedTest`() {
-    throw FooException()  // Test should pass as this should be banged
-  }
+   @Test
+   fun `!bangedTest`() {
+      throw FooException()  // Test should pass as this should be banged
+   }
 
-  @Test(expected = FooException::class)
-  fun test3() {
-    throw FooException()  // This test should pass!
-  }
+   @Test(expected = FooException::class)
+   fun test3() {
+      throw FooException()  // This test should pass!
+   }
 
-  @Test(expected = FooException::class)
-  fun test4() {
-    throw BarException()
-  }
+   @Test(expected = FooException::class)
+   fun test4() {
+      throw BarException()
+   }
 
-  @Test(expected = FooException::class)
-  fun test5() {
-    // Throw nothing
-  }
+   @Test(expected = FooException::class)
+   fun test5() {
+      // Throw nothing
+   }
 
-  override fun afterSpec(spec: Spec) {
-    count shouldBe 2
-  }
+   override fun afterSpec(spec: Spec) {
+      count shouldBe 2
+   }
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(IgnoreFailedTestExtension)
+   override fun extensions(): List<SpecLevelExtension> = listOf(IgnoreFailedTestExtension)
 
-  private object IgnoreFailedTestExtension : TestCaseExtension {
+   private object IgnoreFailedTestExtension : TestCaseExtension {
 
-    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      if (testCase.name !in listOf("test4", "test5")) return execute(testCase, complete)
+      override suspend fun intercept(testCase: TestCase,
+                                     execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+                                     complete: suspend (TestResult) -> Unit) {
+         if (testCase.name !in listOf("test4", "test5")) return execute(testCase, complete)
 
-      execute(testCase) {
-        if (it.error !is AssertionError) {
-          complete(TestResult.failure(AssertionError("Expecting an assertion error!"), 0))
-        }
+         execute(testCase) {
+            if (it.error !is AssertionError) {
+               complete(TestResult.failure(AssertionError("Expecting an assertion error!"), Duration.ZERO))
+            }
 
-        val errorMessage = it.error!!.message
-        val wrongExceptionMessage = "Expected exception of class FooException, but BarException was thrown instead."
-        val noExceptionMessage = "Expected exception of class FooException, but no exception was thrown."
+            val errorMessage = it.error!!.message
+            val wrongExceptionMessage = "Expected exception of class FooException, but BarException was thrown instead."
+            val noExceptionMessage = "Expected exception of class FooException, but no exception was thrown."
 
-        when (testCase.name) {
-          "test4" -> if (errorMessage == wrongExceptionMessage) {
-            complete(TestResult.success(0))
-          } else {
-            complete(TestResult.failure(AssertionError("Wrong message."), 0))
-          }
-          "test5" -> if (errorMessage == noExceptionMessage) {
-            complete(TestResult.success(0))
-          } else {
-            complete(TestResult.failure(AssertionError("Wrong message."), 0))
-          }
-        }
+            when (testCase.name) {
+               "test4" -> if (errorMessage == wrongExceptionMessage) {
+                  complete(TestResult.success(Duration.ZERO))
+               } else {
+                  complete(TestResult.failure(AssertionError("Wrong message."), Duration.ZERO))
+               }
+               "test5" -> if (errorMessage == noExceptionMessage) {
+                  complete(TestResult.success(Duration.ZERO))
+               } else {
+                  complete(TestResult.failure(AssertionError("Wrong message."), Duration.ZERO))
+               }
+            }
+         }
       }
-    }
-  }
+   }
 }
 
 
@@ -169,26 +174,29 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
   override fun testCaseOrder() = TestCaseOrder.Sequential
 }
 
+@ExperimentalTime
 class AnnotationSpecFailureTest : AnnotationSpec() {
-  class FooException: Exception()
+   class FooException : Exception()
 
-  private val thrownException = FooException()
+   private val thrownException = FooException()
 
-  @Test
-  fun foo() {
-    throw thrownException
-  }
+   @Test
+   fun foo() {
+      throw thrownException
+   }
 
-  override fun extensions() = listOf(ExceptionCaptureExtension())
+   override fun extensions() = listOf(ExceptionCaptureExtension())
 
-  inner class ExceptionCaptureExtension : TestCaseExtension {
+   inner class ExceptionCaptureExtension : TestCaseExtension {
 
-    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      execute(testCase) {
-        it.error shouldBe thrownException
-        complete(TestResult.success(0))
+      override suspend fun intercept(testCase: TestCase,
+                                     execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+                                     complete: suspend (TestResult) -> Unit) {
+         execute(testCase) {
+            it.error shouldBe thrownException
+            complete(TestResult.success(Duration.ZERO))
+         }
       }
-    }
 
-  }
+   }
 }

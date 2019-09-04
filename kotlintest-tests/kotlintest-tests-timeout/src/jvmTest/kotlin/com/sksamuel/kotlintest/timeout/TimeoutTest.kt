@@ -31,7 +31,7 @@ class TimeoutTest : StringSpec() {
                                    complete: suspend (TestResult) -> Unit) {
       execute(testCase) {
         when (it.status) {
-          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000))
+          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000.milliseconds))
           else -> throw RuntimeException("${testCase.description} should fail")
         }
       }

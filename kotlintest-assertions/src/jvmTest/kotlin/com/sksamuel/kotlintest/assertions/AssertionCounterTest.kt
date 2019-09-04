@@ -24,8 +24,8 @@ class AssertionCounterTest : FunSpec() {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   execute(testCase) {
                      when (it.status) {
-                        TestStatus.Error, TestStatus.Failure -> complete(TestResult.success(it.durationMs))
-                        else -> complete(TestResult.error(RuntimeException("Should have failed"), it.durationMs))
+                        TestStatus.Error, TestStatus.Failure -> complete(TestResult.success(it.duration))
+                        else -> complete(TestResult.error(RuntimeException("Should have failed"), it.duration))
                      }
                   }
                }
