@@ -6,6 +6,7 @@ import io.kotlintest.matchers.string.shouldHaveLength
 import io.kotlintest.matchers.string.shouldNotContain
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.assertAll
 import io.kotlintest.properties.shrinking.StringShrinker
 import io.kotlintest.specs.StringSpec
@@ -14,6 +15,14 @@ import io.kotlintest.properties.string
 import io.kotlintest.shouldBe
 
 class StringShrinkerTest : StringSpec({
+
+   beforeSpec {
+      PropertyTesting.shouldPrintShrinkSteps = false
+   }
+
+   afterSpec {
+      PropertyTesting.shouldPrintShrinkSteps = true
+   }
 
   "StringShrinker should include empty string as the first candidate" {
     assertAll { a: String ->

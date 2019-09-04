@@ -3,10 +3,19 @@ package com.sksamuel.kotlintest.properties.shrinking
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveElementAt
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.shrinking.ListShrinker
 import io.kotlintest.specs.WordSpec
 
 class ListShrinkerTest : WordSpec({
+
+   beforeSpec {
+      PropertyTesting.shouldPrintShrinkSteps = false
+   }
+
+   afterSpec {
+      PropertyTesting.shouldPrintShrinkSteps = true
+   }
 
   "ListShrinker" should {
     "return empty list for the min value" {

@@ -5,10 +5,19 @@ import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.collections.shouldHaveElementAt
 import io.kotlintest.matchers.collections.shouldNotContain
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.shrinking.ChooseShrinker
 import io.kotlintest.specs.WordSpec
 
 class ChooseShrinkerTest : WordSpec({
+
+   beforeSpec {
+      PropertyTesting.shouldPrintShrinkSteps = false
+   }
+
+   afterSpec {
+      PropertyTesting.shouldPrintShrinkSteps = true
+   }
 
   "ChooseShrinker" should {
     "return empty list for the min value" {
