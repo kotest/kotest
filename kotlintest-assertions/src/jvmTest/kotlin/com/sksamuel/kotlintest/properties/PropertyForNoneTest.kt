@@ -2,6 +2,7 @@ package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.matchers.comparables.gt
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.double
 import io.kotlintest.properties.forNone
 import io.kotlintest.properties.int
@@ -16,6 +17,14 @@ import io.kotlintest.shouldThrow
 
 class PropertyForNoneTest : StringSpec() {
   init {
+
+     beforeSpec {
+        PropertyTesting.shouldPrintShrinkSteps = false
+     }
+
+     afterSpec {
+        PropertyTesting.shouldPrintShrinkSteps = true
+     }
 
     "forNoneTestStrings" {
       forNone { a: String, b: String ->

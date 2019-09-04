@@ -12,15 +12,15 @@ import java.io.PrintStream
 
 class PropertyAssertAllOutputTest : FunSpec() {
 
-  override fun beforeSpec(spec: Spec) {
-    PropertyTesting.shouldPrintGeneratedValues = true
-  }
-
-  override fun afterSpec(spec: Spec) {
-    PropertyTesting.shouldPrintGeneratedValues = false
-  }
-
   init {
+
+     beforeSpec {
+        PropertyTesting.shouldPrintGeneratedValues = true
+     }
+
+     afterSpec {
+        PropertyTesting.shouldPrintGeneratedValues = false
+     }
 
     fun captureStdout(thunk: () -> Unit): String {
       val previous = System.out

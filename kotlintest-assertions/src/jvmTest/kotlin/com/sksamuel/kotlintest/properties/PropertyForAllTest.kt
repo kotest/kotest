@@ -6,6 +6,7 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.forAll
 import io.kotlintest.shouldBe
 import io.kotlintest.assertions.shouldFail
+import io.kotlintest.properties.PropertyTesting
 import io.kotlintest.properties.double
 import io.kotlintest.properties.int
 import io.kotlintest.properties.long
@@ -17,6 +18,14 @@ import kotlin.math.abs
 
 class PropertyForAllTest : StringSpec() {
   init {
+
+     beforeSpec {
+        PropertyTesting.shouldPrintShrinkSteps = false
+     }
+
+     afterSpec {
+        PropertyTesting.shouldPrintShrinkSteps = true
+     }
 
     "startsWith" {
       var actualAttempts = 0
