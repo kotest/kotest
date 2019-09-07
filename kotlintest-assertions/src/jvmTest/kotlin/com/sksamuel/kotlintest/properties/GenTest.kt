@@ -602,12 +602,6 @@ class GenTest : WordSpec() {
         }
       }
     }
-
-    "Gen.samples(sampleValues)" should {
-      Gen.samples(1, 2).random().take(1).last() shouldBe 1
-      Gen.samples(1, 2).random().take(2).last() shouldBe 2
-      Gen.samples(1, 2).random().take(3).last() shouldBe 1
-    }
   }
 }
 
