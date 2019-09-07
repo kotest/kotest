@@ -664,10 +664,10 @@ class CollectionMatchersTest : WordSpec() {
           col should containAll(3, 2, 0)
         }
       }
-      "print errors unambiguously"  {
+      "print errors unambiguously" {
         shouldThrow<AssertionError> {
           listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
-        }.message shouldBe "Collection should contain all of 1L, 2L"
+        }.message shouldBe "Collection should contain all of 1L, 2L but missing 1L, 2L"
       }
     }
 
