@@ -1,12 +1,6 @@
 package io.kotlintest.properties
 
-import io.kotlintest.properties.shrinking.ChooseShrinker
-import io.kotlintest.properties.shrinking.DoubleShrinker
-import io.kotlintest.properties.shrinking.FloatShrinker
-import io.kotlintest.properties.shrinking.IntShrinker
-import io.kotlintest.properties.shrinking.ListShrinker
-import io.kotlintest.properties.shrinking.Shrinker
-import io.kotlintest.properties.shrinking.StringShrinker
+import io.kotlintest.properties.shrinking.*
 import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 import kotlin.random.Random
@@ -590,4 +584,23 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
       return generateSequence { r.nextInt(k) }.filter { it > 0 }
          .filter { k % it == 0 }
    }
+}
+
+fun <T:Any> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
+    private fun nextNumberGenerator(): () -> T  {
+        var currentIndex = 0;
+        return {
+            val nextIndex = currentIndex % sampleValues.size
+            val nextValue = sampleValues[nextIndex]
+            currentIndex += 1
+            nextValue
+        }
+    }
+
+    override fun random(seed: Long?): Sequence<T> {
+        val a = nextNumberGenerator()
+        return generateSequence(a)
+    }
+
+    override fun constants(): Iterable<T> = sampleValues.asIterable()
 }
