@@ -585,3 +585,22 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
          .filter { k % it == 0 }
    }
 }
+
+fun <T:Any> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
+    private fun nextNumberGenerator(): () -> T  {
+        var currentIndex = 0;
+        return {
+            val nextIndex = currentIndex % sampleValues.size
+            val nextValue = sampleValues[nextIndex]
+            currentIndex += 1
+            nextValue
+        }
+    }
+
+    override fun random(seed: Long?): Sequence<T> {
+        val a = nextNumberGenerator()
+        return generateSequence(a)
+    }
+
+    override fun constants(): Iterable<T> = sampleValues.asIterable()
+}

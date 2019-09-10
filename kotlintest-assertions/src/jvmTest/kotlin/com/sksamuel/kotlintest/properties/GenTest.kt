@@ -543,6 +543,7 @@ class GenTest : WordSpec() {
         accumulatedValues shouldBe setOf(5, 6)
       }
     }
+
     "Gen.list(maxSize)" should {
       "Generate lists of length up to 100 by default" {
         assertAll(10_000, Gen.list(Gen.double())) {
@@ -557,6 +558,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.set(maxSize)" should {
       "Generate sets of length up to 100 by default" {
         assertAll(10_000, Gen.set(Gen.double())) {
@@ -571,6 +573,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.map(keyGen, valueGen, maxSize)" should {
       val keyGen = Gen.int()
       val valueGen = Gen.double()
@@ -587,6 +590,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.map(keyValueGen, maxSize)" should {
       val keyValueGen = Gen.int().map { Pair(it, it.toString()) }
       "Generate maps of up to 100 elements by default" {
@@ -601,6 +605,12 @@ class GenTest : WordSpec() {
           }
         }
       }
+    }
+
+    "Gen.samples(sampleValues)" should {
+      Gen.samples(1, 2).random().take(1).last() shouldBe 1
+      Gen.samples(1, 2).random().take(2).last() shouldBe 2
+      Gen.samples(1, 2).random().take(3).last() shouldBe 1
     }
   }
 }
