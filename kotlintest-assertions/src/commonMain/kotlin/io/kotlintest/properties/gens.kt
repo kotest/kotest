@@ -1,12 +1,6 @@
 package io.kotlintest.properties
 
-import io.kotlintest.properties.shrinking.ChooseShrinker
-import io.kotlintest.properties.shrinking.DoubleShrinker
-import io.kotlintest.properties.shrinking.FloatShrinker
-import io.kotlintest.properties.shrinking.IntShrinker
-import io.kotlintest.properties.shrinking.ListShrinker
-import io.kotlintest.properties.shrinking.Shrinker
-import io.kotlintest.properties.shrinking.StringShrinker
+import io.kotlintest.properties.shrinking.*
 import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 import kotlin.random.Random
