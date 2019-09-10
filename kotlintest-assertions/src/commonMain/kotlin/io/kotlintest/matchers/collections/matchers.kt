@@ -1,12 +1,7 @@
 package io.kotlintest.matchers.collections
 
-import io.kotlintest.Matcher
-import io.kotlintest.MatcherResult
+import io.kotlintest.*
 import io.kotlintest.assertions.stringRepr
-import io.kotlintest.neverNullMatcher
-import io.kotlintest.should
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
 
 fun <T> Array<T>.shouldContainOnlyNulls() = asList().shouldContainOnlyNulls()
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
@@ -36,12 +31,10 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
 
 infix fun <T> Array<T>.shouldStartWith(slice: Collection<T>) = asList().shouldStartWith(slice)
 infix fun <T> Array<T>.shouldStartWith(slice: Array<T>) = asList().shouldStartWith(slice.asList())
-infix fun <T> List<T>.shouldStartWith(slice: Collection<T>) = this should startWith(
-  slice)
+infix fun <T> List<T>.shouldStartWith(slice: Collection<T>) = this should startWith(slice)
 infix fun <T> Array<T>.shouldNotStartWith(slice: Collection<T>) = asList().shouldNotStartWith(slice)
 infix fun <T> Array<T>.shouldNotStartWith(slice: Array<T>) = asList().shouldNotStartWith(slice.asList())
-infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(
-  slice)
+infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(slice)
 fun <T> startWith(slice: Collection<T>) = object : Matcher<List<T>> {
   override fun test(value: List<T>) =
     MatcherResult(
@@ -56,8 +49,7 @@ infix fun <T> Array<T>.shouldEndWith(slice: Array<T>) = asList().shouldEndWith(s
 infix fun <T> List<T>.shouldEndWith(slice: Collection<T>) = this should endWith(slice)
 infix fun <T> Array<T>.shouldNotEndWith(slice: Collection<T>) = asList().shouldNotEndWith(slice)
 infix fun <T> Array<T>.shouldNotEndWith(slice: Array<T>) = asList().shouldNotEndWith(slice.asList())
-infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(
-  slice)
+infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(slice)
 fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
   override fun test(value: List<T>) =
     MatcherResult(
@@ -207,8 +199,7 @@ fun <T> containDuplicates() = object : Matcher<Collection<T>> {
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)
 fun <T> beSortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = sortedWith(cmp)
 fun <T> sortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith { a, b ->
-  comparator.compare(a,
-    b)
+  comparator.compare(a, b)
 }
 fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
@@ -326,8 +317,7 @@ fun <T> Array<T>.shouldNotBeSingleton() = asList().shouldNotBeSingleton()
 
 infix fun <T, U> Array<T>.shouldBeLargerThan(other: Collection<U>) = asList().shouldBeLargerThan(other)
 infix fun <T, U> Array<T>.shouldBeLargerThan(other: Array<U>) = asList().shouldBeLargerThan(other.asList())
-infix fun <T, U> Collection<T>.shouldBeLargerThan(other: Collection<U>) = this should beLargerThan(
-  other)
+infix fun <T, U> Collection<T>.shouldBeLargerThan(other: Collection<U>) = this should beLargerThan(other)
 fun <T, U> beLargerThan(other: Collection<U>) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size > other.size,
@@ -338,8 +328,7 @@ fun <T, U> beLargerThan(other: Collection<U>) = object : Matcher<Collection<T>> 
 
 infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Collection<U>) = asList().shouldBeSmallerThan(other)
 infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>) = asList().shouldBeSmallerThan(other.asList())
-infix fun <T, U> Collection<T>.shouldBeSmallerThan(other: Collection<U>) = this should beSmallerThan(
-  other)
+infix fun <T, U> Collection<T>.shouldBeSmallerThan(other: Collection<U>) = this should beSmallerThan(other)
 fun <T, U> beSmallerThan(other: Collection<U>) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size < other.size,
@@ -350,8 +339,7 @@ fun <T, U> beSmallerThan(other: Collection<U>) = object : Matcher<Collection<T>>
 
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Collection<U>) = asList().shouldBeSameSizeAs(other)
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Array<U>) = asList().shouldBeSameSizeAs(other.asList())
-infix fun <T, U> Collection<T>.shouldBeSameSizeAs(other: Collection<U>) = this should beSameSizeAs(
-  other)
+infix fun <T, U> Collection<T>.shouldBeSameSizeAs(other: Collection<U>) = this should beSameSizeAs(other)
 fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size == other.size,
@@ -361,8 +349,7 @@ fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> 
 }
 
 infix fun <T> Array<T>.shouldHaveAtLeastSize(n: Int) = asList().shouldHaveAtLeastSize(n)
-infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int) = this shouldHave atLeastSize(
-  n)
+infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int) = this shouldHave atLeastSize(n)
 fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size >= n,
@@ -372,8 +359,7 @@ fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
 }
 
 infix fun <T> Array<T>.shouldHaveAtMostSize(n: Int) = asList().shouldHaveAtMostSize(n)
-infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostSize(
-  n)
+infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostSize(n)
 fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size <= n,
@@ -426,8 +412,7 @@ infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this should
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
  */
-infix fun <T> T.shouldBeOneOf(collection: Collection<T>) = this should beOneOf(
-  collection)
+infix fun <T> T.shouldBeOneOf(collection: Collection<T>) = this should beOneOf(collection)
 
 /**
  * Verifies that this instance is NOT in [collection]
@@ -440,8 +425,7 @@ infix fun <T> T.shouldBeOneOf(collection: Collection<T>) = this should beOneOf(
  * @see [shouldBeOneOf]
  * @see [beOneOf]
  */
-infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>) = this shouldNot beOneOf(
-  collection)
+infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>) = this shouldNot beOneOf(collection)
 
 /**
  * Verifies that this instance is any of [any]
@@ -470,7 +454,7 @@ fun <T> T.shouldBeOneOf(vararg any: T) = this should beOneOf(any.toList())
 fun <T> T.shouldNotBeOneOf(vararg any: T) = this shouldNot beOneOf(any.toList())
 
 /**
- * Mather that verifies that this instance is in [collection]
+ * Matcher that verifies that this instance is in [collection]
  *
  * Assertion to check that this instance is in [collection]. This matcher checks by reference, and not by value,
  * therefore the exact instance must be in [collection], or this will fail.
@@ -488,6 +472,83 @@ fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
     return MatcherResult(match,
       "Collection should contain the instance of value, but doesn't.",
       "Collection should not contain the instance of value, but does.")
+  }
+}
+
+/**
+ * Verifies that this element is in [collection] by comparing value
+ *
+ * Assertion to check that this element is in [collection]. This assertion checks by value, and not by reference,
+ * therefore even if the exact instance is not in [collection] but another instance with same value is present, the
+ * test will pass.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+infix fun <T> T.shouldBeIn(collection: Collection<T>) = this should beIn(collection)
+
+/**
+ * Verifies that this element is NOT any of [collection]
+ *
+ * Assertion to check that this element is not any of [collection]. This assertion checks by value, and not by reference,
+ * therefore any instance with same value must not be in [collection], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+infix fun <T> T.shouldNotBeIn(collection: Collection<T>) = this shouldNot beIn(collection.toList())
+
+/**
+ * Verifies that this element is any of [any] by comparing value
+ *
+ * Assertion to check that this element is any of [any]. This assertion checks by value, and not by reference,
+ * therefore even if the exact instance is not any of [any] but another instance with same value is present, the
+ * test will pass.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+fun <T> T.shouldBeIn(vararg any: T) = this should beIn(any.toList())
+
+/**
+ * Verifies that this element is NOT any of [any]
+ *
+ * Assertion to check that this element is not any of [any]. This assertion checks by value, and not by reference,
+ * therefore any instance with same value must not be in [any], or this will fail.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+fun <T> T.shouldNotBeIn(vararg any: T) = this shouldNot beIn(any.toList())
+
+/**
+ *  Matcher that verifies that this element is in [collection] by comparing value
+ *
+ * Assertion to check that this element is in [collection]. This assertion checks by value, and not by reference,
+ * therefore even if the exact instance is not in [collection] but another instance with same value is present, the
+ * test will pass.
+ *
+ * An empty collection will always fail. If you need to check for empty collection, use [Collection.shouldBeEmpty]
+ *
+ * @see [shouldBeOneOf]
+ * @see [shouldNotBeOneOf]
+ */
+fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
+  override fun test(value: T): MatcherResult {
+    if (collection.isEmpty()) throwEmptyCollectionError()
+
+    val match = collection.any { it == value }
+    return MatcherResult(match,
+      "Collection should contain the element, but doesn't.",
+      "Collection should not contain the element, but does.")
   }
 }
 

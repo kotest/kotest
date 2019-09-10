@@ -1,98 +1,8 @@
 package com.sksamuel.kotlintest.matchers.collections
 
-import io.kotlintest.matchers.collections.beEmpty
-import io.kotlintest.matchers.collections.monotonicallyDecreasing
-import io.kotlintest.matchers.collections.monotonicallyDecreasingWith
-import io.kotlintest.matchers.collections.monotonicallyIncreasing
-import io.kotlintest.matchers.collections.monotonicallyIncreasingWith
-import io.kotlintest.matchers.collections.strictlyDecreasing
-import io.kotlintest.matchers.collections.strictlyDecreasingWith
-import io.kotlintest.matchers.collections.strictlyIncreasing
-import io.kotlintest.matchers.collections.strictlyIncreasingWith
-import io.kotlintest.matchers.collections.atLeastSize
-import io.kotlintest.matchers.collections.atMostSize
-import io.kotlintest.matchers.collections.beLargerThan
-import io.kotlintest.matchers.collections.beSameSizeAs
-import io.kotlintest.matchers.collections.beSmallerThan
-import io.kotlintest.matchers.collections.contain
-import io.kotlintest.matchers.collections.containDuplicates
-import io.kotlintest.matchers.collections.containExactly
-import io.kotlintest.matchers.collections.containExactlyInAnyOrder
-import io.kotlintest.matchers.collections.containNoNulls
-import io.kotlintest.matchers.collections.containNull
-import io.kotlintest.matchers.collections.containOnlyNulls
-import io.kotlintest.matchers.collections.endWith
-import io.kotlintest.matchers.collections.haveElementAt
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldBeLargerThan
-import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasing
-import io.kotlintest.matchers.collections.shouldBeMonotonicallyDecreasingWith
-import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasing
-import io.kotlintest.matchers.collections.shouldBeMonotonicallyIncreasingWith
-import io.kotlintest.matchers.collections.shouldBeOneOf
-import io.kotlintest.matchers.collections.shouldBeSameSizeAs
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.collections.shouldBeSmallerThan
-import io.kotlintest.matchers.collections.shouldBeSorted
-import io.kotlintest.matchers.collections.shouldBeSortedWith
-import io.kotlintest.matchers.collections.shouldBeStrictlyDecreasing
-import io.kotlintest.matchers.collections.shouldBeStrictlyDecreasingWith
-import io.kotlintest.matchers.collections.shouldBeStrictlyIncreasing
-import io.kotlintest.matchers.collections.shouldBeStrictlyIncreasingWith
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldContainAll
-import io.kotlintest.matchers.collections.shouldContainDuplicates
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.matchers.collections.shouldContainNoNulls
-import io.kotlintest.matchers.collections.shouldContainNull
-import io.kotlintest.matchers.collections.shouldContainOnlyNulls
-import io.kotlintest.matchers.collections.shouldEndWith
-import io.kotlintest.matchers.collections.shouldExist
-import io.kotlintest.matchers.collections.shouldHaveAtLeastSize
-import io.kotlintest.matchers.collections.shouldHaveAtMostSize
-import io.kotlintest.matchers.collections.shouldHaveElementAt
-import io.kotlintest.matchers.collections.shouldHaveSingleElement
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.collections.shouldNotBeEmpty
-import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasing
-import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyDecreasingWith
-import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasing
-import io.kotlintest.matchers.collections.shouldNotBeMonotonicallyIncreasingWith
-import io.kotlintest.matchers.collections.shouldNotBeOneOf
-import io.kotlintest.matchers.collections.shouldNotBeSingleton
-import io.kotlintest.matchers.collections.shouldNotBeSorted
-import io.kotlintest.matchers.collections.shouldNotBeSortedWith
-import io.kotlintest.matchers.collections.shouldNotBeStrictlyDecreasing
-import io.kotlintest.matchers.collections.shouldNotBeStrictlyDecreasingWith
-import io.kotlintest.matchers.collections.shouldNotBeStrictlyIncreasing
-import io.kotlintest.matchers.collections.shouldNotBeStrictlyIncreasingWith
-import io.kotlintest.matchers.collections.shouldNotContainAll
-import io.kotlintest.matchers.collections.shouldNotContainDuplicates
-import io.kotlintest.matchers.collections.shouldNotContainExactly
-import io.kotlintest.matchers.collections.shouldNotContainExactlyInAnyOrder
-import io.kotlintest.matchers.collections.shouldNotContainNoNulls
-import io.kotlintest.matchers.collections.shouldNotContainNull
-import io.kotlintest.matchers.collections.shouldNotContainOnlyNulls
-import io.kotlintest.matchers.collections.shouldNotEndWith
-import io.kotlintest.matchers.collections.shouldNotHaveElementAt
-import io.kotlintest.matchers.collections.shouldNotHaveSize
-import io.kotlintest.matchers.collections.shouldNotStartWith
-import io.kotlintest.matchers.collections.shouldStartWith
-import io.kotlintest.matchers.collections.startWith
-import io.kotlintest.matchers.collections.containAll
-import io.kotlintest.matchers.collections.containsInOrder
-import io.kotlintest.matchers.collections.haveSize
-import io.kotlintest.matchers.collections.singleElement
-import io.kotlintest.matchers.collections.sorted
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+import io.kotlintest.*
 import io.kotlintest.assertions.shouldFail
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldNotHave
-import io.kotlintest.shouldThrow
+import io.kotlintest.matchers.collections.*
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -158,8 +68,8 @@ class CollectionMatchersTest : WordSpec() {
       }
       "support type inference for subtypes of collection" {
         val tests = listOf(
-            TestSealed.Test1("test1"),
-            TestSealed.Test2(2)
+                TestSealed.Test1("test1"),
+                TestSealed.Test2(2)
         )
         tests should haveElementAt(0, TestSealed.Test1("test1"))
         tests.shouldHaveElementAt(1, TestSealed.Test2(2))
@@ -764,6 +674,71 @@ class CollectionMatchersTest : WordSpec() {
 
         val list = emptyList<Foo>()
         shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
+      }
+
+    }
+
+    "Be in" should {
+      "Pass when the element is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+
+        foo shouldBeIn list
+      }
+
+      "Fail when the element is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+
+        val list = listOf(foo1)
+        shouldThrow<AssertionError> { foo2.shouldBeIn(list) }
+      }
+
+      "Pass when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = listOf(foo1)
+        shouldNotThrow<AssertionError>{ foo2 shouldBeIn list }
+      }
+
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldBeIn list }
+      }
+    }
+
+    "Be in (negative)" should {
+      "Fail when the element is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+
+        shouldThrow<AssertionError> { foo shouldNotBeIn list }
+      }
+
+      "Pass when the element is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+
+        val list = listOf(foo1)
+        shouldNotThrow<AssertionError> { foo2.shouldNotBeIn(list) }
+      }
+
+      "Fail when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = listOf(foo1)
+        shouldThrow<AssertionError>{ foo2 shouldNotBeIn list }
+      }
+
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldNotBeIn list }
       }
 
     }
