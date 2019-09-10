@@ -3,6 +3,7 @@ package com.sksamuel.kotlintest.matchers.collections
 import io.kotlintest.*
 import io.kotlintest.assertions.shouldFail
 import io.kotlintest.matchers.collections.*
+import io.kotlintest.matchers.collections.*
 import io.kotlintest.matchers.throwable.shouldHaveMessage
 import io.kotlintest.specs.WordSpec
 import java.util.*
