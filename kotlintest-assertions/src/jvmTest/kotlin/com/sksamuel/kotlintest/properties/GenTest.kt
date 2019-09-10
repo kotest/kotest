@@ -646,4 +646,3 @@ sealed class X {
   data class B(val b: Int) : X()
   data class C(val c: Int) : X()
 }
-
