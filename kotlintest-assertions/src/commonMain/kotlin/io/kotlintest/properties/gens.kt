@@ -586,6 +586,10 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
    }
 }
 
+/**
+ * Returns a [[Gen]] which returns the sample values in same order as they are passed in, once all sample values are used
+ * it repeats elements from starting.
+ */
 fun <T:Any> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
     private fun nextNumberGenerator(): () -> T  {
         var currentIndex = 0;
