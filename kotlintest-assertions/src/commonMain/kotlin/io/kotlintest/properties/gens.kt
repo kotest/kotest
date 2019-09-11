@@ -587,10 +587,10 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
 }
 
 /**
- * Returns a [[Gen]] which returns the sample values in same order as they are passed in, once all sample values are used
- * it repeats elements from starting.
+ * Returns a [Gen] which returns the sample values in same order as they are passed in, once all sample values are used
+ * it repeats elements from start.
  */
-fun <T:Any> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
+fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
     private fun nextNumberGenerator(): () -> T  {
         var currentIndex = 0;
         return {
@@ -602,8 +602,11 @@ fun <T:Any> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
     }
 
     override fun random(seed: Long?): Sequence<T> {
-        val a = nextNumberGenerator()
-        return generateSequence(a)
+        return if(sampleValues.isEmpty()) {
+            emptySequence()
+        } else {
+            generateInfiniteSequence(nextNumberGenerator())
+        }
     }
 
     override fun constants(): Iterable<T> = sampleValues.asIterable()
