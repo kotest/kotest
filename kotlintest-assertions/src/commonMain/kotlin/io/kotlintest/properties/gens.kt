@@ -587,7 +587,7 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
 }
 
 /**
- * Returns a [Gen] which returns the sample values in same order as they are passed in, once all sample values are used
+ * Returns a [Gen] which returns the sample values in the same order as they are passed in, once all sample values are used
  * it repeats elements from start.
  */
 fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
