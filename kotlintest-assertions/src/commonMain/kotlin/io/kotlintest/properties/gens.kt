@@ -591,7 +591,7 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
  * it repeats elements from start.
  */
 fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
-    private fun nextNumberGenerator(): () -> T  {
+    private fun getNextSampleElementProvider(): () -> T  {
         var currentIndex = 0;
         return {
             val nextIndex = currentIndex % sampleValues.size
@@ -605,7 +605,7 @@ fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
         return if(sampleValues.isEmpty()) {
             emptySequence()
         } else {
-            generateInfiniteSequence(nextNumberGenerator())
+            generateInfiniteSequence(getNextSampleElementProvider())
         }
     }
 
