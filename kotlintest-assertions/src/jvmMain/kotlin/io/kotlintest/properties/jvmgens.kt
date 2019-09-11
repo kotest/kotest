@@ -2,16 +2,11 @@ package io.kotlintest.properties
 
 import java.io.File
 import java.math.BigInteger
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
-import java.time.Year
+import java.time.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
 /**
@@ -153,3 +148,25 @@ inline fun <reified T : Enum<T>> Gen.Companion.enum(): Gen<T> = object : Gen<T> 
 
 fun Gen.Companion.regex(regex: String) = RegexpGen(regex)
 fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
+
+/**
+ * Returns a stream of values where each value is a randomly
+ * chosen File object from given directory. Directory does not exists, an empty sequence will be return.
+ * If recursive is true it gives files from inner directories as well recursively.
+ */
+fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<File> = object : Gen<File> {
+   override fun constants(): Iterable<File> = emptyList()
+   override fun random(seed: Long?): Sequence<File> {
+      val fileTreeWalk = File(directoryName).walk()
+      return if (!recursive) {
+         randomiseFiles(fileTreeWalk.maxDepth(1), seed)
+      } else randomiseFiles(fileTreeWalk, seed)
+   }
+
+   private fun randomiseFiles(files: Sequence<File>, seed: Long?): Sequence<File> {
+      val allFiles = files.toList()
+      if(allFiles.isEmpty()) return emptySequence()
+      val r = if (seed == null) Random.Default else Random(seed)
+      return generateInfiniteSequence { allFiles[r.nextInt(0, allFiles.size)] }
+   }
+}
