@@ -2,6 +2,7 @@ package io.kotlintest.matchers.collections
 
 import io.kotlintest.*
 import io.kotlintest.assertions.stringRepr
+import kotlin.jvm.JvmName
 
 fun <T> Array<T>.shouldContainOnlyNulls() = asList().shouldContainOnlyNulls()
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
@@ -548,6 +549,36 @@ fun <T> T.shouldBeIn(vararg any: T) = this should beIn(any.toList())
  * @see [beIn]
  */
 fun <T> T.shouldNotBeIn(vararg any: T) = this shouldNot beIn(any.toList())
+
+
+/**
+ * Verifies that this element is in [array] by comparing value
+ *
+ * Assertion to check that this element is in [array]. This assertion checks by value, and not by reference,
+ * therefore even if the exact instance is not in [array] but another instance with same value is present, the
+ * test will pass.
+ *
+ * An empty array will always fail. If you need to check for empty array, use [Array.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+@JvmName("shouldBeInArray")
+infix fun <T> T.shouldBeIn(array: Array<T>) = this should beIn(array.toList())
+
+/**
+ * Verifies that this element is NOT any of [array]
+ *
+ * Assertion to check that this element is not any of [array]. This assertion checks by value, and not by reference,
+ * therefore any instance with same value must not be in [array], or this will fail.
+ *
+ * An empty array will always fail. If you need to check for empty array, use [Array.shouldBeEmpty]
+ *
+ * @see [shouldNotBeIn]
+ * @see [beIn]
+ */
+@JvmName("shouldNotBeInArray")
+infix fun <T> T.shouldNotBeIn(array: Array<T>) = this shouldNot beIn(array.toList())
 
 /**
  *  Matcher that verifies that this element is in [collection] by comparing value

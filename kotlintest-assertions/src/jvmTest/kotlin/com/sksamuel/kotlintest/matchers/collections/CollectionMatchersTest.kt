@@ -744,6 +744,14 @@ class CollectionMatchersTest : WordSpec() {
         shouldNotThrow<AssertionError>{ foo2 shouldBeIn list }
       }
 
+      "Pass when there's an equal element, but not the same instance in the array" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = arrayOf(foo1)
+        shouldNotThrow<AssertionError>{ foo2 shouldBeIn list }
+      }
+
       "Fail when the list is empty" {
         val foo = Foo("Bar")
 
