@@ -3,6 +3,8 @@ package com.sksamuel.kotlintest.matchers.collections
 import io.kotlintest.*
 import io.kotlintest.assertions.shouldFail
 import io.kotlintest.matchers.collections.*
+import io.kotlintest.matchers.throwable.shouldHaveMessage
+import io.kotlintest.matchers.collections.*
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -68,8 +70,8 @@ class CollectionMatchersTest : WordSpec() {
       }
       "support type inference for subtypes of collection" {
         val tests = listOf(
-                TestSealed.Test1("test1"),
-                TestSealed.Test2(2)
+            TestSealed.Test1("test1"),
+            TestSealed.Test2(2)
         )
         tests should haveElementAt(0, TestSealed.Test1("test1"))
         tests.shouldHaveElementAt(1, TestSealed.Test2(2))
@@ -676,6 +678,46 @@ class CollectionMatchersTest : WordSpec() {
         shouldThrow<AssertionError> { foo shouldNotBeOneOf list }
       }
 
+    }
+
+    "Contain any" should {
+      "Fail when the list is empty" {
+        shouldThrow<AssertionError> {
+          listOf(1, 2, 3).shouldContainAnyOf(emptyList())
+        }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+      }
+
+      "Pass when one element is in the list" {
+        listOf(1, 2, 3).shouldContainAnyOf(1)
+      }
+
+      "Pass when all elements are in the list" {
+        listOf(1, 2, 3).shouldContainAnyOf(1, 2, 3)
+      }
+
+      "Fail when no element is in the list" {
+        shouldThrow<AssertionError> { listOf(1, 2, 3).shouldContainAnyOf(4) }
+      }
+    }
+
+    "Contain any (negative)" should {
+      "Fail when the list is empty" {
+        shouldThrow<AssertionError> {
+          listOf(1, 2, 3).shouldNotContainAnyOf(emptyList())
+        }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+      }
+
+      "Pass when no element is present in the list" {
+        listOf(1, 2, 3).shouldNotContainAnyOf(4)
+      }
+
+      "Fail when one element is in the list" {
+        shouldThrow<AssertionError> { listOf(1, 2, 3).shouldNotContainAnyOf(1) }
+      }
+
+      "Fail when all elements are in the list" {
+        shouldThrow<AssertionError> { listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3) }
+      }
     }
 
     "Be in" should {
