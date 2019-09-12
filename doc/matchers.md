@@ -147,6 +147,7 @@ For the extension function style, each function has an equivalent negated versio
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
 | `value.shouldBeOneOf(collection)` | Asserts that a specific instance is contained in a collection. |
+| `value.shouldBeIn(collection)` | Asserts that an object is contained in collection, checking by value and not by reference. |
 
 | URIs ||
 | -------- | ---- |
