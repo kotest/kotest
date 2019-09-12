@@ -1,15 +1,10 @@
 package com.sksamuel.kotlintest.matchers.collections
 
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+
+import io.kotlintest.*
 import io.kotlintest.assertions.shouldFail
 import io.kotlintest.matchers.collections.*
 import io.kotlintest.matchers.throwable.shouldHaveMessage
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNot
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldNotHave
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import java.util.*
 
@@ -723,6 +718,79 @@ class CollectionMatchersTest : WordSpec() {
       "Fail when all elements are in the list" {
         shouldThrow<AssertionError> { listOf(1, 2, 3).shouldNotContainAnyOf(1, 2, 3) }
       }
+    }
+
+    "Be in" should {
+      "Pass when the element is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+
+        foo shouldBeIn list
+      }
+
+      "Fail when the element is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+
+        val list = listOf(foo1)
+        shouldThrow<AssertionError> { foo2.shouldBeIn(list) }
+      }
+
+      "Pass when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = listOf(foo1)
+        shouldNotThrow<AssertionError>{ foo2 shouldBeIn list }
+      }
+
+      "Pass when there's an equal element, but not the same instance in the array" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = arrayOf(foo1)
+        shouldNotThrow<AssertionError>{ foo2 shouldBeIn list }
+      }
+
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldBeIn list }
+      }
+    }
+
+    "Be in (negative)" should {
+      "Fail when the element is in the list" {
+        val foo = Foo("Bar")
+        val list = listOf(foo)
+
+        shouldThrow<AssertionError> { foo shouldNotBeIn list }
+      }
+
+      "Pass when the element is not in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Booz")
+
+        val list = listOf(foo1)
+        shouldNotThrow<AssertionError> { foo2.shouldNotBeIn(list) }
+      }
+
+      "Fail when there's an equal element, but not the same instance in the list" {
+        val foo1 = Foo("Bar")
+        val foo2 = Foo("Bar")
+
+        val list = listOf(foo1)
+        shouldThrow<AssertionError>{ foo2 shouldNotBeIn list }
+      }
+
+      "Fail when the list is empty" {
+        val foo = Foo("Bar")
+
+        val list = emptyList<Foo>()
+        shouldThrow<AssertionError> { foo shouldNotBeIn list }
+      }
+
     }
   }
 }
