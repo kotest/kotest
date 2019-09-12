@@ -565,7 +565,7 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
   override fun test(value: T): MatcherResult {
     if (collection.isEmpty()) throwEmptyCollectionError()
 
-    val match = collection.any { it == value }
+    val match = value in collection
     return MatcherResult(match,
       "Collection should contain the element, but doesn't.",
       "Collection should not contain the element, but does.")
