@@ -151,22 +151,22 @@ fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
 
 /**
  * Returns a stream of values where each value is a randomly
- * chosen File object from given directory. Directory does not exists, an empty sequence will be return.
+ * chosen File object from given directory. If the Directory does not exist, an empty sequence will be returned instead.
  * If recursive is true it gives files from inner directories as well recursively.
  */
 fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {
       val fileTreeWalk = File(directoryName).walk()
-      return if (!recursive) {
-         randomiseFiles(fileTreeWalk.maxDepth(1), seed)
-      } else randomiseFiles(fileTreeWalk, seed)
+      return if (recursive) {
+         randomiseFiles(fileTreeWalk.maxDepth(Int.MAX_VALUE), seed)
+      } else randomiseFiles(fileTreeWalk.maxDepth(1), seed)
    }
 
    private fun randomiseFiles(files: Sequence<File>, seed: Long?): Sequence<File> {
       val allFiles = files.toList()
       if(allFiles.isEmpty()) return emptySequence()
-      val r = if (seed == null) Random.Default else Random(seed)
-      return generateInfiniteSequence { allFiles[r.nextInt(0, allFiles.size)] }
+      val random = if (seed == null) Random.Default else Random(seed)
+      return generateInfiniteSequence { allFiles.random(random) }
    }
 }
