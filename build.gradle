@@ -23,7 +23,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
-    //    classpath "io.kotlintest:kotlintest-gradle-plugin:1.1.1-LOCAL"
+    //    classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
     }
 }
 
@@ -36,7 +36,7 @@ plugins {
     id 'net.researchgate.release' version '2.8.0'
 }
 
-// apply plugin: "io.kotlintest"
+// apply plugin: "io.kotest"
 
 allprojects {
 
@@ -48,7 +48,7 @@ allprojects {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
 
-    group = "io.kotlintest"
+    group = "io.kotest"
 
     if (isTravis) {
         version "4.0." + travisBuildNumber + "-SNAPSHOT"

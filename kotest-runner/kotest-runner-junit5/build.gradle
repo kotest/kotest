@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                api project(':kotest-core')
+                api project(':kotest-runner:kotest-runner-console')
+                api project(':kotest-runner:kotest-runner-jvm')
+                api "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+                api "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+                api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+                api 'org.slf4j:slf4j-api:1.7.25'
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+apply from: '../../publish.gradle'
