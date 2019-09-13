@@ -619,6 +619,7 @@ class GenTest : WordSpec() {
         genWithNullableValues.random().take(9).toList() shouldBe listOf(1, 2, null, 4, 1, 2, null, 4, 1)
       }
     }
+<<<<<<< HEAD
 
     "Gen.file(directoryName, recursive)" should {
       "gives an empty sequence" {
@@ -638,6 +639,8 @@ class GenTest : WordSpec() {
         randomFilesFromReflectionDirectory shouldContainAnyOf classesFilesInReflectionTestDirectory
       }
     }
+=======
+>>>>>>> #973 Adds a samples type Gen which repeatably gives given samples (#983)
   }
 }
 
