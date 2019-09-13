@@ -585,3 +585,29 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
          .filter { k % it == 0 }
    }
 }
+
+/**
+ * Returns a [Gen] which returns the sample values in the same order as they are passed in, once all sample values are used
+ * it repeats elements from start.
+ */
+fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
+    private fun getNextSampleElementProvider(): () -> T  {
+        var currentIndex = 0;
+        return {
+            val nextIndex = currentIndex % sampleValues.size
+            val nextValue = sampleValues[nextIndex]
+            currentIndex += 1
+            nextValue
+        }
+    }
+
+    override fun random(seed: Long?): Sequence<T> {
+        return if(sampleValues.isEmpty()) {
+            emptySequence()
+        } else {
+            generateInfiniteSequence(getNextSampleElementProvider())
+        }
+    }
+
+    override fun constants(): Iterable<T> = sampleValues.asIterable()
+}

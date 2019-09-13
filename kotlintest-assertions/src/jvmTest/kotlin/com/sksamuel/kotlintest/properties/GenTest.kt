@@ -543,6 +543,7 @@ class GenTest : WordSpec() {
         accumulatedValues shouldBe setOf(5, 6)
       }
     }
+
     "Gen.list(maxSize)" should {
       "Generate lists of length up to 100 by default" {
         assertAll(10_000, Gen.list(Gen.double())) {
@@ -557,6 +558,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.set(maxSize)" should {
       "Generate sets of length up to 100 by default" {
         assertAll(10_000, Gen.set(Gen.double())) {
@@ -571,6 +573,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.map(keyGen, valueGen, maxSize)" should {
       val keyGen = Gen.int()
       val valueGen = Gen.double()
@@ -587,6 +590,7 @@ class GenTest : WordSpec() {
         }
       }
     }
+
     "Gen.map(keyValueGen, maxSize)" should {
       val keyValueGen = Gen.int().map { Pair(it, it.toString()) }
       "Generate maps of up to 100 elements by default" {
@@ -600,6 +604,21 @@ class GenTest : WordSpec() {
             it.size.shouldBeLessThanOrEqual(size)
           }
         }
+      }
+    }
+
+    "Gen.samples(sampleValues)" should {
+      "create gen for more than one sample values" {
+        val genSamples = Gen.samples(1, 2, 3)
+        genSamples.random().take(10).toList() shouldBe listOf(1, 2, 3, 1, 2, 3, 1, 2, 3, 1)
+      }
+      "create gen for no sample values" {
+        val emptyGenSample = Gen.samples<Any>()
+        emptyGenSample.random().take(10).toList() shouldBe emptyList<Any>()
+      }
+      "create gen for nullable type" {
+        val genWithNullableValues = Gen.samples(1, 2, null, 4)
+        genWithNullableValues.random().take(9).toList() shouldBe listOf(1, 2, null, 4, 1, 2, null, 4, 1)
       }
     }
   }
