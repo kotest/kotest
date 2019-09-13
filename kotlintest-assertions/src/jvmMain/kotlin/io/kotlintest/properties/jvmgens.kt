@@ -152,11 +152,7 @@ fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
 /**
  * Returns a stream of values where each value is a randomly
  * chosen File object from given directory. If the Directory does not exist, an empty sequence will be returned instead.
-<<<<<<< HEAD
  * If recursive is true(default value is false) it gives files from inner directories as well recursively.
-=======
- * If recursive is true it gives files from inner directories as well recursively.
->>>>>>> #947 Adds unit test for Gen.file
  */
 fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
