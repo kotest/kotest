@@ -289,3 +289,12 @@ For the extension function style, each function has an equivalent negated versio
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+
+| Statistic ||
+| ---------- | --- |
+| `collection.shouldHaveMean(mean)` | Asserts that collection has specific mean with default precision = 4 |
+| `collection.shouldHaveMean(mean, precision)` | Asserts that collection has specific mean with specific precision |
+| `collection.shouldHaveVariance(mean)` | Asserts that collection has specific variance with default precision = 4 |
+| `collection.shouldHaveVariance(mean, precision)` | Asserts that collection has specific variance with specific precision |
+| `collection.shouldHaveStandardDeviation(mean)` | Asserts that collection has specific standard deviation with default precision = 4 |
+| `collection.shouldHaveStandardDeviation(mean, precision)` | Asserts that collection has specific standard deviation with specific precision |
