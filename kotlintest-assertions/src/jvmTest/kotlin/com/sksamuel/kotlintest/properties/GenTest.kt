@@ -4,10 +4,7 @@ package com.sksamuel.kotlintest.properties
 
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.matchers.booleans.shouldBeTrue
-import io.kotlintest.matchers.collections.contain
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldContainAll
-import io.kotlintest.matchers.collections.shouldHaveAtMostSize
+import io.kotlintest.matchers.collections.*
 import io.kotlintest.matchers.comparables.beGreaterThan
 import io.kotlintest.matchers.comparables.gte
 import io.kotlintest.matchers.comparables.lt
@@ -26,6 +23,7 @@ import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
+import java.io.File
 import java.time.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -619,6 +617,25 @@ class GenTest : WordSpec() {
       "create gen for nullable type" {
         val genWithNullableValues = Gen.samples(1, 2, null, 4)
         genWithNullableValues.random().take(9).toList() shouldBe listOf(1, 2, null, 4, 1, 2, null, 4, 1)
+      }
+    }
+
+    "Gen.file(directoryName, recursive)" should {
+      "gives an empty sequence" {
+        Gen.file("non-existing-dir").random().toList() shouldBe emptyList()
+      }
+      "gives files from a given directory without recursive search" {
+        val randomTopLevelFileInJvmTest = Gen.file("src/jvmTest").random().take(20).toList()
+        val topLevelFilesInJvmTest = File("src/jvmTest").listFiles()!!.toList()
+
+        randomTopLevelFileInJvmTest shouldContainAll topLevelFilesInJvmTest
+      }
+      "gives files from a given directory with recursive search" {
+        val reflectionTestDirectory = "src/jvmTest/kotlin/com/sksamuel/kotlintest/matchers/reflection"
+        val randomFilesFromReflectionDirectory = Gen.file(reflectionTestDirectory, recursive = true).random().take(100).toList()
+        val classesFilesInReflectionTestDirectory = File("$reflectionTestDirectory/classes").listFiles()!!.toList()
+
+        randomFilesFromReflectionDirectory shouldContainAnyOf classesFilesInReflectionTestDirectory
       }
     }
   }
