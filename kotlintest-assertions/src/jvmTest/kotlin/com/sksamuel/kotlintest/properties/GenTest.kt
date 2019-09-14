@@ -2,6 +2,8 @@
 
 package com.sksamuel.kotlintest.properties
 
+import com.sksamuel.kotlintest.properties.X.*
+import io.kotlintest.*
 import io.kotlintest.inspectors.forAll
 import io.kotlintest.matchers.booleans.shouldBeTrue
 import io.kotlintest.matchers.collections.*
@@ -15,10 +17,6 @@ import io.kotlintest.matchers.floats.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotlintest.matchers.string.include
 import io.kotlintest.properties.*
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldHave
-import io.kotlintest.shouldNotBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
@@ -636,6 +634,28 @@ class GenTest : WordSpec() {
         val classesFilesInReflectionTestDirectory = File("$reflectionTestDirectory/classes").listFiles()!!.toList()
 
         randomFilesFromReflectionDirectory shouldContainAnyOf classesFilesInReflectionTestDirectory
+      }
+    }
+
+    "Gen.concat(gen)" should {
+      val genOfClassA = object : Gen<X> {
+        override fun constants(): Iterable<X> = emptyList()
+        override fun random(seed: Long?): Sequence<X> = sequenceOf(A(1), A(2), A(3))
+      }
+
+      val genOfClassB = object : Gen<X> {
+        override fun constants(): Iterable<X> = emptyList()
+        override fun random(seed: Long?): Sequence<X> = sequenceOf(B(1), B(2), B(3))
+      }
+
+      "given elements from it self when its elements are not exhausted" {
+        val threeElementsFromConcatenatedGen = genOfClassA.concat(genOfClassB).random().take(3).toList()
+        threeElementsFromConcatenatedGen shouldBe listOf(A(1), A(2), A(3))
+      }
+
+      "given elements from the other gen when its elements are exhausted" {
+        val sixElementsFromConcatenatedGen = genOfClassA.concat(genOfClassB).random().take(6).toList()
+        sixElementsFromConcatenatedGen shouldBe listOf(A(1), A(2), A(3), B(1), B(2), B(3))
       }
     }
   }

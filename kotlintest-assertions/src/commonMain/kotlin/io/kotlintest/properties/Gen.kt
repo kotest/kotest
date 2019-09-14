@@ -118,6 +118,19 @@ interface Gen<T> {
        }
     }
   }
+
+  /**
+   * Returns a new [[Gen]] which will return the values from this gen and only once values
+   * of this gen exhaust it will return the values from the supplied gen.
+   * The supplied gen must be a subtype of the type of this gen.
+   */
+  fun <U : T> concat(gen: Gen<U>): Gen<T> {
+    val outer = this
+    return object : Gen<T> {
+      override fun constants(): Iterable<T> = outer.constants() + gen.constants()
+      override fun random(seed: Long?): Sequence<T> = outer.random(seed) + gen.random(seed)
+    }
+  }
 }
 
 /**
