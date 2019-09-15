@@ -5,6 +5,7 @@ import io.kotlintest.matchers.maps.containAll
 import io.kotlintest.matchers.maps.containExactly
 import io.kotlintest.matchers.maps.haveKey
 import io.kotlintest.matchers.maps.haveKeys
+import io.kotlintest.matchers.maps.haveSize
 import io.kotlintest.matchers.maps.haveValue
 import io.kotlintest.matchers.maps.haveValues
 import io.kotlintest.matchers.maps.shouldBeEmpty
@@ -15,6 +16,7 @@ import io.kotlintest.matchers.maps.shouldContainKey
 import io.kotlintest.matchers.maps.shouldContainKeys
 import io.kotlintest.matchers.maps.shouldContainValue
 import io.kotlintest.matchers.maps.shouldContainValues
+import io.kotlintest.matchers.maps.shouldHaveSize
 import io.kotlintest.matchers.maps.shouldNotBeEmpty
 import io.kotlintest.matchers.maps.shouldNotContain
 import io.kotlintest.matchers.maps.shouldNotContainAll
@@ -272,6 +274,20 @@ class MapMatchersTest : WordSpec() {
 
       "Pass on a non empty map" {
         mapOf("Foo" to "Bar").shouldNotBeEmpty()
+      }
+    }
+
+    "haveSize" should {
+      "test that a map has given size" {
+        val map = mapOf(1 to "a", 2 to "b")
+        map should haveSize(2)
+        map shouldHaveSize (2)
+        shouldThrow<AssertionError> {
+          map should haveSize(3)
+        }
+        shouldThrow<AssertionError> {
+          map shouldHaveSize (3)
+        }
       }
     }
   }

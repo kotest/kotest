@@ -47,6 +47,15 @@ fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
 fun <K, V> containExactly(expected: Map<K, V>): Matcher<Map<K, V>> =
   MapContainsMatcher(expected)
 
+fun <K, V> haveSize(size: Int): Matcher<Map<K,V>> = object : Matcher<Map<K, V>> {
+   override fun test(value: Map<K, V>) =
+      MatcherResult(
+         value.size == size,
+         { "Map should have size $size but has size ${value.size}" },
+         { "Map should not have size $size" }
+      )
+}
+
 class MapContainsMatcher<K, V>(
   private val expected: Map<K, V>,
   private val ignoreExtraKeys: Boolean = false
