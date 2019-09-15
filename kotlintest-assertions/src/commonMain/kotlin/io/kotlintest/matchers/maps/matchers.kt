@@ -30,6 +30,8 @@ infix fun <K, V> Map<K, V>.shouldContainValue(value: V) = this should haveValue<
 infix fun <K, V> Map<K, V>.shouldNotContainValue(value: V) = this shouldNot haveValue<V>(
   value)
 
+infix fun <K, V> Map<K, V>.shouldHaveSize(size: Int) = this should haveSize(size)
+
 fun <K, V> Map<K, V>.shouldContainKeys(vararg keys: K) = this should haveKeys(*keys)
 fun <K, V> Map<K, V>.shouldNotContainKeys(vararg keys: K) = this shouldNot haveKeys(*keys)
 
