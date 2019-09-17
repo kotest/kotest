@@ -281,3 +281,22 @@ fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
     "${value.show()} should not be equal ignoring case ${other.show()}"
   )
 }
+
+fun String?.shouldBeTruthy() = this should beTruthy()
+fun String?.shouldBeFalsy() = this should beFalsy()
+
+fun beTruthy() = object : Matcher<String?> {
+   override fun test(value: String?) = MatcherResult(
+      arrayOf("true", "yes", "y", "1").any { it.equals(value, ignoreCase = true) },
+      { """${value.show()} should be equal ignoring case one of values: ["true", "yes", "y", "1"]""" },
+      { """${value.show()} should not be equal ignoring case one of values: ["true", "yes", "y", "1"]""" }
+   )
+}
+
+fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
+   override fun test(value: String?) = MatcherResult(
+      arrayOf("false", "no", "n", "0").any { it.equals(value, ignoreCase = true) },
+      { """${value.show()} should be equal ignoring case one of values: ["false", "no", "n", "0"]""" },
+      { """${value.show()} should not be equal ignoring case one of values: ["false", "no", "n", "0"]""" }
+   )
+}
