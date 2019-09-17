@@ -1,8 +1,8 @@
 package io.kotlintest.assertions.arrow.validation
 
-import arrow.data.Invalid
-import arrow.data.Valid
-import arrow.data.Validated
+import arrow.core.Invalid
+import arrow.core.Valid
+import arrow.core.Validated
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.should
@@ -41,7 +41,7 @@ fun <A> beValid(a: A) = object : Matcher<Validated<*, A>> {
 @UseExperimental(ExperimentalContracts::class)
 fun Validated<*, *>.shouldBeInvalid() {
   contract {
-    returns() implies (this@shouldBeInvalid is Invalid<*>)
+    returns() implies (this@shouldBeInvalid is Validated.Invalid<*>)
   }
   this should beInvalid()
 }

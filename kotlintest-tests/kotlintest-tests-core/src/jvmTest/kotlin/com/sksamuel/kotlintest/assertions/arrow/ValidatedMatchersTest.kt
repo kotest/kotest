@@ -1,9 +1,9 @@
 package com.sksamuel.kotlintest.assertions.arrow
 
-import arrow.data.Invalid
-import arrow.data.Valid
-import arrow.data.invalid
-import arrow.data.valid
+import arrow.core.Invalid
+import arrow.core.Valid
+import arrow.core.invalid
+import arrow.core.valid
 import io.kotlintest.assertions.arrow.validation.beInvalid
 import io.kotlintest.assertions.arrow.validation.beValid
 import io.kotlintest.assertions.arrow.validation.shouldBeInvalid
