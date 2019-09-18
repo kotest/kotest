@@ -1,9 +1,11 @@
 package io.kotlintest.assertions.arrow.tagless
 
 import arrow.Kind
-import arrow.effects.*
-import arrow.effects.extensions.io.applicative.applicative
 import arrow.extension
+import arrow.fx.ForIO
+import arrow.fx.IO
+import arrow.fx.extensions.io.applicative.applicative
+import arrow.fx.fix
 import arrow.typeclasses.Applicative
 import io.kotlintest.Matcher
 import io.kotlintest.assertions.arrow.matcher

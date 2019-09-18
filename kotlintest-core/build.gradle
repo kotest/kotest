@@ -41,7 +41,8 @@ kotlin {
                 implementation "io.ktor:ktor-client-cio:$ktorVersion"
                 implementation "org.slf4j:slf4j-api:$slf4jVersion"
                 implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-                implementation "io.arrow-kt:arrow-core-data:$arrow_version"
+                implementation "io.arrow-kt:arrow-core:$arrow_version"
+
             }
         }
     }

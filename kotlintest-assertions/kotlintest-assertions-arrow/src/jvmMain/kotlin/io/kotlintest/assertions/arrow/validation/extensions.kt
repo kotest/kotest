@@ -1,10 +1,11 @@
 package io.kotlintest.assertions.arrow.validation
 
-import arrow.data.Invalid
-import arrow.data.Valid
-import arrow.data.Validated
-import arrow.data.extensions.validated.applicativeError.applicativeError
-import arrow.data.fix
+
+import arrow.core.Validated
+import arrow.core.Validated.Invalid
+import arrow.core.Validated.Valid
+import arrow.core.extensions.validated.applicativeError.applicativeError
+import arrow.core.fix
 import arrow.typeclasses.Semigroup
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
