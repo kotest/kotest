@@ -22,11 +22,11 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
       "\nabc\n123\n",
       "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
 
-   override fun constants(): Iterable<String> = literals
+   override fun constants(): Iterable<String> = literals.filter { it.length in minSize..maxSize }
    override fun random(seed: Long?): Sequence<String> {
       val r = if (seed == null) Random.Default else Random(seed)
       return generateSequence {
-         r.nextPrintableString(minSize + r.nextInt(maxSize - minSize))
+         r.nextPrintableString(minSize + r.nextInt(maxSize - minSize + 1))
       }
    }
    override fun shrinker(): Shrinker<String>? = StringShrinker
