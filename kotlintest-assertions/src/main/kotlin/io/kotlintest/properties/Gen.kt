@@ -298,11 +298,34 @@ interface Gen<T> : GenOf<T> {
      * a UTF8 string.
      */
     @JvmOverloads
-    fun string(maxSize: Int = 100): Gen<String> = object : Gen<String> {
-      val literals = listOf("", "\n", "\nabc\n123\n", "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
-      override fun constants(): Iterable<String> = literals
-      override fun random(): Sequence<String> = generateSequence { nextPrintableString(Random.nextInt(maxSize)) }
+    fun string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
+      val literals = listOf("",
+        "\n",
+        "\nabc\n123\n",
+        "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
+
+      override fun constants(): Iterable<String> = literals.filter { it.length in minSize..maxSize }
+      override fun random(): Sequence<String> {
+        val r = Random.Default
+        return generateSequence {
+          r.nextPrintableString(minSize + r.nextInt(maxSize - minSize + 1))
+        }
+      }
       override fun shrinker(): Shrinker<String>? = StringShrinker
+    }
+
+    private fun Random.nextPrintableString(length: Int): String {
+      return (0 until length).map { nextPrintableChar() }.joinToString("")
+    }
+
+    /**
+     * Returns the next pseudorandom, uniformly distributed value
+     * from the ASCII range 33-126.
+     */
+    private fun Random.nextPrintableChar(): Char {
+      val low = 32
+      val high = 127
+      return (nextInt(high - low) + low).toChar()
     }
 
     /**
