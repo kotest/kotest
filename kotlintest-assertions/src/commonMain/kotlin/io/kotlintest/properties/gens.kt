@@ -246,7 +246,6 @@ fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
 
 /**
  * Returns a stream of randomly-chosen Chars
- * from the ASCII range 33-126.
  */
 fun Gen.Companion.char(): Gen<Char> = object : Gen<Char> {
   override fun constants(): Iterable<Char> = emptyList()
