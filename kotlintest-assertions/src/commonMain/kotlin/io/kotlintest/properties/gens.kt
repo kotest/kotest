@@ -244,14 +244,44 @@ fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
    }
 }
 
+val CHR_CONTROL            = listOf(0x0000..0x001F, 0x007F..0x007F)
+val CHR_BASIC_LATIN        = listOf(0x0020..0x007E)
+val CHR_LATIN_1_SUPPLMNT   = listOf(0x00A1..0x00FF)
+val CHR_LATIN_EXTENDED_A   = listOf(0x0100..0x017F)
+val CHR_LATIN_EXTENDED_B   = listOf(0x0180..0x024F)
+val CHR_IPA_EXTENSIONS     = listOf(0x0250..0x02AF)
+val CHR_GREEK_COPTIC       = listOf(0x0370..0x0377, 0x037A..0x037F, 0x0384..0x038A, 0x038C..0x038C, 0x038E..0x03A1, 0x03A3..0x03FF)
+val CHR_CYRILLIC           = listOf(0x0400..0x0485, 0x048A..0x04FF)
+val CHR_CYRILLIC_SUPPLMNT  = listOf(0x0500..0x052F)
+val CHR_ARABIC             = listOf(0x0600..0x061B, 0x061E..0x065E, 0x0660..0x06FF)
+val CHR_RUNIC              = listOf(0x16A0..0x16F0)
+val CHR_GEOMETRIC_SHAPES   = listOf(0x25A0..0x25FF)
+val CHR_KANGXI_RADICALS    = listOf(0x2F00..0x2FD5)
+val CHR_MATH_OPERATORS     = listOf(0x2200..0x22FF)
+
+fun <T: Any> Gen.Companion.element(list: List<T>) = object : Gen<T> {
+  override fun constants(): Iterable<T> = emptyList()
+  override fun random(seed: Long?): Sequence<T> {
+    val r = if (seed == null) Random.Default else Random(seed)
+    return generateSequence {
+       val i = r.nextInt(0, list.size)
+       list[i]
+    }
+  }
+}
+
 /**
  * Returns a stream of randomly-chosen Chars
  */
-fun Gen.Companion.char(): Gen<Char> = object : Gen<Char> {
+fun Gen.Companion.char(chrRanges: List<IntRange> = CHR_BASIC_LATIN): Gen<Char> = object : Gen<Char> {
+  private val genElement = Gen.element(chrRanges)
   override fun constants(): Iterable<Char> = emptyList()
   override fun random(seed: Long?): Sequence<Char> {
     val r = if (seed == null) Random.Default else Random(seed)
-    return generateSequence { r.nextPrintableChar() }
+    return generateSequence {
+       val chrRange = genElement.next()
+       chrRange.random(r).toChar()
+    }
   }
 }
 
