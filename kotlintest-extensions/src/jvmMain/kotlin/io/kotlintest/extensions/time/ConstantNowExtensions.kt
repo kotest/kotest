@@ -86,7 +86,7 @@ private val ClassesExtendTemporal =  mapOf(
   LocalTime::class to ZonedDateTime::toLocalTime,
   OffsetDateTime::class to ZonedDateTime::toOffsetDateTime,
   OffsetTime::class to ZonedDateTime::toOffsetTime,
-  Year::class to ZonedDateTime::getYear,
+  Year::class to ZonedDateTime::toYear,
   YearMonth::class to ZonedDateTime::toYearMonth,
   ZonedDateTime::class to ZonedDateTime::self,
   HijrahDate::class to ZonedDateTime::toHijrahDate,
@@ -95,19 +95,22 @@ private val ClassesExtendTemporal =  mapOf(
   ThaiBuddhistDate::class to ZonedDateTime::toThaiBuddhistDate
 )
 
-private fun ZonedDateTime.toThaiBuddhistDate() = ThaiBuddhistDate.of(year, monthValue, dayOfMonth)
+internal fun ZonedDateTime.toThaiBuddhistDate() = ThaiBuddhistDate.from(this)
 
-private fun ZonedDateTime.toMinguoDate() = MinguoDate.of(year, monthValue, dayOfMonth)
+internal fun ZonedDateTime.toMinguoDate() = MinguoDate.from(this)
 
-private fun ZonedDateTime.toJapaneseDate() = JapaneseDate.of(year, monthValue, dayOfMonth)
+internal fun ZonedDateTime.toJapaneseDate() = JapaneseDate.from(this)
 
-private fun ZonedDateTime.toHijrahDate() = HijrahDate.of(year, monthValue, dayOfMonth)
+internal fun ZonedDateTime.toHijrahDate() = HijrahDate.from(this)
 
-private fun ZonedDateTime.self() = this
+internal fun ZonedDateTime.self() = this
 
-private fun ZonedDateTime.toYearMonth() = YearMonth.of(year, month)
+internal fun ZonedDateTime.toYearMonth() = YearMonth.of(year, month)
 
-private fun ZonedDateTime.toOffsetTime() = toOffsetDateTime().toOffsetTime()
+internal fun ZonedDateTime.toOffsetTime() = toOffsetDateTime().toOffsetTime()
+
+internal fun ZonedDateTime.toYear() = Year.of(year)
+
 
 @PublishedApi
 internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<in Time>): KFunction<*> {
