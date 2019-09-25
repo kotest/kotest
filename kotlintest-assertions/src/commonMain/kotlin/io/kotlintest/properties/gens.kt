@@ -468,7 +468,7 @@ fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
     override fun constants(): Iterable<Int> = emptyList()
      override fun random(seed: Long?): Sequence<Int> {
         val r = if (seed == null) Random.Default else Random(seed)
-        return generateSequence { r.nextInt(min, max) }
+        return generateSequence { r.nextInt(min, max + 1) }
      }
 
     override fun shrinker() = ChooseShrinker(min, max)
@@ -485,7 +485,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
      override fun constants(): Iterable<Long> = emptyList()
      override fun random(seed: Long?): Sequence<Long> {
         val r = if (seed == null) Random.Default else Random(seed)
-        return generateSequence { r.nextLong(min, max) }
+        return generateSequence { r.nextLong(min, max + 1) }
      }
   }
 }
