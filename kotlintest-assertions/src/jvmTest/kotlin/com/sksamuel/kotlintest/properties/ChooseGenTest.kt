@@ -6,6 +6,7 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.properties.choose
 import io.kotlintest.properties.next
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotThrow
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FunSpec
 import io.kotlintest.tables.row
@@ -22,9 +23,10 @@ class ChooseGenTest : FunSpec({
       val expectedUniqueValues = pairs.map { it.second }.toSet()
       val chooseGen = Gen.choose(pairs[0], pairs[1], *pairs.drop(2).toTypedArray())
 
-      // Sorted map so that the actual ratios will have
-      // the same order as the expected ratios
-      val actualCountMap = sortedMapOf(*pairs.map { it.second to 0 }.toTypedArray())
+      // Linked map so that the actual ratios will
+      // have the same order as the expected ratios
+      // corresponding to the same letters
+      val actualCountMap = linkedMapOf(*pairs.map { it.second to 0 }.toTypedArray())
       val allGenValues = (1..100000).map { chooseGen.next() }
       val actualUniqueValues = allGenValues.toSet()
       allGenValues.forEach { actualCountMap[it] = actualCountMap[it]!! + 1 }
@@ -45,5 +47,9 @@ class ChooseGenTest : FunSpec({
 
   test("should not accept all zero weights") {
     shouldThrow<IllegalArgumentException> { Gen.choose(0 to 'A', 0 to 'B') }
+  }
+
+  test("should accept weights if at least one is non-zero") {
+    shouldNotThrow<Exception> { Gen.choose(0 to 'A', 0 to 'B', 1 to 'C') }
   }
 })

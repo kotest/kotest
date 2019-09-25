@@ -493,7 +493,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
 /**
  * Returns a stream of values based on weights:
  *
- * <pre>Gen.choose(1 to 'A', 2 to 'B')</pre> will generate 'A' 33% of the time
+ * Gen.choose(1 to 'A', 2 to 'B') will generate 'A' 33% of the time
  * and 'B' 66% of the time.
  *
  * @throws IllegalArgumentException If any negative weight is given or any
@@ -507,6 +507,8 @@ fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: 
   return object : Gen<T> {
     // The algorithm for pick is a migration of
     // the algorithm from Haskell QuickCheck
+    // http://hackage.haskell.org/package/QuickCheck
+    // See function frequency in the package Test.QuickCheck
     private tailrec fun pick(n: Int, l: Sequence<Pair<Int, T>>): T {
       val (w, e) = l.first()
       return if (n <= w) e
