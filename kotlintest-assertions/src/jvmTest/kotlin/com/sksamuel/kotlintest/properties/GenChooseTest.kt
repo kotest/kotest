@@ -9,29 +9,33 @@ import io.kotlintest.specs.FunSpec
 import io.kotlintest.tables.row
 
 class GenChooseTest : FunSpec({
-  test("should give ints in between min and max inclusive") {
+  test("<Int, Int> should give values between min and max inclusive") {
+    // Test parameters include the test for negative bounds
     forall(
-      row(-10 to -1, (-10..-1).toSet()),
-      row(1 to 3, (1..3).toSet()),
-      row(-100 to 100, (-100..100).toSet())
-    ) { minMax, expectedValues ->
-      val vmin = minMax.first
-      val vmax = minMax.second
-      val actualValues = (1..100000).map { Gen.choose(vmin, vmax).next() }.toSet()
+      row(-10, -1),
+      row(1, 3),
+      row(-100, 100),
+      row(Int.MAX_VALUE - 10, Int.MAX_VALUE),
+      row(Int.MIN_VALUE, Int.MIN_VALUE + 10)
+    ) { vMin, vMax ->
+      val expectedValues = (vMin..vMax).toSet()
+      val actualValues = (1..100000).map { Gen.choose(vMin, vMax).next() }.toSet()
 
       actualValues shouldBe expectedValues
     }
   }
 
-  test("should give longs in between min and max inclusive") {
+  test("<Long, Long> should give values between min and max inclusive") {
+    // Test parameters include the test for negative bounds
     forall(
-      row(-10L to -1L, (-10L..-1L).toSet()),
-      row(1L to 3L, (1L..3L).toSet()),
-      row(-100L to 100L, (-100L..100L).toSet())
-    ) { minMax, expectedValues ->
-      val vmin = minMax.first
-      val vmax = minMax.second
-      val actualValues = (1..100000).map { Gen.choose(vmin, vmax).next() }.toSet()
+      row(-10L, -1L),
+      row(1L, 3L),
+      row(-100L, 100L),
+      row(Long.MAX_VALUE - 10L, Long.MAX_VALUE),
+      row(Long.MIN_VALUE, Long.MIN_VALUE + 10L)
+    ) { vMin, vMax ->
+      val expectedValues = (vMin..vMax).toSet()
+      val actualValues = (1..100000).map { Gen.choose(vMin, vMax).next() }.toSet()
 
       actualValues shouldBe expectedValues
     }
