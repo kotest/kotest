@@ -43,62 +43,6 @@ class GenTest : WordSpec() {
         string.length shouldBe rand
       }
     }
-    "Gen.choose<int, int>" should {
-
-      "only give out numbers in the given range".config(invocations = 10000, threads = 8) {
-        val random = Random()
-
-        val min = random.nextInt(10000) - 10000
-        val max = random.nextInt(10000) + 10000
-
-        val rand = Gen.choose(min, max).random().take(10)
-        rand.forEach {
-          it shouldBe gte(min)
-          it shouldBe lt(max)
-        }
-      }
-
-      "support negative bounds".config(invocations = 1000, threads = 8) {
-
-        val random = Random()
-
-        val max = random.nextInt(10000)
-
-        val rand = Gen.choose(Int.MIN_VALUE, max).random().take(10)
-        rand.forEach {
-          it shouldBe gte(Int.MIN_VALUE)
-          it shouldBe lt(max)
-        }
-
-      }
-    }
-    "Gen.choose<long, long>" should {
-      "only give out numbers in the given range".config(invocations = 10000, threads = 8) {
-        val random = Random()
-
-        val min = random.nextInt(10000) - 10000
-        val max = random.nextInt(10000) + 10000
-
-        val rand = Gen.choose(min.toLong(), max.toLong()).random().take(10)
-        rand.forEach {
-          it shouldBe gte(min.toLong())
-          it shouldBe lt(max.toLong())
-        }
-
-      }
-      "support negative bounds".config(invocations = 10000, threads = 8) {
-        val random = Random()
-
-        val max = random.nextInt(10000) + 10000
-
-        val rand = Gen.choose(Long.MIN_VALUE, max.toLong()).random().take(10)
-        rand.forEach {
-          it shouldBe gte(Long.MIN_VALUE)
-          it shouldBe lt(max.toLong())
-        }
-
-      }
-    }
     "Gen.forClassName" should {
       "gives the right result" {
 

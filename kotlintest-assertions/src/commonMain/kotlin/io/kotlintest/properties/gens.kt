@@ -4,6 +4,8 @@ import io.kotlintest.properties.shrinking.*
 import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 import kotlin.random.Random
+import kotlin.random.nextInt
+import kotlin.random.nextLong
 
 /**
  * Returns a stream of values where each value is a random
@@ -468,7 +470,7 @@ fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
     override fun constants(): Iterable<Int> = emptyList()
      override fun random(seed: Long?): Sequence<Int> {
         val r = if (seed == null) Random.Default else Random(seed)
-        return generateSequence { r.nextInt(min, max) }
+        return generateSequence { r.nextInt(min..max) }
      }
 
     override fun shrinker() = ChooseShrinker(min, max)
@@ -485,7 +487,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
      override fun constants(): Iterable<Long> = emptyList()
      override fun random(seed: Long?): Sequence<Long> {
         val r = if (seed == null) Random.Default else Random(seed)
-        return generateSequence { r.nextLong(min, max) }
+        return generateSequence { r.nextLong(min..max) }
      }
   }
 }
