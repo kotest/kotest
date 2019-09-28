@@ -7,7 +7,9 @@ import io.kotlintest.matchers.string.match
 import io.kotlintest.matchers.string.startWith
 import io.kotlintest.matchers.string.beBlank
 import io.kotlintest.matchers.string.beEmpty
+import io.kotlintest.matchers.string.beFalsy
 import io.kotlintest.matchers.string.beLowerCase
+import io.kotlintest.matchers.string.beTruthy
 import io.kotlintest.matchers.string.beUpperCase
 import io.kotlintest.matchers.string.contain
 import io.kotlintest.matchers.string.containADigit
@@ -23,8 +25,10 @@ import io.kotlintest.matchers.string.include
 import io.kotlintest.matchers.string.shouldBeBlank
 import io.kotlintest.matchers.string.shouldBeEmpty
 import io.kotlintest.matchers.string.shouldBeEqualIgnoringCase
+import io.kotlintest.matchers.string.shouldBeFalsy
 import io.kotlintest.matchers.string.shouldBeLowerCase
 import io.kotlintest.matchers.string.shouldBeSingleLine
+import io.kotlintest.matchers.string.shouldBeTruthy
 import io.kotlintest.matchers.string.shouldBeUpperCase
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.matchers.string.shouldContainADigit
@@ -820,6 +824,80 @@ class StringMatchersTest : FreeSpec() {
 
       "should fail when outside range" {
         shouldThrow<AssertionError> { "FOO".shouldHaveLengthIn(9..10) }
+      }
+    }
+
+    "should be truthy" - {
+      "should work with proper values" {
+        "true".shouldBeTruthy()
+        "yes".shouldBeTruthy()
+        "y".shouldBeTruthy()
+        "1".shouldBeTruthy()
+        "Y".shouldBeTruthy()
+        "Yes".shouldBeTruthy()
+        "YeS".shouldBeTruthy()
+        "True".shouldBeTruthy()
+        "TrUe".shouldBeTruthy()
+        "TRUE".shouldBeTruthy()
+      }
+
+      "should fail with unexpected values" {
+        shouldThrow<AssertionError> { "false".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "no".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "n".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "0".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "whatever".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "true yes".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "a".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "10".shouldBeTruthy() }
+        shouldThrow<AssertionError> { "".shouldBeTruthy() }
+        shouldThrow<AssertionError> { " ".shouldBeTruthy() }
+        shouldThrow<AssertionError> { " ".shouldBeTruthy() }
+        shouldThrow<AssertionError> { null.shouldBeTruthy() }
+      }
+
+      "should provide error message" {
+        shouldThrow<AssertionError> { "false".shouldBeTruthy() }
+            .message.shouldBe("false should be equal ignoring case one of values: [true, yes, y, 1]")
+        shouldThrow<AssertionError> { "YES" shouldNot beTruthy() }
+            .message.shouldBe("YES should not be equal ignoring case one of values: [true, yes, y, 1]")
+      }
+    }
+
+    "should be falsy" - {
+      "should work with proper values" {
+        "false".shouldBeFalsy()
+        "no".shouldBeFalsy()
+        "n".shouldBeFalsy()
+        "0".shouldBeFalsy()
+        "N".shouldBeFalsy()
+        "No".shouldBeFalsy()
+        "nO".shouldBeFalsy()
+        "False".shouldBeFalsy()
+        "FaLse".shouldBeFalsy()
+        "FALSE".shouldBeFalsy()
+      }
+
+      "should fail with unexpected values" {
+        shouldThrow<AssertionError> { "true".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "yes".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "1".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "y".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "whatever".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "true yes".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "a".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "10".shouldBeFalsy() }
+        shouldThrow<AssertionError> { "".shouldBeFalsy() }
+        shouldThrow<AssertionError> { " ".shouldBeFalsy() }
+        shouldThrow<AssertionError> { " ".shouldBeFalsy() }
+        shouldThrow<AssertionError> { null.shouldBeFalsy() }
+      }
+
+      "should provide error message" {
+        shouldThrow<AssertionError> { "yes".shouldBeFalsy() }
+            .message.shouldBe("yes should be equal ignoring case one of values: [false, no, n, 0]")
+        shouldThrow<AssertionError> { "FALSE" shouldNot beFalsy() }
+            .message.shouldBe("FALSE should not be equal ignoring case one of values: [false, no, n, 0]")
       }
     }
   }
