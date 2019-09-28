@@ -6,6 +6,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 kotlin {
