@@ -318,6 +318,9 @@ fun String?.shouldBeTruthy() = this should beTruthy()
  */
 fun String?.shouldBeFalsy() = this should beFalsy()
 
+private val truthyValues = listOf("true", "yes", "y", "1")
+private val falsyValues = listOf("false", "no", "n", "0")
+
 /**
  * Matcher checks that string is truthy.
  *
@@ -326,19 +329,20 @@ fun String?.shouldBeFalsy() = this should beFalsy()
  *
  *
  * ```
- * "1" should beTruthy()     // Assertion passes
- * "YeS" should beTruthy()   // Assertion passes
- * "Y" should beTruthy()     // Assertion passes
+ * "1" should beTruthy()       // Assertion passes
+ * "YeS" should beTruthy()     // Assertion passes
+ * "Y" should beTruthy()       // Assertion passes
  *
- * "no" should beTruthy()    // Assertion fails
+ * "no" should beTruthy()      // Assertion fails
+ * "yes" shouldNot beTruthy()  // Assertion fails
  *
  * ```
  */
 fun beTruthy() = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
-      arrayOf("true", "yes", "y", "1").any { it.equals(value, ignoreCase = true) },
-      { """${value.show()} should be equal ignoring case one of values: ["true", "yes", "y", "1"]""" },
-      { """${value.show()} should not be equal ignoring case one of values: ["true", "yes", "y", "1"]""" }
+       truthyValues.any { it.equals(value, ignoreCase = true) },
+      { """${value.show()} should be equal ignoring case one of values: $truthyValues""" },
+      { """${value.show()} should not be equal ignoring case one of values: $truthyValues""" }
    )
 }
 
@@ -355,13 +359,16 @@ fun beTruthy() = object : Matcher<String?> {
  * "n" should beFalsy()     // Assertion passes
  *
  * "yes" should beFalsy()   // Assertion fails
+ * "no" shouldNot beFalsy() // Assertion fails
  *
  * ```
  */
 fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
-   override fun test(value: String?) = MatcherResult(
-      arrayOf("false", "no", "n", "0").any { it.equals(value, ignoreCase = true) },
-      { """${value.show()} should be equal ignoring case one of values: ["false", "no", "n", "0"]""" },
-      { """${value.show()} should not be equal ignoring case one of values: ["false", "no", "n", "0"]""" }
-   )
+   override fun test(value: String?): MatcherResult {
+     return MatcherResult(
+         falsyValues.any { it.equals(value, ignoreCase = true) },
+         { """${value.show()} should be equal ignoring case one of values: $falsyValues""" },
+         { """${value.show()} should not be equal ignoring case one of values: $falsyValues""" }
+     )
+   }
 }
