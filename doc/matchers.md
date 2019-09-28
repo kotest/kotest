@@ -60,6 +60,8 @@ For the extension function style, each function has an equivalent negated versio
 | `str.shouldMatch(regex)` | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
+| `str.shouldBeTruthy()` | Asserts that the string is truthy ("true", "yes", "y" and "1", case insensitive). |
+| `str.shouldBeFalse()` | Asserts that the string is falsy ("false", "no", "n" and "0", case insensitive). |
 
 | JSON ||
 | -------- | ---- |
