@@ -282,9 +282,45 @@ fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
   )
 }
 
+/**
+ * Assert that this string should be truthy.
+ *
+ * Verifies that this string is equal to one of the values: ["true", "yes", "y", "1"].
+ * Assert is not case sensitive.
+ *
+ *
+ * ```
+ * "1".shouldBeTruthy()     // Assertion passes
+ * "YeS".shouldBeTruthy()   // Assertion passes
+ * "Y".shouldBeTruthy()     // Assertion passes
+ *
+ * "no".shouldBeTruthy()    // Assertion fails
+ *
+ * ```
+ */
 fun String?.shouldBeTruthy() = this should beTruthy()
+
+/**
+ * Assert that this string should be falsy.
+ *
+ * Verifies that this string is equal to one of the values: ["false", "no", "n", "0"].
+ * Assert is not case sensitive.
+ *
+ *
+ * ```
+ * "0".shouldBeFalsy()     // Assertion passes
+ * "No".shouldBeFalsy()    // Assertion passes
+ * "n".shouldBeFalsy()     // Assertion passes
+ *
+ * "yes".shouldBeFalsy()   // Assertion fails
+ *
+ * ```
+ */
 fun String?.shouldBeFalsy() = this should beFalsy()
 
+/**
+ * @see[String.shouldBeTruthy]
+ */
 fun beTruthy() = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
       arrayOf("true", "yes", "y", "1").any { it.equals(value, ignoreCase = true) },
@@ -293,6 +329,9 @@ fun beTruthy() = object : Matcher<String?> {
    )
 }
 
+/**
+ * @see[String.shouldBeFalsy]
+ */
 fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
       arrayOf("false", "no", "n", "0").any { it.equals(value, ignoreCase = true) },
