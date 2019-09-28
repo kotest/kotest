@@ -283,9 +283,9 @@ fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
 }
 
 /**
- * Assert that this string should be truthy.
+ * Assert that string should be truthy.
  *
- * Verifies that this string is equal to one of the values: ["true", "yes", "y", "1"].
+ * Verifies that string is equal to one of the values: ["true", "yes", "y", "1"].
  * Assert is not case sensitive.
  *
  *
@@ -301,9 +301,9 @@ fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
 fun String?.shouldBeTruthy() = this should beTruthy()
 
 /**
- * Assert that this string should be falsy.
+ * Assert that string should be falsy.
  *
- * Verifies that this string is equal to one of the values: ["false", "no", "n", "0"].
+ * Verifies that string is equal to one of the values: ["false", "no", "n", "0"].
  * Assert is not case sensitive.
  *
  *
@@ -319,7 +319,20 @@ fun String?.shouldBeTruthy() = this should beTruthy()
 fun String?.shouldBeFalsy() = this should beFalsy()
 
 /**
- * @see[String.shouldBeTruthy]
+ * Matcher checks that string is truthy.
+ *
+ * Verifies that this string is equal to one of the values: ["true", "yes", "y", "1"].
+ * Matcher is not case sensitive.
+ *
+ *
+ * ```
+ * "1" should beTruthy()     // Assertion passes
+ * "YeS" should beTruthy()   // Assertion passes
+ * "Y" should beTruthy()     // Assertion passes
+ *
+ * "no" should beTruthy()    // Assertion fails
+ *
+ * ```
  */
 fun beTruthy() = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
@@ -330,7 +343,20 @@ fun beTruthy() = object : Matcher<String?> {
 }
 
 /**
- * @see[String.shouldBeFalsy]
+ * Matcher checks that string is falsy.
+ *
+ * Verifies that this string is equal to one of the values: ["false", "no", "n", "0"].
+ * Matcher is not case sensitive.
+ *
+ *
+ * ```
+ * "0" should beFalsy()     // Assertion passes
+ * "No" should beFalsy()    // Assertion passes
+ * "n" should beFalsy()     // Assertion passes
+ *
+ * "yes" should beFalsy()   // Assertion fails
+ *
+ * ```
  */
 fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
