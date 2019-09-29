@@ -498,8 +498,8 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
  * Gen.choose(1 to 'A', 2 to 'B') will generate 'A' 33% of the time
  * and 'B' 66% of the time.
  *
- * @throws IllegalArgumentException If any negative weight is given or any
- * weight of zero is given.
+ * @throws IllegalArgumentException If any negative weight is given or only
+ * weights of zero are given.
  */
 fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: Pair<Int, T>): Gen<T> {
   val allPairs = listOf(a, b) + cs
