@@ -1,13 +1,12 @@
-package com.sksamuel.kotlintest.properties
+package com.sksamuel.kotest.properties
 
-import io.kotlintest.inspectors.forAll
-import io.kotlintest.matchers.string.shouldHaveLength
-import io.kotlintest.matchers.string.shouldHaveMaxLength
-import io.kotlintest.matchers.string.shouldHaveMinLength
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.assertAll
-import io.kotlintest.properties.string
-import io.kotlintest.specs.FunSpec
+import io.kotest.matchers.string.shouldHaveLength
+import io.kotest.matchers.string.shouldHaveMaxLength
+import io.kotest.matchers.string.shouldHaveMinLength
+import io.kotest.properties.Gen
+import io.kotest.properties.assertAll
+import io.kotest.properties.string
+import io.kotest.specs.FunSpec
 
 class StringGenTest : FunSpec({
 

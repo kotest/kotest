@@ -1,16 +1,15 @@
-package com.sksamuel.kotlintest.properties
+package com.sksamuel.kotest.properties
 
-import io.kotlintest.data.forall
-import io.kotlintest.matchers.doubles.plusOrMinus
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.choose
-import io.kotlintest.properties.next
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotThrow
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.FunSpec
-import io.kotlintest.tables.row
-import java.lang.IllegalArgumentException
+import io.kotest.data.forall
+import io.kotest.matchers.doubles.plusOrMinus
+import io.kotest.properties.Gen
+import io.kotest.properties.choose
+import io.kotest.properties.next
+import io.kotest.shouldBe
+import io.kotest.shouldNotThrow
+import io.kotest.shouldThrow
+import io.kotest.specs.FunSpec
+import io.kotest.tables.row
 
 class ChooseGenTest : FunSpec({
   test("should generate expected values in correct ratios according to weights") {

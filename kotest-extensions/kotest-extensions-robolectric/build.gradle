@@ -17,7 +17,7 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation project(':kotlintest-core')
+                implementation project(':kotest-core')
                 implementation kotlin('reflect')
                 implementation("org.robolectric:robolectric:4.3")
                 implementation("junit:junit:4.12")
@@ -26,7 +26,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation project(':kotlintest-runner:kotlintest-runner-junit5')
+                implementation project(':kotest-runner:kotest-runner-junit5')
             }
         }
     }

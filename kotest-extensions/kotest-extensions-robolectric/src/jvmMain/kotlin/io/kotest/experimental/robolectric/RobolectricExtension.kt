@@ -1,10 +1,10 @@
-package io.kotlintest.experimental.robolectric
+package io.kotest.experimental.robolectric
 
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.TestResult
-import io.kotlintest.extensions.ConstructorExtension
-import io.kotlintest.extensions.TestCaseExtension
+import io.kotest.Spec
+import io.kotest.TestCase
+import io.kotest.TestResult
+import io.kotest.extensions.ConstructorExtension
+import io.kotest.extensions.TestCaseExtension
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 

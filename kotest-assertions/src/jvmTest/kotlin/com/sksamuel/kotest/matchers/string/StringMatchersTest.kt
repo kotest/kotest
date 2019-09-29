@@ -2,7 +2,9 @@ package com.sksamuel.kotest.matchers.string
 
 import io.kotest.matchers.string.beBlank
 import io.kotest.matchers.string.beEmpty
+import io.kotest.matchers.string.beFalsy
 import io.kotest.matchers.string.beLowerCase
+import io.kotest.matchers.string.beTruthy
 import io.kotest.matchers.string.beUpperCase
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.containADigit
@@ -22,8 +24,10 @@ import io.kotest.matchers.string.match
 import io.kotest.matchers.string.shouldBeBlank
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldBeEqualIgnoringCase
+import io.kotest.matchers.string.shouldBeFalsy
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeSingleLine
+import io.kotest.matchers.string.shouldBeTruthy
 import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainADigit

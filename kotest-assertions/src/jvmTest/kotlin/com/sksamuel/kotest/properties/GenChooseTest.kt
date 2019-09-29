@@ -1,12 +1,12 @@
-package com.sksamuel.kotlintest.properties
+package com.sksamuel.kotest.properties
 
-import io.kotlintest.data.forall
-import io.kotlintest.properties.Gen
-import io.kotlintest.properties.choose
-import io.kotlintest.properties.next
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
-import io.kotlintest.tables.row
+import io.kotest.data.forall
+import io.kotest.properties.Gen
+import io.kotest.properties.choose
+import io.kotest.properties.next
+import io.kotest.shouldBe
+import io.kotest.specs.FunSpec
+import io.kotest.tables.row
 
 class GenChooseTest : FunSpec({
   test("<Int, Int> should give values between min and max inclusive") {

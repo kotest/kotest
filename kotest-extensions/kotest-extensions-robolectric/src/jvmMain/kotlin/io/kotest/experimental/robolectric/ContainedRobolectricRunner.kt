@@ -1,4 +1,4 @@
-package io.kotlintest.experimental.robolectric
+package io.kotest.experimental.robolectric
 
 import org.junit.runners.model.FrameworkMethod
 import org.robolectric.RobolectricTestRunner
@@ -33,7 +33,7 @@ class ContainedRobolectricRunner : RobolectricTestRunner(PlaceholderTest::class.
 
     override fun createClassLoaderConfig(method: FrameworkMethod?): InstrumentationConfiguration {
         return InstrumentationConfiguration.Builder(super.createClassLoaderConfig(method))
-            .doNotAcquirePackage("io.kotlintest")
+            .doNotAcquirePackage("io.kotest")
             .build()
     }
 
