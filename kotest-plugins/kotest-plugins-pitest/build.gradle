@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                implementation kotlin('reflect')
+                implementation project(':kotest-core')
+                implementation project(':kotest-runner:kotest-runner-jvm')
+                implementation 'org.pitest:pitest:1.4.5'
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotest-runner:kotest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+    }
+}
+
+apply from: '../../publish.gradle'

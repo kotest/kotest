@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+               api kotlin('reflect')
+                api project(':kotest-core')
+                api project(':kotest-runner:kotest-runner-jvm')
+                api "net.sourceforge.argparse4j:argparse4j:$argparse4jVersion"
+                api "com.github.ajalt:mordant:$mordantVersion"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+                api project(':kotest-runner:kotest-runner-junit5')
+                api project(':kotest-extensions')
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+apply from: '../../publish.gradle'

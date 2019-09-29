@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    js()
+
+    sourceSets {
+
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+                implementation kotlin('test-js')
+                api project(":kotest-core")
+            }
+        }
+    }
+}
+
+compileKotlinJs.configure {
+    kotlinOptions {
+        moduleKind = 'commonjs'
+    }
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+apply from: '../../publish.gradle'
