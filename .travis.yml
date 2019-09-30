@@ -23,8 +23,8 @@ jobs:
       name: "run MPP unit tests"
       script: "./gradlew check"
 #    - stage: test
-#      name: "kotlintest gradle plugin"
-#      script: "./gradlew compileKotlin kotlintest"
+#      name: "kotest gradle plugin"
+#      script: "./gradlew compileKotlin kotest"
     - stage: deploy
       name: "deploy maven snapshot"
       script: "./snapshot_deploy.sh"

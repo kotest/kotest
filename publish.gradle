@@ -45,7 +45,7 @@ publishing {
 //            }
 //
 //            pom {
-//                name = 'KotlinTest'
+//                name = 'Kotest'
 //                description = 'Kotlin Test Framework'
 //                url = 'http://www.github.com/kotlintest/kotlintest'
 //

@@ -1,0 +1,73 @@
+buildscript {
+   repositories {
+      mavenCentral()
+      mavenLocal()
+   }
+}
+
+plugins {
+   id 'java'
+   id 'org.jetbrains.kotlin.multiplatform'
+   id 'java-library'
+   id 'maven-publish'
+}
+
+repositories {
+   mavenCentral()
+}
+
+kotlin {
+
+   jvm()
+
+   sourceSets {
+
+      commonTest {
+         dependencies {
+            implementation project(':kotest-core')
+         }
+      }
+
+      jvmTest {
+         dependencies {
+            implementation project(':kotest-assertions')
+            // we use the internals of the JVM project in the tests
+            implementation project(':kotest-runner:kotest-runner-jvm')
+            implementation project(':kotest-runner:kotest-runner-junit5')
+            implementation project(':kotest-assertions:kotest-assertions-arrow')
+            implementation "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+            implementation "com.nhaarman:mockito-kotlin:1.6.0"
+            implementation 'org.mockito:mockito-core:2.24.0'
+            // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
+            implementation "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+            implementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+            implementation "org.junit.platform:junit-platform-engine:$JUnitPlatformVersion"
+            implementation "org.junit.platform:junit-platform-suite-api:$JUnitPlatformVersion"
+            implementation "org.junit.platform:junit-platform-launcher:$JUnitPlatformVersion"
+         }
+      }
+   }
+}
+
+compileKotlinJvm {
+   kotlinOptions {
+      freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+   }
+}
+
+jvmTest {
+   useJUnitPlatform()
+
+   // show standard out and standard error of the test JVM(s) on the console
+   testLogging.showStandardStreams = true
+
+   // Always run tests, even when nothing changed.
+   dependsOn 'cleanTest'
+
+   testLogging {
+      events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+      exceptionFormat = 'full'
+   }
+}
+
+publish.enabled = false

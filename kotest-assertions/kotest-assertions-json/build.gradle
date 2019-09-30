@@ -1,0 +1,43 @@
+buildscript {
+    ext.jackson_version = '2.9.8'
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+kotlin {
+
+    jvm()
+
+    sourceSets {
+
+        jvmMain {
+            dependencies {
+                implementation project(':kotest-assertions')
+                implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+                implementation "com.jayway.jsonpath:json-path:$jsonPathVersion"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation project(':kotest-runner:kotest-runner-junit5')
+            }
+        }
+    }
+}
+
+compileKotlinJvm {
+    kotlinOptions {
+        freeCompilerArgs += '-Xuse-experimental=kotlin.Experimental'
+    }
+}
+
+apply from: '../../publish.gradle'
