@@ -363,14 +363,7 @@ class DateMatchersTest : StringSpec() {
         LocalDateTime.of(2002, Month.APRIL, 1, 5, 2).shouldBeToday()
       }
       shouldFail {
-        LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withDayOfMonth(
-          LocalDateTime.now().dayOfMonth - 1
-        ).shouldBeToday()
-      }
-      shouldFail {
-        LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withDayOfMonth(
-          LocalDateTime.now().dayOfMonth + 1
-        ).shouldBeToday()
+        LocalDateTime.now().minusDays(1).shouldBeToday()
       }
     }
 
