@@ -1,15 +1,16 @@
-package com.sksamuel.kotlintest.properties
+package com.sksamuel.kotest.properties
 
-import io.kotlintest.data.forall
-import io.kotlintest.matchers.doubles.plusOrMinus
-import io.kotlintest.matchers.ints.shouldBeGreaterThanOrEqual
-import io.kotlintest.matchers.ints.shouldBeLessThanOrEqual
-import io.kotlintest.properties.*
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.kotlintest.specs.FunSpec
-import io.kotlintest.tables.row
-import java.lang.IllegalArgumentException
+import io.kotest.data.forall
+import io.kotest.matchers.doubles.plusOrMinus
+import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.properties.Gen
+import io.kotest.properties.char
+import io.kotest.properties.next
+import io.kotest.shouldBe
+import io.kotest.shouldThrow
+import io.kotest.specs.FunSpec
+import io.kotest.tables.row
 
 class GenCharTest : FunSpec({
   test("should honour seed") {
