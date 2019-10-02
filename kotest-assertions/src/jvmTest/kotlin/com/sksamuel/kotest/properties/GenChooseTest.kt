@@ -67,7 +67,7 @@ class GenChooseTest : FunSpec({
       actualRatiosMap.keys shouldBe expectedRatiosMap.keys
 
       actualRatiosMap.forEach { (k, actualRatio) ->
-         actualRatio shouldBe (expectedRatiosMap[k] as Double plusOrMinus 0.02)
+        actualRatio shouldBe (expectedRatiosMap[k] as Double plusOrMinus 0.02)
       }
     }
   }
