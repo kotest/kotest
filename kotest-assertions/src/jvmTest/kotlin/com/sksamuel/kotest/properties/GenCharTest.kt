@@ -7,6 +7,7 @@ import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.properties.Gen
 import io.kotest.properties.char
 import io.kotest.properties.next
+import io.kotest.properties.take
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
 import io.kotest.specs.FunSpec
@@ -51,8 +52,8 @@ class GenCharTest : FunSpec({
 
   test("vararg CharRange overload should give same results as List<CharRange> version") {
     val seed: Long? = 9045638172
-    val listResults = Gen.char(listOf('A'..'C', 'D'..'F')).random(seed).take(500).toList()
-    val varargResults = Gen.char('A'..'C', 'D'..'F').random(seed).take(500).toList()
+    val listResults = Gen.char(listOf('A'..'C', 'D'..'F')).take(500, seed).toList()
+    val varargResults = Gen.char('A'..'C', 'D'..'F').take(500, seed).toList()
 
     varargResults shouldBe listResults
   }
@@ -77,8 +78,7 @@ class GenCharTest : FunSpec({
   }
 
   test("should only give ASCII characters when no parameters given")  {
-    val charIter = Gen.char().random().iterator()
-    val actualChars = (1..100000).map { charIter.next().toInt() }
+    val actualChars = Gen.char().take(100000).map(Char::toInt)
     actualChars.min() as Int shouldBeGreaterThanOrEqual 0x0021
     actualChars.max() as Int shouldBeLessThanOrEqual 0x007E
   }

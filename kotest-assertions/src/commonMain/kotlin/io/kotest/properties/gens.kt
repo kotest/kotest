@@ -287,14 +287,15 @@ fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char
     val genRange =
       if (ranges.size == 1) Gen.constant(ranges.first())
       else {
-        val weighted = ranges.map { range ->
+        val weightPairs = ranges.map { range ->
           val weight = range.last.toInt() - range.first.toInt() + 1
           Pair(weight, range)
         }
-        Gen.choose(weighted[0], weighted[1], *weighted.drop(2).toTypedArray())
+        Gen.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
       }
+
     return generateSequence {
-      val range = genRange.next()
+      val range = genRange.next(seed = seed)
       val i = r.nextInt(range.first.toInt()..range.last.toInt())
       i.toChar()
     }
