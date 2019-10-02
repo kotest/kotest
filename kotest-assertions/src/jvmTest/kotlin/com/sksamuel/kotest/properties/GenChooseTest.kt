@@ -54,28 +54,20 @@ class GenChooseTest : FunSpec({
 
   test("weighted should generate expected values in correct ratios according to weights") {
     forall(
-      row(listOf(1 to 'A', 1 to 'B'), listOf(0.5, 0.5)),
-      row(listOf(1 to 'A', 3 to 'B', 1 to 'C'), listOf(0.2, 0.6, 0.2)),
-      row(listOf(1 to 'A', 3 to 'C', 1 to 'C'), listOf(0.2, 0.8)),
-      row(listOf(1 to 'A', 3 to 'B', 1 to 'C', 4 to 'D'), listOf(0.11, 0.33, 0.11, 0.44))
-    ) { pairs, expectedRatios ->
-      val expectedUniqueValues = pairs.map { it.second }.toSet()
-      val chooseGen = Gen.choose(pairs[0], pairs[1], *pairs.drop(2).toTypedArray())
+      row(listOf(1 to 'A', 1 to 'B'), mapOf('A' to 0.5, 'B' to 0.5)),
+      row(listOf(1 to 'A', 3 to 'B', 1 to 'C'), mapOf('A' to 0.2, 'B' to 0.6, 'C' to 0.2)),
+      row(listOf(1 to 'A', 3 to 'C', 1 to 'C'), mapOf('A' to 0.2, 'C' to 0.8)),
+      row(listOf(1 to 'A', 3 to 'B', 1 to 'C', 4 to 'D'), mapOf('A' to 0.11, 'B' to 0.33, 'C' to 0.11, 'D' to 0.44))
+    ) { weightPairs, expectedRatiosMap ->
+      val genCount = 100000
+      val chooseGen = Gen.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
+      val actualCountsMap = (1..genCount).map { chooseGen.next() }.groupBy { it }.map { (k, v) -> k to v.count() }
+      val actualRatiosMap = actualCountsMap.map { (k, v) -> k to (v.toDouble() / genCount) }.toMap()
 
-      // Linked map so that the actual ratios will
-      // have the same order as the expected ratios
-      // corresponding to the same letters
-      val actualCountMap = linkedMapOf(*pairs.map { it.second to 0 }.toTypedArray())
-      val allGenValues = (1..100000).map { chooseGen.next() }
-      val actualUniqueValues = allGenValues.toSet()
-      allGenValues.forEach { actualCountMap[it] = actualCountMap[it]!! + 1 }
-      val actualCountTotal = actualCountMap.values.sum()
-      val actualRatios = actualCountMap.values.map { it.toDouble() / actualCountTotal }
+      actualRatiosMap.keys shouldBe expectedRatiosMap.keys
 
-      actualUniqueValues shouldBe expectedUniqueValues
-
-      (actualRatios.indices).forEach {
-        actualRatios[it] shouldBe (expectedRatios[it] plusOrMinus 0.02)
+      actualRatiosMap.forEach { (k, actualRatio) ->
+         actualRatio shouldBe (expectedRatiosMap[k] as Double plusOrMinus 0.02)
       }
     }
   }
