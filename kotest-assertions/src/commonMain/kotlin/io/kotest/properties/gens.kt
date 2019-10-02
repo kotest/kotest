@@ -575,9 +575,10 @@ fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: 
     }
     override fun constants(): Iterable<T> = emptyList()
     override fun random(seed: Long?): Sequence<T> {
+      val r = if (seed == null) Random.Default else Random(seed)
       val total = weights.sum()
       return generateSequence {
-        val n = Random.nextInt(1, total + 1)
+        val n = r.nextInt(1, total + 1)
         pick(n, allPairs.asSequence())
       }
     }

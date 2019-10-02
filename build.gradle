@@ -34,6 +34,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'net.researchgate.release' version '2.8.0'
+   id("com.gradle.build-scan").version("2.4.2")
 }
 
 // apply plugin: "io.kotest"
@@ -70,4 +71,12 @@ dependencies {
 
 project(":") {
     publish.enabled = false
+}
+
+
+buildScan {
+   // ./gradlew --scan $TASKNAME
+   // see https://dev.to/jmfayard/the-one-gradle-trick-that-supersedes-all-the-others-5bpg
+   termsOfServiceUrl = "https://gradle.com/terms-of-service"
+   termsOfServiceAgree = "yes"
 }
