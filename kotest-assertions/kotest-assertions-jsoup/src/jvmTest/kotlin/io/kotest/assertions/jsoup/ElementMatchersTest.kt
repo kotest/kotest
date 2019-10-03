@@ -5,7 +5,8 @@ import org.jsoup.Jsoup
 
 class ElementMatchersTest : FreeSpec() {
    init {
-      val root = Jsoup.parse(ResourceLoader.getFileAsString("example.html"))
+      val html = javaClass.classLoader.getResourceAsStream("example.html").bufferedReader().use { it.readText() }
+      val root = Jsoup.parse(html)
       "should" - {
          "bePresent" {
             val data = root.getElementsByTag("p")
