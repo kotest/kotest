@@ -6,11 +6,7 @@ import com.sksamuel.kotest.properties.X.A
 import com.sksamuel.kotest.properties.X.B
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.collections.contain
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldContainAll
-import io.kotest.matchers.collections.shouldContainAnyOf
-import io.kotest.matchers.collections.shouldHaveAtMostSize
+import io.kotest.matchers.collections.*
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
@@ -18,39 +14,11 @@ import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.doubles.shouldBeLessThanOrEqual
 import io.kotest.matchers.floats.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldBeLessThanOrEqual
+import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.string.include
-import io.kotest.properties.Gen
-import io.kotest.properties.assertAll
-import io.kotest.properties.bind
-import io.kotest.properties.choose
-import io.kotest.properties.constant
-import io.kotest.properties.create
-import io.kotest.properties.default
-import io.kotest.properties.double
-import io.kotest.properties.duration
-import io.kotest.properties.file
-import io.kotest.properties.forAll
-import io.kotest.properties.forClassName
-import io.kotest.properties.from
-import io.kotest.properties.generateInfiniteSequence
-import io.kotest.properties.int
-import io.kotest.properties.list
-import io.kotest.properties.localDate
-import io.kotest.properties.localDateTime
-import io.kotest.properties.localTime
-import io.kotest.properties.map
-import io.kotest.properties.negativeIntegers
-import io.kotest.properties.next
-import io.kotest.properties.nextPrintableString
-import io.kotest.properties.numericDoubles
-import io.kotest.properties.numericFloats
-import io.kotest.properties.oneOf
-import io.kotest.properties.period
-import io.kotest.properties.positiveIntegers
-import io.kotest.properties.samples
-import io.kotest.properties.set
-import io.kotest.properties.take
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.properties.*
 import io.kotest.shouldBe
 import io.kotest.shouldHave
 import io.kotest.shouldNotBe
@@ -60,12 +28,7 @@ import io.kotest.tables.headers
 import io.kotest.tables.row
 import io.kotest.tables.table
 import java.io.File
-import java.time.Duration
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Period
-import java.util.Random
+import java.time.*
 
 class GenTest : WordSpec() {
   init {
@@ -643,6 +606,29 @@ class GenTest : WordSpec() {
         sixElementsFromConcatenatedGen shouldBe listOf(A(1), A(2), A(3), B(1), B(2), B(3))
       }
     }
+
+     "Gen.sentence(minWordCount, maxWordCount)" should {
+
+        "give sentence of word count between min and max word count" {
+           val sentenceGen = Gen.sentence(2,6)
+
+           sentenceGen.random().first().split(" ").size shouldBeInRange 2..6
+        }
+
+        "give sentence ending with dot" {
+           val sentenceGen = Gen.sentence(2,6)
+
+           sentenceGen.random().first() shouldEndWith "."
+        }
+
+        "give sentence which contains punctuation mark" {
+           val sentenceGen = Gen.sentence(2,6)
+           val punctuationsWithoutDot = (33..45).plus(47..64).plus((91..126)).map { it.toChar().toString() }
+
+           val sentence = sentenceGen.random().first()
+           sentence.split("") shouldContainAnyOf punctuationsWithoutDot
+        }
+     }
   }
 }
 

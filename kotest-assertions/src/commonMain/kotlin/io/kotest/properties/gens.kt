@@ -1,12 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.properties.shrinking.ChooseShrinker
-import io.kotest.properties.shrinking.DoubleShrinker
-import io.kotest.properties.shrinking.FloatShrinker
-import io.kotest.properties.shrinking.IntShrinker
-import io.kotest.properties.shrinking.ListShrinker
-import io.kotest.properties.shrinking.Shrinker
-import io.kotest.properties.shrinking.StringShrinker
+import io.kotest.properties.shrinking.*
 import kotlin.jvm.JvmOverloads
 import kotlin.math.abs
 import kotlin.random.Random
@@ -655,3 +649,43 @@ fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
 
     override fun constants(): Iterable<T> = sampleValues.asIterable()
 }
+
+fun Gen.Companion.sentence(minWordCount: Int, maxWordCount:Int) = object :Gen<String> {
+   override fun constants(): Iterable<String> {
+      return emptyList()
+   }
+
+   override fun random(seed: Long?): Sequence<String> {
+      val r = if (seed == null) Random.Default else Random(seed)
+      return generateInfiniteSequence { generateSentenceOfWordCount(minWordCount, maxWordCount, r) }
+   }
+
+   private fun generateSentenceOfWordCount(wordCount: Int,maxWordCount: Int, random:Random): String {
+      val sentenceBuilder = StringBuilder()
+      repeat(random.nextInt(minWordCount, maxWordCount)) {
+         sentenceBuilder.append(random.nextWordOfLength(random.nextInt(10)))
+         sentenceBuilder.append(random.nextPunctuation())
+         sentenceBuilder.append(" ")
+      }
+      return "${sentenceBuilder.toString().trim()}."
+   }
+}
+
+/**
+ * Returns a word of given length
+ */
+private fun Random.nextWordOfLength(length: Int): String {
+   val wordBuilder = StringBuilder()
+   val capitalLetterRange = 65..90
+   val smallLetterRange =  97..122
+   wordBuilder.append(capitalLetterRange.random().toChar())
+   repeat(length - 1) {
+      wordBuilder.append(smallLetterRange.random().toChar())
+   }
+   return wordBuilder.toString()
+}
+
+/**
+ * Returns a random punctuation
+ * */
+private fun Random.nextPunctuation() = (33..64).plus((91..126)).random().toChar()
