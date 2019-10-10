@@ -9,7 +9,7 @@ import org.jsoup.select.Elements
 
 fun Elements.shouldBePresent() = this should bePresent()
 fun Elements.shouldNotBePresent() = this shouldNot bePresent()
-fun bePresent() = object: Matcher<Elements> {
+fun bePresent() = object : Matcher<Elements> {
    override fun test(value: Elements) = MatcherResult(
       value.isNotEmpty(),
       "Element should be present",
@@ -19,11 +19,21 @@ fun bePresent() = object: Matcher<Elements> {
 
 infix fun Elements.shouldBePresent(times: Int) = this should bePresent(times)
 infix fun Elements.shouldNotBePresent(times: Int) = this shouldNot bePresent(times)
-fun bePresent(times: Int) = object: Matcher<Elements> {
+fun bePresent(times: Int) = object : Matcher<Elements> {
    override fun test(value: Elements) = MatcherResult(
       value.size == times,
       "Element should be present $times times",
       "Element should not be present $times times"
+   )
+}
+
+infix fun Element.shouldHaveChildWithTag(tag: String) = this should haveChildWithTag(tag)
+infix fun Element.shouldNotHaveChildWithTag(tag: String) = this shouldNot haveChildWithTag(tag)
+fun haveChildWithTag(tag: String) = object : Matcher<Element> {
+   override fun test(value: Element) = MatcherResult(
+      value.getElementsByTag(tag).isNotEmpty(),
+      "Document should have at least one child with tag $tag",
+      "Document should not have child with tag $tag"
    )
 }
 
@@ -37,16 +47,6 @@ fun haveText(expectedText: String) = object : Matcher<Element> {
    )
 }
 
-infix fun Element.shouldHaveClass(className: String) = this should haveClass(className)
-infix fun Element.shouldNotHaveClass(className: String) = this shouldNot haveClass(className)
-fun haveClass(className: String) = object: Matcher<Element> {
-   override fun test(value: Element) = MatcherResult(
-      value.hasClass(className),
-      "Element ${value.tagName()} should have class $className.",
-      "Element ${value.tagName()} should not have text $className."
-   )
-}
-
 infix fun Element.shouldHaveAttribute(attrName: String) = this should haveAttribute(attrName)
 infix fun Element.shouldNotHaveAttribute(attrName: String) = this shouldNot haveAttribute(attrName)
 fun haveAttribute(attrName: String) = object : Matcher<Element> {
@@ -57,12 +57,14 @@ fun haveAttribute(attrName: String) = object : Matcher<Element> {
    )
 }
 
-infix fun Element.shouldHaveId(id: String) = this should haveId(id)
-infix fun Element.shouldNotHaveId(id: String) = this shouldNot haveId(id)
-fun haveId(id: String) = object : Matcher<Element> {
+fun Element.shouldHaveAttributeValue(attr: String, expectedValue: String) =
+   this should haveAttrValue(attr, expectedValue)
+fun Element.shouldNotHaveAttributeValue(attr: String, expectedValue: String) =
+   this shouldNot haveAttrValue(attr, expectedValue)
+fun haveAttrValue(attr: String, expectedValue: String) = object : Matcher<Element> {
    override fun test(value: Element) = MatcherResult(
-      value.id() == id,
-      "Element ${value.tagName()} should have id $id.",
-      "Element ${value.tagName()} should not have id $id."
+      value.attr(attr) == expectedValue,
+      "Element should have attribute $attr with value $expectedValue",
+      "Element should not have attribute $attr with value $expectedValue"
    )
 }

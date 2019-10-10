@@ -20,17 +20,16 @@ class ElementMatchersTest : FreeSpec() {
             val data = root.getElementsByTag("h1").first()
             data shouldHaveText "i'm the headline"
          }
-         "haveClass" {
-            val data = root.getElementsByTag("body").first()
-            data shouldHaveClass "someClass"
-         }
          "haveAttribute" {
             val data = root.getElementsByTag("html").first()
             data shouldHaveAttribute "lang"
          }
-         "haveId" {
-            val data = root.getElementsByTag("header").first()
-            data shouldHaveId "abc"
+         "haveChildWithTag" {
+            root shouldHaveChildWithTag "body"
+         }
+         "haveAttrValue" {
+            val data = root.getElementsByTag("html").first()
+            data.shouldHaveAttributeValue("lang", "en")
          }
       }
       "shouldNot" - {
@@ -46,17 +45,16 @@ class ElementMatchersTest : FreeSpec() {
             val data = root.getElementsByTag("h1").first()
             data shouldNotHaveText "i'm not the headline"
          }
-         "haveClass" {
-            val data = root.getElementsByTag("body").first()
-            data shouldNotHaveClass "someOtherClass"
-         }
          "haveAttribute" {
             val data = root.getElementsByTag("h1").first()
             data shouldNotHaveAttribute "lang"
          }
-         "haveId" {
-            val data = root.getElementsByTag("header").first()
-            data shouldNotHaveId "a1b2c3"
+         "haveChildWithTag" {
+            root shouldNotHaveChildWithTag "foot"
+         }
+         "haveAttrValue" {
+            val data = root.getElementsByTag("html").first()
+            data.shouldNotHaveAttributeValue("lang", "es")
          }
       }
    }
