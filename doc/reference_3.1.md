@@ -603,7 +603,7 @@ class StringSpecExample : StringSpec({
 })
 ```
 
-It may be desrable to have each row of data parameters as an individual test. To generating such individual tests follow a similar pattern for each spec style. An example in the `FreeSpec` is below.
+It may be desirable to have each row of data parameters as an individual test. To generating such individual tests follow a similar pattern for each spec style. An example in the `FreeSpec` is below.
 
 ```kotlin
 class IntegerMathSpec : FreeSpec({
