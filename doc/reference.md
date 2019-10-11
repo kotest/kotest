@@ -26,6 +26,18 @@ dependencies {
 }
 ```
 
+Or, if using Kotlin KTS gradle:
+
+```kotlin
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+dependencies {
+  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+}
+```
+
 #### Maven
 
 For maven you must configure the surefire plugin for junit tests.
