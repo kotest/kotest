@@ -1,12 +1,13 @@
 package com.sksamuel.kotest.matchers.channels
 
 import io.kotest.assertions.shouldFail
-import io.kotest.matchers.channels.shouldBeClosed
-import io.kotest.matchers.channels.shouldBeEmpty
+import io.kotest.matchers.channels.*
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.specs.StringSpec
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 class ChannelTest : StringSpec() {
   init {
@@ -42,6 +43,60 @@ class ChannelTest : StringSpec() {
         channel.shouldBeEmpty()
       }
       channel.receive() shouldBeExactly 1
+    }
+    "shouldReceiveWithin should not fail on non-empty channels" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        channel.send(1)
+      }
+      channel.shouldReceiveWithin(Duration.ofSeconds(1))
+    }
+    "shouldReceiveWithin should not fail when elements are received later" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        delay(1000)
+        channel.send(1)
+      }
+      channel.shouldReceiveWithin(Duration.ofSeconds(3))
+    }
+    "shouldReceiveWithin should fail when no elements are sent" {
+      val channel: Channel<Int> = Channel()
+      shouldFail {
+        channel.shouldReceiveWithin(Duration.ofSeconds(1))
+      }
+    }
+    "shouldReceiveNoElementsWithin should not fail when no elements are sent" {
+      val channel: Channel<Int> = Channel()
+      channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
+      println("Not fail")
+    }
+    "shouldReceiveNoElementsWithin should fail when elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        channel.send(69)
+      }
+      shouldFail {
+        channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
+      }
+    }
+    "shouldHaveSize should not fail when n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(10) { channel.send(1) }
+        channel.close()
+      }
+      channel.shouldHaveSize(10)
+    }
+    "shouldHaveSize should fail when greater than n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(12) { channel.send(1) }
+        channel.close()
+      }
+      shouldFail {
+        channel.shouldHaveSize(10)
+      }
+      repeat(2) { channel.receive() }
     }
   }
 }
