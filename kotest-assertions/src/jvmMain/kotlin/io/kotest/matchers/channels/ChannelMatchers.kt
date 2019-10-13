@@ -5,6 +5,7 @@ import io.kotest.MatcherResult
 import io.kotest.should
 import io.kotest.shouldNot
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import java.time.Duration
@@ -97,6 +98,8 @@ fun <T> Channel<T>.shouldReceiveAtMost(n: Int) = runBlocking {
   var count = 0
   for (value in this@shouldReceiveAtMost) {
     count++
-    if(count>n) this@shouldReceiveAtMost.shouldBeClosed()
+    if(count==n) break
   }
+  delay(100)
+  this@shouldReceiveAtMost.shouldBeClosed()
 }

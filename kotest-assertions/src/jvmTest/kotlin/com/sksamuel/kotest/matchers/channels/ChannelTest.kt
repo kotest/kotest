@@ -139,6 +139,7 @@ class ChannelTest : StringSpec() {
       shouldFail {
         channel.shouldReceiveAtMost(10)
       }
+      channel.receive()
     }
   }
 }
