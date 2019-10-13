@@ -72,7 +72,7 @@ class ChannelTest : StringSpec() {
     "shouldReceiveNoElementsWithin should fail when elements are sent" {
       val channel: Channel<Int> = Channel()
       launch {
-        channel.send(69)
+        channel.send(1)
       }
       shouldFail {
         channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
