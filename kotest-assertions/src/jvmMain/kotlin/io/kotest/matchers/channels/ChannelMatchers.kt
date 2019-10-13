@@ -6,17 +6,8 @@ import io.kotest.should
 import io.kotest.shouldNot
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import java.time.Duration
-
-fun <T> beClosed() = object : Matcher<Channel<T>> {
-  override fun test(value: Channel<T>) = MatcherResult(
-    value.isClosedForSend && value.isClosedForReceive,
-    { "Channel should be closed" },
-    { "Channel should not be closed" }
-  )
-}
 
 /**
  * Asserts that this [Channel] is closed
@@ -25,6 +16,14 @@ fun <T> beClosed() = object : Matcher<Channel<T>> {
  *
  */
 fun <T> Channel<T>.shouldBeClosed() = this should beClosed()
+
+fun <T> beClosed() = object : Matcher<Channel<T>> {
+  override fun test(value: Channel<T>) = MatcherResult(
+    value.isClosedForSend && value.isClosedForReceive,
+    { "Channel should be closed" },
+    { "Channel should not be closed" }
+  )
+}
 
 /**
  * Asserts that this [Channel] is open
@@ -58,7 +57,7 @@ fun <T> receiveWithin(duration: Duration) = object : Matcher<Channel<T>> {
   override fun test(value: Channel<T>) = MatcherResult(
     runBlocking {
       withTimeoutOrNull(duration.toMillis()) {
-        println(value.receive())
+        value.receive()
       } != null
     },
     { "Channel should receive within ${duration.toMillis()}ms" },
@@ -80,4 +79,24 @@ fun <T> Channel<T>.shouldReceiveNoElementsWithin(duration: Duration) = this shou
 fun <T> Channel<T>.shouldHaveSize(n: Int) = runBlocking {
   repeat(n) { this@shouldHaveSize.receive() }
   this@shouldHaveSize.shouldBeClosed()
+}
+
+/**
+ * Asserts that this [Channel] should receive at least [n] elements
+ *
+ */
+fun <T> Channel<T>.shouldReceiveAtLeast(n: Int) = runBlocking {
+  repeat(n) { this@shouldReceiveAtLeast.receive() }
+}
+
+/**
+ * Asserts that this [Channel] should receive at most [n] elements, then close
+ *
+ */
+fun <T> Channel<T>.shouldReceiveAtMost(n: Int) = runBlocking {
+  var count = 0
+  for (value in this@shouldReceiveAtMost) {
+    count++
+    if(count>n) this@shouldReceiveAtMost.shouldBeClosed()
+  }
 }

@@ -68,7 +68,6 @@ class ChannelTest : StringSpec() {
     "shouldReceiveNoElementsWithin should not fail when no elements are sent" {
       val channel: Channel<Int> = Channel()
       channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
-      println("Not fail")
     }
     "shouldReceiveNoElementsWithin should fail when elements are sent" {
       val channel: Channel<Int> = Channel()
@@ -97,6 +96,49 @@ class ChannelTest : StringSpec() {
         channel.shouldHaveSize(10)
       }
       repeat(2) { channel.receive() }
+    }
+    "shouldReceiveAtLeast should not fail when n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(10) { channel.send(1) }
+        channel.close()
+      }
+      channel.shouldReceiveAtLeast(10)
+    }
+    "shouldReceiveAtLeast should not fail when greater than n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(12) { channel.send(1) }
+        channel.close()
+      }
+      channel.shouldReceiveAtLeast(10)
+      repeat(2) { channel.receive() }
+    }
+    "shouldReceiveAtMost should not fail when n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(10) { channel.send(1) }
+        channel.close()
+      }
+      channel.shouldReceiveAtMost(10)
+    }
+    "shouldReceiveAtMost should not fail when less than n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(9) { channel.send(1) }
+        channel.close()
+      }
+      channel.shouldReceiveAtMost(10)
+    }
+    "shouldReceiveAtMost should fail when more than n elements are sent" {
+      val channel: Channel<Int> = Channel()
+      launch {
+        repeat(11) { channel.send(1) }
+        channel.close()
+      }
+      shouldFail {
+        channel.shouldReceiveAtMost(10)
+      }
     }
   }
 }
