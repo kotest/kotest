@@ -131,6 +131,17 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n | 
 | `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range | 
 
+| Channels ||
+| -------- | ---- |
+| `channel.shouldReceiveWithin(duration)` | Asserts that the channel should receive within duration |
+| `channel.shouldReceiveNoElementsWithin(duration)` | Asserts that the channel should not receive any elements within duration |
+| `channel.shouldHaveSize(n)` | Asserts that the channel should receive exactly n elements before closing |
+| `channel.shouldReceiveAtLeast(n)` | Asserts that the channel should receive >= n elements |
+| `channel.shouldReceiveAtMost(n)` | Asserts that the channel should receive <=n elements before closing |
+| `channel.shouldBeClosed()` | Asserts that the channel is closed |
+| `channel.shouldBeOpen()` | Asserts that the channel is open |
+| `channel.shouldBeEmpty()` | Asserts that the channel is empty |
+
 | Collections ||
 | -------- | ---- |
 | `collection.shouldBeEmpty()` | Asserts that the collections has zero elements. |
