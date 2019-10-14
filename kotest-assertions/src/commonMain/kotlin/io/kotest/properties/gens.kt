@@ -279,26 +279,25 @@ fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
 fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char> = object : Gen<Char> {
   init {
     require(ranges.all { !it.isEmpty() }) { "Ranges cannot be empty" }
-    require(ranges.isNotEmpty()) { "List of ranges must be greater than zero" }
+    require(ranges.isNotEmpty()) { "List of ranges must have at least one range" }
   }
   override fun constants(): Iterable<Char> = emptyList()
   override fun random(seed: Long?): Sequence<Char> {
     val r = if (seed == null) Random.Default else Random(seed)
     val genRange =
       if (ranges.size == 1) Gen.constant(ranges.first())
-      else {
-        val weightPairs = ranges.map { range ->
-          val weight = range.last.toInt() - range.first.toInt() + 1
-          Pair(weight, range)
-        }
-        Gen.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
-      }
-
-    return generateSequence {
-      val range = genRange.next(seed = seed)
-      val i = r.nextInt(range.first.toInt()..range.last.toInt())
-      i.toChar()
-    }
+      else makeRangeWeightedGen()
+    return generateSequence { genRange.next(seed = seed).random(r) }
+  }
+  // Convert the list of CharRanges into a weighted Gen in which
+  // the ranges are chosen from the list using the length of the
+  // range as the weight.
+  private fun makeRangeWeightedGen(): Gen<CharRange> {
+     val weightPairs = ranges.map { range ->
+        val weight = range.last.toInt() - range.first.toInt() + 1
+        Pair(weight, range)
+     }
+     return Gen.choose(weightPairs[0], weightPairs[1], *weightPairs.drop(2).toTypedArray())
   }
 }
 
