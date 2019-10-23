@@ -293,4 +293,4 @@ For the extension function style, each function has an equivalent negated versio
 
 | JSoup |     |
 | ----- | --- |
-| JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
+| JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](doc/jsoup-matchers.md) |
