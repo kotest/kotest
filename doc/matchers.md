@@ -291,5 +291,6 @@ For the extension function style, each function has an equivalent negated versio
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
 
 
-| JSoup | 
-| JSoup matchers requires `kotlintest-assertions-jsoup`. [See More](/jsoup-matchers.md)
+| JSoup |
+| ----- | 
+| JSoup matchers requires `kotlintest-assertions-jsoup`. [See More](/jsoup-matchers.md) |
