@@ -289,3 +289,7 @@ For the extension function style, each function has an equivalent negated versio
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+
+
+| JSoup | 
+| JSoup matchers requires `kotlintest-assertions-jsoup`. [See More](/jsoup-matchers.md)
