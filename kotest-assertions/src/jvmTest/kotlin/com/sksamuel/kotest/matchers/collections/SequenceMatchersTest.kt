@@ -9,9 +9,9 @@ import io.kotest.matchers.sequences.shouldBeSortedWith
 import io.kotest.matchers.sequences.shouldBeUnique
 import io.kotest.matchers.sequences.shouldContain
 import io.kotest.matchers.sequences.shouldContainAll
+import io.kotest.matchers.sequences.shouldContainAllInAnyOrder
 import io.kotest.matchers.sequences.shouldContainDuplicates
 import io.kotest.matchers.sequences.shouldContainExactly
-import io.kotest.matchers.sequences.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.sequences.shouldContainInOrder
 import io.kotest.matchers.sequences.shouldContainNoNulls
 import io.kotest.matchers.sequences.shouldContainNull
@@ -29,8 +29,8 @@ import io.kotest.matchers.sequences.shouldNotBeSorted
 import io.kotest.matchers.sequences.shouldNotBeSortedWith
 import io.kotest.matchers.sequences.shouldNotBeUnique
 import io.kotest.matchers.sequences.shouldNotContain
+import io.kotest.matchers.sequences.shouldNotContainAllInAnyOrder
 import io.kotest.matchers.sequences.shouldNotContainExactly
-import io.kotest.matchers.sequences.shouldNotContainExactlyInAnyOrder
 import io.kotest.matchers.sequences.shouldNotContainNoNulls
 import io.kotest.matchers.sequences.shouldNotContainNull
 import io.kotest.matchers.sequences.shouldNotContainOnlyNulls
