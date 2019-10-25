@@ -100,6 +100,30 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    )
 }
 
+@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
+infix fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
+   this shouldNot containAllInAnyOrder(expected)
+
+@Deprecated("use shouldNotContainAllInAnyOrder", ReplaceWith("shouldNotContainAllInAnyOrder"))
+fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
+   this shouldNot containAllInAnyOrder(*expected)
+
+@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
+infix fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
+   this should containAllInAnyOrder(expected)
+
+@Deprecated("use shouldContainAllInAnyOrder", ReplaceWith("shouldContainAllInAnyOrder"))
+fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
+   this should containAllInAnyOrder(*expected)
+
+@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
+fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
+   containAllInAnyOrder(expected.asSequence())
+
+@Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
+/** Assert that a sequence contains exactly the given values and nothing else, in any order. */
+fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = containAllInAnyOrder(expected)
+
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
 
