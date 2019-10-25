@@ -121,7 +121,7 @@ fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
    containAllInAnyOrder(expected.asSequence())
 
 @Deprecated("use containAllInAnyOrder", ReplaceWith("containAllInAnyOrder"))
-/** Assert that a sequence contains exactly the given values and nothing else, in any order. */
+/** Assert that a sequence contains the given values and nothing else, in any order. */
 fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = containAllInAnyOrder(expected)
 
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
