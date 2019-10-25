@@ -83,7 +83,7 @@ fun <T> containExactly(vararg expected: T): Matcher<Sequence<T>?> = containExact
 /** Assert that a sequence contains exactly the given values and nothing else, in order. */
 fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
    var passed: Boolean = value.count() == expected.count()
-   var failMessage = "Sequence should contain be exactly $expected but was $value"
+   var failMessage = "Sequence should contain exactly $expected but was $value"
    if (passed) {
       val diff = value.zip(expected) { a, b -> Triple(a, b, a == b) }.withIndex().find { !it.value.third }
       if (diff != null) {
@@ -100,28 +100,28 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
    )
 }
 
-infix fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(expected: C) =
-   this shouldNot containExactlyInAnyOrder(expected)
+infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
+   this shouldNot containAllInAnyOrder(expected)
 
-fun <T, C : Sequence<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T) =
-   this shouldNot containExactlyInAnyOrder(*expected)
+fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
+   this shouldNot containAllInAnyOrder(*expected)
 
-infix fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(expected: C) =
-   this should containExactlyInAnyOrder(expected)
+infix fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(expected: C) =
+   this should containAllInAnyOrder(expected)
 
-fun <T, C : Sequence<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T) =
-   this should containExactlyInAnyOrder(*expected)
+fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
+   this should containAllInAnyOrder(*expected)
 
-fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
-   containExactlyInAnyOrder(expected.asSequence())
+fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Sequence<T>?> =
+   containAllInAnyOrder(expected.asSequence())
 
-/** Assert that a sequence contains exactly the given values and nothing else, in any order. */
-fun <T, C : Sequence<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
+/** Assert that a sequence contains all the given values and nothing else, in any order. */
+fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
    val passed = value.count() == expected.count() && expected.all { value.contains(it) }
    MatcherResult(
       passed,
-      { "Sequence should contain $expected in any order, but was $value" },
-      { "Sequence should not contain exactly $expected in any order" }
+      { "Sequence should contain the values of $expected in any order, but was $value" },
+      { "Sequence should not contain the values of $expected in any order" }
    )
 }
 

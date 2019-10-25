@@ -663,77 +663,77 @@ class SequenceMatchersTest : WordSpec() {
 
       "contain in any order" should {
          succeed("for empty with empty") {
-            empty.shouldContainExactlyInAnyOrder(empty)
+            empty.shouldContainAllInAnyOrder(empty)
          }
 
          fail("for empty with any other") {
-            empty.shouldContainExactlyInAnyOrder(nulls)
+            empty.shouldContainAllInAnyOrder(nulls)
          }
 
          succeed("when elements are same") {
-            countdown.shouldContainExactlyInAnyOrder(countup)
+            countdown.shouldContainAllInAnyOrder(countup)
          }
 
          fail("for overlapping sequence") {
-            countup.shouldContainExactlyInAnyOrder((5..15).asSequence())
+            countup.shouldContainAllInAnyOrder((5..15).asSequence())
          }
 
          succeed("for subset, same count with nulls") {
-            sparse.shouldContainExactlyInAnyOrder(nulls)
+            sparse.shouldContainAllInAnyOrder(nulls)
          }
 
          succeed("for subset, same count") {
-            repeating.shouldContainExactlyInAnyOrder(unique + unique)
+            repeating.shouldContainAllInAnyOrder(unique + unique)
          }
 
          succeed("for subset, same count (variadic)") {
-            repeating.shouldContainExactlyInAnyOrder(1, 1, 2, 2, 3, 3)
+            repeating.shouldContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
          }
 
          fail("for subset, different count with nulls") {
-            sparse.shouldContainExactlyInAnyOrder(sparse.toSet().asSequence())
+            sparse.shouldContainAllInAnyOrder(sparse.toSet().asSequence())
          }
 
          fail("for same, different count") {
-            repeating.shouldContainExactlyInAnyOrder(unique)
+            repeating.shouldContainAllInAnyOrder(unique)
          }
       }
 
       "not contain in any order" should {
          fail("for empty with empty") {
-            empty.shouldNotContainExactlyInAnyOrder(empty)
+            empty.shouldNotContainAllInAnyOrder(empty)
          }
 
          succeed("for empty with any other") {
-            empty.shouldNotContainExactlyInAnyOrder(nulls)
+            empty.shouldNotContainAllInAnyOrder(nulls)
          }
 
          fail("when elements are same") {
-            countdown.shouldNotContainExactlyInAnyOrder(countup)
+            countdown.shouldNotContainAllInAnyOrder(countup)
          }
 
          succeed("for overlapping sequence") {
-            countup.shouldNotContainExactlyInAnyOrder((5..15).asSequence())
+            countup.shouldNotContainAllInAnyOrder((5..15).asSequence())
          }
 
          fail("for subset, same count with nulls") {
-            sparse.shouldNotContainExactlyInAnyOrder(nulls)
+            sparse.shouldNotContainAllInAnyOrder(nulls)
          }
 
          fail("for subset, same count") {
-            repeating.shouldNotContainExactlyInAnyOrder(unique + unique)
+            repeating.shouldNotContainAllInAnyOrder(unique + unique)
          }
 
          fail("for subset, same count (variadic)") {
-            repeating.shouldNotContainExactlyInAnyOrder(1, 1, 2, 2, 3, 3)
+            repeating.shouldNotContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
          }
 
          succeed("for subset, different count with nulls") {
-            sparse.shouldNotContainExactlyInAnyOrder(sparse.toSet().asSequence())
+            sparse.shouldNotContainAllInAnyOrder(sparse.toSet().asSequence())
          }
 
          succeed("for same, different count") {
-            repeating.shouldNotContainExactlyInAnyOrder(unique)
+            repeating.shouldNotContainAllInAnyOrder(unique)
          }
       }
 
