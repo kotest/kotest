@@ -645,7 +645,7 @@ class GenTest : WordSpec() {
       }
     }
 
-    "Gen.unique" should {
+    "Gen.uniqueRandoms" should {
 
       "return unique values from `random`" {
         val a1 = A(1)
