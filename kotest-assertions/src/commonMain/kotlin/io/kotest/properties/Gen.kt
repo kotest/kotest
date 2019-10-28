@@ -1,6 +1,7 @@
 package io.kotest.properties
 
 import io.kotest.properties.shrinking.Shrinker
+import kotlinx.coroutines.yield
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -45,6 +46,10 @@ interface Gen<T> {
   fun random(seed: Long? = null): Sequence<T>
 
   fun shrinker(): Shrinker<T>? = null
+
+  fun uniqueRandoms(seed: Long? = null): Sequence<T> = sequence {
+     yieldAll(random(seed).distinct())
+  }
 
   /**
    * Create a new [Gen] by filtering the output of this gen.
