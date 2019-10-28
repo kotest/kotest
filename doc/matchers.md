@@ -150,7 +150,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `collection.shouldContainAll(e1, e2, ..., en)` | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
 | `collection.shouldContainDuplicates()` | Asserts that the collection contains at least one duplicate element. |
 | `collection.shouldContainExactly()` | Assert that a collection contains exactly the given values and nothing else, in order. |
-| `collection.shouldContainExactlyInAnyOrder()` | Assert that a collection contains exactly the given values and nothing else, in _any_ order. |
+| `collection.shouldContainAllInAnyOrder()` | Assert that a collection contains all the given values and nothing else, in _any_ order. |
 | `collection.shouldContainNoNulls()` | Asserts that the collection contains no null elements, or is empty. |
 | `collection.shouldContainNull()` | Asserts that the collection contains at least one null element. |
 | `collection.shouldContainOnlyNulls()` | Asserts that the collection contains only null elements, or is empty. |
