@@ -16,27 +16,57 @@ KotlinTest is published to Maven Central so you can get the latest version from 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
  as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the KotlinTest dependency.
 
+
+<details open>
+<summary>Groovy (build.gradle)</summary>
+
 ```groovy
 test {
   useJUnitPlatform()
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.0'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
 }
 ```
 
-Or, if using Kotlin KTS gradle:
+</details>
 
-```kotlin
-tasks.withType<Test> {
-    useJUnitPlatform()
+
+<details open>
+<summary>Android Project (Groovy)</summary>
+
+```groovy
+android.testOptions {
+    unitTests.all {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
-  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
 }
 ```
+
+</details>
+
+If you are using Gradle+Kotlin, this works for both Android and non-Android projects:
+
+<details open>
+<summary>Kotlin (build.gradle.kts)</summary>
+
+```kotlin
+tasks.withType<Test> {
+  useJUnitPlatform()
+}
+
+dependencies {
+  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+}
+```
+
+</details>
+
 
 #### Maven
 
