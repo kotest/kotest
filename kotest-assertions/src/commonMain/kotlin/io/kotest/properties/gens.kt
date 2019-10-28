@@ -43,7 +43,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Int]. The values always returned include
- * the following edge cases: [Int.MIN_VALUE, Int.MAX_VALUE, 0]
+ * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0]
  */
 fun Gen.Companion.int() = object : Gen<Int> {
    val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
@@ -59,7 +59,7 @@ fun Gen.Companion.int() = object : Gen<Int> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UInt]. The values always returned include
- * the following edge cases: [UInt.MIN_VALUE, UInt.MAX_VALUE]
+ * the following edge cases: [[UInt.MIN_VALUE], [UInt.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.uint() = object : Gen<UInt> {
@@ -74,14 +74,14 @@ fun Gen.Companion.uint() = object : Gen<UInt> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Short]. The values always returned include
- * the following edge cases: [Short.MIN_VALUE, Short.MAX_VALUE, 0]
+ * the following edge cases: [[Short.MIN_VALUE], [Short.MAX_VALUE], 0]
  */
 fun Gen.Companion.short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS).toShort() }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UShort]. The values always returned include
- * the following edge cases: [UShort.MIN_VALUE, UShort.MAX_VALUE]
+ * the following edge cases: [[UShort.MIN_VALUE], [UShort.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort() }
@@ -89,14 +89,14 @@ fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BI
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Byte]. The values always returned include
- * the following edge cases: [Byte.MIN_VALUE, Byte.MAX_VALUE, 0]
+ * the following edge cases: [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
 fun Gen.Companion.byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UByte]. The values always returned include
- * the following edge cases: [UByte.MIN_VALUE, UByte.MAX_VALUE]
+ * the following edge cases: [[UByte.MIN_VALUE], [UByte.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS).toByte() }
@@ -213,7 +213,7 @@ fun Gen.Companion.numericFloats(
 /**
  * Returns a stream of values where each value is a randomly
  * chosen long. The values returned always include
- * the following edge cases: [Long.MIN_VALUE, Long.MAX_VALUE]
+ * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE]]
  */
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
   val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
@@ -227,7 +227,7 @@ fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [ULong]. The values returned always include
- * the following edge cases: [ULong.MIN_VALUE, ULong.MAX_VALUE]
+ * the following edge cases: [[ULong.MIN_VALUE], [ULong.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
