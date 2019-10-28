@@ -26,7 +26,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
 }
 ```
 
@@ -44,7 +44,7 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
 }
 ```
 
@@ -61,11 +61,12 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 ```
 
 </details>
+
 
 #### Maven
 
@@ -129,8 +130,8 @@ class MyTests : StringSpec() {
 
 Using the lambda expression avoids another level of indentation and looks neater,
  but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
- 
- All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
+
+All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
 
 [See an example](styles.md) of each testing style.
 
@@ -648,6 +649,46 @@ class StringSpecExample : StringSpec({
 })
 ```
 
+It may be desirable to have each row of data parameters as an individual test. To generating such individual tests follow a similar pattern for each spec style. An example in the `FreeSpec` is below.
+
+```kotlin
+class IntegerMathSpec : FreeSpec({
+    "Addition" - {
+        listOf(
+            row("1 + 0", 1) { 1 + 0 },
+            row("1 + 1", 2) { 1 + 1 }
+        ).map { (description: String, expected: Int, math: () -> Int) ->
+            description {
+                math() shouldBe expected
+            }
+        }
+    }
+    // ...
+    "Complex Math" - {
+        listOf(
+            row("8/2(2+2)", 16) { 8 / 2 * (2 + 2) },
+            row("5/5 + 1*1 + 3-2", 3) { 5 / 5 + 1 * 1 + 3 - 2 }
+        ).map { (description: String, expected: Int, math: () -> Int) ->
+            description {
+                math() shouldBe expected
+            }
+        }
+    }
+})
+```
+
+Produces 4 tests and 2 parent descriptions:
+
+```txt
+IntegerMathSpec
+  ✓ Addition
+    ✓ 1 + 0
+    ✓ 1 + 1
+  ✓ Complex Math
+    ✓ 8/2(2+2)
+    ✓ 5/5 + 1*1 + 3-2
+```
+
 
 
 
@@ -826,7 +867,7 @@ Sometimes you want to interrupt a test in runtime, as perhaps you don't know at 
 
 ```kotlin
 class SkipTestExceptionExample : StringSpec({
-   
+
   "Test should be skipped" {
     if(isLocalEnvironment()) {
       throw SkipTestException("Cannot run this test in local environment.")
@@ -1001,8 +1042,8 @@ Extensions
 ----------
 
 KotlinTest provides you with several extensions and listeners to test execution out of the box.
- 
-Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow). 
+
+Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow).
 Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
 
 We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.

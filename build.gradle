@@ -14,7 +14,7 @@ buildscript {
     ext.mordantVersion = "1.2.1"
     ext.log4jVersion = "2.12.1"
     ext.slf4jVersion = "1.7.28"
-    ext.classgraphVersion = "4.8.46"
+    ext.classgraphVersion = "4.8.47"
     ext.jsonPathVersion = "2.4.0"
     repositories {
         mavenCentral()
@@ -34,6 +34,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'net.researchgate.release' version '2.8.0'
+   id("com.gradle.build-scan").version("2.4.2")
 }
 
 // apply plugin: "io.kotest"
@@ -70,4 +71,12 @@ dependencies {
 
 project(":") {
     publish.enabled = false
+}
+
+
+buildScan {
+   // ./gradlew --scan $TASKNAME
+   // see https://dev.to/jmfayard/the-one-gradle-trick-that-supersedes-all-the-others-5bpg
+   termsOfServiceUrl = "https://gradle.com/terms-of-service"
+   termsOfServiceAgree = "yes"
 }
