@@ -52,6 +52,7 @@ import io.kotest.properties.positiveIntegers
 import io.kotest.properties.samples
 import io.kotest.properties.set
 import io.kotest.properties.take
+import io.kotest.properties.uniqueRandoms
 import io.kotest.shouldBe
 import io.kotest.shouldHave
 import io.kotest.shouldNotBe
