@@ -638,11 +638,7 @@ fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<
  * Returns the next pseudorandom, uniformly distributed value
  * from the ASCII range 33-126.
  */
-fun Random.nextPrintableChar(): Char {
-  val low = 32
-  val high = 127
-  return (nextInt(high - low) + low).toChar()
-}
+fun Random.nextPrintableChar(): Char = nextInt(from = 32, until = 127).toChar()
 
 fun Random.nextPrintableString(length: Int): String {
    return (0 until length).map { nextPrintableChar() }.joinToString("")
