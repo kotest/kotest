@@ -19,6 +19,7 @@ import io.kotest.matchers.doubles.shouldBeLessThanOrEqual
 import io.kotest.matchers.floats.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldBeLessThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.sequences.shouldContainAllInAnyOrder
 import io.kotest.matchers.string.include
 import io.kotest.properties.Gen
 import io.kotest.properties.assertAll
@@ -51,6 +52,7 @@ import io.kotest.properties.positiveIntegers
 import io.kotest.properties.samples
 import io.kotest.properties.set
 import io.kotest.properties.take
+import io.kotest.properties.uniqueRandoms
 import io.kotest.shouldBe
 import io.kotest.shouldHave
 import io.kotest.shouldNotBe
@@ -642,6 +644,22 @@ class GenTest : WordSpec() {
         val sixElementsFromConcatenatedGen = genOfClassA.concat(genOfClassB).random().take(6).toList()
         sixElementsFromConcatenatedGen shouldBe listOf(A(1), A(2), A(3), B(1), B(2), B(3))
       }
+    }
+
+    "Gen.uniqueRandoms" should {
+
+      "return unique values from `random`" {
+        val a1 = A(1)
+        val b1 = B(1)
+        val generator = object: Gen<X> {
+          override fun constants(): Iterable<X> = emptyList()
+          override fun random(seed: Long?): Sequence<X> = sequenceOf(a1, a1, b1)
+        }
+
+        val uniqueElements = generator.uniqueRandoms()
+        uniqueElements shouldContainAllInAnyOrder sequenceOf(a1,b1)
+      }
+
     }
   }
 }

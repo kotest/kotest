@@ -1,6 +1,7 @@
 package io.kotest.properties
 
 import io.kotest.properties.shrinking.Shrinker
+import kotlinx.coroutines.yield
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -204,3 +205,10 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Long?): T {
 }
 
 fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, null)
+
+/**
+ * Creates a sequence of unique values from the contents of [random], using [seed] to seed the random function.
+ */
+fun <T>Gen<T>.uniqueRandoms(seed: Long? = null): Sequence<T> = sequence {
+   yieldAll(random(seed).distinct())
+}
