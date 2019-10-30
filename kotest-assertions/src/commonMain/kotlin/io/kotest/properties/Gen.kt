@@ -16,8 +16,8 @@ import io.kotest.properties.shrinking.Shrinker
  * The first are values that should always be included - those
  * edge cases values which are common sources of bugs. For
  * example, a generator for [Int]s should always include
- * values like zero, minus 1, positive 1, Integer.MAX_VALUE
- * and Integer.MIN_VALUE.
+ * values like zero, minus 1, positive 1, [Int.MAX_VALUE]
+ * and [Int.MIN_VALUE].
  *
  * Another example would be for a generator for enums. That
  * should include _all_ the values of the enum to ensure
@@ -44,6 +44,9 @@ interface Gen<T> {
    */
   fun random(seed: Long? = null): Sequence<T>
 
+  /**
+   * @return the [Shrinker] for this gen or `null`
+   */
   fun shrinker(): Shrinker<T>? = null
 
   /**
@@ -63,6 +66,9 @@ interface Gen<T> {
      }
   }
 
+  /**
+   * @return a new [Gen] by filtering this gen's output by the negated function [f]
+   */
   fun filterNot(f: (T) -> Boolean): Gen<T> = filter { !f(it) }
 
   /**
@@ -146,6 +152,20 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
    }
 }
 
+/**
+ * Create a infinite sequence of the given [generator]
+ *
+ * ```kotlin
+ * // Example
+ * generateInfiniteSequence { 42 }
+ *     .take(3)
+ *     .joinToString()
+ *     .let { println(it) }
+ * // Prints: 42, 42, 42
+ * ```
+ *
+ * @return a new [Sequence] of [T] which always returns the result of [generator]
+ */
 inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequence<T> =
     Sequence {
       object : Iterator<T> {
@@ -203,4 +223,7 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Long?): T {
    return random(seed).first(predicate)
 }
 
+/**
+ * @return the result of calling [next] with the given [predicate] defaulting seed to `null`
+ */
 fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, null)
