@@ -515,6 +515,9 @@ fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
    }
 }
 
+/**
+ * @return a new [Gen] created from the given [values] (see [from] List for more details)
+ */
 fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
 
 /**
@@ -619,6 +622,11 @@ fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Ge
    }
 }
 
+/**
+ * @return a stream of values, where each value is a [Map] of [Pair]s from the given [gen]
+ *   the size of the [Map] is bounded between [0, [maxSize])
+ */
+@JvmOverloads
 fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -640,6 +648,21 @@ fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<
  */
 fun Random.nextPrintableChar(): Char = nextInt(from = 32, until = 127).toChar()
 
+/**
+ * Generates a [String] of [length] by calling [nextPrintableChar]
+ *
+ * ```kotlin
+ * // Examples
+ * val r = Random.Default
+ * r.nextPrintableString(-10) // ""
+ * r.nextPrintableString(0)   // ""
+ * r.nextPrintableString(1)   // " ", "a", "Z", etc.
+ * r.nextPrintableString(5)   // "Ha Ha", "gens!", "[{-}]", etc.
+ * ```
+ *
+ * @param length of String
+ * @return a given length String of random printable Chars
+ */
 fun Random.nextPrintableString(length: Int): String {
    return (0 until length).map { nextPrintableChar() }.joinToString("")
 }
