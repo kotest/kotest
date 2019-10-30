@@ -75,6 +75,20 @@ class TypeMatchersTest : WordSpec() {
         }
       }
 
+      "Returns typecasted value when invoked with a lambda" {
+        val list = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>> {}
+        typecastedList shouldBeSameInstanceAs list
+      }
+
+      "Returns typecasted value when invoked without arguments" {
+        val list = arrayListOf(1, 2, 3)
+        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>>()
+
+        typecastedList shouldBeSameInstanceAs list
+      }
+
       "accepts null values" {
         val arrayList: List<Int>? = null
         shouldThrow<AssertionError> { arrayList should beInstanceOf(ArrayList::class) }
@@ -106,6 +120,22 @@ class TypeMatchersTest : WordSpec() {
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1
         }
+      }
+
+      "Returns typecasted value when executed with a lambda" {
+        val list: Any = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>> {}
+        typecastedList shouldBeSameInstanceAs list
+        typecastedList[0] shouldBe 1
+      }
+
+      "Returns typecasted value when executed without argument" {
+        val list: Any = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>>()
+        typecastedList shouldBeSameInstanceAs list
+        typecastedList[0] shouldBe 1
       }
 
       "accepts null values" {
@@ -178,7 +208,7 @@ class TypeMatchersTest : WordSpec() {
       }
 
       "Allow automatic type cast" {
-        fun useString(string: String) {  }
+        fun useString(string: String) {}
 
         nonNullString.shouldNotBeNull()
         useString(nonNullString)
