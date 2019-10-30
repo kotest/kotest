@@ -28,11 +28,22 @@ import io.kotest.shouldNotBe
  * }
  *
  * ```
+ * ```
+ *
+ * val list: List<Int> = arraylistOf(1, 2, 3)
+ *
+ * // arrayList is typecasted to ArrayList<Int>
+ * val arrayList = list.shouldBeInstanceOf<ArrayList<Int>>()
+ *
+ * ```
+ * @param block Lambda that receives typecasted instance as argument for further assertions.
+ * @return The typecasted instance
  */
-inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }) {
+inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
   val matcher = beInstanceOf<T>()
   this shouldBe matcher
   block(this as T)
+  return this
 }
 
 /**
@@ -72,11 +83,21 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * // Use it
  * }
  * ```
+ * ```
+ * val list: List<Int> = arrayListOf(1, 2, 3)
+ *
+ * // arrayList is typecasted to ArrayList<Int>()
+ * val arrayList = list.shouldBeTypeOf<ArrayList<Int>>()
+ * ```
+ *
+ * @param block Lambda that receives typecasted instance  as argument for further assertions.
+ * @return The typecasted instance
  */
-inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }) {
+inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }):T {
   val matcher = beOfType<T>()
   this shouldBe matcher
   block(this as T)
+  return this
 }
 
 /**

@@ -24,167 +24,197 @@ import java.util.LinkedList
 @Suppress("UnnecessaryVariable")
 class TypeMatchersTest : WordSpec() {
 
-  @Retention(AnnotationRetention.RUNTIME)
-  annotation class Vod
+   @Retention(AnnotationRetention.RUNTIME)
+   annotation class Vod
 
-  @Vod
-  class Wibble
+   @Vod
+   class Wibble
 
-  init {
+   init {
 
-    "typeOf" should {
-      "test for exact type" {
-        val arrayList: List<Int> = arrayListOf(1, 2, 3)
-        arrayList.shouldBeTypeOf<ArrayList<*>>()
-        arrayList.shouldNotBeTypeOf<List<*>>()
-      }
-    }
-
-    "haveAnnotation(annotation)" should {
-      "test for the presence of an annotation" {
-        Wibble::class.java should haveAnnotation(Vod::class.java)
-        Wibble::class.java.shouldHaveAnnotation(Vod::class.java)
-      }
-    }
-
-    "beInstanceOf" should {
-      "test that value is assignable to class" {
-        val arrayList: List<Int> = arrayListOf(1, 2, 3)
-
-        arrayList should beInstanceOf(ArrayList::class)
-        arrayList.shouldBeInstanceOf<ArrayList<*>>()
-
-        arrayList should beInstanceOf(List::class)
-
-        shouldThrow<AssertionError> {
-          arrayList should beInstanceOf(LinkedList::class)
-        }
-
-        arrayList.shouldNotBeInstanceOf<LinkedList<*>>()
-
-        shouldThrow<AssertionError> {
-          arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
-        }
+      "typeOf" should {
+         "test for exact type" {
+            val arrayList: List<Int> = arrayListOf(1, 2, 3)
+            arrayList.shouldBeTypeOf<ArrayList<*>>()
+            arrayList.shouldNotBeTypeOf<List<*>>()
+         }
       }
 
-      "Allow execution with a lambda" {
-        val list = arrayListOf(1, 2, 3)
-
-        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
-          it shouldBeSameInstanceAs list
-        }
+      "haveAnnotation(annotation)" should {
+         "test for the presence of an annotation" {
+            Wibble::class.java should haveAnnotation(Vod::class.java)
+            Wibble::class.java.shouldHaveAnnotation(Vod::class.java)
+         }
       }
 
-      "accepts null values" {
-        val arrayList: List<Int>? = null
-        shouldThrow<AssertionError> { arrayList should beInstanceOf(ArrayList::class) }
-        shouldThrow<AssertionError> { arrayList.shouldBeInstanceOf<ArrayList<*>>() }
-        shouldThrow<AssertionError> { arrayList shouldNot beInstanceOf(List::class) }
-        shouldThrow<AssertionError> { arrayList.shouldNotBeInstanceOf<LinkedList<*>>() }
-      }
-    }
+      "beInstanceOf" should {
+         "test that value is assignable to class" {
+            val arrayList: List<Int> = arrayListOf(1, 2, 3)
 
-    "beOfType" should {
-      "test that value have exactly the same type" {
-        val arrayList: List<Int> = arrayListOf(1, 2, 3)
+            arrayList should beInstanceOf(ArrayList::class)
+            arrayList.shouldBeInstanceOf<ArrayList<*>>()
 
-        arrayList should beOfType<ArrayList<Int>>()
+            arrayList should beInstanceOf(List::class)
 
-        shouldThrow<AssertionError> {
-          arrayList should beOfType<LinkedList<Int>>()
-        }
+            shouldThrow<AssertionError> {
+               arrayList should beInstanceOf(LinkedList::class)
+            }
 
-        shouldThrow<AssertionError> {
-          arrayList should beOfType<List<Int>>()
-        }
-      }
+            arrayList.shouldNotBeInstanceOf<LinkedList<*>>()
 
-      "Allow execution with a lambda" {
-        val list: Any = arrayListOf(1, 2, 3)
+            shouldThrow<AssertionError> {
+               arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
+            }
+         }
 
-        list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
-          it shouldBeSameInstanceAs list
-          it[0] shouldBe 1
-        }
-      }
+         "Allow execution with a lambda" {
+            val list = arrayListOf(1, 2, 3)
 
-      "accepts null values" {
-        val arrayList: List<Int>? = null
-        shouldThrow<AssertionError> { arrayList should beOfType<List<Int>>() }
-        shouldThrow<AssertionError> { arrayList.shouldBeTypeOf<List<*>>() }
-        shouldThrow<AssertionError> { arrayList shouldNot beOfType<List<Int>>() }
-        shouldThrow<AssertionError> { arrayList.shouldNotBeTypeOf<List<*>>() }
-      }
-    }
+            list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
+               it shouldBeSameInstanceAs list
+            }
+         }
 
-    "TypeMatchers.theSameInstanceAs" should {
-      "test that references are equal" {
-        val b: List<Int>? = listOf(1, 2, 3)
-        val a: List<Int>? = b
-        val c: List<Int>? = listOf(1, 2, 3)
+         "Returns typecasted value when invoked with a lambda" {
+            val list = arrayListOf(1, 2, 3)
 
-        a should beTheSameInstanceAs(b)
-        a.shouldBeSameInstanceAs(b)
+            val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>> {}
+            typecastedList shouldBeSameInstanceAs list
+         }
 
-        shouldThrow<AssertionError> {
-          a should beTheSameInstanceAs(c)
-        }
+         "Returns typecasted value when invoked without arguments" {
+            val list = arrayListOf(1, 2, 3)
+            val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>>()
 
-        shouldThrow<AssertionError> {
-          a.shouldBeSameInstanceAs(c)
-        }
-      }
-    }
+            typecastedList shouldBeSameInstanceAs list
+         }
 
-    "beTheSameInstanceAs" should {
-      "test that references are equal" {
-        val b = listOf(1, 2, 3)
-        val a = b
-        val c = listOf(1, 2, 3)
-
-        a should beTheSameInstanceAs(b)
-        shouldThrow<AssertionError> {
-          a should beTheSameInstanceAs(c)
-        }
-      }
-    }
-
-    "beNull" should {
-      val nullString: String? = null
-      val nonNullString: String? = "Foo"
-      "Pass for a null value" {
-        nullString.shouldBeNull()
-        nullString should beNull()
+         "accepts null values" {
+            val arrayList: List<Int>? = null
+            shouldThrow<AssertionError> { arrayList should beInstanceOf(ArrayList::class) }
+            shouldThrow<AssertionError> { arrayList.shouldBeInstanceOf<ArrayList<*>>() }
+            shouldThrow<AssertionError> { arrayList shouldNot beInstanceOf(List::class) }
+            shouldThrow<AssertionError> { arrayList.shouldNotBeInstanceOf<LinkedList<*>>() }
+         }
       }
 
-      "Fail for a non-null value" {
-        shouldThrow<AssertionError> { nonNullString.shouldBeNull() }
-        shouldThrow<AssertionError> { nonNullString should beNull() }
+      "beOfType" should {
+         "test that value have exactly the same type" {
+            val arrayList: List<Int> = arrayListOf(1, 2, 3)
+
+            arrayList should beOfType<ArrayList<Int>>()
+
+            shouldThrow<AssertionError> {
+               arrayList should beOfType<LinkedList<Int>>()
+            }
+
+            shouldThrow<AssertionError> {
+               arrayList should beOfType<List<Int>>()
+            }
+         }
+
+         "Allow execution with a lambda" {
+            val list: Any = arrayListOf(1, 2, 3)
+
+            list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
+               it shouldBeSameInstanceAs list
+               it[0] shouldBe 1
+            }
+         }
+
+         "Returns typecasted value when executed with a lambda" {
+            val list: Any = arrayListOf(1, 2, 3)
+
+            val typecastedList = list.shouldBeTypeOf<ArrayList<Int>> {}
+            typecastedList shouldBeSameInstanceAs list
+            typecastedList[0] shouldBe 1
+         }
+
+         "Returns typecasted value when executed without argument" {
+            val list: Any = arrayListOf(1, 2, 3)
+
+            val typecastedList = list.shouldBeTypeOf<ArrayList<Int>>()
+            typecastedList shouldBeSameInstanceAs list
+            typecastedList[0] shouldBe 1
+         }
+
+         "accepts null values" {
+            val arrayList: List<Int>? = null
+            shouldThrow<AssertionError> { arrayList should beOfType<List<Int>>() }
+            shouldThrow<AssertionError> { arrayList.shouldBeTypeOf<List<*>>() }
+            shouldThrow<AssertionError> { arrayList shouldNot beOfType<List<Int>>() }
+            shouldThrow<AssertionError> { arrayList.shouldNotBeTypeOf<List<*>>() }
+         }
       }
-    }
 
-    "notBeNull" should {
-      val nullString: String? = null
-      val nonNullString: String? = "Foo"
+      "TypeMatchers.theSameInstanceAs" should {
+         "test that references are equal" {
+            val b: List<Int>? = listOf(1, 2, 3)
+            val a: List<Int>? = b
+            val c: List<Int>? = listOf(1, 2, 3)
 
-      "Pass for a non-null value" {
-        nonNullString.shouldNotBeNull()
-        nonNullString shouldNot beNull()
+            a should beTheSameInstanceAs(b)
+            a.shouldBeSameInstanceAs(b)
+
+            shouldThrow<AssertionError> {
+               a should beTheSameInstanceAs(c)
+            }
+
+            shouldThrow<AssertionError> {
+               a.shouldBeSameInstanceAs(c)
+            }
+         }
       }
 
-      "Fail for a null value" {
-        shouldThrow<AssertionError> { nullString.shouldNotBeNull() }
-        shouldThrow<AssertionError> { nullString shouldNot beNull() }
+      "beTheSameInstanceAs" should {
+         "test that references are equal" {
+            val b = listOf(1, 2, 3)
+            val a = b
+            val c = listOf(1, 2, 3)
+
+            a should beTheSameInstanceAs(b)
+            shouldThrow<AssertionError> {
+               a should beTheSameInstanceAs(c)
+            }
+         }
       }
 
-      "Allow automatic type cast" {
-        fun useString(string: String) {  }
+      "beNull" should {
+         val nullString: String? = null
+         val nonNullString: String? = "Foo"
+         "Pass for a null value" {
+            nullString.shouldBeNull()
+            nullString should beNull()
+         }
 
-        nonNullString.shouldNotBeNull()
-        useString(nonNullString)
-        nonNullString shouldBe "Foo"
+         "Fail for a non-null value" {
+            shouldThrow<AssertionError> { nonNullString.shouldBeNull() }
+            shouldThrow<AssertionError> { nonNullString should beNull() }
+         }
       }
-    }
-  }
+
+      "notBeNull" should {
+         val nullString: String? = null
+         val nonNullString: String? = "Foo"
+
+         "Pass for a non-null value" {
+            nonNullString.shouldNotBeNull()
+            nonNullString shouldNot beNull()
+         }
+
+         "Fail for a null value" {
+            shouldThrow<AssertionError> { nullString.shouldNotBeNull() }
+            shouldThrow<AssertionError> { nullString shouldNot beNull() }
+         }
+
+         "Allow automatic type cast" {
+            fun useString(string: String) {}
+
+            nonNullString.shouldNotBeNull()
+            useString(nonNullString)
+            nonNullString shouldBe "Foo"
+         }
+      }
+   }
 
 }
