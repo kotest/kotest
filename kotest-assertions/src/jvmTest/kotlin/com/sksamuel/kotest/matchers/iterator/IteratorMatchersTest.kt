@@ -10,33 +10,11 @@ class IteratorMatchersTest: WordSpec() {
 
       "shouldBeEmpty" should {
          "return true when the iterator does not have a next element" {
-            val emptyIterator =  object : Iterator<Int> {
-               override fun hasNext(): Boolean {
-                  return false
-               }
-
-               override fun next(): Int {
-                  return 0
-               }
-
-            }
-
-            emptyIterator.shouldBeEmpty()
+            emptyList<Int>().iterator().shouldBeEmpty()
          }
 
          "return false when the iterator has a next element" {
-            val nonEmptyIterator =  object : Iterator<Int> {
-               override fun hasNext(): Boolean {
-                  return true
-               }
-
-               override fun next(): Int {
-                  return 0
-               }
-
-            }
-
-            nonEmptyIterator.shouldNotBeEmpty()
+            listOf(1).iterator().shouldNotBeEmpty()
          }
       }
 
