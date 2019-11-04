@@ -3,6 +3,8 @@ package io.kotest.matchers.collections
 import io.kotest.Matcher
 import io.kotest.MatcherResult
 import io.kotest.assertions.stringRepr
+import io.kotest.matchers.iterator.shouldBeEmpty
+import io.kotest.matchers.iterator.shouldNotBeEmpty
 import io.kotest.neverNullMatcher
 import io.kotest.should
 import io.kotest.shouldHave
