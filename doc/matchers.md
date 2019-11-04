@@ -29,6 +29,10 @@ For the extension function style, each function has an equivalent negated versio
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | `obj.shouldBeNull()` | Asserts that a given reference is null.|
 
+| Iterables ||
+| ------- | ---- |
+| `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value. 
+
 | Maps ||
 | -------- | ---- |
 | `map.shouldContain("key", "value")` | Asserts that the map contains the mapping "key" to "value" |
