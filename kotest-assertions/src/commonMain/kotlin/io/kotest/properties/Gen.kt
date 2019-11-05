@@ -1,7 +1,6 @@
 package io.kotest.properties
 
 import io.kotest.properties.shrinking.Shrinker
-import kotlinx.coroutines.yield
 
 /**
  * A Generator, or [Gen] is responsible for generating data
