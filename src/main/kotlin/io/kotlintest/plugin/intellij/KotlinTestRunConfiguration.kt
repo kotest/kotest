@@ -29,7 +29,7 @@ class KotlinTestRunConfiguration(name: String, configurationFactory: Configurati
   private var alternativeJrePath: String? = ""
   private var alternativeJrePathEnabled = false
   private var envs = mutableMapOf<String, String>()
-  private var passParentEnvs: Boolean = false
+  private var passParentEnvs: Boolean = true
   private var programParameters: String? = null
   private var vmParameters: String? = ""
   private var workingDirectory: String? = null
