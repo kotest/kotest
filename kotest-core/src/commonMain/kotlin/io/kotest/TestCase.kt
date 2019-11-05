@@ -52,7 +52,7 @@ data class TestCase(
 
   fun isBang(): Boolean = name.startsWith("!")
 
-  // for compatiblity with earlier plugins
+  // for compatibility with earlier plugins
   fun getLine(): Int = source.lineNumber
 
   companion object {
