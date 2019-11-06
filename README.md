@@ -148,6 +148,7 @@ This page gives you just a short overview of KotlinTest. There are many more fea
 * Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
+* Make use of custom plugins for integrations with tools such as [Pitest](doc/plugins.md#Pitest)
 
 See [full documentation](doc/reference.md).
 
