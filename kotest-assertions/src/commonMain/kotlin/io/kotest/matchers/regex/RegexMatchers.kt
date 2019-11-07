@@ -34,6 +34,20 @@ fun areEqualRegexMatcher(regex: Regex) = object : Matcher<Regex> {
    }
 }
 
-infix fun Regex.shouldBeRegex(anotherRegex: Regex) = this should areEqualRegexMatcher(anotherRegex)
+fun beRegex(regex: Regex) = areEqualRegexMatcher(regex)
 
-infix fun Regex.shouldNotBeRegex(anotherRegex: Regex) = this shouldNotBe areEqualRegexMatcher(anotherRegex)
+fun havePatter(pattern: String) = haveSamePatternMatcher(pattern)
+
+fun haveOptions(options: Set<RegexOption>) = haveSameRegexOptionsMatcher(options)
+
+infix fun Regex.shouldBeRegex(anotherRegex: Regex) = this should beRegex(anotherRegex)
+
+infix fun Regex.shouldNotBeRegex(anotherRegex: Regex) = this shouldNot beRegex(anotherRegex)
+
+infix fun Regex.shouldHavePattern(regexPattern: String) = this should havePatter(regexPattern)
+
+infix fun Regex.shouldNotHavePattern(regexPattern: String) = this shouldNot havePatter(regexPattern)
+
+infix fun Regex.shouldHaveAllRegexOptions(regexOption: Set<RegexOption>) = this should haveOptions(regexOption)
+
+infix fun Regex.shouldNotHaveAllRegexOptions(regexOption: Set<RegexOption>) = this shouldNot haveOptions(regexOption)
