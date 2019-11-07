@@ -61,5 +61,13 @@ class RegexMatchersTest : FreeSpec() {
       "assert regex does not have given regex option" {
          "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveRegexOption  COMMENTS
       }
+
+      "assert regex contains all given regex options" {
+         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldHaveRegexOptions setOf(IGNORE_CASE, CANON_EQ)
+      }
+
+      "assert regex does not contains all given regex options" {
+         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldNotHaveRegexOptions setOf(IGNORE_CASE, DOT_MATCHES_ALL)
+      }
    }
 }

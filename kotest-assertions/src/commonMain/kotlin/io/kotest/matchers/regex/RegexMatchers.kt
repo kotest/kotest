@@ -25,12 +25,22 @@ fun haveSameRegexOptionsMatcher(options: Set<RegexOption>) = object : Matcher<Re
    }
 }
 
-fun haveRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
+fun haveExactRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
    override fun test(value: Regex): MatcherResult {
       return MatcherResult(
          value.options.contains(option),
          { "Regex options should contains $option" },
          { "Regex options should not contains $option" }
+      )
+   }
+}
+
+fun haveRegexOptionMatcher(options: Set<RegexOption>) = object : Matcher<Regex> {
+   override fun test(value: Regex): MatcherResult {
+      return MatcherResult(
+         value.options.containsAll(options),
+         { "Regex options should contains $options, but missing ${options.filterNot { value.options.contains(it) }}." },
+         { "Regex options should not contains $options, but containing ${options.filter { value.options.contains(it) }}." }
       )
    }
 }
@@ -53,7 +63,9 @@ fun havePatter(pattern: String) = haveSamePatternMatcher(pattern)
 
 fun haveExactOptions(options: Set<RegexOption>) = haveSameRegexOptionsMatcher(options)
 
-fun haveOption(option: RegexOption) = haveRegexOptionMatcher(option)
+fun haveOption(option: RegexOption) = haveExactRegexOptionMatcher(option)
+
+fun haveOptions(options: Set<RegexOption>) = haveRegexOptionMatcher(options)
 
 /**
  * Assert that [Regex] is equal to [anotherRegex] by comparing their pattern and options([RegexOption]).
@@ -95,7 +107,8 @@ infix fun Regex.shouldHaveExactRegexOptions(regexOptions: Set<RegexOption>) = th
  * @see [shouldHaveExactRegexOptions]
  * @see [haveExactOptions]
  * */
-infix fun Regex.shouldNotHaveExactRegexOptions(regexOptions: Set<RegexOption>) = this shouldNot haveExactOptions(regexOptions)
+infix fun Regex.shouldNotHaveExactRegexOptions(regexOptions: Set<RegexOption>) =
+   this shouldNot haveExactOptions(regexOptions)
 
 /**
  * Assert that [Regex] regex options contains [regexOption]
@@ -110,3 +123,18 @@ infix fun Regex.shouldHaveRegexOption(regexOption: RegexOption) = this should ha
  * @see [haveOption]
  * */
 infix fun Regex.shouldNotHaveRegexOption(regexOption: RegexOption) = this shouldNot haveOption(regexOption)
+
+
+/**
+ * Assert that [Regex] regex options contains [regexOptions]
+ * @see [shouldNotHaveRegexOptions]
+ * @see [haveOptions]
+ * */
+infix fun Regex.shouldHaveRegexOptions(regexOptions: Set<RegexOption>) = this should haveOptions(regexOptions)
+
+/**
+ * Assert that [Regex] regex options does not contains [regexOptions]
+ * @see [shouldHaveRegexOptions]
+ * @see [haveOptions]
+ * */
+infix fun Regex.shouldNotHaveRegexOptions(regexOptions: Set<RegexOption>) = this shouldNot haveOptions(regexOptions)
