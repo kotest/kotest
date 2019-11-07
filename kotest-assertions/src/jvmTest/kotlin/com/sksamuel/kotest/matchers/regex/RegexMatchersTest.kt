@@ -46,12 +46,12 @@ class RegexMatchersTest : FreeSpec() {
          "a.*.js".toRegex() shouldNotHavePattern "bca.js"
       }
 
-      "assert regex have all given regex options" {
-         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldHaveAllRegexOptions setOf(IGNORE_CASE, CANON_EQ)
+      "assert regex have exact given regex options" {
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldHaveExactRegexOptions setOf(IGNORE_CASE, CANON_EQ)
       }
 
-      "assert regex does not all have given regex options" {
-         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveAllRegexOptions  setOf(IGNORE_CASE)
+      "assert regex does not have exact given regex options" {
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveExactRegexOptions  setOf(IGNORE_CASE)
       }
 
       "assert regex have given regex option" {
