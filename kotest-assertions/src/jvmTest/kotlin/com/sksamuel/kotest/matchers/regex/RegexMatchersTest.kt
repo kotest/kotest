@@ -4,8 +4,7 @@ import io.kotest.matchers.regex.*
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
 import io.kotest.specs.FreeSpec
-import kotlin.text.RegexOption.CANON_EQ
-import kotlin.text.RegexOption.IGNORE_CASE
+import kotlin.text.RegexOption.*
 
 class RegexMatchersTest : FreeSpec() {
    init {
@@ -55,5 +54,12 @@ class RegexMatchersTest : FreeSpec() {
          "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveAllRegexOptions  setOf(IGNORE_CASE)
       }
 
+      "assert regex have given regex option" {
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldHaveRegexOption  IGNORE_CASE
+      }
+
+      "assert regex does not have given regex option" {
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveRegexOption  COMMENTS
+      }
    }
 }

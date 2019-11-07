@@ -1,6 +1,9 @@
 package io.kotest.matchers.regex
 
-import io.kotest.*
+import io.kotest.Matcher
+import io.kotest.MatcherResult
+import io.kotest.should
+import io.kotest.shouldNot
 
 fun haveSamePatternMatcher(pattern: String) = object : Matcher<Regex> {
    override fun test(value: Regex): MatcherResult {
@@ -18,6 +21,16 @@ fun haveSameRegexOptionsMatcher(options: Set<RegexOption>) = object : Matcher<Re
          value.options == options,
          { "Regex should have options ${options} but has options ${value.options}" },
          { "Regex should not have pattern ${value.options}" }
+      )
+   }
+}
+
+fun haveRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
+   override fun test(value: Regex): MatcherResult {
+      return MatcherResult(
+         value.options.contains(option),
+         { "Regex options should contains $option" },
+         { "Regex options should not contains $option" }
       )
    }
 }
@@ -40,6 +53,8 @@ fun havePatter(pattern: String) = haveSamePatternMatcher(pattern)
 
 fun haveOptions(options: Set<RegexOption>) = haveSameRegexOptionsMatcher(options)
 
+fun haveOption(option: RegexOption) = haveRegexOptionMatcher(option)
+
 infix fun Regex.shouldBeRegex(anotherRegex: Regex) = this should beRegex(anotherRegex)
 
 infix fun Regex.shouldNotBeRegex(anotherRegex: Regex) = this shouldNot beRegex(anotherRegex)
@@ -48,6 +63,10 @@ infix fun Regex.shouldHavePattern(regexPattern: String) = this should havePatter
 
 infix fun Regex.shouldNotHavePattern(regexPattern: String) = this shouldNot havePatter(regexPattern)
 
-infix fun Regex.shouldHaveAllRegexOptions(regexOption: Set<RegexOption>) = this should haveOptions(regexOption)
+infix fun Regex.shouldHaveAllRegexOptions(regexOptions: Set<RegexOption>) = this should haveOptions(regexOptions)
 
-infix fun Regex.shouldNotHaveAllRegexOptions(regexOption: Set<RegexOption>) = this shouldNot haveOptions(regexOption)
+infix fun Regex.shouldNotHaveAllRegexOptions(regexOptions: Set<RegexOption>) = this shouldNot haveOptions(regexOptions)
+
+infix fun Regex.shouldHaveRegexOption(regexOption: RegexOption) = this should haveOption(regexOption)
+
+infix fun Regex.shouldNotHaveRegexOption(regexOption: RegexOption) = this shouldNot haveOption(regexOption)
