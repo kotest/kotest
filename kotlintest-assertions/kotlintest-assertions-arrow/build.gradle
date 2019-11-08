@@ -14,12 +14,12 @@ repositories {
 }
 
 dependencies {
-    compile project(":kotlintest-assertions")
+    compile project(path: ':kotlintest-assertions', configuration: 'default')
     compile "io.arrow-kt:arrow-validation:$arrow_version"
     compile "io.arrow-kt:arrow-generic:$arrow_version"
     kapt "io.arrow-kt:arrow-meta:$arrow_version"
     kaptTest "io.arrow-kt:arrow-meta:$arrow_version"
-    testCompile project(":kotlintest-runner:kotlintest-runner-junit5")
+    testCompile project(path: ":kotlintest-runner:kotlintest-runner-junit5", configuration: 'default')
 }
 
 compileKotlin {

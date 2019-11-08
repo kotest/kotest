@@ -8,14 +8,14 @@ plugins {
 }
 
 dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+    compile project(path: ':kotlintest-core', configuration: 'default')
+    compile project(path: ':kotlintest-assertions', configuration: 'default')
 
     implementation 'org.springframework:spring-test:5.1.7.RELEASE'
     implementation 'org.springframework:spring-context:5.1.7.RELEASE'
     implementation 'net.bytebuddy:byte-buddy:1.10.1'
 
+    testCompile project(path: ':kotlintest-runner:kotlintest-runner-junit5', configuration: 'default')
     testImplementation('org.springframework.boot:spring-boot-starter-test:2.1.5.RELEASE')
 }
 

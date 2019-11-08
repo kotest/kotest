@@ -7,9 +7,9 @@ plugins {
 }
 
 dependencies {
-    compile project(':kotlintest-runner:kotlintest-runner-jvm')
+    compile project(path: ':kotlintest-runner:kotlintest-runner-jvm', configuration: 'default')
     compile 'org.pitest:pitest:1.4.5'
-    testCompile project(":kotlintest-runner:kotlintest-runner-junit5")
+    testImplementation project(path: ':kotlintest-runner:kotlintest-runner-junit5', configuration: 'default')
 }
 
 test {

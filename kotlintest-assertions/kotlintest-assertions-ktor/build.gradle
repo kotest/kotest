@@ -18,11 +18,11 @@ repositories {
 }
 
 dependencies {
-    compile project(':kotlintest-assertions')
+    compile project(path: ':kotlintest-assertions', configuration: 'default')
     compile "io.ktor:ktor-server-core:$ktor_version"
     compile "io.ktor:ktor-server-test-host:$ktor_version"
-    testCompile project(':kotlintest-core')
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+    testCompile project(path: ':kotlintest-core', configuration: 'default')
+    testCompile project(path: ':kotlintest-runner:kotlintest-runner-junit5', configuration: 'default')
 }
 
 compileKotlin {

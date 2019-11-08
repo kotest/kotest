@@ -7,13 +7,13 @@ plugins {
 }
 
 dependencies {
-    compile project(':kotlintest-core')
+    compile project(path: ':kotlintest-core', configuration: 'default')
     implementation "org.koin:koin-core:2.0.1"
     implementation("org.koin:koin-test:2.0.1") {
       exclude group: "junit", module: "junit"
     }
 
-    testCompile project(':kotlintest-runner:kotlintest-runner-junit5')
+    testImplementation project(path: ':kotlintest-runner:kotlintest-runner-junit5', configuration: 'default')
 }
 
 test {

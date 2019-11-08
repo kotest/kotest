@@ -7,9 +7,9 @@ plugins {
 }
 
 dependencies {
-    compile project(':kotlintest-core')
-    compile project(':kotlintest-assertions')
-    compile project(':kotlintest-runner:kotlintest-runner-jvm')
+    compile project(path: ':kotlintest-core', configuration: 'default')
+    compile project(path: ':kotlintest-assertions', configuration: 'default')
+    compile project(path: ':kotlintest-runner:kotlintest-runner-jvm', configuration: 'default')
     compile 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.24.0'
     testCompile "com.nhaarman:mockito-kotlin:1.6.0"

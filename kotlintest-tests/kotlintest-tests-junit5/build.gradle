@@ -8,8 +8,8 @@ plugins {
 }
 
 dependencies {
-    testImplementation project(':kotlintest-assertions')
-    testImplementation project(':kotlintest-runner:kotlintest-runner-junit5')
+    testImplementation project(path: ':kotlintest-assertions', configuration: 'default')
+    testImplementation project(path: ':kotlintest-runner:kotlintest-runner-junit5', configuration: 'default')
     testImplementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
     testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
     testImplementation 'org.mockito:mockito-core:2.24.0'
