@@ -1049,3 +1049,13 @@ Some others provides helpers to tricky System Testing situations, such as `Syste
 We also provide a `Locale Extension`, for locale-dependent code, and `Timezone Extension` for timezone-dependent code.
 
 Take a better look at all the extensions available in the [extensions-reference](extensions.md)
+
+
+Plugins
+----------
+
+Sometimes it's not enough to use Extensions or Listeners to integrat with external systems or tools, and for this we use custom Plugins, available at `kotlintest-plugins` module.
+
+Integrations such as `Pitest` require a more complex solution, and thus the plugins module was necessary.
+
+For more information on plugins, take a look at the [plugins reference](plugins.md)
