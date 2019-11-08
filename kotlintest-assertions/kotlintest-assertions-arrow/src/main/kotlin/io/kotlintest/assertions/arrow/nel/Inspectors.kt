@@ -1,6 +1,6 @@
 package io.kotlintest.assertions.arrow.nel
 
-import arrow.data.NonEmptyList
+import arrow.core.NonEmptyList
 
 fun <T> NonEmptyList<T>.forAll(fn: (T) -> Unit) = io.kotlintest.forAll(this.all, fn)
 

@@ -1,6 +1,6 @@
 package io.kotlintest.assertions.arrow.nel
 
-import arrow.data.NonEmptyList
+import arrow.core.NonEmptyList
 import io.kotlintest.properties.Gen
 
 /**

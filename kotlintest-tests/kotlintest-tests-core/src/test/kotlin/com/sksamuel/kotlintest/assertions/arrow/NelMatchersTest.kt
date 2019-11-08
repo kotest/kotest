@@ -1,6 +1,6 @@
 package com.sksamuel.kotlintest.assertions.arrow
 
-import arrow.data.NonEmptyList
+import arrow.core.NonEmptyList
 import io.kotlintest.assertions.arrow.nel.beSorted
 import io.kotlintest.assertions.arrow.nel.contain
 import io.kotlintest.assertions.arrow.nel.containAll

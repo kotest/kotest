@@ -4,7 +4,6 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.extensions.option.applicativeError.applicativeError
 import arrow.core.fix
-import arrow.data.NonEmptyList
 import io.kotlintest.assertions.arrow.choose
 import io.kotlintest.properties.Gen
 

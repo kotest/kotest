@@ -15,10 +15,8 @@ repositories {
 
 dependencies {
     compile project(":kotlintest-assertions")
-    compile "io.arrow-kt:arrow-extras-extensions:$arrow_version"
     compile "io.arrow-kt:arrow-validation:$arrow_version"
     compile "io.arrow-kt:arrow-generic:$arrow_version"
-    compile "io.arrow-kt:arrow-effects-io-extensions:$arrow_version"
     kapt "io.arrow-kt:arrow-meta:$arrow_version"
     kaptTest "io.arrow-kt:arrow-meta:$arrow_version"
     testCompile project(":kotlintest-runner:kotlintest-runner-junit5")

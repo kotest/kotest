@@ -1,8 +1,8 @@
 package io.kotlintest.assertions.arrow.validation
 
-import arrow.data.Invalid
-import arrow.data.Valid
-import arrow.data.Validated
+import arrow.core.Invalid
+import arrow.core.Valid
+import arrow.core.Validated
 import io.kotlintest.Matcher
 import io.kotlintest.MatcherResult
 import io.kotlintest.should
