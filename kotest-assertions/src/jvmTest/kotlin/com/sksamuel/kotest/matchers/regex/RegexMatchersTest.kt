@@ -55,19 +55,19 @@ class RegexMatchersTest : FreeSpec() {
       }
 
       "assert regex have given regex option" {
-         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldHaveRegexOption  IGNORE_CASE
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldIncludeRegexOption  IGNORE_CASE
       }
 
       "assert regex does not have given regex option" {
-         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotHaveRegexOption  COMMENTS
+         "a.*.js".toRegex(setOf(IGNORE_CASE, CANON_EQ)) shouldNotIncludeRegexOption  COMMENTS
       }
 
       "assert regex contains all given regex options" {
-         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldHaveRegexOptions setOf(IGNORE_CASE, CANON_EQ)
+         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldIncludeRegexOptions setOf(IGNORE_CASE, CANON_EQ)
       }
 
       "assert regex does not contains all given regex options" {
-         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldNotHaveRegexOptions setOf(IGNORE_CASE, DOT_MATCHES_ALL)
+         "a.js".toRegex(setOf(COMMENTS, IGNORE_CASE, CANON_EQ)) shouldNotIncludeRegexOptions setOf(IGNORE_CASE, DOT_MATCHES_ALL)
       }
    }
 }

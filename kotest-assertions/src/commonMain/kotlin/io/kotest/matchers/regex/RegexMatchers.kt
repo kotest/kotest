@@ -87,22 +87,22 @@ fun haveSameRegexOptionsMatcher(options: Set<RegexOption>) = object : Matcher<Re
 }
 
 /**
- * Assert that [Regex] regex options contains [regexOption]
- * @see [shouldNotHaveRegexOption]
- * @see [haveOption]
+ * Assert that [Regex] regex options include [regexOption]
+ * @see [shouldNotIncludeRegexOption]
+ * @see [includeOption]
  * */
-infix fun Regex.shouldHaveRegexOption(regexOption: RegexOption) = this should haveOption(regexOption)
+infix fun Regex.shouldIncludeRegexOption(regexOption: RegexOption) = this should includeOption(regexOption)
 
 /**
- * Assert that [Regex] regex options does not contains [regexOption]
- * @see [shouldHaveRegexOption]
- * @see [haveOption]
+ * Assert that [Regex] regex options does not include [regexOption]
+ * @see [shouldIncludeRegexOption]
+ * @see [includeOption]
  * */
-infix fun Regex.shouldNotHaveRegexOption(regexOption: RegexOption) = this shouldNot haveOption(regexOption)
+infix fun Regex.shouldNotIncludeRegexOption(regexOption: RegexOption) = this shouldNot includeOption(regexOption)
 
-fun haveOption(option: RegexOption) = haveExactRegexOptionMatcher(option)
+fun includeOption(option: RegexOption) = haveRegexOptionMatcher(option)
 
-fun haveExactRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
+fun haveRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
    override fun test(value: Regex): MatcherResult {
       return MatcherResult(
          value.options.contains(option),
@@ -113,20 +113,20 @@ fun haveExactRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
 }
 
 /**
- * Assert that [Regex] regex options contains [regexOptions]
- * @see [shouldNotHaveRegexOptions]
- * @see [haveOptions]
+ * Assert that [Regex] regex options include [regexOptions]
+ * @see [shouldNotIncludeRegexOptions]
+ * @see [includeOptions]
  * */
-infix fun Regex.shouldHaveRegexOptions(regexOptions: Set<RegexOption>) = this should haveOptions(regexOptions)
+infix fun Regex.shouldIncludeRegexOptions(regexOptions: Set<RegexOption>) = this should includeOptions(regexOptions)
 
 /**
- * Assert that [Regex] regex options does not contains [regexOptions]
- * @see [shouldHaveRegexOptions]
- * @see [haveOptions]
+ * Assert that [Regex] regex options does not include [regexOptions]
+ * @see [shouldIncludeRegexOptions]
+ * @see [includeOptions]
  * */
-infix fun Regex.shouldNotHaveRegexOptions(regexOptions: Set<RegexOption>) = this shouldNot haveOptions(regexOptions)
+infix fun Regex.shouldNotIncludeRegexOptions(regexOptions: Set<RegexOption>) = this shouldNot includeOptions(regexOptions)
 
-fun haveOptions(options: Set<RegexOption>) = haveRegexOptionMatcher(options)
+fun includeOptions(options: Set<RegexOption>) = haveRegexOptionMatcher(options)
 
 fun haveRegexOptionMatcher(options: Set<RegexOption>) = object : Matcher<Regex> {
    override fun test(value: Regex): MatcherResult {
