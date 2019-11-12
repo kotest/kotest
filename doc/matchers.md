@@ -310,7 +310,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `regex.shouldNotHavePattern(regexPattern)`           | Asserts that regex does not have given regexPattern | 
 | `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions| 
 | `regex.shouldNotHaveExactRegexOptions(regexOptions)` | Asserts that regex does not have exactly the given regexOptions| 
-| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex includes the given regexOption| 
-| `regex.shouldNotIncludeRegexOption(regexOption)`     | Asserts that regex does not includes the given regexOption| 
-| `regex.shouldIncludeRegexOptions(regexOption)`       | Asserts that regex includes of the given regexOptions| 
-| `regex.shouldNotIncludeRegexOptions(regexOption)`    | Asserts that regex does not includes all of the given regexOptions| 
+| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption| 
+| `regex.shouldNotIncludeRegexOption(regexOption)`     | Asserts that regex does not include the given regexOption| 
+| `regex.shouldIncludeRegexOptions(regexOption)`       | Asserts that regex include of the given regexOptions| 
+| `regex.shouldNotIncludeRegexOptions(regexOption)`    | Asserts that regex does not include all of the given regexOptions| 
