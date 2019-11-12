@@ -293,3 +293,16 @@ For the extension function style, each function has an equivalent negated versio
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+
+| Regex |     |
+| ---------- | --- |
+| `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     | 
+| `regex.shouldNotBeRegex(anotherRegex)`               | Asserts that regex is not equal to anotherRegex by comparing their pattern and regexOptions | 
+| `regex.shouldHavePattern(regexPattern)`              | Asserts that regex have given regexPattern | 
+| `regex.shouldNotHavePattern(regexPattern)`           | Asserts that regex does not have given regexPattern | 
+| `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions| 
+| `regex.shouldNotHaveExactRegexOptions(regexOptions)` | Asserts that regex does not have exactly the given regexOptions| 
+| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex includes the given regexOption| 
+| `regex.shouldNotIncludeRegexOption(regexOption)`     | Asserts that regex does not includes the given regexOption| 
+| `regex.shouldIncludeRegexOptions(regexOption)`       | Asserts that regex includes of the given regexOptions| 
+| `regex.shouldNotIncludeRegexOptions(regexOption)`    | Asserts that regex does not includes all of the given regexOptions| 
