@@ -280,7 +280,7 @@ Inspectors
 
 Inspectors allow us to test elements in a collection. They are extension functions for collections and arrays that test
 that all, none or some of the elements pass the given assertions. For example, to test that all elements in a collection
-contain an undercore and start with "aa" we could do:
+contain an underscore and start with "aa" we could do:
 
 ```kotlin
 class StringSpecExample : StringSpec({
