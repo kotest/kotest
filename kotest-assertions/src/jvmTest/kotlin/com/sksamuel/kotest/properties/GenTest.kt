@@ -495,9 +495,13 @@ class GenTest : WordSpec() {
         thrown.message shouldBe "Gen could only generate 5 values while you requested 10."
       }
 
-      "Throw exception if amount <= 0" {
-        shouldThrow<IllegalArgumentException> { mockedGen.take(0) }
+      "Return an empty list if amount is 0" {
+         mockedGen.take(0).size shouldBe 0
+      }
+
+      "Throw exception if amount < 0" {
         shouldThrow<IllegalArgumentException> { mockedGen.take(-1) }
+        shouldThrow<IllegalArgumentException> { mockedGen.take(-100) }
       }
     }
 
