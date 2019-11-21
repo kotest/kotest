@@ -189,7 +189,9 @@ inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequenc
  * ```
  */
 fun <T> Gen<T>.take(amount: Int, seed: Long? = null): List<T> {
-   require(amount > 0) { "Amount must be > 0, but was $amount" }
+   require(amount >= 0) { "Amount must be >= 0, but was $amount" }
+
+   if (amount == 0) return emptyList()
 
    val generatedValues = (constants() + random(seed).take(amount)).take(amount)
    val generatedSize = generatedValues.size
