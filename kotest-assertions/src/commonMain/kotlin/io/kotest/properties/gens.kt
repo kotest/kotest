@@ -25,16 +25,25 @@ import kotlin.random.nextLong
  */
 @JvmOverloads
 fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
-   val literals = listOf("",
+   init {
+      require(minSize >= 0) { "minSize must be >= 0" }
+      require(maxSize >= minSize) { "maxSize must be >= minSize"}
+   }
+   private val genChar = Gen.char(CharSets.PRINTABLE_BASIC_LATIN)
+   private val genInt =
+      if (minSize == maxSize) Gen.constant(minSize)
+      else Gen.choose(minSize, maxSize)
+   private val literals = listOf("",
       "\n",
       "\nabc\n123\n",
       "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
 
    override fun constants(): Iterable<String> = literals.filter { it.length in minSize..maxSize }
    override fun random(seed: Long?): Sequence<String> {
-      val r = if (seed == null) Random.Default else Random(seed)
       return generateSequence {
-         r.nextPrintableString(minSize + r.nextInt(maxSize - minSize + 1))
+         val size = genInt.next(seed = seed)
+         val chars = genChar.take(size, seed)
+         chars.joinToString(separator = "")
       }
    }
    override fun shrinker(): Shrinker<String>? = StringShrinker
@@ -250,10 +259,11 @@ fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
    }
 }
 
-private object CharSets {
+private object
+CharSets {
   val CONTROL     = listOf('\u0000'..'\u001F', '\u007F'..'\u007F')
   val WHITESPACE  = listOf('\u0020'..'\u0020', '\u0009'..'\u0009', '\u000A'..'\u000A')
-  val BASIC_LATIN = listOf('\u0021'..'\u007E')
+  val PRINTABLE_BASIC_LATIN = listOf('\u0021'..'\u007E')
 }
 
 /**
@@ -276,7 +286,7 @@ fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
  *
  * If no parameter is given, ASCII characters will be generated.
  */
-fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char> = object : Gen<Char> {
+fun Gen.Companion.char(ranges: List<CharRange> = CharSets.PRINTABLE_BASIC_LATIN): Gen<Char> = object : Gen<Char> {
   init {
     require(ranges.all { !it.isEmpty() }) { "Ranges cannot be empty" }
     require(ranges.isNotEmpty()) { "List of ranges must have at least one range" }

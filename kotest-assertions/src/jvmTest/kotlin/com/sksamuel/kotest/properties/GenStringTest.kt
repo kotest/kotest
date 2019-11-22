@@ -8,7 +8,7 @@ import io.kotest.properties.assertAll
 import io.kotest.properties.string
 import io.kotest.specs.FunSpec
 
-class StringGenTest : FunSpec({
+class GenStringTest : FunSpec({
 
    test("should honour min size") {
       assertAll(Gen.string(minSize = 10)) { it.shouldHaveMinLength(10) }
