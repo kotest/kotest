@@ -55,7 +55,7 @@ abstract class AbstractFreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : Abstra
         threads: Int? = null,
         tags: Set<Tag>? = null,
         extensions: List<TestCaseExtension>? = null,
-        test: FreeSpecScope.() -> Unit) {
+        test: suspend FreeSpecScope.() -> Unit) {
         val config = TestCaseConfig(
            enabled ?: defaultTestCaseConfig.enabled,
            invocations ?: defaultTestCaseConfig.invocations,
