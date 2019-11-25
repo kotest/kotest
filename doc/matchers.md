@@ -29,6 +29,16 @@ For the extension function style, each function has an equivalent negated versio
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | `obj.shouldBeNull()` | Asserts that a given reference is null.|
 
+
+| Comparables ||
+| ---- | ---- |
+| `comp.shouldBeLessThan(other)` | Uses `compareTo` to verify that `comp` is less than `other` |
+| `comp.shouldBeLessThanOrEqualTo(other)` | Uses `compareTo` to verify that `comp` is less than or equal to `other` |
+| `comp.shouldBeEqualComparingTo(other)` | Uses `compareTo` to verify that `comp` is equal to `other` |
+| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other` |
+| `comp.shouldBeGreaterThan(other)` | Uses `compareTo` to verify that `comp` is greater than `other` |
+| `comp.shouldBeGreaterThanOrEqualTo(other)` | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
+
 | Iterables ||
 | ------- | ---- |
 | `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value. 
