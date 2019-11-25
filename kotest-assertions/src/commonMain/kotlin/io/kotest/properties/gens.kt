@@ -45,6 +45,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
  * chosen [Int]. The values always returned include
  * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.int() = object : Gen<Int> {
    val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
    override fun constants(): Iterable<Int> = literals
@@ -126,6 +127,7 @@ fun Gen.Companion.negativeIntegers(): Gen<Int> = int().filter { it < 0 }
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
   val literals = listOf(0.0,
     1.0,
@@ -163,7 +165,10 @@ fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
    override fun shrinker(): Shrinker<Double>? = DoubleShrinker
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
 
 
@@ -215,6 +220,7 @@ fun Gen.Companion.numericFloats(
  * chosen long. The values returned always include
  * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE]]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
   val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
   override fun constants(): Iterable<Long> = literals
@@ -242,6 +248,7 @@ fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
 /**
  * Returns both boolean values
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
   override fun constants(): Iterable<Boolean> = listOf(true, false)
    override fun random(seed: Long?): Sequence<Boolean> {

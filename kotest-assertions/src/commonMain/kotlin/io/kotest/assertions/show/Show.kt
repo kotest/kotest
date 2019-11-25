@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package io.kotest.assertions.show
 
 import kotlin.reflect.KClass
