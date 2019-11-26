@@ -413,16 +413,16 @@ class PropertyForNoneTest : StringSpec() {
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe 3600
     }
 
-    "forNone: five explicit generators 3411 attempts" {
+    "forNone: five explicit generators 4600 attempts" {
       var attempts = 0
-      forNone(3411, Gen.int(), Gen.string(), Gen.double(), Gen.long(), Gen.int()) { _, _, _, _, _ ->
+      forNone(4600, Gen.int(), Gen.string(), Gen.double(), Gen.long(), Gen.int()) { _, _, _, _, _ ->
         attempts++
         false
       }
-      attempts shouldBe 3411
+      attempts shouldBe 4600
     }
 
     "forNone: five explicit generators fails after 2 attempts" {
@@ -497,7 +497,7 @@ class PropertyForNoneTest : StringSpec() {
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe 3125
     }
 
     "forNone: five implicit generators 4144 attempts" {
@@ -515,7 +515,7 @@ class PropertyForNoneTest : StringSpec() {
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe 15625
     }
 
     "forNone: six explicit generators 17897 attempts" {
@@ -581,7 +581,7 @@ class PropertyForNoneTest : StringSpec() {
         attempts++
         false
       }
-      attempts shouldBe 1000
+      attempts shouldBe 15625
     }
 
     "forNone: six implicit generators 30000 attempts" {
