@@ -43,10 +43,10 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Int]. The values always returned include
- * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0]
+ * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1]
  */
 fun Gen.Companion.int() = object : Gen<Int> {
-   val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
+   val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 1, -1)
    override fun constants(): Iterable<Int> = literals
    override fun random(seed: Long?): Sequence<Int> {
       val r = if (seed == null) Random.Default else Random(seed)
@@ -213,10 +213,10 @@ fun Gen.Companion.numericFloats(
 /**
  * Returns a stream of values where each value is a randomly
  * chosen long. The values returned always include
- * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE]]
+ * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE], 0, 1, -1]
  */
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
-  val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
+  val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE, 0L, 1L, -1L)
   override fun constants(): Iterable<Long> = literals
    override fun random(seed: Long?): Sequence<Long> {
       val r = if (seed == null) Random.Default else Random(seed)
