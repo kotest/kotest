@@ -1,12 +1,18 @@
 package io.kotest.properties
 
 import java.io.File
+import java.io.InputStream
 import java.math.BigInteger
-import java.time.*
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Period
+import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.*
+import java.util.UUID
 import kotlin.random.Random
 
 /**
@@ -38,6 +44,29 @@ fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
    override fun random(seed: Long?): Sequence<File> {
       val r = if (seed == null) Random.Default else Random(seed)
       return generateSequence { File(r.nextPrintableString(r.nextInt(100))) }
+   }
+}
+
+/**
+ * Returns a stream of values where each value is a random line from [file]
+ */
+fun Gen.Companion.lines(file: File) = lines(file.inputStream())
+
+/**
+ * Returns a stream of values where each value is a random line from [fileStream]
+ *
+ */
+fun Gen.Companion.lines(fileStream: InputStream) = object : Gen<String> {
+   
+   private val content = fileStream.bufferedReader().readLines()
+   
+   override fun constants() = emptyList<String>()
+   
+   override fun random(seed: Long?): Sequence<String> {
+      val r = if (seed == null) Random.Default else Random(seed)
+      return generateInfiniteSequence {
+         content.random(r)
+      }
    }
 }
 
