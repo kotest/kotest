@@ -138,10 +138,6 @@ interface Gen<T> {
       override fun random(seed: Long?): Sequence<T> = outer.random(seed) + gen.random(seed)
     }
   }
-
-  fun getRandomFor(aSeed:Long?):Random {
-     return if (aSeed == null) Random.Default else Random(aSeed)
-  }
 }
 
 /**
@@ -240,4 +236,8 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, n
  */
 fun <T>Gen<T>.uniqueRandoms(seed: Long? = null): Sequence<T> = sequence {
    yieldAll(random(seed).distinct())
+}
+
+internal fun getRandomFor(aSeed:Long?):Random {
+   return if (aSeed == null) Random.Default else Random(aSeed)
 }
