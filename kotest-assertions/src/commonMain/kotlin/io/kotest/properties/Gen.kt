@@ -1,6 +1,7 @@
 package io.kotest.properties
 
 import io.kotest.properties.shrinking.Shrinker
+import kotlin.random.Random
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -136,6 +137,10 @@ interface Gen<T> {
       override fun constants(): Iterable<T> = outer.constants() + gen.constants()
       override fun random(seed: Long?): Sequence<T> = outer.random(seed) + gen.random(seed)
     }
+  }
+
+  fun getRandomFor(aSeed:Long?):Random {
+     return if (aSeed == null) Random.Default else Random(aSeed)
   }
 }
 
