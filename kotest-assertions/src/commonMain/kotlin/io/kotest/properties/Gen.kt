@@ -1,6 +1,7 @@
 package io.kotest.properties
 
 import io.kotest.properties.shrinking.Shrinker
+import kotlin.random.Random
 
 /**
  * A Generator, or [Gen] is responsible for generating data
@@ -235,4 +236,8 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, n
  */
 fun <T>Gen<T>.uniqueRandoms(seed: Long? = null): Sequence<T> = sequence {
    yieldAll(random(seed).distinct())
+}
+
+internal fun getRandomFor(aSeed:Long?):Random {
+   return if (aSeed == null) Random.Default else Random(aSeed)
 }
