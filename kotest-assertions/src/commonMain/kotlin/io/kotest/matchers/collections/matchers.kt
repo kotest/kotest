@@ -150,12 +150,16 @@ fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val passed = value.size == expected.size && expected.all { value.contains(it) }
-   MatcherResult(
-      passed,
-      "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
-      "Collection should not contain exactly ${stringRepr(expected)} in any order"
-   )
+  val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
+  val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
+  val passed = expectedGroupedCounts.size == valueGroupedCounts.size
+    && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
+
+  MatcherResult(
+    passed,
+    "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
+    "Collection should not contain exactly ${stringRepr(expected)} in any order"
+  )
 }
 
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T) = asList().shouldHaveUpperBound(t)
