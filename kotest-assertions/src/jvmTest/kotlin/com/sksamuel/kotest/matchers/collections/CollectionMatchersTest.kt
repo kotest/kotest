@@ -521,7 +521,7 @@ class CollectionMatchersTest : WordSpec() {
     }
 
     "containExactlyInAnyOrder" should {
-      "test that a collection contains given elements in any order"  {
+      "test that a collection contains given elements exactly in any order"  {
         val actual = listOf(1, 2, 3)
         actual should containExactlyInAnyOrder(1, 2, 3)
         actual.shouldContainExactlyInAnyOrder(3, 2, 1)
@@ -530,11 +530,33 @@ class CollectionMatchersTest : WordSpec() {
         actual shouldNot containExactlyInAnyOrder(1, 2)
         actual.shouldNotContainExactlyInAnyOrder(1, 2, 3, 4)
         actual.shouldNotContainExactlyInAnyOrder(listOf(5, 6, 7))
+        actual.shouldNotContainExactlyInAnyOrder(1, 1, 1)
+        actual.shouldNotContainExactlyInAnyOrder(listOf(2, 2, 3))
+        actual.shouldNotContainExactlyInAnyOrder(listOf(1, 1, 2, 3))
+
+        val actualDuplicates = listOf(1,1,2)
+        actualDuplicates.shouldContainExactlyInAnyOrder(1,2,1)
+        actualDuplicates.shouldContainExactlyInAnyOrder(2,1,1)
+
+        actualDuplicates.shouldNotContainExactlyInAnyOrder(1,2)
+        actualDuplicates.shouldNotContainExactlyInAnyOrder(1,2,2)
+        actualDuplicates.shouldNotContainExactlyInAnyOrder(1,1,2,2)
+        actualDuplicates.shouldNotContainExactlyInAnyOrder(1,2,7)
+
         shouldThrow<AssertionError> {
           actual should containExactlyInAnyOrder(1, 2)
         }
         shouldThrow<AssertionError> {
           actual should containExactlyInAnyOrder(1, 2, 3, 4)
+        }
+        shouldThrow<AssertionError> {
+          actual should containExactlyInAnyOrder(1,1,1)
+        }
+        shouldThrow<AssertionError> {
+          actual should containExactlyInAnyOrder(1,1,2,3)
+        }
+        shouldThrow<AssertionError> {
+          actualDuplicates should containExactlyInAnyOrder(1,2,2)
         }
       }
 
