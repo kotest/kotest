@@ -18,11 +18,16 @@ import kotlin.random.nextLong
  *
  */
 @JvmOverloads
-fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100, genChar: Gen<Char> = Gen.char()): Gen<String> = object : Gen<String> {
+fun Gen.Companion.string(
+   minSize: Int = 0,
+   maxSize: Int = 100,
+   genChar: Gen<Char> = Gen.char()
+): Gen<String> = object : Gen<String> {
    init {
       require(minSize >= 0) { "minSize must be >= 0" }
-      require(maxSize >= minSize) { "maxSize must be >= minSize"}
+      require(maxSize >= minSize) { "maxSize must be >= minSize" }
    }
+
    private val padChar = genChar.take(1).first()
    private val genInt =
       if (minSize == maxSize) Gen.constant(minSize)
@@ -36,6 +41,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100, genChar: Gen<Char
          chars.joinToString(separator = "")
       }
    }
+
    override fun shrinker(): Shrinker<String>? = StringShrinker(minSize, padChar)
 }
 
