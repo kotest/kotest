@@ -9,9 +9,11 @@ import io.kotest.matchers.string.shouldHaveMinLength
 import io.kotest.properties.Gen
 import io.kotest.properties.assertAll
 import io.kotest.properties.char
+import io.kotest.properties.choose
 import io.kotest.properties.string
 import io.kotest.properties.take
 import io.kotest.shouldBe
+import io.kotest.shouldThrow
 import io.kotest.specs.FunSpec
 import io.kotest.tables.row
 
@@ -25,6 +27,18 @@ class GenStringTest : FunSpec({
       val strings2 = testGenString.take(500, testSeed).toList()
 
       strings1 shouldBe strings2
+   }
+
+   test("should not allow min size < 0") {
+      assertAll(Gen.choose(-10, -1)) { min ->
+         shouldThrow<IllegalArgumentException> { Gen.string(min) }
+      }
+   }
+
+   test("should not allow max size < min size") {
+      assertAll(Gen.choose(20, 100)) { max ->
+         shouldThrow<IllegalArgumentException> { Gen.string(200, max) }
+      }
    }
 
    test("should honour min size") {
