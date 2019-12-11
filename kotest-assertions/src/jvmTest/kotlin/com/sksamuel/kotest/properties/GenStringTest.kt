@@ -13,6 +13,7 @@ import io.kotest.properties.choose
 import io.kotest.properties.string
 import io.kotest.properties.take
 import io.kotest.shouldBe
+import io.kotest.shouldNotThrow
 import io.kotest.shouldThrow
 import io.kotest.specs.FunSpec
 import io.kotest.tables.row
@@ -39,6 +40,10 @@ class GenStringTest : FunSpec({
       assertAll(Gen.choose(20, 100)) { max ->
          shouldThrow<IllegalArgumentException> { Gen.string(200, max) }
       }
+   }
+
+   test("should allow max size == min size") {
+      shouldNotThrow<Exception> { Gen.string(10, 10) }
    }
 
    test("should honour min size") {
