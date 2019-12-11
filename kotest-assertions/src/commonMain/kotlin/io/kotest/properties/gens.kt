@@ -249,8 +249,7 @@ fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
    }
 }
 
-private object
-CharSets {
+private object CharSets {
   val CONTROL     = listOf('\u0000'..'\u001F', '\u007F'..'\u007F')
   val WHITESPACE  = listOf('\u0020'..'\u0020', '\u0009'..'\u0009', '\u000A'..'\u000A')
   val PRINTABLE_BASIC_LATIN = listOf('\u0021'..'\u007E')
