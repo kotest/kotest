@@ -44,12 +44,6 @@ class StringShrinkerTest : StringSpec({
       )
    }
 
-   "StringShrinker should shrink to zero when minimum Size is zero" {
-      StringShrinker(3, '~').shrink("abcdef") shouldBe listOf(
-         "abc", "abcde", "abcde~", "abcf", "abc~~f"
-      )
-   }
-
    "StringShrinker should include empty string as the first candidate when minSize is 0" {
       assertAll(Gen.string(1)) { a: String ->
          StringShrinker(0, 'a').shrink(a)[0].shouldHaveLength(0)
