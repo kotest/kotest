@@ -208,14 +208,14 @@ class PropertyForAllTest : StringSpec() {
       attempts shouldBe 1000
     }
 
-    "forAll: Three explicit generators 30 attempts" {
+    "forAll: Three explicit generators 200 attempts" {
       // 30 should be ignored as we have many always cases
       var attempts = 0
-      forAll(30, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
+      forAll(200, Gen.int(), Gen.int(), Gen.int()) { a, b, c ->
         attempts++
         (a * b) * c == a * (b * c)
       }
-      attempts shouldBe 30
+      attempts shouldBe 200
     }
 
     "forAll: Three explicit generators failure" {
@@ -259,7 +259,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         a + b + c + d == d + c + b + a
       }
-      attempts shouldBe 81
+      attempts shouldBe 625
     }
 
     "forAll: Four explicit generators failed after 4 attempts" {
@@ -291,31 +291,22 @@ class PropertyForAllTest : StringSpec() {
       attempts shouldBe 1000
     }
 
-    "forAll: four implicit generators with 92 attempts" {
+    "forAll: four implicit generators with 630 attempts" {
       var attempts = 0
-      forAll(92) { _: Int, _: Int, _: Int, _: Int ->
+      forAll(630) { _: Int, _: Int, _: Int, _: Int ->
         attempts++
         true
       }
-      attempts shouldBe 92
+      attempts shouldBe 630
     }
 
-    "forAll: four implicit generators with 250 attempts" {
+    "forAll: five explicit generators with 4000 attempts" {
       var attempts = 0
-      forAll(250) { _: Int, _: Int, _: Int, _: Int ->
+      forAll(4000, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
         attempts++
         true
       }
-      attempts shouldBe 250
-    }
-
-    "forAll: five explicit generators with 999 attempts" {
-      var attempts = 0
-      forAll(999, Gen.int(), Gen.int(), Gen.int(), Gen.int(), Gen.int()) { _, _, _, _, _ ->
-        attempts++
-        true
-      }
-      attempts shouldBe 999
+      attempts shouldBe 4000
     }
 
     "forAll: five explicit generators with default attempts" {
@@ -324,7 +315,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 1000
+      attempts shouldBe 3125
     }
 
     "forAll: five explicit generators failure" {
@@ -350,7 +341,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 1000
+      attempts shouldBe 3125
     }
 
     "forAll five implicit generators with 9999 attempts" {
@@ -368,7 +359,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 1000
+      attempts shouldBe 15625
     }
 
     "forAll six explicit arguments with 50 attempts" {
@@ -377,7 +368,7 @@ class PropertyForAllTest : StringSpec() {
         attempts++
         true
       }
-      attempts shouldBe 1000
+      attempts shouldBe 15625
     }
 
     "forAll six explicit arguments failing at 40 attempts" {

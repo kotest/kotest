@@ -1,6 +1,6 @@
-package com.sksamuel.kotest.matchers
+package com.sksamuel.kotest.matchers.comparables
 
-import io.kotest.forAll
+import io.kotest.inspectors.forAll
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.beLessThan
@@ -10,6 +10,12 @@ import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.comparables.lte
+import io.kotest.matchers.comparables.shouldBeEqualComparingTo
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
+import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
+import io.kotest.matchers.comparables.shouldNotBeEqualComparingTo
 import io.kotest.properties.assertAll
 import io.kotest.should
 import io.kotest.shouldBe
@@ -18,13 +24,15 @@ import io.kotest.shouldThrow
 import io.kotest.specs.FreeSpec
 
 class ComparableMatchersTest : FreeSpec() {
-
-  class ComparableExample(private val underlying: Int) : Comparable<ComparableExample> {
+  
+  class ComparableExample(
+    private val underlying: Int
+  ) : Comparable<ComparableExample> {
     override fun compareTo(other: ComparableExample): Int {
       return when {
         underlying == other.underlying -> 0
-        underlying > other.underlying -> 1
-        else -> -1
+        underlying > other.underlying  -> 1
+        else                           -> -1
       }
     }
   }
@@ -40,23 +48,26 @@ class ComparableMatchersTest : FreeSpec() {
       "beLessThan (`<`) comparison" - {
 
         "should pass test for lesser values" {
-          forAll(arrayOf(Pair(cn, cz), Pair(cz, cp))) {
+          arrayOf(cn to cz, cz to cp).forAll {
             it.first shouldBe lt(it.second)
             it.first should beLessThan(it.second)
+            it.first shouldBeLessThan it.second
           }
         }
 
         "should throw exception for equal values" {
-          forAll(arrayOf(cn, cz, cp)) {
+          arrayOf(cn, cz, cp).forAll {
             shouldThrow<AssertionError> { it shouldBe lt(it) }
             shouldThrow<AssertionError> { it should beLessThan(it) }
+            shouldThrow<AssertionError> { it shouldBeLessThan it }
           }
         }
 
         "should throw exception for greater values" {
-          forAll(arrayOf(Pair(cp, cz), Pair(cz, cn))) {
+          arrayOf(cp to cz, cz to cn).forAll {
             shouldThrow<AssertionError> { it.first shouldBe lt(it.second) }
             shouldThrow<AssertionError> { it.first should beLessThan(it.second) }
+            shouldThrow<AssertionError> { it.first shouldBeLessThan it.second }
           }
         }
 
@@ -65,16 +76,18 @@ class ComparableMatchersTest : FreeSpec() {
       "beLessThanOrEqualTo (`<=`) comparison" - {
 
         "should pass for lesser or equal values" {
-          forAll(arrayOf(Pair(cn, cn), Pair(cn, cz), Pair(cz, cz), Pair(cz, cp), Pair(cp, cp))) {
+          arrayOf(cn to cn, cn to cz, cz to cz, cz to cp, cp to cp).forAll {
             it.first shouldBe lte(it.second)
             it.first should beLessThanOrEqualTo(it.second)
+            it.first shouldBeLessThanOrEqualTo it.second
           }
         }
 
         "should throw exception for greater values" {
-          forAll(arrayOf(Pair(cp, cz), Pair(cz, cn))) {
+          arrayOf(cp to cz, cz to cn).forAll {
             shouldThrow<AssertionError> { it.first shouldBe lte(it.second) }
             shouldThrow<AssertionError> { it.first should beLessThanOrEqualTo(it.second) }
+            shouldThrow<AssertionError> { it.first shouldBeLessThanOrEqualTo it.second }
           }
         }
 
@@ -83,23 +96,26 @@ class ComparableMatchersTest : FreeSpec() {
       "beGreaterThan (`>`) comparison" - {
 
         "should pass for greater values" {
-          forAll(arrayOf(Pair(cp, cz), Pair(cz, cn))) {
+          arrayOf(cp to cz, cz to cn).forAll {
             it.first shouldBe gt(it.second)
             it.first should beGreaterThan(it.second)
+            it.first shouldBeGreaterThan it.second
           }
         }
 
         "should throw exception for equal values" {
-          forAll(arrayOf(cn, cz, cp)) {
+          arrayOf(cn, cz, cp).forAll {
             shouldThrow<AssertionError> { it shouldBe gt(it) }
             shouldThrow<AssertionError> { it should beGreaterThan(it) }
+            shouldThrow<AssertionError> { it shouldBeGreaterThan it }
           }
         }
 
         "should throw exception for lesser values" {
-          forAll(arrayOf(Pair(cn, cz), Pair(cz, cp))) {
+          arrayOf(cn to cz, cz to cp).forAll {
             shouldThrow<AssertionError> { it.first shouldBe gt(it.second) }
             shouldThrow<AssertionError> { it.first should beGreaterThan(it.second) }
+            shouldThrow<AssertionError> { it.first shouldBeGreaterThan it.second }
           }
         }
 
@@ -108,29 +124,36 @@ class ComparableMatchersTest : FreeSpec() {
       "beGreaterThanOrEqualTo (`>=`) comparison" - {
 
         "should pass for greater than or equal values" {
-          forAll(arrayOf(Pair(cp, cp), Pair(cp, cz), Pair(cz, cz), Pair(cz, cn), Pair(cn, cn))) {
+          arrayOf(cp to cp, cp to cz, cz to cz, cz to cn, cn to cn).forAll {
             it.first shouldBe gte(it.second)
             it.first should beGreaterThanOrEqualTo(it.second)
+            it.first shouldBeGreaterThanOrEqualTo it.second
           }
         }
 
         "should throw exception for lesser values" {
-          forAll(arrayOf(Pair(cn, cz), Pair(cz, cp))) {
+          arrayOf(cn to cz, cz to cp).forAll {
             shouldThrow<AssertionError> { it.first shouldBe gte(it.second) }
             shouldThrow<AssertionError> { it.first should beGreaterThanOrEqualTo(it.second) }
+            shouldThrow<AssertionError> { it.first shouldBeGreaterThanOrEqualTo it.second }
           }
         }
-
       }
 
       "compareTo" - {
 
         "should pass for equal values" {
           assertAll { a: Int, b: Int ->
-            if (a == b)
+            if (a == b) {
               a should compareTo(b, Comparator { o1, o2 -> o1 - o2 })
-            else
+              a.shouldBeEqualComparingTo(b, Comparator { o1, o2 -> o1 - o2 } )
+              a shouldBeEqualComparingTo b
+            }
+            else {
               a shouldNot compareTo(b, Comparator { o1, o2 -> o1 - o2 })
+              a.shouldNotBeEqualComparingTo(b, Comparator { o1, o2 -> o1 - o2 } )
+              a shouldNotBeEqualComparingTo b
+            }
           }
         }
       }

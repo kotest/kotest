@@ -36,7 +36,7 @@ fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigInteger
 fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { File(r.nextPrintableString(r.nextInt(100))) }
    }
 }
@@ -51,7 +51,7 @@ fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Dur
 
    override fun constants(): Iterable<Duration> = listOf(Duration.ZERO)
    override fun random(seed: Long?): Sequence<Duration> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          Duration.ofSeconds(r.nextLong(maxDurationInSeconds))
       }
@@ -86,7 +86,7 @@ fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<Local
   }
 
    override fun random(seed: Long?): Sequence<LocalDate> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       val minDate = LocalDate.of(minYear, 1, 1)
       val maxDate = LocalDate.of(maxYear, 12, 31)
       val days = ChronoUnit.DAYS.between(minDate, maxDate)
@@ -107,7 +107,7 @@ fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<Local
 fun Gen.Companion.localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
    override fun constants(): Iterable<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
    override fun random(seed: Long?): Sequence<LocalTime> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          LocalTime.of(r.nextInt(24), r.nextInt(60), r.nextInt(60))
       }
@@ -166,7 +166,7 @@ fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<F
    private fun randomiseFiles(files: Sequence<File>, seed: Long?): Sequence<File> {
       val allFiles = files.toList()
       if(allFiles.isEmpty()) return emptySequence()
-      val random = if (seed == null) Random.Default else Random(seed)
+      val random = getRandomFor(seed)
       return generateInfiniteSequence { allFiles.random(random) }
    }
 }
