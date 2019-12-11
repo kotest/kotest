@@ -14,31 +14,21 @@ import kotlin.random.nextInt
 import kotlin.random.nextLong
 
 /**
- * Returns a stream of values where each value is a random
- * printed string.
+ * Returns a stream of values where each value is a random string base.
  *
- * The constant values are:
- * The empty string
- * A line separator
- * Multi-line string
- * a UTF8 string.
  */
 @JvmOverloads
-fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
+fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100, genChar: Gen<Char> = Gen.char()): Gen<String> = object : Gen<String> {
    init {
       require(minSize >= 0) { "minSize must be >= 0" }
       require(maxSize >= minSize) { "maxSize must be >= minSize"}
    }
-   private val genChar = Gen.char(CharSets.PRINTABLE_BASIC_LATIN)
+   private val padChar = genChar.take(1).first()
    private val genInt =
       if (minSize == maxSize) Gen.constant(minSize)
       else Gen.choose(minSize, maxSize)
-   private val literals = listOf("",
-      "\n",
-      "\nabc\n123\n",
-      "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070")
 
-   override fun constants(): Iterable<String> = literals.filter { it.length in minSize..maxSize }
+   override fun constants(): Iterable<String> = emptyList()
    override fun random(seed: Long?): Sequence<String> {
       return generateSequence {
          val size = genInt.next(seed = seed)
@@ -46,7 +36,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
          chars.joinToString(separator = "")
       }
    }
-   override fun shrinker(): Shrinker<String>? = StringShrinker
+   override fun shrinker(): Shrinker<String>? = StringShrinker(minSize, padChar)
 }
 
 /**

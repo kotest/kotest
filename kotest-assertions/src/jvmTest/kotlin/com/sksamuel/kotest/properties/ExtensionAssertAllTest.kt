@@ -1,8 +1,9 @@
 package com.sksamuel.kotest.properties
 
-import io.kotest.matchers.comparables.lt
+import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldHaveSameLengthAs
+import io.kotest.matchers.string.shouldMatch
 import io.kotest.properties.assertAll
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
@@ -22,12 +23,14 @@ class ExtensionAssertAllTest : StringSpec({
   "KFunction1 should report errors" {
     shouldThrow<AssertionError> {
       ::reverse.assertAll { input, _ ->
-        input.shouldHaveSameLengthAs("qwqew")
+        input.shouldHaveSameLengthAs(input + input)
       }
-    }.message shouldBe "Property failed for\n" +
-        "Arg 0: <empty string>\n" +
-        "after 1 attempts\n" +
-        "Caused by: <empty string> should have the same length as qwqew"
+    }.message!!.split("\n").run {
+      this[0] shouldMatch "Property failed for"
+      this[1] shouldMatch "Arg 0: . \\(shrunk from .*\\)"
+      this[2] shouldMatch "after 1 attempts"
+      this[3] shouldMatch "Caused by: \\S+ should have the same length as \\S+"
+    }
   }
 
   "concat should have consistent lengths" {
@@ -38,15 +41,14 @@ class ExtensionAssertAllTest : StringSpec({
   "KFunction2 should report errors" {
     shouldThrow<AssertionError> {
       ::concat.assertAll { _, _, output ->
-        output.length shouldBe lt(5)
+        output.length shouldBe gt(output.length + 5)
       }
-    }.message shouldBe "Property failed for\n" +
-        "Arg 0: <empty string>\n" +
-        "Arg 1: aaaaa (shrunk from \n" +
-        "abc\n" +
-        "123\n" +
-        ")\n" +
-        "after 3 attempts\n" +
-        "Caused by: 9 should be < 5"
+    }.message!!.split("\n").run {
+      this[0] shouldMatch "Property failed for"
+      this[1] shouldMatch "Arg 0: <empty string>.*"
+      this[2] shouldMatch "Arg 1: <empty string>.*"
+      this[3] shouldMatch "after \\d+ attempts"
+      this[4] shouldMatch "Caused by: \\d+ should be > \\d+"
+    }
   }
 })
