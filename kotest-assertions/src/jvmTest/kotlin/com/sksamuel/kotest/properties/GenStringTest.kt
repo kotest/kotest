@@ -10,10 +10,22 @@ import io.kotest.properties.Gen
 import io.kotest.properties.assertAll
 import io.kotest.properties.char
 import io.kotest.properties.string
+import io.kotest.properties.take
+import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
 import io.kotest.tables.row
 
 class GenStringTest : FunSpec({
+
+   test("should honour seed") {
+      val testSeed = 909789123L
+      val testGenString = Gen.string()
+
+      val strings1 = testGenString.take(500, testSeed).toList()
+      val strings2 = testGenString.take(500, testSeed).toList()
+
+      strings1 shouldBe strings2
+   }
 
    test("should honour min size") {
       assertAll(Gen.string(minSize = 10)) { it.shouldHaveMinLength(10) }
