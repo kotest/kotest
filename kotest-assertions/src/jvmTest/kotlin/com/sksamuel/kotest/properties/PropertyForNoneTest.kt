@@ -413,7 +413,7 @@ class PropertyForNoneTest : StringSpec() {
         attempts++
         false
       }
-      attempts shouldBe 3600
+      attempts shouldBe 1000
     }
 
     "forNone: five explicit generators 4600 attempts" {

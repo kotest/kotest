@@ -444,7 +444,7 @@ class PropertyAssertAllTest : StringSpec({
 
   "assertAll: six implicit arguments 27000 attempts" {
     var attempts = 0
-    assertAll(1000) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
+    assertAll(27000) { _: Int, _: Double, _: String, _: Long, _: Float, _: Int ->
       attempts++
     }
     attempts shouldBe 27000
