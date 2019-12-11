@@ -14,7 +14,7 @@ import kotlin.random.nextInt
 import kotlin.random.nextLong
 
 /**
- * Returns a stream of values where each value is a random string base.
+ * Returns a stream of values where each value is a random string.
  *
  */
 @JvmOverloads
