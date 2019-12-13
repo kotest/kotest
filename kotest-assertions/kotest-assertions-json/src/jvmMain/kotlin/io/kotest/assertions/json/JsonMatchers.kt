@@ -22,8 +22,8 @@ fun matchJson(json: String) = object : Matcher<String> {
 
     return MatcherResult(
         actualJson == expectedJson,
-        "Expected $expectedJson but was $actualJson",
-        "Value should not be $expectedJson"
+        "expected: $expectedJson but was: $actualJson",
+        "expected not to match with: $expectedJson but match: $actualJson"
     )
   }
 }
@@ -39,8 +39,8 @@ fun matchJsonResource(resource: String) = object : Matcher<String> {
 
     return MatcherResult(
         actualJson == expectedJson,
-        "Expected $expectedJson but was $actualJson",
-        "Value should not be $expectedJson"
+        "expected: $expectedJson but was: $actualJson",
+        "expected not to match with: $expectedJson but match: $actualJson"
     )
   }
 }
