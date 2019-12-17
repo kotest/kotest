@@ -20,8 +20,8 @@ fun afterTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.after(timestamp),
-         {"Expected $timestamp to be equal $value, but its not."},
-         {"$timestamp expected to be equal $value, but it is equal"}
+         {"Expected $timestamp to be after $value, but its not."},
+         {"$timestamp is not expected to be after $value."}
       )
    }
 }
@@ -30,16 +30,45 @@ fun beforeTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.before(timestamp),
-         {"Expected $timestamp to be equal $value, but its not."},
-         {"$timestamp expected to be equal $value, but it is equal"}
+         {"Expected $timestamp to be before $value, but its not."},
+         {"$timestamp is not expected to be before $value."}
       )
    }
 }
 
-infix fun Timestamp.shouldBe(timestamp: Timestamp) = this should sameTimestamp(timestamp)
 
-infix fun Timestamp.shouldNotBe(timestamp: Timestamp) = this shouldNot sameTimestamp(timestamp)
+/**
+ * Assert that [Timestamp] is equal to [anotherTimestamp].
+ * @see [shouldNotBe]
+ * */
+infix fun Timestamp.shouldBe(anotherTimestamp: Timestamp) = this should sameTimestamp(anotherTimestamp)
 
-infix fun Timestamp.shouldBeAfter(timestamp: Timestamp) = this should afterTimestamp(timestamp)
+/**
+ * Assert that [Timestamp] is not equal to [anotherTimestamp].
+ * @see [shouldBe]
+ * */
+infix fun Timestamp.shouldNotBe(anotherTimestamp: Timestamp) = this shouldNot sameTimestamp(anotherTimestamp)
 
-infix fun Timestamp.shouldBeBefore(timestamp: Timestamp) = this should beforeTimestamp(timestamp)
+/**
+ * Assert that [Timestamp] is after [anotherTimestamp].
+ * @see [shouldNotBeAfter]
+ * */
+infix fun Timestamp.shouldBeAfter(anotherTimestamp: Timestamp) = this should afterTimestamp(anotherTimestamp)
+
+/**
+ * Assert that [Timestamp] is not after [anotherTimestamp].
+ * @see [shouldBeAfter]
+ * */
+infix fun Timestamp.shouldNotBeAfter(anotherTimestamp: Timestamp) = this shouldNot afterTimestamp(anotherTimestamp)
+
+/**
+ * Assert that [Timestamp] is before [anotherTimestamp].
+ * @see [shouldNotBeBefore]
+ * */
+infix fun Timestamp.shouldBeBefore(anotherTimestamp: Timestamp) = this should beforeTimestamp(anotherTimestamp)
+
+/**
+ * Assert that [Timestamp] is not before [anotherTimestamp].
+ * @see [shouldBeBefore]
+ * */
+infix fun Timestamp.shouldNotBeBefore(anotherTimestamp: Timestamp) = this shouldNot beforeTimestamp(anotherTimestamp)
