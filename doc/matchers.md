@@ -297,8 +297,6 @@ For the extension function style, each function has an equivalent negated versio
 
 | Timestamp ||
 | -------- | ---- |
-| `timestamp.shouldBe(anotherTimestamp)` | Asserts that the timestamps are equal |
-| `timestamp.shouldNotBe(anotherTimestamp)` | Asserts that the timestamps are not equal |
 | `timestamp.shouldBeAfter(anotherTimestamp)` | Asserts that the timestamp is after anotherTimestamp |
 | `timestamp.shouldNotBeAfter(anotherTimestamp)` | Asserts that the timestamp is not after anotherTimestamp which means the timestamps are either equal or timestamp is before anotherTimestamp |
 | `timestamp.shouldBeBefore(anotherTimestamp)` | Asserts that the timestamp is before anotherTimestamp |
