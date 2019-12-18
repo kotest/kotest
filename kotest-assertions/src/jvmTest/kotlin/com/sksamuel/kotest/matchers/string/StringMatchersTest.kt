@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.data.forall
 import io.kotest.matchers.string.beBlank
 import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.beFalsy
@@ -73,6 +74,7 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
 import io.kotest.specs.FreeSpec
+import io.kotest.tables.row
 import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
@@ -91,6 +93,34 @@ class StringMatchersTest : FreeSpec() {
         }.let {
           it.actual.value shouldBe "\"a\""
           it.expected.value shouldBe "\"b\""
+        }
+      }
+
+      "should report when only line endings differ" {
+        forall(
+          row("a\nb", "a\r\nb"),
+          row("a\nb\nc", "a\nb\r\nc"),
+          row("a\r\nb", "a\nb"),
+          row("a\nb", "a\rb"),
+          row("a\rb", "a\r\nb")
+        ) { expected, actual  ->
+          shouldThrow<AssertionFailedError> {
+            actual shouldBe expected
+          }.let {
+            it.actual.value shouldBe "\"$actual\""
+            it.expected.value shouldBe "\"$expected\""
+            it.message shouldBe "line contents match, but line-break characters differ"
+          }
+        }
+      }
+
+      "should show diff when newline count differs" {
+        shouldThrow<AssertionFailedError> {
+          "a\nb" shouldBe "a\n\nb"
+        }.let {
+          it.actual.value shouldBe "\"a\nb\""
+          it.expected.value shouldBe "\"a\n\nb\""
+          it.message should startWith("expected: \"a")
         }
       }
     }

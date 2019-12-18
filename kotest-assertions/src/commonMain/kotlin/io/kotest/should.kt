@@ -1,14 +1,6 @@
 package io.kotest
 
-import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.ErrorCollector
-import io.kotest.assertions.Failures
-import io.kotest.assertions.clueContextAsString
-import io.kotest.assertions.collectOrThrow
-import io.kotest.assertions.compare
-import io.kotest.assertions.diffLargeString
-import io.kotest.assertions.readSystemProperty
-import io.kotest.assertions.stringRepr
+import io.kotest.assertions.*
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
@@ -67,5 +59,15 @@ internal fun equalsError(expected: Any?, actual: Any?): Throwable {
   return Failures.failure(message, expectedRepr, actualRepr)
 }
 
-internal fun equalsErrorMessage(expected: Any?, actual: Any?) = "expected: $expected but was: $actual"
+private val linebreaks = Regex("\r?\n|\r")
+
+internal fun equalsErrorMessage(expected: Any?, actual: Any?): String {
+   return when {
+       expected is String && actual is String &&
+          linebreaks.replace(expected, "\n") == linebreaks.replace(actual, "\n") -> {
+          "line contents match, but line-break characters differ"
+       }
+       else -> "expected: $expected but was: $actual"
+   }
+}
 
