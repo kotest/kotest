@@ -1,6 +1,47 @@
 Changelog
 =========
 
+#### 4.0.0 - SNAPSHOTS
+* Feature: KotlinTest assertions to MPP
+* Feature: Generator for multiples and factors #942
+* Feature: Map beEmpty matcher #928
+* Feature: Implement failing a test if no assertions were called #852
+* Feature: Allow seeding of random values in Gen #815
+* Feature: Show missing elements shouldContainAll #945
+* Feature: Should contain any of - collection matcher #946
+* Feature: ShouldBeIn matcher #937
+* Feature: Add Gen.samples() #973
+* Feature: Stats matchers #851
+* Feature: Add Gen.file() #947
+* Feature: Add Gen.concat() #975
+* Feature: Map shouldHaveSize #990
+* Feature: Gen.choose() weighted distribution
+* Feature: Experimental Robolectric Support #926
+* Feature: Truthy/Falsy matchers #943
+* Feature: Replace KotlinTest by Kotest
+* Feature: Infix modifier to JSON matchers
+* Feature: Channel matchers #885
+* Feature: Gen.char() #1005
+* Feature: JSoup assertions #1028
+* Feature: Unique generator values #971
+* Feature: Iterator matcher #1060
+* Feature: Regex Matchers #1074
+* Bugfix: shouldNotThrowAny return T instead of Unit #981
+
+#### 3.4.2
+
+* Bugfix: Enhances SpringListener to work correctly with all Spring's Listeners #950
+
+#### 3.4.1
+
+* Internal: Remove JUnit redeclarations #927
+* Feature: Add infix modifier to more Arrow matchers #921
+* Feature: BigDecimal range matchers #932
+* Feature: monotonically/strictly increasing/decreasing matcher #850
+* Feature: Fixes shouldBe and shouldNotBe comparison #913
+* Feature: Add overload to Ktor shouldHaveStatus matcher #914
+* Feature: Fail parent tests when child tests fail #935
+
 #### 3.4.0
 
 * Feature: Support for running tests with Koin #907
@@ -1266,3 +1307,4 @@ nothing
 
 * Ignored tests now display properly. https://github.com/kotlintest/kotlintest/issues/43
 * Failing tests reported as a success AND a failure https://github.com/kotlintest/kotlintest/issues/42
+Ad
