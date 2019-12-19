@@ -6,16 +6,6 @@ import io.kotest.should
 import io.kotest.shouldNot
 import java.sql.Timestamp
 
-fun sameTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp> {
-   override fun test(value: Timestamp): MatcherResult {
-      return MatcherResult(
-         timestamp.equals(value),
-         {"Expected $timestamp to be equal $value, but it's not."},
-         {"$timestamp not expected to be equal $value, but it is equal"}
-      )
-   }
-}
-
 fun afterTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
@@ -35,19 +25,6 @@ fun beforeTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
       )
    }
 }
-
-
-/**
- * Assert that [Timestamp] is equal to [anotherTimestamp].
- * @see [shouldNotBe]
- * */
-infix fun Timestamp.shouldBe(anotherTimestamp: Timestamp) = this should sameTimestamp(anotherTimestamp)
-
-/**
- * Assert that [Timestamp] is not equal to [anotherTimestamp].
- * @see [shouldBe]
- * */
-infix fun Timestamp.shouldNotBe(anotherTimestamp: Timestamp) = this shouldNot sameTimestamp(anotherTimestamp)
 
 /**
  * Assert that [Timestamp] is after [anotherTimestamp].
