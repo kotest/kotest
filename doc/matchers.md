@@ -296,8 +296,6 @@ For the extension function style, each function has an equivalent negated versio
 
 | Instant ||
 | -------- | ---- |
-| `instant.shouldBe(anotherInstant)` | Asserts that the instants are equal |
-| `instant.shouldNotBe(anotherInstant)` | Asserts that the instants are not equal |
 | `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
 | `instant.shouldNotBeAfter(anotherInstant)` | Asserts that the instant is not after anotherInstant which means the instants are either equal or instant is before anotherInstant |
 | `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
