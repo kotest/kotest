@@ -6,16 +6,6 @@ import io.kotest.should
 import io.kotest.shouldNot
 import java.time.Instant
 
-fun equalInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
-   override fun test(value: Instant): MatcherResult {
-      return MatcherResult(
-         anotherInstant == value,
-         {"Expecting instant $value to be equal to instant $anotherInstant, but it's not"},
-         {"Not expecting instant $value and instant $anotherInstant to be equal, but they are equal"}
-      )
-   }
-}
-
 fun beforeInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
       return MatcherResult(
@@ -35,18 +25,6 @@ fun afterInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
       )
    }
 }
-
-/**
- * Assert that [Instant] is equal to [anotherInstant].
- * @see [shouldNotBe]
- * */
-infix fun Instant.shouldBe(anotherInstant: Instant) = this should equalInstantMatcher(anotherInstant)
-
-/**
- * Assert that [Instant] is not equal to [anotherInstant].
- * @see [shouldBe]
- * */
-infix fun Instant.shouldNotBe(anotherInstant: Instant) = this shouldNot equalInstantMatcher(anotherInstant)
 
 /**
  * Assert that [Instant] is before [anotherInstant].
