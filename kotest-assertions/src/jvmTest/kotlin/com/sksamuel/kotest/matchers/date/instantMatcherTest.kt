@@ -1,11 +1,28 @@
 package com.sksamuel.kotest.matchers.date
 
 import io.kotest.matchers.date.*
+import io.kotest.shouldBe
+import io.kotest.shouldNotBe
 import io.kotest.specs.FreeSpec
 import java.time.Instant
 
 class InstantMatcherTest : FreeSpec() {
    init {
+      "same instance of instant should be same" {
+         val currentInstant = Instant.now()
+         currentInstant shouldBe currentInstant
+      }
+
+      "different instance of instant having same time should be same" {
+         Instant.ofEpochMilli(10000) shouldBe Instant.ofEpochMilli(10000)
+      }
+
+      "instance of different time should be different" {
+         val currentInstant = Instant.now()
+         val pastInstant = currentInstant.minusMillis(40000)
+         currentInstant shouldNotBe pastInstant
+      }
+
       "past instant should be before current instant" {
          val currentInstant = Instant.now()
          val pastInstant = currentInstant.minusMillis(1000)
