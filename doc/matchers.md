@@ -80,9 +80,6 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `str.shouldMatch(regex)` | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
-| `str.shouldBeUUID()` | Asserts that the string is a valid UUID (v1 through v5). |
-| `str.shouldBeTruthy()` | Asserts that the string is truthy ("true", "yes", "y" and "1", case insensitive). |
-| `str.shouldBeFalse()` | Asserts that the string is falsy ("false", "no", "n" and "0", case insensitive). |
 
 | JSON ||
 | -------- | ---- |
@@ -162,6 +159,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `collection.shouldContainAll(e1, e2, ..., en)` | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
 | `collection.shouldContainDuplicates()` | Asserts that the collection contains at least one duplicate element. |
 | `collection.shouldContainExactly()` | Assert that a collection contains exactly the given values and nothing else, in order. |
+| `collection.shouldContainExactlyInAnyOrder()` | Assert that a collection contains exactly the given values and nothing else, in _any_ order. |
 | `collection.shouldContainAllInAnyOrder()` | Assert that a collection contains all the given values and nothing else, in _any_ order. |
 | `collection.shouldContainNoNulls()` | Asserts that the collection contains no null elements, or is empty. |
 | `collection.shouldContainNull()` | Asserts that the collection contains at least one null element. |
@@ -177,7 +175,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `collection.shouldBeLargerThan(col)` | Asserts that the collection is larger than the other collection. |
 | `collection.shouldBeSameSizeAs(col)` | Asserts that the collection has the same size as the other collection. |
 | `collection.shouldHaveAtLeastSize(n)` | Asserts that the collection has at least size n. |
-| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. | 
+| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
@@ -327,6 +325,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `kcallable.shouldAcceptParameters(parameters) { block }` | Asserts that the member can be called with the parameters (check the types), and then, runs the block with the annotation |
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
+| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T |
 
 
 | Statistic ||
@@ -365,3 +364,9 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
 | `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
 | `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
+
+| Instant ||
+| -------- | ---- |
+| `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
+| `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
+| `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
