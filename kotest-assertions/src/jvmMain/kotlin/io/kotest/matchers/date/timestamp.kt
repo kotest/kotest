@@ -20,8 +20,8 @@ fun afterTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.after(timestamp),
-         {"Expected $timestamp to be after $value, but it's not."},
-         {"$timestamp is not expected to be after $value."}
+         {"Expected $value to be after $timestamp, but it's not."},
+         {"$value is not expected to be after $timestamp."}
       )
    }
 }
@@ -30,8 +30,8 @@ fun beforeTimestamp(timestamp: Timestamp) = object: Matcher<Timestamp>  {
    override fun test(value: Timestamp): MatcherResult {
       return MatcherResult(
          value.before(timestamp),
-         {"Expected $timestamp to be before $value, but it's not."},
-         {"$timestamp is not expected to be before $value."}
+         {"Expected $value to be before $timestamp, but it's not."},
+         {"$value is not expected to be before $timestamp."}
       )
    }
 }
