@@ -53,5 +53,29 @@ class TimeStampTest : FreeSpec() {
          val nowInstance = Instant.now()
          Timestamp.from(nowInstance) shouldNotBeBefore Timestamp.from(nowInstance)
       }
+
+      "current timestamp should be between timestamp of past and future" {
+         val nowInstant = Instant.now()
+         val currentTimestamp = Timestamp.from(nowInstant)
+         val pastTimestamp = Timestamp.from(nowInstant.minusMillis(5000))
+         val futureTimestamp = Timestamp.from(nowInstant.plusMillis(5000))
+         currentTimestamp.shouldBeBetween(pastTimestamp, futureTimestamp)
+      }
+
+      "past timestamp should not be between timestamp of current instant and future" {
+         val nowInstant = Instant.now()
+         val currentTimestamp = Timestamp.from(nowInstant)
+         val pastTimestamp = Timestamp.from(nowInstant.minusMillis(5000))
+         val futureTimestamp = Timestamp.from(nowInstant.plusMillis(5000))
+         pastTimestamp.shouldNotBeBetween(currentTimestamp, futureTimestamp)
+      }
+
+      "future timestamp should not be between timestamp of current instant and future" {
+         val nowInstant = Instant.now()
+         val currentTimestamp = Timestamp.from(nowInstant)
+         val pastTimestamp = Timestamp.from(nowInstant.minusMillis(5000))
+         val futureTimestamp = Timestamp.from(nowInstant.plusMillis(5000))
+         futureTimestamp.shouldNotBeBetween(pastTimestamp, currentTimestamp)
+      }
    }
 }
