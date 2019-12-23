@@ -59,5 +59,29 @@ class InstantMatcherTest : FreeSpec() {
          Instant.ofEpochMilli(30000) shouldNotBeAfter Instant.ofEpochMilli(30000)
       }
 
+      "current instant should be between past instant and future instant" {
+         val currentInstant = Instant.now()
+         val pastInstant = currentInstant.minusMillis(30000)
+         val futureInstant = currentInstant.plusMillis(30000)
+
+         currentInstant.shouldBeBetween(pastInstant, futureInstant)
+      }
+
+      "past instant should not be between current instant and future instant" {
+         val currentInstant = Instant.now()
+         val pastInstant = currentInstant.minusMillis(30000)
+         val futureInstant = currentInstant.plusMillis(30000)
+
+         pastInstant.shouldNotBeBetween(currentInstant, futureInstant)
+      }
+
+      "future instant should not be between past instant and current instant" {
+         val currentInstant = Instant.now()
+         val pastInstant = currentInstant.minusMillis(30000)
+         val futureInstant = currentInstant.plusMillis(30000)
+
+         futureInstant.shouldNotBeBetween(pastInstant, currentInstant)
+      }
+
    }
 }

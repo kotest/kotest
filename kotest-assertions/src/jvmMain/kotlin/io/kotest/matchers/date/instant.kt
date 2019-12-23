@@ -1,12 +1,9 @@
 package io.kotest.matchers.date
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.*
 import java.time.Instant
 
-fun beforeInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
+fun before(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
       return MatcherResult(
          value.isBefore(anotherInstant),
@@ -16,7 +13,7 @@ fun beforeInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
    }
 }
 
-fun afterInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
+fun after(anotherInstant: Instant) = object : Matcher<Instant> {
    override fun test(value: Instant): MatcherResult {
       return MatcherResult(
          value.isAfter(anotherInstant),
@@ -26,26 +23,48 @@ fun afterInstantMatcher(anotherInstant: Instant) = object : Matcher<Instant> {
    }
 }
 
+fun between(fromInstant: Instant, toInstant: Instant) = object : Matcher<Instant> {
+   override fun test(value: Instant): MatcherResult {
+      return MatcherResult(
+         value.isAfter(fromInstant) && value.isBefore(toInstant),
+         { "$value should be after $fromInstant and before $toInstant" },
+         { "$value should not be be after $fromInstant and before $toInstant" }
+      )
+   }
+}
+
 /**
  * Assert that [Instant] is before [anotherInstant].
  * @see [shouldNotBeBefore]
  * */
-infix fun Instant.shouldBeBefore(anotherInstant: Instant) = this should beforeInstantMatcher(anotherInstant)
+infix fun Instant.shouldBeBefore(anotherInstant: Instant) = this shouldBe before(anotherInstant)
 
 /**
  * Assert that [Instant] is not before [anotherInstant].
  * @see [shouldBeBefore]
  * */
-infix fun Instant.shouldNotBeBefore(anotherInstant: Instant) = this shouldNot beforeInstantMatcher(anotherInstant)
+infix fun Instant.shouldNotBeBefore(anotherInstant: Instant) = this shouldNotBe before(anotherInstant)
 
 /**
  * Assert that [Instant] is after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
-infix fun Instant.shouldBeAfter(anotherInstant: Instant) = this should afterInstantMatcher(anotherInstant)
+infix fun Instant.shouldBeAfter(anotherInstant: Instant) = this shouldBe after(anotherInstant)
 
 /**
  * Assert that [Instant] is not after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
-infix fun Instant.shouldNotBeAfter(anotherInstant: Instant) = this shouldNot afterInstantMatcher(anotherInstant)
+infix fun Instant.shouldNotBeAfter(anotherInstant: Instant) = this shouldNot after(anotherInstant)
+
+/**
+ * Assert that [Instant] is between [fromInstant] and [toInstant].
+ * @see [shouldNotBeBetween]
+ * */
+fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this should between(fromInstant, toInstant)
+
+/**
+ * Assert that [Instant] is between [fromInstant] and [toInstant].
+ * @see [shouldBeBetween]
+ * */
+fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
