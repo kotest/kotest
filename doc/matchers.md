@@ -300,3 +300,5 @@ For the extension function style, each function has an equivalent negated versio
 | `instant.shouldNotBeAfter(anotherInstant)` | Asserts that the instant is not after anotherInstant which means the instants are either equal or instant is before anotherInstant |
 | `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
 | `instant.shouldNotBeBefore(anotherInstant)` | Asserts that the instant is not before anotherInstant which means the instants are either equal or instant is after anotherInstant |
+| `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
+| `instant.shouldNotBeBefore(fromInstant, toInstant)` | Asserts that the instant is not between fromInstant and toInstant |
