@@ -305,12 +305,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | Regex |     |
 | ---------- | --- |
 | `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     | 
-| `regex.shouldNotBeRegex(anotherRegex)`               | Asserts that regex is not equal to anotherRegex by comparing their pattern and regexOptions | 
 | `regex.shouldHavePattern(regexPattern)`              | Asserts that regex have given regexPattern | 
-| `regex.shouldNotHavePattern(regexPattern)`           | Asserts that regex does not have given regexPattern | 
 | `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions| 
-| `regex.shouldNotHaveExactRegexOptions(regexOptions)` | Asserts that regex does not have exactly the given regexOptions| 
 | `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption| 
-| `regex.shouldNotIncludeRegexOption(regexOption)`     | Asserts that regex does not include the given regexOption| 
-| `regex.shouldIncludeRegexOptions(regexOption)`       | Asserts that regex include of the given regexOptions| 
-| `regex.shouldNotIncludeRegexOptions(regexOption)`    | Asserts that regex does not include all of the given regexOptions| 
+| `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions| 
