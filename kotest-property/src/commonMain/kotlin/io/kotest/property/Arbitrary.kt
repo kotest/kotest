@@ -1,5 +1,7 @@
 package io.kotest.property
 
+import io.kotest.property.arbitraries.double
+import io.kotest.property.arbitraries.float
 import io.kotest.property.arbitraries.int
 import kotlin.random.Random
 
@@ -83,6 +85,8 @@ fun Arbitrary.Companion.forClassName(className: String, iterations: Int): Arbitr
    return when (className) {
       "java.lang.Integer", "kotlin.Int", "Int" -> Arbitrary.int(iterations)
       "java.lang.Long", "kotlin.Long", "Long" -> Arbitrary.long(iterations)
+      "java.lang.Float", "kotlin.Float", "Float" -> Arbitrary.float(iterations)
+      "java.lang.Double", "kotlin.Double", "Double" -> Arbitrary.double(iterations)
       else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
    }
 }

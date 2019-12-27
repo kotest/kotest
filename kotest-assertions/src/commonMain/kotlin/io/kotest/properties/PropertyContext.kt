@@ -4,6 +4,7 @@ package io.kotest.properties
  * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 class PropertyContext {
 
   private var values = mutableListOf<Any?>()

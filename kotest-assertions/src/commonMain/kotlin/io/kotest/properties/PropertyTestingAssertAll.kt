@@ -21,24 +21,43 @@ data class Tuple6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, 
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> assertAll(noinline fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Unit) {
   assertAll(iterations, Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> assertAll(gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) = assertAll(1000, gena, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a: A) -> Unit) = assertAll(iterations, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Unit) = assertAll(iterations, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Unit) = assertAll(iterations, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Unit) = assertAll(iterations, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Unit) = assertAll(iterations, this, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.assertAll(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Unit) = assertAll(iterations, this, this, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> assertAll(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val values = gena.constants().asSequence() + gena.random()
   _assertAll(iterations, values, gena.shrinker(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> _assertAll(iterations: Int,
                    values: Sequence<A>,
                    shrinkera: Shrinker<A>?,
@@ -53,12 +72,18 @@ fun <A> _assertAll(iterations: Int,
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B> assertAll(noinline fn: PropertyContext.(a: A, b: B) -> Unit) = assertAll(1000, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A, b: B) -> Unit) {
   assertAll(iterations, Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> assertAll(gena: Gen<A>, genb: Gen<B>, fn: PropertyContext.(a: A, b: B) -> Unit) = assertAll(1000, gena, genb, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyContext.(a: A, b: B) -> Unit) {
   val values = gena.constants().flatMap { a ->
     genb.constants().map { b ->
@@ -68,6 +93,7 @@ fun <A, B> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyCo
   _assertAll(iterations, values, gena.shrinker(), genb.shrinker(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> _assertAll(iterations: Int,
                       values: Sequence<Pair<A, B>>,
                       shrinkera: Shrinker<A>?,
@@ -84,11 +110,15 @@ fun <A, B> _assertAll(iterations: Int,
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C> assertAll(noinline fn: PropertyContext.(a: A, b: B, c: C) -> Unit) = assertAll(1000, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C) -> Unit) {
   assertAll(iterations, Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C> assertAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Unit) =
     assertAll(1000, gena, genb, genc, fn)
 
@@ -117,17 +147,21 @@ fun <A, B, C> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D> assertAll(noinline fn: PropertyContext.(a: A, b: B, c: C, D) -> Unit) {
   assertAll(1000, fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, D) -> Unit) {
   assertAll(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D> assertAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Unit) =
     assertAll(1000, gena, genb, genc, gend, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
 
@@ -159,17 +193,21 @@ fun <A, B, C, D> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Ge
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E> assertAll(noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Unit) {
   assertAll(Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Unit) {
   assertAll(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E> assertAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Unit) =
     assertAll(1000, gena, genb, genc, gend, gene, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
@@ -203,17 +241,21 @@ fun <A, B, C, D, E> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc:
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> assertAll(noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) {
   assertAll(1000, fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> assertAll(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) {
   assertAll(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F> assertAll(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) =
     assertAll(1000, gena, genb, genc, gend, gene, genf, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F> assertAll(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>,
                                  fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Unit) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")

@@ -1,8 +1,10 @@
-package io.kotest.properties
+package io.kotest.property
 
 import io.kotest.assertions.readSystemProperty
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+/**
+ * Global object for containing settings for property testing.
+ */
 object PropertyTesting {
   var shouldPrintGeneratedValues: Boolean = readSystemProperty("kotest.propertytest.output.generated-values", "false") == "true"
   var shouldPrintShrinkSteps: Boolean = readSystemProperty("kotest.propertytest.output.shrink-steps", "true") == "true"

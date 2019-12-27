@@ -1,9 +1,6 @@
-package io.kotest.property.shrinker
+package io.kotest.property
 
 import io.kotest.assertions.show.show
-import io.kotest.properties.PropertyTesting
-import io.kotest.property.PropertyInput
-import io.kotest.property.ShrinkingMode
 
 /**
  * Uses a [Shrinker] to shrink the a given failed value.

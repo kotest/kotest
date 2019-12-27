@@ -27,6 +27,7 @@ fun propertyTestFailureMessage(attempt: Int,
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 internal fun propertyAssertionError(e: AssertionError,
                                     attempt: Int,
                                     inputs: List<PropertyFailureInput<out Any?>>): AssertionError {

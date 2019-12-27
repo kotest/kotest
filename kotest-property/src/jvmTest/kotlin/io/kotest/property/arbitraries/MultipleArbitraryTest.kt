@@ -10,7 +10,7 @@ class MultipleArbitraryTest : FunSpec() {
       test("multiple generation") {
          Arbitrary.multiples(1000, 3, 100)
             .samples(Random.Default).toList()
-            .forAll { it % 3 == 0 }
+            .forAll { it.value % 3 == 0 }
       }
    }
 }
