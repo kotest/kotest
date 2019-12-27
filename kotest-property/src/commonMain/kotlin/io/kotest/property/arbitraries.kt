@@ -1,79 +1,10 @@
 package io.kotest.property
 
 import io.kotest.properties.nextPrintableString
+import io.kotest.property.arbitraries.int
 import io.kotest.property.shrinker.*
 import kotlin.random.Random
 import kotlin.random.nextLong
-
-fun Arbitrary.Companion.int(
-   iterations: Int,
-   range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE,
-   distribution: IntDistribution = IntDistribution.Uniform
-) = object : Arbitrary<Int> {
-   override fun edgecases(): Iterable<Int> = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
-   override fun samples(random: Random): Sequence<PropertyInput<Int>> {
-      return sequence {
-         for (k in 0 until iterations) {
-            val block = distribution.get(k, iterations, range.first.toLong()..range.last.toLong())
-            val next = random.nextLong(block).toInt()
-            val input = PropertyInput(next, IntShrinker)
-            yield(input)
-         }
-      }
-   }
-}
-
-sealed class IntDistribution {
-
-   abstract fun get(k: Int, iterations: Int, range: LongRange): LongRange
-
-   /**
-    * Splits the range into discrete "blocks" to ensure that random values are distributed
-    * across the entire range in a uniform manner.
-    */
-   object Uniform : IntDistribution() {
-      override fun get(k: Int, iterations: Int, range: LongRange): LongRange {
-         val step = (range.last - range.first) / iterations
-         return (step * k)..(step * (k + 1))
-      }
-   }
-
-   /**
-    * Values are distributed according to the Pareto distribution.
-    * See https://en.wikipedia.org/wiki/Pareto_distribution
-    * Sometimes referred to as the 80-20 rule
-    *
-    * tl;dr - more values are produced at the lower bound than the upper bound.
-    */
-   object Pareto : IntDistribution() {
-      override fun get(k: Int, iterations: Int, range: LongRange): LongRange {
-         // this isn't really the pareto distribution so either implement it properly, or rename this implementation
-         val step = (range.last - range.first) / iterations
-         return 0..(step * k + 1)
-      }
-   }
-}
-
-/**
- * Returns an [Arbitrary] where each value is a randomly chosen positive integer.
- * The edge cases are: [Int.MAX_VALUE]
- */
-fun Arbitrary.Companion.positiveIntegers(iterations: Int): Arbitrary<Int> =
-   int(iterations).withEdgeCases(Int.MAX_VALUE).filter { it > 0 }
-
-
-/**
- * Returns an [Arbitrary] where each value is a randomly chosen negative integer.
- * The edge cases are: [Int.MIN_VALUE]
- */
-fun Arbitrary.Companion.negativeIntegers(iterations: Int): Arbitrary<Int> =
-   int(iterations).withEdgeCases(Int.MIN_VALUE).filter { it > 0 }
-
-/**
- * Returns an [Arbitrary] where each value is a randomly chosen natural integer.
- * The edge cases are: [Int.MAX_VALUE]
- */
-fun Arbitrary.Companion.nats(iterations: Int): Arbitrary<Int> = int(iterations).filter { it >= 0 }
 
 fun Arbitrary.Companion.long(
    iterations: Int,
@@ -94,58 +25,6 @@ fun Arbitrary.Companion.long(
 fun <T> Arbitrary.Companion.constant(constant: T) = object : Arbitrary<T> {
    override fun edgecases(): Iterable<T> = emptyList()
    override fun samples(random: Random): Sequence<PropertyInput<T>> = sequenceOf(PropertyInput(constant))
-}
-
-/**
- * Returns a stream of values where each value is a randomly
- * chosen Double.
- */
-
-fun Arbitrary.Companion.double(iterations: Int): Arbitrary<Double> = object : Arbitrary<Double> {
-
-   val literals = listOf(
-      0.0,
-      1.0,
-      -1.0,
-      1e300,
-      Double.MIN_VALUE,
-      Double.MAX_VALUE,
-      Double.NEGATIVE_INFINITY,
-      Double.NaN,
-      Double.POSITIVE_INFINITY
-   )
-
-   override fun edgecases(): Iterable<Double> = literals
-
-   override fun samples(random: Random): Sequence<PropertyInput<Double>> {
-      return generateSequence {
-         val d = random.nextDouble()
-         PropertyInput(d, DoubleShrinker)
-      }.take(iterations)
-   }
-}
-
-fun Arbitrary.Companion.positiveDoubles(iterations: Int): Arbitrary<Double> = double(iterations).filter { it > 0.0 }
-fun Arbitrary.Companion.negativeDoubles(iterations: Int): Arbitrary<Double> = double(iterations).filter { it < 0.0 }
-
-/**
- * Returns an [Arbitrary] which is the same as [double] but does not include +INFINITY, -INFINITY or NaN.
- *
- * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
- */
-fun Arbitrary.Companion.numericDoubles(
-   iterations: Int,
-   from: Double = Double.MIN_VALUE,
-   to: Double = Double.MAX_VALUE
-): Arbitrary<Double> = object : Arbitrary<Double> {
-   val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
-   override fun edgecases(): Iterable<Double> = literals
-   override fun samples(random: Random): Sequence<PropertyInput<Double>> {
-      return generateSequence {
-         val d = random.nextDouble()
-         PropertyInput(d, DoubleShrinker)
-      }.take(iterations)
-   }
 }
 
 /**
@@ -230,6 +109,7 @@ fun <K, V> Arbitrary.Companion.map(
  * removing elements until they map is empty.
  *
  * @see MapShrinker
+ *
  */
 fun <K, V> Arbitrary.Companion.map(
    iterations: Int,

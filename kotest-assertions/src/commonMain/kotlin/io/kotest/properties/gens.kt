@@ -689,6 +689,7 @@ fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { value }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
 
    // 0 is a multiple of everything
