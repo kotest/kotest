@@ -17,8 +17,8 @@ class PropertyContext {
       failures++
    }
 
-   internal fun successes() = successes
-   internal fun failures() = failures
+   fun successes() = successes
+   fun failures() = failures
 
    fun attempts(): Int = successes + failures
 }

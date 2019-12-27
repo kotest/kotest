@@ -92,10 +92,16 @@ fun Arbitrary.Companion.long(
    }
 }
 
+fun <T> Arbitrary.Companion.constant(constant: T) = object : Arbitrary<T> {
+   override fun edgecases(): Iterable<T> = emptyList()
+   override fun samples(random: Random): Sequence<PropertyInput<T>> = sequenceOf(PropertyInput(constant))
+}
+
 /**
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
+
 fun Arbitrary.Companion.double(iterations: Int): Arbitrary<Double> = object : Arbitrary<Double> {
 
    val literals = listOf(

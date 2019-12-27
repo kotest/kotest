@@ -4,51 +4,52 @@ import io.kotest.property.shrinker.shrink
 import kotlin.math.min
 import kotlin.random.Random
 
+data class PropTestArgs(
+   val seed: Long = 0,
+   val minSuccess: Int = Int.MAX_VALUE,
+   val maxFailure: Int = 0,
+   val shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000)
+)
+
 inline fun <reified A, reified B> forAll(
-   iterations: Int = 1000,
-   seed: Long = 0,
-   minSuccess: Int = Int.MAX_VALUE,
-   maxFailure: Int = 0,
-   shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   iterations: Int = 100,
+   args: PropTestArgs = PropTestArgs(),
    noinline property: (A, B) -> Boolean
 ) = forAll(
    Arbitrary.default(iterations),
    Arbitrary.default(iterations),
-   seed,
-   minSuccess,
-   maxFailure,
-   shrinking,
+   args,
    property
 )
 
 fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
-   seed: Long = 0,
-   minSuccess: Int = Int.MAX_VALUE,
-   maxFailure: Int = 0,
-   shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   args: PropTestArgs = PropTestArgs(),
    property: (A, B) -> Boolean
 ): PropertyContext {
 
-   val random = if (seed == 0L) Random.Default else Random(seed)
+   val random = when (args.seed) {
+      0L -> Random.Default
+      else -> Random(args.seed)
+   }
    val context = PropertyContext()
 
-   genA.generate(random).map { a ->
-      genB.generate(random).map { b ->
+   genA.generate(random).forEach { a ->
+      genB.generate(random).forEach { b ->
          when (property(a.value, b.value)) {
             true -> context.success()
             false -> context.failure()
          }
-         if (context.failures() > maxFailure) {
-            val smallestA = shrink(a, { a2 -> property(a2, b.value) }, shrinking)
-            val smallestB = shrink(b, { b2 -> property(a.value, b2) }, shrinking)
+         if (context.failures() > args.maxFailure) {
+            val smallestA = shrink(a, { a2 -> property(a2, b.value) }, args.shrinking)
+            val smallestB = shrink(b, { b2 -> property(a.value, b2) }, args.shrinking)
             val inputs = listOf(
                PropertyFailureInput(a.value, smallestA),
                PropertyFailureInput(b.value, smallestB)
             )
             throw propertyAssertionError(
-               AssertionError("Property Test has failed ${context.failures()} times (max failure rate was $maxFailure)"),
+               AssertionError("Prop test failed ${context.failures()} times (max failure rate was ${args.maxFailure})"),
                context.attempts(),
                inputs
             )
@@ -56,9 +57,9 @@ fun <A, B> forAll(
       }
    }
 
-   val min = min(minSuccess, context.attempts())
+   val min = min(args.minSuccess, context.attempts())
    if (context.successes() < min) {
-      throw AssertionError("Property test has passed ${context.successes()} times (min success rate was $min)")
+      throw AssertionError("Prop test passed ${context.successes()} times (min success rate was $min)")
    }
 
    return context

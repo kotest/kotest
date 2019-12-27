@@ -12,3 +12,11 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> = object : Gen<U
    override fun generate(random: Random): Sequence<PropertyInput<U>> =
       this@filterIsInstance.generate(random).filter { it.value is U }.map { it as PropertyInput<U> }
 }
+
+/**
+ * Returns a new [Gen] that always includes null in the generated values.
+ */
+fun <T> Gen<T>.orNull(): Gen<T?> = object : Gen<T?> {
+   override fun generate(random: Random): Sequence<PropertyInput<T?>> =
+      sequenceOf(PropertyInput.invoke(null)) + this@orNull.generate(random)
+}

@@ -4,6 +4,10 @@ fun Progression.Companion.int(range: IntRange) = object : Progression<Int> {
    override fun values(): Sequence<Int> = range.asSequence()
 }
 
+fun Progression.Companion.long(range: LongRange) = object : Progression<Long> {
+   override fun values(): Sequence<Long> = range.asSequence()
+}
+
 fun Progression.Companion.azstring(range: IntRange) = object : Progression<String> {
    private fun az() = ('a'..'z').asSequence().map { it.toString() }
    override fun values(): Sequence<String> = range.asSequence().flatMap { size ->
