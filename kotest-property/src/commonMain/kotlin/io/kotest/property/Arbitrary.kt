@@ -69,11 +69,11 @@ fun <T> Arbitrary<T>.filter(predicate: (T) -> Boolean): Arbitrary<T> = object : 
  * Returns a new [Arbitrary] where the edge cases of the receiver are replaced with the edge
  * cases given as input to this function. The samples are unchanged.
  */
-fun <T> Arbitrary<T>.withEdgeCases(vararg edgecases: T): Arbitrary<T> = withEdgeCases(edgecases.asList())
+fun <T> Arbitrary<T>.setEdgeCases(vararg edgecases: T): Arbitrary<T> = setEdgeCases(edgecases.asList())
 
-fun <T> Arbitrary<T>.withEdgeCases(edgecases: Iterable<T>): Arbitrary<T> = object : Arbitrary<T> {
+fun <T> Arbitrary<T>.setEdgeCases(edgecases: Iterable<T>): Arbitrary<T> = object : Arbitrary<T> {
    override fun edgecases(): Iterable<T> = edgecases
-   override fun samples(random: Random): Sequence<PropertyInput<T>> = this@withEdgeCases.samples(random)
+   override fun samples(random: Random): Sequence<PropertyInput<T>> = this@setEdgeCases.samples(random)
 }
 
 @Suppress("UNCHECKED_CAST")

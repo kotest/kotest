@@ -4,7 +4,7 @@ import io.kotest.property.Arbitrary
 import io.kotest.property.PropertyInput
 import io.kotest.property.filter
 import io.kotest.property.Shrinker
-import io.kotest.property.withEdgeCases
+import io.kotest.property.setEdgeCases
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.random.nextLong
@@ -33,7 +33,7 @@ fun Arbitrary.Companion.int(
  * The edge cases are: [Int.MAX_VALUE]
  */
 fun Arbitrary.Companion.positiveIntegers(iterations: Int): Arbitrary<Int> =
-   int(iterations).withEdgeCases(Int.MAX_VALUE).filter { it > 0 }
+   int(iterations).setEdgeCases(Int.MAX_VALUE).filter { it > 0 }
 
 
 /**
@@ -41,7 +41,7 @@ fun Arbitrary.Companion.positiveIntegers(iterations: Int): Arbitrary<Int> =
  * The edge cases are: [Int.MIN_VALUE]
  */
 fun Arbitrary.Companion.negativeIntegers(iterations: Int): Arbitrary<Int> =
-   int(iterations).withEdgeCases(Int.MIN_VALUE).filter { it > 0 }
+   int(iterations).setEdgeCases(Int.MIN_VALUE).filter { it > 0 }
 
 /**
  * Returns an [Arbitrary] where each value is a randomly chosen natural integer.
