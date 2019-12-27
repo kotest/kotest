@@ -1,6 +1,6 @@
 package io.kotest.property
 
-import io.kotest.property.arbitraries.string
+import io.kotest.property.arbitrary.string
 import io.kotest.specs.FunSpec
 
 class StringArbitraryTest : FunSpec() {

@@ -1,6 +1,6 @@
 package io.kotest.property
 
-import io.kotest.property.progressions.constant
+import io.kotest.property.progression.constant
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 import io.kotest.specs.FunSpec

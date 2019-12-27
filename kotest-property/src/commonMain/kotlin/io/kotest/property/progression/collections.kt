@@ -1,4 +1,4 @@
-package io.kotest.property.progressions
+package io.kotest.property.progression
 
 import io.kotest.property.Progression
 

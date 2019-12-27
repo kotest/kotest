@@ -1,4 +1,4 @@
-package io.kotest.property.arbitraries
+package io.kotest.property.arbitrary
 
 import io.kotest.properties.generateInfiniteSequence
 import io.kotest.property.Arbitrary

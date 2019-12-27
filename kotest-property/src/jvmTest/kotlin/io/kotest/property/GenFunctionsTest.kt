@@ -1,7 +1,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.collections.shouldContain
-import io.kotest.property.progressions.int
+import io.kotest.property.progression.int
 import io.kotest.specs.FunSpec
 import kotlin.random.Random
 

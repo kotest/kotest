@@ -1,10 +1,10 @@
 package io.kotest.property
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.property.arbitraries.int
-import io.kotest.property.progressions.constant
-import io.kotest.property.progressions.int
-import io.kotest.property.progressions.long
+import io.kotest.property.arbitrary.int
+import io.kotest.property.progression.constant
+import io.kotest.property.progression.int
+import io.kotest.property.progression.long
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 import io.kotest.specs.FunSpec

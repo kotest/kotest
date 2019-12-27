@@ -1,7 +1,6 @@
-package io.kotest.property.arbitraries
+package io.kotest.property.arbitrary
 
 import io.kotest.property.Arbitrary
-import io.kotest.property.PropertyInput
 import io.kotest.property.filter
 import io.kotest.property.Shrinker
 import io.kotest.property.setEdgeCases
@@ -41,7 +40,7 @@ fun Arbitrary.Companion.positiveIntegers(iterations: Int): Arbitrary<Int> =
  * The edge cases are: [Int.MIN_VALUE]
  */
 fun Arbitrary.Companion.negativeIntegers(iterations: Int): Arbitrary<Int> =
-   int(iterations).setEdgeCases(Int.MIN_VALUE).filter { it > 0 }
+   int(iterations).setEdgeCases(Int.MIN_VALUE).filter { it < 0 }
 
 /**
  * Returns an [Arbitrary] where each value is a randomly chosen natural integer.

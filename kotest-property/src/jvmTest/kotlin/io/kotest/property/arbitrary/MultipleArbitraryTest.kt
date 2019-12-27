@@ -1,6 +1,5 @@
-package io.kotest.property.arbitraries
+package io.kotest.property.arbitrary
 
-import io.kotest.inspectors.forAll
 import io.kotest.property.Arbitrary
 import io.kotest.specs.FunSpec
 import kotlin.random.Random
