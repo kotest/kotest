@@ -2,30 +2,20 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
+
 }
 
 repositories {
    mavenCentral()
 }
-
 kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
-            }
-         }
-      }
-      js {
-         val main by compilations.getting {
+         compilations.all {
             kotlinOptions {
-               moduleKind = "commonjs"
+               jvmTarget = "1.8"
             }
          }
       }
@@ -41,31 +31,17 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-common"))
-            api(project(":kotest-assertions"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-         }
-      }
-
       val jvmMain by getting {
-         dependsOn(commonMain)
          dependencies {
+            implementation(project(":kotest-core"))
+            implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("com.github.wumpz:diffutils:2.2")
-            implementation("com.univocity:univocity-parsers:2.8.3")
-            api("io.arrow-kt:arrow-core:0.10.3")
-            implementation("com.github.mifmif:generex:1.0.2")
+            implementation("org.springframework:spring-test:5.2.2.RELEASE")
+            implementation("org.springframework:spring-context:5.2.2.RELEASE")
+            implementation("net.bytebuddy:byte-buddy:1.10.1")
+
          }
       }
 
@@ -73,6 +49,8 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
+
          }
       }
    }
@@ -93,4 +71,4 @@ tasks {
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../../publish.gradle")

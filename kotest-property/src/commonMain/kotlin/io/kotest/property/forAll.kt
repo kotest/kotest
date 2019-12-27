@@ -11,7 +11,15 @@ inline fun <reified A, reified B> forAll(
    maxFailure: Int = 0,
    shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000),
    noinline property: (A, B) -> Boolean
-) = forAll(Arbitrary.default(iterations), Arbitrary.default(iterations), seed, minSuccess, maxFailure, shrinking, property)
+) = forAll(
+   Arbitrary.default(iterations),
+   Arbitrary.default(iterations),
+   seed,
+   minSuccess,
+   maxFailure,
+   shrinking,
+   property
+)
 
 fun <A, B> forAll(
    genA: Gen<A>,
@@ -21,7 +29,7 @@ fun <A, B> forAll(
    maxFailure: Int = 0,
    shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000),
    property: (A, B) -> Boolean
-) {
+): PropertyContext {
 
    val random = if (seed == 0L) Random.Default else Random(seed)
    val context = PropertyContext()
@@ -52,6 +60,8 @@ fun <A, B> forAll(
    if (context.successes() < min) {
       throw AssertionError("Property test has passed ${context.successes()} times (min success rate was $min)")
    }
+
+   return context
 }
 
 fun main() {

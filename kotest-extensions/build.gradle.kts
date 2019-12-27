@@ -7,25 +7,13 @@ plugins {
 repositories {
    mavenCentral()
 }
-
 kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
-            }
-         }
-      }
-      js {
-         val main by compilations.getting {
+         compilations.all {
             kotlinOptions {
-               moduleKind = "commonjs"
+               jvmTarget = "1.8"
             }
          }
       }
@@ -41,31 +29,13 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-common"))
-            api(project(":kotest-assertions"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-         }
-      }
-
-      val jsMain by getting {
-         dependsOn(commonMain)
-         dependencies {
-            implementation(kotlin("stdlib-js"))
-         }
-      }
-
       val jvmMain by getting {
-         dependsOn(commonMain)
          dependencies {
+            implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
-            implementation(kotlin("reflect"))
-            implementation("com.github.wumpz:diffutils:2.2")
-            implementation("com.univocity:univocity-parsers:2.8.3")
-            api("io.arrow-kt:arrow-core:0.10.3")
-            implementation("com.github.mifmif:generex:1.0.2")
+            implementation("commons-io:commons-io:2.6")
+            implementation("io.mockk:mockk:1.9.3")
+
          }
       }
 
@@ -73,6 +43,12 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+            implementation("org.mockito:mockito-core:2.24.0")
+            implementation("com.nhaarman:mockito-kotlin:1.6.0")
+            implementation("io.mockk:mockk:1.9.3")
+            implementation("log4j:log4j:1.2.17")
+            implementation("org.slf4j:slf4j-log4j12:1.7.25")
          }
       }
    }

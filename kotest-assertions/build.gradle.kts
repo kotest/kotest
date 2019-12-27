@@ -43,10 +43,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-common"))
-            api(project(":kotest-assertions"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+            implementation (kotlin ("stdlib-common"))
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
+            implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
          }
       }
 

@@ -1,13 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
-buildscript {
-   repositories {
-      mavenCentral()
-      mavenLocal()
-   }
-}
-
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -16,8 +6,8 @@ plugins {
 
 repositories {
    mavenCentral()
+   google()
 }
-
 kotlin {
 
    targets {
@@ -39,15 +29,22 @@ kotlin {
    }
 
    sourceSets {
-      val jvmTest by getting {
+
+      val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-console"))
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            implementation("org.robolectric:robolectric:4.3")
+            implementation("junit:junit:4.12")
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
-            implementation("org.junit.platform:junit-platform-testkit:1.5.1")
+
          }
       }
    }
@@ -59,8 +56,13 @@ tasks {
       testLogging {
          showExceptions = true
          showStandardStreams = true
-         events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
-         exceptionFormat = TestExceptionFormat.FULL
+         events = setOf(
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+         )
+         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
       }
    }
 }
+
+apply(from = "../../publish.gradle")
