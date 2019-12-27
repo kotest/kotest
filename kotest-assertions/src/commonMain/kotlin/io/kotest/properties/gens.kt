@@ -92,6 +92,7 @@ fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BI
  * chosen [Byte]. The values always returned include
  * the following edge cases: [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
 
 /**
@@ -107,6 +108,7 @@ fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS
  * chosen positive value. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
 
 /**
@@ -114,6 +116,7 @@ fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
  * chosen natural number. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
 
 /**
@@ -121,6 +124,7 @@ fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
  * chosen negative value. The values returned always include
  * the following edge cases: [Int.MIN_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeIntegers(): Gen<Int> = int().filter { it < 0 }
 
 /**

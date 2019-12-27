@@ -17,3 +17,10 @@ fun Progression.Companion.azstring(range: IntRange) = object : Progression<Strin
 fun Progression.Companion.bools() = object : Progression<Boolean> {
    override fun values(): Sequence<Boolean> = sequenceOf(true, false)
 }
+
+/**
+ * Returns a [Progression] of bytes from [Byte.MIN_VALUE] to [Byte.MAX_VALUE].
+ */
+fun Progression.Companion.byte() = object : Progression<Byte> {
+   override fun values(): Sequence<Byte> = (Byte.MIN_VALUE..Byte.MAX_VALUE).asSequence().map { it.toByte() }
+}

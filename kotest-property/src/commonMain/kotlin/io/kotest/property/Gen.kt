@@ -69,6 +69,16 @@ fun <T, U> PropertyInput<T>.map(f: (T) -> U): PropertyInput<U> = when (this) {
    }
 }
 
+fun <T, U> Gen<T>.map(f: (T) -> U): Gen<U> = object : Gen<U> {
+   override fun generate(random: Random): Sequence<PropertyInput<U>> =
+      this@map.generate(random).map { it.map(f) }
+}
+
+fun <T> Gen<T>.filter(predicate: (T) -> Boolean): Gen<T> = object : Gen<T> {
+   override fun generate(random: Random): Sequence<PropertyInput<T>> =
+      this@filter.generate(random).filter { predicate(it.value) }
+}
+
 /**
  * Returns a new [Gen] which will merge the values from this gen and the values of
  * the supplied gen together in turn.

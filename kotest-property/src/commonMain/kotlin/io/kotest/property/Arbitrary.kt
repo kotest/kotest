@@ -61,6 +61,17 @@ fun <T> Arbitrary<T>.filter(predicate: (T) -> Boolean): Arbitrary<T> = object : 
       this@filter.samples(random).filter { predicate(it.value) }
 }
 
+/**
+ * Returns a new [Arbitrary] where the edge cases of the receiver are replaced with the edge
+ * cases given as input to this function. The samples are unchanged.
+ */
+fun <T> Arbitrary<T>.withEdgeCases(vararg edgecases: T): Arbitrary<T> = withEdgeCases(edgecases.asList())
+
+fun <T> Arbitrary<T>.withEdgeCases(edgecases: Iterable<T>): Arbitrary<T> = object : Arbitrary<T> {
+   override fun edgecases(): Iterable<T> = edgecases
+   override fun samples(random: Random): Sequence<PropertyInput<T>> = this@withEdgeCases.samples(random)
+}
+
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T> Arbitrary.Companion.default(iterations: Int): Arbitrary<T> {
    val classname = T::class.simpleName ?: "<unknown>"

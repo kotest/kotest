@@ -55,6 +55,27 @@ sealed class IntDistribution {
    }
 }
 
+/**
+ * Returns an [Arbitrary] where each value is a randomly chosen positive integer.
+ * The edge cases are: [Int.MAX_VALUE]
+ */
+fun Arbitrary.Companion.positiveIntegers(iterations: Int): Arbitrary<Int> =
+   int(iterations).withEdgeCases(Int.MAX_VALUE).filter { it > 0 }
+
+
+/**
+ * Returns an [Arbitrary] where each value is a randomly chosen negative integer.
+ * The edge cases are: [Int.MIN_VALUE]
+ */
+fun Arbitrary.Companion.negativeIntegers(iterations: Int): Arbitrary<Int> =
+   int(iterations).withEdgeCases(Int.MIN_VALUE).filter { it > 0 }
+
+/**
+ * Returns an [Arbitrary] where each value is a randomly chosen natural integer.
+ * The edge cases are: [Int.MAX_VALUE]
+ */
+fun Arbitrary.Companion.nats(iterations: Int): Arbitrary<Int> = int(iterations).filter { it >= 0 }
+
 fun Arbitrary.Companion.long(
    iterations: Int,
    range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE
@@ -75,7 +96,7 @@ fun Arbitrary.Companion.long(
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
-fun Arbitrary.Companion.double(): Arbitrary<Double> = object : Arbitrary<Double> {
+fun Arbitrary.Companion.double(iterations: Int): Arbitrary<Double> = object : Arbitrary<Double> {
 
    val literals = listOf(
       0.0,
@@ -95,19 +116,20 @@ fun Arbitrary.Companion.double(): Arbitrary<Double> = object : Arbitrary<Double>
       return generateSequence {
          val d = random.nextDouble()
          PropertyInput(d, DoubleShrinker)
-      }
+      }.take(iterations)
    }
 }
 
-fun Arbitrary.Companion.positiveDoubles(): Arbitrary<Double> = double().filter { it > 0.0 }
-fun Arbitrary.Companion.negativeDoubles(): Arbitrary<Double> = double().filter { it < 0.0 }
+fun Arbitrary.Companion.positiveDoubles(iterations: Int): Arbitrary<Double> = double(iterations).filter { it > 0.0 }
+fun Arbitrary.Companion.negativeDoubles(iterations: Int): Arbitrary<Double> = double(iterations).filter { it < 0.0 }
 
 /**
- * Returns an [Arbitrary] which is the same as [Arbitrary.double] but does not include +INFINITY, -INFINITY or NaN.
+ * Returns an [Arbitrary] which is the same as [double] but does not include +INFINITY, -INFINITY or NaN.
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
 fun Arbitrary.Companion.numericDoubles(
+   iterations: Int,
    from: Double = Double.MIN_VALUE,
    to: Double = Double.MAX_VALUE
 ): Arbitrary<Double> = object : Arbitrary<Double> {
@@ -117,6 +139,12 @@ fun Arbitrary.Companion.numericDoubles(
       return generateSequence {
          val d = random.nextDouble()
          PropertyInput(d, DoubleShrinker)
-      }
+      }.take(iterations)
    }
 }
+
+/**
+ * Returns an [Arbitrary] where each random value is a Byte.
+ * The edge cases are [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
+ */
+fun Arbitrary.Companion.byte(iterations: Int) = int(iterations).map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }

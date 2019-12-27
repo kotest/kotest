@@ -1,7 +1,5 @@
 package io.kotest.property
 
-import io.kotest.properties.PropertyFailureInput
-import io.kotest.properties.propertyAssertionError
 import io.kotest.property.shrinker.shrink
 import kotlin.math.min
 import kotlin.random.Random
