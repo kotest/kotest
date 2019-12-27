@@ -4,6 +4,7 @@ package io.kotest.property.internal
 
 import io.kotest.tuples.Tuple3
 import io.kotest.property.*
+import io.kotest.property.arbitrary.PropertyInput
 
 inline fun <A, B, C> test3(
    genA: Gen<A>,

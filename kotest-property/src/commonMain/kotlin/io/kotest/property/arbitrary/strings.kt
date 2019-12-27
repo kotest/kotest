@@ -2,7 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.properties.nextPrintableString
 import io.kotest.property.Arbitrary
-import io.kotest.property.PropertyInput
 import io.kotest.property.Shrinker
 import kotlin.random.Random
 

@@ -1,5 +1,7 @@
 package io.kotest.property
 
+import io.kotest.property.arbitrary.PropertyInput
+
 interface Shrinker<T> {
 
    /**

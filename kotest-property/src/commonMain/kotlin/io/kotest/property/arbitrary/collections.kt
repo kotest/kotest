@@ -2,7 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.properties.generateInfiniteSequence
 import io.kotest.property.Arbitrary
-import io.kotest.property.PropertyInput
 import kotlin.random.Random
 import io.kotest.property.Progression
 

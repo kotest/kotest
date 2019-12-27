@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import arrow.core.extensions.list.foldable.forAll
 import io.kotest.property.Arbitrary
 import io.kotest.specs.FunSpec
 import kotlin.random.Random

@@ -1,7 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arbitrary
-import io.kotest.property.PropertyInput
 import io.kotest.property.map
 import kotlin.random.Random
 

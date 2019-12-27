@@ -1,7 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arbitrary
-import io.kotest.property.PropertyInput
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.math.round

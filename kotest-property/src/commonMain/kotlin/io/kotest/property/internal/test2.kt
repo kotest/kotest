@@ -4,6 +4,7 @@ package io.kotest.property.internal
 
 import io.kotest.tuples.Tuple2
 import io.kotest.property.*
+import io.kotest.property.arbitrary.PropertyInput
 import kotlin.math.min
 
 inline fun <A, B> test2(

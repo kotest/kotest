@@ -3,6 +3,7 @@
 package io.kotest.property.internal
 
 import io.kotest.property.*
+import io.kotest.property.arbitrary.PropertyInput
 
 inline fun <A> test1(
    genA: Gen<A>,
