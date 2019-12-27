@@ -27,37 +27,41 @@ inline fun <T> shrink(input: PropertyInput<T>, test: (T) -> Unit, mode: Shrinkin
 
    while (mode.shouldShrink(count)) {
       val candidates = candidate.candidates().filterNot { tested.contains(it.value) }
-      if (candidates.isEmpty()) {
-         sb.append("Shrink result => ${candidate.show()}\n")
-         if (PropertyTesting.shouldPrintShrinkSteps) {
-            println(sb)
-         }
-         return candidate.value
-      } else {
-         val next = candidates.firstOrNull {
-            tested.add(it.value)
-            count++
-            try {
-               test(it.value)
-               sb.append("Shrink #$count: ${it.show()} pass\n")
-               false
-            } catch (t: Throwable) {
-               sb.append("Shrink #$count: ${it.show()} fail\n")
-               true
+      when {
+         // if candidates is empty then that means that there were no further shrinks to test
+         candidates.isEmpty() -> return result(sb, candidate, count)
+         else -> {
+            val next = candidates.firstOrNull {
+               tested.add(it.value)
+               count++
+               try {
+                  test(it.value)
+                  sb.append("Shrink #$count: ${it.show()} pass\n")
+                  false
+               } catch (t: Throwable) {
+                  sb.append("Shrink #$count: ${it.show()} fail\n")
+                  true
+               }
             }
-         }
-         if (next == null) {
-            sb.append("Shrink result (after $count shrinks) => ${candidate.show()}\n")
-            if (PropertyTesting.shouldPrintShrinkSteps) {
-               println(sb)
+            when (next) {
+               // if next is null, that means all the shrinks passed so the original value is the smallest
+               null -> return result(sb, candidate, count)
+               else -> candidate = next
             }
-            return candidate.value
-         } else {
-            candidate = next
          }
       }
    }
+   return candidate.value
+}
 
+fun <T> result(sb: StringBuilder, candidate: PropertyInput<T>, count: Int): T {
+   when (count) {
+      0 -> sb.append("Shrink result => ${candidate.value.show()}\n")
+      else -> sb.append("Shrink result (after $count shrinks) => ${candidate.show()}\n")
+   }
+   if (PropertyTesting.shouldPrintShrinkSteps) {
+      println(sb)
+   }
    return candidate.value
 }
 

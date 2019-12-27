@@ -6,7 +6,7 @@ import io.kotest.assertions.show.show
 fun propertyTestFailureMessage(
    attempt: Int,
    inputs: List<PropertyFailureInput<out Any?>>,
-   cause: AssertionError
+   cause: Throwable
 ): String {
    val sb = StringBuilder()
    if (inputs.isEmpty()) {
@@ -25,21 +25,21 @@ fun propertyTestFailureMessage(
       }
       sb.append("after $attempt attempts\n")
    }
-   sb.append("Caused by: ${cause.message?.trim()}")
+   // don't bother to include the exception type if it's AssertionError
+   val causedBy = when (cause::class.simpleName) {
+      "AssertionError" -> "Caused by: ${cause.message?.trim()}"
+      else -> "Caused by ${cause::class.simpleName}: ${cause.message?.trim()}"
+   }
+   sb.append(causedBy)
    return sb.toString()
 }
 
 data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
 fun propertyAssertionError(
-   e: AssertionError,
+   e: Throwable,
    attempt: Int,
    inputs: List<PropertyFailureInput<out Any?>>
 ): AssertionError {
-   return Failures.failure(
-      propertyTestFailureMessage(
-         attempt,
-         inputs,
-         e
-      ), e)
+   return Failures.failure(propertyTestFailureMessage(attempt, inputs, e), e)
 }

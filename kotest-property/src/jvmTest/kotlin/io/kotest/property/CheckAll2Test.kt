@@ -47,12 +47,12 @@ class CheckAll2Test : FunSpec({
 
    test("checkAll with 2 implicit arbitraries using a suspend function") {
 
-      val context = forAll<Int, Long>(100) { a, b ->
+      val context = forAll<Int, Long>(15) { a, b ->
          delay(10)
          a + b == b + a
       }
-      context.attempts() shouldBe 10609
-      context.successes() shouldBe 10609
+      context.attempts() shouldBe 324
+      context.successes() shouldBe 324
       context.failures() shouldBe 0
    }
 

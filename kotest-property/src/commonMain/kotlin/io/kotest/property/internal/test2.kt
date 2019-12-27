@@ -22,25 +22,19 @@ inline fun <A, B> test2(
             try {
                property(a.value, b.value)
                context.markSuccess()
+               // we track assertion errors and try to shrink them
             } catch (e: AssertionError) {
-               context.markFailure()
-               if (args.maxFailure == 0) {
-                  fail(
-                     a,
-                     b,
-                     shrink(a, b, property, args),
-                     e,
-                     attempts()
-                  )
-               } else if (failures() > args.maxFailure) {
-                  val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-                  fail(
-                     a,
-                     b,
-                     shrink(a, b, property, args),
-                     t,
-                     attempts()
-                  )
+               handleException(a, b, e, args, property)
+               // any other non assertion error exception is an immediate fail without shrink
+            } catch (e: Exception) {
+               if (e::class.simpleName == "AssertionError"
+                  || e::class.simpleName == "AssertionFailedError"
+                  || e::class.simpleName == "ComparisonFailure"
+               ) {
+                  handleException(a, b, e, args, property)
+               } else {
+                  context.markFailure()
+                  fail(e, attempts())
                }
             }
          }
@@ -49,6 +43,22 @@ inline fun <A, B> test2(
    }
 
    return context
+}
+
+inline fun <A, B> PropertyContext.handleException(
+   a: PropertyInput<A>,
+   b: PropertyInput<B>,
+   e: Throwable,
+   args: PropTestArgs,
+   property: PropertyContext.(A, B) -> Unit
+) {
+   markFailure()
+   if (args.maxFailure == 0) {
+      fail(a, b, shrink(a, b, property, args), e, attempts())
+   } else if (failures() > args.maxFailure) {
+      val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
+      fail(a, b, shrink(a, b, property, args), t, attempts())
+   }
 }
 
 fun PropertyContext.checkMaxSuccess(args: PropTestArgs) {
@@ -69,10 +79,8 @@ inline fun <A, B> shrink(
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    return with(context) {
-      val smallestA =
-         shrink(a, { property(it, b.value) }, args.shrinking)
-      val smallestB =
-         shrink(b, { property(a.value, it) }, args.shrinking)
+      val smallestA = shrink(a, { property(it, b.value) }, args.shrinking)
+      val smallestB = shrink(b, { property(a.value, it) }, args.shrinking)
       Tuple2(smallestA, smallestB)
    }
 }
@@ -82,7 +90,7 @@ fun <A, B> fail(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    shrink: Tuple2<A, B>,
-   e: AssertionError, // the underlying failure reason,
+   e: Throwable, // the underlying failure reason,
    attempts: Int
 ) {
    val inputs = listOf(
@@ -94,7 +102,7 @@ fun <A, B> fail(
 
 // creates an exception without specifying parameter details and throws
 fun fail(
-   e: AssertionError, // the underlying failure reason,
+   e: Throwable, // the underlying failure reason,
    attempts: Int
 ) {
    throw propertyAssertionError(e, attempts, emptyList())

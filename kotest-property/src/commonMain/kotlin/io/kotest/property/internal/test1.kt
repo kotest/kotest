@@ -61,7 +61,7 @@ inline fun <A> shrink(
 fun <A> fail(
    a: PropertyInput<A>,
    shrink: A,
-   e: AssertionError, // the underlying failure reason,
+   e: Error, // the underlying failure reason,
    attempts: Int
 ) {
    val inputs = listOf(PropertyFailureInput(a.value, shrink))
