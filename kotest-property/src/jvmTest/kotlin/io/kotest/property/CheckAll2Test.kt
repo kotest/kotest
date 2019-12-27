@@ -5,6 +5,7 @@ import io.kotest.property.arbitraries.int
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 import io.kotest.specs.FunSpec
+import kotlinx.coroutines.delay
 
 class CheckAll2Test : FunSpec({
 
@@ -41,15 +42,16 @@ class CheckAll2Test : FunSpec({
       context.failures() shouldBe 0
    }
 
-//   test("checkAll with 2 implicit arbitraries using a suspend function") {
-//      val context = forAll<Int, Long>(100) { a, b ->
-//         delay(10)
-//         a + b == b + a
-//      }
-//      context.attempts() shouldBe 10609
-//      context.successes() shouldBe 10609
-//      context.failures() shouldBe 0
-//   }
+   test("checkAll with 2 implicit arbitraries using a suspend function") {
+
+      val context = forAll<Int, Long>(100) { a, b ->
+         delay(10)
+         a + b == b + a
+      }
+      context.attempts() shouldBe 10609
+      context.successes() shouldBe 10609
+      context.failures() shouldBe 0
+   }
 
    test("checkAll with mixed arbitrary and progression") {
 

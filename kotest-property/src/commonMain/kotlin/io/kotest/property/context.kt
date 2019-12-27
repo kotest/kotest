@@ -9,11 +9,11 @@ class PropertyContext {
    private var successes = 0
    private var failures = 0
 
-   internal fun markSuccess() {
+   fun markSuccess() {
       successes++
    }
 
-   internal fun markFailure() {
+   fun markFailure() {
       failures++
    }
 

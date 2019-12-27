@@ -31,7 +31,7 @@ fun propertyTestFailureMessage(
 
 data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
-internal fun propertyAssertionError(
+fun propertyAssertionError(
    e: AssertionError,
    attempt: Int,
    inputs: List<PropertyFailureInput<out Any?>>

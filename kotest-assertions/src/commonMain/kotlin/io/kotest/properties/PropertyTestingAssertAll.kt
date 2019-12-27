@@ -5,16 +5,21 @@ package io.kotest.properties
 import io.kotest.properties.shrinking.Shrinker
 import io.kotest.properties.shrinking.shrink
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 data class Tuple4<out A, out B, out C, out D>(val a: A, val b: B, val c: C, val d: D) {
   override fun toString(): String {
     return "($a, $b, $c, $d)"
   }
 }
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 data class Tuple5<out A, out B, out C, out D, out E>(val a: A, val b: B, val c: C, val d: D, val e: E) {
   override fun toString(): String {
     return "($a, $b, $c, $d, $e)"
   }
 }
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 data class Tuple6<out A, out B, out C, out D, out E, out F>(val a: A, val b: B, val c: C, val d: D, val e: E, val f: F) {
   override fun toString(): String {
     return "($a, $b, $c, $d, $e, $f)"
