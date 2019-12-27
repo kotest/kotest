@@ -1,8 +1,10 @@
 package io.kotest.property
 
+import io.kotest.properties.nextPrintableString
 import io.kotest.property.shrinker.DoubleShrinker
 import io.kotest.property.shrinker.IntShrinker
 import io.kotest.property.shrinker.LongShrinker
+import io.kotest.property.shrinker.StringShrinker
 import kotlin.random.Random
 import kotlin.random.nextLong
 
@@ -154,3 +156,33 @@ fun Arbitrary.Companion.numericDoubles(
  * The edge cases are [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
 fun Arbitrary.Companion.byte(iterations: Int) = int(iterations).map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
+
+/**
+ * Returns an [Arbitrary] where each random value is a String.
+ * The edge cases values are:
+ *
+ * The empty string
+ * A line separator
+ * Multi-line string
+ * a UTF8 string.
+ */
+fun Arbitrary.Companion.string(iterations: Int = 100, minSize: Int = 0, maxSize: Int = 100): Arbitrary<String> =
+   object : Arbitrary<String> {
+
+      val range = minSize..maxSize
+
+      val literals = listOf(
+         "",
+         "\n",
+         "\nabc\n123\n",
+         "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070"
+      )
+
+      override fun edgecases(): Iterable<String> = literals.filter { it.length in range }
+
+      override fun samples(random: Random): Sequence<PropertyInput<String>> {
+         return generateSequence {
+            random.nextPrintableString(range.first + random.nextInt(range.last - range.first + 1))
+         }.map { PropertyInput(it, StringShrinker) }.take(iterations)
+      }
+   }

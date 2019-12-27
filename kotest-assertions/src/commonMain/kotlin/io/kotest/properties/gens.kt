@@ -24,6 +24,7 @@ import kotlin.random.nextLong
  * a UTF8 string.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
    val literals = listOf("",
       "\n",
