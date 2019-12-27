@@ -2,7 +2,7 @@
 
 package io.kotest.property.internal
 
-import io.kotest.Tuple2
+import io.kotest.tuples.Tuple2
 import io.kotest.property.*
 import kotlin.math.min
 

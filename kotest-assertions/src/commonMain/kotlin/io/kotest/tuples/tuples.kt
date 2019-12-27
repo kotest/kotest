@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.tuples
 
 data class Tuple2<out A, out B>(val a: A, val b: B) {
    override fun toString(): String {

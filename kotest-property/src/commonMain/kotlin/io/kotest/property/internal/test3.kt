@@ -2,7 +2,7 @@
 
 package io.kotest.property.internal
 
-import io.kotest.Tuple3
+import io.kotest.tuples.Tuple3
 import io.kotest.property.*
 
 inline fun <A, B, C> test3(
