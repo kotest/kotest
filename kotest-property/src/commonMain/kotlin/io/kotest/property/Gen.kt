@@ -41,7 +41,7 @@ fun <T> Gen<T>.filter(predicate: (T) -> Boolean): Gen<T> = object : Gen<T> {
  * Returns a new [Gen] which will merge the values from this gen and the values of
  * the supplied gen together in turn.
  *
- * If other words, if GenA provides 1,2,3 and GenB provides 7,8,9 then this gen will output
+ * In other words, if GenA provides 1,2,3 and GenB provides 7,8,9 then this gen will output
  * 1,7,2,8,3,9.
  *
  * The supplied gen must be a subtype of the type of this gen.
