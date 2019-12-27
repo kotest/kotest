@@ -1,6 +1,9 @@
 package io.kotest.property
 
 import io.kotest.property.arbitraries.int
+import io.kotest.property.progressions.constant
+import io.kotest.property.progressions.int
+import io.kotest.property.progressions.long
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 import io.kotest.specs.FunSpec
@@ -72,7 +75,7 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
       shouldThrowAny {
          forAll(
             Progression.int(0..10),
-            Arbitrary.constant(8),
+            Progression.constant(8),
             PropTestArgs(maxFailure = 9, minSuccess = 9)
          ) { a, b -> a < b }
       }.message shouldBe """Property failed after 11 attempts

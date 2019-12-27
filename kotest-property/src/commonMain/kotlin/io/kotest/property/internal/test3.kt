@@ -1,8 +1,9 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package io.kotest.property
+package io.kotest.property.internal
 
 import io.kotest.Tuple3
+import io.kotest.property.*
 
 inline fun <A, B, C> test3(
    genA: Gen<A>,
@@ -25,11 +26,25 @@ inline fun <A, B, C> test3(
                } catch (e: AssertionError) {
                   context.markFailure()
                   if (args.maxFailure == 0) {
-                     fail(a, b, c, shrink(a, b, c, property, args), e, attempts())
+                     fail(
+                        a,
+                        b,
+                        c,
+                        shrink(a, b, c, property, args),
+                        e,
+                        attempts()
+                     )
                   } else if (failures() > args.maxFailure) {
                      val t =
                         AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-                     fail(a, b, c, shrink(a, b, c, property, args), t, attempts())
+                     fail(
+                        a,
+                        b,
+                        c,
+                        shrink(a, b, c, property, args),
+                        t,
+                        attempts()
+                     )
                   }
                }
             }
@@ -52,9 +67,12 @@ inline fun <A, B, C> shrink(
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    return with(context) {
-      val smallestA = shrink(a, { property(it, b.value, c.value) }, args.shrinking)
-      val smallestB = shrink(b, { property(a.value, it, c.value) }, args.shrinking)
-      val smallestC = shrink(c, { property(a.value, b.value, it) }, args.shrinking)
+      val smallestA =
+         shrink(a, { property(it, b.value, c.value) }, args.shrinking)
+      val smallestB =
+         shrink(b, { property(a.value, it, c.value) }, args.shrinking)
+      val smallestC =
+         shrink(c, { property(a.value, b.value, it) }, args.shrinking)
       Tuple3(smallestA, smallestB, smallestC)
    }
 }

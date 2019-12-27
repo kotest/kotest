@@ -1,8 +1,9 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package io.kotest.property
+package io.kotest.property.internal
 
 import io.kotest.Tuple2
+import io.kotest.property.*
 import kotlin.math.min
 
 inline fun <A, B> test2(
@@ -24,10 +25,22 @@ inline fun <A, B> test2(
             } catch (e: AssertionError) {
                context.markFailure()
                if (args.maxFailure == 0) {
-                  fail(a, b, shrink(a, b, property, args), e, attempts())
+                  fail(
+                     a,
+                     b,
+                     shrink(a, b, property, args),
+                     e,
+                     attempts()
+                  )
                } else if (failures() > args.maxFailure) {
                   val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-                  fail(a, b, shrink(a, b, property, args), t, attempts())
+                  fail(
+                     a,
+                     b,
+                     shrink(a, b, property, args),
+                     t,
+                     attempts()
+                  )
                }
             }
          }
@@ -56,8 +69,10 @@ inline fun <A, B> shrink(
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    return with(context) {
-      val smallestA = shrink(a, { property(it, b.value) }, args.shrinking)
-      val smallestB = shrink(b, { property(a.value, it) }, args.shrinking)
+      val smallestA =
+         shrink(a, { property(it, b.value) }, args.shrinking)
+      val smallestB =
+         shrink(b, { property(a.value, it) }, args.shrinking)
       Tuple2(smallestA, smallestB)
    }
 }

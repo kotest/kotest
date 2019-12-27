@@ -3,6 +3,7 @@ package io.kotest.property
 import io.kotest.property.arbitraries.double
 import io.kotest.property.arbitraries.float
 import io.kotest.property.arbitraries.int
+import io.kotest.property.arbitraries.long
 import kotlin.random.Random
 
 /**

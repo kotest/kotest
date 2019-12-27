@@ -1,6 +1,5 @@
 package io.kotest.property
 
-import io.kotest.property.shrinker.Shrinker
 import kotlin.random.Random
 
 /**

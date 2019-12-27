@@ -3,7 +3,7 @@ package io.kotest.property.arbitraries
 import io.kotest.property.Arbitrary
 import io.kotest.property.PropertyInput
 import io.kotest.property.filter
-import io.kotest.property.shrinker.Shrinker
+import io.kotest.property.Shrinker
 import io.kotest.property.withEdgeCases
 import kotlin.math.abs
 import kotlin.random.Random

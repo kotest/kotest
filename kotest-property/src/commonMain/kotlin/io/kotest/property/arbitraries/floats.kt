@@ -2,7 +2,7 @@ package io.kotest.property.arbitraries
 
 import io.kotest.property.Arbitrary
 import io.kotest.property.PropertyInput
-import io.kotest.property.shrinker.Shrinker
+import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.math.round
 import kotlin.random.Random
@@ -34,6 +34,28 @@ fun Arbitrary.Companion.float(iterations: Int): Arbitrary<Float> = object : Arbi
    override fun samples(random: Random): Sequence<PropertyInput<Float>> {
       return generateSequence { PropertyInput(random.nextFloat(), FloatShrinker) }
          .take(iterations)
+   }
+}
+
+/**
+ * Returns an [Arbitrary] which is the same as [double] but does not include +INFINITY, -INFINITY or NaN.
+ *
+ * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
+ */
+fun Arbitrary.Companion.numericFloats(
+   from: Float = Float.MIN_VALUE,
+   to: Float = Float.MAX_VALUE
+): Arbitrary<Float> = object : Arbitrary<Float> {
+
+   val literals = listOf(0.0F, 1.0F, -1.0F, Float.MIN_VALUE, Float.MAX_VALUE).filter { it in (from..to) }
+
+   override fun edgecases(): Iterable<Float> = literals
+
+   // There's no nextFloat(from, to) method, so borrowing it from Double
+   override fun samples(random: Random): Sequence<PropertyInput<Float>> {
+      return generateSequence {
+         PropertyInput(random.nextDouble(from.toDouble(), to.toDouble()).toFloat(), FloatShrinker)
+      }
    }
 }
 

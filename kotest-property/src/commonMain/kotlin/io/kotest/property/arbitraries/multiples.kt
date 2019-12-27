@@ -2,7 +2,7 @@ package io.kotest.property.arbitraries
 
 import io.kotest.property.Arbitrary
 import io.kotest.property.PropertyInput
-import io.kotest.property.shrinker.Shrinker
+import io.kotest.property.Shrinker
 import kotlin.random.Random
 
 /**

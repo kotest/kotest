@@ -157,6 +157,7 @@ fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
                                  to: Double = Double.MAX_VALUE
 ): Gen<Double> = object : Gen<Double> {
@@ -181,6 +182,7 @@ fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
  * Returns a stream of values where each value is a randomly
  * chosen Float.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
   val literals = listOf(0F,
     Float.MIN_VALUE,
@@ -202,6 +204,7 @@ fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericFloats(
    from: Float = Float.MIN_VALUE,
    to: Float = Float.MAX_VALUE
@@ -519,6 +522,7 @@ inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : 
  * values will be picked. May not choose every
  * item in the list.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> {
@@ -530,6 +534,7 @@ fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
 /**
  * @return a new [Gen] created from the given [values] (see [from] List for more details)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
 
 /**
@@ -684,6 +689,7 @@ fun Random.nextPrintableString(length: Int): String {
 /**
  * Returns a [[Gen]] which always returns the same value.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
    override fun constants(): Iterable<T> = listOf(value)
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { value }

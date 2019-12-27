@@ -1,6 +1,8 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package io.kotest.property
+package io.kotest.property.internal
+
+import io.kotest.property.*
 
 inline fun <A> test1(
    genA: Gen<A>,
@@ -19,10 +21,20 @@ inline fun <A> test1(
          } catch (e: AssertionError) {
             context.markFailure()
             if (args.maxFailure == 0) {
-               fail(a, shrink(a, property, args), e, attempts())
+               fail(
+                  a,
+                  shrink(a, property, args),
+                  e,
+                  attempts()
+               )
             } else if (failures() > args.maxFailure) {
                val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-               fail(a, shrink(a, property, args), t, attempts())
+               fail(
+                  a,
+                  shrink(a, property, args),
+                  t,
+                  attempts()
+               )
             }
          }
       }

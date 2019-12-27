@@ -1,6 +1,4 @@
-package io.kotest.property.shrinker
-
-import io.kotest.property.PropertyInput
+package io.kotest.property
 
 interface Shrinker<T> {
 

@@ -1,4 +1,4 @@
-package io.kotest.property
+package io.kotest.property.internal
 
 import io.kotest.assertions.Failures
 import io.kotest.assertions.show.show
@@ -36,5 +36,10 @@ fun propertyAssertionError(
    attempt: Int,
    inputs: List<PropertyFailureInput<out Any?>>
 ): AssertionError {
-   return Failures.failure(propertyTestFailureMessage(attempt, inputs, e), e)
+   return Failures.failure(
+      propertyTestFailureMessage(
+         attempt,
+         inputs,
+         e
+      ), e)
 }

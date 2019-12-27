@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.property.internal.test2
 
 inline fun <A, B> checkAll(
    genA: Gen<A>,

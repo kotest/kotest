@@ -1,6 +1,9 @@
-package io.kotest.property
+package io.kotest.property.internal
 
 import io.kotest.assertions.show.show
+import io.kotest.property.PropertyInput
+import io.kotest.property.PropertyTesting
+import io.kotest.property.ShrinkingMode
 
 /**
  * Accepts a failed value and tests it while shrinking it's value.

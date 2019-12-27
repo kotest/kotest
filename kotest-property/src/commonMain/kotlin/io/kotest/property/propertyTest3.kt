@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.property.internal.test3
 
 inline fun <A, B, C> checkAll(
    genA: Gen<A>,
@@ -30,7 +31,13 @@ inline fun <A, B, C> forAll(
    genC: Gen<C>,
    args: PropTestArgs = PropTestArgs(),
    property: PropertyContext.(A, B, C) -> Boolean
-) = test3(genA, genB, genC, args) { a, b, c -> property(a, b, c).shouldBeTrue() }
+) = test3(genA, genB, genC, args) { a, b, c ->
+   property(
+      a,
+      b,
+      c
+   ).shouldBeTrue()
+}
 
 inline fun <reified A, reified B, reified C> forAll(
    iterations: Int = 100,
