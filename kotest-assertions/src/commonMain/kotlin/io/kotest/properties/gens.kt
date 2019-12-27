@@ -24,6 +24,7 @@ import kotlin.random.nextLong
  * a UTF8 string.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
    val literals = listOf("",
       "\n",
@@ -45,6 +46,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
  * chosen [Int]. The values always returned include
  * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.int() = object : Gen<Int> {
    val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 1, -1)
    override fun constants(): Iterable<Int> = literals
@@ -91,6 +93,7 @@ fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BI
  * chosen [Byte]. The values always returned include
  * the following edge cases: [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
 
 /**
@@ -106,6 +109,7 @@ fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS
  * chosen positive value. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
 
 /**
@@ -113,6 +117,7 @@ fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
  * chosen natural number. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
 
 /**
@@ -120,12 +125,14 @@ fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
  * chosen negative value. The values returned always include
  * the following edge cases: [Int.MIN_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeIntegers(): Gen<Int> = int().filter { it < 0 }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
   val literals = listOf(0.0,
     1.0,
@@ -150,6 +157,7 @@ fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
                                  to: Double = Double.MAX_VALUE
 ): Gen<Double> = object : Gen<Double> {
@@ -163,7 +171,10 @@ fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
    override fun shrinker(): Shrinker<Double>? = DoubleShrinker
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
 
 
@@ -171,6 +182,7 @@ fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
  * Returns a stream of values where each value is a randomly
  * chosen Float.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
   val literals = listOf(0F,
     Float.MIN_VALUE,
@@ -192,6 +204,7 @@ fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericFloats(
    from: Float = Float.MIN_VALUE,
    to: Float = Float.MAX_VALUE
@@ -215,6 +228,7 @@ fun Gen.Companion.numericFloats(
  * chosen long. The values returned always include
  * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE], 0, 1, -1]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
   val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE, 0L, 1L, -1L)
   override fun constants(): Iterable<Long> = literals
@@ -242,6 +256,7 @@ fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
 /**
  * Returns both boolean values
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
   override fun constants(): Iterable<Boolean> = listOf(true, false)
    override fun random(seed: Long?): Sequence<Boolean> {
@@ -507,6 +522,7 @@ inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : 
  * values will be picked. May not choose every
  * item in the list.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> {
@@ -518,6 +534,7 @@ fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
 /**
  * @return a new [Gen] created from the given [values] (see [from] List for more details)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
 
 /**
@@ -607,6 +624,7 @@ fun <K, V> Gen.Companion.pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = obj
  * from the underlying generators.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -627,6 +645,7 @@ fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Ge
  *   the size of the [Map] is bounded between [0, [maxSize])
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -670,11 +689,13 @@ fun Random.nextPrintableString(length: Int): String {
 /**
  * Returns a [[Gen]] which always returns the same value.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
    override fun constants(): Iterable<T> = listOf(value)
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { value }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
 
    // 0 is a multiple of everything

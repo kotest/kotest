@@ -101,7 +101,7 @@ infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot conta
 fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
   override fun test(value: C) = MatcherResult(
     value.contains(t),
-    { "Collection should contain element ${stringRepr(t)}" },
+    { "Collection should contain element ${stringRepr(t)}; listing some elements ${value.take(5)}" },
     { "Collection should not contain element ${stringRepr(t)}" }
   )
 }
