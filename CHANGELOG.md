@@ -26,6 +26,7 @@ Changelog
 * Feature: Unique generator values #971
 * Feature: Iterator matcher #1060
 * Feature: Regex Matchers #1074
+* Feature: Add matchers for java.time.Instant #1127
 * Bugfix: shouldNotThrowAny return T instead of Unit #981
 
 #### 3.4.2
