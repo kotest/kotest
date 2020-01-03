@@ -23,7 +23,13 @@ buildscript {
 
    dependencies {
       classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
+      classpath 'com.android.tools.build:gradle:3.5.0'
       //    classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
+   }
+   
+   repositories {
+      mavenCentral()
+      google()
    }
 }
 
@@ -43,6 +49,7 @@ allprojects {
    repositories {
       mavenCentral()
       jcenter()
+      google()
    }
 
    sourceCompatibility = 1.8
