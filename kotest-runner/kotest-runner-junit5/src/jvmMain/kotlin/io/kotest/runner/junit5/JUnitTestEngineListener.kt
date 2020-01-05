@@ -1,15 +1,15 @@
 package io.kotest.runner.junit5
 
-import arrow.core.Try
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.Project
-import io.kotest.SpecInterface
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.TestStatus
 import io.kotest.core.TestType
-import io.kotest.core.fromSpecClass
+import io.kotest.core.fp.Try
+import io.kotest.core.specs.Spec
 import io.kotest.core.specs.SpecContainer
+import io.kotest.core.specs.description
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -20,7 +20,6 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.reflect.KClass
 
 /**
  * Notifies JUnit Platform of test statuses via a [EngineExecutionListener].
@@ -63,7 +62,7 @@ import kotlin.reflect.KClass
  * Must start tests after their parent or they can go missing.
  * Sibling containers can start and finish in parallel.
  */
-class JUnitTestRunnerListener(
+class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor
 ) : TestEngineListener {
@@ -86,14 +85,11 @@ class JUnitTestRunnerListener(
    // we store them all and mark the tests as finished only when we exit the spec
    private val results = mutableSetOf<ResultState>()
 
-   override fun engineStarted(classes: List<KClass<out SpecInterface>>) {
-      logger.trace("Engine started; classes=[$classes]")
-      listener.executionStarted(root)
-   }
-
-   override fun engineStarted2(containers: List<SpecContainer>) {
-      super.engineStarted2(containers)
-      logger.trace("Engine started; specs=[$containers]")
+   override fun engineStarted(containers: List<SpecContainer>) {
+      println("Engine starting; specs=[$containers]")
+      println("Engine starting; specs=[$containers]")
+      println("Engine starting; specs=[$containers]")
+      println("Engine starting; root=[$root]")
       listener.executionStarted(root)
    }
 
@@ -126,18 +122,21 @@ class JUnitTestRunnerListener(
       Files.write(path, content.toByteArray())
    }
 
-   override fun beforeSpecClass(klass: KClass<out SpecInterface>) {
-      logger.trace("beforeSpecClass [$klass]")
+   override fun beginSpec(spec: Spec) {
+      println("JUnit beginSpec [$spec]")
       try {
-         val descriptor = createSpecDescriptor(klass)
+         val descriptor = createSpecDescriptor(spec)
+         println("JUnit test descriptor $descriptor")
          listener.executionStarted(descriptor)
+         println("qeqweqwe")
       } catch (t: Throwable) {
-         logger.error("Error in JUnit Platform listener", t)
+         println("Error in JUnit Platform listener $t")
          throw t
       }
    }
 
    override fun enterTestCase(testCase: TestCase) {
+      println("Seeing test " + testCase.description)
       discovered.add(Pair(testCase.description, testCase.type))
    }
 
@@ -161,22 +160,23 @@ class JUnitTestRunnerListener(
       results.add(ResultState(testCase, result))
    }
 
-   override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
-      logger.trace("specInitialisationFailed $klass $t")
-      // we must "start" the spec to get it to show
-      beforeSpecClass(klass)
-      afterSpecClass(klass, t)
-   }
+//   override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
+//      logger.trace("specInitialisationFailed $klass $t")
+//      // we must "start" the spec to get it to show
+//      beforeSpecClass(klass)
+//      // todo specCompleted(klass, t)
+//   }
 
-   override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
-      logger.trace("afterSpecClass [$klass]")
+   override fun endSpec(spec: Spec, t: Throwable?) {
+      logger.trace("endSpec [$spec]")
 
-      val description = Description.fromSpecClass(klass)
+      val description = spec.description()
 
       // we should have a result for at least every test that was discovered
       // we wait until the spec is completed before completing all child scopes, because we need
       // to wait until all possible invocations of each scope have completed.
       // for each description we can grab the best result and use that
+      println("discovered test cases $discovered")
       discovered
          .filter { description.isAncestorOf(it.first) }
          .forEach {
@@ -277,25 +277,23 @@ class JUnitTestRunnerListener(
       return descriptor
    }
 
-   private fun createSpecDescriptor(klass: KClass<out SpecInterface>): TestDescriptor {
+   private fun createSpecDescriptor(spec: Spec): TestDescriptor {
 
       // the id must be completely unique, so we need to use the full class name of the spec, otherwise
       // if we have com.FooTest and org.FooTest gradle will throw a wobbly
-      val description = Description.fromSpecClass(klass)
-      val id = root.uniqueId.append("spec", description.name)
-      val source = ClassSource.from(klass.java)
+      val id = root.uniqueId.append("spec", spec.description().name)
+      // todo restore
+      val source = ClassSource.from(Spec::class.java)
 
-      val descriptor = object : AbstractTestDescriptor(id, description.name, source) {
+      val descriptor = object : AbstractTestDescriptor(id, spec.description().name, source) {
          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
          override fun mayRegisterTests(): Boolean = true
       }
 
-      descriptors[description] = descriptor
+      descriptors[spec.description()] = descriptor
 
-      // we need to synchronize because we don't want to allow multiple specs adding
-      // to the root container at the same time
       root.addChild(descriptor)
-      logger.trace("Dynamically registering spec [id=$id, descriptor=$descriptor]")
+      println("Dynamically registering spec [id=$id, descriptor=$descriptor]")
       listener.dynamicTestRegistered(descriptor)
 
       return descriptor

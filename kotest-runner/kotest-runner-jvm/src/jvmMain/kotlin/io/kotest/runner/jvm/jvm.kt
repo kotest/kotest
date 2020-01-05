@@ -3,7 +3,10 @@ package io.kotest.runner.jvm
 import io.kotest.core.Project
 import io.kotest.core.fp.Try
 import io.kotest.core.fp.success
-import io.kotest.core.specs.*
+import io.kotest.core.specs.Spec
+import io.kotest.core.specs.SpecBuilder
+import io.kotest.core.specs.SpecContainer
+import io.kotest.core.specs.plus
 import io.kotest.specs.displayName
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -15,10 +18,6 @@ fun SpecContainer.instantiate(): Try<Spec> = when (this) {
          name = this.kclass.java.displayName(),
          configure = {},
          tests = builder.testCases(),
-         beforeTest = builder.beforeTest,
-         afterTest = builder.afterTest,
-         beforeAll = builder.beforeAll,
-         afterAll = builder.afterAll,
          isolationMode = builder.isolationMode,
          testCaseOrder = builder.testCaseOrder,
          tags = builder.tags,

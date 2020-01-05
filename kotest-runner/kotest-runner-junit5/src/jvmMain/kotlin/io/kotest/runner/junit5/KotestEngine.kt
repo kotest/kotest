@@ -14,7 +14,7 @@ import org.junit.platform.launcher.LauncherDiscoveryRequest
 import org.slf4j.LoggerFactory
 
 /**
- * A Kotest Junit Platform [TestEngine].
+ * A Kotest implementation of a Junit Platform [TestEngine].
  */
 class KotestEngine : TestEngine {
 
@@ -31,7 +31,7 @@ class KotestEngine : TestEngine {
       logger.debug("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       val listener = IsolationTestEngineListener(
-         JUnitTestRunnerListener(
+         JUnitTestEngineListener(
             SynchronizedEngineExecutionListener(request.engineExecutionListener),
             root
          )
@@ -51,13 +51,33 @@ class KotestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId
    ): KotestEngineDescriptor {
+      println("Test discovery")
       logger.trace("configurationParameters=" + request.configurationParameters)
       logger.trace("uniqueId=$uniqueId")
+      // a method selector is passed by intellij to run just a single method inside a test file
+      // this happens for example, when trying to run a junit test alongside kotest tests,
+      // and kotest will then run all other tests.
+      // therefore, the presence of a MethodSelector means we must run no tests in KT.
+      return when {
+         request.getSelectorsByType(MethodSelector::class.java).isEmpty() -> scan(request, uniqueId)
+         else -> KotestEngineDescriptor(uniqueId, emptyList())
+      }
+   }
+
+   /**
+    * Performs test discovery by scanning the classpath.
+    */
+   private fun scan(
+      request: EngineDiscoveryRequest,
+      uniqueId: UniqueId
+   ): KotestEngineDescriptor {
+
+      val result = TestDiscovery.discover(request.toDiscoveryRequest())
 
       val postFilters = when (request) {
          is LauncherDiscoveryRequest -> {
             logger.trace(request.string())
-            request.postDiscoveryFilters.toList()
+            request.postDiscoveryFilters
          }
          else -> {
             logger.trace(request.string())
@@ -65,20 +85,12 @@ class KotestEngine : TestEngine {
          }
       }
 
-      // a method selector is passed by intellij to run just a single method inside a test file
-      // this happens for example, when trying to run a junit test alongside kotest tests,
-      // and kotest will then run all other tests.
-      // therefore, the presence of a MethodSelector means we must run no tests in KT.
-      return if (request.getSelectorsByType(MethodSelector::class.java).isEmpty()) {
-         val result = TestDiscovery.discover(discoveryRequest(request))
+      val classes = if (postFilters.isEmpty()) result.containers else {
          val testFilters = postFilters.map { ClassMethodAdaptingFilter(uniqueId, it) }
-         val classes = result.containers.filter { container ->
-            testFilters.isEmpty() || testFilters.any { it.invoke(container) }
-         }
-         KotestEngineDescriptor(uniqueId, classes)
-      } else {
-         KotestEngineDescriptor(uniqueId, emptyList())
+         result.containers.filter { container -> testFilters.any { it.invoke(container) } }
       }
+
+      return KotestEngineDescriptor(uniqueId, classes)
    }
 
    class KotestEngineDescriptor(id: UniqueId, val classes: List<SpecContainer>) : EngineDescriptor(id, RootTestName) {

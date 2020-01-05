@@ -1,122 +1,104 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Description
-import io.kotest.SpecInterface
+import io.kotest.core.Description
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
-import io.kotest.core.fromSpecClass
+import io.kotest.core.specs.Spec
+import io.kotest.core.specs.SpecContainer
+import io.kotest.core.specs.description
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.reflect.KClass
 
+/**
+ * Gradle gets confused if test events are published concurrently.
+ * So we must ensure that each spec is isolated in its output.
+ */
 @Suppress("LocalVariableName")
 class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
-  private val runningSpec = AtomicReference<Description?>(null)
-  private val callbacks = mutableListOf<() -> Unit>()
+   private val runningSpec = AtomicReference<Description?>(null)
+   private val callbacks = mutableListOf<() -> Unit>()
 
-  private fun queue(fn: () -> Unit) {
-    callbacks.add { fn() }
-  }
+   private fun queue(fn: () -> Unit) {
+      callbacks.add { fn() }
+   }
 
-  private fun replay() {
-    val _callbacks = callbacks.toList()
-    callbacks.clear()
-    _callbacks.forEach { it.invoke() }
-  }
+   private fun replay() {
+      val _callbacks = callbacks.toList()
+      callbacks.clear()
+      _callbacks.forEach { it.invoke() }
+   }
 
-  override fun engineFinished(t: Throwable?) {
-    listener.engineFinished(t)
-  }
-
-  override fun engineStarted(classes: List<KClass<out SpecInterface>>) {
-    listener.engineStarted(classes)
-  }
-
-  override fun specCreated(spec: SpecInterface) {
-    if (runningSpec.compareAndSet(null, spec.description())) {
-      listener.specCreated(spec)
-    } else {
-      queue {
-        specCreated(spec)
+   private fun runOrQueue(description: Description, f: () -> Unit) {
+      println("${runningSpec.get()} == $description")
+      if (runningSpec.compareAndSet(null, description)) {
+         f()
+      } else {
+         queue(f)
       }
-    }
-  }
+   }
 
-  override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
-    if (runningSpec.compareAndSet(null, Description.fromSpecClass(klass))) {
-      listener.specInitialisationFailed(klass, t)
-    } else {
-      queue {
-        specInitialisationFailed(klass, t)
+   override fun engineFinished(t: Throwable?) {
+      listener.engineFinished(t)
+   }
+
+   override fun engineStarted(containers: List<SpecContainer>) {
+      listener.engineStarted(containers)
+   }
+
+   override fun beginSpec(spec: Spec) {
+      println("beginSpec ${spec.description()} current=${runningSpec.get()}")
+      if (runningSpec.compareAndSet(null, spec.description())) {
+         println("Runing has been updated to ${runningSpec.get()}")
+         listener.beginSpec(spec)
+         println("begin done")
+      } else {
+         queue {
+            beginSpec(spec)
+         }
       }
-    }
-  }
+   }
 
-  override fun beforeSpecClass(klass: KClass<out SpecInterface>) {
-    if (isRunning(klass)) {
-      listener.beforeSpecClass(klass)
-    } else {
-      queue {
-        beforeSpecClass(klass)
+   override fun specExecutionError(containers: SpecContainer, t: Throwable) {
+      listener.specExecutionError(containers, t)
+   }
+
+   private fun isRunning(spec: Spec): Boolean {
+      val running = runningSpec.get()
+      val given = spec.description()
+      return running == given
+   }
+
+   override fun enterTestCase(testCase: TestCase) {
+      runOrQueue(testCase.spec.description()) {
+         listener.enterTestCase(testCase)
       }
-    }
-  }
+   }
 
-  private fun isRunning(klass: KClass<out SpecInterface>): Boolean {
-    val running = runningSpec.get()
-    val given = Description.fromSpecClass(klass)
-    return running == given
-  }
-
-  override fun enterTestCase(testCase: TestCase) {
-    if (runningSpec.get() == testCase.spec.description()) {
-      listener.enterTestCase(testCase)
-    } else {
-      queue {
-        enterTestCase(testCase)
+   override fun invokingTestCase(testCase: TestCase, k: Int) {
+      runOrQueue(testCase.spec.description()) {
+         listener.invokingTestCase(testCase, k)
       }
-    }
-  }
+   }
 
-  override fun invokingTestCase(testCase: TestCase, k: Int) {
-    if (runningSpec.get() == testCase.spec.description()) {
-      listener.invokingTestCase(testCase, k)
-    } else {
-      queue {
-        invokingTestCase(testCase, k)
+   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
+      runOrQueue(testCase.spec.description()) {
+         listener.afterTestCaseExecution(testCase, result)
       }
-    }
-  }
+   }
 
-  override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
-    if (runningSpec.get() == testCase.spec.description()) {
-      listener.afterTestCaseExecution(testCase, result)
-    } else {
-      queue {
-        afterTestCaseExecution(testCase, result)
+   override fun exitTestCase(testCase: TestCase, result: TestResult) {
+      runOrQueue(testCase.spec.description()) {
+         listener.exitTestCase(testCase, result)
       }
-    }
-  }
+   }
 
-  override fun exitTestCase(testCase: TestCase, result: TestResult) {
-    if (runningSpec.get() == testCase.spec.description()) {
-      listener.exitTestCase(testCase, result)
-    } else {
-      queue {
-        exitTestCase(testCase, result)
+   override fun endSpec(spec: Spec, t: Throwable?) {
+      println("Ending spec ${spec.description()} current=${runningSpec.get()}")
+      runOrQueue(spec.description()) {
+         println("Ending spec 2")
+         listener.endSpec(spec, t)
+         runningSpec.set(null)
+         replay()
       }
-    }
-  }
-
-  override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
-    if (runningSpec.get() == Description.fromSpecClass(klass)) {
-      listener.afterSpecClass(klass, t)
-      runningSpec.set(null)
-      replay()
-    } else {
-      queue {
-        afterSpecClass(klass, t)
-      }
-    }
-  }
+   }
 }

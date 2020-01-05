@@ -1,14 +1,10 @@
 package io.kotest.runner.console
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.Description
-import io.kotest.SpecInterface
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.TestStatus
-import io.kotest.core.TestType
-import io.kotest.core.fromSpecClass
-import kotlin.reflect.KClass
+import io.kotest.core.*
+import io.kotest.core.specs.Spec
+import io.kotest.core.specs.SpecContainer
+import io.kotest.core.specs.description
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -77,13 +73,13 @@ class MochaConsoleWriter(private val term: TermColors,
     return term.brightRed("$margin\tcause: $message (${testCase.source.fileName}:${testCase.source.lineNumber})")
   }
 
-  override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
+  override fun endSpec(spec: Spec, t: Throwable?) {
 
     n += 1
-    val specDesc = Description.fromSpecClass(klass)
+    val specDesc = spec.description()
 
     if (t == null) {
-      println("$margin$n) " + term.brightWhite(klass.qualifiedName!!))
+      println("$margin$n) " + term.brightWhite(spec.name ?: "<none>"))
     } else {
       errors = true
       print(margin)
@@ -92,7 +88,7 @@ class MochaConsoleWriter(private val term: TermColors,
     }
     println()
 
-    tests.filter { it.spec::class.qualifiedName == klass.qualifiedName }.forEach {
+    tests.filter { it.spec::class.qualifiedName == spec.name }.forEach {
       val result = results[it.description]
       if (result != null) {
         val line = testLine(it, result)
@@ -112,21 +108,21 @@ class MochaConsoleWriter(private val term: TermColors,
     println()
   }
 
-  override fun engineStarted(classes: List<KClass<out SpecInterface>>) {
+  override fun engineStarted(containers: List<SpecContainer>) {
     start = System.currentTimeMillis()
   }
 
-  override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
-
-    n += 1
-    val specDesc = Description.fromSpecClass(klass)
-    errors = true
-
-    print(margin)
-    println(term.red(specDesc.name + " *** FAILED ***"))
-    println(term.red("$margin\tcause: ${t.message})"))
-    println()
-  }
+//  override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
+//
+//    n += 1
+//    val specDesc = Description.fromSpecClass(klass)
+//    errors = true
+//
+//    print(margin)
+//    println(term.red(specDesc.name + " *** FAILED ***"))
+//    println(term.red("$margin\tcause: ${t.message})"))
+//    println()
+//  }
 
   override fun enterTestCase(testCase: TestCase) {
     tests.add(testCase)

@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.Description
 import io.kotest.extensions.ProjectLevelFilter
 import io.kotest.extensions.TestCaseExtension
 

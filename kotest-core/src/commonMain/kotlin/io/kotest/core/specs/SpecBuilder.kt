@@ -25,11 +25,6 @@ open class SpecBuilder {
 
    var acceptingTopLevelRegistration = true
 
-   var beforeTest: BeforeTest? = null
-   var afterTest: AfterTest? = null
-   var afterAll: AfterAll? = null
-   var beforeAll: BeforeAll? = null
-
    var isolationMode: IsolationMode? = null
    var testCaseOrder: TestCaseOrder? = null
    var assertionMode: AssertionMode? = null
@@ -61,7 +56,11 @@ open class SpecBuilder {
     * Registers a new before-test callback to be executed before every [TestCase].
     */
    fun beforeTest(f: BeforeTest) {
-      beforeTest = beforeTest.compose(f)
+      listeners(object : TestListener {
+         override fun beforeTest(testCase: TestCase) {
+            f(testCase)
+         }
+      })
    }
 
    /**
@@ -70,15 +69,28 @@ open class SpecBuilder {
     * and the [TestResult] outcome of that test.
     */
    fun afterTest(f: AfterTest) {
-      afterTest = afterTest.compose(f)
+      listeners(object : TestListener {
+         override fun afterTest(testCase: TestCase, result: TestResult) {
+            f(testCase, result)
+         }
+      })
    }
 
    fun beforeAll(f: BeforeAll) {
-      beforeAll = beforeAll.compose(f)
+      listeners(object : TestListener {
+         override fun beginSpec(spec: Spec) {
+            f()
+         }
+      })
    }
 
    fun afterAll(f: AfterAll) {
-      afterAll = afterAll.compose(f)
+      listeners(object : TestListener {
+         override fun endSpec(spec: Spec) {
+            println("end spec")
+            f()
+         }
+      })
    }
 
    fun tags(vararg tags: Tag) {
@@ -97,32 +109,9 @@ open class SpecBuilder {
       includes = includes + spec
    }
 
-   fun autoclose(closeable: AutoCloseable) {
+   fun <T : AutoCloseable> autoClose(closeable: T): T {
       afterAll { closeable.close() }
-   }
-}
-
-private fun <R> Function0<R>?.compose(f: () -> R): () -> R = when (this) {
-   null -> f
-   else -> { ->
-      this()
-      f()
-   }
-}
-
-private fun <A, R> Function1<A, R>?.compose(f: (A) -> R): (A) -> R = when (this) {
-   null -> f
-   else -> { a ->
-      this(a)
-      f(a)
-   }
-}
-
-private fun <A, B, R> Function2<A, B, R>?.compose(f: (A, B) -> R): (A, B) -> R = when (this) {
-   null -> f
-   else -> { a, b ->
-      this(a, b)
-      f(a, b)
+      return closeable
    }
 }
 
@@ -133,10 +122,6 @@ fun createSpec(name: String?, configure: SpecBuilder.() -> Unit): Spec {
       name = name,
       configure = configure,
       tests = builder.testCases(),
-      beforeTest = builder.beforeTest,
-      afterTest = builder.afterTest,
-      beforeAll = builder.beforeAll,
-      afterAll = builder.afterAll,
       isolationMode = builder.isolationMode,
       testCaseOrder = builder.testCaseOrder,
       tags = builder.tags,

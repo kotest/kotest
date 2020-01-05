@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.Project
 import io.kotest.core.tags.StringTag
 import io.kotest.core.tags.Tags

@@ -1,5 +1,6 @@
 package io.kotest.core.specs
 
+import io.kotest.core.Description
 import io.kotest.core.*
 import io.kotest.core.tags.Tag
 import io.kotest.extensions.SpecLevelExtension
@@ -27,10 +28,6 @@ data class Spec(
    val name: String?,
    val configure: SpecBuilder.() -> Unit,
    val tests: List<TestCase>,
-   val beforeTest: BeforeTest?,
-   val afterTest: AfterTest?,
-   val beforeAll: BeforeAll?,
-   val afterAll: AfterAll?,
    val isolationMode: IsolationMode?,
    val testCaseOrder: TestCaseOrder?,
    val tags: Set<Tag>,
@@ -38,6 +35,8 @@ data class Spec(
    val listeners: List<TestListener>,
    val extensions: List<SpecLevelExtension>
 )
+
+fun Spec.description(): Description = Description.spec(name ?: "<none>")
 
 /**
  * Merges two specs. The receiver of the function takes priority for root name, isolationMode, testCaseOrder and
@@ -55,23 +54,12 @@ operator fun Spec.plus(other: Spec): Spec {
          }
       },
       tests = this.tests + other.tests,
-      beforeTest = {
-         this.beforeTest?.invoke(it)
-         other.beforeTest?.invoke(it)
+      isolationMode = when {
+         this@plus.isolationMode == null -> other.isolationMode
+         other.isolationMode == null -> this.isolationMode
+         this@plus.isolationMode == other.isolationMode -> other.isolationMode
+         else -> throw RuntimeException("Cannot combine specs which have different isolation modes")
       },
-      afterTest = { testCase, testResult ->
-         this.afterTest?.invoke(testCase, testResult)
-         other.afterTest?.invoke(testCase, testResult)
-      },
-      beforeAll = {
-         this.beforeAll?.invoke()
-         other.beforeAll?.invoke()
-      },
-      afterAll = {
-         this.afterAll?.invoke()
-         other.afterAll?.invoke()
-      },
-      isolationMode = this.isolationMode ?: other.isolationMode,
       testCaseOrder = this.testCaseOrder ?: other.testCaseOrder,
       tags = this.tags + other.tags,
       assertionMode = this.assertionMode ?: other.assertionMode,

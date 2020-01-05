@@ -19,7 +19,7 @@ import kotlin.reflect.full.findAnnotation
 class TestEngine(
    val specs: List<SpecContainer>,
    filters: List<TestCaseFilter>,
-   val parallelism: Int,
+   private val parallelism: Int,
    includedTags: Set<Tag>,
    excludedTags: Set<Tag>,
    val listener: TestEngineListener
@@ -40,6 +40,7 @@ class TestEngine(
    }
 
    fun execute() {
+      println("Starting test engine for ${specs.size} specs")
       start()
          .flatMap { submitAll() }
          .fold(
@@ -61,7 +62,7 @@ class TestEngine(
 
    // attempts to submit all specs to the test engine
    private fun submitAll() = Try {
-      logger.trace("Submitting ${specs.size} specs")
+      println("Submitting ${specs.size} specs")
 
       val ordered = Project.specExecutionOrder().sort(specs)
 
@@ -85,14 +86,16 @@ class TestEngine(
       specs.forEach { submitSpec(it, executor) }
       executor.shutdown()
 
-      logger.trace("Waiting for spec executor to terminate")
+      println("Waiting for batch executor to terminate")
       val error = try {
          executor.awaitTermination(1, TimeUnit.DAYS)
          null
       } catch (t: InterruptedException) {
+         println(t)
          t
       }
 
+      println("Ready to go")
       if (error != null) throw error
    }
 
@@ -106,32 +109,29 @@ class TestEngine(
    }
 
    // attempt to execute the project after all callbacks
-   private fun afterAll() = Try { Project.afterAll() }
+   private fun afterAll() = Try {
+      println("Running project after all")
+      Project.afterAll()
+   }
 
    // attempt to invoke the engine started callback
    private fun start() = Try {
-      listener.engineStarted2(specs)
+      listener.engineStarted(specs)
       Project.beforeAll()
    }
 
    private fun submitSpec(container: SpecContainer, executor: ExecutorService) {
+      println("Submitting spec $container")
       executor.submit {
-         createSpec(container)
+         container.instantiate()
             .flatMap { specExecutor.execute(it) }
             .onFailure {
+               println(it)
                listener.specExecutionError(container, it)
                // if creating or executing the spec failed we will bomb out early as this means
                // something happened that the framwork wasn't able to handle
                executor.shutdownNow()
             }
-      }
-   }
-
-   private fun createSpec(container: SpecContainer) = container.instantiate().flatMap {
-      Try {
-         // todo restore this for full junit support
-         // listener.specCreated(it)
-         it
       }
    }
 }

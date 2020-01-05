@@ -1,11 +1,12 @@
 package io.kotest.extensions
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.IsolationMode.InstancePerLeaf
 import io.kotest.core.IsolationMode.InstancePerTest
 import io.kotest.SpecInterface
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.specs.Spec
 
 interface TestListener {
 
@@ -46,6 +47,14 @@ interface TestListener {
     * @param testCase the [TestCase] that has completed.
     */
    fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
+
+   fun beginSpec(spec: Spec): Unit = Unit
+
+   fun endSpec(spec: Spec): Unit = Unit
+
+   fun beforeSpec(spec: Spec): Unit = Unit
+
+   fun afterSpec(spec: Spec): Unit = Unit
 
    /**
     * This callback is invoked after the Engine instantiates a [SpecInterface]

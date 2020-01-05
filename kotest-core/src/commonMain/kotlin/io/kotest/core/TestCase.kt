@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.Description
 import io.kotest.SpecInterface
 import io.kotest.core.specs.FakeSpec
 
@@ -32,16 +31,16 @@ import io.kotest.core.specs.FakeSpec
  */
 data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
-   val description: Description,
+    val description: Description,
    // the spec that contains this testcase
-   val spec: SpecInterface,
+    val spec: SpecInterface,
    // a closure of the test function
-   val test: suspend TestContext.() -> Unit,
-   val source: SourceRef,
-   val type: TestType,
+    val test: suspend TestContext.() -> Unit,
+    val source: SourceRef,
+    val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-   val config: TestCaseConfig
+    val config: TestCaseConfig
 ) {
 
    val name = description.name

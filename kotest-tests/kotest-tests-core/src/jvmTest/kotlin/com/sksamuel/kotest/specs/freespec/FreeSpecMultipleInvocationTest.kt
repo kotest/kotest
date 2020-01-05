@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.SpecInterface
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec

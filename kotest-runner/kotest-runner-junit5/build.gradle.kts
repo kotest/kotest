@@ -51,4 +51,4 @@ kotlin {
 }
 
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish.gradle.kts")

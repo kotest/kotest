@@ -14,14 +14,14 @@ import kotlin.reflect.KClass
 class KotestUnit(val klass: KClass<out SpecInterface>) : TestUnit {
 
    override fun getDescription(): Description =
-      Description(io.kotest.Description.fromSpecClass(klass).fullName(), klass.java)
+      Description(io.kotest.core.Description.fromSpecClass(klass).fullName(), klass.java)
 
    override fun execute(rc: ResultCollector) {
 
       val listener = object : TestEngineListener {
 
-         private val started = mutableSetOf<io.kotest.Description>()
-         private val completed = mutableSetOf<io.kotest.Description>()
+         private val started = mutableSetOf<io.kotest.core.Description>()
+         private val completed = mutableSetOf<io.kotest.core.Description>()
 
          override fun enterTestCase(testCase: TestCase) {
             if (started.add(testCase.description))

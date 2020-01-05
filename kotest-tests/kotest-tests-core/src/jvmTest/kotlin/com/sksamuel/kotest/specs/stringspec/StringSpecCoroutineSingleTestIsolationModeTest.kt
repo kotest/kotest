@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import currentThreadWithoutCoroutine
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.TestCaseOrder
 import io.kotest.core.TestResult
 import io.kotest.matchers.string.shouldStartWith

@@ -40,7 +40,7 @@ kotlin {
             api(kotlin("reflect"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+            api(Libs.Coroutines.core)
             api("io.github.classgraph:classgraph:4.8.59")
             api("org.slf4j:slf4j-api:1.7.25")
 
@@ -72,4 +72,4 @@ tasks {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish.gradle.kts")

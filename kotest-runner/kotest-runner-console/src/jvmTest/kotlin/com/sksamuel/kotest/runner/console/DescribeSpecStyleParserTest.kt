@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.runner.console.DescribeSpecStyleParser
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -13,17 +13,20 @@ class DescribeSpecStyleParserTest : FunSpec() {
       DescribeSpecStyleParser.parse(Description.spec("myspec"), "Describe: foo") shouldBe
           Description.spec("myspec").append("Describe: foo")
 
-      DescribeSpecStyleParser.parse(Description.spec("myspec"),
+      DescribeSpecStyleParser.parse(
+          Description.spec("myspec"),
           "Describe:    foo!") shouldBe
           Description.spec("myspec").append("Describe:    foo!")
     }
 
     test("should parse Describe It") {
-      DescribeSpecStyleParser.parse(Description.spec("myspec"),
+      DescribeSpecStyleParser.parse(
+          Description.spec("myspec"),
           "Describe: foo It: bar") shouldBe
           Description.spec("myspec").append("Describe: foo").append("It: bar")
 
-      DescribeSpecStyleParser.parse(Description.spec("myspec"),
+      DescribeSpecStyleParser.parse(
+          Description.spec("myspec"),
           "Describe: foo     It: bar!!!") shouldBe
           Description.spec("myspec").append("Describe: foo    ").append("It: bar!!!")
     }

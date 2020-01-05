@@ -1,39 +1,23 @@
-//apply plugin: 'org.jetbrains.dokka'
-//apply plugin: 'signing'
-apply plugin: 'maven-publish'
-//dokka {
-//    outputFormat = 'javadoc'
-//    outputDirectory = javadoc.destinationDir
+//publishing {
+//   repositories {
+//      maven {
+//
+//         val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+//         val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+//
+//         val ossrhUsername: String by project
+//         val ossrhPassword: String by project
+//
+//         name = "deploy"
+//         url = if (Travis.isTravis) snapshotsRepoUrl else releasesRepoUrl
+//         credentials {
+//            username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
+//            password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
+//         }
+//      }
+//   }
 //}
 
-//  dokka.dependsOn javadoc
-//
-//  task javadocJar(type: Jar, dependsOn: dokka) {
-//      // task javadocJar(type: Jar) {
-//      from javadoc.destinationDir
-//      archiveClassifier = 'javadoc'
-//  }
-//
-//  task sourcesJar(type: Jar) {
-//      // from sourceSets.main.kotlin
-//      archiveClassifier = 'sources'
-//  }
-
-publishing {
-    repositories {
-        maven {
-
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-
-            name 'deploy'
-            url = isTravis ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
-                password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword
-            }
-        }
-    }
 //    publications {
 //        mavenJava(MavenPublication) {
 //
@@ -72,7 +56,6 @@ publishing {
 //            }
 //        }
 //    }
-}
 
 //artifacts {
 //    archives javadocJar, sourcesJar

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
 

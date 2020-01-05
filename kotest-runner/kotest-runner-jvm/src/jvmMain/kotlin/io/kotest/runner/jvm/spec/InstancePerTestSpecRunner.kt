@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.TestResult
 import io.kotest.core.TestType
 import io.kotest.core.TestCase

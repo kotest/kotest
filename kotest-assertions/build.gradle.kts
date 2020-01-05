@@ -12,13 +12,9 @@ kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
             }
          }
       }
@@ -43,9 +39,9 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation (kotlin ("stdlib-common"))
-            implementation (Libs.Coroutines.coreCommon)
-            implementation (Libs.Coroutines.core)
+            implementation(kotlin("stdlib-common"))
+            implementation(Libs.Coroutines.coreCommon)
+            implementation(Libs.Coroutines.core)
          }
       }
 
@@ -92,4 +88,4 @@ tasks {
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish.gradle.kts")

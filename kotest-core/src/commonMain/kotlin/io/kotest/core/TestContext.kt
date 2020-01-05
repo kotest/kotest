@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.Description
 import io.kotest.SpecInterface
 import io.kotest.core.specs.KotestDsl
 import kotlinx.coroutines.CoroutineScope

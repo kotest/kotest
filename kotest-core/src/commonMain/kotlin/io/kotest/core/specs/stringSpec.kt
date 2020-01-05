@@ -20,7 +20,14 @@ fun stringSpec(name: String? = null, block: StringSpecBuilder.() -> Unit): Spec 
    return createSpec(name, configure)
 }
 
-class StringSpecBuilder : SpecBuilder() {
+abstract class StringSpec(body: StringSpecBuilder.() -> Unit = {}) : StringSpecBuilder() {
+
+   init {
+      body()
+   }
+}
+
+open class StringSpecBuilder : SpecBuilder() {
 
    fun String.config(
        enabled: Boolean? = null,

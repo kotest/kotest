@@ -1,14 +1,14 @@
 package io.kotest.runner.console
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.Description
-import io.kotest.SpecInterface
+import io.kotest.core.Description
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.TestStatus
-import io.kotest.core.fromSpecClass
+import io.kotest.core.specs.Spec
+import io.kotest.core.specs.SpecContainer
+import io.kotest.core.specs.description
 import java.time.Duration
-import kotlin.reflect.KClass
 
 /**
  * Writes to the console.
@@ -33,7 +33,7 @@ class BasicConsoleWriter : ConsoleWriter {
 
   override fun hasErrors(): Boolean = errors
 
-  override fun engineStarted(classes: List<KClass<out SpecInterface>>) {
+  override fun engineStarted(containers: List<SpecContainer>) {
     start = System.currentTimeMillis()
   }
 
@@ -45,10 +45,10 @@ class BasicConsoleWriter : ConsoleWriter {
     results[testCase.description] = result
   }
 
-  override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
+  override fun endSpec(spec: Spec, t: Throwable?) {
 
     n += 1
-    val specDesc = Description.fromSpecClass(klass)
+    val specDesc = spec.description()
 
     if (t == null) {
       print("$n) ")
@@ -59,7 +59,7 @@ class BasicConsoleWriter : ConsoleWriter {
       red("  \tcause: ${t.message})")
     }
 
-    tests.filter { it.spec::class.qualifiedName == klass.qualifiedName }.forEach {
+    tests.filter { it.spec::class.qualifiedName == spec::class.qualifiedName }.forEach {
       val result = results[it.description]
       when (result?.status) {
         null -> red("${it.description} did not complete")

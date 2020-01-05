@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 buildscript {
    repositories {
@@ -47,20 +45,8 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-console"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
-            implementation("org.junit.platform:junit-platform-testkit:1.5.1")
+            implementation("org.junit.platform:junit-platform-testkit:1.5.2")
          }
-      }
-   }
-}
-
-tasks {
-   test {
-      useJUnitPlatform()
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
-         exceptionFormat = TestExceptionFormat.FULL
       }
    }
 }

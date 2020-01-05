@@ -1,6 +1,6 @@
 package io.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.SpecInterface
 import io.kotest.core.TestCaseFilter
 import io.kotest.core.TestFilterResult

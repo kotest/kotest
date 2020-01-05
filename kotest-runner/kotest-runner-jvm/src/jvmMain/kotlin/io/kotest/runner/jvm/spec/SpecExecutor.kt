@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.IsolationMode
 import io.kotest.core.Project
 import io.kotest.core.fp.Try
@@ -40,36 +40,44 @@ class SpecExecutor(
    }
 
    fun execute(spec: Spec) = Try {
+      println("Spec executor has spec $spec")
       withExecutor { listenerExecutor ->
 
-         engineListener.beforeSpec(spec)
+         println("engineListener.beginSpec")
+         engineListener.beginSpec(spec)
 
          val userListeners = spec.listeners + Project.listeners()
+         println("userListeners " + userListeners.size)
 
          Try {
-
+            println("Ordering tests")
             val tests = spec.orderedRootTests()
-            logger.trace("Discovered top level tests $tests for spec $spec")
+            println("Ordered root tests $tests for spec $spec")
 
             userListeners.forEach {
-               // todo restore listeners               it.beforeSpecClass(spec, tests.tests)
+               it.beginSpec(spec)
+               //it.beforeSpecClass(spec, tests.tests)
             }
 
             val runner = runner(spec, listenerExecutor, scheduler)
             val results = runner.execute(spec, tests)
 
-            userListeners.forEach {
-               // todo restore listeners               it.afterSpecClass(spec, results)
+            println("end spec on ${userListeners.size} listeners")
+            userListeners.reversed().forEach {
+               it.endSpec(spec)
+               // it.afterSpecClass(spec, results)
             }
 
          }.fold(
             {
-               logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with error $it")
-               // todo restore listeners     engineListener.afterSpecClass(spec.javaClass.kotlin, it)
+               println("Completing spec ${Description.fromSpecClass(spec::class)} with error $it")
+               engineListener.endSpec(spec, it)
+               println(it)
+               it.printStackTrace()
             },
             {
-               logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with success")
-               // todo restore listeners    engineListener.afterSpecClass(spec.javaClass.kotlin, null)
+               println("Completing spec ${Description.fromSpecClass(spec::class)} with success")
+               engineListener.endSpec(spec, null)
             }
          )
       }

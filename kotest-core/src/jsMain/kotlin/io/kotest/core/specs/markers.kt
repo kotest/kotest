@@ -1,6 +1,6 @@
 package io.kotest.core.specs
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.TestCase
 import io.kotest.core.TestType
 import io.kotest.core.TestContext

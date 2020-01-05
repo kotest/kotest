@@ -2,6 +2,7 @@ package io.kotest.runner.jvm
 
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ScanResult
+import io.kotest.core.*
 import io.kotest.core.fp.getOrElse
 import io.kotest.core.fp.orElse
 import io.kotest.core.fp.some
@@ -58,33 +59,32 @@ object TestDiscovery {
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
-
+      println("performing test discovery $request")
       val specs = when {
          // if we have class names in the request then only those classes directly are considered
          request.classNames.isNotEmpty() -> loadByClassName(request.classNames).apply {
-            logger.info("Loaded $size classes from classnames...")
+            println("Loaded $size classes from classnames...")
          }
          // otherwise we scan the classpath and then filter down
          else -> {
             val result = scan()
             val specs = result.findClassSpecs() + result.findValueSpecs()
-            logger.info("Scan discovered ${specs.size} specs in the classpaths before filtering...")
-
-            val filtered = specs
-               .filter { container -> request.classNameFilters.all { container.filterClassName(it) } }
-               .filter { container -> request.packageFilters.all { container.filterPackageName(it) } }
-            logger.info("After filters there are ${filtered.size} specs")
-            filtered
+            println("Scan discovered ${specs.size} specs in the classpaths before filtering...")
+            specs
          }
       }
 
-// todo add new discovery extension
-//      val afterExtensions = Project.discoveryExtensions()
-//         .fold(filtered) { cl, ext -> ext.afterScan(cl) }
-//         .sortedBy { it.simpleName }
-//      logger.info("After discovery extensions there are ${filtered.size} spec classes")
+      val filtered = specs
+         .filter { container -> request.classNameFilters.all { container.filterClassName(it) } }
+         .filter { container -> request.packageFilters.all { container.filterPackageName(it) } }
+      println("After filters there are ${filtered.size} specs")
 
-      DiscoveryResult(specs)
+      val afterExtensions = Project.discoveryExtensions()
+         .fold(filtered) { cl, ext -> ext.afterScan(cl) }
+         .sortedBy { it.name.value }
+      logger.info("After discovery extensions there are ${afterExtensions.size} spec classes")
+
+      DiscoveryResult(afterExtensions)
    }
 
    private fun scan() = ClassGraph()
@@ -134,12 +134,13 @@ object TestDiscovery {
       return allClasses
          .filter { info -> info.superclasses.map { it.name }.contains(SpecBuilder::class.java.canonicalName) }
          .map { Class.forName(it.name).kotlin }
-         .filter { Modifier.isPublic(it.java.modifiers) }
-         .filterIsInstance<KClass<out SpecBuilder>>()
          // must filter out abstract classes to avoid the spec parent classes themselves
-         .filter { !it.isAbstract }
+         .filter { it.java.isPublic() && it.java.isConcrete() }
+         // all specs must have SpecBuilder as a parent superclass
+         .filter { it.java.isSubclassOf(SpecBuilder::class.java) }
          // keep only class instances and not objects
          .filter { it.objectInstance == null }
+         .filterIsInstance<KClass<out SpecBuilder>>()
          .map { SpecContainer.ClassSpec(it) }
    }
 
@@ -149,6 +150,10 @@ object TestDiscovery {
     */
    private fun loadByClassName(classes: List<String>): List<SpecContainer> =
       classes.map { Class.forName(it).kotlin }
+         // must filter out abstract classes to avoid the spec parent classes themselves
+         .filter { it.java.isPublic() && it.java.isConcrete() }
+         // only keep classes that subclass the right class
+         .filter { it.java.isSubclassOf(SpecBuilder::class.java) }
          .filterIsInstance<KClass<out SpecBuilder>>()
          .map { SpecContainer.ClassSpec(it) }
 }

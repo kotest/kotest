@@ -1,9 +1,6 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.Description
 import io.kotest.core.IsolationMode
-import io.kotest.SpecInterface
-import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
 
 class FreeSpecIsolationModeSingleInstanceTest : FreeSpec() {

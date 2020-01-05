@@ -1,6 +1,6 @@
 package io.kotest.runner.junit5
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.specs.SpecContainer
 import io.kotest.runner.jvm.SpecFilter
 import org.junit.platform.engine.TestDescriptor

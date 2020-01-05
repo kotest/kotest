@@ -31,20 +31,20 @@ import org.junit.platform.engine.discovery.UriSelector
  *
  * - [MethodSelector] - not supported because kotest does not define tests as methods/functions
  */
-internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
+internal fun EngineDiscoveryRequest.toDiscoveryRequest(): DiscoveryRequest {
 
   // inside intellij when running a single test, we might be passed a class selector
   // and gradle will sometimes pass a class selector for each class it has detected
-  val classnames = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+  val classnames = getSelectorsByType(ClassSelector::class.java).map { it.className }
 
-  val packages = request.getSelectorsByType(PackageSelector::class.java).map { it.packageName }
+  val packages = getSelectorsByType(PackageSelector::class.java).map { it.packageName }
 
-  val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
-      request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
-      request.getSelectorsByType(UriSelector::class.java).map { it.uri }
+  val uris = getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
+      getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
+      getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-  val classNameFilters = request.getFiltersByType(ClassNameFilter::class.java).map { it.toPredicate() }
-  val packageFilters = request.getFiltersByType(PackageNameFilter::class.java).map { it.toPredicate() }
+  val classNameFilters = getFiltersByType(ClassNameFilter::class.java).map { it.toPredicate() }
+  val packageFilters = getFiltersByType(PackageNameFilter::class.java).map { it.toPredicate() }
 
   return DiscoveryRequest(uris, classnames, packages, classNameFilters, packageFilters)
 }

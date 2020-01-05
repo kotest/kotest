@@ -1,11 +1,9 @@
 package io.kotest.runner.jvm
 
-import io.kotest.SpecInterface
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.specs.Spec
 import io.kotest.core.specs.SpecContainer
-import kotlin.reflect.KClass
 
 /**
  * Implementations of this interface will be notified of events
@@ -18,15 +16,9 @@ interface TestEngineListener {
    /**
     * Is invoked when the [TestEngine] is starting execution.
     *
-    * @param classes the [SpecInterface] classes that will be used by the [TestEngine].
+    * @param containers the [Spec] classes that will be used by the [TestEngine].
     */
-   @Deprecated("will be replaced with new val/class versions")
-   fun engineStarted(classes: List<KClass<out SpecInterface>>) {
-   }
-
-   fun engineStarted2(containers: List<SpecContainer>) {
-
-   }
+   fun engineStarted(containers: List<SpecContainer>) {}
 
    /**
     * Is invoked when the [TestEngine] has finished execution.
@@ -37,33 +29,16 @@ interface TestEngineListener {
    fun engineFinished(t: Throwable?) {}
 
    /**
-    * Is invoked once per [SpecInterface] when the [TestEngine] is preparing
-    * to submit the spec for execution to a [SpecExecutor2].
-    */
-   @Deprecated("will be replaced with new val/class versions")
-   fun beforeSpecClass(klass: KClass<out SpecInterface>) {
-   }
-
-   /**
     * Is invoked once per [Spec] when the [TestEngine] is preparing
     * to submit the spec for execution to a [SpecExecutor].
     */
-   fun beforeSpec(spec: Spec) {
-
-   }
+   fun beginSpec(spec: Spec) {}
 
    /**
-    * Is invoked once per [SpecInterface] to indicate that all [TestCase] instances
-    * of the spec have returned and the [SpecExecutor2] has completed.
+    * Is invoked once per [Spec] to indicate that all [TestCase] instances
+    * of the spec have returned and the [SpecExecutor] has completed.
     */
-   @Deprecated("will be replaced with new val/class versions")
-   fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
-   }
-
-   /**
-    * Is invoked if a [SpecInterface] throws an exception during initialisation
-    */
-   fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {}
+   fun endSpec(spec: Spec, t: Throwable?) {}
 
    fun specExecutionError(containers: SpecContainer, t: Throwable) {}
 
@@ -109,11 +84,4 @@ interface TestEngineListener {
     * The result passed in here is the result directly from the test run, before any interception.
     */
    fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {}
-
-   /**
-    * Invoked each time an instance of a [Spec] is created.
-    * A spec may be created more than once if it contains multiple tests and the isolation mode is set.
-    */
-   fun specCreated(spec: SpecInterface) {}
-
 }

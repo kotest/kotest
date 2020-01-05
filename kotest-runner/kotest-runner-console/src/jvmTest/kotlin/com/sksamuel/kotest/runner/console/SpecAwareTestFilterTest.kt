@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.core.TestFilterResult
 import io.kotest.core.fromSpecClass
 import io.kotest.core.specs.AbstractFeatureSpec
