@@ -1,8 +1,8 @@
 package io.kotest.runner.console
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.StringTag
-import io.kotest.Tag
+import io.kotest.core.tags.StringTag
+import io.kotest.core.tags.Tag
 import net.sourceforge.argparse4j.ArgumentParsers
 import kotlin.system.exitProcess
 
@@ -25,8 +25,16 @@ fun main(args: Array<String>) {
   val spec: String? = ns.getString("spec")
   val test: String? = ns.getString("test")
   val source: String? = ns.getString("source")
-  val includeTags: Set<Tag> = ns.getString("include-tags")?.split(',')?.map { StringTag(it) }?.toSet() ?: emptySet()
-  val excludeTags: Set<Tag> = ns.getString("exclude-tags")?.split(',')?.map { StringTag(it) }?.toSet() ?: emptySet()
+  val includeTags: Set<Tag> = ns.getString("include-tags")?.split(',')?.map {
+      StringTag(
+          it
+      )
+  }?.toSet() ?: emptySet()
+  val excludeTags: Set<Tag> = ns.getString("exclude-tags")?.split(',')?.map {
+      StringTag(
+          it
+      )
+  }?.toSet() ?: emptySet()
   val slowDuration: Int = ns.getString("slow-duration")?.toInt() ?: 1000
   val verySlowDuration: Int = ns.getString("very-slow-duration")?.toInt() ?: 3000
   // val maxTestDuration: Int = ns.getString("max-test-duration")?.toInt() ?: 0

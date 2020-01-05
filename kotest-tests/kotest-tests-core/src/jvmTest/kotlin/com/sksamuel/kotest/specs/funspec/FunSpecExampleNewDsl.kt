@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.funspec
 
-import io.kotest.AssertionMode
-import io.kotest.IsolationMode
-import io.kotest.Tag
-import io.kotest.TestCaseOrder
+import io.kotest.core.AssertionMode
+import io.kotest.core.IsolationMode
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestCaseOrder
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import io.kotest.shouldBe

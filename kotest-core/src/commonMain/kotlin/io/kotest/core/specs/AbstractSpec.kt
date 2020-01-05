@@ -1,9 +1,9 @@
 package io.kotest.core.specs
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.fromSpecClass
@@ -20,7 +20,7 @@ expect interface AutoCloseable {
 
 @Suppress("MemberVisibilityCanBePrivate")
 @Testable
-abstract class AbstractSpec : Spec {
+abstract class AbstractSpec : SpecInterface {
 
    protected val rootTestCases = mutableListOf<TestCase>()
 
@@ -32,18 +32,22 @@ abstract class AbstractSpec : Spec {
    protected fun createTestCase(name: String,
                                 test: suspend TestContext.() -> Unit,
                                 config: TestCaseConfig,
-                                type: TestType) =
-      TestCase(Description.fromSpecClass(this::class).append(name),
+                                type: TestType
+   ) =
+      TestCase(
+         Description.fromSpecClass(this::class).append(name),
          this,
          test,
          sourceRef(),
          type,
-         config)
+         config
+      )
 
    protected fun addTestCase(name: String,
                              test: suspend TestContext.() -> Unit,
                              config: TestCaseConfig,
-                             type: TestType) {
+                             type: TestType
+   ) {
       require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
       require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
       rootTestCases.add(createTestCase(name, test, config, type))

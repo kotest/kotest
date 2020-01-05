@@ -1,11 +1,11 @@
 package io.kotest.runner.jvm.spec
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.core.TestContext
-import io.kotest.extensions.TopLevelTests
+import io.kotest.core.specs.Spec
+import io.kotest.extensions.RootTests
 import io.kotest.runner.jvm.TestCaseExecutor
 import io.kotest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.runBlocking
@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [Spec] instance. In other words, only a single instance of the spec class
+ * same [Spec] instance. In other words, only a single instance of the spec
  * is instantiated for all the test cases.
  */
 class SingleInstanceSpecRunner(listener: TestEngineListener,
@@ -45,13 +45,13 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
     }
   }
 
-  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+  override fun execute(spec: Spec, rootTests: RootTests): Map<TestCase, TestResult> {
 
     // creating the spec instance will have invoked the init block, resulting
     // in the top level test cases being available on the spec class
     runBlocking {
       interceptSpec(spec) {
-        topLevelTests.tests.forEach { topLevelTest ->
+        rootTests.tests.forEach { topLevelTest ->
           // each spec is allocated it's own thread so we can block here safely
           // allowing us to enter the coroutine world
           executor.execute(

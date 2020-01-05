@@ -1,7 +1,7 @@
 package io.kotest.specs
 
-import io.kotest.Tag
-import io.kotest.TestType
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.specs.AbstractSpecDsl
@@ -122,13 +122,13 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpecDs
    inner class TestScope(val name: String, val context: TestContext) {
       @UseExperimental(ExperimentalTime::class)
       suspend fun config(
-         invocations: Int? = null,
-         enabled: Boolean? = null,
-         timeout: Duration? = null,
-         threads: Int? = null,
-         tags: Set<Tag>? = null,
-         extensions: List<TestCaseExtension>? = null,
-         test: TestContext.() -> Unit) {
+          invocations: Int? = null,
+          enabled: Boolean? = null,
+          timeout: Duration? = null,
+          threads: Int? = null,
+          tags: Set<Tag>? = null,
+          extensions: List<TestCaseExtension>? = null,
+          test: TestContext.() -> Unit) {
          val config = TestCaseConfig(
             enabled ?: this@BehaviorSpec.defaultTestCaseConfig.enabled,
             invocations ?: this@BehaviorSpec.defaultTestCaseConfig.invocations,

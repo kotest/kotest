@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import currentThreadWithoutCoroutine
-import io.kotest.IsolationMode
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.IsolationMode
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec

@@ -1,9 +1,7 @@
 package io.kotest.core
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.SpecInterface
 import io.kotest.core.specs.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
@@ -32,8 +30,9 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
   /**
    * Creates a new [TestCase] and then notifies the test runner of this nested test.
    */
-  suspend fun registerTestCase(name: String, spec: Spec, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
-    val tc = TestCase(description().append(name), spec, test, sourceRef(), type, config)
+  suspend fun registerTestCase(name: String, spec: SpecInterface, test: suspend TestContext.() -> Unit, config: TestCaseConfig, type: TestType) {
+    val tc =
+        TestCase(description().append(name), spec, test, sourceRef(), type, config)
     registerTestCase(tc)
   }
 

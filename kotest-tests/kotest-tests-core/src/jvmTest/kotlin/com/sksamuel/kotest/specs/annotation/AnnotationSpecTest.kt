@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.specs.annotation
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestCaseOrder
-import io.kotest.TestResult
+import io.kotest.core.IsolationMode
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestCaseOrder
+import io.kotest.core.TestResult
 import io.kotest.assertions.fail
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestCaseExtension
@@ -52,7 +52,7 @@ class AnnotationSpecTest : AnnotationSpec() {
       // Throw nothing
    }
 
-   override fun afterSpec(spec: Spec) {
+   override fun afterSpec(spec: SpecInterface) {
       count shouldBe 2
    }
 
@@ -161,7 +161,7 @@ class AnnotationSpecAnnotationsTest : AnnotationSpec() {
     fail("This should never execute as the test is marked with @Ignore")
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecInterface, results: Map<TestCase, TestResult>) {
     counterAfterAll.get() shouldBe 2
     counterAfterEach.get() shouldBe 6
 

@@ -2,7 +2,7 @@ package com.sksamuel.kotest
 
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
-import io.kotest.whenReady
+import io.kotest.core.whenReady
 import java.util.concurrent.CompletableFuture
 import kotlin.concurrent.thread
 
@@ -18,9 +18,9 @@ class WhenReadyTest : WordSpec() {
           completableFuture.complete("wibble")
         }
 
-        whenReady(completableFuture) {
-          it shouldBe "wibble"
-        }
+          whenReady(completableFuture) {
+              it shouldBe "wibble"
+          }
       }
       "support nested threads" {
         val completableFuture1 = CompletableFuture<String>()
@@ -40,17 +40,17 @@ class WhenReadyTest : WordSpec() {
           }
         }
 
-        whenReady(completableFuture1) {
-          it shouldBe "wibble"
-        }
+          whenReady(completableFuture1) {
+              it shouldBe "wibble"
+          }
 
-        whenReady(completableFuture2) {
-          it shouldBe "wobble"
-        }
+          whenReady(completableFuture2) {
+              it shouldBe "wobble"
+          }
 
-        whenReady(completableFuture3) {
-          it shouldBe "wubble"
-        }
+          whenReady(completableFuture3) {
+              it shouldBe "wubble"
+          }
       }
     }
   }

@@ -1,7 +1,7 @@
 package io.kotest.specs
 
-import io.kotest.Tag
-import io.kotest.TestType
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.specs.AbstractSpecDsl
@@ -24,13 +24,13 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : AbstractSpecDsl() 
 
    @UseExperimental(ExperimentalTime::class)
    fun String.config(
-      invocations: Int? = null,
-      enabled: Boolean? = null,
-      timeout: Duration? = null,
-      threads: Int? = null,
-      tags: Set<Tag>? = null,
-      extensions: List<TestCaseExtension>? = null,
-      test: suspend TestContext.() -> Unit) {
+       invocations: Int? = null,
+       enabled: Boolean? = null,
+       timeout: Duration? = null,
+       threads: Int? = null,
+       tags: Set<Tag>? = null,
+       extensions: List<TestCaseExtension>? = null,
+       test: suspend TestContext.() -> Unit) {
       val config = TestCaseConfig(
          enabled ?: defaultTestCaseConfig.enabled,
          invocations ?: defaultTestCaseConfig.invocations,

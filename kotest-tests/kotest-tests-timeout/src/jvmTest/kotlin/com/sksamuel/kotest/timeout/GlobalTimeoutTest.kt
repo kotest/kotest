@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.timeout
 
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.specs.StringSpec
@@ -31,7 +31,8 @@ class GlobalTimeoutTest : StringSpec() {
                                    complete: suspend (TestResult) -> Unit) {
       execute(testCase) {
         when (it.status) {
-          TestStatus.Failure, TestStatus.Error -> complete(TestResult.success(1000.milliseconds))
+          TestStatus.Failure, TestStatus.Error -> complete(
+              TestResult.success(1000.milliseconds))
           else -> throw RuntimeException("This should not occur")
         }
       }

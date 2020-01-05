@@ -6,7 +6,7 @@ import io.kotest.tuples.Tuple3
 import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 
-inline fun <A, B, C> test3(
+fun <A, B, C> test3(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
@@ -58,7 +58,7 @@ inline fun <A, B, C> test3(
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A, B, C> shrink(
+fun <A, B, C> shrink(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    c: PropertyInput<C>,

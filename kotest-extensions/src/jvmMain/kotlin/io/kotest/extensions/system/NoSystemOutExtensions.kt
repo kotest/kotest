@@ -1,6 +1,6 @@
 package io.kotest.extensions.system
 
-import io.kotest.Spec
+import io.kotest.SpecInterface
 import io.kotest.extensions.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -26,7 +26,7 @@ object NoSystemOutListener : TestListener {
   }
 
   override fun beforeProject() = setup()
-  override fun beforeSpec(spec: Spec) = setup()
+  override fun beforeSpec(spec: SpecInterface) = setup()
 }
 
 object NoSystemErrListener : TestListener {
@@ -47,5 +47,5 @@ object NoSystemErrListener : TestListener {
   }
 
   override fun beforeProject() = setup()
-  override fun beforeSpec(spec: Spec) = setup()
+  override fun beforeSpec(spec: SpecInterface) = setup()
 }

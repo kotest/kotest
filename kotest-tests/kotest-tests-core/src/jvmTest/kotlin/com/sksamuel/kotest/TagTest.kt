@@ -1,8 +1,8 @@
 package com.sksamuel.kotest
 
-import io.kotest.StringTag
-import io.kotest.Tag
-import io.kotest.Tags
+import io.kotest.core.tags.StringTag
+import io.kotest.core.tags.Tag
+import io.kotest.core.tags.Tags
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 

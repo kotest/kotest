@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.assertions
 
-import io.kotest.AssertionMode
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.core.AssertionMode
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.assertions.AssertionCounter
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.matchers.string.shouldHaveLength
@@ -24,7 +24,8 @@ class AssertionCounterTest : FunSpec() {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   execute(testCase) {
                      when (it.status) {
-                        TestStatus.Error, TestStatus.Failure -> complete(TestResult.success(it.duration))
+                        TestStatus.Error, TestStatus.Failure -> complete(
+                            TestResult.success(it.duration))
                         else -> complete(TestResult.error(RuntimeException("Should have failed"), it.duration))
                      }
                   }

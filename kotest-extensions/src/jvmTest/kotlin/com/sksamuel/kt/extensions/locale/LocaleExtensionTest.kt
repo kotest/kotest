@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.locale
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.withDefaultLocale
@@ -57,11 +57,11 @@ class LocaleListenerTest : FunSpec() {
 
   private var deflocale: Locale? = null
 
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+  override fun beforeSpecClass(spec: SpecInterface, tests: List<TopLevelTest>) {
     deflocale = Locale.getDefault()
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecInterface, results: Map<TestCase, TestResult>) {
     Locale.getDefault() shouldBe deflocale
   }
 

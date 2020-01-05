@@ -1,7 +1,7 @@
 package io.kotest.extensions
 
-import io.kotest.Tag
-import io.kotest.Tags
+import io.kotest.core.tags.Tag
+import io.kotest.core.tags.Tags
 import io.kotest.extensions.RuntimeTagExtension.excluded
 import io.kotest.extensions.RuntimeTagExtension.included
 

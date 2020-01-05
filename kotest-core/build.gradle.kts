@@ -41,7 +41,7 @@ kotlin {
          dependencies {
             api(project(":kotest-assertions"))
             api(kotlin("stdlib-common"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
+            api(Libs.Coroutines.coreCommon)
          }
       }
 
@@ -50,7 +50,7 @@ kotlin {
          dependencies {
             api(kotlin("stdlib-js"))
             api(kotlin("test-js"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.3.3")
+            api(Libs.Coroutines.coreJs)
          }
       }
 
@@ -59,9 +59,9 @@ kotlin {
          dependencies {
             api(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-            implementation("org.slf4j:slf4j-api:1.7.28")
-            implementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+            api(Libs.Coroutines.core)
+            implementation(Libs.Slf4j.api)
+            implementation(Libs.JUnitJupiter.api)
             implementation("io.arrow-kt:arrow-core:0.10.3")
 
          }

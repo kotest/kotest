@@ -1,7 +1,7 @@
 package io.kotest.core.specs
 
-import io.kotest.Tag
-import io.kotest.TestType
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.extensions.TestCaseExtension
@@ -17,13 +17,13 @@ abstract class AbstractFeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : 
    inner class ScenarioBuilder(val name: String, val context: TestContext) {
       @UseExperimental(ExperimentalTime::class)
       suspend fun config(
-         invocations: Int? = null,
-         enabled: Boolean? = null,
-         timeout: Duration? = null,
-         threads: Int? = null,
-         tags: Set<Tag>? = null,
-         extensions: List<TestCaseExtension>? = null,
-         test: suspend TestContext.() -> Unit) {
+          invocations: Int? = null,
+          enabled: Boolean? = null,
+          timeout: Duration? = null,
+          threads: Int? = null,
+          tags: Set<Tag>? = null,
+          extensions: List<TestCaseExtension>? = null,
+          test: suspend TestContext.() -> Unit) {
          val config = TestCaseConfig(
             enabled ?: defaultTestCaseConfig.enabled,
             invocations ?: defaultTestCaseConfig.invocations,

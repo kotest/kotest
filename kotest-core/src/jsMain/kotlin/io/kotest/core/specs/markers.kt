@@ -1,8 +1,8 @@
 package io.kotest.core.specs
 
 import io.kotest.Description
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.core.TestCase
+import io.kotest.core.TestType
 import io.kotest.core.TestContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise

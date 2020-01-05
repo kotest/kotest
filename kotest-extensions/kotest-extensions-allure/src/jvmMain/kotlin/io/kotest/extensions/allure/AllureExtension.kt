@@ -1,9 +1,9 @@
 package io.kotest.extensions.allure
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.SpecInterface
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.extensions.TestListener
 import io.qameta.allure.Allure
 import io.qameta.allure.model.Label
@@ -15,7 +15,7 @@ object AllureExtension : TestListener {
 
   private val logger = LoggerFactory.getLogger(javaClass)
 
-  override fun beforeSpec(description: Description, spec: Spec) {
+  override fun beforeSpec(description: Description, spec: SpecInterface) {
     Paths.get("allure-results").toFile().deleteRecursively()
   }
 

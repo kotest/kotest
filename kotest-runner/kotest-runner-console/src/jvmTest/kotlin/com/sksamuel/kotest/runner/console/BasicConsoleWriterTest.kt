@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder

@@ -1,13 +1,13 @@
 package io.kotest.specs
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestType
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.specs.AbstractSpec
-import io.kotest.internal.unwrapIfReflectionCall
+import io.kotest.core.unwrapIfReflectionCall
 import io.kotest.specs.AbstractAnnotationSpec.After
 import io.kotest.specs.AbstractAnnotationSpec.AfterAll
 import io.kotest.specs.AbstractAnnotationSpec.AfterClass
@@ -30,7 +30,7 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
     body()
   }
 
-  override fun beforeSpec(spec: Spec) {
+  override fun beforeSpec(spec: SpecInterface) {
     executeBeforeSpecFunctions()
   }
 
@@ -48,7 +48,7 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
 
   private fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach { it.call(this) }
 
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpec(spec: SpecInterface) {
     executeAfterSpecFunctions()
   }
 

@@ -1,11 +1,11 @@
 package io.kotest.runner.jvm
 
-import io.kotest.AssertionMode
-import io.kotest.Project
-import io.kotest.SkipTestException
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.core.AssertionMode
+import io.kotest.core.Project
+import io.kotest.core.SkipTestException
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.assertSoftly
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.getAndReset
@@ -13,10 +13,10 @@ import io.kotest.core.TestContext
 import io.kotest.core.resolvedTimeout
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
-import io.kotest.internal.isActive
-import io.kotest.internal.unwrapIfReflectionCall
-import io.kotest.listenerInstances
-import io.kotest.resolvedAssertionMode
+import io.kotest.core.isActive
+import io.kotest.core.unwrapIfReflectionCall
+import io.kotest.specs.listenerInstances
+import io.kotest.core.resolvedAssertionMode
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -239,10 +239,34 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private fun buildTestResult(error: Throwable?,
                               metadata: Map<String, Any?>,
                               duration: Duration): TestResult = when (error) {
-     null -> TestResult(TestStatus.Success, null, null, duration, metadata)
-     is AssertionError -> TestResult(TestStatus.Failure, error, null, duration, metadata)
-     is SkipTestException -> TestResult(TestStatus.Ignored, null, error.reason, duration, metadata)
-     else -> TestResult(TestStatus.Error, error, null, duration, metadata)
+     null -> TestResult(
+        TestStatus.Success,
+        null,
+        null,
+        duration,
+        metadata
+     )
+     is AssertionError -> TestResult(
+        TestStatus.Failure,
+        error,
+        null,
+        duration,
+        metadata
+     )
+     is SkipTestException -> TestResult(
+        TestStatus.Ignored,
+        null,
+        error.reason,
+        duration,
+        metadata
+     )
+     else -> TestResult(
+        TestStatus.Error,
+        error,
+        null,
+        duration,
+        metadata
+     )
   }
 
 }

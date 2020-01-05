@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.DisplayName
+import io.kotest.core.DisplayName
 import io.kotest.specs.FunSpec
 
 @DisplayName("ZZZZZZZ")

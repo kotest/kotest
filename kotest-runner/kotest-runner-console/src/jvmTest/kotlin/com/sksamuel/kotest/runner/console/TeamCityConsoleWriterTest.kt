@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.runner.console
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestType
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestType
 import io.kotest.assertions.shouldFail
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.fromSpecClass
@@ -24,7 +24,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class TeamCityConsoleWriterTest : FunSpec() {
 
-  private val klass: KClass<out Spec> = TeamCityConsoleWriterTest::class
+  private val klass: KClass<out SpecInterface> = TeamCityConsoleWriterTest::class
 
   private val testCaseContainer = TestCase(
       Description.fromSpecClass(klass).append("my context").append("my test container"),

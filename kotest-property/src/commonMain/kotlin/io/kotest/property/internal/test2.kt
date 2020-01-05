@@ -7,7 +7,7 @@ import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 import kotlin.math.min
 
-inline fun <A, B> test2(
+fun <A, B> test2(
    genA: Gen<A>,
    genB: Gen<B>,
    args: PropTestArgs,
@@ -46,7 +46,7 @@ inline fun <A, B> test2(
    return context
 }
 
-inline fun <A, B> PropertyContext.handleException(
+fun <A, B> PropertyContext.handleException(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    e: Throwable,
@@ -71,7 +71,7 @@ fun PropertyContext.checkMaxSuccess(args: PropTestArgs) {
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A, B> shrink(
+fun <A, B> shrink(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    property: PropertyContext.(A, B) -> Unit,

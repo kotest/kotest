@@ -25,7 +25,7 @@ class Kotest : StringSpec() {
             }
           }).build()
       val descriptor = KotestEngine().discover(request, UniqueId.forEngine("test-engine"))
-      descriptor.classes.first().jvmName shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
+      descriptor.classes.first().name shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
       descriptor.classes.size shouldBe 1
     }
   }

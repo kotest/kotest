@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.Description
-import io.kotest.TestCase
+import io.kotest.core.TestCase
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
 

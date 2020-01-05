@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.time
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -263,7 +263,7 @@ class ConstantNowExtensionsListenerTest : StringSpec() {
     }
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecInterface, results: Map<TestCase, TestResult>) {
     HijrahDate.now() shouldNotBeSameInstanceAs myNow
     LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
   }

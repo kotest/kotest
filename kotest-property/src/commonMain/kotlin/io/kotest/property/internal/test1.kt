@@ -5,7 +5,7 @@ package io.kotest.property.internal
 import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 
-inline fun <A> test1(
+fun <A> test1(
    genA: Gen<A>,
    args: PropTestArgs,
    property: PropertyContext.(A) -> Unit
@@ -46,7 +46,7 @@ inline fun <A> test1(
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A> shrink(
+fun <A> shrink(
    a: PropertyInput<A>,
    property: PropertyContext.(A) -> Unit,
    args: PropTestArgs

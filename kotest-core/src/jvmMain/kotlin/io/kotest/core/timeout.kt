@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.Project
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

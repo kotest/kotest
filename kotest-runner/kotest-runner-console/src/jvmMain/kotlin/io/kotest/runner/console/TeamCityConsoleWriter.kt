@@ -1,11 +1,11 @@
 package io.kotest.runner.console
 
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
-import io.kotest.TestType
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
+import io.kotest.core.TestType
 import io.kotest.core.fromSpecClass
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -38,12 +38,12 @@ class TeamCityConsoleWriter : ConsoleWriter {
 
   override fun hasErrors(): Boolean = errors
 
-  override fun beforeSpecClass(klass: KClass<out Spec>) {
+  override fun beforeSpecClass(klass: KClass<out SpecInterface>) {
     println()
     println(TeamCityMessages.testSuiteStarted(Description.fromSpecClass(klass).name))
   }
 
-  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
     println()
     val desc = Description.fromSpecClass(klass)
     if (t == null) {

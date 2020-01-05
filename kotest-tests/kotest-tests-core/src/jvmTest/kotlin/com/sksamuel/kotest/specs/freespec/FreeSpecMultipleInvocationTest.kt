@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.Description
-import io.kotest.Spec
+import io.kotest.SpecInterface
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
 import java.util.concurrent.atomic.AtomicInteger
@@ -28,7 +28,7 @@ class FreeSpecMultipleInvocationTest : FreeSpec() {
     }
   }
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(description: Description, spec: SpecInterface) {
     counter.get().shouldBe(9)
   }
 }

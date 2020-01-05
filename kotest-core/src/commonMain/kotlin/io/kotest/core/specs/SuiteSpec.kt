@@ -1,8 +1,8 @@
 package io.kotest.core.specs
 
 import io.kotest.Description
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.core.TestCase
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.fromSpecClass
@@ -16,14 +16,14 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : AbstractSpec() {
 
   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
     rootTestCases.add(
-      TestCase(
-        Description.fromSpecClass(this::class).append(name),
-        this,
-        { SuiteScope(this).test() },
-        sourceRef(),
-        TestType.Container,
-        TestCaseConfig()
-      )
+        TestCase(
+            Description.fromSpecClass(this::class).append(name),
+            this,
+            { SuiteScope(this).test() },
+            sourceRef(),
+            TestType.Container,
+            TestCaseConfig()
+        )
     )
   }
 

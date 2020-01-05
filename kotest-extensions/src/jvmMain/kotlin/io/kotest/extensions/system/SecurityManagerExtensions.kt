@@ -1,7 +1,7 @@
 package io.kotest.extensions.system
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 
 /**
@@ -15,9 +15,9 @@ import io.kotest.extensions.TestListener
  */
 inline fun <reified T> withSecurityManager(securityManager: SecurityManager?, block: () -> T): T {
   val originalSecurityManager = System.getSecurityManager()
-  
+
   System.setSecurityManager(securityManager)
-  
+
   try {
     return block()
   } finally {
@@ -29,13 +29,13 @@ inline fun <reified T> withSecurityManager(securityManager: SecurityManager?, bl
 abstract class SecurityManagerListener(
         protected val securityManager: SecurityManager?
 ) : TestListener {
-  
+
   private val originalSecurityManager = System.getSecurityManager()
-  
+
   protected fun changeSecurityManager() {
     System.setSecurityManager(securityManager)
   }
-  
+
   protected fun resetSecurityManager() {
     System.setSecurityManager(originalSecurityManager)
   }
@@ -56,11 +56,11 @@ abstract class SecurityManagerListener(
 class SecurityManagerTestListener(
         securityManager: SecurityManager?
 ) : SecurityManagerListener(securityManager) {
-  
+
   override fun beforeTest(testCase: TestCase) {
     changeSecurityManager()
   }
-  
+
   override fun afterTest(testCase: TestCase, result: TestResult) {
     resetSecurityManager()
   }
@@ -81,11 +81,11 @@ class SecurityManagerTestListener(
 class SecurityManagerProjectListener(
         securityManager: SecurityManager?
 ) : SecurityManagerListener(securityManager) {
-  
+
   override fun beforeProject() {
     changeSecurityManager()
   }
-  
+
   override fun afterProject() {
     resetSecurityManager()
   }

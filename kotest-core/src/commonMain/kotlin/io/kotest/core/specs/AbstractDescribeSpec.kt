@@ -1,7 +1,7 @@
 package io.kotest.core.specs
 
-import io.kotest.Tag
-import io.kotest.TestType
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.extensions.TestCaseExtension

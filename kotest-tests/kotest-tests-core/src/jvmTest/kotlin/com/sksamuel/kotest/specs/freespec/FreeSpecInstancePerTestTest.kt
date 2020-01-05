@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.IsolationMode
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
 
@@ -15,7 +15,7 @@ class FreeSpecInstancePerTestTest : FreeSpec() {
 
   override fun isolationMode() = IsolationMode.InstancePerTest
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecInterface, results: Map<TestCase, TestResult>) {
     string shouldBe "a_ab_abccc_ad_ade_"
   }
 

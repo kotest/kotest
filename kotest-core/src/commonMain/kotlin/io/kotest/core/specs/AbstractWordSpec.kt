@@ -1,9 +1,9 @@
 package io.kotest.core.specs
 
 import io.kotest.Description
-import io.kotest.Tag
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.core.tags.Tag
+import io.kotest.core.TestCase
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.extensions.TestCaseExtension
@@ -43,13 +43,13 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
 
      @UseExperimental(ExperimentalTime::class)
      suspend fun String.config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Duration? = null,
-        threads: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: suspend FinalTestContext.() -> Unit) {
+         invocations: Int? = null,
+         enabled: Boolean? = null,
+         timeout: Duration? = null,
+         threads: Int? = null,
+         tags: Set<Tag>? = null,
+         extensions: List<TestCaseExtension>? = null,
+         test: suspend FinalTestContext.() -> Unit) {
         val config = TestCaseConfig(
            enabled ?: this@AbstractWordSpec.defaultTestCaseConfig.enabled,
            invocations ?: this@AbstractWordSpec.defaultTestCaseConfig.invocations,

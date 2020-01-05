@@ -40,11 +40,11 @@ kotlin {
             api(project(":kotest-core"))
             api(project(":kotest-runner:kotest-runner-console"))
             api(project(":kotest-runner:kotest-runner-jvm"))
-            api("org.junit.platform:junit-platform-engine:1.5.2")
-            api("org.junit.platform:junit-platform-suite-api:1.5.2")
-            api("org.junit.platform:junit-platform-launcher:1.5.2")
-            api("org.junit.jupiter:junit-jupiter-api:5.5.2")
-            api("org.slf4j:slf4j-api:1.7.25")
+            api(Libs.JUnitPlatform.api)
+            api(Libs.JUnitPlatform.launcher)
+            api(Libs.JUnitPlatform.engine)
+            api(Libs.JUnitJupiter.api)
+            api(Libs.Slf4j.api)
          }
       }
    }

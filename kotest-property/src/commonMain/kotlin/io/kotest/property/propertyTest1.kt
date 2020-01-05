@@ -5,7 +5,7 @@ package io.kotest.property
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.property.internal.test1
 
-inline fun <A> checkAll(
+fun <A> checkAll(
    genA: Gen<A>,
    args: PropTestArgs = PropTestArgs(),
    property: PropertyContext.(A) -> Unit
@@ -14,14 +14,14 @@ inline fun <A> checkAll(
 inline fun <reified A> checkAll(
    iterations: Int = 100,
    args: PropTestArgs = PropTestArgs(),
-   property: PropertyContext.(A) -> Unit
+   noinline property: PropertyContext.(A) -> Unit
 ): PropertyContext = test1(
    Arbitrary.default(iterations),
    args,
    property
 )
 
-inline fun <A> forAll(
+fun <A> forAll(
    genA: Gen<A>,
    args: PropTestArgs = PropTestArgs(),
    property: PropertyContext.(A) -> Boolean
@@ -30,7 +30,7 @@ inline fun <A> forAll(
 inline fun <reified A> forAll(
    iterations: Int = 100,
    args: PropTestArgs = PropTestArgs(),
-   property: PropertyContext.(A) -> Boolean
+   crossinline property: PropertyContext.(A) -> Boolean
 ) = test1<A>(
    Arbitrary.default(iterations),
    args

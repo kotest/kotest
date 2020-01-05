@@ -2,11 +2,11 @@ package io.kotest.runner.console
 
 import com.github.ajalt.mordant.TermColors
 import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
-import io.kotest.TestType
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
+import io.kotest.core.TestType
 import io.kotest.core.fromSpecClass
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
@@ -77,7 +77,7 @@ class MochaConsoleWriter(private val term: TermColors,
     return term.brightRed("$margin\tcause: $message (${testCase.source.fileName}:${testCase.source.lineNumber})")
   }
 
-  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out SpecInterface>, t: Throwable?) {
 
     n += 1
     val specDesc = Description.fromSpecClass(klass)
@@ -112,11 +112,11 @@ class MochaConsoleWriter(private val term: TermColors,
     println()
   }
 
-  override fun engineStarted(classes: List<KClass<out Spec>>) {
+  override fun engineStarted(classes: List<KClass<out SpecInterface>>) {
     start = System.currentTimeMillis()
   }
 
-  override fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {
+  override fun specInitialisationFailed(klass: KClass<out SpecInterface>, t: Throwable) {
 
     n += 1
     val specDesc = Description.fromSpecClass(klass)

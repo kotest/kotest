@@ -1,8 +1,8 @@
 package com.sksamuel.kt.spring
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecInterface
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -34,7 +34,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     }
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecInterface, results: Map<TestCase, TestResult>) {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
     DummyTestExecutionListener.beforeTestMethod shouldBe 2
     DummyTestExecutionListener.beforeTestExecution shouldBe 2

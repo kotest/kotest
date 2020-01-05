@@ -2,7 +2,7 @@
 
 package com.sksamuel.kotest
 
-import io.kotest.Tag
+import io.kotest.core.tags.Tag
 import io.kotest.assertions.fail
 import io.kotest.core.TestCaseConfig
 import io.kotest.provided.ProjectConfig

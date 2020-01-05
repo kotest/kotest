@@ -1,7 +1,7 @@
 package io.kotest.extensions.system
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.util.Properties

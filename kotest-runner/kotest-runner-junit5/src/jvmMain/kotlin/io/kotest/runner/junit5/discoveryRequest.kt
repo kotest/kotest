@@ -22,7 +22,7 @@ import org.junit.platform.engine.discovery.UriSelector
  * - [UriSelector] - classes are scanned from the given uri
  * - [PackageSelector] - classes are scanned on the default classpath for the given package name
  *
- * Support filters are:
+ * Supported filters are:
  *
  * - [ClassNameFilter] - filters out specs based on a classname
  * - [PackageNameFilter] - filters out specs based on package names

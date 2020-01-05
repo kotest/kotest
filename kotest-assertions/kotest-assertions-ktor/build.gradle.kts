@@ -37,8 +37,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-assertions"))
-            implementation("io.ktor:ktor-server-core:1.2.6")
-            implementation("io.ktor:ktor-server-test-host:1.2.6")
+            implementation(Libs.Ktor.serverCore)
+            implementation(Libs.Ktor.serverTestHost)
          }
       }
 
