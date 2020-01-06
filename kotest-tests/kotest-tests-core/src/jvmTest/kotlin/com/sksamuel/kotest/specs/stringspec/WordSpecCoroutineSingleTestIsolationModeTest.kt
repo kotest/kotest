@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import currentThreadWithoutCoroutine
-import io.kotest.TestCase
-import io.kotest.TestCaseOrder
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestCaseOrder
+import io.kotest.core.TestResult
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec

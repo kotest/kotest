@@ -1,9 +1,9 @@
 package io.kotest.core.specs
 
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.core.Description
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.fromSpecClass
@@ -20,7 +20,7 @@ expect interface AutoCloseable {
 
 @Suppress("MemberVisibilityCanBePrivate")
 @Testable
-abstract class AbstractSpec : Spec {
+abstract class AbstractSpec : SpecClass {
 
    protected val rootTestCases = mutableListOf<TestCase>()
 
@@ -29,21 +29,29 @@ abstract class AbstractSpec : Spec {
 
    override fun testCases(): List<TestCase> = rootTestCases.toList()
 
-   protected fun createTestCase(name: String,
-                                test: suspend TestContext.() -> Unit,
-                                config: TestCaseConfig,
-                                type: TestType) =
-      TestCase(Description.fromSpecClass(this::class).append(name),
-         this,
-         test,
-         sourceRef(),
-         type,
-         config)
+   @Deprecated("Replace with the top level create root test case function")
+   protected fun createTestCase(
+      name: String,
+      test: suspend TestContext.() -> Unit,
+      config: TestCaseConfig,
+      type: TestType
+   ) = TestCase(
+      Description.fromSpecClass(this::class).append(name),
+      this,
+      test,
+      sourceRef(),
+      type,
+      config,
+      null,
+      null
+   )
 
-   protected fun addTestCase(name: String,
-                             test: suspend TestContext.() -> Unit,
-                             config: TestCaseConfig,
-                             type: TestType) {
+   protected fun addTestCase(
+      name: String,
+      test: suspend TestContext.() -> Unit,
+      config: TestCaseConfig,
+      type: TestType
+   ) {
       require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
       require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
       rootTestCases.add(createTestCase(name, test, config, type))

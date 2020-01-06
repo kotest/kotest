@@ -3,10 +3,10 @@ package com.sksamuel.kotest
 import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
-import io.kotest.Description
-import io.kotest.SkipTestException
-import io.kotest.TestCase
-import io.kotest.TestStatus
+import io.kotest.core.Description
+import io.kotest.core.SkipTestException
+import io.kotest.core.TestCase
+import io.kotest.core.TestStatus
 import io.kotest.core.TestContext
 import io.kotest.runner.jvm.TestCaseExecutor
 import io.kotest.runner.jvm.TestEngineListener

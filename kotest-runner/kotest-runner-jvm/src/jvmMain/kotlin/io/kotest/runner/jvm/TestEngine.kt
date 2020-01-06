@@ -3,8 +3,8 @@ package io.kotest.runner.jvm
 import arrow.core.Try
 import io.kotest.DoNotParallelize
 import io.kotest.Project
-import io.kotest.Spec
-import io.kotest.Tag
+import io.kotest.SpecClass
+import io.kotest.core.Tag
 import io.kotest.core.TestCaseFilter
 import io.kotest.extensions.SpecifiedTagsTagExtension
 import io.kotest.runner.jvm.internal.NamedThreadFactory
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
-class TestEngine(val classes: List<KClass<out Spec>>,
+class TestEngine(val classes: List<KClass<out SpecClass>>,
                  filters: List<TestCaseFilter>,
                  val parallelism: Int,
                  includedTags: Set<Tag>,
@@ -61,7 +61,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     submitBatch(single, 1)
   }
 
-  private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
+  private fun submitBatch(specs: List<KClass<out SpecClass>>, parallelism: Int) {
     val executor = Executors.newFixedThreadPool(parallelism,
       NamedThreadFactory("kotest-engine-%d"))
     specs.forEach { submitSpec(it, executor) }
@@ -102,7 +102,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     )
   }
 
-  private fun submitSpec(klass: KClass<out Spec>, executor: ExecutorService) {
+  private fun submitSpec(klass: KClass<out SpecClass>, executor: ExecutorService) {
     executor.submit {
       createSpec(klass).fold(
           { t ->
@@ -120,7 +120,7 @@ class TestEngine(val classes: List<KClass<out Spec>>,
     }
   }
 
-  private fun createSpec(klass: KClass<out Spec>) =
+  private fun createSpec(klass: KClass<out SpecClass>) =
       instantiateSpec(klass).flatMap {
         Try {
           listener.specCreated(it)

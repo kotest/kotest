@@ -1,8 +1,8 @@
 package io.kotest.extensions
 
-import io.kotest.StringTag
-import io.kotest.Tag
-import io.kotest.Tags
+import io.kotest.core.StringTag
+import io.kotest.core.Tag
+import io.kotest.core.Tags
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties
@@ -13,7 +13,11 @@ object SystemPropertyTagExtension : TagExtension {
   override fun tags(): Tags {
 
     fun readTagsProperty(name: String): List<Tag> =
-      (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map { StringTag(it.trim()) }
+      (System.getProperty(name) ?: "").split(',').filter { it.isNotBlank() }.map {
+         StringTag(
+            it.trim()
+         )
+      }
 
     val includedTags = readTagsProperty("kotest.tags.include")
     val excludedTags = readTagsProperty("kotest.tags.exclude")

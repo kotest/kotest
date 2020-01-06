@@ -1,8 +1,8 @@
 package io.kotest.experimental.robolectric
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.TestCaseExtension
 import kotlin.reflect.KClass
@@ -12,12 +12,12 @@ class RobolectricExtension : ConstructorExtension, TestCaseExtension {
 
     private val containedRobolectricRunner = ContainedRobolectricRunner()
 
-    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
+    override fun <T : SpecClass> instantiate(clazz: KClass<T>): SpecClass? {
         if(clazz.isRobolectricClass()) return null
-        return containedRobolectricRunner.sdkEnvironment.bootstrappedClass<Spec>(clazz.java).newInstance()
+        return containedRobolectricRunner.sdkEnvironment.bootstrappedClass<SpecClass>(clazz.java).newInstance()
     }
 
-    private fun <T : Spec> KClass<T>.isRobolectricClass() =
+    private fun <T : SpecClass> KClass<T>.isRobolectricClass() =
         findAnnotation<RobolectricTest>() == null
 
     override suspend fun intercept(

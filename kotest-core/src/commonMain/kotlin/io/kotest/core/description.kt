@@ -1,7 +1,6 @@
 package io.kotest.core
 
-import io.kotest.Description
-import io.kotest.Spec
+import io.kotest.SpecClass
 import kotlin.reflect.KClass
 
-expect fun Description.Companion.fromSpecClass(klass: KClass<out Spec>): Description
+expect fun Description.Companion.fromSpecClass(klass: KClass<out SpecClass>): Description

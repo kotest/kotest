@@ -1,6 +1,6 @@
 package io.kotest.core.specs
 
-import io.kotest.TestCase
+import io.kotest.core.TestCase
 
 actual typealias Junit5TestFactory = org.junit.jupiter.api.TestFactory
 

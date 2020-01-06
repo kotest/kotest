@@ -2,7 +2,7 @@
 
 package io.kotest
 
-import io.kotest.core.TestCaseFilter
+import io.kotest.core.*
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.DiscoveryExtension
 import io.kotest.extensions.ProjectLevelExtension

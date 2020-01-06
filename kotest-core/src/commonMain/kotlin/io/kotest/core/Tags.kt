@@ -1,11 +1,13 @@
-package io.kotest
+package io.kotest.core
 
 data class Tags(val included: Set<Tag>, val excluded: Set<Tag>) {
 
   companion object {
     val Empty = Tags(emptySet(), emptySet())
-    fun include(vararg tags: Tag): Tags = Tags(tags.toSet(), emptySet())
-    fun exclude(vararg tags: Tag): Tags = Tags(emptySet(), tags.toSet())
+    fun include(vararg tags: Tag): Tags =
+       Tags(tags.toSet(), emptySet())
+    fun exclude(vararg tags: Tag): Tags =
+       Tags(emptySet(), tags.toSet())
   }
 
   fun isActive(tag: Tag): Boolean = isActive(setOf(tag))
@@ -18,5 +20,6 @@ data class Tags(val included: Set<Tag>, val excluded: Set<Tag>) {
     }
   }
 
-  fun combine(other: Tags) = Tags(included + other.included, excluded + other.excluded)
+  fun combine(other: Tags) =
+     Tags(included + other.included, excluded + other.excluded)
 }

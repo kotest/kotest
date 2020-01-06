@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.junit5
 
-import io.kotest.TestCase
+import io.kotest.core.TestCase
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 

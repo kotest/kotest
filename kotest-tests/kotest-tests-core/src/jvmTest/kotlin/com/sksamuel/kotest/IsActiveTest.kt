@@ -1,10 +1,10 @@
 package com.sksamuel.kotest
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.Project
-import io.kotest.StringTag
-import io.kotest.Tags
-import io.kotest.TestCase
+import io.kotest.core.StringTag
+import io.kotest.core.Tags
+import io.kotest.core.TestCase
 import io.kotest.core.TestCaseConfig
 import io.kotest.extensions.TagExtension
 import io.kotest.internal.isActive
@@ -27,7 +27,8 @@ class IsActiveTest : StringSpec() {
       val mytag = StringTag("mytag")
 
       val ext = object : TagExtension {
-        override fun tags(): Tags = Tags(emptySet(), setOf(mytag))
+        override fun tags(): Tags =
+            Tags(emptySet(), setOf(mytag))
       }
 
       Project.registerExtension(ext)
@@ -44,7 +45,8 @@ class IsActiveTest : StringSpec() {
       val yourtag = StringTag("yourtag")
 
       val ext = object : TagExtension {
-        override fun tags(): Tags = Tags(setOf(yourtag), emptySet())
+        override fun tags(): Tags =
+            Tags(setOf(yourtag), emptySet())
       }
 
       Project.registerExtension(ext)

@@ -2,11 +2,11 @@ package io.kotest.runner.jvm.spec
 
 import arrow.core.Failure
 import arrow.core.Success
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestType
+import io.kotest.core.Description
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestType
 import io.kotest.core.TestContext
 import io.kotest.extensions.TopLevelTests
 import io.kotest.runner.jvm.TestCaseExecutor
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Implementation of [SpecRunner] that executes each leaf test (that is a [TestCase] which
- * has type [TestType.Test]) in a fresh instance of the [Spec] class (that is, isolated
+ * has type [TestType.Test]) in a fresh instance of the [SpecClass] class (that is, isolated
  * from other leaf executions).
  *
  * Each branch test (that is a [TestCase] of type [TestType.Container]) is only
@@ -71,7 +71,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener,
   private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
   private val results = mutableMapOf<TestCase, TestResult>()
 
-  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+  override fun execute(spec: SpecClass, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
     topLevelTests.tests.forEach { test -> enqueue(test.testCase) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()

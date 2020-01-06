@@ -1,8 +1,8 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -16,9 +16,9 @@ interface TestEngineListener {
   /**
    * Is invoked when the [TestEngine] is starting execution.
    *
-   * @param classes the [Spec] classes that will be used by the [TestEngine].
+   * @param classes the [SpecClass] classes that will be used by the [TestEngine].
    */
-  fun engineStarted(classes: List<KClass<out Spec>>) {}
+  fun engineStarted(classes: List<KClass<out SpecClass>>) {}
 
   /**
    * Is invoked when the [TestEngine] has finished execution.
@@ -29,21 +29,21 @@ interface TestEngineListener {
   fun engineFinished(t: Throwable?) {}
 
   /**
-   * Is invoked once per [Spec] when the [TestEngine] is preparing
+   * Is invoked once per [SpecClass] when the [TestEngine] is preparing
    * to submit the spec for execution to a [SpecRunner].
    */
-  fun beforeSpecClass(klass: KClass<out Spec>) {}
+  fun beforeSpecClass(klass: KClass<out SpecClass>) {}
 
   /**
-   * Is invoked once per [Spec] to indicate that all [TestCase] instances
+   * Is invoked once per [SpecClass] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {}
+  fun afterSpecClass(klass: KClass<out SpecClass>, t: Throwable?) {}
 
   /**
-   * Is invoked if a [Spec] throws an exception during initialisation
+   * Is invoked if a [SpecClass] throws an exception during initialisation
    */
-  fun specInitialisationFailed(klass: KClass<out Spec>, t: Throwable) {}
+  fun specInitialisationFailed(klass: KClass<out SpecClass>, t: Throwable) {}
 
   /**
    * Invoked each time a [TestCase] has been entered from a parent test.
@@ -89,9 +89,9 @@ interface TestEngineListener {
   fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {}
 
   /**
-   * Invoked each time an instance of a [Spec] is created.
+   * Invoked each time an instance of a [SpecClass] is created.
    * A spec may be created once per class, or one per [TestCase].
    */
-  fun specCreated(spec: Spec) {}
+  fun specCreated(spec: SpecClass) {}
 
 }

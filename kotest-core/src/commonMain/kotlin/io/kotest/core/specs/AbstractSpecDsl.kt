@@ -1,12 +1,12 @@
 package io.kotest.core.specs
 
-import io.kotest.AssertionMode
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.Tag
-import io.kotest.TestCase
-import io.kotest.TestCaseOrder
-import io.kotest.TestResult
+import io.kotest.core.AssertionMode
+import io.kotest.core.IsolationMode
+import io.kotest.SpecClass
+import io.kotest.core.Tag
+import io.kotest.core.TestCase
+import io.kotest.core.TestCaseOrder
+import io.kotest.core.TestResult
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
 
@@ -14,9 +14,9 @@ abstract class AbstractSpecDsl : AbstractSpec() {
 
    private var beforeTestFn: (TestCase) -> Unit = {}
    private var afterTestFn: (TestCase, TestResult) -> Unit = { _, _ -> }
-   private var beforeSpecFn: (Spec) -> Unit = {}
-   private var afterSpecFn: (Spec) -> Unit = {}
-   private var afterSpecClassFn: (Spec, Map<TestCase, TestResult>) -> Unit = { _, _ -> }
+   private var beforeSpecFn: (SpecClass) -> Unit = {}
+   private var afterSpecFn: (SpecClass) -> Unit = {}
+   private var afterSpecClassFn: (SpecClass, Map<TestCase, TestResult>) -> Unit = { _, _ -> }
    private var tags: Set<Tag> = emptySet()
    private var listeners: List<TestListener> = emptyList()
    private var extensions: List<SpecLevelExtension> = emptyList()
@@ -41,12 +41,12 @@ abstract class AbstractSpecDsl : AbstractSpec() {
       afterTestFn(testCase, result)
    }
 
-   override fun beforeSpec(spec: Spec) {
+   override fun beforeSpec(spec: SpecClass) {
       super.beforeSpec(spec)
       beforeSpecFn(spec)
    }
 
-   override fun afterSpec(spec: Spec) {
+   override fun afterSpec(spec: SpecClass) {
       super.afterSpec(spec)
       afterSpecFn(spec)
    }
@@ -55,7 +55,7 @@ abstract class AbstractSpecDsl : AbstractSpec() {
       return super.tags()
    }
 
-   override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+   override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
       super.afterSpecClass(spec, results)
       afterSpecClassFn(spec, results)
    }
@@ -92,15 +92,15 @@ abstract class AbstractSpecDsl : AbstractSpec() {
       afterTestFn = f
    }
 
-   fun beforeSpec(f: (Spec) -> Unit) {
+   fun beforeSpec(f: (SpecClass) -> Unit) {
       beforeSpecFn = f
    }
 
-   fun afterSpec(f: (Spec) -> Unit) {
+   fun afterSpec(f: (SpecClass) -> Unit) {
       afterSpecFn = f
    }
 
-   fun afterSpecClass(f: (Spec, Map<TestCase, TestResult>) -> Unit) {
+   fun afterSpecClass(f: (SpecClass, Map<TestCase, TestResult>) -> Unit) {
       afterSpecClassFn = f
    }
 }

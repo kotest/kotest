@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
@@ -74,11 +74,11 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SystemEnvironmentTestListener("wibble", "wobble"))
 
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+  override fun beforeSpecClass(spec: SpecClass, tests: List<TopLevelTest>) {
     System.getenv("wibble") shouldBe null
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
     System.getenv("wibble") shouldBe null
   }
 

@@ -1,7 +1,7 @@
 package io.kotest.extensions.time
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -52,13 +52,13 @@ internal fun <Time : Temporal> unmockNow(klass: KClass<Time>) {
 }
 
 abstract class ConstantNowListener<Time : Temporal>(private val now: Time) : TestListener {
-  
+
   private val nowKlass = now::class as KClass<Time>
-  
+
   protected fun changeNow() {
     mockNow(now, nowKlass)
   }
-  
+
   protected fun resetNow() {
     unmockNow(nowKlass)
   }
@@ -81,11 +81,11 @@ abstract class ConstantNowListener<Time : Temporal>(private val now: Time) : Tes
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
 class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now) {
-  
+
   override fun beforeTest(testCase: TestCase) {
     changeNow()
   }
-  
+
   override fun afterTest(testCase: TestCase, result: TestResult) {
     resetNow()
   }
@@ -107,11 +107,11 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
 class ConstantNowProjectListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now) {
-  
+
   override fun beforeProject() {
     changeNow()
   }
-  
+
   override fun afterProject() {
     resetNow()
   }

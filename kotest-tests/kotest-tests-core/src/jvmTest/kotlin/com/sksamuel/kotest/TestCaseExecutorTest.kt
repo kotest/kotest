@@ -3,9 +3,9 @@ package com.sksamuel.kotest
 import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
-import io.kotest.Description
-import io.kotest.TestCase
-import io.kotest.TestStatus
+import io.kotest.core.Description
+import io.kotest.core.TestCase
+import io.kotest.core.TestStatus
 import io.kotest.assertions.currentTimeMillis
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext

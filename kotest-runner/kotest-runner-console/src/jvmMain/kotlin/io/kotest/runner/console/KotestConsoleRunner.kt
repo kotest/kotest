@@ -3,8 +3,8 @@
 package io.kotest.runner.console
 
 import io.kotest.Project
-import io.kotest.Spec
-import io.kotest.Tag
+import io.kotest.SpecClass
+import io.kotest.core.Tag
 import io.kotest.core.TestCaseFilter
 import io.kotest.runner.jvm.DiscoveryRequest
 import io.kotest.runner.jvm.TestDiscovery
@@ -21,7 +21,7 @@ class KotestConsoleRunner(private val writer: TestEngineListener) {
       val result = TestDiscovery.discover(DiscoveryRequest(emptyList()))
       result.classes to null
     } else {
-      val spec = (Class.forName(specFQN) as Class<Spec>).kotlin
+      val spec = (Class.forName(specFQN) as Class<SpecClass>).kotlin
       val filter = test?.let { SpecAwareTestFilter(it, spec) }
       listOf(spec) to filter
     }

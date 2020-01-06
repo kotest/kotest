@@ -3,7 +3,7 @@ package io.kotest
 import kotlin.reflect.KClass
 
 interface SpecExecutionOrder {
-  fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
+  fun sort(classes: List<KClass<out SpecClass>>): List<KClass<out SpecClass>>
 }
 
 /**
@@ -11,7 +11,7 @@ interface SpecExecutionOrder {
  * a lexicographic order.
  */
 object LexicographicSpecExecutionOrder : SpecExecutionOrder {
-  override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> = classes.sortedBy { it.simpleName }
+  override fun sort(classes: List<KClass<out SpecClass>>): List<KClass<out SpecClass>> = classes.sortedBy { it.simpleName }
 }
 
 /**
@@ -19,6 +19,6 @@ object LexicographicSpecExecutionOrder : SpecExecutionOrder {
  * a different random order each time the are executed.
  */
 object RandomSpecExecutionOrder : SpecExecutionOrder {
-  override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> = classes.shuffled()
+  override fun sort(classes: List<KClass<out SpecClass>>): List<KClass<out SpecClass>> = classes.shuffled()
 }
 

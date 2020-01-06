@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * all the tests passed.
  */
 object FailureFirstSpecExecutionOrder : SpecExecutionOrder {
-  override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
+  override fun sort(classes: List<KClass<out SpecClass>>): List<KClass<out SpecClass>> {
     // try to locate a folder called .kotest which should contain a file called spec_failures
     // each line in this file is a failed spec and they should run first
     // if the file doesn't exist then we just execute in Lexico order

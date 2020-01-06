@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemPropertyTestListener
@@ -81,11 +81,11 @@ class SystemPropertyListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
 
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+  override fun beforeSpecClass(spec: SpecClass, tests: List<TopLevelTest>) {
     System.getProperty("wibble") shouldBe null
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
     System.getProperty("wibble") shouldBe null
   }
 

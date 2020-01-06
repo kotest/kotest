@@ -2,11 +2,11 @@ package io.kotest.runner.jvm.spec
 
 import arrow.core.Failure
 import arrow.core.Success
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestType
+import io.kotest.core.Description
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestType
 import io.kotest.core.TestContext
 import io.kotest.extensions.TopLevelTests
 import io.kotest.runner.jvm.TestCaseExecutor
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
- * of the [Spec] class.
+ * of the [SpecClass] class.
  *
  * This differs from the [InstancePerLeafSpecRunner] in that
  * every single test, whether of type [TestType.Test] or [TestType.Container], will be
@@ -83,7 +83,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
    * a stack. When the test case has completed, we take the next test case from the
    * stack, and begin executing that.
    */
-  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+  override fun execute(spec: SpecClass, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
     topLevelTests.tests.forEach { enqueue(it.testCase, true) }
     while (queue.isNotEmpty()) {
       val element = queue.remove()
@@ -104,7 +104,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener,
 
   /**
    * The intention of this runner is that each [TestCase] executes in it's own instance
-   * of the containing [Spec] class. Therefore, when we begin executing a test case from
+   * of the containing [SpecClass] class. Therefore, when we begin executing a test case from
    * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
    *
    * As test lambdas are executed, nested test cases will be registered, these should be ignored

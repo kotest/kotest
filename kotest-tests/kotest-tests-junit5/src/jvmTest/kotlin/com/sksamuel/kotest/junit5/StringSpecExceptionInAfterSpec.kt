@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.junit5
 
-import io.kotest.Spec
+import io.kotest.SpecClass
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 
@@ -17,7 +17,7 @@ class StringSpecExceptionInAfterSpec : StringSpec() {
 
   }
 
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpec(spec: SpecClass) {
     throw RuntimeException("splatt!!")
   }
 

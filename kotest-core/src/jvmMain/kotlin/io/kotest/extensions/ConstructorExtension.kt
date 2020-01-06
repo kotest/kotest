@@ -1,12 +1,12 @@
 package io.kotest.extensions
 
-import io.kotest.Spec
+import io.kotest.SpecClass
 import kotlin.reflect.KClass
 
 interface ConstructorExtension : ProjectLevelExtension {
 
   /**
-   * This function is invoked to create an instance of a [Spec].
+   * This function is invoked to create an instance of a [SpecClass].
    *
    *  By default, test classes are assumed to have zero-arg primary constructors.
    *  If you wish to use non-zero arg primary constructors, this function can
@@ -20,5 +20,5 @@ interface ConstructorExtension : ProjectLevelExtension {
    * the way classes are created, to support things like constructors
    * with parameters, or classes that require special initization logic.
    */
-  fun <T : Spec> instantiate(clazz: KClass<T>): Spec?
+  fun <T : SpecClass> instantiate(clazz: KClass<T>): SpecClass?
 }

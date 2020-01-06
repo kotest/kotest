@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.timeout
 
 import com.nhaarman.mockito_kotlin.mock
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.Description
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.runner.jvm.TestCaseExecutor
@@ -26,7 +26,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
     listenerRan = true
   }
 
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpec(spec: SpecClass) {
     listenerRan shouldBe true
   }
 

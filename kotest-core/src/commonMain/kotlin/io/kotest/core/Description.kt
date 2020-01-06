@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.core
 
 /**
  * The description gives the full path to a [TestCase].
@@ -23,17 +23,24 @@ data class Description(val parents: List<String>, val name: String) {
   }
 
   fun append(name: String) =
-      Description(this.parents + this.name, name)
+     Description(this.parents + this.name, name)
 
   fun hasParent(description: Description): Boolean = parents.containsAll(description.parents + listOf(description.name))
 
-  fun parent(): Description? = if (isSpec()) null else Description(parents.dropLast(1), parents.last())
+  fun parent(): Description? = if (isSpec()) null else Description(
+     parents.dropLast(1),
+     parents.last()
+  )
 
   fun isSpec(): Boolean = parents.isEmpty()
 
-  fun spec(): Description = spec(parents.first())
+  fun spec(): Description =
+     spec(parents.first())
 
-  fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(parents.drop(1), name)
+  fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(
+     parents.drop(1),
+     name
+  )
 
   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 

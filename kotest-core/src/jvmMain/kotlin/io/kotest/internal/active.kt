@@ -1,9 +1,9 @@
 package io.kotest.internal
 
 import io.kotest.Project
-import io.kotest.Spec
-import io.kotest.Tag
-import io.kotest.TestCase
+import io.kotest.SpecClass
+import io.kotest.core.Tag
+import io.kotest.core.TestCase
 import io.kotest.core.TestFilterResult
 
 /**
@@ -19,7 +19,7 @@ import io.kotest.core.TestFilterResult
  * - Include tag filters have been specified and this test either has no tags, or does not have a tag that is one of those included
  * - The test is filtered out via a [TestCaseFilter]
  *
- * Note: tags are defined either through [TestCaseConfig] or in the [Spec] itself.
+ * Note: tags are defined either through [TestCaseConfig] or in the [SpecClass] itself.
  *
  * Note2: Focused tests will override any settings here.
  *

@@ -1,5 +1,6 @@
 package io.kotest
 
+import io.kotest.core.Description
 import io.kotest.extensions.TestListener
 import java.util.WeakHashMap
 import kotlin.reflect.KProperty
@@ -12,16 +13,16 @@ import kotlin.reflect.KProperty
  * Note: This name must be globally unique. Two specs, even in different packages,
  * cannot share the same name.
  */
-fun Class<out Spec>.displayName(): String {
+fun Class<out SpecClass>.displayName(): String {
   return when (val displayName = annotations.find { it is DisplayName }) {
     is DisplayName -> displayName.name
     else -> canonicalName
   }
 }
 
-fun Class<out Spec>.description() = Description.spec(this.displayName())
+fun Class<out SpecClass>.description() = Description.spec(this.displayName())
 
-val Spec.listenerInstances by LazyWithReceiver<Spec, List<TestListener>> { this.listeners() }
+val SpecClass.listenerInstances by LazyWithReceiver<SpecClass, List<TestListener>> { this.listeners() }
 
 private class LazyWithReceiver<This, Return>(val initializer: This.() -> Return) {
   private val values = WeakHashMap<This, Return>()

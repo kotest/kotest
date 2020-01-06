@@ -1,11 +1,11 @@
 package io.kotest
 
-import io.kotest.core.fromSpecClass
+import io.kotest.core.*
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
 
 /**
- * A [Spec] is the top level component in Kotest.
+ * A [SpecClass] is the top level component in Kotest.
  *
  * It contains the root [TestCase] instances which in turn
  * can contain nested [TestCase] instances.
@@ -22,11 +22,11 @@ import io.kotest.extensions.TestListener
  * branches and test cases as the leaves. The actual hierarchy
  * will depend on the spec being used.
  *
- * A [Spec] is also a [TestListener] to allow for
+ * A [SpecClass] is also a [TestListener] to allow for
  * convenience overloads here if you just want to listen
  * in a single place.
  */
-interface Spec : TestListener {
+interface SpecClass : TestListener {
 
    fun isolationMode(): IsolationMode? = null
 
@@ -67,7 +67,7 @@ interface Spec : TestListener {
 
    /**
     * Any tags added here will be in applied to all [TestCase]s defined
-    * in this [Spec] in addition to any defined on the individual
+    * in this [SpecClass] in addition to any defined on the individual
     * tests themselves.
     */
    fun tags(): Set<Tag> = emptySet()
@@ -80,4 +80,4 @@ interface Spec : TestListener {
 /**
  * Returns the focused tests for this Spec. Can be empty if no test is marked as focused.
  */
-fun Spec.focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }
+fun SpecClass.focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }

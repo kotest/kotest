@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.core
 
 import io.kotest.assertions.classname
 
@@ -27,7 +27,8 @@ abstract class Tag {
    override fun toString() = name
 
    companion object {
-      operator fun invoke(name: String): StringTag = StringTag(name)
+      operator fun invoke(name: String): StringTag =
+          StringTag(name)
    }
 }
 

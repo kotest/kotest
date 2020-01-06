@@ -1,8 +1,8 @@
 package io.kotest.plugin.pitest
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.core.fromSpecClass
 import io.kotest.runner.jvm.TestEngine
 import io.kotest.runner.jvm.TestEngineListener
@@ -11,16 +11,16 @@ import org.pitest.testapi.ResultCollector
 import org.pitest.testapi.TestUnit
 import kotlin.reflect.KClass
 
-class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
+class KotestUnit(val klass: KClass<out SpecClass>) : TestUnit {
 
-  override fun getDescription(): Description = Description(io.kotest.Description.fromSpecClass(klass).fullName(), klass.java)
+  override fun getDescription(): Description = Description(io.kotest.core.Description.fromSpecClass(klass).fullName(), klass.java)
 
   override fun execute(rc: ResultCollector) {
 
     val listener = object : TestEngineListener {
 
-      private val started = mutableSetOf<io.kotest.Description>()
-      private val completed = mutableSetOf<io.kotest.Description>()
+      private val started = mutableSetOf<io.kotest.core.Description>()
+      private val completed = mutableSetOf<io.kotest.core.Description>()
 
       override fun enterTestCase(testCase: TestCase) {
         if (started.add(testCase.description))

@@ -1,7 +1,7 @@
 package io.kotest.extensions.system
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.lang.reflect.Field
@@ -61,9 +61,9 @@ inline fun <T>  withEnvironment(environment: Pair<String, String?>, mode: Overri
  */
 inline fun <T> withEnvironment(environment: Map<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
   val originalEnvironment = System.getenv().toMap() // Using to map to guarantee it's not modified
-  
+
   setEnvironmentMap(mode.override(originalEnvironment, environment))
-  
+
   try {
     return block()
   } finally {

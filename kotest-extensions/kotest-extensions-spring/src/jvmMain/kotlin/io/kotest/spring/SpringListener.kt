@@ -1,8 +1,8 @@
 package io.kotest.spring
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.TestListener
 import net.bytebuddy.ByteBuddy
@@ -24,9 +24,9 @@ object SpringListener : TestListener {
   // Each Spec needs its own context. However, this listener is a singleton, so we need
   // to keep this map to separate those contexts instead of making this class non-singleton, thus
   // breaking client code
-  private val testContexts = mutableMapOf<Spec, TestContextManager>()
+  private val testContexts = mutableMapOf<SpecClass, TestContextManager>()
 
-  override fun beforeSpec(spec: Spec) {
+  override fun beforeSpec(spec: SpecClass) {
     testContexts[spec] = TestContextManager(spec.javaClass)
     spec.testContext.beforeTestClass()
     spec.testContext.prepareTestInstance(spec)
@@ -43,23 +43,23 @@ object SpringListener : TestListener {
     testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
   }
 
-  override fun afterSpec(spec: Spec) {
+  override fun afterSpec(spec: SpecClass) {
     spec.testContext.afterTestClass()
   }
 
-  private val Spec.testContext: TestContextManager
+  private val SpecClass.testContext: TestContextManager
     get() = testContexts.getValue(this)
 
   // Check https://github.com/kotlintest/kotlintest/issues/950#issuecomment-524127221
   // for a in-depth explanation. Too much to write here
-  private val Spec.method: Method
+  private val SpecClass.method: Method
     get() {
       val klass = this::class.java
 
 
       return if(Modifier.isFinal(klass.modifiers)) {
         logger.warn("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
-        this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java)
+        this@SpringListener::class.java.getMethod("afterSpec", SpecClass::class.java)
       } else {
         val fakeSpec = ByteBuddy()
                 .subclass(klass)
@@ -75,7 +75,7 @@ object SpringListener : TestListener {
 }
 
 object SpringAutowireConstructorExtension : ConstructorExtension {
-  override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
+  override fun <T : SpecClass> instantiate(clazz: KClass<T>): SpecClass? {
     // we only instantiate via spring if there's actually parameters in the constructor
     // otherwise there's nothing to inject there
     val constructor = clazz.primaryConstructor
@@ -84,7 +84,7 @@ object SpringAutowireConstructorExtension : ConstructorExtension {
     } else {
       val manager = TestContextManager(clazz.java)
       val ac = manager.testContext.applicationContext
-      ac.autowireCapableBeanFactory.autowire(clazz.java, AUTOWIRE_CONSTRUCTOR, true) as Spec
+      ac.autowireCapableBeanFactory.autowire(clazz.java, AUTOWIRE_CONSTRUCTOR, true) as SpecClass
     }
   }
 }

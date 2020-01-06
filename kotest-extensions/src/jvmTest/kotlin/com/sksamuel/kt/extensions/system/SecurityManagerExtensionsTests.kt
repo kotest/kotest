@@ -1,7 +1,7 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.system.SecurityManagerTestListener
 import io.kotest.extensions.system.withSecurityManager
 import io.kotest.matchers.types.shouldBeSameInstanceAs

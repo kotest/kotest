@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.Description
-import io.kotest.IsolationMode
-import io.kotest.Spec
+import io.kotest.core.Description
+import io.kotest.core.IsolationMode
+import io.kotest.SpecClass
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
 
@@ -14,7 +14,7 @@ class FreeSpecIsolationModeInstancePerLeafTest : FreeSpec() {
 
   override fun isolationMode() = IsolationMode.InstancePerLeaf
 
-  override fun afterSpecCompleted(description: Description, spec: Spec) {
+  override fun afterSpecCompleted(description: Description, spec: SpecClass) {
     string shouldBe "abccc_ade_"
   }
 

@@ -4,10 +4,10 @@ import arrow.core.Try
 import arrow.core.getOrElse
 import arrow.core.orElse
 import arrow.core.toOption
-import io.kotest.Description
-import io.kotest.IsolationMode
+import io.kotest.core.Description
+import io.kotest.core.IsolationMode
 import io.kotest.Project
-import io.kotest.Spec
+import io.kotest.SpecClass
 import io.kotest.core.fromSpecClass
 import io.kotest.internal.topLevelTests
 import io.kotest.listenerInstances
@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
 /**
- * Handles the execution of a single [Spec] class.
+ * Handles the execution of a single [SpecClass] class.
  * Delegates to a [SpecRunner] which determines how and when
  * to instantiate fresh specs based on the [IsolationMode] of the spec.
  */
@@ -38,7 +38,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
     listenerExecutor.shutdown()
   }
 
-  fun execute(spec: Spec) = Try {
+  fun execute(spec: SpecClass) = Try {
     withExecutor { listenerExecutor ->
 
       engineListener.beforeSpecClass(spec::class)
@@ -82,7 +82,7 @@ class SpecExecutor(private val engineListener: TestEngineListener,
   // otherwise, the listeners and the tests can be run on seperate threads,
   // which is undesirable in some situations, see
   // https://github.com/kotlintest/kotlintest/issues/447
-  private fun runner(spec: Spec, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
+  private fun runner(spec: SpecClass, listenerExecutor: ExecutorService, scheduler: ScheduledExecutorService): SpecRunner {
     val mode = spec.isolationMode().toOption()
       .orElse { Project.isolationMode().toOption() }
       .getOrElse { IsolationMode.SingleInstance }

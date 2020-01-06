@@ -6,8 +6,8 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.then
 import com.nhaarman.mockito_kotlin.times
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.core.TestCaseConfig
 import io.kotest.runner.junit5.JUnitTestRunnerListener
 import io.kotest.shouldBe

@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.core
 
 /**
  * Exception to mark a test as ignored while it is already running

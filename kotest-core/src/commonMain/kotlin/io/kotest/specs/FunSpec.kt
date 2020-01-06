@@ -1,73 +1,14 @@
 package io.kotest.specs
 
-import io.kotest.Tag
-import io.kotest.TestCase
-import io.kotest.TestType
+import io.kotest.core.Tag
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
+import io.kotest.core.TestType
 import io.kotest.core.specs.AbstractSpecDsl
 import io.kotest.core.specs.KotestDsl
 import io.kotest.extensions.TestCaseExtension
-import io.kotest.shouldBe
-import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-
-interface FunSpecCollector {
-   fun test(name: String)
-   fun test(name: String, test: suspend TestContext.() -> Unit)
-}
-
-open class SafeFunSpecCollector : FunSpecCollector {
-
-   internal val rootTestCases = mutableListOf<TestCase>()
-
-   override fun test(name: String) {
-   }
-
-   override fun test(name: String, test: suspend TestContext.() -> Unit) {
-   }
-}
-
-fun funSpec(f: FunSpecCollector.() -> Unit): List<TestCase> {
-   val collector = SafeFunSpecCollector()
-   collector.f()
-   return collector.rootTestCases
-}
-
-val myTests = funSpec {
-
-   test("my test") {
-      delay(10)
-      1 shouldBe 2
-   }
-
-   test("my test") {
-      delay(10)
-      1 shouldBe 2
-   }
-}
-
-abstract class SuperFunSpec(body: FunSpecCollector.() -> Unit = {}) : SafeFunSpecCollector() {
-
-   init {
-      body()
-   }
-
-   fun include(tests: List<TestCase>) {
-
-   }
-}
-
-class MyCompositeFunSpec : SuperFunSpec() {
-   init {
-      test("my test") {
-         delay(10)
-         1 shouldBe 2
-      }
-      include(myTests)
-   }
-}
 
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : AbstractSpecDsl() {
 

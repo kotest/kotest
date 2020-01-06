@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.runner.console.FeatureSpecStyleParser
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -18,11 +18,13 @@ class FeatureSpecStyleParserTest : FunSpec() {
     }
 
     test("should parse Feature / Scenario") {
-      FeatureSpecStyleParser.parse(Description.spec("myspec"),
+      FeatureSpecStyleParser.parse(
+          Description.spec("myspec"),
           "Feature: foo Scenario: bar") shouldBe
           Description.spec("myspec").append("Feature: foo").append("Scenario: bar")
 
-      FeatureSpecStyleParser.parse(Description.spec("myspec"),
+      FeatureSpecStyleParser.parse(
+          Description.spec("myspec"),
           "Feature: foo     Scenario: bar!!!") shouldBe
           Description.spec("myspec").append("Feature: foo    ").append("Scenario: bar!!!")
     }

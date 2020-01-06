@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.core
 
 enum class IsolationMode {
 

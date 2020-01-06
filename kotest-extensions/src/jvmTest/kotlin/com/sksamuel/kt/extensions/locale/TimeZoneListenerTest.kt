@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.locale
 
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.locale.TimeZoneTestListener
 import io.kotest.extensions.locale.withDefaultTimeZone
@@ -61,11 +61,11 @@ class TimeZoneListenerTest : FunSpec() {
 
   private var deftz: TimeZone? = null
 
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+  override fun beforeSpecClass(spec: SpecClass, tests: List<TopLevelTest>) {
     deftz = TimeZone.getDefault()
   }
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
     TimeZone.getDefault() shouldBe deftz
   }
 

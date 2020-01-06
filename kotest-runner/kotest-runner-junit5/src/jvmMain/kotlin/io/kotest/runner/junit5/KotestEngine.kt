@@ -1,7 +1,7 @@
 package io.kotest.runner.junit5
 
 import io.kotest.Project
-import io.kotest.Spec
+import io.kotest.SpecClass
 import io.kotest.description
 import io.kotest.runner.jvm.IsolationTestEngineListener
 import io.kotest.runner.jvm.SpecFilter
@@ -88,7 +88,7 @@ class KotestEngine : TestEngine {
          // This is liable to be buggy, and should be stripped out as soon as gradle
          // fix their bugs around junit 5 support, if ever.
          class ClassMethodAdaptingFilter(val filter: PostDiscoveryFilter) : SpecFilter {
-            override fun invoke(klass: KClass<out Spec>): Boolean {
+            override fun invoke(klass: KClass<out SpecClass>): Boolean {
                val id = uniqueId.appendSpec(klass.java.description())
                val descriptor = object : AbstractTestDescriptor(id, klass.java.description().name) {
                   override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
@@ -109,7 +109,7 @@ class KotestEngine : TestEngine {
       }
    }
 
-   class KotestEngineDescriptor(id: UniqueId, val classes: List<KClass<out Spec>>) : EngineDescriptor(id, "Kotest") {
+   class KotestEngineDescriptor(id: UniqueId, val classes: List<KClass<out SpecClass>>) : EngineDescriptor(id, "Kotest") {
       override fun mayRegisterTests(): Boolean = true
    }
 }
