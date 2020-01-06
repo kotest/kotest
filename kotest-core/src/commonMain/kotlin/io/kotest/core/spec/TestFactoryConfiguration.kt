@@ -275,7 +275,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
 class FakeSpec : AbstractSpec()
 
 @Suppress("DEPRECATION")
-abstract class SpecConfiguration : CompatibilitySpecConfiguration() {
+abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfiguration {
 
    /**
     * Contains the root [TestCase]s used in this spec.

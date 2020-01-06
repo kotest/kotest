@@ -1,120 +1,121 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.Description
+import io.kotest.core.spec.ComposedSpec
+import io.kotest.core.spec.stringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
 
-class DescriptionTest : StringSpec() {
-  init {
-    "parents" {
+val descriptionTests = stringSpec {
+   "parents" {
       Description(
-          listOf("a", "b", "c"),
-          "d"
+         listOf("a", "b", "c"),
+         "d"
       ).parent() shouldBe Description(listOf("a", "b"), "c")
       Description(
-          listOf("a"),
-          "b"
+         listOf("a"),
+         "b"
       ).parent() shouldBe Description(listOf(), "a")
       Description(listOf(), "a").parent() shouldBe null
-    }
-    "full name" {
+   }
+   "full name" {
       Description(listOf("a", "b", "c"), "d").fullName() shouldBe "a b c d"
       Description(listOf("a"), "b").fullName() shouldBe "a b"
       Description(listOf(), "a").fullName() shouldBe "a"
-    }
-    "append" {
+   }
+   "append" {
       Description.spec("a").append("b") shouldBe Description(
-          listOf("a"),
-          "b"
+         listOf("a"),
+         "b"
       )
       Description(
-          listOf("a"),
-          "b"
+         listOf("a"),
+         "b"
       ).append("c") shouldBe Description(listOf("a", "b"), "c")
       Description(
-          listOf("a", "b"),
-          "c"
+         listOf("a", "b"),
+         "c"
       ).append("d") shouldBe Description(listOf("a", "b", "c"), "d")
-    }
-    "isParentOf" {
+   }
+   "isParentOf" {
       Description(listOf("a", "b"), "c")
-          .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
+         .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b")
-          .isParentOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
+         .isParentOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
       Description.spec("a").isParentOf(
-          Description(
-              listOf("a"),
-              "b"
-          )
+         Description(
+            listOf("a"),
+            "b"
+         )
       ).shouldBeTrue()
 
       Description.spec("a").isParentOf(Description.spec("a")).shouldBeFalse()
       Description.spec("a").isParentOf(
-          Description(
-              listOf("b"),
-              "a"
-          )
+         Description(
+            listOf("b"),
+            "a"
+         )
       ).shouldBeFalse()
       Description.spec("a").isParentOf(
-          Description(
-              listOf("b", "a"),
-              "c"
-          )
+         Description(
+            listOf("b", "a"),
+            "c"
+         )
       ).shouldBeFalse()
       Description.spec("a").isParentOf(
-          Description(
-              listOf("a", "b"),
-              "c"
-          )
+         Description(
+            listOf("a", "b"),
+            "c"
+         )
       ).shouldBeFalse()
       Description.spec("a").isParentOf(Description.spec("a")).shouldBeFalse()
       Description(listOf("a"), "b")
-          .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
+         .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isParentOf(Description(listOf("a"), "b")).shouldBeFalse()
+         .isParentOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
+         .isParentOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isParentOf(Description.spec("a")).shouldBeFalse()
-    }
-    "isAncestorOf" {
+         .isParentOf(Description.spec("a")).shouldBeFalse()
+   }
+   "isAncestorOf" {
       Description(listOf("a", "b"), "c")
-          .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
+         .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b")
-          .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
+         .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeTrue()
       Description(listOf("a"), "b")
-          .isAncestorOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
+         .isAncestorOf(Description(listOf("a", "b"), "c")).shouldBeTrue()
       Description.spec("a").isAncestorOf(
-          Description(
-              listOf("a"),
-              "b"
-          )
+         Description(
+            listOf("a"),
+            "b"
+         )
       ).shouldBeTrue()
       Description.spec("a").isAncestorOf(
-          Description(
-              listOf("a", "b"),
-              "c"
-          )
+         Description(
+            listOf("a", "b"),
+            "c"
+         )
       ).shouldBeTrue()
       Description.spec("a").isAncestorOf(
-          Description(
-              listOf("a", "b", "c"),
-              "d"
-          )
+         Description(
+            listOf("a", "b", "c"),
+            "d"
+         )
       ).shouldBeTrue()
 
       Description(listOf("a"), "b")
-          .isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
+         .isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a"), "b")
-          .isAncestorOf(Description(listOf("b", "a"), "c")).shouldBeFalse()
+         .isAncestorOf(Description(listOf("b", "a"), "c")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
+         .isAncestorOf(Description(listOf("a"), "b")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
+         .isAncestorOf(Description(listOf("a", "b", "c"), "d")).shouldBeFalse()
       Description(listOf("a", "b", "c"), "d")
-          .isAncestorOf(Description.spec("a")).shouldBeFalse()
-    }
-  }
+         .isAncestorOf(Description.spec("a")).shouldBeFalse()
+   }
 }
+
+class DescriptionTest : ComposedSpec(descriptionTests)

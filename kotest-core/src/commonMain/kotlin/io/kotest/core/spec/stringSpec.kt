@@ -2,6 +2,9 @@ package io.kotest.core.spec
 
 import io.kotest.core.*
 import io.kotest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -23,17 +26,6 @@ class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpe
 }
 
 /**
- * Decorates a [SpecConfiguration] with the StringSpec DSL.
- */
-class StringSpec(body: StringSpec.() -> Unit = {}) : SpecConfiguration(), StringSpecDsl {
-   override val addTest = ::addRootTestCase
-
-   init {
-      body()
-   }
-}
-
-/**
  * Defines the DSL for creating tests in the 'StringSpec' style.
  *
  * Example:
@@ -45,8 +37,12 @@ class StringSpec(body: StringSpec.() -> Unit = {}) : SpecConfiguration(), String
  */
 interface StringSpecDsl : SpecDsl {
 
+   @UseExperimental(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
+      invocations: Int = 0,
+      threads: Int = 0,
+      timeout: Duration = 1000.seconds,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
       test: suspend TestContext.() -> Unit
