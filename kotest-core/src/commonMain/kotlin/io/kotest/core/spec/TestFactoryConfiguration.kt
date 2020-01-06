@@ -10,7 +10,6 @@ import io.kotest.core.specs.AutoCloseable
 import io.kotest.core.specs.JsTest
 import io.kotest.core.specs.generateTests
 import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
 
 typealias BeforeTest = (TestCase) -> Unit
@@ -131,13 +130,19 @@ fun TestFactoryConfiguration.build(): TestFactory {
 /**
  * Builds an immutable [Spec] from this configuration.
  */
+@Suppress("DEPRECATION")
 fun SpecConfiguration.build(): Spec {
    return Spec(
-      rootTests = this.rootTestCases,
-      listeners = this.listeners,
-      extensions = this.extensions,
-      isolationMode = this.isolationMode,
-      testCaseOrder = this.testCaseOrder
+      rootTests = this.rootTestCases.map {
+         it.copy(
+            assertionMode = it.assertionMode ?: this.assertionMode ?: this.assertionMode(),
+            config = it.config.copy(tags = it.config.tags + this.tags + this.tags())
+         )
+      },
+      listeners = this.listeners + this.listeners(),
+      extensions = this.extensions + this.extensions(),
+      isolationMode = this.isolationMode ?: this.isolationMode(),
+      testCaseOrder = this.testCaseOrder ?: this.testCaseOrder()
    )
 }
 
@@ -269,7 +274,8 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
 
 class FakeSpec : AbstractSpec()
 
-abstract class SpecConfiguration : TestConfiguration() {
+@Suppress("DEPRECATION")
+abstract class SpecConfiguration : CompatibilitySpecConfiguration() {
 
    /**
     * Contains the root [TestCase]s used in this spec.
