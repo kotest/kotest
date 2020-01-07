@@ -27,11 +27,11 @@ val funTests = funSpec {
       println(testCase.name + " is completed with result " + result)
    }
 
-   beforeAll {
+   beforeSpec {
       println("Starting this example")
    }
 
-   afterAll {
+   afterSpec {
       println("Finished this example")
    }
 

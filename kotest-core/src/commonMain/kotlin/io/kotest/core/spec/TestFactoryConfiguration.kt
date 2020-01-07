@@ -201,11 +201,11 @@ abstract class TestConfiguration {
       afterTests = afterTests + f
    }
 
-   fun beforeAll(f: BeforeAll) {
+   fun beforeSpec(f: BeforeAll) {
       beforeAlls = beforeAlls + f
    }
 
-   fun afterAll(f: AfterAll) {
+   fun afterSpec(f: AfterAll) {
       afterAlls = afterAlls + f
    }
 
@@ -238,7 +238,7 @@ abstract class TestConfiguration {
     * when the tests are completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterAll { closeable.close() }
+      afterSpec { closeable.close() }
       return closeable
    }
 }
