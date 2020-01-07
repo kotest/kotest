@@ -1,6 +1,8 @@
 package io.kotest.core
 
 import io.kotest.SpecClass
+import io.kotest.core.spec.FakeSpec
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.TestFactory
 import kotlin.random.Random
 
@@ -61,6 +63,10 @@ data class TestCase(
    fun getLine(): Int = source.lineNumber
 
    companion object {
+
+      fun test(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
+         TestCase(description, FakeSpec(), test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
+
       fun test(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(description, spec, test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
 

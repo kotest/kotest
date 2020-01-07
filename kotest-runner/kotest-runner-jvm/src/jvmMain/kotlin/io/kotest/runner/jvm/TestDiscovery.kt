@@ -46,9 +46,10 @@ object TestDiscovery {
       val fromClassNames = loadClasses(request.classNames)
       logger.trace("Loaded ${fromClassNames.size} classes from classnames...")
 
-      val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty()) emptyList() else scanUris(
-         request.uris
-      )
+      val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty())
+         emptyList()
+      else
+         scanUris(request.uris)
       logger.trace("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
       val fromPackages = if (request.packages.isEmpty()) emptyList() else scanPackages(request.packages)
@@ -101,7 +102,6 @@ object TestDiscovery {
       val scanResult = ClassGraph()
          .enableClassInfo()
          .enableExternalClasses()
-         .ignoreClassVisibility()
          .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
          .scan()
 
