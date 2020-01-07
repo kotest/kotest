@@ -1,5 +1,7 @@
  A design for #598 and #399
 
+ Note: This PR replaces the previous PR. Most notable change is that test factories (previously value specs) are not in themselves considered executable units.
+
  **Goal**:
 
  To allow specs to be composed of smaller reusable specs. These abstractions should be easily parameterized, dynamic and mappable.
@@ -12,9 +14,9 @@ I would rather merge sooner than later so that other contributors are not workin
 **Implementation**:
 
 This implementation adds a new type of "test container" called `TestFactory`. A TestFactory is a way of defining tests (and test related configuraton)
+and then import those tests into a spec.
 
-_Value specs_ are new. They are defined as top level public vals that use a spec factory function such as `funSpec { }` or `behaviorSpec { }`
-These factory functions allows tests to be defined in the same structure that the similarly named classes do. For example the factory equivalent of FunSpec is:
+To create a test factory, we use a test factory builder function, for example:
 
 ```kotlin
 val funTests = funSpec {
@@ -40,11 +42,7 @@ val funTests = funSpec {
       println(testCase.name + " is completed with result " + result)
    }
 
-   isolationMode = IsolationMode.InstancePerLeaf
-
    assertionMode = AssertionMode.Error
-
-   testCaseOrder = TestCaseOrder.Random
 
    test("my test") {
       1 + 1 shouldBe 2
@@ -52,17 +50,8 @@ val funTests = funSpec {
 }
 ```
 
-Specs defined as vals are in every way as functionally complete as specs defined as classes. Both types of specs will be
-executed as part of the test suite so you do not need to use class based syntax if not desired.
-
-If you don't want a class or a val to be executed then mark them as private.
-
-```kotlin
-private val skipped = funSpec { /*tests here*/ }
-```
-
-So what's the point of this new syntax? The point is to allow reusable composable specs. Since the result of a spec factory function is just a `Spec` value,
-it can be passed around, filtered, mapped, copied or whatever else you want to do. It's just a value. More importantly however, it can be
+The aim of these test test factories is to allow reusable composable specs. Since the result of a test factory builder function is just a `TestFactory` instance,
+they can be passed around, filtered, mapped, copied or whatever else you want to do. It's just a value. More importantly however, it can be
 included as part other specs.
 
 ```kotlin
@@ -85,14 +74,14 @@ class MySpec : StringSpec() {
 Note that you can even mix and match the spec styles when composing. The output reports will reflect the correct structure.
 
 ```kotlin
-val funtests = stringSpec {
-  "test 1" {
+val funtests = funSpec {
+  test("test 1") {
     "abc".shouldHaveLength(3)
   }
 }
 
 val stringtests = stringSpec {
-  "test 1" {
+  "test 2" {
     "zyx".shouldHaveLength(3)
   }
 }
@@ -106,7 +95,7 @@ class MySpec : FunSpec() {
 }
 ```
 
-Since the spec factory functions are just that - functions - they can dynamically generate tests based on parameters.
+Since the test factory functions are just that - functions - they can dynamically generate tests based on parameters.
 
 ```kotlin
 // defines an interface for the Semigroup typeclass
@@ -152,16 +141,15 @@ class LongSemigroupTest : FunSpec() {
 }
 ```
 
-**Restrictions**
+Specs cannot be included into other specs, only test factories can be added to specs.
 
-* Class specs cannot be included into other class specs (I may drop this restriction if it proves easy to implement).
-* You cannot merge isolation modes. For example, if a value spec has isolation mode of per test, you cannot then include it in a spec that has the default isolation mode.
-* Other parameters lose out to the outer most spec. For example, if you include testsA into a classB then settings for test case order will be honoured from classB.
-* Value specs can be automatically detected and included in a test suite, so they offer an alternative syntax to classes, but only on the JVM. With JS we'd need to always include in classes.
+If you have some test factories and want to execute those without defining new tests, then you can use the `CompositeSpec` class.
 
-**Nomenclature:**
-
-The nomenclature used here is totally open for change. I am currently using terms like `SpecBuilder`, `SpecFactory` and _value spec_ and _class spec_.
+```kotlin
+val tests1 = funSpec { }
+val tests2 = stringSpec { }
+class SomeTests : CompositeSpec(tests1, tests2)
+```
 
 
 
