@@ -5,11 +5,11 @@ import io.kotest.Project
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecExtension
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.TopLevelTests
-import io.kotest.listenerInstances
 import io.kotest.runner.jvm.TestEngineListener
 
 /**
@@ -23,10 +23,11 @@ import io.kotest.runner.jvm.TestEngineListener
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
-  abstract fun execute(spec: SpecClass, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
+  abstract fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
 
   private suspend fun interceptSpec(spec: SpecConfiguration, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
-    val listeners = listOf(spec) + spec.listenerInstances + Project.listeners()
+     // todo
+    val listeners = Project.listeners() // listOf(spec) // + spec.listenerInstances + Project.listeners()
     when {
       remaining.isEmpty() -> {
         executeBeforeSpec(spec, listeners)
@@ -42,7 +43,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
   private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
     listeners.forEach {
-      it.beforeSpec(spec.description(), spec)
+      it.beforeSpec(spec::class.description(), spec)
       it.beforeSpec(spec)
     }
   }
@@ -50,7 +51,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
   private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
     listeners.reversed().forEach {
       it.afterSpec(spec)
-      it.afterSpec(spec.description(), spec)
+      it.afterSpec(spec::class.description(), spec)
     }
   }
 

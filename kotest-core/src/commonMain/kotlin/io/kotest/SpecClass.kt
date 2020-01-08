@@ -72,7 +72,7 @@ interface SpecClass : TestListener {
     */
    fun tags(): Set<Tag> = emptySet()
 
-   fun description(): Description = Description.fromSpecClass(this::class)
+   fun description(): Description = TODO()
 
    fun assertionMode(): AssertionMode? = null
 }

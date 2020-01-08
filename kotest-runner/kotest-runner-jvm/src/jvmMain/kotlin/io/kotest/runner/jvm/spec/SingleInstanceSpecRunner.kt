@@ -5,6 +5,7 @@ import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.TestContext
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TopLevelTests
 import io.kotest.runner.jvm.TestCaseExecutor
 import io.kotest.runner.jvm.TestEngineListener
@@ -45,7 +46,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener,
     }
   }
 
-  override fun execute(spec: SpecClass, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+  override fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
 
     // creating the spec instance will have invoked the init block, resulting
     // in the top level test cases being available on the spec class

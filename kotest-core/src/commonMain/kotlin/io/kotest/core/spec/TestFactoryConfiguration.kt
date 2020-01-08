@@ -115,11 +115,11 @@ fun TestFactoryConfiguration.build(): TestFactory {
          }
       }
 
-      override fun afterSpec(spec: SpecClass) {
+      override fun afterSpec(spec: SpecConfiguration) {
          this@build.afterAlls.forEach { it() }
       }
 
-      override fun beforeSpec(spec: SpecClass) {
+      override fun beforeSpec(spec: SpecConfiguration) {
          this@build.beforeAlls.forEach { it() }
       }
    }
@@ -308,7 +308,7 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
       config: TestCaseConfig,
       type: TestType
    ) = TestCase(
-      Description.fromSpecClass(FakeSpec::class).append(name),
+      this::class.description().append(name),
       FakeSpec(),
       test,
       sourceRef(),

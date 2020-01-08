@@ -1,21 +1,13 @@
 package io.kotest.core.specs
 
-import io.kotest.core.AssertionMode
-import io.kotest.core.IsolationMode
 import io.kotest.SpecClass
-import io.kotest.core.Tag
-import io.kotest.core.TestCase
-import io.kotest.core.TestCaseOrder
-import io.kotest.core.TestResult
+import io.kotest.core.*
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
 
 abstract class AbstractSpecDsl : AbstractSpec() {
 
-   private var beforeTestFn: (TestCase) -> Unit = {}
-   private var afterTestFn: (TestCase, TestResult) -> Unit = { _, _ -> }
-   private var beforeSpecFn: (SpecClass) -> Unit = {}
-   private var afterSpecFn: (SpecClass) -> Unit = {}
    private var afterSpecClassFn: (SpecClass, Map<TestCase, TestResult>) -> Unit = { _, _ -> }
    private var tags: Set<Tag> = emptySet()
    private var listeners: List<TestListener> = emptyList()
@@ -33,31 +25,32 @@ abstract class AbstractSpecDsl : AbstractSpec() {
 
    override fun beforeTest(testCase: TestCase) {
       super.beforeTest(testCase)
-      beforeTestFn(testCase)
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
       super.afterTest(testCase, result)
-      afterTestFn(testCase, result)
    }
 
-   override fun beforeSpec(spec: SpecClass) {
+   override fun beforeSpec(spec: SpecConfiguration) {
       super.beforeSpec(spec)
-      beforeSpecFn(spec)
    }
 
-   override fun afterSpec(spec: SpecClass) {
+   override fun afterSpec(spec: SpecConfiguration) {
       super.afterSpec(spec)
-      afterSpecFn(spec)
+   }
+
+   fun beforeSpec(spec: SpecClass) {
+   }
+
+   fun afterSpec(spec: SpecClass) {
    }
 
    override fun tags(): Set<Tag> {
       return super.tags()
    }
 
-   override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
+   override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
       super.afterSpecClass(spec, results)
-      afterSpecClassFn(spec, results)
    }
 
    fun set(isolationMode: IsolationMode) {
@@ -82,22 +75,6 @@ abstract class AbstractSpecDsl : AbstractSpec() {
 
    fun extensions(vararg extensions: SpecLevelExtension) {
       this.extensions = extensions.toList()
-   }
-
-   fun beforeTest(f: (TestCase) -> Unit) {
-      beforeTestFn = f
-   }
-
-   fun afterTest(f: (TestCase, TestResult) -> Unit) {
-      afterTestFn = f
-   }
-
-   fun beforeSpec(f: (SpecClass) -> Unit) {
-      beforeSpecFn = f
-   }
-
-   fun afterSpec(f: (SpecClass) -> Unit) {
-      afterSpecFn = f
    }
 
    fun afterSpecClass(f: (SpecClass, Map<TestCase, TestResult>) -> Unit) {

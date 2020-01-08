@@ -6,6 +6,7 @@ import io.kotest.core.IsolationMode.InstancePerTest
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 
 interface TestListener {
 
@@ -56,7 +57,7 @@ interface TestListener {
    *
    * @param spec the [SpecClass] instance.
    */
-  fun beforeSpec(spec: SpecClass): Unit = Unit
+  fun beforeSpec(spec: SpecConfiguration): Unit = Unit
 
   /**
    * Is invoked after the [TestCase]s that are part of a particular
@@ -74,7 +75,7 @@ interface TestListener {
    *
    * @param spec the [SpecClass] instance.
    */
-  fun afterSpec(spec: SpecClass): Unit = Unit
+  fun afterSpec(spec: SpecConfiguration): Unit = Unit
 
   /**
    * Called once per [SpecClass], when the engine is preparing to
@@ -115,7 +116,7 @@ interface TestListener {
    * @param spec the [SpecClass] instance
    * @param results a map of each test case mapped to its result.
    */
-  fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>): Unit = Unit
+  fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>): Unit = Unit
 
   /**
    * Is invoked after all the [SpecClass] classes have been discovered.
@@ -138,7 +139,7 @@ interface TestListener {
    * @param spec the actual [SpecClass] instance.
    */
   @Deprecated("use beforeSpec(Spec)", ReplaceWith("beforeSpec(Spec)"))
-  fun beforeSpec(description: Description, spec: SpecClass): Unit = Unit
+  fun beforeSpec(description: Description, spec: SpecConfiguration): Unit = Unit
 
   /**
    * Is invoked each time a [SpecClass] completes.
@@ -150,7 +151,7 @@ interface TestListener {
    * @param spec the actual [SpecClass] instance.
    */
   @Deprecated("use afterSpec(Spec)", ReplaceWith("afterSpec(Spec)"))
-  fun afterSpec(description: Description, spec: SpecClass): Unit = Unit
+  fun afterSpec(description: Description, spec: SpecConfiguration): Unit = Unit
 
   /**
    * This function will be invoked each time a new [TestCase] is executed.

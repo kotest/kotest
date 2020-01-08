@@ -4,11 +4,10 @@ import arrow.core.Try
 import arrow.core.getOrElse
 import arrow.core.orElse
 import arrow.core.toOption
-import io.kotest.core.Description
 import io.kotest.core.IsolationMode
 import io.kotest.Project
 import io.kotest.SpecClass
-import io.kotest.core.fromSpecClass
+import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.internal.orderedRootTests
 import io.kotest.listenerInstances
@@ -41,18 +40,12 @@ class SpecExecutor(
       listenerExecutor.shutdown()
    }
 
-   fun execute(spec: SpecConfiguration): Try<Unit> = Try {
-      withExecutor { listenerExecutor ->
-         engineListener.beforeSpecClass(spec::class)
-      }
-   }
-
-   fun execute(spec: SpecClass) = Try {
+   fun execute(spec: SpecConfiguration) = Try {
       withExecutor { listenerExecutor ->
 
          //engineListener.beforeSpecClass(spec::class)
 
-         val userListeners = listOf(spec) + spec.listenerInstances + Project.listeners()
+         val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
 
          Try {
 
@@ -60,7 +53,7 @@ class SpecExecutor(
             logger.trace("Discovered top level tests $tests for spec $spec")
 
             userListeners.forEach {
-               it.beforeSpecStarted(Description.fromSpecClass(spec::class), spec)
+               // it.beforeSpecStarted(spec::class.description(), spec)
                it.beforeSpecClass(spec, tests.tests)
             }
 
@@ -69,21 +62,21 @@ class SpecExecutor(
 
             userListeners.forEach {
                it.afterSpecClass(spec, results)
-               it.afterSpecCompleted(Description.fromSpecClass(spec::class), spec)
+               // it.afterSpecCompleted(spec::class.description(), spec)
             }
 
          }.fold(
             {
-               logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with error $it")
+               logger.trace("Completing spec ${spec::class.description()} with error $it")
                //     engineListener.afterSpecClass(spec.javaClass.kotlin, it)
             },
             {
-               logger.trace("Completing spec ${Description.fromSpecClass(spec::class)} with success")
+               logger.trace("Completing spec ${spec::class.description()} with success")
                //     engineListener.afterSpecClass(spec.javaClass.kotlin, null)
             }
          )
       }
-      spec.closeResources()
+      //  todo spec.closeResources()
    }
 
    // each runner must get a single-threaded executor, which is used to invoke
@@ -101,8 +94,10 @@ class SpecExecutor(
          .getOrElse { IsolationMode.SingleInstance }
       return when (mode) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
-         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
-         IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
+         else -> SingleInstanceSpecRunner(engineListener, listenerExecutor, scheduler)
+         // todo
+        // IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
+        // IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
       }
    }
 }

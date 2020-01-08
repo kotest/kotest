@@ -16,3 +16,9 @@ fun KClass<*>.bestName(): String = fqn().orElse(simpleName.toOption()).getOrElse
  * Returns the fully qualified name for this class, or none.
  */
 expect fun KClass<*>.fqn(): Option<String>
+
+/**
+ * Returns the display name value for this class if the class is annoated with @DisplayName,
+ * otherwise returns None.
+ */
+expect fun KClass<*>.displayName(): Option<String>

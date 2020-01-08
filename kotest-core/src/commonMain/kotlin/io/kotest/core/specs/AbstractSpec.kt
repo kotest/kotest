@@ -1,13 +1,7 @@
 package io.kotest.core.specs
 
-import io.kotest.core.Description
 import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestType
-import io.kotest.core.TestCaseConfig
-import io.kotest.core.TestContext
-import io.kotest.core.fromSpecClass
-import io.kotest.core.sourceRef
+import io.kotest.core.*
 import org.junit.platform.commons.annotation.Testable
 
 // these functions call out to the js test methods
@@ -36,7 +30,7 @@ abstract class AbstractSpec : SpecClass {
       config: TestCaseConfig,
       type: TestType
    ) = TestCase(
-      Description.fromSpecClass(this::class).append(name),
+      this::class.description().append(name),
       this,
       test,
       sourceRef(),
