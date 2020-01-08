@@ -2,14 +2,14 @@ package io.kotest.runner.jvm
 
 import arrow.core.Try
 import io.kotest.Project
-import io.kotest.SpecClass
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.specs.AbstractSpec
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-fun <T : SpecClass> instantiateSpec(clazz: KClass<T>): Try<SpecClass> = Try {
+fun <T : SpecConfiguration> instantiateSpec(clazz: KClass<T>): Try<SpecConfiguration> = Try {
 
-  val nullSpec: SpecClass? = null
+  val nullSpec: SpecConfiguration? = null
 
   val instance = Project.constructorExtensions()
       .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: clazz.createInstance()

@@ -14,13 +14,13 @@ fun <T> Option<T>.getOrElse(t: T): T = fold({ t }, { it })
 
 fun <T> Option<T>.getOrElse(f: () -> T): T = fold({ f() }, { it })
 
-fun <T> Option<T>.orElse(opt: Option<T>): Option<T> = when (this) {
-   is Option.None -> opt
+fun <T> Option<T>.orElse(other: Option<T>): Option<T> = when (this) {
+   is Option.None -> other
    else -> this
 }
 
-fun <T> Option<T>.orElse(f: () -> Option<T>): Option<T> = when (this) {
-   is Option.None -> f()
+fun <T> Option<T>.orElse(other: () -> Option<T>): Option<T> = when (this) {
+   is Option.None -> other()
    else -> this
 }
 

@@ -17,11 +17,18 @@ object Libs {
    }
 
    object Log4j {
-      const val api = "org.apache.logging.log4j:log4j:2.13.0"
+      private const val version = "2.13.0"
+      const val api = "org.apache.logging.log4j:log4j-api:$version"
+      const val core = "org.apache.logging.log4j:log4j-core:$version"
+      const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:$version"
+   }
+
+   object Logback {
+      const val classic = "ch.qos.logback:logback-classic:1.2.3"
    }
 
    object Slf4j {
-      const val api = "org.slf4j:slf4j-api:1.7.25"
+      const val api = "org.slf4j:slf4j-api:1.7.30"
    }
 
    object Coroutines {

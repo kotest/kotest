@@ -1,7 +1,7 @@
 package io.kotest.runner.junit5
 
-import io.kotest.SpecClass
-import io.kotest.description
+import io.kotest.core.description
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.SpecFilter
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
@@ -20,13 +20,13 @@ import kotlin.reflect.KClass
 // fix their bugs around junit 5 support, if ever.
 class ClassMethodAdaptingFilter(private val filter: PostDiscoveryFilter,
                                 private val uniqueId: UniqueId) : SpecFilter {
-   override fun invoke(klass: KClass<out SpecClass>): Boolean {
-      val id = uniqueId.appendSpec(klass.java.description())
-      val descriptor = object : AbstractTestDescriptor(id, klass.java.description().name) {
+   override fun invoke(klass: KClass<out SpecConfiguration>): Boolean {
+      val id = uniqueId.appendSpec(klass.description())
+      val descriptor = object : AbstractTestDescriptor(id, klass.description().name) {
          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
          override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(klass.java))
       }
-      val parent = KotestEngine.KotestEngineDescriptor(uniqueId, emptyList())
+      val parent = KotestEngineDescriptor(uniqueId, emptyList())
       parent.addChild(descriptor)
       return filter.apply(descriptor).included()
    }

@@ -1,6 +1,7 @@
 package io.kotest.extensions
 
 import io.kotest.SpecClass
+import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
 /**
@@ -31,5 +32,5 @@ interface DiscoveryExtension : ProjectLevelExtension {
    *
    * @return  the list of filtered classes to use.
    */
-  fun afterScan(classes: List<KClass<out SpecClass>>): List<KClass<out SpecClass>>
+  fun afterScan(classes: List<KClass<out SpecConfiguration>>): List<KClass<out SpecConfiguration>>
 }

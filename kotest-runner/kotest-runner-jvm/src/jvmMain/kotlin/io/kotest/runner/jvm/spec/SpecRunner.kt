@@ -5,6 +5,7 @@ import io.kotest.Project
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecExtension
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.TopLevelTests
@@ -24,7 +25,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
   abstract fun execute(spec: SpecClass, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
 
-  private suspend fun interceptSpec(spec: SpecClass, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
+  private suspend fun interceptSpec(spec: SpecConfiguration, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
     val listeners = listOf(spec) + spec.listenerInstances + Project.listeners()
     when {
       remaining.isEmpty() -> {
@@ -39,21 +40,21 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     }
   }
 
-  private fun executeBeforeSpec(spec: SpecClass, listeners: List<TestListener>) {
+  private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
     listeners.forEach {
       it.beforeSpec(spec.description(), spec)
       it.beforeSpec(spec)
     }
   }
 
-  private fun executeAfterSpec(spec: SpecClass, listeners: List<TestListener>) {
+  private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
     listeners.reversed().forEach {
       it.afterSpec(spec)
       it.afterSpec(spec.description(), spec)
     }
   }
 
-  suspend fun interceptSpec(spec: SpecClass, afterInterception: suspend () -> Unit) {
+  suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit) {
     val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
     interceptSpec(spec, extensions, afterInterception)
   }

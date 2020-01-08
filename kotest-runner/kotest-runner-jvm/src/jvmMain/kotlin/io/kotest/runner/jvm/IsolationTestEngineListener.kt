@@ -1,10 +1,7 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.Description
-import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.fromSpecClass
+import io.kotest.core.*
+import io.kotest.core.spec.SpecConfiguration
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
@@ -28,12 +25,12 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     listener.engineFinished(t)
   }
 
-  override fun engineStarted(classes: List<KClass<out SpecClass>>) {
+  override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
     listener.engineStarted(classes)
   }
 
-  override fun specCreated(spec: SpecClass) {
-    if (runningSpec.compareAndSet(null, spec.description())) {
+  override fun specCreated(spec: SpecConfiguration) {
+    if (runningSpec.compareAndSet(null, spec::class.description())) {
       listener.specCreated(spec)
     } else {
       queue {
@@ -42,8 +39,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun specInitialisationFailed(klass: KClass<out SpecClass>, t: Throwable) {
-    if (runningSpec.compareAndSet(null, Description.fromSpecClass(klass))) {
+  override fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
+    if (runningSpec.compareAndSet(null, klass.description())) {
       listener.specInitialisationFailed(klass, t)
     } else {
       queue {
@@ -52,7 +49,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun beforeSpecClass(klass: KClass<out SpecClass>) {
+  override fun beforeSpecClass(klass: KClass<out SpecConfiguration>) {
     if (isRunning(klass)) {
       listener.beforeSpecClass(klass)
     } else {
@@ -62,9 +59,9 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  private fun isRunning(klass: KClass<out SpecClass>): Boolean {
+  private fun isRunning(klass: KClass<out SpecConfiguration>): Boolean {
     val running = runningSpec.get()
-    val given = Description.fromSpecClass(klass)
+    val given = klass.description()
     return running == given
   }
 
@@ -108,8 +105,8 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
     }
   }
 
-  override fun afterSpecClass(klass: KClass<out SpecClass>, t: Throwable?) {
-    if (runningSpec.get() == Description.fromSpecClass(klass)) {
+  override fun afterSpecClass(klass: KClass<out SpecConfiguration>, t: Throwable?) {
+    if (runningSpec.get() == klass.description()) {
       listener.afterSpecClass(klass, t)
       runningSpec.set(null)
       replay()

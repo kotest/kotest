@@ -26,7 +26,7 @@ class KotestConsoleRunner(private val writer: TestEngineListener) {
       listOf(spec) to filter
     }
 
-    val runner = io.kotest.runner.jvm.TestEngine(
+    val runner = io.kotest.runner.jvm.KotestEngine(
       specs,
       if (filter == null) emptyList<TestCaseFilter>() else listOf(filter),
       Project.parallelism(),

@@ -1,6 +1,7 @@
 package io.kotest.extensions
 
 import io.kotest.SpecClass
+import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
 interface ConstructorExtension : ProjectLevelExtension {
@@ -20,5 +21,5 @@ interface ConstructorExtension : ProjectLevelExtension {
    * the way classes are created, to support things like constructors
    * with parameters, or classes that require special initization logic.
    */
-  fun <T : SpecClass> instantiate(clazz: KClass<T>): SpecClass?
+  fun <T : SpecConfiguration> instantiate(clazz: KClass<T>): SpecConfiguration?
 }

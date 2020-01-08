@@ -12,7 +12,7 @@ import io.kotest.extensions.TopLevelTests
  * to the [TestCaseOrder] specified in the spec (or the project if not in the spec).
  * Captures information on focused tests.
  */
-fun topLevelTests(spec: SpecClass): TopLevelTests {
+fun orderedRootTests(spec: SpecClass): TopLevelTests {
 
   val order = spec.testCaseOrder() ?: Project.testCaseOrder()
 

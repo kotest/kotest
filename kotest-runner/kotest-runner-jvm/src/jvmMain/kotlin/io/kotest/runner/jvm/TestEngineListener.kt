@@ -3,25 +3,26 @@ package io.kotest.runner.jvm
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
 /**
  * Implementations of this interface will be notified of events
- * that occur as part of the [TestEngine] lifecycle.
+ * that occur as part of the [KotestEngine] lifecycle.
  *
  * This is an internal listener liable to be changed.
  */
 interface TestEngineListener {
 
   /**
-   * Is invoked when the [TestEngine] is starting execution.
+   * Is invoked when the [KotestEngine] is starting execution.
    *
-   * @param classes the [SpecClass] classes that will be used by the [TestEngine].
+   * @param classes the [SpecClass] classes that will be used by the [KotestEngine].
    */
-  fun engineStarted(classes: List<KClass<out SpecClass>>) {}
+  fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {}
 
   /**
-   * Is invoked when the [TestEngine] has finished execution.
+   * Is invoked when the [KotestEngine] has finished execution.
    *
    * If an unrecoverable error was detected during execution then it will be passed
    * as the parameter to the engine.
@@ -29,21 +30,21 @@ interface TestEngineListener {
   fun engineFinished(t: Throwable?) {}
 
   /**
-   * Is invoked once per [SpecClass] when the [TestEngine] is preparing
+   * Is invoked once per [SpecClass] when the [KotestEngine] is preparing
    * to submit the spec for execution to a [SpecRunner].
    */
-  fun beforeSpecClass(klass: KClass<out SpecClass>) {}
+  fun beforeSpecClass(klass: KClass<out SpecConfiguration>) {}
 
   /**
    * Is invoked once per [SpecClass] to indicate that all [TestCase] instances
    * of the spec have returned and the [SpecRunner] has completed.
    */
-  fun afterSpecClass(klass: KClass<out SpecClass>, t: Throwable?) {}
+  fun afterSpecClass(klass: KClass<out SpecConfiguration>, t: Throwable?) {}
 
   /**
    * Is invoked if a [SpecClass] throws an exception during initialisation
    */
-  fun specInitialisationFailed(klass: KClass<out SpecClass>, t: Throwable) {}
+  fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {}
 
   /**
    * Invoked each time a [TestCase] has been entered from a parent test.
@@ -92,6 +93,6 @@ interface TestEngineListener {
    * Invoked each time an instance of a [SpecClass] is created.
    * A spec may be created once per class, or one per [TestCase].
    */
-  fun specCreated(spec: SpecClass) {}
+  fun specCreated(spec: SpecConfiguration) {}
 
 }
