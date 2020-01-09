@@ -1,7 +1,6 @@
 package io.kotest.core
 
 import io.kotest.SpecClass
-import io.kotest.core.spec.FakeSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.TestFactory
 import kotlin.random.Random
@@ -36,7 +35,7 @@ data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
    val description: Description,
    // the spec that contains this testcase
-   val spec: SpecClass,
+   val spec: SpecConfiguration,
    // a closure of the test function
    val test: suspend TestContext.() -> Unit,
    val source: SourceRef,
@@ -65,12 +64,24 @@ data class TestCase(
    companion object {
 
       fun test(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
-         TestCase(description, FakeSpec(), test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
-
-      fun test(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(description, spec, test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
 
+      fun test(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
+         TestCase(description, FakeSpecConfiguration(), test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
+
       fun container(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
+         TestCase(
+            description,
+            FakeSpecConfiguration(),
+            test,
+            sourceRef(),
+            TestType.Container,
+            TestCaseConfig(),
+            null,
+            null
+         )
+
+      fun container(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
             spec,
@@ -83,6 +94,8 @@ data class TestCase(
          )
    }
 }
+
+class FakeSpecConfiguration : SpecConfiguration()
 
 data class GeneratorId(val id: String) {
    companion object {

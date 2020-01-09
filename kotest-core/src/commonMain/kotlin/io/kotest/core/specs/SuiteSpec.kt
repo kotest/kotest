@@ -12,7 +12,7 @@ abstract class SuiteSpec(body: SuiteSpec.() -> Unit = {}) : AbstractSpec() {
       rootTestCases.add(
          TestCase(
             this::class.description().append(name),
-            this,
+            FakeSpecConfiguration(),
             { SuiteScope(this).test() },
             sourceRef(),
             TestType.Container,

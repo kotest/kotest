@@ -42,7 +42,7 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc = TestCase(description().append(name), spec, test, sourceRef(), type, config, null, null)
+      val tc = TestCase(description().append(name), FakeSpecConfiguration(), test, sourceRef(), type, config, null, null)
       registerTestCase(tc)
    }
 
@@ -55,7 +55,7 @@ abstract class TestContext(override val coroutineContext: CoroutineContext) : Co
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc = TestCase(description().append(name), spec(), test, sourceRef(), type, config, null, null)
+      val tc = TestCase(description().append(name), FakeSpecConfiguration(), test, sourceRef(), type, config, null, null)
       registerTestCase(tc)
    }
 

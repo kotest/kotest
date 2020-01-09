@@ -77,7 +77,7 @@ fun TestFactory.generate(description: Description, spec: SpecClass): List<TestCa
    return tests.map { dyn ->
       TestCase(
          description = description.append(dyn.name),
-         spec = spec,
+         spec = FakeSpecConfiguration(),
          test = dyn.test,
          type = dyn.type,
          source = dyn.source,
@@ -309,7 +309,7 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
       type: TestType
    ) = TestCase(
       this::class.description().append(name),
-      FakeSpec(),
+      FakeSpecConfiguration(),
       test,
       sourceRef(),
       type,
