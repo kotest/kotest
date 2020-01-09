@@ -156,7 +156,8 @@ class TestCaseExecutor(private val listener: TestEngineListener,
                   val warningMessage = "Test '${testCase.description.fullName()}' did not invoke any assertions"
 
                   if (AssertionCounter.getAndReset() > 0) null else {
-                     when (testCase.spec.resolvedAssertionMode()) {
+                     // todo restore
+                     when (AssertionMode.Error) { // testCase.spec.resolvedAssertionMode()) {
                         AssertionMode.Error -> RuntimeException(warningMessage)
                         AssertionMode.Warn -> {
                            println("Warning: $warningMessage")
@@ -209,7 +210,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
   private fun before(testCase: TestCase) {
     listener.enterTestCase(testCase)
 
-    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+    val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
     val active = isActive(testCase)
     userListeners.forEach {
       it.beforeTest(testCase.description)
@@ -224,7 +225,7 @@ class TestCaseExecutor(private val listener: TestEngineListener,
    */
   private fun after(testCase: TestCase, result: TestResult) {
     val active = isActive(testCase)
-    val userListeners = testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+    val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
     userListeners.reversed().forEach {
       it.afterTest(testCase.description, result)
       if (active) {

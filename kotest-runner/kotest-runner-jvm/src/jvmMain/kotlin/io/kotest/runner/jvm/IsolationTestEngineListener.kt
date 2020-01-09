@@ -66,7 +66,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun enterTestCase(testCase: TestCase) {
-    if (runningSpec.get() == testCase.spec.description()) {
+    if (runningSpec.get() == testCase.spec::class.description()) {
       listener.enterTestCase(testCase)
     } else {
       queue {
@@ -76,7 +76,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun invokingTestCase(testCase: TestCase, k: Int) {
-    if (runningSpec.get() == testCase.spec.description()) {
+    if (runningSpec.get() == testCase.spec::class.description()) {
       listener.invokingTestCase(testCase, k)
     } else {
       queue {
@@ -86,7 +86,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
-    if (runningSpec.get() == testCase.spec.description()) {
+    if (runningSpec.get() == testCase.spec::class.description()) {
       listener.afterTestCaseExecution(testCase, result)
     } else {
       queue {
@@ -96,7 +96,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
   }
 
   override fun exitTestCase(testCase: TestCase, result: TestResult) {
-    if (runningSpec.get() == testCase.spec.description()) {
+    if (runningSpec.get() == testCase.spec::class.description()) {
       listener.exitTestCase(testCase, result)
     } else {
       queue {
