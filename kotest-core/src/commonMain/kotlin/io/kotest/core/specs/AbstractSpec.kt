@@ -31,7 +31,7 @@ abstract class AbstractSpec : SpecClass {
       type: TestType
    ) = TestCase(
       this::class.description().append(name),
-      this,
+      FakeSpecConfiguration(),
       test,
       sourceRef(),
       type,

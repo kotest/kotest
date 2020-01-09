@@ -4,6 +4,9 @@ sealed class Option<out T> {
    data class Some<T>(val value: T) : Option<T>()
    object None : Option<Nothing>()
 
+   fun isDefined(): Boolean = this is Some
+   fun isEmpty(): Boolean = this is None
+
    inline fun <R> fold(ifEmpty: () -> R, ifDefined: (T) -> R): R = when (this) {
       is Some -> ifDefined(this.value)
       is None -> ifEmpty()

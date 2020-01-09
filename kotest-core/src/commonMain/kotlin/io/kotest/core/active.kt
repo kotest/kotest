@@ -1,10 +1,4 @@
-package io.kotest.internal
-
-import io.kotest.Project
-import io.kotest.SpecClass
-import io.kotest.core.Tag
-import io.kotest.core.TestCase
-import io.kotest.core.TestFilterResult
+package io.kotest.core
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -19,17 +13,17 @@ import io.kotest.core.TestFilterResult
  * - Include tag filters have been specified and this test either has no tags, or does not have a tag that is one of those included
  * - The test is filtered out via a [TestCaseFilter]
  *
- * Note: tags are defined either through [TestCaseConfig] or in the [SpecClass] itself.
+ * Note: tags are defined either through [TestCaseConfig] or in the [SpecConfiguration] dsl.
  *
  * Note2: Focused tests will override any settings here.
  *
  */
 fun isActive(test: TestCase): Boolean {
   val focused = test.isFocused() && test.isTopLevel()
-  val hasFocused = test.spec.hasFocusedTest()
+  val hasFocused = test.spec.focused().isNotEmpty()
   val enabledInConfig = test.config.enabled
-  val disabledViaBang = test.name.startsWith("!") && System.getProperty("kotest.bang.disable") == null
-  val activeViaTags = Project.tags().isActive(test.config.tags + test.spec.tags())
-  val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Exclude }
-  return focused || !hasFocused && enabledInConfig && activeViaTags && !disabledViaBang && !filtered
+  val disabledViaBang = test.name.startsWith("!") && sysprop("kotest.bang.disable").isEmpty()
+  // todo val activeViaTags = Project.tags().isActive(test.config.tags + test.spec.tags())
+  // todo val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Exclude }
+  return focused || !hasFocused && enabledInConfig && !disabledViaBang // && !filtered && activeViaTags
 }

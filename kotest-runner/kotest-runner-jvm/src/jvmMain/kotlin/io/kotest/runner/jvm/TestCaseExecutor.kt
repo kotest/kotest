@@ -13,10 +13,8 @@ import io.kotest.core.TestContext
 import io.kotest.core.resolvedTimeout
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
-import io.kotest.internal.isActive
+import io.kotest.core.isActive
 import io.kotest.internal.unwrapIfReflectionCall
-import io.kotest.listenerInstances
-import io.kotest.core.resolvedAssertionMode
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

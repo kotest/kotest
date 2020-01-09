@@ -54,8 +54,6 @@ interface SpecClass : TestListener {
     */
    fun testCases(): List<TestCase>
 
-   fun hasFocusedTest(): Boolean = focused().isNotEmpty()
-
    fun closeResources()
 
    /**
@@ -76,8 +74,3 @@ interface SpecClass : TestListener {
 
    fun assertionMode(): AssertionMode? = null
 }
-
-/**
- * Returns the focused tests for this Spec. Can be empty if no test is marked as focused.
- */
-fun SpecClass.focused(): List<TestCase> = testCases().filter { it.name.startsWith("f:") }

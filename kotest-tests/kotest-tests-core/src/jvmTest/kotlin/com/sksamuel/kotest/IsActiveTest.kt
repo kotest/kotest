@@ -7,7 +7,7 @@ import io.kotest.core.Tags
 import io.kotest.core.TestCase
 import io.kotest.core.TestCaseConfig
 import io.kotest.extensions.TagExtension
-import io.kotest.internal.isActive
+import io.kotest.core.isActive
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
 import io.kotest.specs.StringSpec
