@@ -44,7 +44,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-console"))
+            //implementation(project(":kotest-runner:kotest-runner-console"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
             implementation("org.junit.platform:junit-platform-testkit:1.5.1")

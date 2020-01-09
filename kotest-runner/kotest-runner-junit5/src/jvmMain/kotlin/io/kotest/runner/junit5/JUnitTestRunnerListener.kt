@@ -1,14 +1,9 @@
 package io.kotest.runner.junit5
 
 import arrow.core.Try
-import io.kotest.core.Description
 import io.kotest.Project
-import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.TestStatus
-import io.kotest.core.TestType
-import io.kotest.core.fromSpecClass
+import io.kotest.core.*
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -84,7 +79,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
   // we store them all and mark the tests as finished only when we exit the spec
   private val results = mutableSetOf<ResultState>()
 
-  override fun engineStarted(classes: List<KClass<out SpecClass>>) {
+  override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
     logger.trace("Engine started; classes=[$classes]")
     listener.executionStarted(root)
   }
@@ -118,7 +113,7 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     Files.write(path, content.toByteArray())
   }
 
-  override fun beforeSpecClass(klass: KClass<out SpecClass>) {
+  override fun beforeSpecClass(klass: KClass<out SpecConfiguration>) {
     logger.trace("beforeSpecClass [$klass]")
     try {
       val descriptor = createSpecDescriptor(klass)
@@ -153,17 +148,17 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     results.add(ResultState(testCase, result))
   }
 
-  override fun specInitialisationFailed(klass: KClass<out SpecClass>, t: Throwable) {
+  override fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
     logger.trace("specInitialisationFailed $klass $t")
     // we must "start" the spec to get it to show
     beforeSpecClass(klass)
     afterSpecClass(klass, t)
   }
 
-  override fun afterSpecClass(klass: KClass<out SpecClass>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out SpecConfiguration>, t: Throwable?) {
     logger.trace("afterSpecClass [$klass]")
 
-    val description = Description.fromSpecClass(klass)
+    val description = klass.description()
 
     // we should have a result for at least every test that was discovered
     // we wait until the spec is completed before completing all child scopes, because we need
@@ -266,12 +261,12 @@ class JUnitTestRunnerListener(private val listener: EngineExecutionListener,
     return descriptor
   }
 
-  private fun createSpecDescriptor(klass: KClass<out SpecClass>): TestDescriptor {
+  private fun createSpecDescriptor(klass: KClass<out SpecConfiguration>): TestDescriptor {
 
     // the id must be completely unique, so we need to use the full class name of the spec, otherwise
     // if we have com.FooTest and org.FooTest gradle will throw a wobbly
-    val description = Description.fromSpecClass(klass)
-    val id = root.uniqueId.append("spec", description.name)
+     val description = klass.description()
+     val id = root.uniqueId.append("spec", description.name)
     val source = ClassSource.from(klass.java)
 
     val descriptor = object : AbstractTestDescriptor(id, description.name, source) {

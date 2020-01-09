@@ -38,7 +38,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             api(project(":kotest-core"))
-            api(project(":kotest-runner:kotest-runner-console"))
+//            api(project(":kotest-runner:kotest-runner-console"))
             api(project(":kotest-runner:kotest-runner-jvm"))
             api("org.junit.platform:junit-platform-engine:1.5.2")
             api("org.junit.platform:junit-platform-suite-api:1.5.2")

@@ -10,7 +10,6 @@ import io.kotest.SpecClass
 import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.internal.orderedRootTests
-import io.kotest.listenerInstances
 import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
@@ -85,7 +84,7 @@ class SpecExecutor(
    // which is undesirable in some situations, see
    // https://github.com/kotlintest/kotlintest/issues/447
    private fun runner(
-      spec: SpecClass,
+      spec: SpecConfiguration,
       listenerExecutor: ExecutorService,
       scheduler: ScheduledExecutorService
    ): SpecRunner {

@@ -1,9 +1,9 @@
 package io.kotest.plugin.pitest
 
-import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
-import io.kotest.core.fromSpecClass
+import io.kotest.core.description
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.KotestEngine
 import io.kotest.runner.jvm.TestEngineListener
 import org.pitest.testapi.Description
@@ -11,9 +11,9 @@ import org.pitest.testapi.ResultCollector
 import org.pitest.testapi.TestUnit
 import kotlin.reflect.KClass
 
-class KotestUnit(val klass: KClass<out SpecClass>) : TestUnit {
+class KotestUnit(val klass: KClass<out SpecConfiguration>) : TestUnit {
 
-  override fun getDescription(): Description = Description(io.kotest.core.Description.fromSpecClass(klass).fullName(), klass.java)
+  override fun getDescription(): Description = Description(klass.description().fullName(), klass.java)
 
   override fun execute(rc: ResultCollector) {
 

@@ -14,11 +14,11 @@ import io.kotest.extensions.TopLevelTests
  */
 fun orderedRootTests(spec: SpecConfiguration): TopLevelTests {
 
-  val order = spec.testCaseOrder() ?: Project.testCaseOrder()
+  val order = spec.testCaseOrder ?: spec.testCaseOrder() ?: Project.testCaseOrder()
 
   val tests = when (order) {
-    TestCaseOrder.Sequential -> spec.testCases()
-    TestCaseOrder.Random -> spec.testCases().shuffled()
+    TestCaseOrder.Sequential -> spec.rootTestCases
+    TestCaseOrder.Random -> spec.rootTestCases.shuffled()
   }
 
   return TopLevelTests(tests.withIndex().map { TopLevelTest(it.value, it.index) })

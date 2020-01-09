@@ -3,6 +3,8 @@ package io.kotest.extensions.system
 import io.kotest.AbstractProjectConfig
 import io.kotest.core.Description
 import io.kotest.SpecClass
+import io.kotest.core.description
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TestListener
 import java.io.FileDescriptor
 import java.net.InetAddress
@@ -50,16 +52,16 @@ object SpecSystemExitListener : TestListener {
 
     private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
 
-    override fun beforeSpec(spec: SpecClass) {
+    override fun beforeSpec(spec: SpecConfiguration) {
         val previous = System.getSecurityManager()
         if (previous != null)
-            previousSecurityManagers[spec.description()] = previous
+            previousSecurityManagers[spec::class.description()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
-    override fun afterSpec(spec: SpecClass) {
-        if (previousSecurityManagers.contains(spec.description()))
-            System.setSecurityManager(previousSecurityManagers[spec.description()])
+    override fun afterSpec(spec: SpecConfiguration) {
+        if (previousSecurityManagers.contains(spec::class.description()))
+            System.setSecurityManager(previousSecurityManagers[spec::class.description()])
         else
             System.setSecurityManager(null)
     }

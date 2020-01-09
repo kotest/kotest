@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.properties
 
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.properties.Gen
 import io.kotest.properties.PropertyTesting
 import io.kotest.properties.assertAll
@@ -11,15 +12,15 @@ import java.io.PrintStream
 
 class PropertyAssertAllOutputTest : FunSpec() {
 
+   override fun afterSpec(spec: SpecConfiguration) {
+      PropertyTesting.shouldPrintGeneratedValues = true
+   }
+
+   override fun beforeSpec(spec: SpecConfiguration) {
+      PropertyTesting.shouldPrintGeneratedValues = false
+   }
+
   init {
-
-     beforeSpec {
-        PropertyTesting.shouldPrintGeneratedValues = true
-     }
-
-     afterSpec {
-        PropertyTesting.shouldPrintGeneratedValues = false
-     }
 
     fun captureStdout(thunk: () -> Unit): String {
       val previous = System.out
