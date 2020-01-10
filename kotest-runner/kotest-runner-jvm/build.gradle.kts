@@ -41,9 +41,9 @@ kotlin {
             api(project(":kotest-fp"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
-            implementation(Libs.Coroutines.core)
-            implementation(Libs.Classgraph.classgraph)
-            implementation(Libs.Slf4j.api)
+            api(Libs.Coroutines.core)
+            api(Libs.Classgraph.classgraph)
+            api(Libs.Slf4j.api)
             api("io.arrow-kt:arrow-core:0.10.3")
          }
       }
