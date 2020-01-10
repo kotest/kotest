@@ -3,6 +3,7 @@ package com.sksamuel.kotest.specs.behavior
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.shouldBe
@@ -123,7 +124,7 @@ class BehaviorSpecTest : BehaviorSpec() {
     }
   }
 
-  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     counter.get() shouldBe 6
   }
 }

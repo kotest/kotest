@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.listeners
 
 import io.kotest.core.IsolationMode
-import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TopLevelTest
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -16,11 +16,11 @@ class TestListenerBeforeSpecStartedTest : FunSpec() {
   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
   // this should only be invoked once regardless of extra specs instantiated
-  override fun beforeSpecClass(spec: SpecClass, tests: List<TopLevelTest>) {
+  override fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>) {
     counter.incrementAndGet()
   }
 
-  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     counter.get() shouldBe 1
   }
 

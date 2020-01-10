@@ -4,6 +4,7 @@ import io.kotest.core.IsolationMode
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
 import java.util.concurrent.atomic.AtomicInteger
@@ -21,7 +22,7 @@ class TestListenerBeforeSpecTest : FunSpec() {
     counter.incrementAndGet()
   }
 
-  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     counter.get() shouldBe 4
   }
 

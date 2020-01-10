@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.core.Description
-import io.kotest.SpecClass
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
 
@@ -10,7 +10,7 @@ class FreeSpecTest : FreeSpec() {
 
   private var count = 0
 
-  override fun afterSpec(description: Description, spec: SpecClass) {
+  override fun afterSpec(description: Description, spec: SpecConfiguration) {
     count shouldBe 3
   }
 

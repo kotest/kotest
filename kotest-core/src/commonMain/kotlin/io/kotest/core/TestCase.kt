@@ -52,11 +52,7 @@ data class TestCase(
 
    val name = description.name
 
-   fun isFocused() = name.startsWith("f:")
-
    fun isTopLevel(): Boolean = description.isTopLevel()
-
-   fun isBang(): Boolean = name.startsWith("!")
 
    // for compatibility with earlier plugins
    fun getLine(): Int = source.lineNumber

@@ -17,6 +17,5 @@ class StringSpecSingleInstanceDuplicateNameTest : StringSpec() {
          throw RuntimeException("Must fail when adding duplicate root test name")
       } catch (e: IllegalArgumentException) {
       }
-      "should not count multiple invocations as the same test".config(invocations = 3) {}
    }
 }

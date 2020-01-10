@@ -22,10 +22,10 @@ abstract class AbstractSpecDsl : AbstractSpec() {
    override fun listeners(): List<TestListener> = listeners
    override fun extensions(): List<SpecLevelExtension> = extensions
 
-   fun beforeSpec(spec: SpecClass) {
+   open fun beforeSpec(spec: SpecClass) {
    }
 
-   fun afterSpec(spec: SpecClass) {
+   open fun afterSpec(spec: SpecClass) {
    }
 
    fun set(isolationMode: IsolationMode) {

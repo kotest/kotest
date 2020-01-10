@@ -4,6 +4,7 @@ import io.kotest.core.IsolationMode
 import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.specs.ShouldSpec
 
@@ -15,7 +16,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
     val invocations = mutableListOf<String>()
   }
 
-  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     invocations.joinToString("  ") shouldBe "1  1.1  1  1.2  1.2.1  1  1.2  1.2.2  1.2.2.1  1  1.2  1.2.2  1.2.2.2  2  2.1  2.1.1  2  2.1  2.1.2"
   }
 

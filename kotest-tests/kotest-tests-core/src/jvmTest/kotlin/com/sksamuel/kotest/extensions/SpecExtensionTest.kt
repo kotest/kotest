@@ -1,7 +1,8 @@
 package com.sksamuel.kotest.extensions
 
 import io.kotest.Project
-import io.kotest.SpecClass
+import io.kotest.core.description
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecExtension
 import io.kotest.extensions.TestListener
 import io.kotest.shouldBe
@@ -13,8 +14,8 @@ object SpecExtensionNumbers {
   var after = 0
 
   val ext = object : SpecExtension {
-    override suspend fun intercept(spec: SpecClass, process: suspend () -> Unit) {
-      if (spec.description().name == "com.sksamuel.kotest.extensions.SpecExtensionTest") {
+    override suspend fun intercept(spec: SpecConfiguration, process: suspend () -> Unit) {
+      if (spec::class.description().name == "com.sksamuel.kotest.extensions.SpecExtensionTest") {
         before++
         process()
         println("AFTER SPEK")
