@@ -121,7 +121,7 @@ class JUnitTestRunnerListener(
       try {
          val descriptor = createSpecDescriptor(klass)
          println("Notifying junit that execution has started for $descriptor")
-         //listener.executionStarted(descriptor)
+         listener.executionStarted(descriptor)
          println("qweqwewe $descriptor")
       } catch (t: Throwable) {
          logger.error("Error in JUnit Platform listener", t)
