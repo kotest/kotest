@@ -4,14 +4,14 @@ object Libs {
    val dokkaVersion = "0.10.0"
 
    object JUnitPlatform {
-      private const val version = "1.5.1"
+      private const val version = "1.6.0-RC1"
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
       const val api = "org.junit.platform:junit-platform-suite-api:$version"
    }
 
    object JUnitJupiter {
-      private const val version = "5.5.2"
+      private const val version = "5.6.0-RC1"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
@@ -21,6 +21,10 @@ object Libs {
       const val api = "org.apache.logging.log4j:log4j-api:$version"
       const val core = "org.apache.logging.log4j:log4j-core:$version"
       const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:$version"
+   }
+
+   object Classgraph {
+      const val classgraph = "io.github.classgraph:classgraph:4.8.59"
    }
 
    object Logback {

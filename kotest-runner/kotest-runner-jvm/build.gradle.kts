@@ -40,10 +40,9 @@ kotlin {
             api(kotlin("reflect"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-            api("io.github.classgraph:classgraph:4.8.59")
-            api("org.slf4j:slf4j-api:1.7.25")
-
+            implementation(Libs.Coroutines.core)
+            implementation(Libs.Classgraph.classgraph)
+            implementation(Libs.Slf4j.api)
             api("io.arrow-kt:arrow-core:0.10.3")
          }
       }

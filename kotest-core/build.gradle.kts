@@ -61,7 +61,7 @@ kotlin {
             api(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
-            api(Libs.JUnitJupiter.api)
+            implementation(Libs.JUnitJupiter.api)
             implementation(Libs.Slf4j.api)
             implementation("io.arrow-kt:arrow-core:0.10.3")
 

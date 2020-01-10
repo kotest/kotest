@@ -73,8 +73,11 @@ class KotestEngine(
          executor.awaitTermination(1, TimeUnit.DAYS)
          null
       } catch (t: InterruptedException) {
+         logger.error("Spec executor interupted", t)
          t
       }
+
+      logger.trace("Spec executor has terminated $error")
 
       if (error != null) throw error
    }
@@ -103,7 +106,7 @@ class KotestEngine(
    }
 
    private fun submitSpec(klass: KClass<out SpecConfiguration>, executor: ExecutorService) {
-      executor.submit {
+     // executor.submit {
          createSpec(klass).fold(
             { t ->
                listener.specInitialisationFailed(klass, t)
@@ -117,7 +120,7 @@ class KotestEngine(
                }
             }
          )
-      }
+      //}
    }
 
    private fun createSpec(klass: KClass<out SpecConfiguration>) =
