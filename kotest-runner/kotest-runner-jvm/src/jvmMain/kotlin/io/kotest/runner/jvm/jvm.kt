@@ -1,9 +1,9 @@
 package io.kotest.runner.jvm
 
-import arrow.core.Try
 import io.kotest.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.specs.AbstractSpec
+import io.kotest.fp.Try
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 

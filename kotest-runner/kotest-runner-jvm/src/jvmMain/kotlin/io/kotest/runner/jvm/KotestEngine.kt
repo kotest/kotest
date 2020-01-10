@@ -1,12 +1,12 @@
 package io.kotest.runner.jvm
 
-import arrow.core.Try
 import io.kotest.DoNotParallelize
 import io.kotest.Project
 import io.kotest.core.Tag
 import io.kotest.core.TestCaseFilter
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecifiedTagsTagExtension
+import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
 import io.kotest.runner.jvm.spec.SpecExecutor
 import org.slf4j.LoggerFactory

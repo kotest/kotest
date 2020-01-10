@@ -1,21 +1,20 @@
 package io.kotest.runner.jvm.spec
 
-import arrow.core.Try
-import arrow.core.getOrElse
-import arrow.core.orElse
-import arrow.core.toOption
 import io.kotest.core.IsolationMode
 import io.kotest.Project
 import io.kotest.SpecClass
 import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.fp.Try
+import io.kotest.fp.getOrElse
+import io.kotest.fp.orElse
+import io.kotest.fp.toOption
 import io.kotest.internal.orderedRootTests
 import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ThreadFactory
 
 /**
  * Handles the execution of a single [SpecClass] class.
@@ -74,6 +73,7 @@ class SpecExecutor(
 
       userListeners.forEach {
          it.afterSpecClass(spec, results)
+         @Suppress("DEPRECATION")
          it.afterSpecCompleted(spec::class.description(), spec)
       }
    }
@@ -108,6 +108,7 @@ class SpecExecutor(
       listenerExecutor: ExecutorService,
       scheduler: ScheduledExecutorService
    ): SpecRunner {
+      @Suppress("DEPRECATION")
       val mode = spec.isolationMode().toOption()
          .orElse { Project.isolationMode().toOption() }
          .getOrElse { IsolationMode.SingleInstance }

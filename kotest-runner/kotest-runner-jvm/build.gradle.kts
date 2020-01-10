@@ -38,6 +38,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
+            api(project(":kotest-fp"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
             implementation(Libs.Coroutines.core)

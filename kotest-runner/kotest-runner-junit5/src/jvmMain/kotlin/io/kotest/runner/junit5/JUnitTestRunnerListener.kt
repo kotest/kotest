@@ -1,9 +1,9 @@
 package io.kotest.runner.junit5
 
-import arrow.core.Try
 import io.kotest.Project
 import io.kotest.core.*
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor

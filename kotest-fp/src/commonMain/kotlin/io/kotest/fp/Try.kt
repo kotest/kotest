@@ -15,11 +15,7 @@ sealed class Try<out T> {
    }
 
    inline fun <U> map(crossinline f: (T) -> U): Try<U> = flatMap {
-      Try {
-         f(
-            it
-         )
-      }
+      Try { f(it) }
    }
 
    inline fun <U> flatMap(f: (T) -> Try<U>): Try<U> = when (this) {
