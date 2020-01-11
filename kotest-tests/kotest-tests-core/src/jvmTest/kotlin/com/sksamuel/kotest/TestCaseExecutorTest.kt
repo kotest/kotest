@@ -5,11 +5,10 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.then
 import io.kotest.core.Description
 import io.kotest.core.TestCase
-import io.kotest.core.TestStatus
 import io.kotest.assertions.currentTimeMillis
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
-import io.kotest.runner.jvm.TestCaseExecutor
+import io.kotest.runner.jvm.TestExecutor
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
@@ -33,7 +32,7 @@ class TestCaseExecutorTest : FunSpec() {
       var counter = 0
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
-      val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
+      val executor = TestExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) { counter++ }
       val context = object : TestContext(GlobalScope.coroutineContext) {
         override suspend fun registerTestCase(testCase: TestCase) {}
@@ -48,7 +47,7 @@ class TestCaseExecutorTest : FunSpec() {
       var counter = 0
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
-      val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
+      val executor = TestExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter++
       }.copy(config = TestCaseConfig(true, invocations = 10, threads = 1))
@@ -67,7 +66,7 @@ class TestCaseExecutorTest : FunSpec() {
       val threadLocal = ThreadLocal.withInitial { false }
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
-      val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
+      val executor = TestExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter.incrementAndGet()
@@ -90,7 +89,7 @@ class TestCaseExecutorTest : FunSpec() {
       val threadLocal = ThreadLocal.withInitial { false }
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
-      val executor = TestCaseExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
+      val executor = TestExecutor(object : TestEngineListener {}, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         counter.incrementAndGet()
@@ -111,7 +110,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
@@ -130,7 +129,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
@@ -149,7 +148,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
@@ -168,7 +167,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
@@ -187,7 +186,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         "a" shouldBe "b"
@@ -206,7 +205,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         throw RuntimeException()
@@ -224,7 +223,7 @@ class TestCaseExecutorTest : FunSpec() {
     test("tests which timeout should error").config {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         Thread.sleep(10000)
@@ -246,7 +245,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         val startTime = currentTimeMillis()
@@ -272,7 +271,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         while (true) {
@@ -293,7 +292,7 @@ class TestCaseExecutorTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseExecutorTest) {
         while (true) {

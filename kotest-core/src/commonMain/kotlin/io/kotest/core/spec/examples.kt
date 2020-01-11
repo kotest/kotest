@@ -1,7 +1,6 @@
 package io.kotest.core.spec
 
 import io.kotest.core.AssertionMode
-import io.kotest.core.IsolationMode
 import io.kotest.core.Tag
 import io.kotest.extensions.TestListener
 import io.kotest.matchers.string.shouldHaveLength
@@ -45,16 +44,3 @@ val funTests = funSpec {
       1 + 1 shouldBe 2
    }
 }
-
-class MyFunSpec : FunSpec({
-
-   isolationMode = IsolationMode.InstancePerLeaf
-
-   test("baz") {
-      1 + 1 shouldBe 2
-   }
-
-   include(stringTests)
-   include(funTests)
-
-})

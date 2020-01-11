@@ -6,9 +6,8 @@ import com.nhaarman.mockito_kotlin.then
 import io.kotest.core.Description
 import io.kotest.core.SkipTestException
 import io.kotest.core.TestCase
-import io.kotest.core.TestStatus
 import io.kotest.core.TestContext
-import io.kotest.runner.jvm.TestCaseExecutor
+import io.kotest.runner.jvm.TestExecutor
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.specs.FreeSpec
 import io.kotest.specs.FunSpec
@@ -24,7 +23,7 @@ class SkipTestExceptionTest : FunSpec() {
 
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), object : FreeSpec() {}) {
         throw SkipTestException("Foo")

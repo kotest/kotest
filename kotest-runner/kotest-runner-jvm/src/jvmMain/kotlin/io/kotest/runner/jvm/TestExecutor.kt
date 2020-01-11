@@ -1,9 +1,6 @@
 package io.kotest.runner.jvm
 
 import io.kotest.Project
-import io.kotest.assertSoftly
-import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.getAndReset
 import io.kotest.core.*
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
@@ -17,7 +14,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 /**
- * The [TestCaseExecutor] is responsible for preparing and executing a single [TestCase].
+ * The [TestExecutor] is responsible for preparing and executing a single [TestCase].
  *
  * This class handles notifications to [TestListener] instances, as well as any
  * [TestCaseExtension] instances which may intercept and circumvent execution.
@@ -32,7 +29,7 @@ import kotlin.time.milliseconds
  * The executor can be shared between multiple tests as it is thread safe.
  */
 @UseExperimental(ExperimentalTime::class)
-class TestCaseExecutor(private val listener: TestEngineListener) {
+class TestExecutor(private val listener: TestEngineListener) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -112,45 +109,26 @@ class TestCaseExecutor(private val listener: TestEngineListener) {
       // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
       val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
 
-      // the test is executed in the same coroutine with the timeout
+      // the test is executed in the same coroutine with a timeout
       val error = try {
          withTimeout(timeout) {
-            collectAssertions(testCase, context)
+            collectAssertions(
+               { testCase.test.invoke(context) },
+               testCase.description.name,
+               testCase.spec.resolvedAssertionMode()
+            )
          }
       } catch (e: TimeoutCancellationException) {
          TimeoutException("Execution of test took longer than ${timeout}ms")
-      } catch (e: TimeoutCancellationException) {
+      } catch (e: Throwable) {
          e.unwrapIfReflectionCall()
       }
 
       val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
       logger.debug("Test completed with result $result")
       listener.testFinished(testCase, result)
+      println(error?.javaClass)
       return result
-   }
-
-   private suspend fun collectAssertions(testCase: TestCase, context: TestContext): Throwable? {
-      AssertionCounter.reset()
-
-      if (Project.globalAssertSoftly()) {
-         assertSoftly {
-            testCase.test(context)
-         }
-      } else {
-         testCase.test(context)
-      }
-
-      val warningMessage = "Test '${testCase.description.fullName()}' did not invoke any assertions"
-
-      return if (AssertionCounter.getAndReset() > 0) null else {
-         when (testCase.spec.resolvedAssertionMode()) {
-            AssertionMode.Error -> RuntimeException(warningMessage)
-            AssertionMode.Warn -> {
-               println("Warning: $warningMessage")
-               null
-            }
-         }
-      }
    }
 
    /**

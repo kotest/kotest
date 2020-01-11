@@ -7,7 +7,7 @@ import io.kotest.core.TestContext
 import io.kotest.core.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TopLevelTests
-import io.kotest.runner.jvm.TestCaseExecutor
+import io.kotest.runner.jvm.TestExecutor
 import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 
@@ -21,7 +21,7 @@ class SingleInstanceSpecRunner(
 ) : SpecRunner(listener) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
-   private val executor = TestCaseExecutor(listener)
+   private val executor = TestExecutor(listener)
    private val results = mutableMapOf<TestCase, TestResult>()
 
    inner class Context(val description: Description) : TestContext() {

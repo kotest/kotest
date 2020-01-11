@@ -7,7 +7,7 @@ import io.kotest.core.TestResult
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.runner.jvm.TestCaseExecutor
+import io.kotest.runner.jvm.TestExecutor
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -37,7 +37,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
       val listenerExecutor = Executors.newSingleThreadExecutor()
       val listener = mock<TestEngineListener> {}
       val scheduler = Executors.newScheduledThreadPool(1)
-      val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
+      val executor = TestExecutor(listener, listenerExecutor, scheduler)
 
       val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseTimeoutListenerTest) {
         Thread.sleep(500)
