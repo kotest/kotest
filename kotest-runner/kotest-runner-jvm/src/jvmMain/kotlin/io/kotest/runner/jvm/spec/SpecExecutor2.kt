@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory
  *
  * @param engineListener a listener that is notified of events in the spec lifecycle
  */
-class SpecExecutor2(
-   private val engineListener: TestEngineListener
-) {
+class SpecExecutor2(private val engineListener: TestEngineListener) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -35,7 +33,7 @@ class SpecExecutor2(
          .fold({ afterSpec(spec, it, emptyMap()) }, { afterSpec(spec, null, it) })
    }
 
-   private suspend fun beforeSpec(spec: SpecConfiguration) = Try {
+   private fun beforeSpec(spec: SpecConfiguration) = Try {
       logger.trace("beforeSpec $spec")
 
       logger.trace("Executing engine listener 'executionStarted' for ${spec::class}")
@@ -52,7 +50,7 @@ class SpecExecutor2(
       logger.trace("Completed beforeSpec $spec")
    }
 
-   private suspend fun afterSpec(spec: SpecConfiguration, t: Throwable?, results: Map<TestCase, TestResult>) = Try {
+   private fun afterSpec(spec: SpecConfiguration, t: Throwable?, results: Map<TestCase, TestResult>) = Try {
       logger.trace("afterSpec $spec [$t]")
 
       logger.trace("Executing user listeners for afterSpec")

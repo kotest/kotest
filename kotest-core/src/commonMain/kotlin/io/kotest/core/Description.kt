@@ -31,7 +31,7 @@ data class Description(val parents: List<String>, val name: String) {
    /**
     * Returns the parent of this description, unless it is a spec then it will throw
     */
-   fun parent(): Description = if (isSpec()) error("Cannot call parent on a spec") else Description(
+   fun parent(): Description = if (isSpec()) error("Cannot call .parent() on a spec") else Description(
       parents.dropLast(1),
       parents.last()
    )
@@ -65,13 +65,15 @@ data class Description(val parents: List<String>, val name: String) {
       parents + name == description.parents
 
    /**
-    * Returns true if this instance is an ancestor of the supplied argument.
+    * Returns true if this instance is an ancestor (nth-parent) of the supplied argument.
     */
    fun isAncestorOf(description: Description): Boolean {
       if (isParentOf(description))
          return true
-      val p = description.parent() ?: return false
-      return isAncestorOf(p)
+      return if (description.isSpec()) false else {
+         val p = description.parent()
+         isAncestorOf(p)
+      }
    }
 
    /**

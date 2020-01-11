@@ -11,14 +11,14 @@ import io.kotest.fp.Try
 
 /**
  * Returns the root tests for the receiver [SpecConfiguration].
- * This includes tests added directly to the spec at construction time, as well
+ *
+ * This includes tests added directly to the spec at initialization, as well
  * as materializing dynamic tests added instances of [TestFactory].
  */
 fun SpecConfiguration.materializeRootTests(): Try<List<TopLevelTest>> = Try {
-   factories
+   val tests = rootTestCases + factories
       .flatMap { it.generate(this::class.description(), this) }
-      .withIndex()
-      .map { TopLevelTest(it.value, it.index) }
+   tests.withIndex().map { TopLevelTest(it.value, it.index) }
 }
 
 /**

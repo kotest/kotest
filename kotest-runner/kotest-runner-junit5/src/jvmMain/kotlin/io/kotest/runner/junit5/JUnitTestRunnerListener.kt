@@ -138,7 +138,7 @@ class JUnitTestRunnerListener(
       val descriptor = descriptors[klass.description()]
          ?: throw RuntimeException("Error retrieving description for spec: ${klass.qualifiedName}")
 
-      val nestedFailure = findNestedFailure(klass.description())
+      val nestedFailure = findChildFailure(klass.description())
 
       val result = when {
          specException != null -> TestExecutionResult.failed(specException)
@@ -164,7 +164,7 @@ class JUnitTestRunnerListener(
       val descriptor = descriptors[testCase.description]
          ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
       results.add(Pair(testCase.description, result))
-      val resultp = findNestedFailure(testCase.description) ?: result
+      val resultp = findChildFailure(testCase.description) ?: result
       logger.trace("Notifying junit that execution has finished: $descriptor")
       listener.executionFinished(descriptor, resultp.testExecutionResult())
    }
@@ -228,12 +228,12 @@ class JUnitTestRunnerListener(
    }
 
    /**
-    * Returns a failed or errored [TestResult] for a given description by also considering
-    * the test results of all children of the description.
+    * Returns a failed or errored [TestResult] for a given description's children by searching
+    * the results list.
     */
-   private fun findNestedFailure(description: Description): TestResult? {
+   private fun findChildFailure(description: Description): TestResult? {
       return results
-         .filter { it.first == description || description.isAncestorOf(it.first) }
+         .filter { description.isAncestorOf(it.first) }
          .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
          // the lowest level test should be what we pick
          .sortedBy { it.first.depth() }
