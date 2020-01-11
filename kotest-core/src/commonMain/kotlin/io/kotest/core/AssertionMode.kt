@@ -3,7 +3,7 @@ package io.kotest.core
 import io.kotest.core.spec.SpecConfiguration
 
 enum class AssertionMode {
-   Error, Warn, None
+   Error, Warn
 }
 
 fun SpecConfiguration.resolvedAssertionMode(): AssertionMode =

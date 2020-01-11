@@ -6,7 +6,7 @@ sealed class Try<out T> {
    data class Failure(val error: Throwable) : Try<Nothing>()
 
    companion object {
-      operator fun <T> invoke(f: () -> T): Try<T> = try {
+      inline operator fun <T> invoke(f: () -> T): Try<T> = try {
          Success(f())
       } catch (e: Throwable) {
          println(e)
@@ -28,7 +28,13 @@ sealed class Try<out T> {
       is Success -> ifSuccess(this.value)
    }
 
-   inline fun onFailure(f: (Throwable) -> Unit) = fold({ f(it) }, {})
+   inline fun onFailure(f: (Throwable) -> Unit): Try<T> = when (this) {
+      is Success -> this
+      is Failure -> {
+         f(this.error)
+         this
+      }
+   }
 
    fun toOption(): Option<T> = fold({ Option.None }, {
       Option.Some(

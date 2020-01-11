@@ -45,7 +45,7 @@ object Project {
    private const val defaultProjectConfigFullyQualifiedName = "io.kotest.provided.ProjectConfig"
    @UseExperimental(ExperimentalTime::class)
    private val defaultTimeout = 600.seconds
-   private val defaultAssertionMode = AssertionMode.None
+   private val defaultAssertionMode = AssertionMode.Error
 
    private fun discoverProjectConfig(): AbstractProjectConfig? {
       return try {

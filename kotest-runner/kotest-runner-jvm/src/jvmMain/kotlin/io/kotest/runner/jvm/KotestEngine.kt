@@ -8,7 +8,8 @@ import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecifiedTagsTagExtension
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
-import io.kotest.runner.jvm.spec.SpecExecutor
+import io.kotest.runner.jvm.spec.SpecExecutor2
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.Collections.emptyList
 import java.util.concurrent.ExecutorService
@@ -31,7 +32,7 @@ class KotestEngine(
    // the scheduler executor is used for notifications on when a test case timeout has been reached
    private val scheduler = Executors.newSingleThreadScheduledExecutor()
 
-   private val specExecutor = SpecExecutor(listener, scheduler)
+   private val specExecutor = SpecExecutor2(listener)
 
    init {
       Project.registerTestCaseFilter(filters)
@@ -106,20 +107,22 @@ class KotestEngine(
    }
 
    private fun submitSpec(klass: KClass<out SpecConfiguration>, executor: ExecutorService) {
-     // executor.submit {
-         createSpec(klass).fold(
-            { t ->
-               listener.specInitialisationFailed(klass, t)
-               executor.shutdownNow()
-            },
-            { spec ->
-               specExecutor.execute(spec).onFailure { t ->
+      // executor.submit {
+      createSpec(klass).fold(
+         { t ->
+            listener.specInitialisationFailed(klass, t)
+            executor.shutdownNow()
+         },
+         { spec ->
+            runBlocking {
+               specExecutor.execute(spec).onFailure {
                   // todo move this to a new listener method like specFailed(klass, t)
-                  listener.specInitialisationFailed(klass, t)
+                  listener.specInitialisationFailed(klass, it)
                   executor.shutdownNow()
                }
             }
-         )
+         }
+      )
       //}
    }
 

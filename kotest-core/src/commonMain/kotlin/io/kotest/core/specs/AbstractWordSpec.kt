@@ -7,7 +7,6 @@ import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.extensions.TestCaseExtension
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -59,13 +58,13 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
            extensions ?: this@AbstractWordSpec.defaultTestCaseConfig.extensions)
         context.registerTestCase(this,
            this@AbstractWordSpec,
-           { FinalTestContext(this, coroutineContext).test() },
+           { FinalTestContext(this).test() },
            config,
            TestType.Test)
      }
 
     suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
-        context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this, coroutineContext).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
+        context.registerTestCase(this, this@AbstractWordSpec, { FinalTestContext(this).test() }, this@AbstractWordSpec.defaultTestCaseConfig, TestType.Test)
 
     // we need to override the should method to stop people nesting a should inside a should
     @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
@@ -85,7 +84,7 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
   }
 
   @KotestDsl
-  inner class FinalTestContext(val context: TestContext, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
+  inner class FinalTestContext(val context: TestContext) : TestContext() {
 
     override fun description(): Description = context.description()
     override suspend fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)

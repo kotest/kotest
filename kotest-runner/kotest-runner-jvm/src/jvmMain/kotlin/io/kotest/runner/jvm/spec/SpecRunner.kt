@@ -23,40 +23,44 @@ import io.kotest.runner.jvm.TestEngineListener
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
-  abstract fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
+   abstract suspend fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
 
-  private suspend fun interceptSpec(spec: SpecConfiguration, remaining: List<SpecExtension>, afterInterception: suspend () -> Unit) {
-     // todo
-    val listeners = Project.listeners() // listOf(spec) // + spec.listenerInstances + Project.listeners()
-    when {
-      remaining.isEmpty() -> {
-        executeBeforeSpec(spec, listeners)
-        afterInterception()
-        executeAfterSpec(spec, listeners)
+   private suspend fun interceptSpec(
+      spec: SpecConfiguration,
+      remaining: List<SpecExtension>,
+      afterInterception: suspend () -> Unit
+   ) {
+      // todo
+      val listeners = Project.listeners() // listOf(spec) // + spec.listenerInstances + Project.listeners()
+      when {
+         remaining.isEmpty() -> {
+            executeBeforeSpec(spec, listeners)
+            afterInterception()
+            executeAfterSpec(spec, listeners)
+         }
+         else -> {
+            val rest = remaining.drop(1)
+            remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
+         }
       }
-      else -> {
-        val rest = remaining.drop(1)
-        remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
+   }
+
+   private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
+      listeners.forEach {
+         it.beforeSpec(spec::class.description(), spec)
+         it.beforeSpec(spec)
       }
-    }
-  }
+   }
 
-  private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
-    listeners.forEach {
-      it.beforeSpec(spec::class.description(), spec)
-      it.beforeSpec(spec)
-    }
-  }
+   private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
+      listeners.reversed().forEach {
+         it.afterSpec(spec)
+         it.afterSpec(spec::class.description(), spec)
+      }
+   }
 
-  private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
-    listeners.reversed().forEach {
-      it.afterSpec(spec)
-      it.afterSpec(spec::class.description(), spec)
-    }
-  }
-
-  suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit) {
-    val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
-    interceptSpec(spec, extensions, afterInterception)
-  }
+   suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit) {
+      val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
+      interceptSpec(spec, extensions, afterInterception)
+   }
 }

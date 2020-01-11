@@ -41,6 +41,36 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
+   override fun testStarted(testCase: TestCase) {
+      if (runningSpec.get() == testCase.spec::class.description()) {
+         listener.testStarted(testCase)
+      } else {
+         queue {
+            testStarted(testCase)
+         }
+      }
+   }
+
+   override fun testIgnored(testCase: TestCase, reason: String?) {
+      if (runningSpec.get() == testCase.spec::class.description()) {
+         listener.testIgnored(testCase, reason)
+      } else {
+         queue {
+            testIgnored(testCase, reason)
+         }
+      }
+   }
+
+   override fun testFinished(testCase: TestCase, result: TestResult) {
+      if (runningSpec.get() == testCase.spec::class.description()) {
+         listener.testFinished(testCase, result)
+      } else {
+         queue {
+            testFinished(testCase, result)
+         }
+      }
+   }
+
    override fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
       if (runningSpec.compareAndSet(null, klass.description())) {
          listener.specInitialisationFailed(klass, t)
@@ -51,14 +81,13 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun beforeSpecClass(klass: KClass<out SpecConfiguration>) {
-      logger.trace("beforeSpecClass")
-      if (isRunning(klass)) {
-         listener.beforeSpecClass(klass)
+   override fun specStarted(kclass: KClass<out SpecConfiguration>) {
+      if (isRunning(kclass)) {
+         listener.specStarted(kclass)
       } else {
          logger.trace("Queuing")
          queue {
-            beforeSpecClass(klass)
+            specStarted(kclass)
          }
       }
    }
@@ -66,58 +95,21 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    private fun isRunning(klass: KClass<out SpecConfiguration>): Boolean {
       val running = runningSpec.get()
       val given = klass.description()
-      println("$running = $given : " + (running == given))
       return running == given
    }
 
-   override fun enterTestCase(testCase: TestCase) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
-         listener.enterTestCase(testCase)
-      } else {
-         queue {
-            enterTestCase(testCase)
-         }
-      }
-   }
-
-   override fun invokingTestCase(testCase: TestCase, k: Int) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
-         listener.invokingTestCase(testCase, k)
-      } else {
-         queue {
-            invokingTestCase(testCase, k)
-         }
-      }
-   }
-
-   override fun afterTestCaseExecution(testCase: TestCase, result: TestResult) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
-         listener.afterTestCaseExecution(testCase, result)
-      } else {
-         queue {
-            afterTestCaseExecution(testCase, result)
-         }
-      }
-   }
-
-   override fun exitTestCase(testCase: TestCase, result: TestResult) {
-      if (runningSpec.get() == testCase.spec::class.description()) {
-         listener.exitTestCase(testCase, result)
-      } else {
-         queue {
-            exitTestCase(testCase, result)
-         }
-      }
-   }
-
-   override fun afterSpecClass(klass: KClass<out SpecConfiguration>, t: Throwable?) {
+   override fun specFinished(
+      klass: KClass<out SpecConfiguration>,
+      t: Throwable?,
+      results: Map<TestCase, TestResult>
+   ) {
       if (runningSpec.get() == klass.description()) {
-         listener.afterSpecClass(klass, t)
+         listener.specFinished(klass, t, results)
          runningSpec.set(null)
          replay()
       } else {
          queue {
-            afterSpecClass(klass, t)
+            specFinished(klass, t, results)
          }
       }
    }

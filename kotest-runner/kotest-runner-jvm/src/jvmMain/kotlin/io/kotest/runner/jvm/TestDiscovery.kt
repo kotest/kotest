@@ -105,7 +105,7 @@ object TestDiscovery {
          .scan()
 
       return scanResult
-         .getClassesImplementing(SpecConfiguration::class.java.canonicalName)
+         .getSubclasses(SpecConfiguration::class.java.name)
          .map { Class.forName(it.name).kotlin }
          .filterIsInstance<KClass<out SpecConfiguration>>()
    }

@@ -15,64 +15,68 @@ package io.kotest.core
 @Suppress("MemberVisibilityCanBePrivate")
 data class Description(val parents: List<String>, val name: String) {
 
-  companion object {
-    /**
-     * Creates a Spec level description object for the given name.
-     */
-    fun spec(name: String) = Description(emptyList(), name)
-  }
+   companion object {
+      /**
+       * Creates a Spec level description object for the given name.
+       */
+      fun spec(name: String) = Description(emptyList(), name)
+   }
 
-  fun append(name: String) =
-     Description(this.parents + this.name, name)
+   fun append(name: String) =
+      Description(this.parents + this.name, name)
 
-  fun hasParent(description: Description): Boolean = parents.containsAll(description.parents + listOf(description.name))
+   fun hasParent(description: Description): Boolean =
+      parents.containsAll(description.parents + listOf(description.name))
 
-  fun parent(): Description? = if (isSpec()) null else Description(
-     parents.dropLast(1),
-     parents.last()
-  )
+   /**
+    * Returns the parent of this description, unless it is a spec then it will throw
+    */
+   fun parent(): Description = if (isSpec()) error("Cannot call parent on a spec") else Description(
+      parents.dropLast(1),
+      parents.last()
+   )
 
-  fun isSpec(): Boolean = parents.isEmpty()
+   fun isSpec(): Boolean = parents.isEmpty()
 
-  fun spec(): Description =
-     spec(parents.first())
+   fun spec(): Description =
+      spec(parents.first())
 
-  fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(
-     parents.drop(1),
-     name
-  )
+   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(
+      parents.drop(1),
+      name
+   )
 
-  fun fullName(): String = (parents + listOf(name)).joinToString(" ")
+   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
 
-  /**
-   * Returns a String version of this description, which is
-   * the parents + this name concatenated with slashes.
-   */
-  fun id(): String = (parents + listOf(name)).joinToString("/")
+   /**
+    * Returns a String version of this description, which is
+    * the parents + this name concatenated with slashes.
+    */
+   fun id(): String = (parents + listOf(name)).joinToString("/")
 
-  fun names(): List<String> = parents + name
+   fun names(): List<String> = parents + name
 
-  fun depth() = names().size
+   fun depth() = names().size
 
-  /**
-   * Returns true if this instance is the immediate parent of the supplied argument.
-   */
-  fun isParentOf(description: Description): Boolean =
+   /**
+    * Returns true if this instance is the immediate parent of the supplied argument.
+    */
+   fun isParentOf(description: Description): Boolean =
       parents + name == description.parents
 
-  /**
-   * Returns true if this instance is an ancestor of the supplied argument.
-   */
-  fun isAncestorOf(description: Description): Boolean {
-    if (isParentOf(description))
-      return true
-    val p = description.parent() ?: return false
-    return isAncestorOf(p)
-  }
+   /**
+    * Returns true if this instance is an ancestor of the supplied argument.
+    */
+   fun isAncestorOf(description: Description): Boolean {
+      if (isParentOf(description))
+         return true
+      val p = description.parent() ?: return false
+      return isAncestorOf(p)
+   }
 
-  /**
-   * Returns true if this test is a top level test. In other words, if the
-   * test has no parents other than the spec itself.
-   */
-  fun isTopLevel(): Boolean = parents.size == 1
+   /**
+    * Returns true if this test is a top level test. In other words, if the
+    * test has no parents other than the spec itself.
+    */
+   fun isTopLevel(): Boolean = parents.size == 1
 }
