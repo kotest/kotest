@@ -1,15 +1,15 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.core.IsolationMode
 import io.kotest.Project
 import io.kotest.SpecClass
+import io.kotest.core.IsolationMode
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecExtension
 import io.kotest.extensions.TestListener
-import io.kotest.extensions.TopLevelTests
+import io.kotest.extensions.TopLevelTest
 import io.kotest.runner.jvm.TestEngineListener
 
 /**
@@ -23,7 +23,7 @@ import io.kotest.runner.jvm.TestEngineListener
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
-   abstract suspend fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult>
+   abstract suspend fun execute(spec: SpecConfiguration, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult>
 
    private suspend fun interceptSpec(
       spec: SpecConfiguration,

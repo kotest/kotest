@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.Description
-import io.kotest.core.spec.ComposedSpec
+import io.kotest.core.spec.CompositeSpec
 import io.kotest.core.spec.stringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -118,4 +118,4 @@ val descriptionTests = stringSpec {
    }
 }
 
-class DescriptionTest : ComposedSpec(descriptionTests)
+class DescriptionTest : CompositeSpec(descriptionTests)

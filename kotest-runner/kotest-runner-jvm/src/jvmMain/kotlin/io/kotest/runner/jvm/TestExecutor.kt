@@ -127,7 +127,6 @@ class TestExecutor(private val listener: TestEngineListener) {
       val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
       logger.debug("Test completed with result $result")
       listener.testFinished(testCase, result)
-      println(error?.javaClass)
       return result
    }
 

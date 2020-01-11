@@ -6,12 +6,11 @@ import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TopLevelTests
+import io.kotest.extensions.TopLevelTest
 import io.kotest.fp.Try
 import io.kotest.fp.getOrElse
 import io.kotest.fp.orElse
 import io.kotest.fp.toOption
-import io.kotest.internal.orderedRootTests
 import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 
@@ -31,7 +30,7 @@ class SpecExecutor2(
    suspend fun execute(spec: SpecConfiguration) = Try {
       logger.trace("Executing spec $spec")
       beforeSpec(spec)
-         .flatMap { resolveRootTests(spec) }
+         .flatMap { spec.materializeRootTests() }
          .flatMap { runTests(spec, it) }
          .fold({ afterSpec(spec, it, emptyMap()) }, { afterSpec(spec, null, it) })
    }
@@ -43,7 +42,7 @@ class SpecExecutor2(
       engineListener.specStarted(spec::class)
 
       logger.trace("Executing user listeners for beforeSpec")
-      spec.beforeAlls.forEach { it.invoke() }
+      spec.beforeSpecs.forEach { it.invoke() }
       val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach { _ ->
          // it.beforeSpecStarted(spec::class.description(), spec)
@@ -57,7 +56,7 @@ class SpecExecutor2(
       logger.trace("afterSpec $spec [$t]")
 
       logger.trace("Executing user listeners for afterSpec")
-      spec.afterAlls.forEach { it.invoke(results) }
+      spec.afterSpecs.forEach { it.invoke(results) }
       val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach {
          it.afterSpecClass(spec, results)
@@ -71,17 +70,15 @@ class SpecExecutor2(
       logger.trace("Completed afterSpec $spec")
    }
 
-   private fun resolveRootTests(spec: SpecConfiguration): Try<TopLevelTests> = Try {
-      val tests = orderedRootTests(spec)
-      logger.trace("Discovered top level tests $tests for spec $spec")
-      tests
-   }
-
-   private suspend fun runTests(spec: SpecConfiguration, tests: TopLevelTests): Try<Map<TestCase, TestResult>> = Try {
-      val runner = runner(spec)
-      runner.execute(spec, tests)
-      emptyMap<TestCase, TestResult>()
-   }
+   private suspend fun runTests(
+      spec: SpecConfiguration,
+      tests: List<TopLevelTest>
+   ): Try<Map<TestCase, TestResult>> =
+      Try {
+         val runner = runner(spec)
+         runner.execute(spec, tests)
+         emptyMap<TestCase, TestResult>()
+      }
 
    // each runner must get a single-threaded executor, which is used to invoke
    // listeners/extensions and the test itself when testcase.config.threads=1

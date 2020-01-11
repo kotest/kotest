@@ -53,6 +53,7 @@ internal fun <Time : Temporal> unmockNow(klass: KClass<Time>) {
 
 abstract class ConstantNowListener<Time : Temporal>(private val now: Time) : TestListener {
 
+  @Suppress("UNCHECKED_CAST")
   private val nowKlass = now::class as KClass<Time>
 
   protected fun changeNow() {

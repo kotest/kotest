@@ -1,6 +1,6 @@
 package io.kotest.core.spec
 
-abstract class ComposedSpec(vararg factories: TestFactory) : SpecConfiguration() {
+abstract class CompositeSpec(vararg factories: TestFactory) : SpecConfiguration() {
    init {
       factories.forEach { include(it) }
    }

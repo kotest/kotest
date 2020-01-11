@@ -11,11 +11,12 @@ import io.kotest.core.specs.JsTest
 import io.kotest.core.specs.generateTests
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
+import org.junit.platform.commons.annotation.Testable
 
 typealias BeforeTest = (TestCase) -> Unit
 typealias AfterTest = (TestCase, TestResult) -> Unit
-typealias BeforeAll = () -> Unit
-typealias AfterAll = (Map<TestCase, TestResult>) -> Unit
+typealias BeforeSpec = () -> Unit
+typealias AfterSpec = (Map<TestCase, TestResult>) -> Unit
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and
@@ -70,14 +71,14 @@ data class Spec(
  * Any included factories are recursively called and their generated
  * tests included in the returned list.
  *
- * @param description the parent description for the spec of the generated tests.
- * @param spec the spec that contains the generated tests
+ * @param description the parent description for the generated tests.
+ * @param spec the [SpecConfiguration] that contains the generated tests.
  */
-fun TestFactory.generate(description: Description, spec: SpecClass): List<TestCase> {
+fun TestFactory.generate(description: Description, spec: SpecConfiguration): List<TestCase> {
    return tests.map { dyn ->
       TestCase(
          description = description.append(dyn.name),
-         spec = FakeSpecConfiguration(),
+         spec = spec,
          test = dyn.test,
          type = dyn.type,
          source = dyn.source,
@@ -99,7 +100,7 @@ fun TestFactoryConfiguration.build(): TestFactory {
       listeners = this.listeners,
       extensions = this.extensions,
       assertionMode = this.assertionMode,
-      includes = this.includes
+      includes = this.factories
    )
 
    val callbacks = object : TestListener {
@@ -116,11 +117,11 @@ fun TestFactoryConfiguration.build(): TestFactory {
       }
 
       override fun afterSpec(spec: SpecConfiguration) {
-         this@build.afterAlls.forEach { it(emptyMap()) }
+         this@build.afterSpecs.forEach { it(emptyMap()) }
       }
 
       override fun beforeSpec(spec: SpecConfiguration) {
-         this@build.beforeAlls.forEach { it() }
+         this@build.beforeSpecs.forEach { it() }
       }
    }
 
@@ -170,13 +171,13 @@ abstract class TestConfiguration {
    /**
     * Contains the [TestFactory] instances that have been included with this config.
     */
-   var includes = emptyList<TestFactory>()
+   var factories = emptyList<TestFactory>()
 
    // test lifecycle callbacks
    var beforeTests = emptyList<BeforeTest>()
    var afterTests = emptyList<AfterTest>()
-   var beforeAlls = emptyList<BeforeAll>()
-   var afterAlls = emptyList<AfterAll>()
+   var beforeSpecs = emptyList<BeforeSpec>()
+   var afterSpecs = emptyList<AfterSpec>()
 
    // test listeners
    var listeners = emptyList<TestListener>()
@@ -201,12 +202,12 @@ abstract class TestConfiguration {
       afterTests = afterTests + f
    }
 
-   fun beforeSpec(f: BeforeAll) {
-      beforeAlls = beforeAlls + f
+   fun beforeSpec(f: BeforeSpec) {
+      beforeSpecs = beforeSpecs + f
    }
 
-   fun afterSpec(f: AfterAll) {
-      afterAlls = afterAlls + f
+   fun afterSpec(f: AfterSpec) {
+      afterSpecs = afterSpecs + f
    }
 
    /**
@@ -230,7 +231,7 @@ abstract class TestConfiguration {
     * Include the tests from the given [TestFactory] in this configuration.
     */
    fun include(factory: TestFactory) {
-      includes = includes + factory
+      factories = factories + factory
    }
 
    /**
@@ -238,7 +239,7 @@ abstract class TestConfiguration {
     * when the tests are completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpec { closeable.close() }
+      afterSpecs = listOf<AfterSpec>({ closeable.close() }) + afterSpecs
       return closeable
    }
 }
@@ -275,24 +276,25 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
 class FakeSpec : AbstractSpec()
 
 @Suppress("DEPRECATION")
+@Testable
 abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfiguration {
 
    /**
     * Contains the root [TestCase]s used in this spec.
     */
-   internal var rootTestCases = emptyList<TestCase>()
+   var rootTestCases = emptyList<TestCase>()
 
    /**
     * Sets the [IsolationMode] used by the test engine when running tests in this spec.
     * If left null, then the project default is applied.
     */
-   internal var isolationMode: IsolationMode? = null
+   var isolationMode: IsolationMode? = null
 
    /**
     * Sets the [TestCaseOrder] to control the order of execution of root level tests in this spec.
     * If left null, then the project default is applied.
     */
-   internal var testCaseOrder: TestCaseOrder? = null
+   var testCaseOrder: TestCaseOrder? = null
 
    /**
     * This is a dummy method, intercepted by the kotlin.js framework adapter to generate tests.

@@ -28,11 +28,9 @@ abstract class TestContext : CoroutineScope {
    abstract fun description(): Description
 
    /**
-    * Returns the [SpecClass] that this context is currently executing in.
+    * Returns the [SpecConfiguration] that this context is currently executing in.
     */
-   fun spec(): SpecClass = TODO()
-
-   fun specconf(): SpecConfiguration = TODO()
+   abstract fun spec(): SpecConfiguration
 
    /**
     * Creates a new [TestCase] and then notifies the test runner of this nested test.
@@ -44,8 +42,7 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc =
-         TestCase(description().append(name), specconf(), test, sourceRef(), type, config, null, null)
+      val tc = TestCase(description().append(name), spec(), test, sourceRef(), type, config, null, null)
       registerTestCase(tc)
    }
 
@@ -58,8 +55,7 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc =
-         TestCase(description().append(name), specconf(), test, sourceRef(), type, config, null, null)
+      val tc = TestCase(description().append(name), spec(), test, sourceRef(), type, config, null, null)
       registerTestCase(tc)
    }
 

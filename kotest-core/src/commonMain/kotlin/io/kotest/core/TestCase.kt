@@ -42,12 +42,12 @@ data class TestCase(
    val type: TestType,
    // config used when running the test, such as number of
    // invocations, threads, etc
-   val config: TestCaseConfig,
+   val config: TestCaseConfig = TestCaseConfig(),
    // an optional factory which is used to indicate which factory (if any) generated this test.
-   val factory: TestFactory?,
+   val factory: TestFactory? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
-   val assertionMode: AssertionMode?
+   val assertionMode: AssertionMode? = null
 ) {
 
    val name = description.name

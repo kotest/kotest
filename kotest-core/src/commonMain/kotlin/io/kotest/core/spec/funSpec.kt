@@ -19,12 +19,17 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    return config.build()
 }
 
+fun testcase(name: String, f: suspend (TestContext).() -> Unit): TestFactory = funSpec {
+   test(name, f)
+}
+
 class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
    override val addTest = ::addDynamicTest
 }
 
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : SpecConfiguration(), FunSpecDsl {
    override val addTest = ::addRootTestCase
+
    init {
       body()
    }
@@ -55,10 +60,7 @@ interface FunSpecDsl : SpecDsl {
    }
 
    @KotestDsl
-   class ContextScope(
-      private val context: TestContext,
-      private val spec: FunSpecDsl
-   ) {
+   class ContextScope(private val context: TestContext, private val spec: FunSpecDsl) {
 
       suspend fun context(name: String, init: suspend ContextScope.() -> Unit) {
          context.registerTestCase(

@@ -1,15 +1,14 @@
 package io.kotest.runner.jvm.spec
 
-import arrow.core.const
 import io.kotest.SpecClass
 import io.kotest.core.Description
 import io.kotest.core.TestCase
 import io.kotest.core.TestContext
 import io.kotest.core.TestResult
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TopLevelTests
-import io.kotest.runner.jvm.TestExecutor
+import io.kotest.extensions.TopLevelTest
 import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
@@ -28,6 +27,7 @@ class SingleInstanceSpecRunner(
    private val results = mutableMapOf<TestCase, TestResult>()
 
    inner class Context(
+      val spec: SpecConfiguration,
       val description: Description,
       override val coroutineContext: CoroutineContext
    ) : TestContext() {
@@ -36,6 +36,7 @@ class SingleInstanceSpecRunner(
       private val seen = mutableSetOf<String>()
 
       override fun description(): Description = description
+      override fun spec(): SpecConfiguration = spec
 
       override suspend fun registerTestCase(testCase: TestCase) {
          // if we have a test with this name already, but the line number is different
@@ -43,22 +44,22 @@ class SingleInstanceSpecRunner(
          if (seen.contains(testCase.name))
             throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
          seen.add(testCase.name)
-         executor.execute(testCase, Context(testCase.description, coroutineContext)) { result ->
+         executor.execute(testCase, Context(testCase.spec, testCase.description, coroutineContext)) { result ->
             results[testCase] = result
          }
       }
    }
 
-   override suspend fun execute(spec: SpecConfiguration, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
+   override suspend fun execute(spec: SpecConfiguration, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
       // creating the spec instance will have invoked the init block, resulting
       // in the top level test cases being available on the spec class
       coroutineScope {
          interceptSpec(spec) {
-            topLevelTests.tests.forEach { topLevelTest ->
+            topLevelTests.forEach { topLevelTest ->
                logger.trace("Executing test $topLevelTest")
                executor.execute(
                   topLevelTest.testCase,
-                  Context(topLevelTest.testCase.description, coroutineContext)
+                  Context(topLevelTest.testCase.spec, topLevelTest.testCase.description, coroutineContext)
                ) { result -> results[topLevelTest.testCase] = result }
             }
          }
