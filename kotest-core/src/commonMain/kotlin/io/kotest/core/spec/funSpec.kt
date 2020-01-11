@@ -6,6 +6,8 @@ import io.kotest.core.TestType
 import io.kotest.core.deriveTestConfig
 import io.kotest.core.specs.KotestDsl
 import io.kotest.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -44,9 +46,11 @@ interface FunSpecDsl : SpecDsl {
       private val name: String,
       private val spec: FunSpecDsl
    ) {
+      @UseExperimental(ExperimentalTime::class)
       fun config(
          enabled: Boolean? = null,
          tags: Set<Tag>? = null,
+         timeout: Duration? = null,
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {

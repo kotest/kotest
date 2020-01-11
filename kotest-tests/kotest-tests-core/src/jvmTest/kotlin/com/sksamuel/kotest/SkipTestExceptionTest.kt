@@ -1,19 +1,16 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.*
+import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
-import io.kotest.specs.FunSpec
 import kotlinx.coroutines.GlobalScope
-import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
 class SkipTestExceptionTest : FunSpec() {
-
-   private val scheduler = Executors.newScheduledThreadPool(1)
-
    init {
       test("A test that throws SkipTestException should have Ignored as a result") {
 
@@ -35,6 +32,7 @@ class SkipTestExceptionTest : FunSpec() {
 
          val context = object : TestContext() {
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
+            override fun spec(): SpecConfiguration = this@SkipTestExceptionTest
             override suspend fun registerTestCase(testCase: TestCase) {}
             override fun description(): Description = Description.spec("wibble")
          }

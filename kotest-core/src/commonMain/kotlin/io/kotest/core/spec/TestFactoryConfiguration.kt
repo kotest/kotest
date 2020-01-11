@@ -1,7 +1,6 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Description
-import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.*
