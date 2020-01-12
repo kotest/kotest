@@ -34,6 +34,8 @@ Changelog
 * whenReady(f) has been replaced with f.whenReady which is coroutine enabled
 * Alphabetic test case ordering
 * SkipTestException removed
+* Fixed file matchers to check for null
+* Test callbacks now coroutine enabled
 
 #### 3.4.2
 
