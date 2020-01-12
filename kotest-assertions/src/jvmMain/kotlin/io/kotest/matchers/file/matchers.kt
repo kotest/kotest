@@ -7,15 +7,20 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldNotBe
 import java.io.File
+import java.io.FileFilter
 import java.nio.file.Files
 import java.nio.file.Path
+
+private fun File.safeList(): List<String> = this.list()?.toList() ?: emptyList()
+private fun File.safeListFiles(): List<File> = this.listFiles()?.toList() ?: emptyList()
+private fun File.safeListFiles(filter: FileFilter): List<File> = this.listFiles(filter)?.toList() ?: emptyList()
 
 fun File.shouldBeNonEmptyDirectory() = this should beNonEmptyDirectory()
 fun Path.shouldBeNonEmptyDirectory() = this.toFile() should beNonEmptyDirectory()
 fun File.shouldNotBeNonEmptyDirectory() = this shouldNot beNonEmptyDirectory()
 fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() shouldNot beNonEmptyDirectory()
 fun beNonEmptyDirectory(): Matcher<File> = object : Matcher<File> {
-  override fun test(value: File): MatcherResult = MatcherResult(value.isDirectory && value.list().isNotEmpty(), "$value should be a non empty directory", "$value should not be a non empty directory")
+  override fun test(value: File): MatcherResult = MatcherResult(value.isDirectory && value.safeList().isEmpty(), "$value should be a non empty directory", "$value should not be a non empty directory")
 }
 
 infix fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
@@ -23,7 +28,7 @@ infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFile
 infix fun File.shouldNotContainNFiles(n: Int) = this shouldNotBe containNFiles(n)
 infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
 fun containNFiles(n: Int): Matcher<File> = object : Matcher<File> {
-  override fun test(value: File): MatcherResult = MatcherResult(value.isDirectory && value.list().size == n, "$value should be a directory and contain $n files", "$value should not be a directory containing $n files")
+  override fun test(value: File): MatcherResult = MatcherResult(value.isDirectory && value.safeList().size == n, "$value should be a directory and contain $n files", "$value should not be a directory containing $n files")
 }
 
 fun File.shouldBeEmpty() = this shouldBe emptyFile()
@@ -63,7 +68,7 @@ infix fun File.shouldContainFile(name: String) = this should containFile(name)
 infix fun File.shouldNotContainFile(name: String) = this shouldNot containFile(name)
 fun containFile(name: String) = object : Matcher<File> {
   override fun test(value: File): MatcherResult {
-    val contents = value.list()
+    val contents = value.safeList()
     val passed = value.isDirectory && contents.contains(name)
     return MatcherResult(passed,
         "Directory $value should contain a file with filename $name (detected ${contents.size} other files)",
@@ -243,21 +248,24 @@ infix fun Path.shouldNotStartWithPath(prefix: String) = this.toFile() shouldNot 
 infix fun Path.shouldContainFileDeep(name: String) = this should containFileDeep(name)
 infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFileDeep(name)
 fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
-  private fun fileExists(dir: File): Boolean =
-    dir.list().contains(name) || dir.listFiles { file -> file.isDirectory }.any(::fileExists)
 
-  override fun test(value: Path): MatcherResult = MatcherResult(
-    fileExists(value.toFile()),
-    { "File $name should exist in $value" },
-    { "File $name should not exist in $value" }
-  )
+   private val filter = FileFilter { file -> file.isDirectory }
+
+   private fun fileExists(dir: File): Boolean =
+      dir.safeList().contains(name) || dir.safeListFiles(filter).any(::fileExists)
+
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      fileExists(value.toFile()),
+      { "File $name should exist in $value" },
+      { "File $name should not exist in $value" }
+   )
 }
 
 fun Path.shouldContainFiles(vararg files: String) = this should containFiles(files.asList())
 fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFiles(files.asList())
 fun containFiles(names: List<String>) = object : Matcher<Path> {
   override fun test(value: Path): MatcherResult {
-    val files = value.toFile().list()?.asIterable() ?: emptyList()
+    val files = value.toFile().safeList()
 
     val existingFiles = names.intersect(files)
     val nonExistingFiles = names.subtract(existingFiles)
