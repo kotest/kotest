@@ -28,10 +28,6 @@ class KotestEngine(
 ) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
-
-   // the scheduler executor is used for notifications on when a test case timeout has been reached
-   private val scheduler = Executors.newSingleThreadScheduledExecutor()
-
    private val specExecutor = SpecExecutor2(listener)
 
    init {
@@ -110,14 +106,14 @@ class KotestEngine(
       // executor.submit {
       createSpec(klass).fold(
          { t ->
-            listener.specInitialisationFailed(klass, t)
+            listener.specInitError(klass, t)
             executor.shutdownNow()
          },
          { spec ->
             runBlocking {
                specExecutor.execute(spec).onFailure {
                   // todo move this to a new listener method like specFailed(klass, t)
-                  listener.specInitialisationFailed(klass, it)
+                  listener.specInitError(klass, it)
                   executor.shutdownNow()
                }
             }
@@ -126,7 +122,7 @@ class KotestEngine(
       //}
    }
 
-   private fun createSpec(klass: KClass<out SpecConfiguration>) =
+   private fun createSpec(klass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
       instantiateSpec(klass).flatMap {
          Try {
             listener.specCreated(it)

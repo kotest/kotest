@@ -27,23 +27,31 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
 
    suspend fun execute(spec: SpecConfiguration) = Try {
       logger.trace("Executing spec $spec")
-      beforeSpec(spec)
+      notifySpecStarted(spec)
+         .flatMap { beforeSpecListeners(spec) }
          .flatMap { spec.materializeRootTests() }
          .flatMap { runTests(spec, it) }
-         .fold({ afterSpec(spec, it, emptyMap()) }, { afterSpec(spec, null, it) })
+         .flatMap { afterSpec(spec, it) }
+         .fold({ notifySpecFinished(spec, it, emptyMap()) }, { notifySpecFinished(spec, null, it) })
    }
 
-   private fun beforeSpec(spec: SpecConfiguration) = Try {
-      logger.trace("beforeSpec $spec")
-
-      logger.trace("Executing engine listener 'executionStarted' for ${spec::class}")
+   private fun notifySpecStarted(spec: SpecConfiguration) = Try {
+      logger.trace("Executing engine listener callback:specStarted for:${spec::class}")
       engineListener.specStarted(spec::class)
+   }
 
-      logger.trace("Executing user listeners for beforeSpec")
+   private fun notifySpecFinished(spec: SpecConfiguration, t: Throwable?, results: Map<TestCase, TestResult>) = Try {
+      logger.trace("Executing engine listener 'executionFinished' for ${spec::class}")
+      engineListener.specFinished(spec::class, t, results)
+   }
+
+   private fun beforeSpecListeners(spec: SpecConfiguration) = Try {
+      logger.trace("Executing user listeners before spec")
       spec.beforeSpecs.forEach { it.invoke() }
       spec.beforeSpec(spec)
-      val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
+      val userListeners = Project.listeners() // todo listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach { _ ->
+         // todo
          // it.beforeSpecStarted(spec::class.description(), spec)
          //  it.beforeSpecClass(spec, tests.tests)
       }
@@ -51,10 +59,8 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
       logger.trace("Completed beforeSpec $spec")
    }
 
-   private fun afterSpec(spec: SpecConfiguration, t: Throwable?, results: Map<TestCase, TestResult>) = Try {
-      logger.trace("afterSpec $spec [$t]")
-
-      logger.trace("Executing user listeners for afterSpec")
+   private fun afterSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) = Try {
+      logger.trace("Executing user listeners after spec")
       spec.afterSpecs.forEach { it.invoke(results) }
       val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach {
@@ -62,11 +68,7 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
          @Suppress("DEPRECATION")
          it.afterSpecCompleted(spec::class.description(), spec)
       }
-
-      logger.trace("Executing engine listener 'executionFinished' for ${spec::class}")
-      engineListener.specFinished(spec::class, t, results)
-
-      logger.trace("Completed afterSpec $spec")
+      results
    }
 
    private suspend fun runTests(
@@ -76,7 +78,6 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
       Try {
          val runner = runner(spec)
          runner.execute(spec, tests)
-         emptyMap<TestCase, TestResult>()
       }
 
    // each runner must get a single-threaded executor, which is used to invoke

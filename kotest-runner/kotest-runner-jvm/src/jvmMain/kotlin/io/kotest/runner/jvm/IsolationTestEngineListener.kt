@@ -71,12 +71,12 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {
       if (runningSpec.compareAndSet(null, klass.description())) {
-         listener.specInitialisationFailed(klass, t)
+         listener.specInitError(klass, t)
       } else {
          queue {
-            specInitialisationFailed(klass, t)
+            specInitError(klass, t)
          }
       }
    }

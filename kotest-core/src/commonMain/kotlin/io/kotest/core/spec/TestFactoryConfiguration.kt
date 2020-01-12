@@ -268,6 +268,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
       type: TestType
    ) {
       require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
+      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
       this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef())
    }
 }
@@ -308,16 +309,18 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
-   ) = TestCase(
-      this::class.description().append(name),
-      this,
-      test,
-      sourceRef(),
-      type,
-      config,
-      null,
-      null
-   )
+   ): TestCase {
+      return TestCase(
+         this::class.description().append(name),
+         this,
+         test,
+         sourceRef(),
+         type,
+         config,
+         null,
+         null
+      )
+   }
 
    /**
     * Adds a new root-level [TestCase] to this [Spec].
@@ -329,6 +332,7 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
       type: TestType
    ) {
       require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
+      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
       //require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
       rootTestCases = rootTestCases + createTestCase(name, test, config, type)
    }

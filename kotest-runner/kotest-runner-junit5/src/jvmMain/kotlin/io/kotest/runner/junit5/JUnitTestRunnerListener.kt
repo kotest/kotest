@@ -6,10 +6,9 @@ import io.kotest.core.spec.SpecConfiguration
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.*
-import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
-import org.junit.platform.engine.support.descriptor.ClassSource
-import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.engine.support.descriptor.*
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
@@ -128,6 +127,21 @@ class JUnitTestRunnerListener(
       }
    }
 
+   override fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {
+      logger.trace("beforeSpecClass [${klass.qualifiedName}]")
+      try {
+         val descriptor = createSpecDescriptor(klass)
+         logger.trace("Registering junit dynamic test: $descriptor")
+         listener.dynamicTestRegistered(descriptor)
+         logger.trace("Notifying junit that execution has started: $descriptor")
+         listener.executionStarted(descriptor)
+         listener.executionFinished(descriptor, TestExecutionResult.aborted(t))
+      } catch (t: Throwable) {
+         logger.error("Error in JUnit Platform listener", t)
+         specException = t
+      }
+   }
+
    override fun specFinished(
       klass: KClass<out SpecConfiguration>,
       t: Throwable?,
@@ -164,7 +178,13 @@ class JUnitTestRunnerListener(
       val descriptor = descriptors[testCase.description]
          ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
       results.add(Pair(testCase.description, result))
-      val resultp = findChildFailure(testCase.description) ?: result
+
+      // if we have a success we override with a child error if one exists
+      val resultp = when (result.status) {
+         TestStatus.Success -> findChildFailure(testCase.description) ?: result
+         else -> result
+      }
+
       logger.trace("Notifying junit that execution has finished: $descriptor")
       listener.executionFinished(descriptor, resultp.testExecutionResult())
    }
@@ -207,6 +227,9 @@ class JUnitTestRunnerListener(
          logger.error(msg)
          error(msg)
       }
+
+      val source = FileSource.from(File(testCase.source.fileName), FilePosition.from(testCase.source.lineNumber))
+
       // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
       // see https://github.com/gradle/gradle/issues/4912
       // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
@@ -214,7 +237,8 @@ class JUnitTestRunnerListener(
          TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
          TestType.Test -> TestDescriptor.Type.TEST
       }
-      return parent.append(testCase.description, type, null)
+
+      return parent.append(testCase.description, type, source)
    }
 
    /**
@@ -223,7 +247,7 @@ class JUnitTestRunnerListener(
    private fun TestResult.testExecutionResult(): TestExecutionResult = when (this.status) {
       TestStatus.Ignored -> error("An ignored test cannot reach this state")
       TestStatus.Success -> TestExecutionResult.successful()
-      TestStatus.Error -> TestExecutionResult.aborted(this.error)
+      TestStatus.Error -> TestExecutionResult.failed(this.error)
       TestStatus.Failure -> TestExecutionResult.failed(this.error)
    }
 

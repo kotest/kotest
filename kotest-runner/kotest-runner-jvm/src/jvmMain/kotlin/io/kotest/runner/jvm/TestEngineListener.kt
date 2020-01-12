@@ -46,9 +46,9 @@ interface TestEngineListener {
    fun specFinished(klass: KClass<out SpecConfiguration>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
    /**
-    * Is invoked if a [SpecClass] throws an exception during initialisation
+    * Is invoked if a [SpecConfiguration] throws an exception during initialisation
     */
-   fun specInitialisationFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {}
+   fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed (is active).
