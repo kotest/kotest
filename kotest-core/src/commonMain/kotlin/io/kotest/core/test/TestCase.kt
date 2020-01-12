@@ -1,9 +1,9 @@
-package io.kotest.core
+package io.kotest.core.test
 
 import io.kotest.SpecClass
+import io.kotest.core.*
+import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.spec.TestFactory
-import kotlin.random.Random
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
@@ -43,7 +43,7 @@ data class TestCase(
    // config used when running the test, such as number of
    // invocations, threads, etc
    val config: TestCaseConfig = TestCaseConfig(),
-   // an optional factory which is used to indicate which factory (if any) generated this test.
+   // an optional factory which is used to indicate which factory (if any) generated this test case.
    val factory: TestFactory? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
@@ -60,10 +60,28 @@ data class TestCase(
    companion object {
 
       fun test(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
-         TestCase(description, spec, test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
+         TestCase(
+            description,
+            spec,
+            test,
+            sourceRef(),
+            TestType.Test,
+            TestCaseConfig(),
+            null,
+            null
+         )
 
       fun test(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
-         TestCase(description, FakeSpecConfiguration(), test, sourceRef(), TestType.Test, TestCaseConfig(), null, null)
+         TestCase(
+            description,
+            FakeSpecConfiguration(),
+            test,
+            sourceRef(),
+            TestType.Test,
+            TestCaseConfig(),
+            null,
+            null
+         )
 
       fun container(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
@@ -92,9 +110,3 @@ data class TestCase(
 }
 
 class FakeSpecConfiguration : SpecConfiguration()
-
-data class GeneratorId(val id: String) {
-   companion object {
-      fun uuid(): GeneratorId = GeneratorId(Random.Default.nextLong().toString())
-   }
-}

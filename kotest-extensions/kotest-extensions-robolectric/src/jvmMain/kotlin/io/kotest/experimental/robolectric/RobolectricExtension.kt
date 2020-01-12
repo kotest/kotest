@@ -1,7 +1,7 @@
 package io.kotest.experimental.robolectric
 
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.TestCaseExtension
@@ -21,9 +21,9 @@ class RobolectricExtension : ConstructorExtension, TestCaseExtension {
         findAnnotation<RobolectricTest>() == null
 
     override suspend fun intercept(
-        testCase: TestCase,
-        execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-        complete: suspend (TestResult) -> Unit
+       testCase: TestCase,
+       execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+       complete: suspend (TestResult) -> Unit
     ) {
         if(testCase.spec::class.isRobolectricClass()) return super.intercept(testCase, execute, complete)
 

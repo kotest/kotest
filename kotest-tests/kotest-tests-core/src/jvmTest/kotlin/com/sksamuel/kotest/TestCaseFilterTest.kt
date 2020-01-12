@@ -1,11 +1,11 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.Description
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.TestStatus
-import io.kotest.core.TestCaseFilter
-import io.kotest.core.TestFilterResult
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestCaseFilter
+import io.kotest.core.test.TestFilterResult
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 

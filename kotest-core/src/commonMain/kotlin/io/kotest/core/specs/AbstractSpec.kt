@@ -2,6 +2,8 @@ package io.kotest.core.specs
 
 import io.kotest.SpecClass
 import io.kotest.core.*
+import io.kotest.core.spec.description
+import io.kotest.core.test.*
 import org.junit.platform.commons.annotation.Testable
 
 // these functions call out to the js test methods
@@ -68,7 +70,8 @@ abstract class AbstractSpec : SpecClass {
    /**
     * Config applied to each test case if not overridden per test case.
     */
-   protected open val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
+   protected open val defaultTestCaseConfig: TestCaseConfig =
+      TestCaseConfig()
 
    // this is a dummy method, intercepted by the kotlin.js framework adapter to generate tests
    @JsTest

@@ -1,6 +1,6 @@
 //package com.sksamuel.kotest.runner.jvm
 //
-//import io.kotest.core.TestCaseOrder
+//import io.kotest.core.test.TestCaseOrder
 //import io.kotest.internal.topLevelTests
 //import io.kotest.shouldBe
 //import io.kotest.shouldNotBe

@@ -1,8 +1,8 @@
 //package com.sksamuel.kotest.timeout
 //
-//import io.kotest.core.TestCase
-//import io.kotest.core.TestResult
-//import io.kotest.core.TestStatus
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestResult
+//import io.kotest.core.test.TestStatus
 //import io.kotest.extensions.SpecLevelExtension
 //import io.kotest.extensions.TestCaseExtension
 //import io.kotest.specs.StringSpec

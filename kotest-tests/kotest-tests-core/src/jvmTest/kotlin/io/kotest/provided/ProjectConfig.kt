@@ -3,8 +3,8 @@ package io.kotest.provided
 import com.sksamuel.kotest.AutoCloseListener
 import com.sksamuel.kotest.TestCaseFilterTestFilter
 import io.kotest.AbstractProjectConfig
-import io.kotest.core.FailureFirstSpecExecutionOrder
-import io.kotest.core.SpecExecutionOrder
+import io.kotest.core.spec.FailureFirstSpecExecutionOrder
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.extensions.ProjectLevelFilter
 import io.kotest.extensions.ProjectListener
 import io.kotest.properties.PropertyTesting
@@ -21,7 +21,7 @@ object ProjectConfig : AbstractProjectConfig() {
   override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
 
   override fun specExecutionOrder(): SpecExecutionOrder =
-     FailureFirstSpecExecutionOrder
+    FailureFirstSpecExecutionOrder
 
   override fun beforeAll() {
     intercepterLog.append("B1.")

@@ -3,6 +3,12 @@
 package io.kotest
 
 import io.kotest.core.*
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.LexicographicSpecExecutionOrder
+import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCaseFilter
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.DiscoveryExtension
 import io.kotest.extensions.ProjectLevelExtension

@@ -36,6 +36,14 @@ sealed class Try<out T> {
       }
    }
 
+   inline fun onSuccess(f: (T) -> Unit): Try<T> = when (this) {
+      is Success -> {
+         f(this.value)
+         this
+      }
+      is Failure -> this
+   }
+
    fun toOption(): Option<T> = fold({ Option.None }, {
       Option.Some(
          it

@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.core
 
 import kotlinx.coroutines.future.await
 import java.util.concurrent.CompletableFuture

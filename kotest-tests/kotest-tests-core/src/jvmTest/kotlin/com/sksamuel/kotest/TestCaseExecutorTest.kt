@@ -3,11 +3,11 @@
 //import com.nhaarman.mockito_kotlin.argThat
 //import com.nhaarman.mockito_kotlin.mock
 //import com.nhaarman.mockito_kotlin.then
-//import io.kotest.core.Description
-//import io.kotest.core.TestCase
+//import io.kotest.core.test.Description
+//import io.kotest.core.test.TestCase
 //import io.kotest.assertions.currentTimeMillis
-//import io.kotest.core.TestCaseConfig
-//import io.kotest.core.TestContext
+//import io.kotest.core.test.TestCaseConfig
+//import io.kotest.core.test.TestContext
 //import io.kotest.runner.jvm.TestExecutor
 //import io.kotest.runner.jvm.TestEngineListener
 //import io.kotest.shouldBe

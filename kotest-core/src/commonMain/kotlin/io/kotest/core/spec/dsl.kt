@@ -1,8 +1,8 @@
 package io.kotest.core.spec
 
-import io.kotest.core.TestCaseConfig
-import io.kotest.core.TestContext
-import io.kotest.core.TestType
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
 
 interface SpecDsl {
 

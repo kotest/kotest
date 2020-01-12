@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.test
 
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

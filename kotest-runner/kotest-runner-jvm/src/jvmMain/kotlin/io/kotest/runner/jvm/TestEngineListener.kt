@@ -1,8 +1,8 @@
 package io.kotest.runner.jvm
 
 import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
@@ -48,7 +48,7 @@ interface TestEngineListener {
    /**
     * Is invoked if a [SpecConfiguration] throws an exception during initialisation
     */
-   fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {}
+   fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed (is active).

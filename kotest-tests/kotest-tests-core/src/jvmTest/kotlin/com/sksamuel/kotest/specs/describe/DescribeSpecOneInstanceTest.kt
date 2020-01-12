@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.describe
 
-import io.kotest.core.IsolationMode
+import io.kotest.core.spec.IsolationMode
 import io.kotest.shouldBe
 import io.kotest.specs.DescribeSpec
 import java.util.concurrent.atomic.AtomicInteger

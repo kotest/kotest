@@ -1,7 +1,7 @@
 //package com.sksamuel.kotest.specs.behavior
 //
-//import io.kotest.core.TestCase
-//import io.kotest.core.TestResult
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestResult
 //import io.kotest.core.spec.SpecConfiguration
 //import io.kotest.matchers.ints.shouldBeLessThan
 //import io.kotest.matchers.string.shouldStartWith

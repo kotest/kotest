@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.test
 
 import io.kotest.extensions.ProjectLevelFilter
 import io.kotest.extensions.TestCaseExtension
@@ -18,7 +18,8 @@ interface TestCaseFilter : ProjectLevelFilter {
 }
 
 object IncludeAllTestCaseFilter : TestCaseFilter {
-  override fun filter(description: Description): TestFilterResult = TestFilterResult.Include
+  override fun filter(description: Description): TestFilterResult =
+     TestFilterResult.Include
 }
 
 enum class TestFilterResult {

@@ -1,10 +1,10 @@
 package io.kotest.extensions
 
-import io.kotest.core.Description
-import io.kotest.core.IsolationMode.InstancePerLeaf
-import io.kotest.core.IsolationMode.InstancePerTest
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.Description
+import io.kotest.core.spec.IsolationMode.InstancePerLeaf
+import io.kotest.core.spec.IsolationMode.InstancePerTest
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
@@ -75,7 +75,7 @@ interface TestListener {
     * with the first instance of the Spec.
     *
     * The top level tests declared in the spec are supplied as a list of
-    * instances of [TopLevelTest] which includes a flag set to true if
+    * instances of [RootTest] which includes a flag set to true if
     * the test is active or false if inactive.
     *
     * If there are no active tests in a spec, then this callback will
@@ -118,6 +118,4 @@ interface TestListener {
    fun afterDiscovery(descriptions: List<Description>): Unit = Unit
 }
 
-data class TopLevelTest(val testCase: TestCase, val order: Int)
-
-data class TopLevelTests(val tests: List<TopLevelTest>)
+data class RootTest(val testCase: TestCase, val order: Int)

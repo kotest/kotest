@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.specs.funspec
 
-import io.kotest.core.IsolationMode
+import io.kotest.core.spec.IsolationMode
 import io.kotest.SpecClass
 import io.kotest.core.Tag
-import io.kotest.core.TestCase
-import io.kotest.core.TestCaseOrder
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener

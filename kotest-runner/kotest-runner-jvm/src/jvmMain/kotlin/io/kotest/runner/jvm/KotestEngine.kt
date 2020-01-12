@@ -3,12 +3,12 @@ package io.kotest.runner.jvm
 import io.kotest.DoNotParallelize
 import io.kotest.Project
 import io.kotest.core.Tag
-import io.kotest.core.TestCaseFilter
+import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecifiedTagsTagExtension
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
-import io.kotest.runner.jvm.spec.SpecExecutor2
+import io.kotest.runner.jvm.spec.SpecExecutor
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.Collections.emptyList
@@ -28,7 +28,7 @@ class KotestEngine(
 ) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
-   private val specExecutor = SpecExecutor2(listener)
+   private val specExecutor = SpecExecutor(listener)
 
    init {
       Project.registerTestCaseFilter(filters)
@@ -103,32 +103,14 @@ class KotestEngine(
    }
 
    private fun submitSpec(klass: KClass<out SpecConfiguration>, executor: ExecutorService) {
-      // executor.submit {
-      createSpec(klass).fold(
-         { t ->
-            listener.specInitError(klass, t)
+      runBlocking {
+         specExecutor.execute(klass).onFailure {
+            listener.specFailed(klass, it)
+            // if a spec fails to even instantiate properly we fail tast
             executor.shutdownNow()
-         },
-         { spec ->
-            runBlocking {
-               specExecutor.execute(spec).onFailure {
-                  // todo move this to a new listener method like specFailed(klass, t)
-                  listener.specInitError(klass, it)
-                  executor.shutdownNow()
-               }
-            }
-         }
-      )
-      //}
-   }
-
-   private fun createSpec(klass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
-      instantiateSpec(klass).flatMap {
-         Try {
-            listener.specCreated(it)
-            it
          }
       }
+   }
 }
 
 fun KClass<*>.isDoNotParallelize(): Boolean = findAnnotation<DoNotParallelize>() != null

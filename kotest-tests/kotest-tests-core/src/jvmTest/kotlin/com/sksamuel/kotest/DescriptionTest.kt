@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.Description
+import io.kotest.core.test.Description
 import io.kotest.core.spec.CompositeSpec
 import io.kotest.core.spec.stringSpec
 import io.kotest.matchers.booleans.shouldBeFalse

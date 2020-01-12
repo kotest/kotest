@@ -1,9 +1,9 @@
 package io.kotest.core.specs
 
 import io.kotest.core.Tag
-import io.kotest.core.TestType
-import io.kotest.core.TestCaseConfig
-import io.kotest.core.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
 import io.kotest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -32,7 +32,8 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
           timeout ?: this@AbstractDescribeSpec.defaultTestCaseConfig.timeout,
           parallelism ?: this@AbstractDescribeSpec.defaultTestCaseConfig.threads,
           tags ?: this@AbstractDescribeSpec.defaultTestCaseConfig.tags,
-          extensions ?: this@AbstractDescribeSpec.defaultTestCaseConfig.extensions)
+          extensions ?: this@AbstractDescribeSpec.defaultTestCaseConfig.extensions
+      )
       context.registerTestCase(name, this@AbstractDescribeSpec, test, config, TestType.Test)
     }
   }

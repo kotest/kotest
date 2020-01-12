@@ -2,7 +2,11 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.*
 import io.kotest.core.spec.CompositeSpec
+import io.kotest.core.spec.description
 import io.kotest.core.spec.funSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.runner.junit5.JUnitTestRunnerListener
 import io.kotest.runner.junit5.KotestEngineDescriptor

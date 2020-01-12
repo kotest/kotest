@@ -2,15 +2,17 @@ package io.kotest.runner.jvm.spec
 
 import io.kotest.Project
 import io.kotest.SpecClass
-import io.kotest.core.IsolationMode
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.description
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.resolvedListeners
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.SpecExtension
-import io.kotest.extensions.TestListener
-import io.kotest.extensions.TopLevelTest
+import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.runner.jvm.instantiateSpec
+import org.slf4j.LoggerFactory
+import kotlin.reflect.KClass
 
 /**
  * The base class for executing all the tests inside a [SpecClass].
@@ -23,42 +25,62 @@ import io.kotest.runner.jvm.TestEngineListener
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
-   abstract suspend fun execute(spec: SpecConfiguration, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult>
+   private val logger = LoggerFactory.getLogger(javaClass)
+
+   abstract suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>>
+
+   suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit): Try<SpecConfiguration> {
+      val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
+      return interceptSpec(spec, extensions, afterInterception)
+   }
 
    private suspend fun interceptSpec(
       spec: SpecConfiguration,
       remaining: List<SpecExtension>,
       afterInterception: suspend () -> Unit
-   ) {
-      // todo
-      val listeners = Project.listeners() // listOf(spec) // + spec.listenerInstances + Project.listeners()
+   ): Try<SpecConfiguration> = Try {
       when {
-         remaining.isEmpty() -> {
-            executeBeforeSpec(spec, listeners)
-            afterInterception()
-            executeAfterSpec(spec, listeners)
-         }
+         remaining.isEmpty() -> afterInterception()
          else -> {
             val rest = remaining.drop(1)
             remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
          }
       }
+      spec
    }
 
-   private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
+   /**
+    * Creates an instance of the supplied [SpecConfiguration] by delegating to the project constructors,
+    * and notifies the [TestEngineListener] of the instantiation event.
+    */
+   protected fun createInstance(kclass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
+      instantiateSpec(kclass).onSuccess {
+         Try { listener.specCreated(it) }
+      }
+
+   /**
+    * Notifies the user listeners that a [SpecConfiguration] is starting.
+    * This will be invoked for every instance of a spec.
+    */
+   protected fun notifyBeforeSpec(spec: SpecConfiguration): Try<SpecConfiguration> = Try {
+      logger.trace("Executing listeners beforeSpec")
+      val listeners = spec.resolvedListeners()
       listeners.forEach {
          it.beforeSpec(spec)
       }
+      spec
    }
 
-   private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
-      listeners.reversed().forEach {
+   /**
+    * Notifies the user listeners that a [SpecConfiguration] has finished.
+    * This will be invoked for every instance of a spec.
+    */
+   protected fun notifyAfterSpec(spec: SpecConfiguration): Try<SpecConfiguration> = Try {
+      logger.trace("Executing listeners beforeSpec")
+      val listeners = spec.resolvedListeners()
+      listeners.forEach {
          it.afterSpec(spec)
       }
-   }
-
-   suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit) {
-      val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
-      interceptSpec(spec, extensions, afterInterception)
+      spec
    }
 }

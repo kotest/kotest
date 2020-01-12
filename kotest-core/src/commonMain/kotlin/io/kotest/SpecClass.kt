@@ -1,6 +1,11 @@
 package io.kotest
 
 import io.kotest.core.*
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
 

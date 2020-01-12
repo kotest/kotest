@@ -1,6 +1,5 @@
-package io.kotest.core
+package io.kotest.core.spec
 
-import io.kotest.core.spec.SpecConfiguration
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 

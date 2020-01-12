@@ -1,9 +1,8 @@
 package com.sksamuel.kt.extensions.locale
 
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.withDefaultLocale
 import io.kotest.shouldBe

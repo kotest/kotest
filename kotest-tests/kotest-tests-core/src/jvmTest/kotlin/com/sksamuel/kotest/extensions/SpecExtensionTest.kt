@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.extensions
 
 import io.kotest.Project
-import io.kotest.core.description
+import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.ProjectListener
 import io.kotest.extensions.SpecExtension

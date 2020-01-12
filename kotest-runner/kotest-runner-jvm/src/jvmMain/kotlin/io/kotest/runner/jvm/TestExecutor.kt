@@ -1,7 +1,7 @@
 package io.kotest.runner.jvm
 
 import io.kotest.Project
-import io.kotest.core.*
+import io.kotest.core.test.*
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
 import io.kotest.fp.Tuple2
@@ -171,14 +171,38 @@ class TestExecutor(private val listener: TestEngineListener) {
    }
 
    private fun successResult(duration: Duration) =
-      TestResult(TestStatus.Success, null, null, duration, emptyMap())
+      TestResult(
+         TestStatus.Success,
+         null,
+         null,
+         duration,
+         emptyMap()
+      )
 
    private fun ignoredResult(reason: String?, duration: Duration) =
-      TestResult(TestStatus.Ignored, null, reason, duration, emptyMap())
+      TestResult(
+         TestStatus.Ignored,
+         null,
+         reason,
+         duration,
+         emptyMap()
+      )
 
    private fun errorResult(t: Throwable, duration: Duration) =
-      TestResult(TestStatus.Error, t, null, duration, emptyMap())
+      TestResult(
+         TestStatus.Error,
+         t,
+         null,
+         duration,
+         emptyMap()
+      )
 
    private fun failureResult(t: Throwable, duration: Duration) =
-      TestResult(TestStatus.Failure, t, null, duration, emptyMap())
+      TestResult(
+         TestStatus.Failure,
+         t,
+         null,
+         duration,
+         emptyMap()
+      )
 }

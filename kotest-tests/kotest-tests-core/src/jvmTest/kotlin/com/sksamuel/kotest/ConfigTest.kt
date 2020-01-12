@@ -4,7 +4,7 @@ package com.sksamuel.kotest
 
 import io.kotest.core.Tag
 import io.kotest.assertions.fail
-import io.kotest.core.TestCaseConfig
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.provided.ProjectConfig
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
@@ -17,7 +17,8 @@ class ConfigTest : WordSpec() {
 
   object TagZ : Tag()
 
-  override val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig(invocations = 3, tags = setOf(TagZ))
+  override val defaultTestCaseConfig: TestCaseConfig =
+      TestCaseConfig(invocations = 3, tags = setOf(TagZ))
 
   private val invocationCounter = AtomicInteger(0)
   private val invocationCounter2 = AtomicInteger(0)

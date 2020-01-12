@@ -1,7 +1,7 @@
 package io.kotest.extensions
 
 import io.kotest.AbstractProjectConfig
-import io.kotest.core.TestCase
+import io.kotest.core.test.TestCase
 import io.kotest.core.spec.SpecConfiguration
 
 /**

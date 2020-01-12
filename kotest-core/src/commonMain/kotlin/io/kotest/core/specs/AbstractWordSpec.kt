@@ -2,6 +2,7 @@ package io.kotest.core.specs
 
 import io.kotest.core.*
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.test.*
 import io.kotest.extensions.TestCaseExtension
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -104,10 +105,8 @@ abstract class AbstractWordSpec(body: AbstractWordSpec.() -> Unit = {}) : Abstra
    @KotestDsl
    inner class FinalTestContext(val context: TestContext) : TestContext() {
 
-      override fun description(): Description = context.description()
-      override suspend fun registerTestCase(testCase: TestCase) = context.registerTestCase(testCase)
+      override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)
       override val coroutineContext: CoroutineContext = context.coroutineContext
-      override fun spec(): SpecConfiguration = FakeSpecConfiguration()
 
       // we need to override the should method to stop people nesting a should inside a should
       @Deprecated(

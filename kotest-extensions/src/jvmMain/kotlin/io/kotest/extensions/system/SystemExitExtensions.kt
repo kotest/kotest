@@ -1,9 +1,9 @@
 package io.kotest.extensions.system
 
 import io.kotest.AbstractProjectConfig
-import io.kotest.core.Description
+import io.kotest.core.test.Description
 import io.kotest.SpecClass
-import io.kotest.core.description
+import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TestListener
 import java.io.FileDescriptor

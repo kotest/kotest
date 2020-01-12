@@ -1,11 +1,12 @@
 package com.sksamuel.kotest.specs.wordspec
 
-import io.kotest.core.TestCaseConfig
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.specs.WordSpec
 
 class WordSpecSharedInstanceDuplicateNameTest : WordSpec() {
 
-  override val defaultTestCaseConfig: TestCaseConfig = TestCaseConfig(invocations = 2)
+  override val defaultTestCaseConfig: TestCaseConfig =
+      TestCaseConfig(invocations = 2)
 
   init {
     "context" should {

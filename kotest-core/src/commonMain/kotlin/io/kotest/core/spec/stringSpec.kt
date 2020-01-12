@@ -1,9 +1,10 @@
 package io.kotest.core.spec
 
-import io.kotest.core.Tag
-import io.kotest.core.TestContext
-import io.kotest.core.TestType
-import io.kotest.core.deriveTestConfig
+import io.kotest.core.*
+import io.kotest.core.factory.TestFactory
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.deriveTestConfig
 import io.kotest.extensions.TestCaseExtension
 
 /**

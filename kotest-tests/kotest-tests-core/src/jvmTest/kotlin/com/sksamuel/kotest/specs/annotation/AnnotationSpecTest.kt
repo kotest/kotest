@@ -1,9 +1,9 @@
 //package com.sksamuel.kotest.specs.annotation
 //
-//import io.kotest.core.IsolationMode
-//import io.kotest.core.TestCase
-//import io.kotest.core.TestCaseOrder
-//import io.kotest.core.TestResult
+//import io.kotest.core.spec.IsolationMode
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestCaseOrder
+//import io.kotest.core.test.TestResult
 //import io.kotest.assertions.fail
 //import io.kotest.core.spec.SpecConfiguration
 //import io.kotest.extensions.SpecLevelExtension

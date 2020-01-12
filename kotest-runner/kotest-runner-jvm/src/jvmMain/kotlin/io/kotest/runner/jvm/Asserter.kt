@@ -4,7 +4,7 @@ import io.kotest.Project
 import io.kotest.assertSoftly
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.getAndReset
-import io.kotest.core.AssertionMode
+import io.kotest.core.test.AssertionMode
 
 /**
  * Executes the given run function checking for the absense of assertions according to

@@ -2,12 +2,12 @@
 //
 //import arrow.core.Failure
 //import arrow.core.Success
-//import io.kotest.core.Description
+//import io.kotest.core.test.Description
 //import io.kotest.SpecClass
-//import io.kotest.core.TestCase
-//import io.kotest.core.TestResult
-//import io.kotest.core.TestType
-//import io.kotest.core.TestContext
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestResult
+//import io.kotest.core.test.TestType
+//import io.kotest.core.test.TestContext
 //import io.kotest.extensions.TopLevelTests
 //import io.kotest.runner.jvm.TestCaseExecutor
 //import io.kotest.runner.jvm.TestEngineListener

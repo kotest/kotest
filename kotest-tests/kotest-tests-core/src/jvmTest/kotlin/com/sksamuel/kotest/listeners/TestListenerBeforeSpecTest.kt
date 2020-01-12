@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.core.IsolationMode
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.FunSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe

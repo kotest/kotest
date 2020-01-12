@@ -1,6 +1,8 @@
-package io.kotest.core
+package io.kotest.core.test
 
 import io.kotest.SpecClass
+import io.kotest.core.SourceRef
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.specs.KotestDsl
 import kotlinx.coroutines.CoroutineScope
@@ -23,18 +25,9 @@ abstract class TestContext : CoroutineScope {
    }
 
    /**
-    * Returns the [Description] of the [TestCase] that is attached to this [TestContext].
-    */
-   abstract fun description(): Description
-
-   /**
-    * Returns the [SpecConfiguration] that this context is currently executing in.
-    */
-   abstract fun spec(): SpecConfiguration
-
-   /**
     * Creates a new [TestCase] and then notifies the test runner of this nested test.
     */
+   @Deprecated("to be removed once all specs moved to spec config")
    suspend fun registerTestCase(
       name: String,
       spec: SpecClass,
@@ -42,12 +35,11 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc = TestCase(description().append(name), spec(), test, sourceRef(), type, config, null, null)
-      registerTestCase(tc)
+      TODO()
    }
 
    /**
-    * Creates a new [TestCase] and then notifies the test runner of this nested test.
+    * Creates a [NestedTest] and then registers with the [TestContext].
     */
    suspend fun registerTestCase(
       name: String,
@@ -55,12 +47,32 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val tc = TestCase(description().append(name), spec(), test, sourceRef(), type, config, null, null)
-      registerTestCase(tc)
+      val nested = NestedTest(name, test, config, type, sourceRef())
+      registerTestCase(nested)
    }
 
    /**
-    * Notifies the test runner about a nested [TestCase].
+    * Notifies the test runner about a test in a nested scope.
     */
-   abstract suspend fun registerTestCase(testCase: TestCase)
+   abstract suspend fun registerTestCase(test: NestedTest)
 }
+
+data class NestedTest(
+   val name: String,
+   val test: suspend TestContext.() -> Unit,
+   val config: TestCaseConfig,
+   val type: TestType,
+   val sourceRef: SourceRef
+)
+
+fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase =
+   TestCase(
+      parent.append(name),
+      spec,
+      test,
+      sourceRef,
+      type,
+      config,
+      null,
+      null
+   )

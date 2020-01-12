@@ -1,7 +1,10 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.*
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.description
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
@@ -71,12 +74,12 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
       if (runningSpec.compareAndSet(null, klass.description())) {
-         listener.specInitError(klass, t)
+         listener.specFailed(klass, t)
       } else {
          queue {
-            specInitError(klass, t)
+            specFailed(klass, t)
          }
       }
    }

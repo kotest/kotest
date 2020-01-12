@@ -1,8 +1,8 @@
 package com.sksamuel.kt.extensions.time
 
 import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs

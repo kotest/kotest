@@ -1,8 +1,8 @@
 package io.kotest.plugin.pitest
 
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.KotestEngine
 import io.kotest.runner.jvm.TestEngineListener
@@ -19,8 +19,8 @@ class KotestUnit(val klass: KClass<out SpecConfiguration>) : TestUnit {
 
       val listener = object : TestEngineListener {
 
-         private val started = mutableSetOf<io.kotest.core.Description>()
-         private val completed = mutableSetOf<io.kotest.core.Description>()
+         private val started = mutableSetOf<io.kotest.core.test.Description>()
+         private val completed = mutableSetOf<io.kotest.core.test.Description>()
 
          override fun testStarted(testCase: TestCase) {
             if (started.add(testCase.description))

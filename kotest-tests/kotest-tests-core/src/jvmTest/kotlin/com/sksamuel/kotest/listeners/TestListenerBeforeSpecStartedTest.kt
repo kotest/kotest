@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.core.IsolationMode
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.FunSpec
 import io.kotest.shouldBe
 import java.util.concurrent.atomic.AtomicInteger

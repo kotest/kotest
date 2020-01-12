@@ -1,4 +1,4 @@
-package io.kotest.core
+package io.kotest.core.test
 
 /**
  * The description gives the full path to a [TestCase].

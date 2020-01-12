@@ -1,9 +1,9 @@
 package io.kotest.core.specs
 
 import io.kotest.core.Tag
-import io.kotest.core.TestType
-import io.kotest.core.TestCaseConfig
-import io.kotest.core.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
 import io.kotest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -55,7 +55,8 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
             timeout ?: defaultTestCaseConfig.timeout,
             threads ?: defaultTestCaseConfig.threads,
             tags ?: defaultTestCaseConfig.tags,
-            extensions ?: defaultTestCaseConfig.extensions)
+            extensions ?: defaultTestCaseConfig.extensions
+         )
          register(test, config)
       }
    }
@@ -85,7 +86,8 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
               timeout ?: defaultTestCaseConfig.timeout,
               threads ?: defaultTestCaseConfig.threads,
               tags ?: defaultTestCaseConfig.tags,
-              extensions ?: defaultTestCaseConfig.extensions)
+              extensions ?: defaultTestCaseConfig.extensions
+           )
            register(test, config)
         }
      }

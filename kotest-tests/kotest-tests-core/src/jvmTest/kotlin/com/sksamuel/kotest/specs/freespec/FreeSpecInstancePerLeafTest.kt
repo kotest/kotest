@@ -1,8 +1,8 @@
 //package com.sksamuel.kotest.specs.freespec
 //
-//import io.kotest.core.IsolationMode
-//import io.kotest.core.TestCase
-//import io.kotest.core.TestResult
+//import io.kotest.core.spec.IsolationMode
+//import io.kotest.core.test.TestCase
+//import io.kotest.core.test.TestResult
 //import io.kotest.core.spec.SpecConfiguration
 //import io.kotest.shouldBe
 //import io.kotest.specs.FreeSpec

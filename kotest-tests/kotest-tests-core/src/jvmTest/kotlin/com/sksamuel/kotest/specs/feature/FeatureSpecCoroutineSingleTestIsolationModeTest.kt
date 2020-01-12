@@ -1,8 +1,8 @@
 //package com.sksamuel.kotest.specs.feature
 //
 //import currentThreadWithoutCoroutine
-//import io.kotest.core.Description
-//import io.kotest.core.TestResult
+//import io.kotest.core.test.Description
+//import io.kotest.core.test.TestResult
 //import io.kotest.matchers.string.shouldStartWith
 //import io.kotest.shouldBe
 //import io.kotest.specs.FeatureSpec

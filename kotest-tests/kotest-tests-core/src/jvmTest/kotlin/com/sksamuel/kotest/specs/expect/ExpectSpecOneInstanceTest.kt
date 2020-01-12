@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.expect
 
-import io.kotest.core.IsolationMode
+import io.kotest.core.spec.IsolationMode
 import io.kotest.shouldBe
 import io.kotest.specs.ExpectSpec
 import java.util.concurrent.atomic.AtomicInteger

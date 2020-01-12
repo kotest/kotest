@@ -1,5 +1,8 @@
-package io.kotest.core
+package io.kotest.core.spec
 
+import io.kotest.core.bestName
+import io.kotest.core.displayName
+import io.kotest.core.test.Description
 import io.kotest.fp.getOrElse
 import kotlin.reflect.KClass
 

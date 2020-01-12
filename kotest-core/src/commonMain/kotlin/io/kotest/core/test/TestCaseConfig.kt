@@ -1,5 +1,6 @@
-package io.kotest.core
+package io.kotest.core.test
 
+import io.kotest.core.Tag
 import io.kotest.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

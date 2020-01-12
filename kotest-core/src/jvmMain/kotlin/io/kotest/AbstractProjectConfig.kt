@@ -1,6 +1,10 @@
 package io.kotest
 
-import io.kotest.core.*
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.LexicographicSpecExecutionOrder
+import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.extensions.ProjectLevelExtension
 import io.kotest.extensions.ProjectLevelFilter
 import io.kotest.extensions.ProjectListener
@@ -54,7 +58,7 @@ abstract class AbstractProjectConfig {
     *  - [RandomSpecExecutionOrder]
     */
    open fun specExecutionOrder(): SpecExecutionOrder =
-       LexicographicSpecExecutionOrder
+      LexicographicSpecExecutionOrder
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.

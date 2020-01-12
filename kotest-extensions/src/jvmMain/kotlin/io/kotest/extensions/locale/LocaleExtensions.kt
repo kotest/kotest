@@ -1,7 +1,7 @@
 package io.kotest.extensions.locale
 
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.extensions.ProjectListener
 import io.kotest.extensions.TestListener
 import java.util.Locale

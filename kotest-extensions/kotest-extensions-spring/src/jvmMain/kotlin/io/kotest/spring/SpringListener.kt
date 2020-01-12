@@ -1,7 +1,7 @@
 package io.kotest.spring
 
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.TestListener

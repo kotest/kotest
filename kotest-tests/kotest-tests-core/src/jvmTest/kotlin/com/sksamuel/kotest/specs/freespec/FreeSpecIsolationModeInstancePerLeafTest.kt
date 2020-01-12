@@ -1,7 +1,7 @@
 //package com.sksamuel.kotest.specs.freespec
 //
-//import io.kotest.core.Description
-//import io.kotest.core.IsolationMode
+//import io.kotest.core.test.Description
+//import io.kotest.core.spec.IsolationMode
 //import io.kotest.core.spec.SpecConfiguration
 //import io.kotest.shouldBe
 //import io.kotest.specs.FreeSpec

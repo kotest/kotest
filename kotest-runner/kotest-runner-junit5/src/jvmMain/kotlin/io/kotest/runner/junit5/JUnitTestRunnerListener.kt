@@ -1,8 +1,9 @@
 package io.kotest.runner.junit5
 
 import io.kotest.Project
-import io.kotest.core.*
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.description
+import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.*
@@ -127,7 +128,7 @@ class JUnitTestRunnerListener(
       }
    }
 
-   override fun specInitError(klass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
       logger.trace("beforeSpecClass [${klass.qualifiedName}]")
       try {
          val descriptor = createSpecDescriptor(klass)

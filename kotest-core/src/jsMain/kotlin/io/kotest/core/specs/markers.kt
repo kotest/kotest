@@ -1,10 +1,6 @@
 package io.kotest.core.specs
 
-import io.kotest.core.Description
-import io.kotest.core.TestCase
-import io.kotest.core.TestType
-import io.kotest.core.TestContext
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.test.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
@@ -23,18 +19,15 @@ fun testContext(
    desc: Description,
    coroutineContext: CoroutineContext
 ): TestContext = object : TestContext() {
-
-   override suspend fun registerTestCase(testCase: TestCase) {
-      it(testCase.name) {
+   override suspend fun registerTestCase(test: NestedTest) {
+      it(test.name) {
          GlobalScope.promise {
-            val t = testCase.test
-            testContext(desc.append(testCase.name), coroutineContext).t()
+            val t = test.test
+            testContext(desc.append(test.name), coroutineContext).t()
          }
       }
    }
 
-   override fun description(): Description = desc
-   override fun spec(): SpecConfiguration = TODO()
    override val coroutineContext: CoroutineContext = coroutineContext
 }
 
