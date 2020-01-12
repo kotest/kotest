@@ -8,8 +8,6 @@ import io.kotest.specs.StringSpec
 
 class TestCaseExtensionChainTest : StringSpec() {
 
-  class WibbleException : RuntimeException()
-
   object MyExt1 : TestCaseExtension {
     override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
       if (testCase.description.name == "test1")

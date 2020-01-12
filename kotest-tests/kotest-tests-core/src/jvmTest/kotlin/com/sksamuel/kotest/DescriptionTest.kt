@@ -17,7 +17,6 @@ val descriptionTests = stringSpec {
          listOf("a"),
          "b"
       ).parent() shouldBe Description(listOf(), "a")
-      Description(listOf(), "a").parent() shouldBe null
    }
    "full name" {
       Description(listOf("a", "b", "c"), "d").fullName() shouldBe "a b c d"

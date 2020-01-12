@@ -35,4 +35,4 @@ fun List<TestCase>.ordered(spec: SpecConfiguration): List<TestCase> {
 
 
 fun SpecConfiguration.resolvedTestCaseOrder() =
-   testCaseOrder ?: testCaseOrder() ?: Project.testCaseOrder()
+   testOrder ?: testCaseOrder() ?: Project.testCaseOrder()

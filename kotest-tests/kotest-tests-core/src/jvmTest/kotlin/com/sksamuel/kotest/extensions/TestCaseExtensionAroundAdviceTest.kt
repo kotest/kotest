@@ -5,6 +5,7 @@ import io.kotest.core.TestResult
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.specs.StringSpec
+import java.lang.AssertionError
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -12,24 +13,22 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
-   class WibbleException : RuntimeException()
-
    object MyExt : TestCaseExtension {
-      override suspend fun intercept(testCase: TestCase,
-                                     execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-                                     complete: suspend (TestResult) -> Unit) {
-         when {
-            testCase.description.name == "test1" -> complete(TestResult.Ignored)
-            testCase.description.name == "test2" -> execute(testCase) {
+      override suspend fun intercept(
+         testCase: TestCase,
+         execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+         complete: suspend (TestResult) -> Unit
+      ) {
+         when (testCase.description.name) {
+            "test1" -> complete(TestResult.Ignored)
+            "test2" -> execute(testCase) {
                when (it.error) {
-                  is WibbleException -> complete(TestResult.success(Duration.ZERO))
-                  else -> complete(it)
+                  is RuntimeException -> complete(TestResult.success(Duration.ZERO))
+                  else -> complete(TestResult.failure(AssertionError("boom"), Duration.ZERO))
                }
             }
-            testCase.description.name == "test3" ->
-               if (testCase.config.enabled) throw RuntimeException() else execute(testCase) { complete(it) }
-            testCase.description.name == "test4" ->
-               execute(testCase.copy(config = testCase.config.copy(enabled = false))) { complete(it) }
+            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase) { complete(it) }
+            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false))) { complete(it) }
             else -> execute(testCase) { complete(it) }
          }
       }
@@ -44,7 +43,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       }
       // this exception will be thrown but then the test extension will override the failed result to return a success
       "test2" {
-         throw WibbleException()
+         throw RuntimeException()
       }
       // the config for this test should be carried through to the extension
       "test3".config(enabled = false) {

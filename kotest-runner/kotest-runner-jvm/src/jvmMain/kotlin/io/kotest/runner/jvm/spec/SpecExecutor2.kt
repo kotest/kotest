@@ -49,6 +49,7 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
       logger.trace("Executing user listeners before spec")
       spec.beforeSpecs.forEach { it.invoke() }
       spec.beforeSpec(spec)
+      spec.beforeSpec(spec::class.description(), spec)
       val userListeners = Project.listeners() // todo listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach { _ ->
          // todo

@@ -35,9 +35,8 @@ class TestExecutor(private val listener: TestEngineListener) {
 
    suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
       logger.trace("Executing $testCase")
-
-      val start = System.currentTimeMillis()
       try {
+         val start = System.currentTimeMillis()
 
          try {
             before(testCase)
@@ -50,9 +49,10 @@ class TestExecutor(private val listener: TestEngineListener) {
             testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
             Project.testCaseExtensions()
 
-         // get active status here in case calling this function is expensive
          runExtensions(testCase, context, start, extensions) { result ->
             after(testCase, result)
+            if (result.status != TestStatus.Ignored)
+               listener.testFinished(testCase, result)
             onResult(result)
          }
 
@@ -126,7 +126,6 @@ class TestExecutor(private val listener: TestEngineListener) {
 
       val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
       logger.debug("Test completed with result $result")
-      listener.testFinished(testCase, result)
       return result
    }
 

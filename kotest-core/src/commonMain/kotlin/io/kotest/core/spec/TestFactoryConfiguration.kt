@@ -141,8 +141,8 @@ fun SpecConfiguration.build(): Spec {
       },
       listeners = this.listeners + this.listeners(),
       extensions = this.extensions + this.extensions(),
-      isolationMode = this.isolationMode ?: this.isolationMode(),
-      testCaseOrder = this.testCaseOrder ?: this.testCaseOrder()
+      isolationMode = this.isolation ?: this.isolationMode(),
+      testCaseOrder = this.testOrder ?: this.testCaseOrder()
    )
 }
 
@@ -288,13 +288,13 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
     * Sets the [IsolationMode] used by the test engine when running tests in this spec.
     * If left null, then the project default is applied.
     */
-   var isolationMode: IsolationMode? = null
+   var isolation: IsolationMode? = null
 
    /**
     * Sets the [TestCaseOrder] to control the order of execution of root level tests in this spec.
     * If left null, then the project default is applied.
     */
-   var testCaseOrder: TestCaseOrder? = null
+   var testOrder: TestCaseOrder? = null
 
    /**
     * This is a dummy method, intercepted by the kotlin.js framework adapter to generate tests.

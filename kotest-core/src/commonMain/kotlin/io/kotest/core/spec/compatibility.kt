@@ -4,7 +4,6 @@ import io.kotest.SpecClass
 import io.kotest.core.*
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
-import io.kotest.shouldBe
 
 /**
  * Contains functions which can be overriden to set config in the same way that KotlinTest 3.x allowed.
@@ -90,6 +89,6 @@ interface CompatibilitySpecConfiguration {
    }
 
    @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec { }"))
-   fun beforeSpec(description: Description, spec: SpecClass) {
+   fun beforeSpec(description: Description, spec: SpecConfiguration) {
    }
 }
