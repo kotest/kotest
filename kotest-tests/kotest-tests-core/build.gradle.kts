@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -38,33 +41,28 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+            implementation(Libs.Coroutines.core)
             implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")
+            implementation(Libs.JUnitPlatform.engine)
+            implementation(Libs.JUnitPlatform.api)
+            implementation(Libs.JUnitPlatform.launcher)
+            implementation(Libs.JUnitJupiter.api)
             // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-            implementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
-            implementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
-            implementation("org.junit.platform:junit-platform-engine:1.5.2")
-            implementation("org.junit.platform:junit-platform-suite-api:1.5.2")
-            implementation("org.junit.platform:junit-platform-launcher:1.5.2")
+            implementation(Libs.JUnitJupiter.engine)
          }
       }
    }
 }
 
-tasks {
-   test {
-      useJUnitPlatform()
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-         )
-         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 

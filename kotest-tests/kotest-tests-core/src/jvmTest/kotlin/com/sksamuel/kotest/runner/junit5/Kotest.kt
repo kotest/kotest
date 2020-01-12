@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.runner.junit5.KotestEngine
+import io.kotest.runner.junit5.KotestJunitPlatformTestEngine
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 import io.kotest.specs.WordSpec
@@ -24,7 +24,7 @@ class Kotest : StringSpec() {
               else -> FilterResult.included("")
             }
           }).build()
-      val descriptor = KotestEngine().discover(request, UniqueId.forEngine("test-engine"))
+      val descriptor = KotestJunitPlatformTestEngine().discover(request, UniqueId.forEngine("test-engine"))
       descriptor.classes.first().jvmName shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
       descriptor.classes.size shouldBe 1
     }

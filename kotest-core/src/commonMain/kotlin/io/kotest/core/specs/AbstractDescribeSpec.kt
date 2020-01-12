@@ -1,7 +1,7 @@
 package io.kotest.core.specs
 
-import io.kotest.Tag
-import io.kotest.TestType
+import io.kotest.core.Tag
+import io.kotest.core.TestType
 import io.kotest.core.TestCaseConfig
 import io.kotest.core.TestContext
 import io.kotest.extensions.TestCaseExtension
@@ -19,13 +19,13 @@ abstract class AbstractDescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) 
 
     @UseExperimental(ExperimentalTime::class)
     suspend fun config(
-        invocations: Int? = null,
-        enabled: Boolean? = null,
-        timeout: Duration? = null,
-        parallelism: Int? = null,
-        tags: Set<Tag>? = null,
-        extensions: List<TestCaseExtension>? = null,
-        test: suspend TestContext.() -> Unit) {
+       invocations: Int? = null,
+       enabled: Boolean? = null,
+       timeout: Duration? = null,
+       parallelism: Int? = null,
+       tags: Set<Tag>? = null,
+       extensions: List<TestCaseExtension>? = null,
+       test: suspend TestContext.() -> Unit) {
       val config = TestCaseConfig(
           enabled ?: this@AbstractDescribeSpec.defaultTestCaseConfig.enabled,
           invocations ?: this@AbstractDescribeSpec.defaultTestCaseConfig.invocations,

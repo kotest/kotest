@@ -1,11 +1,11 @@
 package io.kotest.extensions
 
-import io.kotest.Description
-import io.kotest.IsolationMode.InstancePerLeaf
-import io.kotest.IsolationMode.InstancePerTest
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.Description
+import io.kotest.core.IsolationMode.InstancePerLeaf
+import io.kotest.core.IsolationMode.InstancePerTest
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
 
 interface TestListener {
 
@@ -42,7 +42,7 @@ interface TestListener {
   fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
   /**
-   * This callback is invoked after the Engine instantiates a [Spec]
+   * This callback is invoked after the Engine instantiates a [SpecConfiguration]
    * to be used as part of a [TestCase] execution.
    *
    * If a spec is instantiated multiple times - for example, if
@@ -54,13 +54,13 @@ interface TestListener {
    * each time a new spec instance is created. If you simply need to
    * perform setup once per class file, then use [beforeSpecClass].
    *
-   * @param spec the [Spec] instance.
+   * @param spec the [SpecConfiguration] instance.
    */
-  fun beforeSpec(spec: Spec): Unit = Unit
+  fun beforeSpec(spec: SpecConfiguration): Unit = Unit
 
   /**
    * Is invoked after the [TestCase]s that are part of a particular
-   * [Spec] instance have completed.
+   * [SpecConfiguration] instance have completed.
    *
    * If a spec is instantiated multiple times - for example, if
    * [InstancePerTest] or [InstancePerLeaf] isolation modes are used,
@@ -72,12 +72,12 @@ interface TestListener {
    * after each individual spec instance. If you simply need to
    * perform cleanup once per class file, then use [afterSpecClass].
    *
-   * @param spec the [Spec] instance.
+   * @param spec the [SpecConfiguration] instance.
    */
-  fun afterSpec(spec: Spec): Unit = Unit
+  fun afterSpec(spec: SpecConfiguration): Unit = Unit
 
   /**
-   * Called once per [Spec], when the engine is preparing to
+   * Called once per [SpecConfiguration], when the engine is preparing to
    * execute the tests for that spec.
    *
    * Regardless of how many times the spec is instantiated,
@@ -95,13 +95,13 @@ interface TestListener {
    * The order of the list of tests is the same as the
    * order of execution.
    *
-   * @param spec the [Spec] instance
+   * @param spec the [SpecConfiguration] instance
    * @param tests the list of top level tests
    */
-  fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>): Unit = Unit
+  fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>): Unit = Unit
 
   /**
-   * Called once per [Spec], after all tests have completed for that spec.
+   * Called once per [SpecConfiguration], after all tests have completed for that spec.
    *
    * Regardless of how many times the spec is instantiated,
    * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
@@ -112,14 +112,14 @@ interface TestListener {
    * the result of that test, including tests that were ignored (which
    * will have a TestResult that has TestStatus.Ignored)
    *
-   * @param spec the [Spec] instance
+   * @param spec the [SpecConfiguration] instance
    * @param results a map of each test case mapped to its result.
    */
-  fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>): Unit = Unit
+  fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>): Unit = Unit
 
   /**
-   * Is invoked after all the [Spec] classes have been discovered.
-   * This callback will be called after any [DiscoveryExtension]s have been invoked.
+   * Is invoked after all the [SpecConfiguration] classes have been discovered.
+   * This callback will be called SpecConfiguration any [DiscoveryExtension]s have been invoked.
    *
    * In other words the descriptions given here are after discovery extensions
    * have had the chance to filter.
@@ -129,28 +129,28 @@ interface TestListener {
   fun afterDiscovery(descriptions: List<Description>): Unit = Unit
 
   /**
-   * Is invoked each time a [Spec] is started.
+   * Is invoked each time a [SpecConfiguration] is started.
    *
    * Note: If the spec is running with one instance per test, then this
    * function will be invoked multiple times.
    *
    * @param description the [Description] for the root [TestCase] of the spec.
-   * @param spec the actual [Spec] instance.
+   * @param spec the actual [SpecConfiguration] instance.
    */
   @Deprecated("use beforeSpec(Spec)", ReplaceWith("beforeSpec(Spec)"))
-  fun beforeSpec(description: Description, spec: Spec): Unit = Unit
+  fun beforeSpec(description: Description, spec: SpecConfiguration): Unit = Unit
 
   /**
-   * Is invoked each time a [Spec] completes.
+   * Is invoked each time a [SpecConfiguration] completes.
    *
    * Note: If the spec is running with one instance per test, then this
    * function will be invoked multiple times.
    *
    * @param description the [Description] for the root [TestCase] of the spec.
-   * @param spec the actual [Spec] instance.
+   * @param spec the actual [SpecConfiguration] instance.
    */
   @Deprecated("use afterSpec(Spec)", ReplaceWith("afterSpec(Spec)"))
-  fun afterSpec(description: Description, spec: Spec): Unit = Unit
+  fun afterSpec(description: Description, spec: SpecConfiguration): Unit = Unit
 
   /**
    * This function will be invoked each time a new [TestCase] is executed.
@@ -171,10 +171,10 @@ interface TestListener {
   fun afterTest(description: Description, result: TestResult): Unit = Unit
 
   @Deprecated("use beforeSpecClass(Spec, List<TopLevelTest>)", ReplaceWith("beforeSpecClass(Spec)"))
-  fun beforeSpecStarted(description: Description, spec: Spec): Unit = Unit
+  fun beforeSpecStarted(description: Description, spec: SpecConfiguration): Unit = Unit
 
   @Deprecated("use afterSpecClass(Spec, Map<TestCase, TestResult>) which provides the full test case instance", ReplaceWith("afterSpecClass(Spec, Map<TestCase, TestResult>)"))
-  fun afterSpecCompleted(description: Description, spec: Spec): Unit = Unit
+  fun afterSpecCompleted(description: Description, spec: SpecConfiguration): Unit = Unit
 }
 
 data class TopLevelTest(val testCase: TestCase, val order: Int)

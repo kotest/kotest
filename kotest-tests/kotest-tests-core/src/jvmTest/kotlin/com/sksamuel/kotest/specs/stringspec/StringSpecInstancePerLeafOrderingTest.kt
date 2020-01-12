@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.specs.stringspec
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.IsolationMode
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.shouldBe
 import io.kotest.specs.StringSpec
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,7 +16,7 @@ class StringSpecInstancePerLeafOrderingTest : StringSpec() {
 
   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
     string shouldBe "a_z_b_y_c_"
   }
 

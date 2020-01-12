@@ -1,9 +1,9 @@
 package com.sksamuel.kotest
 
-import io.kotest.Description
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.core.Description
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.core.TestCaseFilter
 import io.kotest.core.TestFilterResult
 import io.kotest.shouldBe

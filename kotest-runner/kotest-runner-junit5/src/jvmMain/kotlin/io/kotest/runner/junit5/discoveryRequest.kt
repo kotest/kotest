@@ -1,5 +1,6 @@
 package io.kotest.runner.junit5
 
+import io.kotest.runner.jvm.DiscoveryFilter
 import io.kotest.runner.jvm.DiscoveryRequest
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.discovery.ClassNameFilter
@@ -33,18 +34,31 @@ import org.junit.platform.engine.discovery.UriSelector
  */
 internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
 
-  // inside intellij when running a single test, we might be passed a class selector
-  // and gradle will sometimes pass a class selector for each class it has detected
-  val classnames = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+   // inside intellij when running a single test, we might be passed a class selector
+   // and gradle will sometimes pass a class selector for each class it has detected
+   val classnames = request.getSelectorsByType(ClassSelector::class.java).map { it.className }
 
-  val packages = request.getSelectorsByType(PackageSelector::class.java).map { it.packageName }
+   val packageFilters: List<DiscoveryFilter> = request.getSelectorsByType(PackageSelector::class.java).map {
+      object : DiscoveryFilter {
+         override fun test(className: String, packageName: String): Boolean = packageName == it.packageName
+      }
+   } + request.getFiltersByType(PackageNameFilter::class.java).map {
+      object : DiscoveryFilter {
+         override fun test(className: String, packageName: String): Boolean = it.toPredicate().test(packageName)
+      }
+   }
 
-  val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
+   val classnameFilters = request.getFiltersByType(ClassNameFilter::class.java).map {
+      object : DiscoveryFilter {
+         override fun test(className: String, packageName: String): Boolean = it.toPredicate().test(className)
+      }
+   }
+
+   val filters = packageFilters + classnameFilters
+
+   val uris = request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot } +
       request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
       request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-  val classNameFilters = request.getFiltersByType(ClassNameFilter::class.java).map { it.toPredicate() }
-  val packageFilters = request.getFiltersByType(PackageNameFilter::class.java).map { it.toPredicate() }
-
-  return DiscoveryRequest(uris, classnames, packages, classNameFilters, packageFilters)
+   return DiscoveryRequest(uris, classnames, filters)
 }

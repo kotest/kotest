@@ -14,8 +14,12 @@ class StringSpecTest : StringSpec() {
          "hello" should haveLength(5)
       }
 
-      "strings should support config".config(invocations = 5) {
+      "strings should support config".config(enabled = true) {
          "hello".length shouldBe 5
+      }
+
+      "an ignored string test".config(enabled = false) {
+
       }
    }
 }

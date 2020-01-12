@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.wordspec
 
-import io.kotest.IsolationMode
+import io.kotest.core.IsolationMode
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger

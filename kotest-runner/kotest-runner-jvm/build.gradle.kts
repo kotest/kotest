@@ -38,12 +38,12 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
+            api(project(":kotest-fp"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
-            api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-            api("io.github.classgraph:classgraph:4.8.59")
-            api("org.slf4j:slf4j-api:1.7.25")
-
+            api(Libs.Coroutines.core)
+            api(Libs.Classgraph.classgraph)
+            api(Libs.Slf4j.api)
             api("io.arrow-kt:arrow-core:0.10.3")
          }
       }

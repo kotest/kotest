@@ -1,67 +1,69 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.SpecClass
+import io.kotest.core.Description
+import io.kotest.core.TestCase
 import io.kotest.core.TestContext
-import io.kotest.extensions.TopLevelTests
-import io.kotest.runner.jvm.TestCaseExecutor
+import io.kotest.core.TestResult
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.extensions.TopLevelTest
 import io.kotest.runner.jvm.TestEngineListener
-import kotlinx.coroutines.runBlocking
+import io.kotest.runner.jvm.TestExecutor
+import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.ScheduledExecutorService
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [Spec] instance. In other words, only a single instance of the spec class
+ * same [SpecClass] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
-class SingleInstanceSpecRunner(listener: TestEngineListener,
-                               listenerExecutor: ExecutorService,
-                               scheduler: ScheduledExecutorService) : SpecRunner(listener) {
+class SingleInstanceSpecRunner(
+   listener: TestEngineListener
+) : SpecRunner(listener) {
 
-  private val logger = LoggerFactory.getLogger(this.javaClass)
-  private val executor = TestCaseExecutor(listener, listenerExecutor, scheduler)
-  private val results = mutableMapOf<TestCase, TestResult>()
+   private val logger = LoggerFactory.getLogger(this.javaClass)
+   private val executor = TestExecutor(listener)
+   private val results = mutableMapOf<TestCase, TestResult>()
 
-  inner class Context(val description: Description, coroutineContext: CoroutineContext) : TestContext(coroutineContext) {
+   inner class Context(
+      val spec: SpecConfiguration,
+      val description: Description,
+      override val coroutineContext: CoroutineContext
+   ) : TestContext() {
 
-    // test names mapped to their line numbers, allows detection of duplicate test names
-    // the line number is required because the same test is allowed to be invoked multiple times
-    private val seen = HashMap<String, Int>()
+      // keeps track of test names we've seen so we can avoid tests trying to use the same name
+      private val seen = mutableSetOf<String>()
 
-    override fun description(): Description = description
+      override fun description(): Description = description
+      override fun spec(): SpecConfiguration = spec
 
-    override suspend fun registerTestCase(testCase: TestCase) {
-      // if we have a test with this name already, but the line number is different
-      // then it's a duplicate test name, so boom
-      if (seen.containsKey(testCase.name) && seen[testCase.name] != testCase.source.lineNumber)
-        throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
-      seen[testCase.name] = testCase.source.lineNumber
-      executor.execute(testCase, Context(testCase.description, coroutineContext)) { result -> results[testCase] = result }
-    }
-  }
-
-  override fun execute(spec: Spec, topLevelTests: TopLevelTests): Map<TestCase, TestResult> {
-
-    // creating the spec instance will have invoked the init block, resulting
-    // in the top level test cases being available on the spec class
-    runBlocking {
-      interceptSpec(spec) {
-        topLevelTests.tests.forEach { topLevelTest ->
-          // each spec is allocated it's own thread so we can block here safely
-          // allowing us to enter the coroutine world
-          executor.execute(
-              topLevelTest.testCase,
-              Context(topLevelTest.testCase.description, this.coroutineContext)
-          ) { result -> results[topLevelTest.testCase] = result }
-        }
+      override suspend fun registerTestCase(testCase: TestCase) {
+         // if we have a test with this name already, but the line number is different
+         // then it's a duplicate test name, so boom
+         if (seen.contains(testCase.name))
+            throw IllegalStateException("Cannot add duplicate test name ${testCase.name}")
+         seen.add(testCase.name)
+         executor.execute(testCase, Context(testCase.spec, testCase.description, coroutineContext)) { result ->
+            results[testCase] = result
+         }
       }
-    }
+   }
 
-    return results
-  }
+   override suspend fun execute(spec: SpecConfiguration, topLevelTests: List<TopLevelTest>): Map<TestCase, TestResult> {
+      // creating the spec instance will have invoked the init block, resulting
+      // in the top level test cases being available on the spec class
+      coroutineScope {
+         interceptSpec(spec) {
+            topLevelTests.forEach { topLevelTest ->
+               logger.trace("Executing test $topLevelTest")
+               executor.execute(
+                  topLevelTest.testCase,
+                  Context(topLevelTest.testCase.spec, topLevelTest.testCase.description, coroutineContext)
+               ) { result -> results[topLevelTest.testCase] = result }
+            }
+         }
+      }
+      return results
+   }
 }

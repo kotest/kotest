@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.Spec
-import io.kotest.Tag
+import io.kotest.core.Tag
 import io.kotest.assertions.fail
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.RuntimeTagExtension
 import io.kotest.specs.StringSpec
 
@@ -17,7 +17,7 @@ class RuntimeTagExtensionTest : StringSpec() {
         }
     }
 
-    override fun beforeSpec(spec: Spec) {
+    override fun beforeSpec(spec: SpecConfiguration) {
         RuntimeTagExtension.excluded += MyRuntimeExcludedTag
     }
 }

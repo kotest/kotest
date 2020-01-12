@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
 import java.util.concurrent.atomic.AtomicInteger

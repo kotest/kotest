@@ -1,7 +1,7 @@
 package io.kotest.extensions.locale
 
-import io.kotest.TestCase
-import io.kotest.TestResult
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
 import io.kotest.extensions.TestListener
 import java.util.TimeZone
 
@@ -16,9 +16,9 @@ import java.util.TimeZone
  */
 inline fun <reified T> withDefaultTimeZone(timeZone: TimeZone, block: () -> T): T {
   val previous = TimeZone.getDefault()
-  
+
   TimeZone.setDefault(timeZone)
-  
+
   try {
     return block()
   } finally {
@@ -27,13 +27,13 @@ inline fun <reified T> withDefaultTimeZone(timeZone: TimeZone, block: () -> T): 
 }
 
 abstract class TimeZoneListener(private val timeZone: TimeZone) : TestListener {
-  
+
   private val originalTimeZone = TimeZone.getDefault()
-  
+
   protected fun changeTimeZone() {
     TimeZone.setDefault(timeZone)
   }
-  
+
   protected fun resetTimeZone() {
     TimeZone.setDefault(originalTimeZone)
   }
@@ -49,11 +49,11 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) : TestListener {
  * change the timezone while it was already changed, the result may be inconsistent.
  */
 class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
-  
+
   override fun beforeTest(testCase: TestCase) {
     changeTimeZone()
   }
-  
+
   override fun afterTest(testCase: TestCase, result: TestResult) {
     resetTimeZone()
   }
@@ -69,11 +69,11 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
  * change the timezone while it was already changed, the result may be inconsistent.
  */
 class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
-  
+
   override fun beforeProject() {
     changeTimeZone()
   }
-  
+
   override fun afterProject() {
     resetTimeZone()
   }

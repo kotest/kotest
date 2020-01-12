@@ -2,7 +2,7 @@
 
 package io.kotest
 
-import io.kotest.core.TestCaseFilter
+import io.kotest.core.*
 import io.kotest.extensions.ConstructorExtension
 import io.kotest.extensions.DiscoveryExtension
 import io.kotest.extensions.ProjectLevelExtension
@@ -45,7 +45,7 @@ object Project {
    private const val defaultProjectConfigFullyQualifiedName = "io.kotest.provided.ProjectConfig"
    @UseExperimental(ExperimentalTime::class)
    private val defaultTimeout = 600.seconds
-   private val defaultAssertionMode = AssertionMode.None
+   private val defaultAssertionMode = AssertionMode.Error
 
    private fun discoverProjectConfig(): AbstractProjectConfig? {
       return try {
@@ -68,7 +68,8 @@ object Project {
    private val _listeners = mutableListOf<TestListener>()
    private val _projectlisteners = mutableListOf<ProjectListener>()
    private val _filters = mutableListOf<ProjectLevelFilter>()
-   private var _specExecutionOrder: SpecExecutionOrder = LexicographicSpecExecutionOrder
+   private var _specExecutionOrder: SpecExecutionOrder =
+       LexicographicSpecExecutionOrder
    private var writeSpecFailureFile: Boolean = false
    private var _globalAssertSoftly: Boolean = false
    private var parallelism: Int = 1

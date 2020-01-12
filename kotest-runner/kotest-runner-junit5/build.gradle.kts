@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -12,13 +15,9 @@ kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
             }
          }
       }
@@ -37,18 +36,42 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            api(project(":kotest-fp"))
             api(project(":kotest-core"))
-            api(project(":kotest-runner:kotest-runner-console"))
+//            api(project(":kotest-runner:kotest-runner-console"))
             api(project(":kotest-runner:kotest-runner-jvm"))
-            api("org.junit.platform:junit-platform-engine:1.5.2")
-            api("org.junit.platform:junit-platform-suite-api:1.5.2")
-            api("org.junit.platform:junit-platform-launcher:1.5.2")
-            api("org.junit.jupiter:junit-jupiter-api:5.5.2")
-            api("org.slf4j:slf4j-api:1.7.25")
+            api(Libs.JUnitPlatform.engine)
+            api(Libs.JUnitPlatform.api)
+            api(Libs.JUnitPlatform.launcher)
+            api(Libs.JUnitJupiter.api)
+            api(Libs.Slf4j.api)
+         }
+      }
+
+      val jvmTest by getting {
+         dependencies {
+            implementation(project(":kotest-core"))
+            implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-runner:kotest-runner-jvm"))
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.Slf4j.api)
+            implementation(Libs.Logback.classic)
          }
       }
    }
 }
 
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(
+         TestLogEvent.FAILED,
+         TestLogEvent.PASSED
+      )
+      exceptionFormat = TestExceptionFormat.FULL
+   }
+}
 
 apply(from = "../../publish.gradle")
