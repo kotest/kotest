@@ -33,7 +33,7 @@ class KotlinListenerTest : FunSpec(), KoinTest {
     }
   }
 
-  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
   }
 

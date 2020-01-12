@@ -29,13 +29,13 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
 
    private fun executeBeforeSpecFunctions() = this::class.findBeforeSpecFunctions().forEach { it.call(this) }
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       executeBeforeTestFunctions()
    }
 
    private fun executeBeforeTestFunctions() = this::class.findBeforeTestFunctions().forEach { it.call(this) }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       executeAfterTestFunctions()
    }
 

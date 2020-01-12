@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.core.Description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.TestListener
 import io.kotest.shouldBe
@@ -10,7 +9,7 @@ class TestListenerTest : WordSpec(), TestListener {
 
   var a: String? = null
 
-  override fun beforeSpec(description: Description, spec: SpecConfiguration) {
+  override fun beforeSpec(spec: SpecConfiguration) {
     a = "wibble"
   }
 

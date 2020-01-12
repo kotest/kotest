@@ -5,13 +5,13 @@ package io.kotest.extensions
  */
 interface ProjectListener {
 
-  /**
-   * Executed before the first test of the project and before [AbstractProjectConfig.beforeAll].
-   */
-  fun beforeProject()
+   /**
+    * Executed before the first test of the project and before [AbstractProjectConfig.beforeAll].
+    */
+   fun beforeProject() {}
 
-  /**
-   * Executed after the last test of the project and after [AbstractProjectConfig.afterAll]
-   */
-  fun afterProject()
+   /**
+    * Executed after the last test of the project and after [AbstractProjectConfig.afterAll]
+    */
+   fun afterProject() {}
 }

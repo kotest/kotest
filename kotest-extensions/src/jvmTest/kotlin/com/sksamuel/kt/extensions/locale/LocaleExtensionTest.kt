@@ -58,11 +58,11 @@ class LocaleListenerTest : FunSpec() {
 
   private var deflocale: Locale? = null
 
-  override fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
     deflocale = Locale.getDefault()
   }
 
-  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     Locale.getDefault() shouldBe deflocale
   }
 

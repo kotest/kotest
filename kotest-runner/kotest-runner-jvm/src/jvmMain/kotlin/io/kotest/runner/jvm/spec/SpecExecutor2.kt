@@ -50,25 +50,24 @@ class SpecExecutor2(private val engineListener: TestEngineListener) {
       spec.beforeSpecs.forEach { it.invoke() }
       spec.beforeSpec(spec)
       spec.beforeSpec(spec::class.description(), spec)
-      val userListeners = Project.listeners() // todo listOf(spec) + spec.listenerInstances + Project.listeners()
-      userListeners.forEach { _ ->
-         // todo
-         // it.beforeSpecStarted(spec::class.description(), spec)
-         //  it.beforeSpecClass(spec, tests.tests)
+      val listeners = Project.listeners() + spec.listeners()
+      listeners.forEach {
+         it.beforeSpec(spec)
+         it.afterSpec(spec)
+         it.prepareSpec(spec::class)
       }
-
       logger.trace("Completed beforeSpec $spec")
    }
 
    private fun afterSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) = Try {
       logger.trace("Executing user listeners after spec")
       spec.afterSpecs.forEach { it.invoke(results) }
+      spec.afterSpec(spec)
       val userListeners = Project.listeners() // listOf(spec) + spec.listenerInstances + Project.listeners()
       userListeners.forEach {
-         it.afterSpecClass(spec, results)
-         @Suppress("DEPRECATION")
-         it.afterSpecCompleted(spec::class.description(), spec)
+         it.finalizeSpec(spec::class, results)
       }
+      spec.finalizeSpec(spec, results)
       results
    }
 

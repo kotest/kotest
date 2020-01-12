@@ -120,11 +120,9 @@ object Project {
     printConfigs()
     projectListeners().forEach { it.beforeProject() }
     projectConfig?.beforeAll()
-    listeners().forEach { it.beforeProject() }
   }
 
   fun afterAll() {
-    listeners().forEach { it.afterProject() }
     projectConfig?.afterAll()
     projectListeners().forEach { it.afterProject() }
   }

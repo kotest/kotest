@@ -25,7 +25,6 @@ object NoSystemOutListener : TestListener {
       })
    }
 
-   override fun beforeProject() = setup()
    override fun beforeSpec(spec: SpecConfiguration) = setup()
 }
 
@@ -46,6 +45,5 @@ object NoSystemErrListener : TestListener {
       })
    }
 
-   override fun beforeProject() = setup()
    override fun beforeSpec(spec: SpecConfiguration) = setup()
 }

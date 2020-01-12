@@ -7,7 +7,6 @@ import io.kotest.core.FailureFirstSpecExecutionOrder
 import io.kotest.core.SpecExecutionOrder
 import io.kotest.extensions.ProjectLevelFilter
 import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.TestListener
 import io.kotest.properties.PropertyTesting
 
 object ProjectConfig : AbstractProjectConfig() {
@@ -17,9 +16,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
   val intercepterLog = StringBuilder()
 
-  override fun listeners(): List<TestListener> = listOf(AutoCloseListener)
-
-  override fun projectListeners() = listOf(TestProjectListener)
+  override fun projectListeners() = listOf(TestProjectListener, AutoCloseListener)
 
   override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
 

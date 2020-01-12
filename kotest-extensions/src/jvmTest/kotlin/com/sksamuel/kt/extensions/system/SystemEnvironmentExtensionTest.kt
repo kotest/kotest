@@ -74,11 +74,11 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SystemEnvironmentTestListener("wibble", "wobble"))
 
-  override fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
     System.getenv("wibble") shouldBe null
   }
 
-  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     System.getenv("wibble") shouldBe null
   }
 

@@ -1,8 +1,5 @@
 package io.kotest.core.spec
 
-import io.kotest.core.Description
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
 import io.kotest.core.*
 import io.kotest.core.specs.AbstractSpec
 import io.kotest.core.specs.AutoCloseable
@@ -10,12 +7,16 @@ import io.kotest.core.specs.JsTest
 import io.kotest.core.specs.generateTests
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
+import io.kotest.fp.Tuple2
 import org.junit.platform.commons.annotation.Testable
+import kotlin.reflect.KClass
 
-typealias BeforeTest = (TestCase) -> Unit
-typealias AfterTest = (TestCase, TestResult) -> Unit
+typealias BeforeTest = suspend (TestCase) -> Unit
+typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = () -> Unit
 typealias AfterSpec = (Map<TestCase, TestResult>) -> Unit
+typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
+typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and
@@ -103,15 +104,15 @@ fun TestFactoryConfiguration.build(): TestFactory {
    )
 
    val callbacks = object : TestListener {
-      override fun beforeTest(testCase: TestCase) {
+      override suspend fun beforeTest(testCase: TestCase) {
          if (testCase.factory == factory) {
             this@build.beforeTests.forEach { it(testCase) }
          }
       }
 
-      override fun afterTest(testCase: TestCase, result: TestResult) {
+      override suspend fun afterTest(testCase: TestCase, result: TestResult) {
          if (testCase.factory == factory) {
-            this@build.afterTests.forEach { it(testCase, result) }
+            this@build.afterTests.forEach { it(Tuple2(testCase, result)) }
          }
       }
 
@@ -207,6 +208,22 @@ abstract class TestConfiguration {
 
    fun afterSpec(f: AfterSpec) {
       afterSpecs = afterSpecs + f
+   }
+
+   fun prepareSpec(f: PrepareSpec) {
+      listeners(object : TestListener {
+         override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+            f(kclass)
+         }
+      })
+   }
+
+   fun finalizeSpec(f: FinalizeSpec) {
+      listeners(object : TestListener {
+         override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+            f(Tuple2(kclass, results))
+         }
+      })
    }
 
    /**

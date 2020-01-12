@@ -81,11 +81,11 @@ class SystemPropertyListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
 
-  override fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
     System.getProperty("wibble") shouldBe null
   }
 
-  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     System.getProperty("wibble") shouldBe null
   }
 

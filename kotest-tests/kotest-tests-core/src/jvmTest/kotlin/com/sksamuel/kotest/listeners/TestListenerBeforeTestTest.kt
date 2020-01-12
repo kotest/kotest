@@ -10,12 +10,12 @@ class TestListenerBeforeTestTest : FunSpec() {
 
   private val counter = AtomicInteger(0)
 
-  override fun beforeTest(testCase: TestCase) {
+  override suspend fun beforeTest(testCase: TestCase) {
     // should only be invoked for active tests
     counter.incrementAndGet()
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     counter.get() shouldBe 1
   }
 

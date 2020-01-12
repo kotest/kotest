@@ -4,6 +4,7 @@ import io.kotest.SpecClass
 import io.kotest.core.*
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
+import io.kotest.shouldBe
 
 /**
  * Contains functions which can be overriden to set config in the same way that KotlinTest 3.x allowed.
@@ -50,7 +51,7 @@ interface CompatibilitySpecConfiguration {
    @Deprecated("Use the spec DSL", ReplaceWith("tags(mytag)"))
    fun tags(): Set<Tag> = emptySet()
 
-   @Deprecated("Use the spec DSL", ReplaceWith("isolationMode = myIsolationMode"))
+   // @Deprecated("Use the spec DSL", ReplaceWith("isolationMode = myIsolationMode"))
    fun isolationMode(): IsolationMode? = null
 
    @Deprecated("Use the spec DSL", ReplaceWith("assertionMode = myAssertionMode"))
@@ -68,6 +69,10 @@ interface CompatibilitySpecConfiguration {
    fun afterSpec(spec: SpecClass) {
    }
 
+   @Deprecated("Use the spec DSL", ReplaceWith("afterSpec {  }"))
+   fun afterSpec(spec: SpecConfiguration) {
+   }
+
    @Deprecated("Use the spec DSL", ReplaceWith("afterTest { test, result -> }"))
    fun afterTest(testCase: TestCase, result: TestResult) {
    }
@@ -76,8 +81,11 @@ interface CompatibilitySpecConfiguration {
    fun beforeSpec(spec: SpecClass) {
    }
 
-   @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec {  }"))
+   // @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec {  }"))
    fun beforeSpec(spec: SpecConfiguration) {
+   }
+
+   fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
    }
 
    @Deprecated("Use the spec DSL", ReplaceWith("beforeTest { test -> }"))

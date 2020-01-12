@@ -47,7 +47,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
    private fun executeBeforeSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
       listeners.forEach {
-         it.beforeSpec(spec::class.description(), spec)
          it.beforeSpec(spec)
       }
    }
@@ -55,7 +54,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    private fun executeAfterSpec(spec: SpecConfiguration, listeners: List<TestListener>) {
       listeners.reversed().forEach {
          it.afterSpec(spec)
-         it.afterSpec(spec::class.description(), spec)
       }
    }
 

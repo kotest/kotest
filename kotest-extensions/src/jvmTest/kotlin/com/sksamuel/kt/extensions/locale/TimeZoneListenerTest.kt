@@ -61,11 +61,11 @@ class TimeZoneListenerTest : FunSpec() {
 
   private var deftz: TimeZone? = null
 
-  override fun beforeSpecClass(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
     deftz = TimeZone.getDefault()
   }
 
-  override fun afterSpecClass(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
     TimeZone.getDefault() shouldBe deftz
   }
 

@@ -10,6 +10,7 @@ import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 /**
  * Will replace the [SecurityManager] used by the Java runtime
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
-    override fun beforeProject() {
+    override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
         val previous = System.getSecurityManager()
         System.setSecurityManager(NoExitSecurityManager(previous))
     }

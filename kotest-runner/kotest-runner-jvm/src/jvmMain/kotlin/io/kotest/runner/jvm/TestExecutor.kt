@@ -4,6 +4,7 @@ import io.kotest.Project
 import io.kotest.core.*
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
+import io.kotest.fp.Tuple2
 import io.kotest.internal.unwrapIfReflectionCall
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -132,12 +133,12 @@ class TestExecutor(private val listener: TestEngineListener) {
    /**
     * Handles all "before" listeners.
     */
-   private fun before(testCase: TestCase) {
+   private suspend fun before(testCase: TestCase) {
       logger.trace("before testCase ${testCase.description.fullName()}")
       val active = testCase.isActive()
-      val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+      testCase.spec.beforeTests.forEach { it.invoke(testCase) }
+      val userListeners = Project.listeners() + testCase.spec.listeners
       userListeners.forEach {
-         it.beforeTest(testCase.description)
          if (active) {
             it.beforeTest(testCase)
          }
@@ -147,12 +148,12 @@ class TestExecutor(private val listener: TestEngineListener) {
    /**
     * Handles all "after" listeners.
     */
-   private fun after(testCase: TestCase, result: TestResult) {
+   private suspend fun after(testCase: TestCase, result: TestResult) {
       logger.trace("after testCase ${testCase.description.fullName()}")
       val active = testCase.isActive()
-      val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
+      testCase.spec.afterTests.forEach { it.invoke(Tuple2(testCase, result)) }
+      val userListeners = Project.listeners() + testCase.spec.listeners
       userListeners.reversed().forEach {
-         it.afterTest(testCase.description, result)
          if (active) {
             it.afterTest(testCase, result)
          }

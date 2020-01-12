@@ -20,7 +20,7 @@ class FunSpecExample : FunSpec() {
 
    override fun tags(): Set<Tag> = setOf(jvmTag, linuxTag)
 
-   override fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeTest(testCase: TestCase) {
       println("Starting test ${testCase.description}")
    }
 
@@ -32,7 +32,7 @@ class FunSpecExample : FunSpec() {
       println("Completed spec ${spec.description()}")
    }
 
-   override fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
       println("Test ${testCase.description} completed with result $result")
    }
 

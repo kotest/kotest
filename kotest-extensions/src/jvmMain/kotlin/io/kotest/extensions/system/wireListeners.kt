@@ -53,7 +53,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 
   fun output(): String = String(buffer.toByteArray())
 
-  override fun beforeTest(testCase: TestCase) {
+  override suspend fun beforeTest(testCase: TestCase) {
     buffer = ByteArrayOutputStream()
     previous = System.out
     if (tee) {
@@ -63,7 +63,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
     }
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     System.setOut(previous)
   }
 }
@@ -81,7 +81,7 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
   fun output(): String = String(buffer.toByteArray())
 
-  override fun beforeTest(testCase: TestCase) {
+  override suspend fun beforeTest(testCase: TestCase) {
     buffer = ByteArrayOutputStream()
     previous = System.err
     if (tee) {
@@ -91,7 +91,7 @@ class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
     }
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     System.setErr(previous)
   }
 }
