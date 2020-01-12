@@ -80,5 +80,5 @@ data class Description(val parents: List<String>, val name: String) {
     * Returns true if this test is a top level test. In other words, if the
     * test has no parents other than the spec itself.
     */
-   fun isTopLevel(): Boolean = parents.size == 1
+   fun isTopLevel(): Boolean = parents.size == 1 && parent().isSpec()
 }

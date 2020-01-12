@@ -88,7 +88,7 @@ class TestExecutor(private val listener: TestEngineListener) {
    }
 
    private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext, start: Long): TestResult {
-      val active = isActive(testCase)
+      val active = testCase.isActive()
       logger.trace("Test ${testCase.description.fullName()} active=$active")
       // executes the test case or if the test is not active then returns an ignored test result
       return if (active) executeActiveTest(testCase, context, start) else {
@@ -135,7 +135,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     */
    private fun before(testCase: TestCase) {
       logger.trace("before testCase ${testCase.description.fullName()}")
-      val active = isActive(testCase)
+      val active = testCase.isActive()
       val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
       userListeners.forEach {
          it.beforeTest(testCase.description)
@@ -150,7 +150,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     */
    private fun after(testCase: TestCase, result: TestResult) {
       logger.trace("after testCase ${testCase.description.fullName()}")
-      val active = isActive(testCase)
+      val active = testCase.isActive()
       val userListeners = Project.listeners() // testCase.spec.listenerInstances + testCase.spec + Project.listeners()
       userListeners.reversed().forEach {
          it.afterTest(testCase.description, result)

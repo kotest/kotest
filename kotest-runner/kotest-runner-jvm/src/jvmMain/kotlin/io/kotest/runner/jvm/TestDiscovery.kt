@@ -29,12 +29,9 @@ data class DiscoveryRequest(
 )
 
 /**
- * Contains [SpecClass] classes discovered as part of a discovery request scan.
+ * Contains [SpecConfiguration] classes discovered as part of a discovery request scan.
  */
-data class DiscoveryResult(
-   val classes: List<KClass<out SpecClass>>,
-   val specs: List<KClass<out SpecConfiguration>>
-)
+data class DiscoveryResult(val specs: List<KClass<out SpecConfiguration>>)
 
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
@@ -45,6 +42,12 @@ object TestDiscovery {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
+
+   // filter functions
+   private val specOnly: (KClass<*>) -> Boolean = { SpecConfiguration::class.java.isAssignableFrom(it.java) }
+   private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
+   private val isPublic: (KClass<*>) -> Boolean = { Modifier.isPublic(it.java.modifiers) }
+   private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
@@ -63,16 +66,6 @@ object TestDiscovery {
          }
       }
 
-      val specOnly: (KClass<*>) -> Boolean = { SpecConfiguration::class.java.isAssignableFrom(it.java) }
-
-      // must filter out abstract classes to avoid the spec parent classes themselves
-      val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
-
-      val isPublic: (KClass<*>) -> Boolean = { Modifier.isPublic(it.java.modifiers) }
-
-      // keep only class instances and not objects
-      val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
-
       val filtered = (fromClassNames + fromClassPaths)
          .asSequence()
          .filter(requestFilters)
@@ -89,7 +82,7 @@ object TestDiscovery {
          .sortedBy { it.simpleName }
       logger.trace("After discovery extensions there are ${filtered.size} spec classes")
 
-      DiscoveryResult(emptyList(), afterExtensions)
+      DiscoveryResult(afterExtensions)
    }
 
    /**

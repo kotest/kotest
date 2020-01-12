@@ -18,12 +18,12 @@ package io.kotest.core
  * Note2: Focused tests will override any settings here.
  *
  */
-fun isActive(test: TestCase): Boolean {
-  val focused = test.isFocused() && test.isTopLevel()
-  val hasFocused = test.spec.focused().isNotEmpty()
-  val enabledInConfig = test.config.enabled
-  val disabledViaBang = test.name.startsWith("!") && sysprop("kotest.bang.disable").isEmpty()
-  // todo val activeViaTags = Project.tags().isActive(test.config.tags + test.spec.tags())
-  // todo val filtered = Project.testCaseFilters().map { it.filter(test.description) }.any { it == TestFilterResult.Exclude }
-  return focused || !hasFocused && enabledInConfig && !disabledViaBang // && !filtered && activeViaTags
+fun TestCase.isActive(): Boolean {
+   val focused = isFocused() && isTopLevel()
+   val hasFocused = spec.focusTests().isNotEmpty()
+   val enabledInConfig = config.enabled
+   val disabledViaBang = isBang() && sysprop("kotest.bang.disable").isEmpty()
+   val activeViaTags = ProjectConfiguration.tags().isActive(config.tags + spec.tags() + spec.tags)
+   val filtered = testCaseFilters().map { it.filter(description) }.any { it == TestFilterResult.Exclude }
+   return focused || !hasFocused && enabledInConfig && !disabledViaBang && !filtered && activeViaTags
 }

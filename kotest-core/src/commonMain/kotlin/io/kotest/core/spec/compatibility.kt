@@ -77,6 +77,10 @@ interface CompatibilitySpecConfiguration {
    fun beforeSpec(spec: SpecClass) {
    }
 
+   @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec {  }"))
+   fun beforeSpec(spec: SpecConfiguration) {
+   }
+
    @Deprecated("Use the spec DSL", ReplaceWith("beforeTest { test -> }"))
    fun beforeTest(testCase: TestCase) {
    }
