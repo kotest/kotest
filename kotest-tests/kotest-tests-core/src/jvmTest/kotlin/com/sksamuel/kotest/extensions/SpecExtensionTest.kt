@@ -3,8 +3,8 @@ package com.sksamuel.kotest.extensions
 import io.kotest.Project
 import io.kotest.core.description
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.extensions.ProjectListener
 import io.kotest.extensions.SpecExtension
-import io.kotest.extensions.TestListener
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
 
@@ -39,7 +39,7 @@ class SpecExtensionTest : WordSpec() {
 
     SpecSetup.setup()
 
-    Project.registerListeners(object : TestListener {
+    Project.registerProjectListener(object : ProjectListener {
       override fun afterProject() {
         SpecExtensionNumbers.after shouldBe 1
       }

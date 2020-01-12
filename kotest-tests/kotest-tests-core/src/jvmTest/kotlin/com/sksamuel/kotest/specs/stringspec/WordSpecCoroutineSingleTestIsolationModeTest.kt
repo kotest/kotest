@@ -21,11 +21,11 @@ class WordSpecCoroutineSingleTestIsolationModeTest : WordSpec() {
 
   override fun testCaseOrder(): TestCaseOrder = TestCaseOrder.Sequential
 
-  override fun beforeTest(testCase: TestCase) {
+  override suspend fun beforeTest(testCase: TestCase) {
     listenerThread = currentThreadWithoutCoroutine()
   }
 
-  override fun afterTest(testCase: TestCase, result: TestResult) {
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     listenerThread shouldBe currentThreadWithoutCoroutine()
   }
 

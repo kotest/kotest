@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.core.Description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.specs.FreeSpec
@@ -28,7 +27,7 @@ class FreeSpecMultipleInvocationTest : FreeSpec() {
     }
   }
 
-  override fun afterSpec(description: Description, spec: SpecConfiguration) {
+  override fun afterSpec(spec: SpecConfiguration) {
     counter.get().shouldBe(9)
   }
 }

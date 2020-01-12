@@ -33,14 +33,14 @@ import kotlin.time.seconds
  */
 object Project {
 
-  init {
-    System.getProperty("includeTags")?.apply {
-      println("[WARN] The system property 'includeTags' has been detected. This no longer has any effect in Kotest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotest.tags.include")
-    }
-    System.getProperty("excludeTags")?.apply {
-      println("[WARN] The system property 'excludeTags' has been detected. This no longer has any effect in Kotest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotest.tags.exclude")
-    }
-  }
+   init {
+      System.getProperty("includeTags")?.apply {
+         println("[WARN] The system property 'includeTags' has been detected. This no longer has any effect in Kotest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotest.tags.include")
+      }
+      System.getProperty("excludeTags")?.apply {
+         println("[WARN] The system property 'excludeTags' has been detected. This no longer has any effect in Kotest. If you are setting this property for another library then you can ignore this message. Otherwise change the property to be kotest.tags.exclude")
+      }
+   }
 
    private const val defaultProjectConfigFullyQualifiedName = "io.kotest.provided.ProjectConfig"
    @UseExperimental(ExperimentalTime::class)
@@ -61,7 +61,7 @@ object Project {
       } catch (cnf: ClassNotFoundException) {
          null
       }
-  }
+   }
 
    private val _extensions: MutableList<ProjectLevelExtension> =
       mutableListOf(SystemPropertyTagExtension, RuntimeTagExtension)
@@ -69,7 +69,7 @@ object Project {
    private val _projectlisteners = mutableListOf<ProjectListener>()
    private val _filters = mutableListOf<ProjectLevelFilter>()
    private var _specExecutionOrder: SpecExecutionOrder =
-       LexicographicSpecExecutionOrder
+      LexicographicSpecExecutionOrder
    private var writeSpecFailureFile: Boolean = false
    private var _globalAssertSoftly: Boolean = false
    private var parallelism: Int = 1
@@ -105,7 +105,8 @@ object Project {
       _projectlisteners.addAll(it.projectListeners())
       _filters.addAll(it.filters())
       _specExecutionOrder = it.specExecutionOrder()
-      _globalAssertSoftly = System.getProperty("kotest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
+      _globalAssertSoftly =
+         System.getProperty("kotest.assertions.global-assert-softly") == "true" || it.globalAssertSoftly
       _timeout = it.timeout
       parallelism = System.getProperty("kotest.parallelism")?.toInt() ?: it.parallelism()
       writeSpecFailureFile = System.getProperty("kotest.write.specfailures") == "true" || it.writeSpecFailureFile()
@@ -116,89 +117,91 @@ object Project {
    fun writeSpecFailureFile(): Boolean = writeSpecFailureFile
    fun specExecutionOrder(): SpecExecutionOrder = _specExecutionOrder
 
-  fun beforeAll() {
-    printConfigs()
-    projectListeners().forEach { it.beforeProject() }
-    projectConfig?.beforeAll()
-  }
+   fun beforeAll() {
+      printConfigs()
+      projectListeners().forEach { it.beforeProject() }
+      projectConfig?.beforeAll()
+   }
 
-  fun afterAll() {
-    projectConfig?.afterAll()
-    projectListeners().forEach { it.afterProject() }
-  }
+   fun afterAll() {
+      projectConfig?.afterAll()
+      projectListeners().forEach { it.afterProject() }
+   }
 
-  fun registerTestCaseFilter(filters: List<TestCaseFilter>) = _filters.addAll(filters)
+   fun registerTestCaseFilter(filters: List<TestCaseFilter>) = _filters.addAll(filters)
 
-  fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
-  private fun registerListener(listener: TestListener) {
-    _listeners.add(listener)
-  }
+   fun registerProjectListener(listener: ProjectListener) = _projectlisteners.add(listener)
 
-  fun registerExtensions(vararg extensions: ProjectLevelExtension) = extensions.forEach { registerExtension(it) }
-  fun registerExtension(extension: ProjectLevelExtension) {
-    _extensions.add(extension)
-  }
+   fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
+   private fun registerListener(listener: TestListener) {
+      _listeners.add(listener)
+   }
 
-  fun deregisterExtension(extension: ProjectLevelExtension) {
-    _extensions.remove(extension)
-  }
+   fun registerExtensions(vararg extensions: ProjectLevelExtension) = extensions.forEach { registerExtension(it) }
+   fun registerExtension(extension: ProjectLevelExtension) {
+      _extensions.add(extension)
+   }
+
+   fun deregisterExtension(extension: ProjectLevelExtension) {
+      _extensions.remove(extension)
+   }
 
    fun assertionMode(): AssertionMode = _assertionMode ?: defaultAssertionMode
    fun testCaseOrder(): TestCaseOrder = projectConfig?.testCaseOrder() ?: TestCaseOrder.Sequential
    fun isolationMode(): IsolationMode? = projectConfig?.isolationMode()
 
-  private fun printConfigs() {
-    println("~~~ Project Configuration ~~~")
-    buildOutput("Parallelism", parallelism.plurals("%d thread", "%d threads"))
-    buildOutput("Test order", _specExecutionOrder::class.java.simpleName)
-    buildOutput("Soft assertations", _globalAssertSoftly.toString().capitalize())
-    buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
-    buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
+   private fun printConfigs() {
+      println("~~~ Project Configuration ~~~")
+      buildOutput("Parallelism", parallelism.plurals("%d thread", "%d threads"))
+      buildOutput("Test order", _specExecutionOrder::class.java.simpleName)
+      buildOutput("Soft assertations", _globalAssertSoftly.toString().capitalize())
+      buildOutput("Write spec failure file", writeSpecFailureFile.toString().capitalize())
+      buildOutput("Fail on ignored tests", failOnIgnoredTests.toString().capitalize())
 
-    if (_extensions.isNotEmpty()) {
-      buildOutput("Extensions")
-      _extensions.map(::mapClassName).forEach {
-        buildOutput(it, indentation = 1)
+      if (_extensions.isNotEmpty()) {
+         buildOutput("Extensions")
+         _extensions.map(::mapClassName).forEach {
+            buildOutput(it, indentation = 1)
+         }
       }
-    }
 
-    if (_listeners.isNotEmpty()) {
-      buildOutput("Listeners")
-      _listeners.map(::mapClassName).forEach {
-        buildOutput(it, indentation = 1)
+      if (_listeners.isNotEmpty()) {
+         buildOutput("Listeners")
+         _listeners.map(::mapClassName).forEach {
+            buildOutput(it, indentation = 1)
+         }
       }
-    }
 
-    if (_filters.isNotEmpty()) {
-      buildOutput("Filters")
-      _filters.map(::mapClassName).forEach {
-        buildOutput(it, indentation = 1)
+      if (_filters.isNotEmpty()) {
+         buildOutput("Filters")
+         _filters.map(::mapClassName).forEach {
+            buildOutput(it, indentation = 1)
+         }
       }
-    }
-  }
+   }
 
-  private fun buildOutput(key: String, value: String? = null, indentation: Int = 0) {
-    StringBuilder().apply {
-      if (indentation == 0) {
-        append("-> ")
-      } else {
-        for (i in 0 until indentation) {
-          append("  ")
-        }
-        append("- ")
-      }
-      append(key)
-      value?.let { append(": $it") }
-    }.also { println(it.toString()) }
-  }
+   private fun buildOutput(key: String, value: String? = null, indentation: Int = 0) {
+      StringBuilder().apply {
+         if (indentation == 0) {
+            append("-> ")
+         } else {
+            for (i in 0 until indentation) {
+               append("  ")
+            }
+            append("- ")
+         }
+         append(key)
+         value?.let { append(": $it") }
+      }.also { println(it.toString()) }
+   }
 
-  private fun Int.plurals(singular: String, plural: String, zero: String = plural) = when {
-    this == 0 -> zero.format(this)
-    this in listOf(-1, 1) -> singular.format(this)
-    else -> plural.format(this)
-  }
+   private fun Int.plurals(singular: String, plural: String, zero: String = plural) = when {
+      this == 0 -> zero.format(this)
+      this in listOf(-1, 1) -> singular.format(this)
+      else -> plural.format(this)
+   }
 
-  private fun mapClassName(any: Any) =
+   private fun mapClassName(any: Any) =
       any::class.java.canonicalName ?: any::class.java.name
 
 }
