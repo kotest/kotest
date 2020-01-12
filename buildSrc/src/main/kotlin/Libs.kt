@@ -3,6 +3,13 @@ object Libs {
    val kotlinVersion = "1.3.61"
    val dokkaVersion = "0.10.0"
 
+   object Arrow {
+      private const val version = "0.10.4"
+      const val fx = "io.arrow-kt:arrow-fx:$version"
+      const val syntax = "io.arrow-kt:arrow-syntax:$version"
+      const val validation = "io.arrow-kt:arrow-validation:$version"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.0-RC1"
       const val engine = "org.junit.platform:junit-platform-engine:$version"

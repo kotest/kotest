@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.assertions.arrow
+package io.kotest.assertions.arrow
 
 //package com.sksamuel.kotest.tests.assertions.arrow
 //

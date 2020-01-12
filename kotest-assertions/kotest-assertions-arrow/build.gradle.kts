@@ -36,10 +36,10 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation (project(":kotest-assertions"))
-            implementation ("io.arrow-kt:arrow-syntax:0.10.3")
-            api ("io.arrow-kt:arrow-validation:0.10.3")
-            implementation ("io.arrow-kt:arrow-fx:0.10.3")
+            implementation(project(":kotest-assertions"))
+            implementation(Libs.Arrow.fx)
+            implementation(Libs.Arrow.validation)
+            implementation(Libs.Arrow.syntax)
          }
       }
 

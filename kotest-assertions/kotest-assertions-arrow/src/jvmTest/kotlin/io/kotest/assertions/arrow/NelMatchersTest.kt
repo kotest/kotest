@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.assertions.arrow
+package io.kotest.assertions.arrow
 
 import arrow.core.NonEmptyList
 import io.kotest.assertions.arrow.nel.beSorted
