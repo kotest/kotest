@@ -60,7 +60,6 @@ kotlin {
             implementation(Libs.Coroutines.core)
             implementation("com.github.wumpz:diffutils:2.2")
             implementation("com.univocity:univocity-parsers:2.8.3")
-            api("io.arrow-kt:arrow-core:0.10.3")
             implementation("com.github.mifmif:generex:1.0.2")
          }
       }

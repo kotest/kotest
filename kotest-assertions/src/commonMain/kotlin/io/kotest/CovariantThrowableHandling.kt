@@ -6,7 +6,7 @@ import io.kotest.assertions.classname
 
 
 /**
- * Verifies if a block of code throw a Throwable of type [T] or subtypes
+ * Verifies if a block of code throws a Throwable of type [T] or subtypes
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (or subclasses) or not.
  *
