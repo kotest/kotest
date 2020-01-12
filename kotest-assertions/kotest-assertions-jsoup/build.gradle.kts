@@ -36,9 +36,9 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            implementation(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-assertions"))
             implementation("org.jsoup:jsoup:1.12.1")
-
          }
       }
 

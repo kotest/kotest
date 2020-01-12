@@ -36,6 +36,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
+            implementation(kotlin("stdlib-jdk8"))
             implementation (project(":kotest-assertions"))
             implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
             implementation ("com.jayway.jsonpath:json-path:2.4.0")
