@@ -37,8 +37,7 @@ class InitErrorEngineKitTest : FunSpec({
          }
   }
 }) {
-  override fun afterTest(testCase: TestCase, result: TestResult) {
-    super.afterTest(testCase, result)
+  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
     System.clearProperty("KotestEngineTest")
   }
 }

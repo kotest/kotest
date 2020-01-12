@@ -13,6 +13,7 @@ import io.kotest.specs.DescribeSpec
 import io.kotest.specs.FunSpec
 import java.time.ZoneId
 import java.util.TimeZone
+import kotlin.reflect.KClass
 
 class TimeZoneExtensionFunctionTest : DescribeSpec() {
 
@@ -61,11 +62,11 @@ class TimeZoneListenerTest : FunSpec() {
 
   private var deftz: TimeZone? = null
 
-  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
     deftz = TimeZone.getDefault()
   }
 
-  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
     TimeZone.getDefault() shouldBe deftz
   }
 

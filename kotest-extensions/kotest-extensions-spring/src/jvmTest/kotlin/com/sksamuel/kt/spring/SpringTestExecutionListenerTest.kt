@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.TestExecutionListeners
+import kotlin.reflect.KClass
 import org.springframework.test.context.TestExecutionListener as SpringTestExecutionListener
 
 @TestExecutionListeners(DummyTestExecutionListener::class, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -34,7 +35,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     }
   }
 
-  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
     DummyTestExecutionListener.beforeTestMethod shouldBe 2
     DummyTestExecutionListener.beforeTestExecution shouldBe 2

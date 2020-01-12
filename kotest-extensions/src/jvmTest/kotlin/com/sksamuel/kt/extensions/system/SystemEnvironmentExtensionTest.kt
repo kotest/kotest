@@ -3,7 +3,6 @@ package com.sksamuel.kt.extensions.system
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TopLevelTest
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
 import io.kotest.extensions.system.withEnvironment
@@ -14,6 +13,7 @@ import io.kotest.specs.FreeSpec
 import io.kotest.specs.WordSpec
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.reflect.KClass
 
 class SystemEnvironmentExtensionTest : FreeSpec() {
 
@@ -74,11 +74,11 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
 
   override fun listeners() = listOf(SystemEnvironmentTestListener("wibble", "wobble"))
 
-  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
     System.getenv("wibble") shouldBe null
   }
 
-  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
     System.getenv("wibble") shouldBe null
   }
 

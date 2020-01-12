@@ -20,7 +20,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
    init {
 
-      afterTest { _, _ ->
+      afterTest {
          listenerRan = true
       }
 

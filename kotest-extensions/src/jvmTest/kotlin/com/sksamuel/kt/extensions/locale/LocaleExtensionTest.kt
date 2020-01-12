@@ -1,6 +1,5 @@
 package com.sksamuel.kt.extensions.locale
 
-import io.kotest.SpecClass
 import io.kotest.core.TestCase
 import io.kotest.core.TestResult
 import io.kotest.core.spec.SpecConfiguration
@@ -13,6 +12,7 @@ import io.kotest.shouldThrowAny
 import io.kotest.specs.DescribeSpec
 import io.kotest.specs.FunSpec
 import java.util.Locale
+import kotlin.reflect.KClass
 
 class LocaleExtensionFunctionTest : DescribeSpec() {
 
@@ -58,11 +58,11 @@ class LocaleListenerTest : FunSpec() {
 
   private var deflocale: Locale? = null
 
-  override fun prepareSpec(spec: SpecConfiguration, tests: List<TopLevelTest>) {
+  override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
     deflocale = Locale.getDefault()
   }
 
-  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
     Locale.getDefault() shouldBe deflocale
   }
 
