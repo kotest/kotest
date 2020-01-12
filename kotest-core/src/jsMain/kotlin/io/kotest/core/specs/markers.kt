@@ -4,6 +4,7 @@ import io.kotest.core.Description
 import io.kotest.core.TestCase
 import io.kotest.core.TestType
 import io.kotest.core.TestContext
+import io.kotest.core.spec.SpecConfiguration
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
@@ -18,35 +19,39 @@ external fun xdescribe(name: String, fn: () -> Unit)
 external fun it(name: String, fn: () -> Any?)
 external fun xit(name: String, fn: () -> Any?)
 
-fun testContext(desc: Description,
-                coroutineContext: CoroutineContext): TestContext = object : TestContext(coroutineContext) {
+fun testContext(
+   desc: Description,
+   coroutineContext: CoroutineContext
+): TestContext = object : TestContext() {
 
-  override suspend fun registerTestCase(testCase: TestCase) {
-    it(testCase.name) {
-      GlobalScope.promise {
-        val t = testCase.test
-        testContext(desc.append(testCase.name), coroutineContext).t()
+   override suspend fun registerTestCase(testCase: TestCase) {
+      it(testCase.name) {
+         GlobalScope.promise {
+            val t = testCase.test
+            testContext(desc.append(testCase.name), coroutineContext).t()
+         }
       }
-    }
-  }
+   }
 
-  override fun description(): Description = desc
+   override fun description(): Description = desc
+   override fun spec(): SpecConfiguration = TODO()
+   override val coroutineContext: CoroutineContext = coroutineContext
 }
 
 // we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
 actual fun generateTests(rootTests: List<TestCase>) {
 
-  fun runner(testCase: TestCase) = GlobalScope.promise {
-    val t = testCase.test
-    testContext(testCase.description, coroutineContext).t()
-  }
+   fun runner(testCase: TestCase) = GlobalScope.promise {
+      val t = testCase.test
+      testContext(testCase.description, coroutineContext).t()
+   }
 
-  rootTests.forEach {
-    when (it.type) {
-      TestType.Container -> describe(it.name) { runner(it) }
-      TestType.Test -> it(it.name) { runner(it) }
-    }
-  }
+   rootTests.forEach {
+      when (it.type) {
+         TestType.Container -> describe(it.name) { runner(it) }
+         TestType.Test -> it(it.name) { runner(it) }
+      }
+   }
 }
 
 actual interface AutoCloseable {
