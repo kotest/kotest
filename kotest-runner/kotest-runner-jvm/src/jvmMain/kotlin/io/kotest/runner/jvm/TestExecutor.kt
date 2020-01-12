@@ -166,7 +166,6 @@ class TestExecutor(private val listener: TestEngineListener) {
    ): TestResult = when (error) {
       null -> successResult(duration)
       is AssertionError -> failureResult(error, duration)
-      is SkipTestException -> ignoredResult(error.reason, duration)
       else -> errorResult(error, duration)
    }
 

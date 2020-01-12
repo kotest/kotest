@@ -33,6 +33,7 @@ Changelog
 * Bugfix: Empty test name throws an error
 * whenReady(f) has been replaced with f.whenReady which is coroutine enabled
 * Alphabetic test case ordering
+* SkipTestException removed
 
 #### 3.4.2
 
