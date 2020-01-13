@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isBang

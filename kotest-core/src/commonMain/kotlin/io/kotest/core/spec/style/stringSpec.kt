@@ -1,7 +1,11 @@
-package io.kotest.core.spec
+package io.kotest.core.spec.style
 
 import io.kotest.core.*
 import io.kotest.core.factory.TestFactory
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.SpecDsl
+import io.kotest.core.spec.TestFactoryConfiguration
+import io.kotest.core.spec.build
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
@@ -28,6 +32,7 @@ class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpe
 
 abstract class StringSpec(body: StringSpec.() -> Unit = {}) : SpecConfiguration(), StringSpecDsl {
    override val addTest = ::addRootTestCase
+
    init {
       body()
    }

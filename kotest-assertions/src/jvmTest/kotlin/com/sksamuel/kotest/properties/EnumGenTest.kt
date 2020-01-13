@@ -3,7 +3,7 @@ package com.sksamuel.kotest.properties
 import io.kotest.properties.Gen
 import io.kotest.properties.enum
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class EnumGenTest : StringSpec() {
   init {

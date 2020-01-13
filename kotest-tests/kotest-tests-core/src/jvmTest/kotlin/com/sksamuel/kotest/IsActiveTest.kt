@@ -8,8 +8,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.extensions.TagExtension
 import io.kotest.core.test.isActive
-import io.kotest.core.spec.FunSpec
-import io.kotest.core.spec.StringSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.shouldBe
 
 class IsActiveTest : StringSpec() {

@@ -13,7 +13,7 @@
 //import io.kotest.properties.string
 //import io.kotest.shouldBe
 //import io.kotest.shouldThrow
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //import kotlin.math.abs
 //
 //class PropertyForAllTest : StringSpec() {

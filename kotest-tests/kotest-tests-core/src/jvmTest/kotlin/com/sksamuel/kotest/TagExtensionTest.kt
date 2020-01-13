@@ -9,7 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.extensions.TagExtension
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class TagExtensionTest : StringSpec() {
 

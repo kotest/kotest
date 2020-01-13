@@ -1,7 +1,7 @@
 package io.kotest.plugin.pitest.specs
 
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecs : StringSpec() {
   init {

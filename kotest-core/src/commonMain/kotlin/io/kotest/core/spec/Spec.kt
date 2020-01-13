@@ -45,18 +45,22 @@ fun SpecConfiguration.resolvedListeners(): List<TestListener> {
    val callbacks = object : TestListener {
       override suspend fun beforeTest(testCase: TestCase) {
          this@resolvedListeners.beforeTests.forEach { it(testCase) }
+         this@resolvedListeners.beforeTest(testCase)
       }
 
       override suspend fun afterTest(testCase: TestCase, result: TestResult) {
          this@resolvedListeners.afterTests.forEach { it(Tuple2(testCase, result)) }
+         this@resolvedListeners.afterTest(testCase, result)
       }
 
       override fun afterSpec(spec: SpecConfiguration) {
-         this@resolvedListeners.afterSpecs.forEach { it(emptyMap()) }
+         this@resolvedListeners.afterSpecs.forEach { it() }
+         this@resolvedListeners.afterSpec(spec)
       }
 
       override fun beforeSpec(spec: SpecConfiguration) {
          this@resolvedListeners.beforeSpecs.forEach { it() }
+         this@resolvedListeners.beforeSpec(spec)
       }
    }
 
@@ -89,64 +93,6 @@ fun SpecConfiguration.materializeRootTests(): List<RootTest> {
       .withIndex()
       .map { RootTest(it.value, it.index) }
 }
-
-/**
- * Builds an immutable [Spec] from the given [SpecConfiguration].
- *
- * The returning spec combines tests defined directly in a spec configuration class as well
- * as tests generated from any included factories.
- *
- * Callbacks added via the callback-dsl will be converted into a [TestListener].
- */
-fun SpecConfiguration.build(): Spec {
-
-   // test are ordered by the value set in the spec or falling back to the project
-   val order = testOrder ?: testCaseOrder() ?: TestCaseOrder.Sequential // todo ?: Project.testCaseOrder()
-
-   val allTests = this.rootTestCases + factories
-      .flatMap { it.generate(this::class.description(), this) }
-
-   // materialize the tests in the factories at this time
-   // and apply the configuration from the spec config
-   val rootTests = allTests
-      .map {
-         it.copy(
-            assertionMode = it.assertionMode ?: this.assertionMode ?: this.assertionMode(),
-            config = it.config.copy(tags = it.config.tags + this.tags + this.tags())
-         )
-      }
-      .ordered(order)
-      .withIndex()
-      .map { RootTest(it.value, it.index) }
-
-   // listeners from the spec callbacks need to be wrapped into a TestListener
-   val callbacks = object : TestListener {
-      override suspend fun beforeTest(testCase: TestCase) {
-         this@build.beforeTests.forEach { it(testCase) }
-      }
-
-      override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-         this@build.afterTests.forEach { it(Tuple2(testCase, result)) }
-      }
-
-      override fun afterSpec(spec: SpecConfiguration) {
-         this@build.afterSpecs.forEach { it(emptyMap()) }
-      }
-
-      override fun beforeSpec(spec: SpecConfiguration) {
-         this@build.beforeSpecs.forEach { it() }
-      }
-   }
-
-   return Spec(
-      rootTests = rootTests,
-      listeners = this.listeners + this.listeners() + callbacks,
-      extensions = this.extensions + this.extensions(),
-      isolationMode = this.isolation ?: this.isolationMode(),
-      testCaseOrder = this.testOrder ?: this.testCaseOrder()
-   )
-}
-
 
 /**
  * Orders the collection of [TestCase]s based on the provided [TestCaseOrder].

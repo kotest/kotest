@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class ArrayEqualsTest : StringSpec() {
   init {

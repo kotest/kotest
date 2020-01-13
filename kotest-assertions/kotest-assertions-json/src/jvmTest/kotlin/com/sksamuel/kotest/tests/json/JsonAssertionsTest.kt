@@ -10,7 +10,7 @@ import io.kotest.assertions.json.shouldNotMatchJson
 import io.kotest.assertions.json.shouldNotMatchJsonResource
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 const val json = """{
     "store": {

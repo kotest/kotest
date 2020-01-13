@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit5.JUnitTestEngineListener
 import io.kotest.runner.junit5.KotestEngineDescriptor
 import io.kotest.runner.jvm.spec.SpecExecutor

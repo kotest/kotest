@@ -4,7 +4,7 @@ import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.SpecExtension
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class LateinitSpecInterceptorStringSpecTest : StringSpec() {

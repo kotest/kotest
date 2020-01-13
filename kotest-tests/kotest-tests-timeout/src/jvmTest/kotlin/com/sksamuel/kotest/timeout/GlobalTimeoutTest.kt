@@ -5,7 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestCaseExtension
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds

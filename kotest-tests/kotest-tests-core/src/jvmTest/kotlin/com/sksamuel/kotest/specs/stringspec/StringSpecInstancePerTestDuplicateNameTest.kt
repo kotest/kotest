@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import io.kotest.core.spec.IsolationMode
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecInstancePerTestDuplicateNameTest : StringSpec() {
 

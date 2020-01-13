@@ -4,7 +4,7 @@ package io.kotest.assertions.arrow
 //
 //import arrow.core.Tuple2
 //import io.kotest.assertions.arrow.gen.genT
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //
 //@product
 //data class Person(val name: String, val age: Int) {

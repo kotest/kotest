@@ -3,7 +3,7 @@ package com.sksamuel.kotest.junit5
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecExceptionInAfterTest : StringSpec() {
 

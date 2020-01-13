@@ -49,7 +49,7 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.time.DayOfWeek.SATURDAY
 import java.time.Duration
 import java.time.LocalDate

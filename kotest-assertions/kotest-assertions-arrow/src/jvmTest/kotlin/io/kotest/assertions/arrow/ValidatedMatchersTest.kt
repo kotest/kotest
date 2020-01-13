@@ -12,7 +12,7 @@ import io.kotest.assertions.arrow.validation.shouldNotBeValid
 import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class ValidatedMatchersTest : StringSpec({
 

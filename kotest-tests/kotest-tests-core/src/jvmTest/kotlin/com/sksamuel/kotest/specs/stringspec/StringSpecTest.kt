@@ -3,7 +3,7 @@ package com.sksamuel.kotest.specs.stringspec
 import io.kotest.matchers.string.haveLength
 import io.kotest.should
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecTest : StringSpec() {
 

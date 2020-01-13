@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecDslTest : StringSpec() {
   init {

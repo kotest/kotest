@@ -8,7 +8,7 @@
 //import io.kotest.properties.int
 //import io.kotest.properties.string
 //import io.kotest.shouldBe
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //
 //class ClassifyTest : StringSpec() {
 //  init {

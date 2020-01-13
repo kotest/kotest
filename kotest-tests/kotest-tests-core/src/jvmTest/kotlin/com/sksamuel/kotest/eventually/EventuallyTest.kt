@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.eventually
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.eventually
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -74,6 +74,24 @@ class EventuallyTest : WordSpec() {
                }
             }
          }
+         "handle kotlin assertion errors" {
+            var thrown = false
+            eventually(Duration.ofMillis(100)) {
+               if (!thrown) {
+                  thrown = true
+                  throw AssertionError("boom")
+               }
+            }
+         }
+         "handle java assertion errors" {
+            var thrown = false
+            eventually(Duration.ofMillis(100)) {
+               if (!thrown) {
+                  thrown = true
+                  throw java.lang.AssertionError("boom")
+               }
+            }
+         }
          "pass tests that pass a predicate" {
             val result = eventually(Duration.ofSeconds(2), { it == 1 }) {
                1
@@ -82,7 +100,7 @@ class EventuallyTest : WordSpec() {
          }
          "display the underlying assertion failure" {
             shouldThrow<AssertionError> {
-               eventually(Duration.ofMillis(10)) {
+               eventually(Duration.ofMillis(100)) {
                   1 shouldBe 2
                }
             }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")

@@ -17,7 +17,7 @@
 //import io.kotest.properties.string
 //import io.kotest.shouldBe
 //import io.kotest.shouldThrowAny
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //
 //class ShrinkTest : StringSpec({
 //

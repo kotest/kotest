@@ -7,7 +7,7 @@ import io.kotest.matchers.stats.shouldHaveVariance
 import io.kotest.matchers.stats.shouldNotHaveMean
 import io.kotest.matchers.stats.shouldNotHaveStandardDeviation
 import io.kotest.matchers.stats.shouldNotHaveVariance
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.tables.row
 import java.math.BigDecimal
 

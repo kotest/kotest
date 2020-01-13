@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestCaseExtension
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.lang.AssertionError
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

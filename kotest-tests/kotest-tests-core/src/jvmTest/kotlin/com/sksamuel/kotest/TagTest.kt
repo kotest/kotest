@@ -4,7 +4,7 @@ import io.kotest.core.StringTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class TagTest : StringSpec() {
 

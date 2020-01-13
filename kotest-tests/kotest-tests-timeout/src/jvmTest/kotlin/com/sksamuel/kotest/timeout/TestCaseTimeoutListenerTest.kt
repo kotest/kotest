@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.timeout
 
 import com.nhaarman.mockito_kotlin.mock
-import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.*
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor

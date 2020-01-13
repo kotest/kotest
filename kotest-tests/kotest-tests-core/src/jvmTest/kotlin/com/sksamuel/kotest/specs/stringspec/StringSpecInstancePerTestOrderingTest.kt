@@ -5,7 +5,7 @@ import io.kotest.SpecClass
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class StringSpecInstancePerTestOrderingTest : StringSpec() {

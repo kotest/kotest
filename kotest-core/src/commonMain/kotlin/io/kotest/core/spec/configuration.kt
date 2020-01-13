@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = () -> Unit
-typealias AfterSpec = (Map<TestCase, TestResult>) -> Unit
+typealias AfterSpec = () -> Unit
 typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
 
@@ -48,7 +48,7 @@ fun TestFactoryConfiguration.build(): TestFactory {
       }
 
       override fun afterSpec(spec: SpecConfiguration) {
-         this@build.afterSpecs.forEach { it(emptyMap()) }
+         this@build.afterSpecs.forEach { it() }
       }
 
       override fun beforeSpec(spec: SpecConfiguration) {
@@ -168,7 +168,7 @@ abstract class TestConfiguration {
     * when the tests are completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpecs = listOf<AfterSpec>({ closeable.close() }) + afterSpecs
+      afterSpecs = listOf({ closeable.close() }) + afterSpecs
       return closeable
    }
 }

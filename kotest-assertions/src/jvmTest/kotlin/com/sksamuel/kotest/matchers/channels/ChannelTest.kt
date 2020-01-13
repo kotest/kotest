@@ -3,7 +3,7 @@ package com.sksamuel.kotest.matchers.channels
 import io.kotest.assertions.shouldFail
 import io.kotest.matchers.channels.*
 import io.kotest.matchers.ints.shouldBeExactly
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

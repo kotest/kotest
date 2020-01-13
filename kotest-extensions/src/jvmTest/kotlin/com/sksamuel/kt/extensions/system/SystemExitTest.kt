@@ -4,7 +4,7 @@ import io.kotest.extensions.system.SpecSystemExitListener
 import io.kotest.extensions.system.SystemExitException
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import kotlin.system.exitProcess
 
 class SystemExitTest : StringSpec() {

@@ -8,7 +8,7 @@ import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import io.kotest.specs.DescribeSpec
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.LocalDate

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.style.FunSpec
 
 class AutoCloseDslTest : FunSpec({
 

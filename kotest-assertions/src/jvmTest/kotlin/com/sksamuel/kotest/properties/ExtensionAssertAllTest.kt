@@ -6,7 +6,7 @@ import io.kotest.matchers.string.shouldHaveSameLengthAs
 import io.kotest.properties.assertAll
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 fun reverse(a: String): String = a.reversed()
 fun concat(a: String, b: String): String = a + b

@@ -1,7 +1,11 @@
-package io.kotest.core.spec
+package io.kotest.core.spec.style
 
 import io.kotest.core.*
 import io.kotest.core.factory.TestFactory
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.SpecDsl
+import io.kotest.core.spec.TestFactoryConfiguration
+import io.kotest.core.spec.build
 import io.kotest.core.specs.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
@@ -22,15 +26,18 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    return config.build()
 }
 
-fun testcase(name: String, f: suspend (TestContext).() -> Unit): TestFactory = funSpec {
-   test(name, f)
-}
+fun testcase(name: String, f: suspend (TestContext).() -> Unit): TestFactory =
+    funSpec {
+        test(name, f)
+    }
 
-class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
+class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(),
+    FunSpecDsl {
    override val addTest = ::addDynamicTest
 }
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : SpecConfiguration(), FunSpecDsl {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : SpecConfiguration(),
+    FunSpecDsl {
    override val addTest = ::addRootTestCase
 
    init {

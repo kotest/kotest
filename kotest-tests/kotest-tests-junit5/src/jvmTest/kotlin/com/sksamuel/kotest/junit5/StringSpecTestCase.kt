@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.junit5
 
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecTestCase : StringSpec({
 

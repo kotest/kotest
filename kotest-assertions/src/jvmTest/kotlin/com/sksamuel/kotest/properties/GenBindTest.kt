@@ -14,7 +14,7 @@
 //import io.kotest.properties.string
 //import io.kotest.should
 //import io.kotest.shouldNotBe
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //import io.kotest.matchers.doubles.beGreaterThan as gtd
 //
 //class GenBindTest : StringSpec({

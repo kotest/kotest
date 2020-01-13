@@ -3,7 +3,7 @@ package com.sksamuel.kotest.matchers
 import io.kotest.matchers.ints.between
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class LogicalMatchOperatorsTest : StringSpec({
 

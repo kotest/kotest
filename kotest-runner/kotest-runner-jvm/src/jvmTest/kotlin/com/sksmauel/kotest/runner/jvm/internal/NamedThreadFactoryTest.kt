@@ -2,7 +2,7 @@ package com.sksmauel.kotest.runner.jvm.internal
 
 import io.kotest.runner.jvm.internal.NamedThreadFactory
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class NamedThreadFactoryTest : StringSpec({
   "named thread factory should increment name" {

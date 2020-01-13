@@ -6,7 +6,7 @@ import io.kotest.extensions.system.SecurityManagerTestListener
 import io.kotest.extensions.system.withSecurityManager
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.security.Permission
 
 class SecurityManagerExtensionFunctionTests : StringSpec() {

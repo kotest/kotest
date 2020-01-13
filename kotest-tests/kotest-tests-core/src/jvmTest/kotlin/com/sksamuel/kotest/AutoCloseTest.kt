@@ -2,7 +2,7 @@ package com.sksamuel.kotest
 
 import io.kotest.extensions.ProjectListener
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.io.Closeable
 
 // this is here to test for github issue #294

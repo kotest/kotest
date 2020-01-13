@@ -6,7 +6,7 @@
 //import io.kotest.core.test.TestResult
 //import io.kotest.matchers.string.shouldStartWith
 //import io.kotest.shouldBe
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //import kotlinx.coroutines.async
 //import kotlinx.coroutines.delay
 //import java.util.concurrent.ConcurrentHashMap

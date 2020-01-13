@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.discovery
 
-import io.kotest.core.spec.FunSpec
-import io.kotest.core.spec.StringSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.runner.jvm.DiscoveryRequest
 import io.kotest.runner.jvm.TestDiscovery
 import io.kotest.shouldBe

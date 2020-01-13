@@ -1,6 +1,6 @@
 //package com.sksamuel.kotest.specs
 //
-//import io.kotest.core.spec.FunSpec
+//import io.kotest.core.spec.style.FunSpec
 //
 //// tests that errors in fields of a spec actually error the engine
 //class SpecInitializationErrorTest : FunSpec() {

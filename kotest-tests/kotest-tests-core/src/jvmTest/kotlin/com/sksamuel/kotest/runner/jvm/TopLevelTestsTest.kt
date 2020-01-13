@@ -5,7 +5,7 @@
 //import io.kotest.shouldBe
 //import io.kotest.shouldNotBe
 //import io.kotest.specs.FunSpec
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //
 //class TopLevelTestsTest : FunSpec({
 //

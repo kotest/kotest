@@ -2,7 +2,7 @@ package com.sksamuel.kotest.matchers.string
 
 import io.kotest.assertions.diffLargeString
 import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class MultiLineStringErrorTest : StringSpec({
 

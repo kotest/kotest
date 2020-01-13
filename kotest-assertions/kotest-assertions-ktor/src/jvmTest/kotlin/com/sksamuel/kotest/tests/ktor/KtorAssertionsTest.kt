@@ -4,7 +4,7 @@ import io.kotest.assertions.ktor.shouldHaveContent
 import io.kotest.assertions.ktor.shouldHaveCookie
 import io.kotest.assertions.ktor.shouldHaveHeader
 import io.kotest.assertions.ktor.shouldHaveStatus
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call

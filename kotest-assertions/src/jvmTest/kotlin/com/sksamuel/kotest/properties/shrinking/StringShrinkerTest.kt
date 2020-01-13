@@ -12,7 +12,7 @@
 //import io.kotest.properties.shrinking.shrink
 //import io.kotest.properties.string
 //import io.kotest.shouldBe
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //
 //class StringShrinkerTest : StringSpec({
 //

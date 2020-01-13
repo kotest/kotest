@@ -3,7 +3,7 @@ package com.sksamuel.kotest.listeners
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.FunSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import java.util.concurrent.atomic.AtomicInteger

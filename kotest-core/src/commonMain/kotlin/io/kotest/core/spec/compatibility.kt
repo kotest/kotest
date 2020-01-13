@@ -64,11 +64,9 @@ interface CompatibilitySpecConfiguration {
    fun afterSpec(spec: SpecClass) {
    }
 
-   @Deprecated("Use the spec DSL", ReplaceWith("afterSpec {  }"))
    fun afterSpec(spec: SpecConfiguration) {
    }
 
-   @Deprecated("Use the spec DSL", ReplaceWith("afterTest { test, result -> }"))
    fun afterTest(testCase: TestCase, result: TestResult) {
    }
 
@@ -83,7 +81,6 @@ interface CompatibilitySpecConfiguration {
    fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
    }
 
-   @Deprecated("Use the spec DSL", ReplaceWith("beforeTest { test -> }"))
    fun beforeTest(testCase: TestCase) {
    }
 

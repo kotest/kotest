@@ -4,7 +4,7 @@
 //import io.kotest.shouldBe
 //import io.kotest.shouldThrow
 //import io.kotest.specs.FreeSpec
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //import io.kotest.tables.row
 //import kotlin.math.max
 //import io.kotest.data.suspend.forall as forallSuspendOverload
