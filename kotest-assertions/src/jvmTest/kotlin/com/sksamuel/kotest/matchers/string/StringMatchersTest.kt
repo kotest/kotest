@@ -29,6 +29,7 @@ import io.kotest.matchers.string.shouldBeFalsy
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeSingleLine
 import io.kotest.matchers.string.shouldBeTruthy
+import io.kotest.matchers.string.shouldBeUUID
 import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainADigit
@@ -50,6 +51,7 @@ import io.kotest.matchers.string.shouldNotBeEmpty
 import io.kotest.matchers.string.shouldNotBeEqualIgnoringCase
 import io.kotest.matchers.string.shouldNotBeLowerCase
 import io.kotest.matchers.string.shouldNotBeSingleLine
+import io.kotest.matchers.string.shouldNotBeUUID
 import io.kotest.matchers.string.shouldNotBeUpperCase
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotContainADigit
@@ -69,6 +71,10 @@ import io.kotest.matchers.string.shouldNotMatch
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.string.startWith
+import io.kotest.properties.Gen
+import io.kotest.properties.assertAll
+import io.kotest.properties.string
+import io.kotest.properties.uuid
 import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
@@ -928,6 +934,42 @@ class StringMatchersTest : FreeSpec() {
             .message.shouldBe("yes should be equal ignoring case one of values: [false, no, n, 0]")
         shouldThrow<AssertionError> { "FALSE" shouldNot beFalsy() }
             .message.shouldBe("FALSE should not be equal ignoring case one of values: [false, no, n, 0]")
+      }
+    }
+    
+    "Should be UUID" - {
+      "Should pass for Java generated UUIDs" {
+        Gen.uuid().assertAll { uuid ->
+          uuid.toString().shouldBeUUID()
+          uuid.toString().toUpperCase().shouldBeUUID()
+          uuid.toString().toLowerCase().shouldBeUUID()
+          shouldThrow<AssertionError> { uuid.toString().shouldNotBeUUID() }
+        }
+      }
+      
+      "Should pass for nil UUID" {
+        "00000000-0000-0000-0000-000000000000".shouldBeUUID()
+        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldNotBeUUID() }
+      }
+      
+      "Should fail for nil UUID if it should be considered invalid" {
+        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldBeUUID(considerNilValid = false) }
+        "00000000-0000-0000-0000-000000000000".shouldNotBeUUID(considerNilValid = false)
+      }
+      
+      "Should fail for strings" {
+        Gen.string(31, 41).assertAll(iterations = 10_000) { str ->
+          shouldThrow<AssertionError> { str.shouldBeUUID() }
+          str.shouldNotBeUUID()
+        }
+      }
+      
+      "Should fail for UUIDs without hyphens (not in accordance with specification)" {
+        Gen.uuid().assertAll { uuid ->
+          val nonHyphens = uuid.toString().replace("-", "")
+          nonHyphens.shouldNotBeUUID()
+          shouldThrow<AssertionError> { nonHyphens.shouldBeUUID() }
+        }
       }
     }
   }

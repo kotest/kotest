@@ -1,13 +1,18 @@
 package io.kotest.properties
 
+import io.kotest.matchers.string.UUIDVersion
 import java.io.File
 import java.math.BigInteger
-import java.time.*
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Period
+import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.*
-import kotlin.random.Random
+import java.util.UUID
 
 /**
  * Generates a stream of random Periods
@@ -58,9 +63,17 @@ fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Dur
    }
 }
 
-fun Gen.Companion.uuid(): Gen<UUID> = object : Gen<UUID> {
-   override fun constants(): Iterable<UUID> = emptyList()
-   override fun random(seed: Long?): Sequence<UUID> = generateSequence { UUID.randomUUID() }
+fun Gen.Companion.uuid(
+   uuidVersion: UUIDVersion = UUIDVersion.V4,
+   allowNilValue: Boolean = true
+): Gen<UUID> = object: Gen<UUID> {
+   override fun constants() = if(allowNilValue) 
+      listOf(UUID.fromString("00000000-0000-0000-0000-000000000000")) 
+   else emptyList()
+   
+   override fun random(seed: Long?) = Gen.regex(uuidVersion.uuidRegex).random(seed).map { 
+      UUID.fromString(it)
+   }
 }
 
 /**
