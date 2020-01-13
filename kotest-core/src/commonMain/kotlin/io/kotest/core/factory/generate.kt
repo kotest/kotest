@@ -22,7 +22,7 @@ fun TestFactory.generate(description: Description, spec: SpecConfiguration): Lis
          type = dyn.type,
          source = dyn.source,
          config = dyn.config.copy(tags = dyn.config.tags + this.tags),
-         factory = this,
+         factoryId = this.factoryId,
          assertionMode = this.assertionMode
       )
    } + factories.flatMap { it.generate(description, spec) }

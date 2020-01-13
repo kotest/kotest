@@ -1,8 +1,8 @@
 package io.kotest.core.spec
 
 import io.kotest.core.*
-import io.kotest.core.factory.DynamicTest
 import io.kotest.core.factory.TestFactory
+import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.specs.AutoCloseable
 import io.kotest.core.specs.JsTest
 import io.kotest.core.specs.generateTests
@@ -21,45 +21,6 @@ typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
 
 /**
- * Builds an immutable [TestFactory] from this configuration.
- */
-fun TestFactoryConfiguration.build(): TestFactory {
-
-   val factory = TestFactory(
-      tests = this.tests,
-      tags = this.tags,
-      listeners = this.listeners,
-      extensions = this.extensions,
-      assertionMode = this.assertionMode,
-      factories = this.factories
-   )
-
-   val callbacks = object : TestListener {
-      override suspend fun beforeTest(testCase: TestCase) {
-         if (testCase.factory == factory) {
-            this@build.beforeTests.forEach { it(testCase) }
-         }
-      }
-
-      override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-         if (testCase.factory == factory) {
-            this@build.afterTests.forEach { it(Tuple2(testCase, result)) }
-         }
-      }
-
-      override fun afterSpec(spec: SpecConfiguration) {
-         this@build.afterSpecs.forEach { it() }
-      }
-
-      override fun beforeSpec(spec: SpecConfiguration) {
-         this@build.beforeSpecs.forEach { it() }
-      }
-   }
-
-   return factory.copy(listeners = listeners + callbacks)
-}
-
-/**
  * The parent of all configuration DSL objects and contains configuration methods
  * common to both [SpecConfiguration] and [TestFactoryConfiguration] implementations.
  */
@@ -68,8 +29,7 @@ abstract class TestConfiguration {
    /**
     * Config applied to each test case if not overridden per test case.
     */
-   var defaultTestCaseConfig: TestCaseConfig =
-      TestCaseConfig()
+   var defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
 
    /**
     * Sets an assertion mode which is applied to every test.
@@ -102,6 +62,7 @@ abstract class TestConfiguration {
     * and not other tests in a [Spec].
     */
    fun beforeTest(f: BeforeTest) {
+      println("Building before test")
       beforeTests = beforeTests + f
    }
 
@@ -116,6 +77,7 @@ abstract class TestConfiguration {
    }
 
    fun beforeSpec(f: BeforeSpec) {
+      println("Building before spec")
       beforeSpecs = beforeSpecs + f
    }
 
@@ -170,42 +132,6 @@ abstract class TestConfiguration {
    fun <T : AutoCloseable> autoClose(closeable: T): T {
       afterSpecs = listOf({ closeable.close() }) + afterSpecs
       return closeable
-   }
-}
-
-/**
- * A [TestFactoryConfiguration] provides a DSL to allow for easy creation of a
- * [TestFactory] when this class is the receiver of a lambda parameter.
- *
- * This class shouldn't be used directly, but as the base for a particular
- * layout style, eg [FunSpecTestFactoryConfiguration].
- */
-abstract class TestFactoryConfiguration : TestConfiguration() {
-
-   /**
-    * Contains the [DynamicTest]s that have been added to this configuration.
-    */
-   internal var tests = emptyList<DynamicTest>()
-
-   /**
-    * Adds a new [DynamicTest] to this factory. When this factory is included into a [Spec]
-    * these tests will be added to the spec as [TestCase]s.
-    */
-   protected fun addDynamicTest(
-      name: String,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ) {
-      require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
-      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
-      this.tests = this.tests + DynamicTest(
-         name,
-         test,
-         config,
-         type,
-         sourceRef()
-      )
    }
 }
 

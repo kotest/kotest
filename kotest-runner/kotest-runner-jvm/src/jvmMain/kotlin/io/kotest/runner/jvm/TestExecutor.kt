@@ -1,10 +1,12 @@
 package io.kotest.runner.jvm
 
 import io.kotest.Project
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.*
 import io.kotest.extensions.TestCaseExtension
 import io.kotest.extensions.TestListener
-import io.kotest.fp.Tuple2
+import io.kotest.fp.Try
 import io.kotest.internal.unwrapIfReflectionCall
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -39,19 +41,18 @@ class TestExecutor(private val listener: TestEngineListener) {
       try {
          val start = System.currentTimeMillis()
 
-         try {
-            before(testCase)
-         } catch (t: Throwable) {
-            logger.error("Before test errors", t)
-            throw t
-         }
+         notifyBeforeTest(testCase.spec, testCase)
+            .onFailure {
+               logger.error("Before test errors", it)
+               throw it
+            }
 
          val extensions = testCase.config.extensions +
             testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
             Project.testCaseExtensions()
 
          runExtensions(testCase, context, start, extensions) { result ->
-            after(testCase, result)
+            notifyAfterTest(testCase.spec, testCase, result)
             if (result.status != TestStatus.Ignored)
                listener.testFinished(testCase, result)
             onResult(result)
@@ -131,32 +132,26 @@ class TestExecutor(private val listener: TestEngineListener) {
    }
 
    /**
-    * Handles all "before" listeners.
+    * Notifies the user listeners that a [TestCase] is starting.
+    * This will be invoked for every instance of a spec.
     */
-   private suspend fun before(testCase: TestCase) {
-      logger.trace("before testCase ${testCase.description.fullName()}")
-      val active = testCase.isActive()
-      testCase.spec.beforeTests.forEach { it.invoke(testCase) }
-      val userListeners = Project.listeners() + testCase.spec.listeners
-      userListeners.forEach {
-         if (active) {
-            it.beforeTest(testCase)
-         }
+   private suspend fun notifyBeforeTest(spec: SpecConfiguration, testCase: TestCase) = Try {
+      logger.trace("Executing listeners beforeTest")
+      val listeners = spec.resolvedListeners()
+      listeners.forEach {
+         it.beforeTest(testCase)
       }
    }
 
    /**
-    * Handles all "after" listeners.
+    * Notifies the user listeners that a [TestCase] has finished.
+    * This will be invoked for every instance of a spec.
     */
-   private suspend fun after(testCase: TestCase, result: TestResult) {
-      logger.trace("after testCase ${testCase.description.fullName()}")
-      val active = testCase.isActive()
-      testCase.spec.afterTests.forEach { it.invoke(Tuple2(testCase, result)) }
-      val userListeners = Project.listeners() + testCase.spec.listeners
-      userListeners.reversed().forEach {
-         if (active) {
-            it.afterTest(testCase, result)
-         }
+   private suspend fun notifyAfterTest(spec: SpecConfiguration, testCase: TestCase, result: TestResult) = Try {
+      logger.trace("Executing listeners afterTest")
+      val listeners = spec.resolvedListeners()
+      listeners.forEach {
+         it.afterTest(testCase, result)
       }
    }
 

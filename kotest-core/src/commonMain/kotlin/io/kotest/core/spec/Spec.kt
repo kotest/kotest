@@ -4,35 +4,34 @@ import io.kotest.core.factory.generate
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.SpecLevelExtension
 import io.kotest.extensions.TestListener
 import io.kotest.extensions.RootTest
 import io.kotest.fp.Tuple2
 
-/**
- * A [Spec] is the unit of execution in Kotest. It contains one or more
- * [TestCase]s which are executed individually.  All tests in a spec must
- * pass for the spec itself to be considered passing.
- *
- * Tests can either be root level, or nested inside other tests, depending
- * on the style of spec in use.
- *
- * Specs also contain [TestListener]s and [SpecLevelExtension]s which are used
- * to hook into the test lifecycle and interface with the test engine.
- *
- * A spec can define an [IsolationMode] used to control the instantiation of
- * classes for test cases in that spec.
- *
- * A spec can define the [TestCaseOrder] which controls the ordering of the
- * execution of root level tests in that spec.
- */
-data class Spec(
-   val rootTests: List<RootTest>,
-   val listeners: List<TestListener>,
-   val extensions: List<SpecLevelExtension>,
-   val isolationMode: IsolationMode?,
-   val testCaseOrder: TestCaseOrder?
-)
+///**
+// * A [Spec] is the unit of execution in Kotest. It contains one or more
+// * [TestCase]s which are executed individually.  All tests in a spec must
+// * pass for the spec itself to be considered passing.
+// *
+// * Tests can either be root level, or nested inside other tests, depending
+// * on the style of spec in use.
+// *
+// * Specs also contain [TestListener]s and [SpecLevelExtension]s which are used
+// * to hook into the test lifecycle and interface with the test engine.
+// *
+// * A spec can define an [IsolationMode] used to control the instantiation of
+// * classes for test cases in that spec.
+// *
+// * A spec can define the [TestCaseOrder] which controls the ordering of the
+// * execution of root level tests in that spec.
+// */
+//data class Spec(
+//   val rootTests: List<RootTest>,
+//   val listeners: List<TestListener>,
+//   val extensions: List<SpecLevelExtension>,
+//   val isolationMode: IsolationMode?,
+//   val testCaseOrder: TestCaseOrder?
+//)
 
 /**
  * Returns the resolved listeners for a given [SpecConfiguration].

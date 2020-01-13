@@ -2,7 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.SpecClass
 import io.kotest.core.*
-import io.kotest.core.factory.TestFactory
+import io.kotest.core.factory.TestFactoryId
 import io.kotest.core.spec.SpecConfiguration
 
 /**
@@ -43,8 +43,8 @@ data class TestCase(
    // config used when running the test, such as number of
    // invocations, threads, etc
    val config: TestCaseConfig = TestCaseConfig(),
-   // an optional factory which is used to indicate which factory (if any) generated this test case.
-   val factory: TestFactory? = null,
+   // an optional factory id which is used to indicate which factory (if any) generated this test case.
+   val factoryId: TestFactoryId? = null,
    // assertion mode can be set to control errors/warnings in a test
    // if null, defaults will be applied
    val assertionMode: AssertionMode? = null
