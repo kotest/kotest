@@ -10,7 +10,6 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.extensions.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
@@ -27,9 +26,7 @@ object Project {
 
    private val userconf = detectConfig()
    private val defaultTimeout = 600.seconds
-   private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension,
-      RuntimeTagExtension
-   )
+   private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension, RuntimeTagExtension)
    private var projectListeners = userconf.projectListeners
    private var testListeners = userconf.testListeners
    private var filters = userconf.filters
