@@ -8,14 +8,15 @@ import io.kotest.*
 import java.io.File
 
 private fun compileCodeSnippet(codeSnippet: String): Result {
-   val testSourceFile = SourceFile.kotlin("KClass.kt", codeSnippet)
-
-   return KotlinCompilation()
+   val kotlinCompilation = KotlinCompilation()
       .apply {
-         sources = listOf(testSourceFile)
+         sources = listOf(SourceFile.kotlin("KClass.kt", codeSnippet))
          inheritClassPath = true
       }
-      .compile()
+   val compilationResult = kotlinCompilation.compile()
+   kotlinCompilation.workingDir.deleteRecursively()
+
+   return compilationResult
 }
 
 private val compiles = object : Matcher<String> {
