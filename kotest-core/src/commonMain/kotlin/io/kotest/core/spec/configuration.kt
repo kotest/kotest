@@ -7,8 +7,8 @@ import io.kotest.core.specs.AutoCloseable
 import io.kotest.core.specs.JsTest
 import io.kotest.core.specs.generateTests
 import io.kotest.core.test.*
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.extensions.TestListener
 import io.kotest.fp.Tuple2
 import org.junit.platform.commons.annotation.Testable
 import kotlin.reflect.KClass

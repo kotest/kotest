@@ -1,9 +1,9 @@
 package io.kotest.runner.jvm
 
 import io.github.classgraph.ClassGraph
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.DiscoveryExtension
+import io.kotest.core.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
 import java.net.URI

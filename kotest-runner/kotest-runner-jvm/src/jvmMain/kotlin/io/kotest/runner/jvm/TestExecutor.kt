@@ -1,13 +1,13 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.*
-import io.kotest.extensions.TestCaseExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestListener
 import io.kotest.fp.Try
-import io.kotest.internal.unwrapIfReflectionCall
+import io.kotest.core.internal.unwrapIfReflectionCall
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory

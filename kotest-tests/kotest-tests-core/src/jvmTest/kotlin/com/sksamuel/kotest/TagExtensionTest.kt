@@ -1,13 +1,13 @@
 package com.sksamuel.kotest
 
-import io.kotest.Project
 import io.kotest.SpecClass
 import io.kotest.core.Tag
 import io.kotest.core.Tags
+import io.kotest.core.config.Project
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.extensions.TagExtension
+import io.kotest.core.extensions.TagExtension
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
@@ -30,7 +30,7 @@ class TagExtensionTest : StringSpec() {
   }
 
   override fun beforeSpec(spec: SpecClass) {
-    Project.registerExtension(ext)
+     Project.registerExtension(ext)
   }
 
   override fun afterSpec(spec: SpecClass) {

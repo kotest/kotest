@@ -5,7 +5,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.assertions.AssertionCounter
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.shouldBe
 import io.kotest.shouldThrow

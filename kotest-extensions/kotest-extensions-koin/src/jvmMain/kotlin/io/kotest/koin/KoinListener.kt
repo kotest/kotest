@@ -2,7 +2,7 @@ package io.kotest.koin
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module

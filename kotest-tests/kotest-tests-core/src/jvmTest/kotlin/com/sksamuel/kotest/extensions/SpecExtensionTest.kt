@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.SpecExtension
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
 
@@ -29,7 +29,7 @@ object SpecExtensionNumbers {
 
 object SpecSetup {
   fun setup() {
-    Project.registerExtension(SpecExtensionNumbers.ext)
+     Project.registerExtension(SpecExtensionNumbers.ext)
   }
 }
 
@@ -39,7 +39,7 @@ class SpecExtensionTest : WordSpec() {
 
     SpecSetup.setup()
 
-    Project.registerProjectListener(object : ProjectListener {
+     Project.registerProjectListener(object : ProjectListener {
       override fun afterProject() {
         SpecExtensionNumbers.after shouldBe 1
       }

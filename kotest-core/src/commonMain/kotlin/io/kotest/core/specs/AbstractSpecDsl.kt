@@ -7,8 +7,8 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.extensions.TestListener
 
 abstract class AbstractSpecDsl : AbstractSpec() {
 

@@ -3,8 +3,8 @@ package io.kotest.spring
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.ConstructorExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.extensions.TestListener
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy

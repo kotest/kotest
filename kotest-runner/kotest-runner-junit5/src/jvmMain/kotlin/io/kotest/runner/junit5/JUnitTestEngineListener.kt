@@ -1,7 +1,6 @@
 package io.kotest.runner.junit5
 
-import arrow.core.extensions.list.foldable.exists
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
@@ -98,7 +97,8 @@ class JUnitTestEngineListener(
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
-         Project.failOnIgnoredTests && hasIgnored() -> TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+         Project.failOnIgnoredTests() && hasIgnored() ->
+            TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
          else -> TestExecutionResult.successful()
       }
 
@@ -171,7 +171,7 @@ class JUnitTestEngineListener(
    }
 
    private fun isVisible(description: Description) =
-      results.exists { description.isAncestorOf(it.first) }
+      results.any { description.isAncestorOf(it.first) }
 
    override fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)

@@ -5,8 +5,8 @@ import io.kotest.core.SourceRef
 import io.kotest.core.Tag
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.*
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.extensions.TestListener
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and

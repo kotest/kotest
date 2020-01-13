@@ -3,8 +3,8 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.delay
 import kotlin.time.ExperimentalTime
@@ -25,7 +25,8 @@ class GlobalTimeoutTest : StringSpec() {
 
   }
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(object : TestCaseExtension {
+  override fun extensions(): List<SpecLevelExtension> = listOf(object :
+     TestCaseExtension {
     override suspend fun intercept(testCase: TestCase,
                                    execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
                                    complete: suspend (TestResult) -> Unit) {

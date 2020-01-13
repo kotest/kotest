@@ -4,7 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.test.TestType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.extensions
 
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.SpecExtension
-import io.kotest.extensions.SpecLevelExtension
+import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 

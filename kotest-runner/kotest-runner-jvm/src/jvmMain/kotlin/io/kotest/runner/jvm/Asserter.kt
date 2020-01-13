@@ -1,9 +1,9 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Project
 import io.kotest.assertSoftly
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.getAndReset
+import io.kotest.core.config.Project
 import io.kotest.core.test.AssertionMode
 
 /**

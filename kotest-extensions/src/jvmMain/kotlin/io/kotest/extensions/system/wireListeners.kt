@@ -2,7 +2,7 @@ package io.kotest.extensions.system
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -46,7 +46,8 @@ fun captureStandardErr(fn: () -> Unit): String {
  * @param tee If true then any data written to standard out will be captured as well as written out.
  *            If false then the data written will be captured only.
  */
-class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
+class SystemOutWireListener(private val tee: Boolean = true) :
+    TestListener {
 
   private var buffer = ByteArrayOutputStream()
   private var previous = System.out
@@ -74,7 +75,8 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
  *
  * Users can query the written data by fetching the buffer by invoking [output].
  */
-class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
+class SystemErrWireListener(private val tee: Boolean = true) :
+    TestListener {
 
   private var buffer = ByteArrayOutputStream()
   private var previous = System.err

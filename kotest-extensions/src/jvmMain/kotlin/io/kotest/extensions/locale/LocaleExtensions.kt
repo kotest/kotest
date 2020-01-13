@@ -2,8 +2,8 @@ package io.kotest.extensions.locale
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.extensions.TestListener
 import java.util.Locale
 
 /**
@@ -49,7 +49,8 @@ abstract class LocaleListener(private val locale: Locale) {
  * **Attention:** This code is subject to race conditions. The System can only have one default locale, and if you
  * change the locale while it was already changed, the result may be inconsistent.
  */
-class LocaleTestListener(locale: Locale) : LocaleListener(locale), TestListener {
+class LocaleTestListener(locale: Locale) : LocaleListener(locale),
+   TestListener {
 
    override suspend fun beforeTest(testCase: TestCase) {
       changeLocale()
@@ -69,7 +70,8 @@ class LocaleTestListener(locale: Locale) : LocaleListener(locale), TestListener 
  * **Attention:** This code is subject to race conditions. The System can only have one default locale, and if you
  * change the locale while it was already changed, the result may be inconsistent.
  */
-class LocaleProjectListener(newLocale: Locale) : LocaleListener(newLocale), ProjectListener {
+class LocaleProjectListener(newLocale: Locale) : LocaleListener(newLocale),
+    ProjectListener {
 
    override fun beforeProject() {
       changeLocale()

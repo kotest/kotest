@@ -1,9 +1,8 @@
 package io.kotest.core.specs
 
 import io.kotest.core.*
-import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.*
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestCaseExtension
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

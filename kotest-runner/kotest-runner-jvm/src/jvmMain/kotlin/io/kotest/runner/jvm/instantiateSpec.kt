@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.specs.AbstractSpec
 import io.kotest.fp.Try

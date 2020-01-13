@@ -5,7 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import io.qameta.allure.Allure
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status

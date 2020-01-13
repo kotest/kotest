@@ -3,8 +3,8 @@ package io.kotest.experimental.robolectric
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.ConstructorExtension
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.extensions.TestCaseExtension
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 

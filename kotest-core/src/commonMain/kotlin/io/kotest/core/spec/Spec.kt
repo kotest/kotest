@@ -4,8 +4,8 @@ import io.kotest.core.factory.generate
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.TestListener
-import io.kotest.extensions.RootTest
+import io.kotest.core.extensions.TestListener
+import io.kotest.core.extensions.RootTest
 import io.kotest.fp.Tuple2
 
 ///**

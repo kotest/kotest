@@ -1,18 +1,16 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.Project
 import io.kotest.SpecClass
+import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.SpecExtension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.instantiateSpec
 import org.slf4j.LoggerFactory
-import kotlin.reflect.KClass
 
 /**
  * The base class for executing all the tests inside a [SpecClass].

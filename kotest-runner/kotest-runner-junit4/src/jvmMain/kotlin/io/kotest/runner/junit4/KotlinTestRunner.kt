@@ -2,7 +2,6 @@ package io.kotest.runner.junit4
 
 import arrow.core.Failure
 import arrow.core.Success
-import io.kotest.Project
 import io.kotest.Spec
 import io.kotest.runner.jvm.TestEngine
 import io.kotest.runner.jvm.instantiateSpec
@@ -17,7 +16,7 @@ class KotestRunner(private val testClass: Class<out Spec>) : Runner() {
     val runner = TestEngine(
       listOf(testClass.kotlin),
       emptyList(),
-      Project.parallelism(),
+      ProjectConfiguration.parallelism(),
       emptySet(),
       emptySet(),
       listener

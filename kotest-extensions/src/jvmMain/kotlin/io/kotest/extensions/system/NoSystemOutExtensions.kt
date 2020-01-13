@@ -1,7 +1,7 @@
 package io.kotest.extensions.system
 
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 

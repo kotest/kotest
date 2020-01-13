@@ -7,7 +7,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.specs.AbstractSpecDsl
 import io.kotest.core.specs.KotestDsl
 import io.kotest.core.specs.createTestName
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -122,13 +122,13 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpecDs
    inner class TestScope(val name: String, val context: TestContext) {
       @UseExperimental(ExperimentalTime::class)
       suspend fun config(
-         invocations: Int? = null,
-         enabled: Boolean? = null,
-         timeout: Duration? = null,
-         threads: Int? = null,
-         tags: Set<Tag>? = null,
-         extensions: List<TestCaseExtension>? = null,
-         test: TestContext.() -> Unit) {
+          invocations: Int? = null,
+          enabled: Boolean? = null,
+          timeout: Duration? = null,
+          threads: Int? = null,
+          tags: Set<Tag>? = null,
+          extensions: List<TestCaseExtension>? = null,
+          test: TestContext.() -> Unit) {
          val config = TestCaseConfig(
             enabled ?: this@BehaviorSpec.defaultTestCaseConfig.enabled,
             invocations ?: this@BehaviorSpec.defaultTestCaseConfig.invocations,

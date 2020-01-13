@@ -2,8 +2,8 @@ package io.kotest.extensions.locale
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.extensions.TestListener
 import java.util.TimeZone
 
 /**
@@ -49,7 +49,8 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) {
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.
  */
-class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), TestListener {
+class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
+   TestListener {
 
    override suspend fun beforeTest(testCase: TestCase) {
       changeTimeZone()
@@ -69,7 +70,8 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.
  */
-class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone), ProjectListener {
+class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
+   ProjectListener {
 
    override fun beforeProject() {
       changeTimeZone()

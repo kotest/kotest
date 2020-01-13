@@ -1,12 +1,12 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.test.Description
-import io.kotest.Project
 import io.kotest.core.StringTag
 import io.kotest.core.Tags
+import io.kotest.core.config.Project
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.extensions.TagExtension
+import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec

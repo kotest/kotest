@@ -1,9 +1,7 @@
-package io.kotest.extensions
+package io.kotest.core.extensions
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.extensions.RuntimeTagExtension.excluded
-import io.kotest.extensions.RuntimeTagExtension.included
 
 /**
  * Returns [Tags] to be used by the Test Engine.
@@ -27,24 +25,8 @@ interface TagExtension : ProjectLevelExtension {
   fun tags(): Tags
 }
 
-/**
- * Allows including/excluding tags at runtime
- *
- * You can use the properties [included] and [excluded] to modify what behavior you should use for specific tests
- * at runtime. Any test tagged with tags in [included] will be included to run, and any tags in [excluded] will be excluded.
- */
-object RuntimeTagExtension : TagExtension {
-
-  val included = mutableSetOf<Tag>()
-  val excluded = mutableSetOf<Tag>()
-
-  override fun tags(): Tags {
-    return Tags(included, excluded)
-  }
-
-}
-
-class SpecifiedTagsTagExtension(private val included: Set<Tag>, private val excluded: Set<Tag>) : TagExtension {
+class SpecifiedTagsTagExtension(private val included: Set<Tag>, private val excluded: Set<Tag>) :
+   TagExtension {
   override fun tags(): Tags {
     return Tags(included, excluded)
   }

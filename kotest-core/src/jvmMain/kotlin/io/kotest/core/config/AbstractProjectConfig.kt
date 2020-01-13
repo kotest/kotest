@@ -1,14 +1,14 @@
-package io.kotest
+package io.kotest.core.config
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.extensions.ProjectLevelExtension
-import io.kotest.extensions.ProjectLevelFilter
-import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.ProjectLevelExtension
+import io.kotest.core.extensions.ProjectLevelFilter
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.extensions.TestListener
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -49,21 +49,25 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this function and return an instance of [SpecExecutionOrder] which will
-    * be used to sort specs before execution. By default, will return specs in
-    * lexicographic order.
+    * be used to sort specs before execution.
     *
     * Implementations are currently:
     *  - [LexicographicSpecExecutionOrder]
     *  - [FailureFirstSpecExecutionOrder]
     *  - [RandomSpecExecutionOrder]
     */
-   open fun specExecutionOrder(): SpecExecutionOrder =
-      LexicographicSpecExecutionOrder
+   @Deprecated("use the val version")
+   open fun specExecutionOrder(): SpecExecutionOrder? = null
+
+   open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.
     */
+   @Deprecated("use the val version")
    open fun isolationMode(): IsolationMode? = null
+
+   open val isolationMode: IsolationMode? = null
 
    /**
     * A global timeout that is applied to all tests if not null.
@@ -81,7 +85,10 @@ abstract class AbstractProjectConfig {
     * An alternative way to enable this is the system property kotest.parallelism
     * which will always (if defined) take priority over the value here.
     */
+   @Deprecated("use the val version")
    open fun parallelism(): Int = 1
+
+   open val parallelism: Int = 1
 
    /**
     * When set to true, failed specs are written to a file called spec_failures.
@@ -90,7 +97,10 @@ abstract class AbstractProjectConfig {
     * To enable this feature, set this to true, or set the system property
     * 'kotest.write.specfailures=true'
     */
+   @Deprecated("use the val version")
    open fun writeSpecFailureFile(): Boolean = false
+
+   open val writeSpecFailureFile: Boolean = false
 
    /**
     * Sets the order of top level tests in a spec.
@@ -101,7 +111,10 @@ abstract class AbstractProjectConfig {
     * If this function returns null then the default of Sequential
     * will be used.
     */
+   @Deprecated("use the val version")
    open fun testCaseOrder(): TestCaseOrder? = null
+
+   val testCaseOrder: TestCaseOrder? = null
 
    /**
     * Override this value and set it to true if you want all tests to behave as if they

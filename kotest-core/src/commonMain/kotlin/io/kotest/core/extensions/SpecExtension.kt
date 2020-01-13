@@ -1,6 +1,5 @@
-package io.kotest.extensions
+package io.kotest.core.extensions
 
-import io.kotest.AbstractProjectConfig
 import io.kotest.core.test.TestCase
 import io.kotest.core.spec.SpecConfiguration
 
@@ -9,7 +8,8 @@ import io.kotest.core.spec.SpecConfiguration
  * using [AbstractProjectConfig.extensions] or on a
  * per-spec basis by overriding `extensions()` in a [SpecConfiguration] class.
  */
-interface SpecExtension : ProjectLevelExtension, SpecLevelExtension {
+interface SpecExtension : ProjectLevelExtension,
+   SpecLevelExtension {
 
    /**
     * Intercepts execution of a [SpecConfiguration].

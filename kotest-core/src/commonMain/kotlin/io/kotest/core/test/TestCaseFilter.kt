@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
-import io.kotest.extensions.ProjectLevelFilter
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.ProjectLevelFilter
+import io.kotest.core.extensions.TestCaseExtension
 
 interface TestCaseFilter : ProjectLevelFilter {
   fun filter(description: Description): TestFilterResult

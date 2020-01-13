@@ -1,9 +1,9 @@
 package io.kotest.provided
 
-import io.kotest.AbstractProjectConfig
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.DiscoveryExtension
-import io.kotest.extensions.ProjectLevelExtension
+import io.kotest.core.extensions.DiscoveryExtension
+import io.kotest.core.extensions.ProjectLevelExtension
 import kotlin.reflect.KClass
 
 class ProjectConfig : AbstractProjectConfig() {

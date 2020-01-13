@@ -2,7 +2,6 @@
 
 package io.kotest.runner.console
 
-import io.kotest.Project
 import io.kotest.SpecClass
 import io.kotest.core.Tag
 import io.kotest.core.TestCaseFilter
@@ -29,7 +28,7 @@ class KotestConsoleRunner(private val writer: TestEngineListener) {
     val runner = io.kotest.runner.jvm.KotestEngine(
       specs,
       if (filter == null) emptyList<TestCaseFilter>() else listOf(filter),
-      Project.parallelism(),
+      ProjectConfiguration.parallelism(),
       includeTags,
       excludeTags,
       writer

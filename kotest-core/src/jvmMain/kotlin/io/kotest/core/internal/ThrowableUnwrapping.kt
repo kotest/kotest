@@ -1,4 +1,4 @@
-package io.kotest.internal
+package io.kotest.core.internal
 
 import java.lang.reflect.InvocationTargetException
 

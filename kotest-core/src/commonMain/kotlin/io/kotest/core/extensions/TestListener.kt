@@ -1,4 +1,4 @@
-package io.kotest.extensions
+package io.kotest.core.extensions
 
 import io.kotest.core.test.Description
 import io.kotest.core.spec.IsolationMode.InstancePerLeaf

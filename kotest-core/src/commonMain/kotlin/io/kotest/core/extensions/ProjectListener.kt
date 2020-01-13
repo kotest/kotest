@@ -1,4 +1,4 @@
-package io.kotest.extensions
+package io.kotest.core.extensions
 
 /**
  * Reusable extension to be registered with [AbstractProjectConfig.listeners].

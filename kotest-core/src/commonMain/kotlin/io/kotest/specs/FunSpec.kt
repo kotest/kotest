@@ -6,7 +6,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.specs.AbstractSpecDsl
 import io.kotest.core.specs.KotestDsl
-import io.kotest.extensions.TestCaseExtension
+import io.kotest.core.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

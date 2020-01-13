@@ -6,8 +6,8 @@
 //import io.kotest.core.test.TestResult
 //import io.kotest.assertions.fail
 //import io.kotest.core.spec.SpecConfiguration
-//import io.kotest.extensions.SpecLevelExtension
-//import io.kotest.extensions.TestCaseExtension
+//import io.kotest.core.extensions.SpecLevelExtension
+//import io.kotest.core.extensions.TestCaseExtension
 //import io.kotest.shouldBe
 //import io.kotest.specs.AnnotationSpec
 //import java.util.concurrent.atomic.AtomicInteger

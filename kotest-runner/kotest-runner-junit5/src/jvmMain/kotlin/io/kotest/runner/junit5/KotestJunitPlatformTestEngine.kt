@@ -1,6 +1,6 @@
 package io.kotest.runner.junit5
 
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.runner.jvm.IsolationTestEngineListener
 import io.kotest.runner.jvm.KotestEngine

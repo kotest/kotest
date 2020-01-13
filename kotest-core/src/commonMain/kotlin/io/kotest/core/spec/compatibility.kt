@@ -3,8 +3,8 @@ package io.kotest.core.spec
 import io.kotest.SpecClass
 import io.kotest.core.*
 import io.kotest.core.test.*
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.extensions.TestListener
 
 /**
  * Contains functions which can be overriden to set config in the same way that KotlinTest 3.x allowed.

@@ -2,8 +2,8 @@ package io.kotest.extensions.time
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.ProjectListener
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.extensions.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -82,7 +82,8 @@ abstract class ConstantNowListener<Time : Temporal>(private val now: Time) {
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now), TestListener {
+class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now),
+   TestListener {
 
    override suspend fun beforeTest(testCase: TestCase) {
       changeNow()
@@ -108,7 +109,8 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowProjectListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now), ProjectListener {
+class ConstantNowProjectListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now),
+    ProjectListener {
 
    override fun beforeProject() {
       changeNow()

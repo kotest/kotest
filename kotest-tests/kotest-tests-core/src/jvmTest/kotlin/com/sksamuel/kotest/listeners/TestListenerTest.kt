@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.listeners
 
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import io.kotest.shouldBe
 import io.kotest.specs.WordSpec
 

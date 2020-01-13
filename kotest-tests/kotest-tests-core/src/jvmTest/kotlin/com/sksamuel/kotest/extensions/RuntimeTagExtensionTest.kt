@@ -4,7 +4,7 @@ import io.kotest.assertions.fail
 import io.kotest.core.Tag
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.extensions.RuntimeTagExtension
+import io.kotest.core.extensions.RuntimeTagExtension
 
 class RuntimeTagExtensionTest : StringSpec() {
 

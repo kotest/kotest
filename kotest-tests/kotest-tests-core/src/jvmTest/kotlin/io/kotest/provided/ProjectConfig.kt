@@ -2,11 +2,11 @@ package io.kotest.provided
 
 import com.sksamuel.kotest.AutoCloseListener
 import com.sksamuel.kotest.TestCaseFilterTestFilter
-import io.kotest.AbstractProjectConfig
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.FailureFirstSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.extensions.ProjectLevelFilter
-import io.kotest.extensions.ProjectListener
+import io.kotest.core.extensions.ProjectLevelFilter
+import io.kotest.core.extensions.ProjectListener
 import io.kotest.properties.PropertyTesting
 
 object ProjectConfig : AbstractProjectConfig() {

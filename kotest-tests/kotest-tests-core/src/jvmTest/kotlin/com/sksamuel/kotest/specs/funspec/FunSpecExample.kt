@@ -6,7 +6,7 @@ import io.kotest.core.Tag
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.extensions.TestListener
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
 import io.kotest.specs.FunSpec

@@ -1,4 +1,4 @@
-package io.kotest.extensions
+package io.kotest.core.extensions
 
 /**
  * What is an extension? - An extension allows your code to interact

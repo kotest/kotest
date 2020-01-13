@@ -1,11 +1,12 @@
 package io.kotest.runner.jvm
 
-import io.kotest.Project
+import io.kotest.core.config.Project
 import io.kotest.core.Tag
+import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.isDoNotParallelize
-import io.kotest.extensions.SpecifiedTagsTagExtension
+import io.kotest.core.extensions.SpecifiedTagsTagExtension
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
 import io.kotest.runner.jvm.spec.SpecExecutor
@@ -29,15 +30,21 @@ class KotestEngine(
    private val specExecutor = SpecExecutor(listener)
 
    init {
-      Project.registerTestCaseFilter(filters)
+      Project.registerFilters(filters)
       if (includedTags.isNotEmpty() || excludedTags.isNotEmpty())
-         Project.registerExtension(SpecifiedTagsTagExtension(includedTags, excludedTags))
+         Project.registerExtension(
+            SpecifiedTagsTagExtension(
+               includedTags,
+               excludedTags
+            )
+         )
    }
 
    private fun afterAll() = Try { Project.afterAll() }
 
    private fun start() = Try {
       listener.engineStarted(classes)
+      Project.dumpProjectConfig()
       Project.beforeAll()
    }
 
