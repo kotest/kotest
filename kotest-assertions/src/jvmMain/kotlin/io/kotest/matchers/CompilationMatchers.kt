@@ -37,30 +37,30 @@ private val compiles = object : Matcher<String> {
  * Assert that given codeSnippet[String] compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available for calling process will be available for code snippet snippet as well.
- * @see [String.shouldNotCompiles]
+ * @see [String.shouldNotCompile]
  * */
-fun String.shouldCompiles() = this should compiles
+fun String.shouldCompile() = this should compiles
 
 /**
  * Assert that given codeSnippet[String] does not compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available for calling process will be available for code snippet snippet as well.
- * @see [String.shouldCompiles]
+ * @see [String.shouldCompile]
  * */
-fun String.shouldNotCompiles() = this shouldNot compiles
+fun String.shouldNotCompile() = this shouldNot compiles
 
 /**
  * Assert that given file[File] compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available for calling process will be available for code snippet snippet as well.
- * @see [File.shouldNotCompiles]
+ * @see [File.shouldNotCompile]
  * */
-fun File.shouldCompiles() = readText() should compiles
+fun File.shouldCompile() = readText() should compiles
 
 /**
  * Assert that given file[File] does not compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available for calling process will be available for code snippet snippet as well.
- * @see [File.shouldNotCompiles]
+ * @see [File.shouldNotCompile]
  * */
-fun File.shouldNotCompiles() = readText() shouldNot compiles
+fun File.shouldNotCompile() = readText() shouldNot compiles

@@ -3,8 +3,8 @@ package com.sksamuel.kotest.matchers
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.matchers.shouldCompiles
-import io.kotest.matchers.shouldNotCompiles
+import io.kotest.matchers.shouldCompile
+import io.kotest.matchers.shouldNotCompile
 import java.io.File
 
 class CompilationsMatcherTest : StringSpec() {
@@ -24,9 +24,9 @@ class CompilationsMatcherTest : StringSpec() {
              val aString: String = "A valid variable assignment"
           """.trimIndent()
 
-         codeSnippet.shouldCompiles()
+         codeSnippet.shouldCompile()
          file.writeText(codeSnippet)
-         file.shouldCompiles()
+         file.shouldCompile()
       }
 
       "a code snippet of invalid variable assignment should not compile" {
@@ -34,9 +34,9 @@ class CompilationsMatcherTest : StringSpec() {
              val aString: String = 123
           """.trimIndent()
 
-         codeSnippet.shouldNotCompiles()
+         codeSnippet.shouldNotCompile()
          file.writeText(codeSnippet)
-         file.shouldNotCompiles()
+         file.shouldNotCompile()
       }
 
       "a code snippet with missing variable assignment should not compile" {
@@ -49,9 +49,9 @@ class CompilationsMatcherTest : StringSpec() {
             }
           """.trimIndent()
 
-         codeSnippet.shouldNotCompiles()
+         codeSnippet.shouldNotCompile()
          file.writeText(codeSnippet)
-         file.shouldNotCompiles()
+         file.shouldNotCompile()
       }
 
       "a code snippet with a proper import statement should compile" {
@@ -65,9 +65,9 @@ class CompilationsMatcherTest : StringSpec() {
             }
           """.trimIndent()
 
-         codeSnippet.shouldCompiles()
+         codeSnippet.shouldCompile()
          file.writeText(codeSnippet)
-         file.shouldCompiles()
+         file.shouldCompile()
       }
 
       "a code snippet with a invalid import statement should not compile" {
@@ -81,9 +81,9 @@ class CompilationsMatcherTest : StringSpec() {
             }
           """.trimIndent()
 
-         codeSnippet.shouldNotCompiles()
+         codeSnippet.shouldNotCompile()
          file.writeText(codeSnippet)
-         file.shouldNotCompiles()
+         file.shouldNotCompile()
       }
    }
 }
