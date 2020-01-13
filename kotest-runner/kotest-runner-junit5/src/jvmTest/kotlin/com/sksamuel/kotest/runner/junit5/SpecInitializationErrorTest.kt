@@ -13,6 +13,32 @@ import org.junit.platform.engine.reporting.ReportEntry
 
 class SpecInitializationErrorTest : FunSpec({
 
+   test("an error in a class field should mark spec as failed") {
+
+      val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
+      val finished = mutableMapOf<String, TestExecutionResult.Status>()
+
+      val engineListener = object : EngineExecutionListener {
+         override fun executionFinished(testDescriptor: TestDescriptor, testExecutionResult: TestExecutionResult) {
+            finished[testDescriptor.displayName] = testExecutionResult.status
+         }
+
+         override fun reportingEntryPublished(testDescriptor: TestDescriptor?, entry: ReportEntry?) {}
+         override fun executionSkipped(testDescriptor: TestDescriptor?, reason: String?) {}
+         override fun executionStarted(testDescriptor: TestDescriptor?) {}
+         override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
+      }
+
+      val listener = JUnitTestEngineListener(engineListener, root)
+      val executor = SpecExecutor(listener)
+      executor.execute(SpecWithFieldError::class)
+
+      finished.toMap() shouldBe mapOf(
+         "Spec instantiation failed" to TestExecutionResult.Status.ABORTED,
+         "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
+      )
+   }
+
    test("an error in a class initializer should mark spec as failed") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
@@ -40,10 +66,18 @@ class SpecInitializationErrorTest : FunSpec({
    }
 })
 
-private class SpecWithInitError : FunSpec() {
+private class SpecWithFieldError : FunSpec() {
    private val err = "failme".apply { error("foo") }
 
    init {
+      test("foo") {
+      }
+   }
+}
+
+private class SpecWithInitError : FunSpec() {
+   init {
+      error("foo")
       test("foo") {
       }
    }

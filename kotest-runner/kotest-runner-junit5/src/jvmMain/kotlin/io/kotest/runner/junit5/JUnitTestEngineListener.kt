@@ -177,19 +177,6 @@ class JUnitTestEngineListener(
       }
    }
 
-   // if no test events were received for a spec then we need to insert a dummy
-   // placeholder test so the ide shows the spec, otherwise it just disappears
-//   private fun ensureSpecVisible(kclass: KClass<out SpecConfiguration>) {
-//      val description = kclass.description()
-//      if (!isVisible(description)) {
-//         val spec = descriptors[description]!!
-//         val test = spec.append(description.append("No tests"), TestDescriptor.Type.TEST, null)
-//         listener.dynamicTestRegistered(test)
-//         listener.executionStarted(test)
-//         listener.executionFinished(test, TestExecutionResult.successful())
-//      }
-//   }
-
    private fun isVisible(description: Description) =
       results.exists { description.isAncestorOf(it.first) }
 
