@@ -36,6 +36,7 @@ Changelog
 * SkipTestException removed
 * Fixed file matchers to check for null
 * Test callbacks now coroutine enabled
+* Bugfix: Error in spec initialization is cryptic with recent intellij #1097
 
 #### 3.4.2
 

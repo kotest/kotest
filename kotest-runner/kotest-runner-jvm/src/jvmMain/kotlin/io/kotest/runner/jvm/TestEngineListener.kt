@@ -46,11 +46,6 @@ interface TestEngineListener {
    fun specFinished(klass: KClass<out SpecConfiguration>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
    /**
-    * Is invoked if a [SpecConfiguration] throws an exception during initialisation
-    */
-   fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {}
-
-   /**
     * Invoked if a [TestCase] is about to be executed (is active).
     * Will not be invoked if the test is ignored.
     */
@@ -72,6 +67,8 @@ interface TestEngineListener {
     * Invoked each time an instance of a [SpecClass] is created.
     * A spec may be created once per class, or one per [TestCase].
     */
-   fun specCreated(spec: SpecConfiguration) {}
+   fun specInstantiated(spec: SpecConfiguration) {}
+
+   fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {}
 
 }

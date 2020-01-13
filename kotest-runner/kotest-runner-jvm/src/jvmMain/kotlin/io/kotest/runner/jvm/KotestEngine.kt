@@ -1,10 +1,10 @@
 package io.kotest.runner.jvm
 
-import io.kotest.DoNotParallelize
 import io.kotest.Project
 import io.kotest.core.Tag
 import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.extensions.SpecifiedTagsTagExtension
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
@@ -12,11 +12,9 @@ import io.kotest.runner.jvm.spec.SpecExecutor
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.Collections.emptyList
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
 
 class KotestEngine(
    val classes: List<KClass<out SpecConfiguration>>,
@@ -62,10 +60,16 @@ class KotestEngine(
 
    private fun submitBatch(specs: List<KClass<out SpecConfiguration>>, parallelism: Int) {
       val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotest-engine-%d"))
-      specs.forEach { submitSpec(it, executor) }
+      specs.forEach { klass ->
+         executor.submit {
+            runBlocking {
+               specExecutor.execute(klass)
+            }
+         }
+      }
       executor.shutdown()
-
       logger.trace("Waiting for spec execution to terminate")
+
       val error = try {
          executor.awaitTermination(1, TimeUnit.DAYS)
          null
@@ -101,16 +105,4 @@ class KotestEngine(
          }
       )
    }
-
-   private fun submitSpec(klass: KClass<out SpecConfiguration>, executor: ExecutorService) {
-      runBlocking {
-         specExecutor.execute(klass).onFailure {
-            listener.specFailed(klass, it)
-            // if a spec fails to even instantiate properly we fail tast
-            executor.shutdownNow()
-         }
-      }
-   }
 }
-
-fun KClass<*>.isDoNotParallelize(): Boolean = findAnnotation<DoNotParallelize>() != null

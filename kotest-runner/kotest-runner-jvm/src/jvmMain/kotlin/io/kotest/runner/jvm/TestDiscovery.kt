@@ -2,7 +2,6 @@ package io.kotest.runner.jvm
 
 import io.github.classgraph.ClassGraph
 import io.kotest.Project
-import io.kotest.SpecClass
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
@@ -82,6 +81,7 @@ object TestDiscovery {
          .sortedBy { it.simpleName }
       logger.trace("After discovery extensions there are ${filtered.size} spec classes")
 
+      logger.debug("Discovery is returning ${afterExtensions.size} specs")
       DiscoveryResult(afterExtensions)
    }
 

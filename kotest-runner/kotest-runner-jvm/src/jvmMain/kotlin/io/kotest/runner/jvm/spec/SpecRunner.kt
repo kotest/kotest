@@ -50,15 +50,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    }
 
    /**
-    * Creates an instance of the supplied [SpecConfiguration] by delegating to the project constructors,
-    * and notifies the [TestEngineListener] of the instantiation event.
-    */
-   protected fun createInstance(kclass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
-      instantiateSpec(kclass).onSuccess {
-         Try { listener.specCreated(it) }
-      }
-
-   /**
     * Notifies the user listeners that a [SpecConfiguration] is starting.
     * This will be invoked for every instance of a spec.
     */

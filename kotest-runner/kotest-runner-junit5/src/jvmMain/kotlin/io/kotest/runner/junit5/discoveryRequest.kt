@@ -8,9 +8,11 @@ import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DirectorySelector
 import org.junit.platform.engine.discovery.MethodSelector
+import org.junit.platform.engine.discovery.NestedMethodSelector
 import org.junit.platform.engine.discovery.PackageNameFilter
 import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UriSelector
+import org.junit.platform.engine.discovery.UniqueIdSelector
 
 /**
  * Returns a Kotest [DiscoveryRequest] built from the selectors and filters present
@@ -30,7 +32,10 @@ import org.junit.platform.engine.discovery.UriSelector
  *
  * Unsupported selectors are:
  *
- * - [MethodSelector] - not supported because kotest does not define tests as methods/functions
+ * - [MethodSelector] - not supported because kotest does not define tests as methods
+ * - [NestedMethodSelector] - not supported becase kotest does not define tests as methods
+ * - [UniqueIdSelector]
+ * - [DirectorySelector]
  */
 internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
 

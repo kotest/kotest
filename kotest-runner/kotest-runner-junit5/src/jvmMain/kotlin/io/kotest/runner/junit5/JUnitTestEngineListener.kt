@@ -1,6 +1,8 @@
 package io.kotest.runner.junit5
 
+import arrow.core.extensions.list.foldable.exists
 import io.kotest.Project
+import io.kotest.core.spec.FunSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
@@ -60,7 +62,9 @@ import kotlin.reflect.KClass
  * Must start tests after their parent or they can go missing.
  * Sibling containers can start and finish in parallel.
  */
-class JUnitTestRunnerListener(
+private class NoTests : FunSpec()
+
+class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor
 ) : TestEngineListener {
@@ -82,6 +86,10 @@ class JUnitTestRunnerListener(
    override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
       logger.trace("Engine started; classes=[$classes]")
       listener.executionStarted(root)
+      val desc = createSpecDescriptor(NoTests::class)
+      listener.dynamicTestRegistered(desc)
+      listener.executionStarted(desc)
+      listener.executionFinished(desc, TestExecutionResult.successful())
    }
 
    /**
@@ -115,28 +123,13 @@ class JUnitTestRunnerListener(
    }
 
    override fun specStarted(kclass: KClass<out SpecConfiguration>) {
-      logger.trace("beforeSpecClass [${kclass.qualifiedName}]")
+      logger.trace("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = createSpecDescriptor(kclass)
          logger.trace("Registering junit dynamic test: $descriptor")
          listener.dynamicTestRegistered(descriptor)
          logger.trace("Notifying junit that execution has started: $descriptor")
          listener.executionStarted(descriptor)
-      } catch (t: Throwable) {
-         logger.error("Error in JUnit Platform listener", t)
-         specException = t
-      }
-   }
-
-   override fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
-      logger.trace("beforeSpecClass [${klass.qualifiedName}]")
-      try {
-         val descriptor = createSpecDescriptor(klass)
-         logger.trace("Registering junit dynamic test: $descriptor")
-         listener.dynamicTestRegistered(descriptor)
-         logger.trace("Notifying junit that execution has started: $descriptor")
-         listener.executionStarted(descriptor)
-         listener.executionFinished(descriptor, TestExecutionResult.aborted(t))
       } catch (t: Throwable) {
          logger.error("Error in JUnit Platform listener", t)
          specException = t
@@ -156,6 +149,7 @@ class JUnitTestRunnerListener(
       val nestedFailure = findChildFailure(klass.description())
 
       val result = when {
+         t != null -> TestExecutionResult.failed(t)
          specException != null -> TestExecutionResult.failed(specException)
          nestedFailure != null -> nestedFailure.testExecutionResult()
          else -> TestExecutionResult.successful()
@@ -164,8 +158,40 @@ class JUnitTestRunnerListener(
       logger.trace("Notifying junit that execution has finished: $descriptor, $result")
       // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
       // this is because in gradle and intellij nested errors are not very obvious
+      //ensureSpecVisible(klass)
       listener.executionFinished(descriptor, result)
    }
+
+   /**
+    * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
+    * failed test so that the spec shows up.
+    */
+   override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
+      val description = kclass.description()
+      val spec = descriptors[description]!!
+      val test = spec.append(description.append("Spec instantiation failed"), TestDescriptor.Type.TEST, null)
+      if (!isVisible(description)) {
+         listener.dynamicTestRegistered(test)
+         listener.executionStarted(test)
+         listener.executionFinished(test, TestExecutionResult.aborted(t))
+      }
+   }
+
+   // if no test events were received for a spec then we need to insert a dummy
+   // placeholder test so the ide shows the spec, otherwise it just disappears
+//   private fun ensureSpecVisible(kclass: KClass<out SpecConfiguration>) {
+//      val description = kclass.description()
+//      if (!isVisible(description)) {
+//         val spec = descriptors[description]!!
+//         val test = spec.append(description.append("No tests"), TestDescriptor.Type.TEST, null)
+//         listener.dynamicTestRegistered(test)
+//         listener.executionStarted(test)
+//         listener.executionFinished(test, TestExecutionResult.successful())
+//      }
+//   }
+
+   private fun isVisible(description: Description) =
+      results.exists { description.isAncestorOf(it.first) }
 
    override fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)

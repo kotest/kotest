@@ -22,7 +22,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
 
-   suspend fun execute(kclass: KClass<out SpecConfiguration>) = Try {
+   /**
+    * Executes the given [SpecConfiguration] and returns true if the spec returned normally.
+    */
+   suspend fun execute(kclass: KClass<out SpecConfiguration>) {
       logger.trace("Executing spec $kclass")
       notifySpecStarted(kclass)
          .flatMap { createInstance(kclass) }
@@ -48,7 +51,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) = Try {
-      logger.trace("Executing engine listener 'executionFinished' for ${kclass}")
+      logger.trace("Executing engine listener callback:specFinished for:${kclass}")
       listener.specFinished(kclass, t, results)
    }
 
@@ -58,7 +61,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private fun createInstance(kclass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
       instantiateSpec(kclass).onSuccess {
-         Try { listener.specCreated(it) }
+         Try { listener.specInstantiated(it) }
+      }.onFailure {
+         it.printStackTrace()
+         Try { listener.specInstantiationError(kclass, it) }
       }
 
    private suspend fun runTests(spec: SpecConfiguration): Try<Map<TestCase, TestResult>> {

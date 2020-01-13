@@ -29,10 +29,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun getId(): String = EngineId
 
    override fun execute(request: ExecutionRequest) {
-      logger.debug("JUnit execution request [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
+      logger.debug("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       val listener = IsolationTestEngineListener(
-         JUnitTestRunnerListener(
+         JUnitTestEngineListener(
             SynchronizedEngineExecutionListener(request.engineExecutionListener),
             root
          )
@@ -52,9 +52,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId
    ): KotestEngineDescriptor {
-      logger.trace("configurationParameters=" + request.configurationParameters)
-      logger.trace("uniqueId=$uniqueId")
-      logger.trace(request.string())
+      logger.debug("uniqueId=$uniqueId")
+      logger.debug(request.string())
 
       val postFilters = request.postFilters()
 

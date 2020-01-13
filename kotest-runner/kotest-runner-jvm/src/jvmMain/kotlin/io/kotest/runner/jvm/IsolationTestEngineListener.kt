@@ -34,12 +34,22 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       listener.engineStarted(classes)
    }
 
-   override fun specCreated(spec: SpecConfiguration) {
-      if (runningSpec.compareAndSet(null, spec::class.description())) {
-         listener.specCreated(spec)
+   override fun specInstantiated(spec: SpecConfiguration) {
+      if (runningSpec.get() == spec::class.description()) {
+         listener.specInstantiated(spec)
       } else {
          queue {
-            specCreated(spec)
+            specInstantiated(spec)
+         }
+      }
+   }
+
+   override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
+      if (runningSpec.get() == kclass.description()) {
+         listener.specInstantiationError(kclass, t)
+      } else {
+         queue {
+            specInstantiationError(kclass, t)
          }
       }
    }
@@ -74,21 +84,10 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specFailed(klass: KClass<out SpecConfiguration>, t: Throwable) {
-      if (runningSpec.compareAndSet(null, klass.description())) {
-         listener.specFailed(klass, t)
-      } else {
-         queue {
-            specFailed(klass, t)
-         }
-      }
-   }
-
    override fun specStarted(kclass: KClass<out SpecConfiguration>) {
-      if (isRunning(kclass)) {
+      if (runningSpec.compareAndSet(null, kclass.description())) {
          listener.specStarted(kclass)
       } else {
-         logger.trace("Queuing")
          queue {
             specStarted(kclass)
          }
