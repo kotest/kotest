@@ -7,7 +7,6 @@ import io.kotest.core.spec.funSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.runner.junit5.JUnitTestEngineListener
 import io.kotest.runner.junit5.KotestEngineDescriptor
 import io.kotest.shouldBe
@@ -21,6 +20,7 @@ import kotlin.time.ExperimentalTime
 
 @UseExperimental(ExperimentalTime::class)
 val childFailsParentTest = funSpec {
+
    test("failed test should fail parent and spec") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
@@ -64,7 +64,6 @@ val childFailsParentTest = funSpec {
       listener.specFinished(JUnitTestRunnerListenerTests::class, null, emptyMap())
       listener.engineFinished(null)
 
-      finished.shouldHaveSize(4)
       finished.toMap() shouldBe mapOf(
          "test1" to TestExecutionResult.Status.FAILED,
          "test2" to TestExecutionResult.Status.FAILED,

@@ -2,7 +2,6 @@ package io.kotest.runner.junit5
 
 import arrow.core.extensions.list.foldable.exists
 import io.kotest.Project
-import io.kotest.core.spec.FunSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
@@ -62,8 +61,6 @@ import kotlin.reflect.KClass
  * Must start tests after their parent or they can go missing.
  * Sibling containers can start and finish in parallel.
  */
-private class NoTests : FunSpec()
-
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor
@@ -86,10 +83,6 @@ class JUnitTestEngineListener(
    override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
       logger.trace("Engine started; classes=[$classes]")
       listener.executionStarted(root)
-      val desc = createSpecDescriptor(NoTests::class)
-      listener.dynamicTestRegistered(desc)
-      listener.executionStarted(desc)
-      listener.executionFinished(desc, TestExecutionResult.successful())
    }
 
    /**
