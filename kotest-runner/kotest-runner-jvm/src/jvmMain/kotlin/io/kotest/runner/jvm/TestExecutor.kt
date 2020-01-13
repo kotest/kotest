@@ -124,6 +124,8 @@ class TestExecutor(private val listener: TestEngineListener) {
          TimeoutException("Execution of test took longer than ${timeout}ms")
       } catch (e: Throwable) {
          e.unwrapIfReflectionCall()
+      } catch (e: java.lang.AssertionError) {
+        e
       }
 
       val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
