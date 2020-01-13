@@ -1,10 +1,13 @@
 package io.kotest.matchers
 
 import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.KotlinCompilation.Result
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
+import com.tschuchort.compiletesting.KotlinCompilation.Result
 import com.tschuchort.compiletesting.SourceFile
-import io.kotest.*
+import io.kotest.Matcher
+import io.kotest.MatcherResult
+import io.kotest.should
+import io.kotest.shouldNot
 import java.io.File
 
 private fun compileCodeSnippet(codeSnippet: String): Result {
@@ -30,10 +33,34 @@ private val compiles = object : Matcher<String> {
    }
 }
 
+/**
+ * Assert that given codeSnippet[String] compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * @see [String.shouldNotCompiles]
+ * */
 fun String.shouldCompiles() = this should compiles
 
+/**
+ * Assert that given codeSnippet[String] does not compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * @see [String.shouldCompiles]
+ * */
 fun String.shouldNotCompiles() = this shouldNot compiles
 
+/**
+ * Assert that given file[File] compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * @see [File.shouldNotCompiles]
+ * */
 fun File.shouldCompiles() = readText() should compiles
 
+/**
+ * Assert that given file[File] does not compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available for calling process will be available for code snippet snippet as well.
+ * @see [File.shouldNotCompiles]
+ * */
 fun File.shouldNotCompiles() = readText() shouldNot compiles
