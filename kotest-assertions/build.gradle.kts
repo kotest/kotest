@@ -62,6 +62,7 @@ kotlin {
             implementation("com.github.wumpz:diffutils:2.2")
             implementation("com.univocity:univocity-parsers:2.8.3")
             implementation("com.github.mifmif:generex:1.0.2")
+            implementation("com.github.tschuchortdev:kotlin-compile-testing:1.2.5")
          }
       }
 
