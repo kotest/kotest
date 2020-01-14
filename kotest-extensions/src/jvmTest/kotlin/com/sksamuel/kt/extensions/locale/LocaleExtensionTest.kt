@@ -3,12 +3,12 @@ package com.sksamuel.kt.extensions.locale
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.withDefaultLocale
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrowAny
-import io.kotest.specs.DescribeSpec
 import io.kotest.specs.FunSpec
 import java.util.Locale
 import kotlin.reflect.KClass

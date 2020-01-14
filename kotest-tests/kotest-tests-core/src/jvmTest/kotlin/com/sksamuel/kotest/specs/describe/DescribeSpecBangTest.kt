@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.describe
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.DescribeSpec
+import io.kotest.core.spec.style.DescribeSpec
 
 class DescribeSpecBangTest : DescribeSpec() {
 
@@ -26,7 +26,5 @@ class DescribeSpecBangTest : DescribeSpec() {
         }
       }
     }
-
   }
-
 }

@@ -11,17 +11,17 @@ import io.kotest.core.spec.SpecConfiguration
  * The receiver of the block is a [FunSpecTestFactoryConfiguration] which allows tests
  * to be defined using the 'fun-spec' style.
  */
-fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
-   val config = FunSpecTestFactoryConfiguration()
+fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
+   val config = DescribeSpecTestFactoryConfiguration()
    config.block()
    return config.build()
 }
 
-class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
+class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecDsl {
    override val addTest = ::addDynamicTest
 }
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : SpecConfiguration(), FunSpecDsl {
+abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : SpecConfiguration(), DescribeSpecDsl {
    override val addTest = ::addRootTestCase
 
    init {

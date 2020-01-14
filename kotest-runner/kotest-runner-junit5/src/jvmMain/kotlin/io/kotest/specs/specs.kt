@@ -1,7 +1,6 @@
 package io.kotest.specs
 
 import io.kotest.Matcher
-import io.kotest.core.specs.AbstractDescribeSpec
 import io.kotest.core.specs.AbstractExpectSpec
 import io.kotest.core.specs.AbstractFeatureSpec
 import io.kotest.core.specs.AbstractFreeSpec
@@ -20,7 +19,6 @@ interface IntelliMarker {
 
 abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractAnnotationSpec(body), IntelliMarker
 
-abstract class DescribeSpec(body: AbstractDescribeSpec.() -> Unit = {}) : AbstractDescribeSpec(body), IntelliMarker
 abstract class ExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractExpectSpec(body), IntelliMarker
 
 abstract class FeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : AbstractFeatureSpec(body), IntelliMarker

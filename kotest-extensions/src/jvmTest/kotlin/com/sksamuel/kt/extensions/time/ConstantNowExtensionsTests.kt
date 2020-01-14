@@ -1,13 +1,13 @@
 package com.sksamuel.kt.extensions.time
 
 import io.kotest.SpecClass
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
-import io.kotest.specs.DescribeSpec
 import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.delay
 import java.time.Instant

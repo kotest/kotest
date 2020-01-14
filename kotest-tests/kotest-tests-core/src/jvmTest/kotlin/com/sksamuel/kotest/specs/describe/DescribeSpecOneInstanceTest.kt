@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.describe
 
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.shouldBe
-import io.kotest.specs.DescribeSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class DescribeSpecOneInstanceTest : DescribeSpec() {

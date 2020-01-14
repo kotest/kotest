@@ -3,12 +3,12 @@ package com.sksamuel.kt.extensions.locale
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.locale.TimeZoneTestListener
 import io.kotest.extensions.locale.withDefaultTimeZone
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrowAny
-import io.kotest.specs.DescribeSpec
 import io.kotest.specs.FunSpec
 import java.time.ZoneId
 import java.util.TimeZone
