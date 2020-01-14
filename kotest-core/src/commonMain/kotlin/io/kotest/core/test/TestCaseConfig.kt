@@ -31,14 +31,17 @@ data class TestCaseConfig constructor(
  * Creates a [TestCaseConfig] from the given parameters, reverting to the
  * receiver for null parameters.
  */
+@UseExperimental(ExperimentalTime::class)
 fun TestCaseConfig.deriveTestConfig(
    enabled: Boolean? = null,
    tags: Set<Tag>? = null,
-   extensions: List<TestCaseExtension>? = null
+   extensions: List<TestCaseExtension>? = null,
+   timeout: Duration? = null
 ) = TestCaseConfig(
-   enabled ?: this.enabled,
+   enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
-   extensions = extensions ?: this.extensions
+   extensions = extensions ?: this.extensions,
+   timeout = timeout ?: this.timeout
 )
 
 /**

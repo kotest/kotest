@@ -27,7 +27,7 @@ interface FunSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions)
+         val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
          spec.addTest(name, test, config, TestType.Test)
       }
    }
@@ -51,13 +51,15 @@ interface FunSpecDsl : SpecDsl {
       }
 
       inner class TestBuilder(val name: String) {
+         @UseExperimental(ExperimentalTime::class)
          suspend fun config(
             enabled: Boolean? = null,
             tags: Set<Tag>? = null,
+            timeout: Duration? = null,
             extensions: List<TestCaseExtension>? = null,
             test: suspend TestContext.() -> Unit
          ) {
-            val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions)
+            val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
             context.registerTestCase(name, test, config, TestType.Test)
          }
       }

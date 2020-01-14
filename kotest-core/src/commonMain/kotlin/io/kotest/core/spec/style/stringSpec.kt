@@ -1,15 +1,17 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.*
+import io.kotest.core.Tag
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.spec.SpecDsl
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.SpecDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
-import io.kotest.core.extensions.TestCaseExtension
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -50,13 +52,15 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : SpecConfiguration(
  */
 interface StringSpecDsl : SpecDsl {
 
+   @UseExperimental(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       tags: Set<Tag>? = null,
+      timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions)
+      val config = defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
       addTest(this, test, config, TestType.Test)
    }
 
