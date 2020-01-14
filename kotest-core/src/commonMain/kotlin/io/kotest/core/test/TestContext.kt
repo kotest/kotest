@@ -65,9 +65,10 @@ data class NestedTest(
    val sourceRef: SourceRef
 )
 
-fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase =
-   TestCase(
-      parent.append(name),
+fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase {
+   require(!parent.names().contains(this.name)) { "Parent should not contain name of this test" }
+   return TestCase(
+      parent.append(this.name),
       spec,
       test,
       sourceRef,
@@ -76,3 +77,4 @@ fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCas
       null,
       null
    )
+}

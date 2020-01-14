@@ -26,7 +26,8 @@ fun TestCase.isActive(): Boolean {
    val focused = isFocused() && isTopLevel()
    val hasFocused = spec.focusTests().isNotEmpty()
    val enabledInConfig = config.enabled
-   val disabledViaBang = isBang() && sysprop("kotest.bang.disable").isEmpty()
+   val bangEnabled = sysprop("kotest.bang.disable").isEmpty()
+   val disabledViaBang = isBang() && bangEnabled
    val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec.tags)
    val filtered = Project.testCaseFilters()
       .map { it.filter(description) }.any { it == TestFilterResult.Exclude }

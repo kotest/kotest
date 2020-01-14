@@ -40,10 +40,12 @@ interface WordSpecDsl : SpecDsl {
    infix fun String.`when`(init: suspend WhenContext.() -> Unit) = addWhenContext(this, init)
 
    private fun addWhenContext(name: String, init: suspend WhenContext.() -> Unit) {
-      addTest("$name when", { WhenContext(
-         this,
-         this@WordSpecDsl
-      ).init() }, defaultTestCaseConfig, TestType.Container)
+      addTest(
+         "$name when",
+         { WhenContext(this, this@WordSpecDsl).init() },
+         defaultTestCaseConfig,
+         TestType.Container
+      )
    }
 
    @KotestDsl
@@ -104,6 +106,7 @@ interface WordSpecDsl : SpecDsl {
    }
 
    @KotestDsl
+   // this context is used so we can add the deprecated should method to stop nesting a should inside a should
    class FinalTestContext(val context: TestContext) : TestContext() {
 
       override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)

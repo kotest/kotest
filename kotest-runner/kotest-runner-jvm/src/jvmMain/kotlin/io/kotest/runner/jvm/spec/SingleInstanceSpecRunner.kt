@@ -30,12 +30,11 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       val description: Description,
       override val coroutineContext: CoroutineContext
    ) : TestContext() {
+      // in the single instance runner we execute each nested test as soon as the are registered
       override suspend fun registerTestCase(test: NestedTest) {
-         val description = description.append(test.name)
-         if (seen.contains(description))
-            throw IllegalStateException("Cannot add duplicate test name ${test.name}")
-         // in the single instance runner we execute each nested test as soon as the are registered
          val testCase = test.toTestCase(spec, description)
+         if (seen.contains(testCase.description))
+            throw IllegalStateException("Cannot add duplicate test name ${test.name}")
          executor.execute(testCase, Context(spec, testCase.description, coroutineContext)) { result ->
             results[testCase] = result
          }
