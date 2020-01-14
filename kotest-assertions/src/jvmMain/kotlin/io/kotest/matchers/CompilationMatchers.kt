@@ -8,6 +8,7 @@ import io.kotest.Matcher
 import io.kotest.MatcherResult
 import io.kotest.should
 import io.kotest.shouldNot
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 private fun compileCodeSnippet(codeSnippet: String): Result {
@@ -15,6 +16,8 @@ private fun compileCodeSnippet(codeSnippet: String): Result {
       .apply {
          sources = listOf(SourceFile.kotlin("KClass.kt", codeSnippet))
          inheritClassPath = true
+         verbose = false
+         messageOutputStream = ByteArrayOutputStream()
       }
    val compilationResult = kotlinCompilation.compile()
    kotlinCompilation.workingDir.deleteRecursively()
@@ -27,7 +30,7 @@ private val compiles = object : Matcher<String> {
       val compilationResult = compileCodeSnippet(value)
       return MatcherResult(
          compilationResult.exitCode == ExitCode.OK,
-         { "Expected code to compile, but it failed to compile" },
+         { "Expected code to compile, but it failed to compile with error: \n${compilationResult.messages}" },
          { "Expected code to fail to compile, but it compile" }
       )
    }
