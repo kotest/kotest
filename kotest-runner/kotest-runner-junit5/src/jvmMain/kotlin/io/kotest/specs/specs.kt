@@ -5,7 +5,6 @@ import io.kotest.core.specs.AbstractExpectSpec
 import io.kotest.core.specs.AbstractFeatureSpec
 import io.kotest.core.specs.AbstractFreeSpec
 import io.kotest.core.specs.AbstractShouldSpec
-import io.kotest.core.specs.AbstractWordSpec
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import io.kotest.should as shouldMatch
@@ -30,10 +29,4 @@ abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractSh
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
   // clash with the other should method
   infix fun String.should(matcher: Matcher<String>) = this shouldMatch matcher
-}
-
-abstract class WordSpec(body: AbstractWordSpec.() -> Unit = {}) : AbstractWordSpec(body), IntelliMarker {
-  // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
-  // clash with the other should method
-  infix fun String?.should(matcher: Matcher<String?>) = this shouldMatch matcher
 }

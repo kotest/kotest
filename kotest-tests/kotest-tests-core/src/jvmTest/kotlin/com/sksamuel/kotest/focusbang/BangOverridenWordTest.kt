@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.focusbang
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.specs.WordSpec
 
 class BangOverridenWordTest : WordSpec({
    "setting system property to override bang" should {

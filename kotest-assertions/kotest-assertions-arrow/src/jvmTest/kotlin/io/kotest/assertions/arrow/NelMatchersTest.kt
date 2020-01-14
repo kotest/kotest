@@ -33,11 +33,11 @@ import io.kotest.assertions.arrow.nel.shouldNotContainOnlyNulls
 import io.kotest.assertions.arrow.nel.shouldNotHaveDuplicates
 import io.kotest.assertions.arrow.nel.shouldNotHaveSize
 import io.kotest.assertions.arrow.nel.singleElement
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 
 class NelMatchersTest : WordSpec() {
 

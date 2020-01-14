@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.junit5
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 
 @Suppress("UNREACHABLE_CODE")
 class WordSpecTestCase : WordSpec({

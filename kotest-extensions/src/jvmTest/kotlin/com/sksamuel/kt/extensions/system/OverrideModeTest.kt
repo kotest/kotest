@@ -1,5 +1,6 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.OverrideMode.SetOrError
 import io.kotest.extensions.system.OverrideMode.SetOrError.IllegalOverrideException
@@ -9,7 +10,6 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 
 class OverrideModeTest : WordSpec() {
 

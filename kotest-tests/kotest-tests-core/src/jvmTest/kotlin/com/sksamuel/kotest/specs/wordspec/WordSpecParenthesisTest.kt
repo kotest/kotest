@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.wordspec
 
-import io.kotest.specs.WordSpec
+import io.kotest.core.spec.style.WordSpec
 
 class WordSpecParenthesisTest : WordSpec() {
   init {

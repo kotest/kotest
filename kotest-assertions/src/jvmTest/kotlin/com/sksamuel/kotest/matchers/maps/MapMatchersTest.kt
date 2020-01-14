@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.maps
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.maps.contain
 import io.kotest.matchers.maps.containAll
 import io.kotest.matchers.maps.containExactly
@@ -27,7 +28,6 @@ import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {

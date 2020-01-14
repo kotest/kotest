@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.types
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.beTheSameInstanceAs
@@ -17,7 +18,6 @@ import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 import java.util.ArrayList
 import java.util.LinkedList
 

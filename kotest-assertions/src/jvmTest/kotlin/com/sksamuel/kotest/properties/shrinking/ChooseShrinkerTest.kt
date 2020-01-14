@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.properties.shrinking
 
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -8,7 +9,6 @@ import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.properties.PropertyTesting
 import io.kotest.properties.shrinking.ChooseShrinker
-import io.kotest.specs.WordSpec
 
 class ChooseShrinkerTest : WordSpec() {
 

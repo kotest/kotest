@@ -3,6 +3,7 @@ package com.sksamuel.kt.extensions.system
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemPropertyTestListener
 import io.kotest.extensions.system.withSystemProperties
@@ -11,7 +12,6 @@ import io.kotest.inspectors.forAll
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
 import io.kotest.specs.FreeSpec
-import io.kotest.specs.WordSpec
 import io.mockk.every
 import io.mockk.mockk
 import java.util.Properties
@@ -19,81 +19,83 @@ import kotlin.reflect.KClass
 
 class SystemPropertiesExtensionsTest : FreeSpec() {
 
-  private val key = "SystemPropertiesExtensionsTestFoo"
-  private val value = "SystemPropertiesExtensionsTestBar"
+   private val key = "SystemPropertiesExtensionsTestFoo"
+   private val value = "SystemPropertiesExtensionsTestBar"
 
-  private val mode: OverrideMode = mockk {
-    every { override(any(), any()) } answers { firstArg<Map<String, String>>().plus(secondArg<Map<String,String>>()).toMutableMap() }
-  }
-
-  init {
-    "Should set properties to specific map" - {
-      executeOnAllPropertyOverloads {
-        System.getProperty(key) shouldBe value
+   private val mode: OverrideMode = mockk {
+      every { override(any(), any()) } answers {
+         firstArg<Map<String, String>>().plus(secondArg<Map<String, String>>()).toMutableMap()
       }
-    }
+   }
 
-    "Should return original properties to their place after execution" - {
-      val before = System.getProperties()
-
-      executeOnAllPropertyOverloads {
-        System.getProperties() shouldNotBe before
+   init {
+      "Should set properties to specific map" - {
+         executeOnAllPropertyOverloads {
+            System.getProperty(key) shouldBe value
+         }
       }
 
-      System.getProperties() shouldBe before
+      "Should return original properties to their place after execution" - {
+         val before = System.getProperties()
 
-    }
+         executeOnAllPropertyOverloads {
+            System.getProperties() shouldNotBe before
+         }
 
-    "Should return the computed value" - {
-      val results = executeOnAllPropertyOverloads { "RETURNED" }
+         System.getProperties() shouldBe before
 
-      results.forAll {
-        it shouldBe "RETURNED"
       }
-    }
-  }
 
-  private suspend fun <T> FreeSpecScope.executeOnAllPropertyOverloads(block: suspend () -> T): List<T> {
-    val results = mutableListOf<T>()
+      "Should return the computed value" - {
+         val results = executeOnAllPropertyOverloads { "RETURNED" }
 
-    "String String overload" {
-      results += withSystemProperty(key, value, mode) { block() }
-    }
+         results.forAll {
+            it shouldBe "RETURNED"
+         }
+      }
+   }
 
-    "Pair overload" {
-      results += withSystemProperties(key to value, mode) { block() }
-    }
+   private suspend fun <T> FreeSpecScope.executeOnAllPropertyOverloads(block: suspend () -> T): List<T> {
+      val results = mutableListOf<T>()
 
-    "Properties Overload" {
-      results += withSystemProperties(Properties().apply { put(key, value) }) { block() }
-    }
+      "String String overload" {
+         results += withSystemProperty(key, value, mode) { block() }
+      }
 
-    "Map overload" {
-      results += withSystemProperties(mapOf(key to value), mode) { block() }
-    }
+      "Pair overload" {
+         results += withSystemProperties(key to value, mode) { block() }
+      }
 
-    return results
-  }
+      "Properties Overload" {
+         results += withSystemProperties(Properties().apply { put(key, value) }) { block() }
+      }
+
+      "Map overload" {
+         results += withSystemProperties(mapOf(key to value), mode) { block() }
+      }
+
+      return results
+   }
 
 }
 
 class SystemPropertyListenerTest : WordSpec() {
 
-  override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
+   override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
 
-  override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
-    System.getProperty("wibble") shouldBe null
-  }
+   override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+      System.getProperty("wibble") shouldBe null
+   }
 
-  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
-    System.getProperty("wibble") shouldBe null
-  }
+   override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+      System.getProperty("wibble") shouldBe null
+   }
 
-  init {
-    "sys prop extension" should {
-      "set sys prop" {
-        System.getProperty("wibble") shouldBe "wobble"
+   init {
+      "sys prop extension" should {
+         "set sys prop" {
+            System.getProperty("wibble") shouldBe "wobble"
+         }
       }
-    }
-  }
+   }
 }

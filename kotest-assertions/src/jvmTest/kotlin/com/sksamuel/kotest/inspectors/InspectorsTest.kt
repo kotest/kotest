@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.inspectors
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.forNone
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAny
@@ -14,7 +15,6 @@ import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
 import io.kotest.shouldThrowAny
-import io.kotest.specs.WordSpec
 
 @Suppress("ConstantConditionIf")
 class InspectorsTest : WordSpec() {

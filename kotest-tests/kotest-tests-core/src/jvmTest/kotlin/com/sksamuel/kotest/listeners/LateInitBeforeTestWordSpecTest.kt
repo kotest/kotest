@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.listeners
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 
 class LateInitBeforeTestWordSpecTest : WordSpec() {
 
    private lateinit var string: String
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override fun beforeTest(testCase: TestCase) {
       string = "Hello"
    }
 

@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.reflect.KClass
 
 class TestListenerBeforeSpecTest : FunSpec() {
 
@@ -21,7 +22,7 @@ class TestListenerBeforeSpecTest : FunSpec() {
       counter.incrementAndGet()
    }
 
-   override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+   override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
       counter.get() shouldBe 4
    }
 

@@ -5,6 +5,8 @@ import io.kotest.core.*
 import io.kotest.core.test.*
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestListener
+import io.kotest.shouldBe
+import kotlin.reflect.KClass
 
 /**
  * Contains functions which can be overriden to set config in the same way that KotlinTest 3.x allowed.
@@ -13,6 +15,8 @@ import io.kotest.core.extensions.TestListener
  */
 @Deprecated("This is a compatibility class. It exists only to ease migration and will be removed in 4.1")
 interface CompatibilitySpecConfiguration {
+
+   fun defaultTestCaseConfig(): TestCaseConfig? = null
 
    /**
     * Override this function to register extensions
@@ -78,7 +82,10 @@ interface CompatibilitySpecConfiguration {
    fun beforeSpec(spec: SpecConfiguration) {
    }
 
-   fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+   fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+   }
+
+   fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
    }
 
    fun beforeTest(testCase: TestCase) {

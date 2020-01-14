@@ -5,8 +5,8 @@ import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.ProjectListener
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 
 object SpecExtensionNumbers {
 

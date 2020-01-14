@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.uri
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.uri.haveFragment
 import io.kotest.matchers.uri.haveHost
 import io.kotest.matchers.uri.haveParameter
@@ -12,7 +13,6 @@ import io.kotest.matchers.uri.shouldNotBeOpaque
 import io.kotest.matchers.uri.shouldNotHaveScheme
 import io.kotest.should
 import io.kotest.shouldNot
-import io.kotest.specs.WordSpec
 import java.net.URI
 
 class UriMatchersTest : WordSpec() {

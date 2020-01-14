@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.shouldFail
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beEmpty
@@ -99,7 +100,6 @@ import io.kotest.shouldNotBe
 import io.kotest.shouldNotHave
 import io.kotest.shouldNotThrow
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 import java.util.ArrayList
 import java.util.Comparator
 

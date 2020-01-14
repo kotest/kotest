@@ -4,8 +4,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 object Numbers {

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.forAny
 import io.kotest.forExactly
 import io.kotest.forNone
@@ -10,7 +11,6 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 
 class InspectorsTest : WordSpec() {
 

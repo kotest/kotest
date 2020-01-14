@@ -3,8 +3,8 @@ package com.sksamuel.kotest.extensions
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 
 class LateinitSpecInterceptorWordSpecTest : WordSpec() {
 

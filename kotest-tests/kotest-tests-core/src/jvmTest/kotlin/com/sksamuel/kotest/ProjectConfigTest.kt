@@ -1,8 +1,8 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.provided.ProjectConfig
 import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
 
 class ProjectConfigTest : WordSpec() {
   init {

@@ -1,8 +1,8 @@
 package com.sksamuel.kotest
 
 import io.kotest.SpecClass
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.specs.WordSpec
 
 class FocusTest : WordSpec() {
 

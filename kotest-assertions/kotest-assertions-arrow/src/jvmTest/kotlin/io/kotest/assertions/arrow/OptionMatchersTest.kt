@@ -7,10 +7,10 @@ import io.kotest.assertions.arrow.option.shouldBeNone
 import io.kotest.assertions.arrow.option.shouldBeSome
 import io.kotest.assertions.arrow.option.shouldNotBeNone
 import io.kotest.assertions.arrow.option.shouldNotBeSome
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 
 class OptionMatchersTest : WordSpec() {
 

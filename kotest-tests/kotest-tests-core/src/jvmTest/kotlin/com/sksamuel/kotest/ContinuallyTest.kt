@@ -1,11 +1,11 @@
 package com.sksamuel.kotest
 
 import io.kotest.continually
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.shouldBe
 import io.kotest.shouldThrowExactly
-import io.kotest.specs.WordSpec
 import java.time.Duration
 
 class ContinuallyTest : WordSpec() {

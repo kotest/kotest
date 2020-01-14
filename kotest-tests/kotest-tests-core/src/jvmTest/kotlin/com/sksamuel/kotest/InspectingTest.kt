@@ -1,10 +1,10 @@
 package com.sksamuel.kotest
 
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.forOne
 import io.kotest.inspecting
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
-import io.kotest.specs.WordSpec
 
 class InspectingTest : WordSpec() {
   init {
