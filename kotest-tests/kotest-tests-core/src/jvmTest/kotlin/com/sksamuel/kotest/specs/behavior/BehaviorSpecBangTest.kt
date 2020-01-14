@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.behavior
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecBangTest : BehaviorSpec() {
 

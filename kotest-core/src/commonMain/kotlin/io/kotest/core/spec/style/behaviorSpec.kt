@@ -17,11 +17,11 @@ fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
+class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecDsl {
    override val addTest = ::addDynamicTest
 }
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : SpecConfiguration(), FunSpecDsl {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : SpecConfiguration(), BehaviorSpecDsl {
    override val addTest = ::addRootTestCase
 
    init {

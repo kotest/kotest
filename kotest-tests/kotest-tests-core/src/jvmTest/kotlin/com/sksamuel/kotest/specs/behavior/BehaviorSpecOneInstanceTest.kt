@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.behavior
 
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.shouldBe
-import io.kotest.specs.BehaviorSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class BehaviorSpecOneInstanceTest : BehaviorSpec() {
