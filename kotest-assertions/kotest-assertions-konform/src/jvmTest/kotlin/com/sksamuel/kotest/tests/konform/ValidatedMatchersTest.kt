@@ -7,6 +7,7 @@ import io.konform.validation.jsonschema.minLength
 import io.konform.validation.jsonschema.minimum
 import io.kotest.assertions.konform.shouldBeInvalid
 import io.kotest.assertions.konform.shouldBeValid
+import io.kotest.assertions.konform.shouldContainError
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -38,15 +39,9 @@ class ValidatedMatchersTest : StringSpec({
    "shouldNotBeValid" {
       val invalidUser = UserProfile("A", -1)
 
-      validateUser.shouldBeInvalid(invalidUser) { invalid ->
-         invalid[UserProfile::fullName].let {
-            it.shouldNotBeNull()
-            it shouldContain "must have at least 2 characters"
-         }
-         invalid[UserProfile::age].let {
-            it.shouldNotBeNull()
-            it shouldContain "must be at least '0'"
-         }
+      validateUser.shouldBeInvalid(invalidUser) {
+         it.shouldContainError(UserProfile::fullName, "must have at least 2 characters")
+         it.shouldContainError(UserProfile::age, "must be at least '0'")
       }
       shouldThrow<AssertionError> {
          validateUser shouldBeValid invalidUser

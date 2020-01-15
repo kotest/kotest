@@ -5,6 +5,8 @@ import io.konform.validation.Valid
 import io.konform.validation.Validation
 import io.kotest.Matcher
 import io.kotest.MatcherResult
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.should
 
 infix fun <T> Validation<T>.shouldBeValid(value: T) = this should beValid(value)
@@ -24,4 +26,12 @@ fun <A> beInvalid(a: A) = object : Matcher<Validation<A>> {
 inline fun <T> Validation<T>.shouldBeInvalid(value: T, fn: (Invalid<T>) -> Unit) {
    this.shouldBeInvalid(value)
    fn(this(value) as Invalid<T>)
+}
+
+fun Invalid<*>.shouldContainError(field: Any, error: String) {
+   val list = this[field]
+   list?.let {
+      it.shouldNotBeNull()
+      it shouldContain error
+   }
 }
