@@ -487,7 +487,7 @@ class CollectionMatchersTest : WordSpec() {
       "print errors unambiguously"  {
         shouldThrow<AssertionError> {
           listOf<Any>(1, 2).shouldContain(listOf<Any>(1L, 2L))
-        }.message shouldBe "Collection should contain element [1L, 2L]"
+        }.message shouldBe "Collection should contain element [1L, 2L]; listing some elements [1, 2]"
       }
     }
 
