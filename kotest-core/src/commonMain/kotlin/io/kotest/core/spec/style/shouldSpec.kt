@@ -1,0 +1,52 @@
+package io.kotest.core.spec.style
+
+import io.kotest.Matcher
+import io.kotest.core.factory.TestFactory
+import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.factory.build
+import io.kotest.core.spec.SpecConfiguration
+import io.kotest.should as shouldBeMatcher
+
+/**
+ * Creates a [TestFactory] from the given block.
+ *
+ * The receiver of the block is a [FunSpecTestFactoryConfiguration] which allows tests
+ * to be defined using the 'should-spec' style.
+ *
+ * Example:
+ *
+ * "some test" {
+ *   "with context" {
+ *      should("do something") {
+ *        // test here
+ *      }
+ *    }
+ *  }
+ *
+ *  or
+ *
+ *  should("do something") {
+ *    // test here
+ *  }
+ */
+fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactory {
+   val config = ShouldSpecTestFactoryConfiguration()
+   config.block()
+   return config.build()
+}
+
+class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecDsl {
+   override val addTest = ::addDynamicTest
+}
+
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : SpecConfiguration(), ShouldSpecDsl {
+   override val addTest = ::addRootTestCase
+
+   init {
+      body()
+   }
+
+   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
+   // clash with the other should method
+   infix fun String.should(matcher: Matcher<String>) = this shouldBeMatcher matcher
+}

@@ -5,6 +5,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.createTestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

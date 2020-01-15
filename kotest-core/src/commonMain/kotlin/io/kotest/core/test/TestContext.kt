@@ -4,7 +4,7 @@ import io.kotest.core.SpecClass
 import io.kotest.core.SourceRef
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.specs.KotestDsl
+import io.kotest.core.spec.style.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 
 /**

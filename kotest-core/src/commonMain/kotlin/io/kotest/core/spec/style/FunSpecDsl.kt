@@ -3,7 +3,6 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
-import io.kotest.core.specs.KotestDsl
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
