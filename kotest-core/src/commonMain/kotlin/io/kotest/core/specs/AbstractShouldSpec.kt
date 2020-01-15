@@ -5,6 +5,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.createTestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -37,7 +38,11 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
   fun should(name: String, test: suspend TestContext.() -> Unit) =
       addTestCase(createTestName("should ", name), test, defaultTestCaseConfig, TestType.Test)
 
-  fun should(name: String) = Testbuilder { test, config -> addTestCase(createTestName("should ", name), test, config, TestType.Test) }
+  fun should(name: String) = Testbuilder { test, config -> addTestCase(
+     createTestName(
+        "should ",
+        name
+     ), test, config, TestType.Test) }
 
    inner class Testbuilder(val register: (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
       @UseExperimental(ExperimentalTime::class)
@@ -92,6 +97,10 @@ abstract class AbstractShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : Ab
         }
      }
 
-    suspend fun should(name: String) = Testbuilder { test, config -> context.registerTestCase(createTestName("should ", name), this@AbstractShouldSpec, test, config, TestType.Test) }
+    suspend fun should(name: String) = Testbuilder { test, config -> context.registerTestCase(
+       createTestName(
+          "should ",
+          name
+       ), this@AbstractShouldSpec, test, config, TestType.Test) }
   }
 }

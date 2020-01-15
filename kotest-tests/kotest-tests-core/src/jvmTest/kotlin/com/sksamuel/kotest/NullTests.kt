@@ -7,9 +7,9 @@ import io.kotest.shouldThrow
 class NullTests : WordSpec() {
 
   // don't want compiler to compile this away
-  fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()
+  private fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()
 
-  fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
+  private fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
 
   init {
 

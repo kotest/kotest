@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.specs.createTestName
+import io.kotest.core.test.createTestName
 import io.kotest.shouldBe
 
 class TestPrefixesTest : FunSpec() {

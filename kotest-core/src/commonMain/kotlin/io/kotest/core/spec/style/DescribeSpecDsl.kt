@@ -4,7 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
 import io.kotest.core.specs.KotestDsl
-import io.kotest.core.specs.createTestName
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType

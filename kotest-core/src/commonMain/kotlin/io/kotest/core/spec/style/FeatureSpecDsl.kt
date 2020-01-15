@@ -4,7 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
 import io.kotest.core.specs.KotestDsl
-import io.kotest.core.specs.createTestName
+import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
@@ -54,5 +54,9 @@ class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
          TestType.Test
       )
 
-   fun scenario(name: String) = ScenarioBuilder(createTestName("Scenario: ", name), context, dsl)
+   fun scenario(name: String) = ScenarioBuilder(
+      createTestName(
+         "Scenario: ",
+         name
+      ), context, dsl)
 }

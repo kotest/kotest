@@ -58,12 +58,7 @@ interface WordSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend FinalTestContext.() -> Unit
       ) {
-         val config = TestCaseConfig(
-            enabled = enabled ?: dsl.defaultTestCaseConfig.enabled,
-            timeout = timeout ?: dsl.defaultTestCaseConfig.timeout,
-            tags = tags ?: dsl.defaultTestCaseConfig.tags,
-            extensions = extensions ?: dsl.defaultTestCaseConfig.extensions
-         )
+         val config = dsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
          context.registerTestCase(
             this,
             { FinalTestContext(this).test() },
@@ -72,13 +67,14 @@ interface WordSpecDsl : SpecDsl {
          )
       }
 
-      suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) =
+      suspend infix operator fun String.invoke(test: suspend FinalTestContext.() -> Unit) {
          context.registerTestCase(
             this,
             { FinalTestContext(this).test() },
             dsl.defaultTestCaseConfig,
             TestType.Test
          )
+      }
 
       // we need to override the should method to stop people nesting a should inside a should
       @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
@@ -106,15 +102,15 @@ interface WordSpecDsl : SpecDsl {
    // this context is used so we can add the deprecated should method to stop nesting a should inside a should
    class FinalTestContext(val context: TestContext) : TestContext() {
 
-      override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)
+      override suspend fun registerTestCase(test: NestedTest) {
+         context.registerTestCase(test)
+      }
+
       override val coroutineContext: CoroutineContext = context.coroutineContext
       override val testCase: TestCase = context.testCase
+
       // we need to override the should method to stop people nesting a should inside a should
-      @Deprecated(
-         "A should block can only be used at the top level",
-         ReplaceWith("{}"),
-         level = DeprecationLevel.ERROR
-      )
+      @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
       infix fun String.should(init: () -> Unit) = { init() }
    }
 }

@@ -50,9 +50,9 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : SpecConfiguration(
  * }
  *
  */
+@UseExperimental(ExperimentalTime::class)
 interface StringSpecDsl : SpecDsl {
 
-   @UseExperimental(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       tags: Set<Tag>? = null,

@@ -240,6 +240,7 @@ class JUnitTestEngineListener(
       // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
       // see https://github.com/gradle/gradle/issues/4912
       // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
+      // update jan 2020: Seems we can use CONTAINER_AND_TEST now in intellij, and CONTAINER is invisible in output
       val type = when (testCase.type) {
          TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
          TestType.Test -> TestDescriptor.Type.TEST

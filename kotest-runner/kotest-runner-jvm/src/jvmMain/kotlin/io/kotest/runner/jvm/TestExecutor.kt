@@ -1,7 +1,6 @@
 package io.kotest.runner.jvm
 
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.*
 import io.kotest.core.extensions.TestCaseExtension
@@ -41,7 +40,7 @@ class TestExecutor(private val listener: TestEngineListener) {
       try {
          val start = System.currentTimeMillis()
 
-         notifyBeforeTest(testCase.spec, testCase)
+         notifyBeforeTest(testCase)
             .onFailure {
                logger.error("Before test errors", it)
                throw it
@@ -52,7 +51,7 @@ class TestExecutor(private val listener: TestEngineListener) {
             Project.testCaseExtensions()
 
          runExtensions(testCase, context, start, extensions) { result ->
-            notifyAfterTest(testCase.spec, testCase, result)
+            notifyAfterTest(testCase, result)
             if (result.status != TestStatus.Ignored)
                listener.testFinished(testCase, result)
             onResult(result)
@@ -137,9 +136,9 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] is starting.
     * This will be invoked for every instance of a spec.
     */
-   private suspend fun notifyBeforeTest(spec: SpecConfiguration, testCase: TestCase) = Try {
+   private suspend fun notifyBeforeTest(testCase: TestCase) = Try {
       logger.trace("Executing listeners beforeTest")
-      val listeners = spec.resolvedListeners()
+      val listeners = testCase.spec.resolvedListeners()
       listeners.forEach {
          it.beforeTest(testCase)
       }
@@ -149,9 +148,9 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] has finished.
     * This will be invoked for every instance of a spec.
     */
-   private suspend fun notifyAfterTest(spec: SpecConfiguration, testCase: TestCase, result: TestResult) = Try {
+   private suspend fun notifyAfterTest(testCase: TestCase, result: TestResult) = Try {
       logger.trace("Executing listeners afterTest")
-      val listeners = spec.resolvedListeners()
+      val listeners = testCase.spec.resolvedListeners()
       listeners.forEach {
          it.afterTest(testCase, result)
       }

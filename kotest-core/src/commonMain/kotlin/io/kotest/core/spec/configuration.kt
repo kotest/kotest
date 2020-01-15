@@ -62,7 +62,6 @@ abstract class TestConfiguration {
     * and not other tests in a [Spec].
     */
    fun beforeTest(f: BeforeTest) {
-      println("Building before test")
       beforeTests = beforeTests + f
    }
 
@@ -77,7 +76,6 @@ abstract class TestConfiguration {
    }
 
    fun beforeSpec(f: BeforeSpec) {
-      println("Building before spec")
       beforeSpecs = beforeSpecs + f
    }
 

@@ -5,6 +5,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.createTestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -46,7 +47,9 @@ abstract class AbstractExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : Ab
     suspend fun expect(name: String, test: suspend TestContext.() -> Unit) =
         context.registerTestCase(createTestName("Expect: ", name), this@AbstractExpectSpec, test, this@AbstractExpectSpec.defaultTestCaseConfig, TestType.Test)
 
-    fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context, createTestName("Expect: ", name))
+    fun expect(name: String) = this@AbstractExpectSpec.TestBuilder(context,
+       createTestName("Expect: ", name)
+    )
   }
 
   fun context(name: String, test: suspend ExpectScope.() -> Unit) =
