@@ -1,6 +1,6 @@
 package io.kotest.core.specs
 
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.*
 import io.kotest.core.spec.description
 import io.kotest.core.test.*

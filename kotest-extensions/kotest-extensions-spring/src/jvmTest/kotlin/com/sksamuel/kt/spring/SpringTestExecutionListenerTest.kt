@@ -4,8 +4,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 import io.kotest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

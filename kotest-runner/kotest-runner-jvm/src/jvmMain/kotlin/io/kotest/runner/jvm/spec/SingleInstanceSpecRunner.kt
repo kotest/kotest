@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
@@ -26,16 +26,15 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    private val seen = mutableSetOf<Description>()
 
    inner class Context(
-      val spec: SpecConfiguration,
-      val description: Description,
+      override val testCase: TestCase,
       override val coroutineContext: CoroutineContext
    ) : TestContext() {
       // in the single instance runner we execute each nested test as soon as the are registered
       override suspend fun registerTestCase(test: NestedTest) {
-         val testCase = test.toTestCase(spec, description)
-         if (seen.contains(testCase.description))
+         val nestedTestCase = test.toTestCase(testCase.spec, testCase.description)
+         if (seen.contains(nestedTestCase.description))
             throw IllegalStateException("Cannot add duplicate test name ${test.name}")
-         executor.execute(testCase, Context(spec, testCase.description, coroutineContext)) { result ->
+         executor.execute(testCase, Context(nestedTestCase, coroutineContext)) { result ->
             results[testCase] = result
          }
       }
@@ -50,7 +49,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
                      logger.trace("Executing test $rootTest")
                      executor.execute(
                         rootTest.testCase,
-                        Context(rootTest.testCase.spec, rootTest.testCase.description, coroutineContext)
+                        Context(rootTest.testCase, coroutineContext)
                      ) { result -> results[rootTest.testCase] = result }
                   }
                }

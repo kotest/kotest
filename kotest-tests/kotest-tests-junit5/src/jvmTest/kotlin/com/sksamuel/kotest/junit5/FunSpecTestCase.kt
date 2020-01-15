@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.junit5
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 
 class FunSpecTestCase : FunSpec({
 

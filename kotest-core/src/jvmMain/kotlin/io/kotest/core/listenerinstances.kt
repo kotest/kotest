@@ -1,6 +1,5 @@
 package io.kotest.core
 
-import io.kotest.SpecClass
 import io.kotest.core.extensions.TestListener
 import java.util.*
 import kotlin.reflect.KProperty

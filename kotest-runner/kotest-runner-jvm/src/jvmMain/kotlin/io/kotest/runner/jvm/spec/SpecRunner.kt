@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecConfiguration

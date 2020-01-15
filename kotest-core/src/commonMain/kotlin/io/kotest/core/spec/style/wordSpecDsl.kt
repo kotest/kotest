@@ -3,11 +3,8 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.spec.SpecDsl
 import io.kotest.core.specs.KotestDsl
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.test.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -111,7 +108,7 @@ interface WordSpecDsl : SpecDsl {
 
       override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)
       override val coroutineContext: CoroutineContext = context.coroutineContext
-
+      override val testCase: TestCase = context.testCase
       // we need to override the should method to stop people nesting a should inside a should
       @Deprecated(
          "A should block can only be used at the top level",

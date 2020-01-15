@@ -2,7 +2,6 @@ package io.kotest.specs
 
 import io.kotest.Matcher
 import io.kotest.core.specs.AbstractExpectSpec
-import io.kotest.core.specs.AbstractFeatureSpec
 import io.kotest.core.specs.AbstractFreeSpec
 import io.kotest.core.specs.AbstractShouldSpec
 import org.junit.jupiter.api.TestFactory
@@ -20,10 +19,7 @@ abstract class AnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : Ab
 
 abstract class ExpectSpec(body: AbstractExpectSpec.() -> Unit = {}) : AbstractExpectSpec(body), IntelliMarker
 
-abstract class FeatureSpec(body: AbstractFeatureSpec.() -> Unit = {}) : AbstractFeatureSpec(body), IntelliMarker
-
 abstract class FreeSpec(body: AbstractFreeSpec.() -> Unit = {}) : AbstractFreeSpec(body), IntelliMarker
-
 
 abstract class ShouldSpec(body: AbstractShouldSpec.() -> Unit = {}) : AbstractShouldSpec(body), IntelliMarker {
   // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't

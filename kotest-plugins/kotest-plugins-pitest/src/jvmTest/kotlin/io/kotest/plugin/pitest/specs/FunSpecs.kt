@@ -1,7 +1,7 @@
 package io.kotest.plugin.pitest.specs
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 
 class FunSpecs : FunSpec() {
   init {

@@ -1,7 +1,7 @@
 package com.sksamuel.kt.spring
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 import io.kotest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest

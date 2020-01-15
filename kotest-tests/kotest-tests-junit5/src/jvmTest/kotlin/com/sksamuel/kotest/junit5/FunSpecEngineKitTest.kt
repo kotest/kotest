@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.junit5
 
 import io.kotest.core.config.Project
-import io.kotest.specs.FunSpec
+import io.kotest.core.spec.style.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 

@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.junit5
 
 import io.kotest.assertSoftly
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 import org.junit.platform.testkit.engine.EventType

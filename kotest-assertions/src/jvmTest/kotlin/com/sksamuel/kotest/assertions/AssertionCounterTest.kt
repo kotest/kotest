@@ -6,10 +6,10 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.assertions.AssertionCounter
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.FunSpec
 
 class AssertionCounterTest : FunSpec() {
 

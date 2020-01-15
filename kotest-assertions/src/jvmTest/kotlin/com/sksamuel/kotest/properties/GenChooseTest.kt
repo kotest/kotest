@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.properties
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forall
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.properties.Gen
@@ -8,7 +9,6 @@ import io.kotest.properties.next
 import io.kotest.shouldBe
 import io.kotest.shouldNotThrow
 import io.kotest.shouldThrow
-import io.kotest.specs.FunSpec
 import io.kotest.tables.row
 
 class GenChooseTest : FunSpec({

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.DisplayName
-import io.kotest.specs.FunSpec
+import io.kotest.core.spec.style.FunSpec
 
 @DisplayName("ZZZZZZZ")
 class DisplayNameTest : FunSpec() {

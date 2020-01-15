@@ -16,14 +16,15 @@ external fun it(name: String, fn: () -> Any?)
 external fun xit(name: String, fn: () -> Any?)
 
 fun testContext(
-   desc: Description,
+   testCase: TestCase,
    coroutineContext: CoroutineContext
 ): TestContext = object : TestContext() {
+   override val testCase: TestCase = testCase
    override suspend fun registerTestCase(test: NestedTest) {
       it(test.name) {
          GlobalScope.promise {
             val t = test.test
-            testContext(desc.append(test.name), coroutineContext).t()
+            testContext(TODO(), coroutineContext).t()
          }
       }
    }
@@ -36,7 +37,7 @@ actual fun generateTests(rootTests: List<TestCase>) {
 
    fun runner(testCase: TestCase) = GlobalScope.promise {
       val t = testCase.test
-      testContext(testCase.description, coroutineContext).t()
+      testContext(testCase, coroutineContext).t()
    }
 
    rootTests.forEach {

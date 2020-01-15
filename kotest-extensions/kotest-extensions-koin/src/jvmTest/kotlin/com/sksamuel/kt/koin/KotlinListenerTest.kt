@@ -4,9 +4,9 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinListener
 import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 import org.koin.core.context.GlobalContext
 import org.koin.test.KoinTest
 import org.koin.test.inject

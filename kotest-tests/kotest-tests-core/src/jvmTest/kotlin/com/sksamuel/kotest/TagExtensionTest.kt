@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.Project

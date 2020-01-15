@@ -3,7 +3,7 @@
 //import arrow.core.Failure
 //import arrow.core.Success
 //import io.kotest.core.test.Description
-//import io.kotest.SpecClass
+//import io.kotest.core.SpecClass
 //import io.kotest.core.test.TestCase
 //import io.kotest.core.test.TestResult
 //import io.kotest.core.test.TestType

@@ -2,7 +2,7 @@ package io.kotest.extensions.system
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.TestListener

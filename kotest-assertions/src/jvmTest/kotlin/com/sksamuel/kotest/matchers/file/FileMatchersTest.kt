@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.file
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.file.aDirectory
 import io.kotest.matchers.file.aFile
 import io.kotest.matchers.file.beAbsolute
@@ -36,7 +37,6 @@ import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
-import io.kotest.specs.FunSpec
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

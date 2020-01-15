@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.until
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
-import io.kotest.specs.FunSpec
 import io.kotest.until.fibonacciInterval
 import io.kotest.until.fixedInterval
 import io.kotest.until.until

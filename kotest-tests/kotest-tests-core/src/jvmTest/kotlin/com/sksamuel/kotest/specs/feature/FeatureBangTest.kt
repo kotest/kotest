@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.feature
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.FeatureSpec
+import io.kotest.core.spec.style.FeatureSpec
 
 class FeatureBangTest : FeatureSpec() {
 

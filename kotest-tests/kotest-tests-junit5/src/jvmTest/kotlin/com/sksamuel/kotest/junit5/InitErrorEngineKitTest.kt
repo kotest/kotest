@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.junit5
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.specs.FunSpec
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 
@@ -37,7 +37,7 @@ class InitErrorEngineKitTest : FunSpec({
          }
   }
 }) {
-  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+  override fun afterTest(testCase: TestCase, result: TestResult) {
     System.clearProperty("KotestEngineTest")
   }
 }

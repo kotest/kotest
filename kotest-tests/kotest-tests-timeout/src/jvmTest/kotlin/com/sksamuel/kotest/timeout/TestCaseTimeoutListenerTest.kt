@@ -34,17 +34,19 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
          val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseTimeoutListenerTest) {
             Thread.sleep(500)
-         }.copy(config = TestCaseConfig(
-            true,
-            invocations = 1,
-            threads = 1,
-            timeout = 125.milliseconds
-         )
+         }.copy(
+            config = TestCaseConfig(
+               true,
+               invocations = 1,
+               threads = 1,
+               timeout = 125.milliseconds
+            )
          )
 
          val context = object : TestContext() {
             override suspend fun registerTestCase(test: NestedTest) {}
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
+            override val testCase: TestCase = testCase
          }
          executor.execute(testCase, context)
       }

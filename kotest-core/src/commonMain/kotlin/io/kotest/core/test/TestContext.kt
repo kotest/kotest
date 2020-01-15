@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.SpecClass
+import io.kotest.core.SpecClass
 import io.kotest.core.SourceRef
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.SpecConfiguration
@@ -9,9 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 
 /**
  * A [TestContext] is used as the receiver of a closure that is associated with a [TestCase].
+ *
  * This allows the scope body to interact with the test engine, for instance, adding metadata
- * during a test, reporting that an error was raised, or notifying the discovery
- * of a nested scope.
+ * during a test, inspecting the current [TestCaseConfig], or notifying the runtime of a nested test.
  *
  * The test context extends [CoroutineScope] giving the ability for any test closure to launch
  * coroutines directly, without requiring them to create a scope.
@@ -23,6 +23,11 @@ abstract class TestContext : CoroutineScope {
    infix operator fun String.invoke(@Suppress("UNUSED_PARAMETER") ignored: suspend TestContext.() -> Unit) {
       throw Exception("Nested tests are not allowed to be defined here. Please see the documentation for the spec styles")
    }
+
+   /**
+    * The currently executing [TestCase].
+    */
+   abstract val testCase: TestCase
 
    /**
     * Creates a new [TestCase] and then notifies the test runner of this nested test.
@@ -66,7 +71,6 @@ data class NestedTest(
 )
 
 fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase {
-   require(!parent.names().contains(this.name)) { "Parent should not contain name of this test" }
    return TestCase(
       parent.append(this.name),
       spec,
