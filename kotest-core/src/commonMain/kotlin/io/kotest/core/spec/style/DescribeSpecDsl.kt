@@ -14,7 +14,12 @@ import kotlin.time.ExperimentalTime
 interface DescribeSpecDsl : SpecDsl {
 
    @KotestDsl
-   class TestBuilder(val context: TestContext, val name: String, val dsl: DescribeSpecDsl) {
+   class TestBuilder(
+      val context: TestContext,
+      val name: String,
+      val dsl: DescribeSpecDsl,
+      private val xdisabled: Boolean? = null
+   ) {
 
       suspend fun config(
          enabled: Boolean? = null,
@@ -23,7 +28,8 @@ interface DescribeSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+         val active = if (xdisabled == true) false else enabled
+         val config = dsl.defaultConfig().deriveTestConfig(active, tags, extensions, timeout)
          context.registerTestCase(name, test, config, TestType.Test)
       }
    }
@@ -31,13 +37,22 @@ interface DescribeSpecDsl : SpecDsl {
    @KotestDsl
    class DescribeScope(val context: TestContext, val dsl: DescribeSpecDsl) {
 
-      fun it(name: String) = TestBuilder(context, "It: $name", dsl)
+      fun it(name: String) = TestBuilder(context, "It: $name", dsl, false)
+      fun xit(name: String) = TestBuilder(context, "It: $name", dsl, true)
 
       suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
          context.registerTestCase(
             createTestName("It: ", name),
             test,
             dsl.defaultConfig(),
+            TestType.Test
+         )
+
+      suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
+         context.registerTestCase(
+            createTestName("It: ", name),
+            test,
+            dsl.defaultConfig().deriveTestConfig(enabled = false),
             TestType.Test
          )
 
@@ -56,6 +71,14 @@ interface DescribeSpecDsl : SpecDsl {
             dsl.defaultConfig(),
             TestType.Container
          )
+
+      suspend fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) =
+         context.registerTestCase(
+            createTestName("Describe: ", name),
+            { DescribeScope(this, this@DescribeScope.dsl).test() },
+            dsl.defaultConfig().deriveTestConfig(enabled = false),
+            TestType.Container
+         )
    }
 
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) =
@@ -66,5 +89,11 @@ interface DescribeSpecDsl : SpecDsl {
          TestType.Container
       )
 
-
+   fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) =
+      addTest(
+         createTestName("Describe: ", name),
+         { DescribeScope(this, this@DescribeSpecDsl).test() },
+         defaultConfig().deriveTestConfig(enabled = false),
+         TestType.Container
+      )
 }
