@@ -28,7 +28,7 @@ interface WordSpecDsl : SpecDsl {
       addTest(
          "$this should",
          { WordScope(this, this@WordSpecDsl).init() },
-         defaultTestCaseConfig,
+         defaultConfig(),
          TestType.Container
       )
 
@@ -39,7 +39,7 @@ interface WordSpecDsl : SpecDsl {
       addTest(
          "$name when",
          { WhenContext(this, this@WordSpecDsl).init() },
-         defaultTestCaseConfig,
+         defaultConfig(),
          TestType.Container
       )
    }
@@ -57,7 +57,7 @@ interface WordSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend FinalTestContext.() -> Unit
       ) {
-         val config = dsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          context.registerTestCase(
             this,
             { FinalTestContext(this).test() },
@@ -70,14 +70,15 @@ interface WordSpecDsl : SpecDsl {
          context.registerTestCase(
             this,
             { FinalTestContext(this).test() },
-            dsl.defaultTestCaseConfig,
+            dsl.defaultConfig(),
             TestType.Test
          )
       }
 
       // we need to override the should method to stop people nesting a should inside a should
+      @Suppress("UNUSED_PARAMETER")
       @Deprecated("A should block can only be used at the top level", ReplaceWith("{}"), level = DeprecationLevel.ERROR)
-      infix fun String.should(init: () -> Unit) = { init() }
+      infix fun String.should(init: () -> Unit) = Unit
    }
 
    @KotestDsl
@@ -90,7 +91,7 @@ interface WordSpecDsl : SpecDsl {
          context.registerTestCase(
             "$name should",
             { WordScope(this, this@WhenContext.dsl).test() },
-            dsl.defaultTestCaseConfig,
+            dsl.defaultConfig(),
             TestType.Container
          )
       }

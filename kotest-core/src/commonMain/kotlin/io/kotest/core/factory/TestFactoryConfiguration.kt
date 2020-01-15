@@ -32,12 +32,6 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    ) {
       require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
       require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
-      this.tests = this.tests + DynamicTest(
-         name,
-         test,
-         config,
-         type,
-         sourceRef()
-      )
+      this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef())
    }
 }

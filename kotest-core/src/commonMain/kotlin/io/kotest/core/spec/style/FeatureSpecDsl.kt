@@ -15,7 +15,7 @@ interface FeatureSpecDsl : SpecDsl {
       addTest(
          createTestName("Feature: ", name),
          { FeatureScope(this, this@FeatureSpecDsl).init() },
-         defaultTestCaseConfig,
+         defaultConfig(),
          TestType.Container
       )
 }
@@ -29,7 +29,7 @@ class ScenarioBuilder(val name: String, val context: TestContext, val dsl: SpecD
       extensions: List<TestCaseExtension>? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = dsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+      val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
       context.registerTestCase(name, test, config, TestType.Test)
    }
 }
@@ -41,7 +41,7 @@ class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
       context.registerTestCase(
          createTestName("And: ", name),
          { FeatureScope(this, this@FeatureScope.dsl).init() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
 
@@ -49,13 +49,9 @@ class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
       context.registerTestCase(
          createTestName("Scenario: ", name),
          test,
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Test
       )
 
-   fun scenario(name: String) = ScenarioBuilder(
-      createTestName(
-         "Scenario: ",
-         name
-      ), context, dsl)
+   fun scenario(name: String) = ScenarioBuilder(createTestName("Scenario: ", name), context, dsl)
 }

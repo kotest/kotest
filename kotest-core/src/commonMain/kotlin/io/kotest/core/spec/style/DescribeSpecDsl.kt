@@ -3,10 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
-import io.kotest.core.test.createTestName
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -26,12 +23,7 @@ interface DescribeSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = TestCaseConfig(
-            enabled = enabled ?: dsl.defaultTestCaseConfig.enabled,
-            timeout = timeout ?: dsl.defaultTestCaseConfig.timeout,
-            tags = tags ?: dsl.defaultTestCaseConfig.tags,
-            extensions = extensions ?: dsl.defaultTestCaseConfig.extensions
-         )
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          context.registerTestCase(name, test, config, TestType.Test)
       }
    }
@@ -45,7 +37,7 @@ interface DescribeSpecDsl : SpecDsl {
          context.registerTestCase(
             createTestName("It: ", name),
             test,
-            dsl.defaultTestCaseConfig,
+            dsl.defaultConfig(),
             TestType.Test
          )
 
@@ -53,7 +45,7 @@ interface DescribeSpecDsl : SpecDsl {
          context.registerTestCase(
             createTestName("Context: ", name),
             { DescribeScope(this, this@DescribeScope.dsl).test() },
-            dsl.defaultTestCaseConfig,
+            dsl.defaultConfig(),
             TestType.Container
          )
 
@@ -61,7 +53,7 @@ interface DescribeSpecDsl : SpecDsl {
          context.registerTestCase(
             createTestName("Describe: ", name),
             { DescribeScope(this, this@DescribeScope.dsl).test() },
-            dsl.defaultTestCaseConfig,
+            dsl.defaultConfig(),
             TestType.Container
          )
    }
@@ -70,7 +62,7 @@ interface DescribeSpecDsl : SpecDsl {
       addTest(
          createTestName("Describe: ", name),
          { DescribeScope(this, this@DescribeSpecDsl).test() },
-         defaultTestCaseConfig,
+         defaultConfig(),
          TestType.Container
       )
 

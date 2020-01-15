@@ -28,8 +28,9 @@ abstract class TestConfiguration {
 
    /**
     * Config applied to each test case if not overridden per test case.
+    * If left null, then defaults to the project config default.
     */
-   var defaultTestCaseConfig: TestCaseConfig = TestCaseConfig()
+   var defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.

@@ -23,7 +23,7 @@ interface BehaviorSpecDsl : SpecDsl {
       addTest(
          createTestName("Given: ", name),
          { GivenContext(this, this@BehaviorSpecDsl).test() },
-         defaultTestCaseConfig,
+         defaultConfig(),
          TestType.Container
       )
    }
@@ -37,7 +37,7 @@ interface BehaviorSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: TestContext.() -> Unit
       ) {
-         val config = dsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          context.registerTestCase(name, { test.invoke(this) }, config, TestType.Test)
       }
    }
@@ -57,7 +57,7 @@ class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("And: ", name),
          { GivenAndContext(this, this@GivenContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -69,7 +69,7 @@ class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("When: ", name),
          { WhenContext(this, this@GivenContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -81,7 +81,7 @@ class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -98,7 +98,7 @@ class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl
       context.registerTestCase(
          createTestName("And: ", name),
          { GivenAndContext(this, this@GivenAndContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -110,7 +110,7 @@ class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl
       context.registerTestCase(
          createTestName("When: ", name),
          { WhenContext(this, this@GivenAndContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -122,7 +122,7 @@ class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -140,7 +140,7 @@ class WhenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("And: ", name),
          { WhenAndContext(this, this@WhenContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -152,7 +152,7 @@ class WhenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Test
       )
    }
@@ -170,7 +170,7 @@ class WhenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl)
       context.registerTestCase(
          createTestName("And: ", name),
          { WhenAndContext(this, this@WhenAndContext.dsl).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
    }
@@ -182,7 +182,7 @@ class WhenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl)
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Test
       )
    }

@@ -1,10 +1,12 @@
 package io.kotest.core.spec.style
 
 import io.kotest.Matcher
+import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.should as shouldBeMatcher
 
 /**
@@ -23,10 +25,12 @@ fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
  * Decorates a [TestFactoryConfiguration] with the WordSpec DSL.
  */
 class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecDsl {
+   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : SpecConfiguration(), WordSpecDsl {
+   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
    override val addTest = ::addRootTestCase
 
    init {

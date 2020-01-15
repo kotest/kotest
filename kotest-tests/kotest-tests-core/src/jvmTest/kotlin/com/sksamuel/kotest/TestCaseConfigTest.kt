@@ -16,7 +16,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 @UseExperimental(ExperimentalTime::class)
-class ConfigTest : WordSpec() {
+class TestCaseConfigTest : WordSpec() {
 
    object TagZ : Tag()
 

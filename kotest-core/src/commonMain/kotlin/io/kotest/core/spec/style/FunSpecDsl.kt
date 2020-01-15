@@ -12,13 +12,13 @@ import kotlin.time.ExperimentalTime
 /**
  * Defines the DSL for creating tests in the 'FunSpec' style
  */
+@UseExperimental(ExperimentalTime::class)
 interface FunSpecDsl : SpecDsl {
 
    class TestBuilder(
       private val name: String,
       private val spec: FunSpecDsl
    ) {
-      @UseExperimental(ExperimentalTime::class)
       fun config(
          enabled: Boolean? = null,
          tags: Set<Tag>? = null,
@@ -26,15 +26,13 @@ interface FunSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = spec.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          spec.addTest(name, test, config, TestType.Test)
       }
    }
 
    fun context(name: String, init: suspend ContextScope.() -> Unit) {
-      addTest(name, { ContextScope(this, this@FunSpecDsl).init() }, defaultTestCaseConfig,
-          TestType.Container
-      )
+      addTest(name, { ContextScope(this, this@FunSpecDsl).init() }, defaultConfig(), TestType.Container)
    }
 
    @KotestDsl
@@ -44,8 +42,8 @@ interface FunSpecDsl : SpecDsl {
          context.registerTestCase(
             name,
             { ContextScope(this, this@ContextScope.spec).init() },
-            spec.defaultTestCaseConfig,
-             TestType.Container
+            spec.defaultConfig(),
+            TestType.Container
          )
       }
 
@@ -58,7 +56,7 @@ interface FunSpecDsl : SpecDsl {
             extensions: List<TestCaseExtension>? = null,
             test: suspend TestContext.() -> Unit
          ) {
-            val config = spec.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+            val config = spec.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
             context.registerTestCase(name, test, config, TestType.Test)
          }
       }
@@ -66,9 +64,7 @@ interface FunSpecDsl : SpecDsl {
       fun test(name: String) = TestBuilder(name)
 
       suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
-         context.registerTestCase(name, test, spec.defaultTestCaseConfig,
-             TestType.Test
-         )
+         context.registerTestCase(name, test, spec.defaultConfig(), TestType.Test)
    }
 
    fun test(name: String) = TestBuilder(name, this)
@@ -78,6 +74,6 @@ interface FunSpecDsl : SpecDsl {
     * the default test case config for this builder.
     */
    fun test(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(name, test, defaultTestCaseConfig, TestType.Test)
+      addTest(name, test, defaultConfig(), TestType.Test)
 
 }

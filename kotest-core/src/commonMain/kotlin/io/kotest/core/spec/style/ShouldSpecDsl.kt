@@ -28,10 +28,10 @@ import kotlin.time.ExperimentalTime
 interface ShouldSpecDsl : SpecDsl {
 
    operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =
-      addTest(this, { ShouldScope(this, this@ShouldSpecDsl).init() }, defaultTestCaseConfig, TestType.Container)
+      addTest(this, { ShouldScope(this, this@ShouldSpecDsl).init() }, defaultConfig(), TestType.Container)
 
    fun should(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(createTestName("should ", name), test, defaultTestCaseConfig, TestType.Test)
+      addTest(createTestName("should ", name), test, defaultConfig(), TestType.Test)
 
    fun should(name: String) = Testbuilder(this) { test, config ->
       addTest(createTestName("should ", name), test, config, TestType.Test)
@@ -48,7 +48,7 @@ interface ShouldSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = specDsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = specDsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          register(test, config)
       }
    }
@@ -63,12 +63,12 @@ class ShouldScope(val context: TestContext, private val dsl: SpecDsl) {
       context.registerTestCase(
          this,
          { ShouldScope(this, this@ShouldScope.dsl).init() },
-         dsl.defaultTestCaseConfig,
+         dsl.defaultConfig(),
          TestType.Container
       )
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
-      context.registerTestCase(createTestName("should ", name), test, dsl.defaultTestCaseConfig, TestType.Test)
+      context.registerTestCase(createTestName("should ", name), test, dsl.defaultConfig(), TestType.Test)
 
    inner class Testbuilder(val register: suspend (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
       suspend fun config(
@@ -78,7 +78,7 @@ class ShouldScope(val context: TestContext, private val dsl: SpecDsl) {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = dsl.defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
          register(test, config)
       }
    }

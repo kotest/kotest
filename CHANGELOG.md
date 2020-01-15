@@ -37,6 +37,7 @@ Changelog
 * Fixed file matchers to check for null
 * Test callbacks now coroutine enabled
 * Bugfix: Error in spec initialization is cryptic with recent intellij #1097
+* Feature: PRoject wide default test case config
 
 #### 3.4.2
 

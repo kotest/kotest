@@ -28,7 +28,8 @@ actual fun detectConfig(): ProjectConf {
          testCaseOrder = conf.testCaseOrder ?: conf.testCaseOrder(),
          specExecutionOrder = conf.specExecutionOrder ?: conf.specExecutionOrder(),
          failOnIgnoredTests = conf.failOnIgnoredTests,
-         globalAssertSoftly = conf.globalAssertSoftly
+         globalAssertSoftly = conf.globalAssertSoftly,
+         testCaseConfig = conf.defaultTestCaseConfig
       )
    }
 

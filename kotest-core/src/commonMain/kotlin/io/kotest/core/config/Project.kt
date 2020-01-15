@@ -8,6 +8,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.test.TestCaseOrder
 import kotlin.time.Duration
@@ -36,6 +37,8 @@ object Project {
    private var writeSpecFailureFile = userconf.writeSpecFailureFile ?: false
    private var globalAssertSoftly = userconf.globalAssertSoftly ?: false
    private var parallelism = userconf.parallelism ?: 1
+
+   fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
 
@@ -156,7 +159,8 @@ data class ProjectConf constructor(
    val globalAssertSoftly: Boolean? = null,
    val writeSpecFailureFile: Boolean? = null,
    val parallelism: Int? = null,
-   val timeout: Duration? = null
+   val timeout: Duration? = null,
+   val testCaseConfig: TestCaseConfig? = null
 )
 
 /**

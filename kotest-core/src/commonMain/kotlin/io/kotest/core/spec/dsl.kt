@@ -6,7 +6,7 @@ import io.kotest.core.test.TestType
 
 interface SpecDsl {
 
-   val defaultTestCaseConfig: TestCaseConfig
+   fun defaultConfig(): TestCaseConfig
 
    val addTest: (
       name: String,

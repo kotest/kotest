@@ -9,12 +9,13 @@ import io.kotest.core.extensions.ProjectLevelExtension
 import io.kotest.core.extensions.ProjectLevelFilter
 import io.kotest.core.extensions.ProjectListener
 import io.kotest.core.extensions.TestListener
+import io.kotest.core.test.TestCaseConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [SpecClass] and [TestCase]s.
+ * instance of this class will be applied to all [SpecConfiguration] and [TestCase]s.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotest.provided`.
@@ -133,6 +134,12 @@ abstract class AbstractProjectConfig {
     * If a [SpecClass] sets an assertion mode, then the spec will override.
     */
    open val assertionMode: AssertionMode? = null
+
+   /**
+    * Any [TestCaseConfig] set here is used as the default for tests, unless overriden in a spec,
+    * or in a test itself. In other words the order is test -> spec -> project config default -> kotest default
+    */
+   open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
     * Executed before the first test of the project, but after the

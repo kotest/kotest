@@ -29,7 +29,7 @@ interface StringSpecDsl : SpecDsl {
       extensions: List<TestCaseExtension>? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultTestCaseConfig.deriveTestConfig(enabled, tags, extensions, timeout)
+      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
       addTest(this, test, config, TestType.Test)
    }
 
@@ -37,5 +37,5 @@ interface StringSpecDsl : SpecDsl {
     * Adds a String Spec test using the default test case config.
     */
    operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      addTest(this, test, defaultTestCaseConfig, TestType.Test)
+      addTest(this, test, defaultConfig(), TestType.Test)
 }
