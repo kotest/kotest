@@ -12,15 +12,25 @@ import io.kotest.should
 infix fun <T> Validation<T>.shouldBeValid(value: T) = this should beValid(value)
 
 fun <A> beValid(a: A) = object : Matcher<Validation<A>> {
-   override fun test(value: Validation<A>): MatcherResult =
-      MatcherResult(value(a) is Valid, "$a should be valid", "$a should not be valid")
+   override fun test(value: Validation<A>): MatcherResult = value(a).let {
+      MatcherResult(
+         it is Valid,
+         "$a should be valid, but was: $it",
+         "$a should not be valid"
+      )
+   }
 }
 
 infix fun <T> Validation<T>.shouldBeInvalid(value: T) = this should beInvalid(value)
 
 fun <A> beInvalid(a: A) = object : Matcher<Validation<A>> {
-   override fun test(value: Validation<A>): MatcherResult =
-      MatcherResult(value(a) is Invalid, "$a should be invalid", "$a should not be invalid")
+   override fun test(value: Validation<A>): MatcherResult = value(a).let {
+      MatcherResult(
+         it is Invalid,
+         "$a should be invalid",
+         "$a should not be invalid, but was: $it"
+      )
+   }
 }
 
 inline fun <T> Validation<T>.shouldBeInvalid(value: T, fn: (Invalid<T>) -> Unit) {
