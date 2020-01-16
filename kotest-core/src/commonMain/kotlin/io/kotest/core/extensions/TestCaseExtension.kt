@@ -63,5 +63,5 @@ interface TestCaseExtension : ProjectLevelExtension,
       testCase: TestCase,
       execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
       complete: suspend (TestResult) -> Unit
-   ) = execute(testCase) { complete(it) }
+   )
 }

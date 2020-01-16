@@ -7,6 +7,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
 import io.kotest.fp.Try
 import io.kotest.core.internal.unwrapIfReflectionCall
+import io.kotest.core.spec.resolvedExtensions
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
@@ -47,7 +48,7 @@ class TestExecutor(private val listener: TestEngineListener) {
             }
 
          val extensions = testCase.config.extensions +
-            testCase.spec.extensions().filterIsInstance<TestCaseExtension>() +
+            testCase.spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
             Project.testCaseExtensions()
 
          runExtensions(testCase, context, start, extensions) { result ->

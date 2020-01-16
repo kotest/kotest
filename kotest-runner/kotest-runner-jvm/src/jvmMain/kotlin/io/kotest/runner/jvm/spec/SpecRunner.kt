@@ -8,6 +8,7 @@ import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.spec.resolvedExtensions
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
@@ -28,7 +29,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    abstract suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>>
 
    suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit): Try<SpecConfiguration> {
-      val extensions = spec.extensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
+      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
       return interceptSpec(spec, extensions, afterInterception)
    }
 

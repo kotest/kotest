@@ -83,6 +83,7 @@ object Project {
    }
 
    fun testCaseExtensions(): List<TestCaseExtension> = extensions.filterIsInstance<TestCaseExtension>()
+
    fun specExtensions(): List<SpecExtension> = extensions.filterIsInstance<SpecExtension>()
 
    /**

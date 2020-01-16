@@ -13,7 +13,7 @@ class DescribeSpecBangTest : DescribeSpec() {
 
       describe("!Foo") {
          it("foo") {
-            assertEquals(1, 2)
+            attemptToFail()
          }
       }
 

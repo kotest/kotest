@@ -22,18 +22,20 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    private val executor = TestExecutor(listener)
    private val results = mutableMapOf<TestCase, TestResult>()
 
-   // keeps track of full test names so we can avoid tests trying to use the same name
-   private val seen = mutableSetOf<Description>()
-
    inner class Context(
       override val testCase: TestCase,
       override val coroutineContext: CoroutineContext
    ) : TestContext() {
+
+      // these are the tests inside this context, so we can track for duplicates
+      private val seen = mutableSetOf<String>()
+
       // in the single instance runner we execute each nested test as soon as the are registered
       override suspend fun registerTestCase(test: NestedTest) {
          val nestedTestCase = test.toTestCase(testCase.spec, testCase.description)
-         if (seen.contains(nestedTestCase.description))
+         if (seen.contains(test.name))
             throw IllegalStateException("Cannot add duplicate test name ${test.name}")
+         seen.add(test.name)
          executor.execute(nestedTestCase, Context(nestedTestCase, coroutineContext)) { result ->
             results[testCase] = result
          }

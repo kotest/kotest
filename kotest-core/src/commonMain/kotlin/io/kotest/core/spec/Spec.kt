@@ -6,6 +6,7 @@ import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.TestListener
 import io.kotest.core.extensions.RootTest
+import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.fp.Tuple2
 
 ///**
@@ -64,6 +65,10 @@ fun SpecConfiguration.resolvedListeners(): List<TestListener> {
    }
 
    return this.listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
+}
+
+fun SpecConfiguration.resolvedExtensions():List<SpecLevelExtension> {
+   return this.extensions + this.extensions()
 }
 
 fun SpecConfiguration.resolvedTestCaseOrder() =
