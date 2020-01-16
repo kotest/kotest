@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.coroutines
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.longs.shouldBeGreaterThan

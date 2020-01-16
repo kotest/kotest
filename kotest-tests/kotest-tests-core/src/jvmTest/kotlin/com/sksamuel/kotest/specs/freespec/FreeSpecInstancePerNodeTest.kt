@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
 import java.util.concurrent.atomic.AtomicInteger
 
 class FreeSpecInstancePerNodeTest : FreeSpec() {

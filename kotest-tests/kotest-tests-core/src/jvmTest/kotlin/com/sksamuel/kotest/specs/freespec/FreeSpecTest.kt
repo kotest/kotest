@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
 
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class FreeSpecTest : FreeSpec() {
@@ -30,7 +30,7 @@ class FreeSpecTest : FreeSpec() {
 
 
     "params" - {
-      "support config".config(invocations = 5) {
+      "support config".config(enabled = true) {
       }
     }
   }

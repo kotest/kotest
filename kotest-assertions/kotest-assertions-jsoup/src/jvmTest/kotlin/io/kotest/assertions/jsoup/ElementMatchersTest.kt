@@ -1,6 +1,6 @@
 package io.kotest.assertions.jsoup
 
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
 import org.jsoup.Jsoup
 
 class ElementMatchersTest : FreeSpec() {

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
 
 class FreeSpecBangTest : FreeSpec() {
 

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 

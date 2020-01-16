@@ -12,7 +12,7 @@ import io.kotest.core.test.AssertionMode
  *
  * @return a Throwable if the assertion mode is [Error] and no assertions were executed else null
  */
-inline fun collectAssertions(run: () -> Unit, name: String, mode: AssertionMode): Throwable? {
+suspend fun collectAssertions(run: suspend () -> Unit, name: String, mode: AssertionMode): Throwable? {
    AssertionCounter.reset()
 
    if (Project.globalAssertSoftly()) {

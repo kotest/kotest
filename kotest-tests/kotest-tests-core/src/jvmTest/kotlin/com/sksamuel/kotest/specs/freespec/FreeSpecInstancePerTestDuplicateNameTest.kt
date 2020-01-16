@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.assertions.fail
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
 
 class FreeSpecInstancePerTestDuplicateNameTest : FreeSpec() {
 

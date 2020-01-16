@@ -9,6 +9,7 @@ import io.kotest.fp.Try
 import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.spec.resolvedExtensions
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeoutException
@@ -111,14 +112,17 @@ class TestExecutor(private val listener: TestEngineListener) {
       // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
       val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
 
-      // the test is executed in the same coroutine with a timeout
       val error = try {
-         withTimeout(timeout) {
-            collectAssertions(
-               { testCase.test.invoke(context) },
-               testCase.description.name,
-               testCase.spec.resolvedAssertionMode()
-            )
+         // we use this scope to wait for any launched coroutines to complete
+         coroutineScope {
+            // we ensure the timeout is honoured
+            withTimeout(timeout) {
+               collectAssertions(
+                  { testCase.test.invoke(context) },
+                  testCase.description.name,
+                  testCase.spec.resolvedAssertionMode()
+               )
+            }
          }
       } catch (e: TimeoutCancellationException) {
          TimeoutException("Execution of test took longer than ${timeout}ms")

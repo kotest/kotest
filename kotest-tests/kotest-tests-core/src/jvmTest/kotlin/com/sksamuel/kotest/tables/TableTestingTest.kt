@@ -2,6 +2,7 @@ package com.sksamuel.kotest.tables
 
 import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.fail
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.should
@@ -9,7 +10,6 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.tables.forAll
 import io.kotest.tables.forNone
