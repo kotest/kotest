@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
-import io.kotest.core.SpecClass
 import io.kotest.core.SourceRef
+import io.kotest.core.SpecClass
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.KotestDsl

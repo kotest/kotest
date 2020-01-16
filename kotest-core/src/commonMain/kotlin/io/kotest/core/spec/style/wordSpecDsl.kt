@@ -4,6 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.spec.SpecDsl
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.*
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

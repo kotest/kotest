@@ -1,18 +1,19 @@
 package io.kotest.runner.jvm
 
 import io.kotest.core.config.Project
-import io.kotest.core.spec.resolvedListeners
-import io.kotest.core.test.*
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
-import io.kotest.fp.Try
 import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.spec.resolvedExtensions
+import io.kotest.core.spec.resolvedListeners
+import io.kotest.core.test.*
+import io.kotest.fp.Try
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeoutException
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -113,12 +114,24 @@ class TestExecutor(private val listener: TestEngineListener) {
       val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
 
       val error = try {
-         // we use this scope to wait for any launched coroutines to complete
+
+         // we use a scope here so we can wait for nested coroutines to launch
          coroutineScope {
+
+            val scope = this
+
+            // we need to wrap the test context in one that extends the outer scope otherwise
+            // launched coroutines will take place on the test executors own coroutine
+            val contextp = object : TestContext() {
+               override val testCase: TestCase = context.testCase
+               override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)
+               override val coroutineContext: CoroutineContext = scope.coroutineContext
+            }
+
             // we ensure the timeout is honoured
             withTimeout(timeout) {
                collectAssertions(
-                  { testCase.test.invoke(context) },
+                  { testCase.test.invoke(contextp) },
                   testCase.description.name,
                   testCase.spec.resolvedAssertionMode()
                )

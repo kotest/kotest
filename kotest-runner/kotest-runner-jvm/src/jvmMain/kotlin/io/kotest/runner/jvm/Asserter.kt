@@ -15,13 +15,13 @@ import io.kotest.core.test.AssertionMode
 suspend fun collectAssertions(run: suspend () -> Unit, name: String, mode: AssertionMode): Throwable? {
    AssertionCounter.reset()
 
-   if (Project.globalAssertSoftly()) {
-      assertSoftly {
+  // if (Project.globalAssertSoftly()) {
+  //    assertSoftly {
          run()
-      }
-   } else {
-      run()
-   }
+  //    }
+  // } else {
+ //     run()
+ //  }
 
    val warningMessage = "Test '${name}' did not invoke any assertions"
 
