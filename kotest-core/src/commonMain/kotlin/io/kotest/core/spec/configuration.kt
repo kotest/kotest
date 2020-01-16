@@ -1,12 +1,13 @@
 package io.kotest.core.spec
 
-import io.kotest.core.*
-import io.kotest.core.factory.TestFactory
-import io.kotest.core.factory.TestFactoryConfiguration
-import io.kotest.core.test.*
+import io.kotest.core.Tag
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
+import io.kotest.core.factory.TestFactory
+import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.sourceRef
+import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
 import org.junit.platform.commons.annotation.Testable
 import kotlin.reflect.KClass
@@ -17,6 +18,12 @@ typealias BeforeSpec = () -> Unit
 typealias AfterSpec = () -> Unit
 typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
+typealias TestCaseExtensionFn = suspend (
+   testCase: TestCase,
+   execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+   complete: suspend (TestResult) -> Unit
+) -> Unit
+typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
 
 // these functions call out to the js test methods
 // on the jvm these functions will be empty
@@ -63,13 +70,7 @@ abstract class TestConfiguration {
    var listeners = emptyList<TestListener>()
    var extensions = emptyList<SpecLevelExtension>()
 
-   fun extension(
-      f: suspend (
-         testCase: TestCase,
-         execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-         complete: suspend (TestResult) -> Unit
-      ) -> Unit
-   ) {
+   fun extension(f: TestCaseExtensionFn) {
       extensions = extensions + object : TestCaseExtension {
          override suspend fun intercept(
             testCase: TestCase,
@@ -81,7 +82,7 @@ abstract class TestConfiguration {
       }
    }
 
-   fun aroundTest(runtest: suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit) {
+   fun aroundTest(runtest: AroundTestFn) {
       extensions = extensions + object : TestCaseExtension {
          override suspend fun intercept(
             testCase: TestCase,
