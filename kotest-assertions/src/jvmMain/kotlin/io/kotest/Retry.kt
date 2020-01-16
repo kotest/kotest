@@ -8,7 +8,7 @@ import java.time.Duration
  * Retry the given lambda [f] in case of assertion error[AssertionError] and exception [Exception].
  * Stops trying when [maxRetry] or [maxDelay] duration is reached.
  * */
-suspend inline fun <T> retry(
+suspend fun <T> retry(
    maxRetry: Int,
    maxDelay: Duration,
    delay: Duration = maxDelay,
@@ -21,7 +21,7 @@ suspend inline fun <T> retry(
  * Retry the given lambda [f] in case of assertion error[AssertionError] and exception of type [exceptionClass].
  * Stops trying when [maxRetry] or [maxDelay] duration is reached. Or an exception other than [exceptionClass] is thrown
  * */
-suspend inline fun <T, E : Throwable> retry(
+suspend fun <T, E : Throwable> retry(
    maxRetry: Int,
    maxDelay: Duration,
    delay: Duration = maxDelay,
