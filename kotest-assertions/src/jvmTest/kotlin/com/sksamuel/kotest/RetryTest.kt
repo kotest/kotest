@@ -43,10 +43,10 @@ class RetryTest : StringSpec() {
             }
          }
          val calledAt = testClass.calledAtTimeInstance
-         val timeHaltInFirstRetry = (calledAt[1] - calledAt[0])
-         val timeHaltInSecondRetry = calledAt[2] - calledAt[1]
-         timeHaltInFirstRetry shouldBeGreaterThanOrEqual 100
-         timeHaltInSecondRetry shouldBeGreaterThanOrEqual 200
+         val delayInFirstRetry = (calledAt[1] - calledAt[0])
+         val delayInSecondRetry = calledAt[2] - calledAt[1]
+         delayInFirstRetry shouldBeGreaterThanOrEqual 100
+         delayInSecondRetry shouldBeGreaterThanOrEqual 200
       }
 
       "should not retry in case of unexpected exception" {
