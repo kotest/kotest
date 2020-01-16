@@ -5,26 +5,32 @@ import io.kotest.core.spec.style.DescribeSpec
 
 class DescribeSpecBangTest : DescribeSpec() {
 
-  init {
+   init {
 
-    describe("!BangedDescribe") {
-      attemptToFail()
-    }
-
-    describe("NonBangedDescribe") {
-      it("!BangedIt") {
-        attemptToFail()
+      describe("!BangedDescribe") {
+         attemptToFail()
       }
 
-      context("!BangedContext") {
-        attemptToFail()
+      describe("!Foo") {
+         it("foo") {
+            assertEquals(1, 2)
+         }
       }
 
-      context("NonBangedContext") {
-        it("!BangedIt") {
-          attemptToFail()
-        }
+      describe("NonBangedDescribe") {
+         it("!BangedIt") {
+            attemptToFail()
+         }
+
+         context("!BangedContext") {
+            attemptToFail()
+         }
+
+         context("NonBangedContext") {
+            it("!BangedIt") {
+               attemptToFail()
+            }
+         }
       }
-    }
-  }
+   }
 }

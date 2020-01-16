@@ -13,13 +13,9 @@ kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
             }
          }
       }
@@ -57,7 +53,10 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }

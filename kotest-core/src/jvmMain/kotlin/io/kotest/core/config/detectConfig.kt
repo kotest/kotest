@@ -22,6 +22,7 @@ actual fun detectConfig(): ProjectConf {
       return ProjectConf(
          extensions = conf.extensions(),
          testListeners = conf.listeners(),
+         projectListeners = conf.projectListeners(),
          filters = conf.filters(),
          isolationMode = conf.isolationMode ?: conf.isolationMode(),
          assertionMode = conf.assertionMode,

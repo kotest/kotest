@@ -16,8 +16,6 @@ object ProjectConfig : AbstractProjectConfig() {
 
    val intercepterLog = StringBuilder()
 
-   override fun projectListeners() = listOf(TestProjectListener, AutoCloseListener)
-
    override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
 
    override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
@@ -28,17 +26,5 @@ object ProjectConfig : AbstractProjectConfig() {
 
    init {
       PropertyTesting.shouldPrintShrinkSteps = false
-   }
-}
-
-object TestProjectListener : ProjectListener {
-
-   override fun beforeProject() {
-      ProjectConfig.intercepterLog.append("A1.")
-      ProjectConfig.beforeAll++
-   }
-
-   override fun afterProject() {
-      ProjectConfig.afterAll++
    }
 }
