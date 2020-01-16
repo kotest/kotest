@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCaseConfig
 /**
  * Creates a [TestFactory] from the given block.
  *
- * The receiver of the block is a [FeatureSpecTestFactoryConfiguration] which allows tests
+ * The receiver of the block is a [ExpectSpecTestFactoryConfiguration] which allows tests
  * to be defined using the 'expect-spec' style.
  */
 fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactory {

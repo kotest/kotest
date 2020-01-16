@@ -5,6 +5,7 @@ import io.kotest.MatcherResult
 import io.kotest.assertSoftly
 import io.kotest.assertions.asClue
 import io.kotest.assertions.withClue
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.haveSameHashCodeAs
@@ -15,7 +16,6 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
 import java.util.ArrayList
 
 class MatchersTest : FreeSpec({

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.throwablehandling
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -8,11 +9,9 @@ import io.kotest.shouldNotThrowExactly
 import io.kotest.shouldNotThrowExactlyUnit
 import io.kotest.shouldThrowExactly
 import io.kotest.shouldThrowExactlyUnit
-import io.kotest.specs.FreeSpec
 import kotlin.reflect.KClass
 
 class StrictThrowableHandlingTest : FreeSpec() {
-
 
   init {
     "Should throw exactly" - {

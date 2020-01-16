@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers
 
 import io.kotest.assertSoftly
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.shouldNotContainExactly
 import io.kotest.matchers.comparables.beLessThan
@@ -18,7 +19,6 @@ import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldNotBe
 import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
 
 class SoftAssertionsTest : FreeSpec({
 

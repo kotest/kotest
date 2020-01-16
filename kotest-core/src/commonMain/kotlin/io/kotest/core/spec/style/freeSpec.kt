@@ -10,21 +10,21 @@ import io.kotest.core.test.TestCaseConfig
 /**
  * Creates a [TestFactory] from the given block.
  *
- * The receiver of the block is a [BehaviorSpecTestFactoryConfiguration] which allows tests
- * to be defined using the 'behavior-spec' style.
+ * The receiver of the block is a [FreeSpecTestFactoryConfiguration] which allows tests
+ * to be defined using the 'free-spec' style.
  */
-fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFactory {
-   val config = BehaviorSpecTestFactoryConfiguration()
+fun freeSpec(block: FreeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
+   val config = FreeSpecTestFactoryConfiguration()
    config.block()
    return config.build()
 }
 
-class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecDsl {
+class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : SpecConfiguration(), BehaviorSpecDsl {
+abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : SpecConfiguration(), FreeSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
       defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 

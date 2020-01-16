@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.throwable
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.throwable.shouldHaveCause
 import io.kotest.matchers.throwable.shouldHaveCauseInstanceOf
 import io.kotest.matchers.throwable.shouldHaveCauseOfType
@@ -11,7 +12,6 @@ import io.kotest.matchers.throwable.shouldNotHaveMessage
 import io.kotest.shouldThrow
 import io.kotest.shouldThrowAny
 import io.kotest.shouldThrowExactly
-import io.kotest.specs.FreeSpec
 import java.io.FileNotFoundException
 import java.io.IOException
 

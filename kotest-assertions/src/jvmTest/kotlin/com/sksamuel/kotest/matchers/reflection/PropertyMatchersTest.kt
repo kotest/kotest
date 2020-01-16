@@ -2,6 +2,7 @@ package com.sksamuel.kotest.matchers.reflection
 
 import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
 import com.sksamuel.kotest.matchers.reflection.classes.SimpleItem
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeConst
 import io.kotest.matchers.reflection.shouldBeLateInit
 import io.kotest.matchers.reflection.shouldBeOfType
@@ -9,7 +10,6 @@ import io.kotest.matchers.reflection.shouldHaveMemberProperty
 import io.kotest.matchers.reflection.shouldNotBeConst
 import io.kotest.matchers.reflection.shouldNotBeLateInit
 import io.kotest.matchers.reflection.shouldNotBeOfType
-import io.kotest.specs.FreeSpec
 
 class PropertyMatchersTest : FreeSpec() {
   init {

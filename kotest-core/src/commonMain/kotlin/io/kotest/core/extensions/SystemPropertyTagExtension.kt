@@ -8,7 +8,9 @@ import io.kotest.fp.getOrElse
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties
- * 'kotest.tags.include' and 'kotest.tags.exclude'
+ * 'kotest.tags.include' and 'kotest.tags.exclude'.
+ *
+ * On non-JVM targets this extension will have no effect.
  */
 object SystemPropertyTagExtension : TagExtension {
 

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.annotation
 
+import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.shouldBe
-import io.kotest.specs.AnnotationSpec
 
 class AnnotationSpecExample : AnnotationSpec() {
 

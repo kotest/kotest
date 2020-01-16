@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.reflection
 
 import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldAcceptParameters
 import io.kotest.matchers.reflection.shouldBeAbstract
 import io.kotest.matchers.reflection.shouldBeFinal
@@ -18,7 +19,6 @@ import io.kotest.matchers.reflection.shouldNotBeSuspendable
 import io.kotest.matchers.reflection.shouldNotHaveParametersWithName
 import io.kotest.matchers.reflection.shouldNotHaveVisibility
 import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
 import kotlin.reflect.KVisibility
 
 class CallableMatchersTest : FreeSpec() {

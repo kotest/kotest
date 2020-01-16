@@ -3,9 +3,6 @@ package io.kotest.core.spec
 import io.kotest.core.*
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
-import io.kotest.core.specs.AutoCloseable
-import io.kotest.core.specs.JsTest
-import io.kotest.core.specs.generateTests
 import io.kotest.core.test.*
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestListener
@@ -19,6 +16,14 @@ typealias BeforeSpec = () -> Unit
 typealias AfterSpec = () -> Unit
 typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
+
+// these functions call out to the js test methods
+// on the jvm these functions will be empty
+expect fun generateTests(rootTests: List<TestCase>)
+
+expect interface AutoCloseable {
+   fun close()
+}
 
 /**
  * The parent of all configuration DSL objects and contains configuration methods
@@ -134,7 +139,6 @@ abstract class TestConfiguration {
    }
 }
 
-@Suppress("DEPRECATION")
 @Testable
 abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfiguration {
 

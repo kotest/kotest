@@ -1,4 +1,4 @@
-package io.kotest.core.specs
+package io.kotest.core.spec
 
 // used by intellij to detect junit 5 tests
 expect annotation class Junit5EnabledIfSystemProperty constructor(val named: String, val matches: String)

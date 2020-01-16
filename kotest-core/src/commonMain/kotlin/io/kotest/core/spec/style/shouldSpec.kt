@@ -12,7 +12,7 @@ import io.kotest.should as shouldBeMatcher
 /**
  * Creates a [TestFactory] from the given block.
  *
- * The receiver of the block is a [FunSpecTestFactoryConfiguration] which allows tests
+ * The receiver of the block is a [ShouldSpecTestFactoryConfiguration] which allows tests
  * to be defined using the 'should-spec' style.
  *
  * Example:

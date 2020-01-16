@@ -1,25 +1,26 @@
-package io.kotest.specs
+package io.kotest.core.spec.style
 
 import io.kotest.core.SpecClass
+import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.specs.AbstractSpec
 import io.kotest.core.test.*
 import io.kotest.core.internal.unwrapIfReflectionCall
-import io.kotest.specs.AbstractAnnotationSpec.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.memberFunctions
 
-typealias Test = AbstractAnnotationSpec.Test
+typealias Test = AnnotationSpec.Test
 
-abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = {}) : AbstractSpec() {
+abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfiguration() {
 
    init {
       body()
    }
 
-   fun beforeSpec(spec: SpecClass) {
+   private fun defaultConfig() = defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+
+   override fun beforeSpec(spec: SpecClass) {
       executeBeforeSpecFunctions()
    }
 
@@ -29,13 +30,13 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
 
    private fun executeBeforeSpecFunctions() = this::class.findBeforeSpecFunctions().forEach { it.call(this) }
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override fun beforeTest(testCase: TestCase) {
       executeBeforeTestFunctions()
    }
 
    private fun executeBeforeTestFunctions() = this::class.findBeforeTestFunctions().forEach { it.call(this) }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override fun afterTest(testCase: TestCase, result: TestResult) {
       executeAfterTestFunctions()
    }
 
@@ -45,36 +46,26 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
       executeAfterSpecFunctions()
    }
 
-   fun afterSpec(spec: SpecClass) {
+   override fun afterSpec(spec: SpecClass) {
       executeAfterSpecFunctions()
    }
 
    private fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach { it.call(this) }
 
-   override fun testCases(): List<TestCase> {
-      return this::class.findTestFunctions().map {
-         if (it.isIgnoredTest()) {
-            it.toIgnoredTestCase()
-         } else {
-            it.toEnabledTestCase()
-         }
-      }
+   private fun KFunction<*>.toIgnoredTestCase() {
+      createTestCase(defaultConfig().copy(enabled = false))
    }
 
-   private fun KFunction<*>.toIgnoredTestCase(): TestCase {
-      return createTestCase(defaultTestCaseConfig.copy(enabled = false))
+   private fun KFunction<*>.toEnabledTestCase() {
+      createTestCase(defaultConfig())
    }
 
-   private fun KFunction<*>.toEnabledTestCase(): TestCase {
-      return createTestCase(defaultTestCaseConfig)
-   }
-
-   private fun KFunction<*>.createTestCase(config: TestCaseConfig): TestCase {
-      return if (this.isExpectingException()) {
+   private fun KFunction<*>.createTestCase(config: TestCaseConfig) {
+      if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         createTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
+         addRootTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
       } else {
-         createTestCase(name, { callSuspend(this@AbstractAnnotationSpec) }, config, TestType.Test)
+         addRootTestCase(name, { callSuspend(this@AnnotationSpec) }, config, TestType.Test)
       }
    }
 
@@ -89,7 +80,7 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
    private fun KFunction<*>.callWhileExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
       return {
          val thrown = try {
-            callSuspend(this@AbstractAnnotationSpec)
+            callSuspend(this@AnnotationSpec)
             null
          } catch (t: Throwable) {
             t.unwrapIfReflectionCall()
@@ -219,33 +210,28 @@ abstract class AbstractAnnotationSpec(body: AbstractAnnotationSpec.() -> Unit = 
 
 }
 
-fun KClass<out AbstractAnnotationSpec>.findBeforeTestFunctions() =
-   findFunctionAnnotatedWithAnyOf(BeforeEach::class, Before::class)
+fun KClass<out AnnotationSpec>.findBeforeTestFunctions() =
+   findFunctionAnnotatedWithAnyOf(AnnotationSpec.BeforeEach::class, AnnotationSpec.Before::class)
 
-fun KClass<out AbstractAnnotationSpec>.findBeforeSpecFunctions() =
-   findFunctionAnnotatedWithAnyOf(BeforeAll::class, BeforeClass::class)
+fun KClass<out AnnotationSpec>.findBeforeSpecFunctions() =
+   findFunctionAnnotatedWithAnyOf(AnnotationSpec.BeforeAll::class, AnnotationSpec.BeforeClass::class)
 
+fun KClass<out AnnotationSpec>.findAfterSpecFunctions() =
+   findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterAll::class, AnnotationSpec.AfterClass::class)
 
-fun KClass<out AbstractAnnotationSpec>.findAfterSpecFunctions() =
-   findFunctionAnnotatedWithAnyOf(AfterAll::class, AfterClass::class)
+fun KClass<out AnnotationSpec>.findAfterTestFunctions() =
+   findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterEach::class, AnnotationSpec.After::class)
 
-fun KClass<out AbstractAnnotationSpec>.findAfterTestFunctions() =
-   findFunctionAnnotatedWithAnyOf(AfterEach::class, After::class)
+fun KClass<out AnnotationSpec>.findTestFunctions() =
+   findFunctionAnnotatedWithAnyOf(AnnotationSpec.Test::class)
 
+fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(AnnotationSpec.Ignore::class)
 
-fun KClass<out AbstractAnnotationSpec>.findTestFunctions() =
-   findFunctionAnnotatedWithAnyOf(AbstractAnnotationSpec.Test::class)
-
-
-fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(Ignore::class)
-
-private fun KClass<out AbstractAnnotationSpec>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
+private fun KClass<out AnnotationSpec>.findFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
    memberFunctions.filter { it.isFunctionAnnotatedWithAnyOf(*annotation) }
-
 
 private fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
    annotations.any { it.annotationClass in annotation }
-
 
 @Deprecated("To be removed soon")
 private object Failures {
@@ -258,7 +244,6 @@ private object Failures {
    fun removeKotestElementsFromStacktrace(throwable: Throwable) {
       throwable.stackTrace = UserStackTraceConverter.getUserStacktrace(throwable.stackTrace)
    }
-
 }
 
 private object UserStackTraceConverter {

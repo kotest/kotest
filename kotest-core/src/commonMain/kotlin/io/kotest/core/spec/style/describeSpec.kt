@@ -10,8 +10,8 @@ import io.kotest.core.test.TestCaseConfig
 /**
  * Creates a [TestFactory] from the given block.
  *
- * The receiver of the block is a [FunSpecTestFactoryConfiguration] which allows tests
- * to be defined using the 'fun-spec' style.
+ * The receiver of the block is a [DescribeSpecTestFactoryConfiguration] which allows tests
+ * to be defined using the 'describe-spec' style.
  */
 fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    val config = DescribeSpecTestFactoryConfiguration()

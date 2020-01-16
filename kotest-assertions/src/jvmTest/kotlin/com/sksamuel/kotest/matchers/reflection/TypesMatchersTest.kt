@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.matchers.reflection
 
 import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeOfType
 import io.kotest.matchers.reflection.shouldHaveFunction
 import io.kotest.matchers.reflection.shouldNotBeOfType
-import io.kotest.specs.FreeSpec
 
 class TypesMatchersTest : FreeSpec() {
   init {

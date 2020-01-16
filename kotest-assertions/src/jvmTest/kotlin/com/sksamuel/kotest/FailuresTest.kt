@@ -3,11 +3,11 @@ package com.sksamuel.kotest
 import com.sksamuel.kotest.throwablehandling.catchThrowable
 import io.kotest.assertions.Failures
 import io.kotest.assertions.shouldFail
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
-import io.kotest.specs.FreeSpec
 
 class FailuresTest : FreeSpec() {
 

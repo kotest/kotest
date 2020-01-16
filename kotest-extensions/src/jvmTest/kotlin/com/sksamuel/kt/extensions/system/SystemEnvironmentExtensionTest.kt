@@ -3,6 +3,8 @@ package com.sksamuel.kt.extensions.system
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FreeSpecScope
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.extensions.system.OverrideMode
 import io.kotest.extensions.system.SystemEnvironmentTestListener
@@ -10,7 +12,6 @@ import io.kotest.extensions.system.withEnvironment
 import io.kotest.inspectors.forAll
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
-import io.kotest.specs.FreeSpec
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.reflect.KClass

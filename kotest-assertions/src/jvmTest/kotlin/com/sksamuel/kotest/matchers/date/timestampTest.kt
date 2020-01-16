@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.matchers.date
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.date.*
 import io.kotest.shouldBe
 import io.kotest.shouldNotBe
-import io.kotest.specs.FreeSpec
 import java.sql.Timestamp
 import java.time.Instant
 

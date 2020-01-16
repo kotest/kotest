@@ -1,4 +1,4 @@
-package io.kotest.core.specs
+package io.kotest.core.spec
 
 import io.kotest.core.test.TestCase
 

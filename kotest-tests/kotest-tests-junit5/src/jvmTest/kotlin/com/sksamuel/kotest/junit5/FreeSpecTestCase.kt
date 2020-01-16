@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.junit5
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
 
 class FreeSpecTestCase : FreeSpec({
 

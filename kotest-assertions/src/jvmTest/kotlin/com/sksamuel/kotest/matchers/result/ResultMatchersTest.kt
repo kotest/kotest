@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.result
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeFailureOfType
@@ -9,7 +10,6 @@ import io.kotest.matchers.result.shouldNotBeFailureOfType
 import io.kotest.matchers.result.shouldNotBeSuccess
 import io.kotest.should
 import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
 import java.io.IOException
 
 class ResultMatchersTest : FreeSpec() {

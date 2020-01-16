@@ -12,8 +12,8 @@ import io.kotest.should as shouldBeMatcher
 /**
  * Creates a [TestFactory] from the given block.
  *
- * The receiver of the block is a [StringSpecTestFactoryConfiguration] which allows tests
- * to be defined using the 'string-spec' style.
+ * The receiver of the block is a [WordSpecTestFactoryConfiguration] which allows tests
+ * to be defined using the 'word-spec' style.
  */
 fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    val config = WordSpecTestFactoryConfiguration()

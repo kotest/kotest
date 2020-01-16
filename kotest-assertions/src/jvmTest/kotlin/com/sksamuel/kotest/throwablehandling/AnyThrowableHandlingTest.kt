@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.throwablehandling
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -8,7 +9,6 @@ import io.kotest.shouldNotThrowAny
 import io.kotest.shouldNotThrowAnyUnit
 import io.kotest.shouldThrowAny
 import io.kotest.shouldThrowAnyUnit
-import io.kotest.specs.FreeSpec
 
 class AnyThrowableHandlingTest : FreeSpec() {
 

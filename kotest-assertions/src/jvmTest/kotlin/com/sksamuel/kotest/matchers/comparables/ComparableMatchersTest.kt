@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.comparables
 
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beGreaterThanOrEqualTo
@@ -21,10 +22,9 @@ import io.kotest.should
 import io.kotest.shouldBe
 import io.kotest.shouldNot
 import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
 
 class ComparableMatchersTest : FreeSpec() {
-  
+
   class ComparableExample(
     private val underlying: Int
   ) : Comparable<ComparableExample> {
