@@ -7,11 +7,11 @@ import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 import kotlin.math.min
 
-inline fun <A, B> test2(
+suspend fun <A, B> test2(
    genA: Gen<A>,
    genB: Gen<B>,
    args: PropTestArgs,
-   property: PropertyContext.(A, B) -> Unit
+   property: suspend PropertyContext.(A, B) -> Unit
 ): PropertyContext {
 
    val context = PropertyContext()
@@ -46,12 +46,12 @@ inline fun <A, B> test2(
    return context
 }
 
-inline fun <A, B> PropertyContext.handleException(
+suspend fun <A, B> PropertyContext.handleException(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    e: Throwable,
    args: PropTestArgs,
-   property: PropertyContext.(A, B) -> Unit
+   property: suspend PropertyContext.(A, B) -> Unit
 ) {
    markFailure()
    if (args.maxFailure == 0) {
@@ -71,10 +71,10 @@ fun PropertyContext.checkMaxSuccess(args: PropTestArgs) {
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A, B> shrink(
+suspend fun <A, B> shrink(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
-   property: PropertyContext.(A, B) -> Unit,
+   property: suspend PropertyContext.(A, B) -> Unit,
    args: PropTestArgs
 ): Tuple2<A, B> {
    // we use a new context for the shrinks, as we don't want to affect classification etc

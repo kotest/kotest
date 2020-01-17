@@ -6,12 +6,12 @@ import io.kotest.fp.Tuple3
 import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 
-inline fun <A, B, C> test3(
+suspend fun <A, B, C> test3(
    genA: Gen<A>,
    genB: Gen<B>,
    genC: Gen<C>,
    args: PropTestArgs,
-   property: PropertyContext.(A, B, C) -> Unit
+   property: suspend PropertyContext.(A, B, C) -> Unit
 ): PropertyContext {
 
    val context = PropertyContext()
@@ -58,11 +58,11 @@ inline fun <A, B, C> test3(
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A, B, C> shrink(
+suspend fun <A, B, C> shrink(
    a: PropertyInput<A>,
    b: PropertyInput<B>,
    c: PropertyInput<C>,
-   property: PropertyContext.(A, B, C) -> Unit,
+   property: suspend PropertyContext.(A, B, C) -> Unit,
    args: PropTestArgs
 ): Tuple3<A, B, C> {
    // we use a new context for the shrinks, as we don't want to affect classification etc

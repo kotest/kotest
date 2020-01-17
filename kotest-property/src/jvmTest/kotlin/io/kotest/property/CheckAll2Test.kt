@@ -18,6 +18,7 @@ class CheckAll2Test : FunSpec({
          Arbitrary.int(1000),
          Arbitrary.int(10)
       ) { a, b ->
+         delay(10)
          a + b shouldBe b + a
       }
 

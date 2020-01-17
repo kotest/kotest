@@ -5,10 +5,10 @@ package io.kotest.property.internal
 import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 
-inline fun <A> test1(
+suspend fun <A> test1(
    genA: Gen<A>,
    args: PropTestArgs,
-   property: PropertyContext.(A) -> Unit
+   property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
    val context = PropertyContext()
@@ -22,20 +22,10 @@ inline fun <A> test1(
          } catch (e: AssertionError) {
             context.markFailure()
             if (args.maxFailure == 0) {
-               fail(
-                  a,
-                  shrink(a, property, args),
-                  e,
-                  attempts()
-               )
+               fail(a, shrink(a, property, args), e, attempts())
             } else if (failures() > args.maxFailure) {
                val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-               fail(
-                  a,
-                  shrink(a, property, args),
-                  t,
-                  attempts()
-               )
+               fail(a, shrink(a, property, args), t, attempts())
             }
          }
       }
@@ -46,9 +36,9 @@ inline fun <A> test1(
 }
 
 // shrinks a single set of failed inputs returning a tuple of the smallest values
-inline fun <A> shrink(
+suspend fun <A> shrink(
    a: PropertyInput<A>,
-   property: PropertyContext.(A) -> Unit,
+   property: suspend PropertyContext.(A) -> Unit,
    args: PropTestArgs
 ): A {
    // we use a new context for the shrinks, as we don't want to affect classification etc

@@ -5,32 +5,32 @@ package io.kotest.property
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.property.internal.test1
 
-inline fun <A> checkAll(
+suspend fun <A> checkAll(
    genA: Gen<A>,
    args: PropTestArgs = PropTestArgs(),
-   property: PropertyContext.(A) -> Unit
+   property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = test1(genA, args, property)
 
-inline fun <reified A> checkAll(
+suspend inline fun <reified A> checkAll(
    iterations: Int = 100,
    args: PropTestArgs = PropTestArgs(),
-   property: PropertyContext.(A) -> Unit
+   noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = test1(
    Arbitrary.default(iterations),
    args,
    property
 )
 
-inline fun <A> forAll(
+suspend fun <A> forAll(
    genA: Gen<A>,
    args: PropTestArgs = PropTestArgs(),
    property: PropertyContext.(A) -> Boolean
 ) = test1(genA, args) { a -> property(a).shouldBeTrue() }
 
-inline fun <reified A> forAll(
+suspend inline fun <reified A> forAll(
    iterations: Int = 100,
    args: PropTestArgs = PropTestArgs(),
-   property: PropertyContext.(A) -> Boolean
+   crossinline property: suspend PropertyContext.(A) -> Boolean
 ) = test1<A>(
    Arbitrary.default(iterations),
    args

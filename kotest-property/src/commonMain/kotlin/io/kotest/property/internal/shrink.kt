@@ -17,7 +17,7 @@ import io.kotest.property.arbitrary.PropertyInput
  *
  * @param mode specifies the [ShrinkingMode] which determines how many shrink steps should be attempted.
  */
-inline fun <T> shrink(input: PropertyInput<T>, test: (T) -> Unit, mode: ShrinkingMode): T {
+suspend fun <T> shrink(input: PropertyInput<T>, test: suspend (T) -> Unit, mode: ShrinkingMode): T {
 
    val sb = StringBuilder()
    sb.append("Attempting to shrink failed arg ${input.show()}\n")
