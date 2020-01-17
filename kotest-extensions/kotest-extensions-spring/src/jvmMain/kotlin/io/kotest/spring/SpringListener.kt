@@ -5,6 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.AutoScan
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
@@ -73,6 +74,13 @@ object SpringListener : TestListener {
       }
 }
 
+/**
+ * A Kotest [ConstructorExtension] which will attempt to instantiate test classes if they have a
+ * non-zero arg constructor.
+ *
+ * The extension wilil delegate to spring's [TestContextManager] to autowire the constructors.
+ */
+@AutoScan
 object SpringAutowireConstructorExtension : ConstructorExtension {
    override fun <T : SpecConfiguration> instantiate(clazz: KClass<T>): SpecConfiguration? {
       // we only instantiate via spring if there's actually parameters in the constructor
