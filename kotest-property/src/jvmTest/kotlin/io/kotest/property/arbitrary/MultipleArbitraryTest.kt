@@ -1,8 +1,8 @@
 package io.kotest.property.arbitrary
 
 import arrow.core.extensions.list.foldable.forAll
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arbitrary
-import io.kotest.specs.FunSpec
 import kotlin.random.Random
 
 class MultipleArbitraryTest : FunSpec() {

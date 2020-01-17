@@ -1,8 +1,8 @@
 package io.kotest.property
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.property.progression.int
-import io.kotest.specs.FunSpec
 import kotlin.random.Random
 
 class GenFunctionsTest : FunSpec() {
