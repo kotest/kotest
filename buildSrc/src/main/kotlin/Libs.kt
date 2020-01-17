@@ -31,7 +31,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.59"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.60"
    }
 
    object Logback {

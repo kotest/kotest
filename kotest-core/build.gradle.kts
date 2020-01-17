@@ -64,8 +64,6 @@ kotlin {
             api(Libs.JUnitJupiter.api)
             implementation(Libs.Classgraph.classgraph)
             implementation(Libs.Slf4j.api)
-            implementation("io.arrow-kt:arrow-core:0.10.3")
-
          }
       }
    }
