@@ -1,6 +1,7 @@
 package io.kotest.core.config
 
 import io.github.classgraph.ClassGraph
+import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.ProjectListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
@@ -56,5 +57,8 @@ actual fun detectConfig(): ProjectConf {
       .map { Class.forName(it.name) }
       .map { instantiate(it) }
 
-   return conf.copy(projectListeners = conf.projectListeners + autoscanned.filterIsInstance<ProjectListener>())
+   return conf.copy(
+      projectListeners = conf.projectListeners + autoscanned.filterIsInstance<ProjectListener>(),
+      extensions = conf.extensions + autoscanned.filterIsInstance<Extension>()
+   )
 }
