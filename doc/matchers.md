@@ -293,3 +293,9 @@ For the extension function style, each function has an equivalent negated versio
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+
+| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
