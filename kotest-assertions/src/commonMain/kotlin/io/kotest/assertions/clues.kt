@@ -8,7 +8,7 @@ package io.kotest.assertions
  * @return the return value of the supplied [thunk]
  */
 fun <R> withClue(clue: Any, thunk: () -> R): R {
-  return clue.asClue { thunk() }
+   return clue.asClue { thunk() }
 }
 
 /**
@@ -19,10 +19,16 @@ fun <R> withClue(clue: Any, thunk: () -> R): R {
  * @return the return value of the supplied [block]
  */
 fun <T : Any, R> T.asClue(block: (T) -> R): R {
-  try {
-    ErrorCollector.pushClue(this)
-    return block(this)
-  } finally {
-    ErrorCollector.popClue()
-  }
+   try {
+      ErrorCollector.pushClue(this)
+      return block(this)
+   } finally {
+      ErrorCollector.popClue()
+   }
+}
+
+fun <T : Any> Iterable<T>.forEachAsClue(action: (T) -> Unit) = forEach { element ->
+   element.asClue {
+      action(it)
+   }
 }
