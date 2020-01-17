@@ -4,7 +4,7 @@ KotlinTest Extensions
 
 ### Arrow
 
-The arrow extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
+The arrow extension module provides assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
  To use this library you need to add `kotlintest-assertions-arrow` to your build.
 
 Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
@@ -110,9 +110,9 @@ With the dependency added, we can use Koin in our tests!
 class KotlinTestAndKoin : FunSpec(), KoinTest {
 
     override fun listeners() = listOf(KoinListener(myKoinModule))
-    
+
     val userService by inject<UserService>()
-    
+
     init {
       test("Use user service") {
         userService.getUser().username shouldBe "Kerooker"
@@ -121,6 +121,46 @@ class KotlinTestAndKoin : FunSpec(), KoinTest {
 
 }
 ```
+
+
+### Compilation test
+
+The ```kotest-assertions-compiler``` extension provides matchers to assert that given kotlin code snippet compiles or not.
+This extension is a wrapper over [kotlin-compile-testing](https://github.com/tschuchortdev/kotlin-compile-testing) and provides following matchers
+
+* String.shouldCompile()
+* String.shouldNotCompile()
+* File.shouldCompile()
+* File.shouldNotCompile()
+
+To add the compilation matcher, add the following dependency to your project
+
+```groovy
+testImplementation("io.kotlintest:kotlintest-assertions-compiler:${kotlinTestVersion}")
+```
+
+Usage:
+```kotlin
+    class CompilationTest: StringSpec() {
+        init {
+            "shouldCompile test" {
+                val codeSnippet = """ val aString: String = "A valid assignment" """.trimMargin()
+
+                codeSnippet.shouldCompile()
+                File("SourceFile.kt").shouldCompile()
+            }
+
+            "shouldNotCompile test" {
+                val codeSnippet = """ val aInteger: Int = "A invalid assignment" """.trimMargin()
+
+                codeSnippet.shouldNotCompile()
+                File("SourceFile.kt").shouldNotCompile()
+            }
+        }
+    }
+```
+
+During checking of code snippet compilation the classpath of calling process is inherited, which means any dependencies which are available in calling process will also be available while compiling the code snippet.
 
 
 ### System Extensions
@@ -194,15 +234,15 @@ And with similar Listeners:
 
 ```kotlin
     class MyTest : FreeSpec() {
-    
+
           override fun listeners() = listOf(SystemPropertyListener("foo", "bar"))
-    
+
         init {
           "MyTest" {
             System.getProperty("foo") shouldBe "bar"
           }
         }
-    
+
     }
 ```
 
@@ -222,13 +262,13 @@ And the Listeners:
 
 ```kotlin
     class MyTest : FreeSpec() {
-        
+
               override fun listeners() = listOf(SecurityManagerListener(myManager))
-        
+
             init {
               // Use my security manager
             }
-        
+
         }
 ```
 
@@ -239,18 +279,18 @@ Sometimes you want to test that your code calls `System.exit`. For that you can 
 ```kotlin
 
 class MyTest : FreeSpec() {
-        
+
   override fun listeners() = listOf(SpecSystemExitListener)
-        
+
   init {
     "Catch exception" {
       val thrown: SystemExitException = shouldThrow<SystemExitException> {
         System.exit(22)
       }
-                
+
       thrown.exitCode shouldBe 22
     }
-  }      
+  }
 }
 
 ```
@@ -298,7 +338,7 @@ And with the listeners
 Sometimes you may want to use the `now` static functions located in `java.time` classes for multiple reasons, such as setting the creation date of an entity
 
 `data class MyEntity(creationDate: LocalDateTime = LocalDateTime.now())`.
- 
+
 But what to do when you want to test that value? `now` will be different
 each time you call it!
 
