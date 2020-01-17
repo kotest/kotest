@@ -1,6 +1,8 @@
 package io.kotest.core.config
 
 import io.github.classgraph.ClassGraph
+import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
 
 /**
@@ -9,16 +11,16 @@ import io.kotest.fp.toOption
  */
 actual fun detectConfig(): ProjectConf {
 
-   fun instantiate(klass: Class<*>): AbstractProjectConfig =
+   fun <T> instantiate(klass: Class<T>): T =
       when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
          // if the static field for an object cannot be found, then instantiate
-         null -> klass.newInstance() as AbstractProjectConfig
+         null -> klass.newInstance() as T
          // if the static field can be found then use it
-         else -> field.get(null) as AbstractProjectConfig
+         else -> field.get(null) as T
       }
 
    fun from(fqn: String): ProjectConf {
-      val conf = instantiate(Class.forName(fqn))
+      val conf = instantiate(Class.forName(fqn) as Class<AbstractProjectConfig>)
       return ProjectConf(
          extensions = conf.extensions(),
          testListeners = conf.listeners(),
@@ -36,14 +38,23 @@ actual fun detectConfig(): ProjectConf {
 
    val scanResult = ClassGraph()
       .enableClassInfo()
+      .enableAnnotationInfo()
       .enableExternalClasses()
-      .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+      .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*", "kotlinx.*")
       .scan()
 
-   return scanResult
+   val conf = scanResult
       .getSubclasses(AbstractProjectConfig::class.java.name)
       .map { it.name }
       .firstOrNull()
       .toOption()
       .fold({ ProjectConf() }, { from(it) })
+
+
+   val autoscanned = scanResult
+      .getClassesWithAnnotation(AutoScan::class.java.name)
+      .map { Class.forName(it.name) }
+      .map { instantiate(it) }
+
+   return conf.copy(projectListeners = conf.projectListeners + autoscanned.filterIsInstance<ProjectListener>())
 }

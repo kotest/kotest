@@ -1,12 +1,12 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.config.Project
 import io.kotest.core.Tag
+import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
-import io.kotest.core.test.TestCaseFilter
+import io.kotest.core.extensions.SpecifiedTagsTagExtension
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.isDoNotParallelize
-import io.kotest.core.extensions.SpecifiedTagsTagExtension
+import io.kotest.core.test.TestCaseFilter
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
 import io.kotest.runner.jvm.spec.SpecExecutor

@@ -2,7 +2,7 @@
 
 package io.kotest.property.internal
 
-import io.kotest.tuples.Tuple3
+import io.kotest.fp.Tuple3
 import io.kotest.property.*
 import io.kotest.property.arbitrary.PropertyInput
 

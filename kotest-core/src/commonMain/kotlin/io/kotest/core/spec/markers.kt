@@ -6,3 +6,5 @@ expect annotation class Junit5TestFactory()
 
 // used by the kotlin compiler to generate test methods, we use this for js impl
 expect annotation class JsTest()
+
+annotation class AutoScan
