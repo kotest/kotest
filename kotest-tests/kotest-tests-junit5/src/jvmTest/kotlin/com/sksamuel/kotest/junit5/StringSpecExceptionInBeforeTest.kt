@@ -20,3 +20,20 @@ class StringSpecExceptionInBeforeTest : StringSpec() {
     throw RuntimeException("oooff!!")
   }
 }
+
+class StringSpecExceptionInBeforeTestFunction : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      beforeTest {
+         throw RuntimeException("oooff!!")
+      }
+   }
+}

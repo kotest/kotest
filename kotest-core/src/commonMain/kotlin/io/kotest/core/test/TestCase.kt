@@ -83,5 +83,3 @@ data class TestCase(
          )
    }
 }
-
-class FakeSpecConfiguration : SpecConfiguration()

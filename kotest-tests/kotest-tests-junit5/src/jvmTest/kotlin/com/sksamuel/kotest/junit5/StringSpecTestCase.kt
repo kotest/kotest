@@ -3,7 +3,7 @@ package com.sksamuel.kotest.junit5
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
-class StringSpecTestCase : StringSpec({
+internal class StringSpecTestCase : StringSpec({
 
   "a failing test" {
     1 shouldBe 2

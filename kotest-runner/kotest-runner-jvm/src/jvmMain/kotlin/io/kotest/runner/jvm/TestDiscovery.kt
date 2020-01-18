@@ -5,10 +5,12 @@ import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
-import java.lang.reflect.Modifier
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.reflect.KVisibility
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 interface DiscoveryFilter {
    fun test(className: String, packageName: String): Boolean
@@ -45,8 +47,10 @@ object TestDiscovery {
    // filter functions
    private val specOnly: (KClass<*>) -> Boolean = { SpecConfiguration::class.java.isAssignableFrom(it.java) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
-   private val isPublic: (KClass<*>) -> Boolean = { Modifier.isPublic(it.java.modifiers) }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
+
+   // we filter generally scanned classes for public only, but classes lookup by name can be anything
+   private val isPublic: (KClass<*>) -> Boolean = { it.visibility == KVisibility.PUBLIC }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
@@ -70,7 +74,6 @@ object TestDiscovery {
          .filter(requestFilters)
          .filter(specOnly)
          .filterNot(isAbstract)
-         .filter(isPublic)
          .filter(isClass)
          .toList()
 
@@ -89,17 +92,22 @@ object TestDiscovery {
     * Returns a list of [SpecConfiguration] classes detected using classgraph in the list of
     * locations specified by the uris param.
     */
+   @UseExperimental(ExperimentalTime::class)
    private fun scanUris(uris: List<URI>): List<KClass<out SpecConfiguration>> {
-
-      val scanResult = ClassGraph()
-         .enableClassInfo()
-         .enableExternalClasses()
-         .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
-         .scan()
+      logger.debug("Starting test discovery scan...")
+      val (scanResult, time) = measureTimedValue {
+         ClassGraph()
+            .enableClassInfo()
+            .enableExternalClasses()
+            .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+            .scan()
+      }
+      logger.debug("Test discovery competed in $time")
 
       return scanResult
          .getSubclasses(SpecConfiguration::class.java.name)
          .map { Class.forName(it.name).kotlin }
+         .filter(isPublic)
          .filterIsInstance<KClass<out SpecConfiguration>>()
    }
 

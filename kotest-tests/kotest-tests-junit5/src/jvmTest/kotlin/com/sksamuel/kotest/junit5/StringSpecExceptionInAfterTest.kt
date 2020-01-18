@@ -21,3 +21,20 @@ class StringSpecExceptionInAfterTest : StringSpec() {
     throw RuntimeException("craack!!")
   }
 }
+
+class StringSpecExceptionInAfterTestFunction : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      afterTest {
+         throw RuntimeException("craack!!")
+      }
+   }
+}

@@ -1,270 +1,320 @@
 package com.sksamuel.kotest.junit5
 
-import io.kotest.assertSoftly
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
-import org.junit.platform.testkit.engine.EventType
+import org.junit.platform.testkit.engine.Events
+
+fun Events.shouldHaveNames(vararg names: String) =
+   list().map { it.testDescriptor.displayName }.shouldContainExactly(*names)
+
+fun Events.shouldBeEmpty() = list().shouldBeEmpty()
 
 class StringSpecEngineKitTest : FunSpec({
 
-  test("verify container stats") {
-    EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecTestCase::class.java))
-        .execute()
-        .containers()
-        .assertStatistics { it.started(2).succeeded(2) }
-  }
+   test("verify all events") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecTestCase::class.java))
+         .execute()
+         .allEvents().apply {
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecTestCase",
+               "a failing test",
+               "a passing test",
+               "an erroring test"
+            )
+            skipped().shouldHaveNames("a skipped test")
+            failed().shouldHaveNames(
+               "a failing test",
+               "an erroring test",
+               "com.sksamuel.kotest.junit5.StringSpecTestCase"
+            )
+            succeeded().shouldHaveNames("a passing test", "Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "an erroring test",
+               "com.sksamuel.kotest.junit5.StringSpecTestCase",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecTestCase",
+               "a failing test",
+               "a passing test",
+               "an erroring test",
+               "a skipped test"
+            )
+         }
+   }
 
-  test("verify test stats") {
-    EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecTestCase::class.java))
-        .execute()
-        .tests()
-        .assertStatistics { it.skipped(1).started(3).succeeded(1).aborted(0).failed(2).finished(3) }
-  }
+   test("exception in initializer") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInInit::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 8
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInInit",
+               "Spec instantiation failed"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInInit")
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "Spec instantiation failed",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInInit",
+               "Kotest"
+            )
+            aborted().shouldHaveNames("Spec instantiation failed")
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInInit",
+               "Spec instantiation failed"
+            )
+         }
+   }
 
-  test("exception in initializer") {
+   test("exception in beforeSpec override") {
 
-    val results = EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecExceptionInInit::class.java))
-        .execute()
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecOverride::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 5
+            started().shouldHaveNames("Kotest", "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecOverride")
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecOverride")
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecOverride", "Kotest")
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecOverride")
+         }
+   }
 
-    results.all().list().size shouldBe 5
+   test("exception in beforeSpec function") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecFunction::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 5
+            started().shouldHaveNames("Kotest", "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecFunction")
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecFunction")
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecFunction", "Kotest")
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames("com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpecFunction")
+         }
+   }
 
-    results.all().list().apply {
-      assertSoftly {
+   test("exception in afterSpec override") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInAfterSpec::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames("a failing test", "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec")
+            succeeded().shouldHaveNames("a passing test", "Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec",
+               "a failing test",
+               "a passing test"
+            )
+         }
+   }
 
-        this[0].type shouldBe EventType.STARTED
-        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[2].type shouldBe EventType.STARTED
-        this[3].type shouldBe EventType.FINISHED
-        this[4].type shouldBe EventType.FINISHED
+   test("exception in afterSpec function") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInAfterSpecFunction::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpecFunction",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpecFunction"
+            )
+            succeeded().shouldHaveNames("a passing test", "Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpecFunction",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpecFunction",
+               "a failing test",
+               "a passing test"
+            )
+         }
+   }
 
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInInit"
-        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInInit"
-        this[3].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInInit"
-        this[4].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
+   test("exception in beforeTest override") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInBeforeTest::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest"
+            )
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest", "a failing test", "a passing test"
+            )
+         }
+   }
 
-    results.all().failed().list().apply {
-      assertSoftly {
-        size shouldBe 1
-        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInInit"
-      }
-    }
+   test("exception in beforeTest function") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInBeforeTestFunction::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTestFunction",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTestFunction"
+            )
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTestFunction",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTestFunction", "a failing test", "a passing test"
+            )
+         }
+   }
 
-    results.all().succeeded().list().apply {
-      assertSoftly {
-        size shouldBe 1
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-  }
+   test("exception in afterTest override") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInAfterTest::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest"
+            )
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest",
+               "a failing test",
+               "a passing test"
+            )
+         }
+   }
 
-  test("exception in before spec") {
+   test("exception in afterTest function") {
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInAfterTestFunction::class.java))
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTestFunction",
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTestFunction"
+            )
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTestFunction",
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTestFunction",
+               "a failing test",
+               "a passing test"
+            )
+         }
+   }
 
-    val results = EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecExceptionInBeforeSpec::class.java))
-        .execute()
-
-    results.all().list().size shouldBe 5
-
-    results.all().list().apply {
-      assertSoftly {
-        this[0].type shouldBe EventType.STARTED
-        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[2].type shouldBe EventType.STARTED
-        this[3].type shouldBe EventType.FINISHED
-        this[4].type shouldBe EventType.FINISHED
-
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpec"
-        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpec"
-        this[3].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpec"
-        this[4].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-
-    results.all().failed().list().apply {
-      assertSoftly {
-        size shouldBe 1
-        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeSpec"
-      }
-    }
-
-    results.all().succeeded().list().apply {
-      assertSoftly {
-        size shouldBe 1
-        this[0].type shouldBe EventType.FINISHED
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-  }
-
-  test("exception in after spec") {
-
-    val results = EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecExceptionInAfterSpec::class.java))
-        .execute()
-
-    results.all().list().size shouldBe 11
-
-    results.all().list().apply {
-      assertSoftly {
-        this[0].type shouldBe EventType.STARTED
-        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[2].type shouldBe EventType.STARTED
-        this[3].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[4].type shouldBe EventType.STARTED
-        this[5].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[6].type shouldBe EventType.STARTED
-        this[7].type shouldBe EventType.FINISHED
-        this[8].type shouldBe EventType.FINISHED
-        this[9].type shouldBe EventType.FINISHED
-        this[10].type shouldBe EventType.FINISHED
-
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec"
-        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec"
-        this[3].testDescriptor.displayName shouldBe "a failing test"
-        this[4].testDescriptor.displayName shouldBe "a failing test"
-        this[5].testDescriptor.displayName shouldBe "a passing test"
-        this[6].testDescriptor.displayName shouldBe "a passing test"
-        this[7].testDescriptor.displayName shouldBe "a failing test"
-        this[8].testDescriptor.displayName shouldBe "a passing test"
-        this[9].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec"
-        this[10].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-
-    results.all().failed().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "a failing test"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterSpec"
-      }
-    }
-
-    results.all().succeeded().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "a passing test"
-        this[1].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-  }
-
-  test("exception in before test") {
-
-    val results = EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecExceptionInBeforeTest::class.java))
-        .execute()
-
-    results.all().list().size shouldBe 9
-
-    results.all().list().apply {
-      assertSoftly {
-
-        this[0].type shouldBe EventType.STARTED
-        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[2].type shouldBe EventType.STARTED
-        this[3].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[4].type shouldBe EventType.FINISHED
-        this[5].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[6].type shouldBe EventType.FINISHED
-        this[7].type shouldBe EventType.FINISHED
-        this[8].type shouldBe EventType.FINISHED
-
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest"
-        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest"
-        this[3].testDescriptor.displayName shouldBe "a failing test"
-        this[4].testDescriptor.displayName shouldBe "a failing test"
-        this[5].testDescriptor.displayName shouldBe "a passing test"
-        this[6].testDescriptor.displayName shouldBe "a passing test"
-        this[7].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest"
-        this[8].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-
-    results.all().failed().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "a failing test"
-        this[1].testDescriptor.displayName shouldBe "a passing test"
-      }
-    }
-
-    results.all().succeeded().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInBeforeTest"
-        this[1].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-  }
-
-  test("exception in after test") {
-
-    val results = EngineTestKit
-        .engine("kotest")
-        .selectors(selectClass(StringSpecExceptionInAfterTest::class.java))
-        .execute()
-
-    results.all().list().size shouldBe 11
-
-    results.all().list().apply {
-      assertSoftly {
-        this[0].type shouldBe EventType.STARTED
-        this[1].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[2].type shouldBe EventType.STARTED
-        this[3].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[4].type shouldBe EventType.STARTED
-        this[5].type shouldBe EventType.DYNAMIC_TEST_REGISTERED
-        this[6].type shouldBe EventType.STARTED
-        this[7].type shouldBe EventType.FINISHED
-        this[8].type shouldBe EventType.FINISHED
-        this[9].type shouldBe EventType.FINISHED
-        this[10].type shouldBe EventType.FINISHED
-
-        this[0].testDescriptor.displayName shouldBe "Kotest"
-        this[1].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest"
-        this[2].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest"
-        this[3].testDescriptor.displayName shouldBe "a failing test"
-        this[4].testDescriptor.displayName shouldBe "a failing test"
-        this[5].testDescriptor.displayName shouldBe "a passing test"
-        this[6].testDescriptor.displayName shouldBe "a passing test"
-        this[7].testDescriptor.displayName shouldBe "a failing test"
-        this[8].testDescriptor.displayName shouldBe "a passing test"
-        this[9].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest"
-        this[10].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-
-    results.all().failed().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "a failing test"
-        this[1].testDescriptor.displayName shouldBe "a passing test"
-      }
-    }
-
-    results.all().succeeded().list().apply {
-      assertSoftly {
-        size shouldBe 2
-        this[0].testDescriptor.displayName shouldBe "com.sksamuel.kotest.junit5.StringSpecExceptionInAfterTest"
-        this[1].testDescriptor.displayName shouldBe "Kotest"
-      }
-    }
-  }
 })

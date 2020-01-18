@@ -15,6 +15,7 @@ object Libs {
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
       const val api = "org.junit.platform:junit-platform-suite-api:$version"
+      const val testkit = "org.junit.platform:junit-platform-testkit:$version"
    }
 
    object JUnitJupiter {
