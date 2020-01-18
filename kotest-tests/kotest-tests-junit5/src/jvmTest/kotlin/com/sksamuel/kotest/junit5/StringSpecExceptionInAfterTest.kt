@@ -5,7 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
-class StringSpecExceptionInAfterTest : StringSpec() {
+internal class StringSpecExceptionInAfterTest : StringSpec() {
 
   init {
     "a failing test" {
@@ -22,7 +22,7 @@ class StringSpecExceptionInAfterTest : StringSpec() {
   }
 }
 
-class StringSpecExceptionInAfterTestFunction : StringSpec() {
+internal class StringSpecExceptionInAfterTestFunction : StringSpec() {
 
    init {
       "a failing test" {
