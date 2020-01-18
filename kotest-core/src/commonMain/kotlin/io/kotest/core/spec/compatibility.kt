@@ -1,17 +1,15 @@
 package io.kotest.core.spec
 
-import io.kotest.core.SpecClass
 import io.kotest.core.*
 import io.kotest.core.test.*
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestListener
 
 /**
- * Contains functions which can be overriden to set config in the same way that KotlinTest 3.x allowed.
- * This style of configuration is deprecated and this class exists purely to ease the migration from
- * KotlinTest 3.x to Kotest 4.0.
+ * Contains methods which can be overriden to set config in the same way that KotlinTest 3.x allowed.
+ * The preferred style is to call the DSL functions from within the tests but these methods are still
+ * supported and will not be deprecated.
  */
-@Deprecated("This is a compatibility class. It exists only to ease migration and will be removed in 4.1")
 interface CompatibilitySpecConfiguration {
 
    fun defaultTestCaseConfig(): TestCaseConfig? = null
@@ -44,50 +42,20 @@ interface CompatibilitySpecConfiguration {
 
    /**
     * Any tags added here will be in applied to all [TestCase]s defined
-    * in this [SpecClass] in addition to any defined on the individual
+    * in this [SpecConfiguration] in addition to any defined on the individual
     * tests themselves.
     */
    fun tags(): Set<Tag> = emptySet()
 
-   // @Deprecated("Use the spec DSL", ReplaceWith("isolationMode = myIsolationMode"))
    fun isolationMode(): IsolationMode? = null
 
    fun assertionMode(): AssertionMode? = null
 
-   @Deprecated("Use the spec DSL", ReplaceWith("beforeTest { test -> }"))
-   fun beforeTest(description: Description) {
-   }
+   fun afterSpec(spec: SpecConfiguration) {}
 
-   @Deprecated("Use the spec DSL", ReplaceWith("afterTest { test, result -> }"))
-   fun afterTest(description: Description, result: TestResult) {
-   }
+   fun afterTest(testCase: TestCase, result: TestResult) {}
 
-   @Deprecated("Use the spec DSL", ReplaceWith("afterSpec {  }"))
-   fun afterSpec(spec: SpecClass) {
-   }
+   fun beforeSpec(spec: SpecConfiguration) {}
 
-   fun afterSpec(spec: SpecConfiguration) {
-   }
-
-   fun afterTest(testCase: TestCase, result: TestResult) {
-   }
-
-   @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec {  }"))
-   fun beforeSpec(spec: SpecClass) {
-   }
-
-   // @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec {  }"))
-   fun beforeSpec(spec: SpecConfiguration) {
-   }
-
-   fun beforeTest(testCase: TestCase) {
-   }
-
-   @Deprecated("Use the spec DSL", ReplaceWith("endSpec { }"))
-   fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
-   }
-
-   @Deprecated("Use the spec DSL", ReplaceWith("beforeSpec { }"))
-   fun beforeSpec(description: Description, spec: SpecConfiguration) {
-   }
+   fun beforeTest(testCase: TestCase) {}
 }

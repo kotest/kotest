@@ -1,13 +1,12 @@
 package io.kotest.core.test
 
-import io.kotest.core.SpecClass
 import io.kotest.core.*
 import io.kotest.core.factory.TestFactoryId
 import io.kotest.core.spec.SpecConfiguration
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
- * It contains a reference back to the [SpecClass] instance in which it
+ * It contains a reference back to the [SpecConfiguration] instance in which it
  * is being executed.
  *
  * It also captures a closure of the body of the test case.
@@ -15,9 +14,9 @@ import io.kotest.core.spec.SpecConfiguration
  * The context is used so that the test function can, at runtime,
  * register nested tests with the test engine. This allows
  * nested tests to be executed lazily as required, rather
- * than when the [SpecClass] instance is created.
+ * than when the [SpecConfiguration] instance is created.
  *
- * A test can be nested inside other tests if the [SpecClass] supports it.
+ * A test can be nested inside other tests if the [SpecConfiguration] supports it.
  *
  * For example, in the FunSpec we only allow top level tests.
  *
@@ -66,30 +65,6 @@ data class TestCase(
             test,
             sourceRef(),
             TestType.Test,
-            TestCaseConfig(),
-            null,
-            null
-         )
-
-      fun test(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
-         TestCase(
-            description,
-            FakeSpecConfiguration(),
-            test,
-            sourceRef(),
-            TestType.Test,
-            TestCaseConfig(),
-            null,
-            null
-         )
-
-      fun container(description: Description, spec: SpecClass, test: suspend TestContext.() -> Unit): TestCase =
-         TestCase(
-            description,
-            FakeSpecConfiguration(),
-            test,
-            sourceRef(),
-            TestType.Container,
             TestCaseConfig(),
             null,
             null

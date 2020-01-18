@@ -1,7 +1,6 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.SpecClass
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.KotestDsl
@@ -28,20 +27,6 @@ abstract class TestContext : CoroutineScope {
     * The currently executing [TestCase].
     */
    abstract val testCase: TestCase
-
-   /**
-    * Creates a new [TestCase] and then notifies the test runner of this nested test.
-    */
-   @Deprecated("to be removed once all specs moved to spec config")
-   suspend fun registerTestCase(
-      name: String,
-      spec: SpecClass,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ) {
-      TODO()
-   }
 
    /**
     * Creates a [NestedTest] and then registers with the [TestContext].

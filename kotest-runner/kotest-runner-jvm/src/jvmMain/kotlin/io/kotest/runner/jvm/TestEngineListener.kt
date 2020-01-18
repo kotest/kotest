@@ -1,6 +1,5 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.SpecClass
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
@@ -17,7 +16,7 @@ interface TestEngineListener {
    /**
     * Is invoked when the [KotestEngine] is starting execution.
     *
-    * @param classes the [SpecClass] classes that will be used by the [KotestEngine].
+    * @param classes the [SpecConfiguration] classes that will be used by the [KotestEngine].
     */
    fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {}
 
@@ -64,7 +63,7 @@ interface TestEngineListener {
    fun testFinished(testCase: TestCase, result: TestResult) {}
 
    /**
-    * Invoked each time an instance of a [SpecClass] is created.
+    * Invoked each time an instance of a [SpecConfiguration] is created.
     * A spec may be created once per class, or one per [TestCase].
     */
    fun specInstantiated(spec: SpecConfiguration) {}

@@ -1,6 +1,5 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.core.SpecClass
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecConfiguration
@@ -14,7 +13,7 @@ import io.kotest.runner.jvm.TestEngineListener
 import org.slf4j.LoggerFactory
 
 /**
- * The base class for executing all the tests inside a [SpecClass].
+ * The base class for executing all the tests inside a [SpecConfiguration].
  *
  * Each spec can define how tests are isolated from each other, via an [IsolationMode].
  * The implementation for each mode is handled by an instance of [SpecRunner].

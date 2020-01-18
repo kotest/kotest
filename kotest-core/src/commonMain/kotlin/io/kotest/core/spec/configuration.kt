@@ -23,6 +23,7 @@ typealias TestCaseExtensionFn = suspend (
    execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
    complete: suspend (TestResult) -> Unit
 ) -> Unit
+
 typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
 
 // these functions call out to the js test methods
@@ -150,6 +151,10 @@ abstract class TestConfiguration {
     */
    fun tags(vararg tags: Tag) {
       this.tags = this.tags + tags.toSet()
+   }
+
+   fun listener(listener: TestListener) {
+      listeners(listener)
    }
 
    fun listeners(vararg listener: TestListener) {

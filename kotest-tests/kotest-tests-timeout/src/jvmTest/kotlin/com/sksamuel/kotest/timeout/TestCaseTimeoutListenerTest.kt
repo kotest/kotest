@@ -48,7 +48,7 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase
          }
-         executor.execute(testCase, context)
+         executor.execute(testCase, context) {}
       }
    }
 }

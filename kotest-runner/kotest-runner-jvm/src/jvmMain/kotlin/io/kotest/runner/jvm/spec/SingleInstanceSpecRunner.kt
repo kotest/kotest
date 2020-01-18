@@ -1,6 +1,5 @@
 package io.kotest.runner.jvm.spec
 
-import io.kotest.core.SpecClass
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
@@ -13,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [SpecClass] instance. In other words, only a single instance of the spec class
+ * same [SpecConfiguration] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {

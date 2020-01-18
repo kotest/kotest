@@ -2,7 +2,6 @@ package io.kotest.extensions.system
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
-import io.kotest.core.SpecClass
 import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.TestListener
@@ -22,7 +21,7 @@ import kotlin.reflect.KClass
  *
  * Note: This listener will change the security manager
  * for all tests. If you want to change the security manager
- * for just a single [SpecClass] then consider the
+ * for just a single [SpecConfiguration] then consider the
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {

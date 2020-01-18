@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.junit5
 
-import io.kotest.core.SpecClass
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
@@ -16,7 +16,7 @@ class StringSpecExceptionInBeforeSpec : StringSpec() {
     }
   }
 
-  override fun beforeSpec(spec: SpecClass) {
+  override fun beforeSpec(spec: SpecConfiguration) {
     throw RuntimeException("zopp!!")
   }
 

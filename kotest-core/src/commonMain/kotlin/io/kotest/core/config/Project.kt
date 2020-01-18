@@ -51,6 +51,7 @@ object Project {
    }
 
    fun registerFilters(filters: Collection<ProjectLevelFilter>) = filters.forEach { registerFilter(it) }
+
    fun registerFilters(vararg filters: ProjectLevelFilter) = filters.forEach { registerFilter(it) }
 
    fun registerFilter(filter: ProjectLevelFilter) {
@@ -102,6 +103,7 @@ object Project {
    }
 
    fun constructorExtensions(): List<ConstructorExtension> = extensions.filterIsInstance<ConstructorExtension>()
+
    fun discoveryExtensions(): List<DiscoveryExtension> = extensions.filterIsInstance<DiscoveryExtension>()
 
    fun extensions(): List<Extension> = extensions
@@ -130,14 +132,6 @@ object Project {
 
    fun setGlobalAssertSoftly(g: Boolean) {
       globalAssertSoftly = g
-   }
-
-   fun beforeAll() {
-      projectListeners().forEach { it.beforeProject() }
-   }
-
-   fun afterAll() {
-      projectListeners().forEach { it.afterProject() }
    }
 }
 

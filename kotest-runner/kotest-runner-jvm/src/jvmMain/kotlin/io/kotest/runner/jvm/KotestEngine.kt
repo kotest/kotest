@@ -40,12 +40,12 @@ class KotestEngine(
          )
    }
 
-   private fun afterAll() = Try { Project.afterAll() }
+   private fun afterAll() = Try { Project.projectListeners().forEach { it.afterProject() } }
 
    private fun start() = Try {
       listener.engineStarted(classes)
       Project.dumpProjectConfig()
-      Project.beforeAll()
+      Project.projectListeners().forEach { it.beforeProject() }
    }
 
    private fun submitAll() = Try {
