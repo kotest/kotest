@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style
 
+import io.kotest.assertions.Failures
 import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.*
@@ -223,48 +224,3 @@ private fun KClass<out AnnotationSpec>.findFunctionAnnotatedWithAnyOf(vararg ann
 
 private fun KFunction<*>.isFunctionAnnotatedWithAnyOf(vararg annotation: KClass<*>) =
    annotations.any { it.annotationClass in annotation }
-
-@Deprecated("To be removed soon")
-private object Failures {
-
-   fun failure(message: String, cause: Throwable? = null): AssertionError = AssertionError(message).apply {
-      removeKotestElementsFromStacktrace(this)
-      initCause(cause)
-   }
-
-   fun removeKotestElementsFromStacktrace(throwable: Throwable) {
-      throwable.stackTrace = UserStackTraceConverter.getUserStacktrace(throwable.stackTrace)
-   }
-}
-
-private object UserStackTraceConverter {
-
-   fun getUserStacktrace(kotestStacktraces: Array<StackTraceElement>): Array<StackTraceElement> {
-      return kotestStacktraces.dropUntilUserClass()
-   }
-
-   private fun Array<StackTraceElement>.dropUntilUserClass(): Array<StackTraceElement> {
-      return toList().dropUntilFirstKotestClass().dropUntilFirstNonKotestClass().toTypedArray()
-   }
-
-   private fun List<StackTraceElement>.dropUntilFirstKotestClass(): List<StackTraceElement> {
-      return dropWhile {
-         it.isNotKotestClass()
-      }
-   }
-
-   private fun List<StackTraceElement>.dropUntilFirstNonKotestClass(): List<StackTraceElement> {
-      return dropWhile {
-         it.isKotestClass()
-      }
-   }
-
-   private fun StackTraceElement.isKotestClass(): Boolean {
-      return className.startsWith("io.kotest")
-   }
-
-   private fun StackTraceElement.isNotKotestClass(): Boolean {
-      return !isKotestClass()
-   }
-
-}
