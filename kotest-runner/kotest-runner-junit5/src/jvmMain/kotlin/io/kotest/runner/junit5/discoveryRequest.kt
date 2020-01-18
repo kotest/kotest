@@ -65,5 +65,6 @@ internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest
       request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
       request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-   return DiscoveryRequest(uris, classnames, filters)
+   val allowInternal = request.configurationParameters.get("allow_internal").isPresent
+   return DiscoveryRequest(uris, classnames, filters, allowInternal)
 }

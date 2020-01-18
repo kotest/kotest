@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.junit5
+package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.junit5
+package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -12,11 +12,12 @@ class FreeSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FreeSpecSample::class.java))
+         .configurationParameter("allow_internal", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",
-               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "a simple failing test",
                "a simple passing test",
                "a simple erroring test",
@@ -48,7 +49,7 @@ class FreeSpecEngineKitTest : FunSpec({
                "a erroring test",
                "an inner container with",
                "an outer container with",
-               "com.sksamuel.kotest.junit5.FreeSpecSample"
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample"
             )
             succeeded().shouldHaveNames(
                "a simple passing test",
@@ -81,11 +82,11 @@ class FreeSpecEngineKitTest : FunSpec({
                "a passing test 1",
                "a passing test 2",
                "an outer container with only passing tests",
-               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
                "a simple failing test",
                "a simple passing test",
                "a simple erroring test",

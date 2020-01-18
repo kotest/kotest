@@ -27,7 +27,8 @@ interface DiscoveryFilter {
 data class DiscoveryRequest(
    val uris: List<URI> = emptyList(),
    val classNames: List<String> = emptyList(),
-   val filters: List<DiscoveryFilter> = emptyList()
+   val filters: List<DiscoveryFilter> = emptyList(),
+   val allowInternal: Boolean
 )
 
 /**
@@ -76,8 +77,11 @@ object TestDiscovery {
          .asSequence()
          .filter(requestFilters)
          .filter(specOnly)
-         .filterNot(isAbstract)
          .filter(isClass)
+         .filterNot(isAbstract)
+         .filter(isPublic)
+         .filterNot(isPrivate)
+         .filter { request.allowInternal || !isInternal(it) }
          .toList()
 
       logger.trace("After filters there are ${filtered.size} spec classes")
@@ -110,9 +114,6 @@ object TestDiscovery {
       return scanResult
          .getSubclasses(SpecConfiguration::class.java.name)
          .map { Class.forName(it.name).kotlin }
-         .filter(isPublic)
-         .filterNot(isInternal)
-         .filterNot(isPrivate)
          .filterIsInstance<KClass<out SpecConfiguration>>()
    }
 

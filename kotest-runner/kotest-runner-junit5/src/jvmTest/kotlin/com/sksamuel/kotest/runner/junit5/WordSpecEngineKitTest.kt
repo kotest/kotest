@@ -1,8 +1,7 @@
-package com.sksamuel.kotest.junit5
+package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
@@ -12,12 +11,13 @@ class WordSpecEngineKitTest : FunSpec({
    test("verify engine stats") {
       EngineTestKit
          .engine("kotest")
-         .selectors(selectClass(WordSpecTestCase::class.java))
+         .selectors(selectClass(WordSpecSample::class.java))
+         .configurationParameter("allow_internal", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",
-               "com.sksamuel.kotest.junit5.WordSpecTestCase",
+               "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "a container should",
                "fail a test",
                "pass a test",
@@ -45,7 +45,7 @@ class WordSpecEngineKitTest : FunSpec({
                "with a should container should",
                "a when container with a failing test when",
                "a failing container should",
-               "com.sksamuel.kotest.junit5.WordSpecTestCase"
+               "com.sksamuel.kotest.runner.junit5.WordSpecSample"
             )
             succeeded().shouldHaveNames(
                "pass a test",
@@ -76,11 +76,11 @@ class WordSpecEngineKitTest : FunSpec({
                "with a should container should",
                "a when container when",
                "a failing container should",
-               "com.sksamuel.kotest.junit5.WordSpecTestCase",
+               "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(
-               "com.sksamuel.kotest.junit5.WordSpecTestCase",
+               "com.sksamuel.kotest.runner.junit5.WordSpecSample",
                "a container should",
                "skip a test",
                "fail a test",
@@ -104,7 +104,7 @@ class WordSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class WordSpecTestCase : WordSpec({
+internal class WordSpecSample : WordSpec({
 
    "a container" should {
       "skip a test".config(enabled = false) {}
