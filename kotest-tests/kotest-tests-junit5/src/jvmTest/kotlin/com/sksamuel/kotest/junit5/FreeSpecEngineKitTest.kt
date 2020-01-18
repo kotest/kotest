@@ -2,8 +2,6 @@ package com.sksamuel.kotest.junit5
 
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
@@ -16,18 +14,105 @@ class FreeSpecEngineKitTest : FunSpec({
          .selectors(selectClass(FreeSpecSample::class.java))
          .execute()
          .allEvents().apply {
-            started().list().map { it.testDescriptor.displayName }.shouldContainExactly("Kotest")
-            aborted().list().map { it.testDescriptor.displayName }.shouldBeEmpty()
-            skipped().list().map { it.testDescriptor.displayName }.shouldBeEmpty()
-            failed().list().map { it.testDescriptor.displayName }.shouldBeEmpty()
-            succeeded().list().map { it.testDescriptor.displayName }.shouldContainExactly("Kotest")
-            finished().list().map { it.testDescriptor.displayName }.shouldContainExactly("Kotest")
-            dynamicallyRegistered().list().map { it.testDescriptor.displayName }.shouldContainExactly("")
+            started().shouldHaveNames(
+               "Kotest",
+               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "a simple failing test",
+               "a simple passing test",
+               "a simple erroring test",
+               "a container with",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "an outer container with",
+               "an inner container with",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "an empty outer container with",
+               "an outer container that conatins",
+               "an empty inner container",
+               "an outer container with only passing tests",
+               "a passing test 1",
+               "a passing test 2"
+            )
+            aborted().shouldBeEmpty()
+            skipped().shouldHaveNames("a simple skipped test", "a skipped test", "a skipped test")
+            failed().shouldHaveNames(
+               "a simple failing test",
+               "a simple erroring test",
+               "a failing test",
+               "a erroring test",
+               "a container with",
+               "a failing test",
+               "a erroring test",
+               "an inner container with",
+               "an outer container with",
+               "com.sksamuel.kotest.junit5.FreeSpecSample"
+            )
+            succeeded().shouldHaveNames(
+               "a simple passing test",
+               "a passing test",
+               "a passing test",
+               "an empty outer container with",
+               "an empty inner container",
+               "an outer container that conatins",
+               "a passing test 1",
+               "a passing test 2",
+               "an outer container with only passing tests",
+               "Kotest"
+            )
+            finished().shouldHaveNames(
+               "a simple failing test",
+               "a simple passing test",
+               "a simple erroring test",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "a container with",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "an inner container with",
+               "an outer container with",
+               "an empty outer container with",
+               "an empty inner container",
+               "an outer container that conatins",
+               "a passing test 1",
+               "a passing test 2",
+               "an outer container with only passing tests",
+               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "Kotest"
+            )
+            dynamicallyRegistered().shouldHaveNames(
+               "com.sksamuel.kotest.junit5.FreeSpecSample",
+               "a simple failing test",
+               "a simple passing test",
+               "a simple erroring test",
+               "a simple skipped test",
+               "a container with",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "a skipped test",
+               "an outer container with",
+               "an inner container with",
+               "a failing test",
+               "a passing test",
+               "a erroring test",
+               "a skipped test",
+               "an empty outer container with",
+               "an outer container that conatins",
+               "an empty inner container",
+               "an outer container with only passing tests",
+               "a passing test 1",
+               "a passing test 2"
+            )
          }
    }
 })
 
-private class FreeSpecSample : FreeSpec({
+internal class FreeSpecSample : FreeSpec({
 
    "a simple failing test" {
       1 shouldBe 2

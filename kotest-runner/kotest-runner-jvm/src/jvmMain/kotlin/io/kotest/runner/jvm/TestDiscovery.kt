@@ -5,6 +5,7 @@ import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
+import java.lang.reflect.Modifier
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -50,7 +51,9 @@ object TestDiscovery {
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
 
    // we filter generally scanned classes for public only, but classes lookup by name can be anything
-   private val isPublic: (KClass<*>) -> Boolean = { it.visibility == KVisibility.PUBLIC }
+   private val isInternal: (KClass<*>) -> Boolean = { it.visibility == KVisibility.INTERNAL }
+   private val isPublic: (KClass<*>) -> Boolean = { Modifier.isPublic(it.java.modifiers) }
+   private val isPrivate: (KClass<*>) -> Boolean = { Modifier.isPrivate(it.java.modifiers) }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
@@ -108,6 +111,8 @@ object TestDiscovery {
          .getSubclasses(SpecConfiguration::class.java.name)
          .map { Class.forName(it.name).kotlin }
          .filter(isPublic)
+         .filterNot(isInternal)
+         .filterNot(isPrivate)
          .filterIsInstance<KClass<out SpecConfiguration>>()
    }
 
