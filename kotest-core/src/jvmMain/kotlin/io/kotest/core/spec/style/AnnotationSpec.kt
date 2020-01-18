@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.SpecClass
 import io.kotest.core.config.Project
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.*
@@ -19,10 +18,6 @@ abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfig
    }
 
    private fun defaultConfig() = defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override fun beforeSpec(spec: SpecClass) {
-      executeBeforeSpecFunctions()
-   }
 
    override fun beforeSpec(spec: SpecConfiguration) {
       executeBeforeSpecFunctions()
@@ -43,10 +38,6 @@ abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfig
    private fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach { it.call(this) }
 
    override fun afterSpec(spec: SpecConfiguration) {
-      executeAfterSpecFunctions()
-   }
-
-   override fun afterSpec(spec: SpecClass) {
       executeAfterSpecFunctions()
    }
 

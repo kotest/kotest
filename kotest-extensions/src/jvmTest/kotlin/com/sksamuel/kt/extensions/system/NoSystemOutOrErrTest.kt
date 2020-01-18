@@ -7,7 +7,7 @@ import io.kotest.extensions.system.SystemOutWriteException
 import io.kotest.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 
-class NoSytemOutOrErrTest : StringSpec() {
+class NoSystemOutOrErrTest : StringSpec() {
 
   override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
 
@@ -15,7 +15,7 @@ class NoSytemOutOrErrTest : StringSpec() {
 
     "System.out should throw an exception when the listener is added" {
       shouldThrow<SystemOutWriteException> {
-        System.out.println("boom")
+        println("boom")
       }
     }
 

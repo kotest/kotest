@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -28,8 +29,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
    suspend fun execute(kclass: KClass<out SpecConfiguration>) {
       logger.trace("Executing spec $kclass")
       notifySpecStarted(kclass)
+         .flatMap { notifyPrepareSpec(kclass) }
          .flatMap { createInstance(kclass) }
          .flatMap { runTests(it) }
+         .flatMap { notifyFinalizeSpec(kclass, it) }
          .fold({ notifySpecFinished(kclass, it, emptyMap()) }, { notifySpecFinished(kclass, null, it) })
    }
 
@@ -84,5 +87,31 @@ class SpecExecutor(private val listener: TestEngineListener) {
       // todo
       // IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
       // IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
+   }
+
+   /**
+    * Notifies the user listeners that a new [SpecConfiguration] is starting.
+    * This is only invoked once per spec class, regardless of the number of invocations.
+    */
+   private fun notifyPrepareSpec(kclass: KClass<out SpecConfiguration>): Try<Unit> = Try {
+      logger.trace("Executing notifyPrepareSpec")
+      Project.testListeners().forEach {
+         it.prepareSpec(kclass)
+      }
+   }
+
+   /**
+    * Notifies the user listeners that a [SpecConfiguration] has finished all instances.
+    * This is only invoked once per spec class, regardless of the number of invocations.
+    */
+   private fun notifyFinalizeSpec(
+      kclass: KClass<out SpecConfiguration>,
+      results: Map<TestCase, TestResult>
+   ): Try<Map<TestCase, TestResult>> = Try {
+      logger.trace("Executing notifyAfterSpec")
+      Project.testListeners().forEach {
+         it.finalizeSpec(kclass, results)
+      }
+      results
    }
 }

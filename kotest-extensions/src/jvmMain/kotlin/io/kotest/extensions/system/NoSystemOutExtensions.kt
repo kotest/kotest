@@ -8,6 +8,9 @@ import java.io.PrintStream
 class SystemOutWriteException(val str: String?) : RuntimeException()
 class SystemErrWriteException(val str: String?) : RuntimeException()
 
+/**
+ * A [TestListener] that throws an error if anything is written to standard out.
+ */
 object NoSystemOutListener : TestListener {
    private fun setup() {
       val out = ByteArrayOutputStream()
@@ -28,6 +31,9 @@ object NoSystemOutListener : TestListener {
    override fun beforeSpec(spec: SpecConfiguration) = setup()
 }
 
+/**
+ * A [TestListener] that throws an error if anything is written to standard err.
+ */
 object NoSystemErrListener : TestListener {
    private fun setup() {
       val out = ByteArrayOutputStream()

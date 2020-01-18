@@ -1,8 +1,6 @@
 package com.sksamuel.kt.koin
 
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinListener
@@ -12,7 +10,6 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koin.test.mock.declareMock
 import org.mockito.BDDMockito
-import kotlin.reflect.KClass
 
 class KotlinListenerTest : FunSpec(), KoinTest {
 
@@ -34,7 +31,7 @@ class KotlinListenerTest : FunSpec(), KoinTest {
       }
    }
 
-   override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+   override fun afterSpec(spec: SpecConfiguration) {
       GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
    }
 

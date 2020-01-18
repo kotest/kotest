@@ -1,5 +1,6 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.core.extensions.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
@@ -82,20 +83,23 @@ class SystemPropertiesExtensionsTest : FreeSpec() {
 
 class SystemPropertyListenerTest : WordSpec() {
 
-   override fun listeners() = listOf(SystemPropertyTestListener("wibble", "wobble"))
+   private val assertion = object : TestListener {
+      override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+         System.getProperty("bee") shouldBe null
+      }
 
-   override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
-      System.getProperty("wibble") shouldBe null
+      override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+         System.getProperty("bee") shouldBe null
+      }
    }
 
-   override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
-      System.getProperty("wibble") shouldBe null
-   }
+   override fun listeners() =
+      listOf(SystemPropertyTestListener("bee", "bop", mode = OverrideMode.SetOrOverride), assertion)
 
    init {
       "sys prop extension" should {
          "set sys prop" {
-            System.getProperty("wibble") shouldBe "wobble"
+            System.getProperty("bee") shouldBe "bop"
          }
       }
    }

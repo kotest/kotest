@@ -4,11 +4,13 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @UseExperimental(ExperimentalTime::class)
-data class TestResult(val status: TestStatus,
-                      val error: Throwable?,
-                      val reason: String?,
-                      val duration: Duration,
-                      val metaData: Map<String, Any?> = emptyMap()) {
+data class TestResult(
+   val status: TestStatus,
+   val error: Throwable?,
+   val reason: String?,
+   val duration: Duration,
+   val metaData: Map<String, Any?> = emptyMap()
+) {
    companion object {
       fun success(duration: Duration) = TestResult(
          TestStatus.Success,
@@ -16,24 +18,28 @@ data class TestResult(val status: TestStatus,
          null,
          duration
       )
+
       val Ignored = TestResult(
          TestStatus.Ignored,
          null,
          null,
          Duration.ZERO
       )
+
       fun failure(e: AssertionError, duration: Duration) = TestResult(
          TestStatus.Failure,
          e,
          null,
          duration
       )
+
       fun error(t: Throwable, duration: Duration) = TestResult(
          TestStatus.Error,
          t,
          null,
          duration
       )
+
       fun ignored(reason: String?) = TestResult(
          TestStatus.Ignored,
          null,
@@ -52,4 +58,15 @@ enum class TestStatus {
    Error,
    // the test ran but an assertion failed
    Failure
+}
+
+@UseExperimental(ExperimentalTime::class)
+fun buildTestResult(
+   error: Throwable?,
+   metadata: Map<String, Any?>,
+   duration: Duration
+): TestResult = when (error) {
+   null -> TestResult.success(duration)
+   is AssertionError -> TestResult.failure(error, duration)
+   else -> TestResult.error(error, duration)
 }

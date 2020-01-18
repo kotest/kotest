@@ -7,14 +7,13 @@ import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.*
-import io.kotest.fp.Try
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
+import java.lang.AssertionError
 import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -27,10 +26,6 @@ import kotlin.time.milliseconds
  * A [TestCase] is only executed if it is considered active (see [isActive]),
  * otherwise a result of [TestResult.Ignored] is returned.
  *
- * Executing a [TestCase] is a blocking operation. Although each invocation of the
- * test closure will occur in a coroutine, the overall test execution will block
- * until all runs are completed and the final [TestResult] is returned.
- *
  * The executor can be shared between multiple tests as it is thread safe.
  */
 @UseExperimental(ExperimentalTime::class)
@@ -38,30 +33,56 @@ class TestExecutor(private val listener: TestEngineListener) {
 
    private val logger = LoggerFactory.getLogger(this.javaClass)
 
-   suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit = { }) {
-      logger.trace("Executing $testCase")
+   /**
+    * Executes the given [TestCase] using the supplied [TestContext] and invoking [onResult]
+    * with the outcome of the test.
+    */
+   suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit) {
+      logger.trace("Evaluating $testCase")
+
+      val active = testCase.isActive()
+      logger.trace("Test ${testCase.description.fullName()} active=$active")
+
+      // if the test case is active we execute it, otherwise we just invoke the callback with ignored
+      when (active) {
+         true -> executeActiveTest(testCase, context, onResult)
+         false -> {
+            listener.testIgnored(testCase, null)
+            onResult(TestResult.Ignored)
+         }
+      }
+   }
+
+   private suspend fun executeActiveTest(
+      testCase: TestCase,
+      context: TestContext,
+      onResult: (TestResult) -> Unit
+   ) {
+      logger.trace("Executing active test $testCase")
+
+      val start = System.currentTimeMillis()
+      listener.testStarted(testCase)
+
+      val extensions = testCase.config.extensions +
+         testCase.spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
+         Project.extensions().filterIsInstance<TestCaseExtension>()
+
       try {
-         val start = System.currentTimeMillis()
-
          notifyBeforeTest(testCase)
-            .onFailure {
-               logger.error("Before test errors", it)
-               throw it
-            }
-
-         val extensions = testCase.config.extensions +
-            testCase.spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
-            Project.testCaseExtensions()
-
          runExtensions(testCase, context, start, extensions) { result ->
             notifyAfterTest(testCase, result)
             if (result.status != TestStatus.Ignored)
                listener.testFinished(testCase, result)
             onResult(result)
          }
-
-      } catch (t: Throwable) {
-         t.printStackTrace()
+      } catch (e: AssertionError) {
+         val result = TestResult.error(e, (System.currentTimeMillis() - start).milliseconds)
+         listener.testFinished(testCase, result)
+         onResult(result)
+      } catch (e: Exception) {
+         val result = TestResult.error(e, (System.currentTimeMillis() - start).milliseconds)
+         listener.testFinished(testCase, result)
+         onResult(result)
       }
    }
 
@@ -78,7 +99,7 @@ class TestExecutor(private val listener: TestEngineListener) {
    ) {
       when {
          remaining.isEmpty() -> {
-            val result = executeTestIfActive(testCase, context, start)
+            val result = invokeTestCase(testCase, context, start)
             onComplete(result)
          }
          else -> {
@@ -91,26 +112,15 @@ class TestExecutor(private val listener: TestEngineListener) {
       }
    }
 
-   private suspend fun executeTestIfActive(testCase: TestCase, context: TestContext, start: Long): TestResult {
-      val active = testCase.isActive()
-      logger.trace("Test ${testCase.description.fullName()} active=$active")
-      // executes the test case or if the test is not active then returns an ignored test result
-      return if (active) executeActiveTest(testCase, context, start) else {
-         listener.testIgnored(testCase, null)
-         TestResult.Ignored
-      }
-   }
-
-   private suspend fun executeActiveTest(testCase: TestCase, context: TestContext, start: Long): TestResult {
-      logger.trace("Executing active test $testCase")
-      listener.testStarted(testCase)
+   private suspend fun invokeTestCase(testCase: TestCase, context: TestContext, start: Long): TestResult {
+      logger.trace("invokeTestCase $testCase")
 
       // if we have more than one requested thread, we run the tests inside a clean executor;
       // otherwise we run on the same thread as the listeners to avoid issues where the before and
       // after listeners  require the same thread as the test case.
       // @see https://github.com/kotlintest/kotlintest/issues/447
 
-      // we schedule a timeout, (if timeout has been configured) which will fail the test with a timed-out status
+      // we calculate the timeout, (if timeout has been configured) which will fail the test with a timed-out status
       val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
 
       val error = try {
@@ -130,7 +140,7 @@ class TestExecutor(private val listener: TestEngineListener) {
 
             // we ensure the timeout is honoured
             withTimeout(timeout) {
-               collectAssertions(
+               validateAssertions(
                   { testCase.test.invoke(contextp) },
                   testCase.description.name,
                   testCase.spec.resolvedAssertionMode()
@@ -141,8 +151,8 @@ class TestExecutor(private val listener: TestEngineListener) {
          TimeoutException("Execution of test took longer than ${timeout}ms")
       } catch (e: Throwable) {
          e.unwrapIfReflectionCall()
-      } catch (e: java.lang.AssertionError) {
-        e
+      } catch (e: AssertionError) {
+         e
       }
 
       val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
@@ -152,9 +162,9 @@ class TestExecutor(private val listener: TestEngineListener) {
 
    /**
     * Notifies the user listeners that a [TestCase] is starting.
-    * This will be invoked for every instance of a spec.
+    * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun notifyBeforeTest(testCase: TestCase) = Try {
+   private suspend fun notifyBeforeTest(testCase: TestCase) {
       logger.trace("Executing listeners beforeTest")
       val listeners = testCase.spec.resolvedListeners()
       listeners.forEach {
@@ -164,59 +174,13 @@ class TestExecutor(private val listener: TestEngineListener) {
 
    /**
     * Notifies the user listeners that a [TestCase] has finished.
-    * This will be invoked for every instance of a spec.
+    * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun notifyAfterTest(testCase: TestCase, result: TestResult) = Try {
+   private suspend fun notifyAfterTest(testCase: TestCase, result: TestResult) {
       logger.trace("Executing listeners afterTest")
       val listeners = testCase.spec.resolvedListeners()
       listeners.forEach {
          it.afterTest(testCase, result)
       }
    }
-
-   private fun buildTestResult(
-      error: Throwable?,
-      metadata: Map<String, Any?>,
-      duration: Duration
-   ): TestResult = when (error) {
-      null -> successResult(duration)
-      is AssertionError -> failureResult(error, duration)
-      else -> errorResult(error, duration)
-   }
-
-   private fun successResult(duration: Duration) =
-      TestResult(
-         TestStatus.Success,
-         null,
-         null,
-         duration,
-         emptyMap()
-      )
-
-   private fun ignoredResult(reason: String?, duration: Duration) =
-      TestResult(
-         TestStatus.Ignored,
-         null,
-         reason,
-         duration,
-         emptyMap()
-      )
-
-   private fun errorResult(t: Throwable, duration: Duration) =
-      TestResult(
-         TestStatus.Error,
-         t,
-         null,
-         duration,
-         emptyMap()
-      )
-
-   private fun failureResult(t: Throwable, duration: Duration) =
-      TestResult(
-         TestStatus.Failure,
-         t,
-         null,
-         duration,
-         emptyMap()
-      )
 }
