@@ -13,11 +13,21 @@ private class PrivateSpec : FunSpec()
 internal class InternalSpec : WordSpec()
 
 class DiscoveryTest : FunSpec({
-   test("should detect public spec classes") {
-      TestDiscovery.discover(DiscoveryRequest()).specs.map { it.simpleName }.toSet() shouldBe setOf(
+
+   test("should detect only public spec classes") {
+      TestDiscovery.discover(DiscoveryRequest(allowInternal = false)).specs.map { it.simpleName }.toSet() shouldBe setOf(
          "DiscoveryTest", // this test
          "MyFunSpec", // public
          "MyStringSpec" // public
+      )
+   }
+
+   test("should detect internal spec classes") {
+      TestDiscovery.discover(DiscoveryRequest(allowInternal = true)).specs.map { it.simpleName }.toSet() shouldBe setOf(
+         "DiscoveryTest", // this test
+         "MyFunSpec", // public
+         "MyStringSpec",
+         "InternalSpec"
       )
    }
 })

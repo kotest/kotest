@@ -28,7 +28,7 @@ data class DiscoveryRequest(
    val uris: List<URI> = emptyList(),
    val classNames: List<String> = emptyList(),
    val filters: List<DiscoveryFilter> = emptyList(),
-   val allowInternal: Boolean
+   val allowInternal: Boolean = false
 )
 
 /**
