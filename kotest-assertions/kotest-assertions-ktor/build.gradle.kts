@@ -49,6 +49,9 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      setFailOnNoMatchingTests(false)
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true

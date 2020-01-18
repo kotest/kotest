@@ -21,19 +21,25 @@ class KotlinListenerTest : FunSpec(), KoinTest {
       test("Should have autowired the service correctly") {
          genericService.foo() shouldBe "Bar"
       }
-
-      test("Should allow mocking correctly") {
-         declareMock<GenericRepository> {
-            BDDMockito.given(foo()).willReturn("DootyDoot")
-         }
-
-         genericService.foo() shouldBe "DootyDoot"
-      }
    }
 
    override fun afterSpec(spec: SpecConfiguration) {
       GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
    }
+}
 
-   override fun isolationMode() = IsolationMode.InstancePerTest
+class KoinListenerMockTest : FunSpec(), KoinTest {
+   init {
+      val genericService by inject<GenericService>()
+      listeners(KoinListener(koinModule))
+      test("Should allow mocking correctly") {
+         declareMock<GenericRepository> {
+            BDDMockito.given(foo()).willReturn("DootyDoot")
+         }
+         genericService.foo() shouldBe "DootyDoot"
+      }
+      afterSpec {
+         GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
+      }
+   }
 }
