@@ -10,7 +10,9 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.runner.jvm.instantiateSpec
 import org.slf4j.LoggerFactory
+import kotlin.reflect.KClass
 
 /**
  * The base class for executing all the tests inside a [SpecConfiguration].
@@ -72,4 +74,16 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       }
       spec
    }
+
+   /**
+    * Creates an instance of the supplied [SpecConfiguration] by delegating to the project constructors,
+    * and notifies the [TestEngineListener] of the instantiation event.
+    */
+   protected fun createInstance(kclass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
+      instantiateSpec(kclass).onSuccess {
+         Try { listener.specInstantiated(it) }
+      }.onFailure {
+         it.printStackTrace()
+         Try { listener.specInstantiationError(kclass, it) }
+      }
 }

@@ -44,7 +44,7 @@ abstract class TestContext : CoroutineScope {
    /**
     * Notifies the test runner about a test in a nested scope.
     */
-   abstract suspend fun registerTestCase(test: NestedTest)
+   abstract suspend fun registerTestCase(nested: NestedTest)
 }
 
 data class NestedTest(

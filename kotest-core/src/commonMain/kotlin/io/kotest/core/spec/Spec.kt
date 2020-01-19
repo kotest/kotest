@@ -67,7 +67,7 @@ fun SpecConfiguration.resolvedListeners(): List<TestListener> {
    return this.listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
-fun SpecConfiguration.resolvedExtensions():List<SpecLevelExtension> {
+fun SpecConfiguration.resolvedExtensions(): List<SpecLevelExtension> {
    return this.extensions + this.extensions()
 }
 
@@ -80,12 +80,10 @@ fun SpecConfiguration.resolvedIsolationMode() =
 fun SpecConfiguration.materializeRootTests(): List<RootTest> {
 
    val order = resolvedTestCaseOrder()
-   val allTests = this.rootTestCases + factories
-      .flatMap { it.generate(this::class.description(), this) }
-
    // materialize the tests in the factories at this time
-   // and apply the configuration from the spec config
-   // then order by the test case order
+   val allTests = this.rootTestCases + factories.flatMap { it.generate(this::class.description(), this) }
+
+   // apply the configuration from this spec to each resolved test
    return allTests
       .map {
          it.copy(

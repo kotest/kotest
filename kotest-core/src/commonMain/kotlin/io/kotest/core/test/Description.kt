@@ -77,6 +77,12 @@ data class Description(val parents: List<String>, val name: String) {
    }
 
    /**
+    * Returns true if this instance is on the path to the given descripton. That is, if this
+    * instance is either an ancestor of, of the same as, the given description.
+    */
+   fun isOnPath(description: Description): Boolean = this == description || this.isAncestorOf(description)
+
+   /**
     * Returns true if this test is a top level test. In other words, if the
     * test has no parents other than the spec itself.
     */

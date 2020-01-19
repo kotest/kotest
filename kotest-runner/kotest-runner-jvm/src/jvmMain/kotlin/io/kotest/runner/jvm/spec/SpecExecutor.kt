@@ -76,17 +76,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
       return runner.execute(spec)
    }
 
-   // each runner must get a single-threaded executor, which is used to invoke
-   // listeners/extensions and the test itself when testcase.config.threads=1
-   // otherwise, the listeners and the tests can be run on seperate threads,
-   // which is undesirable in some situations, see
-   // https://github.com/kotlintest/kotlintest/issues/447
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
-      else -> SingleInstanceSpecRunner(listener)
-      // todo
-      // IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(engineListener, listenerExecutor, scheduler)
-      // IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(engineListener, listenerExecutor, scheduler)
+      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
+      IsolationMode.InstancePerLeaf -> SingleInstanceSpecRunner(listener) // topo restore per leaf
    }
 
    /**

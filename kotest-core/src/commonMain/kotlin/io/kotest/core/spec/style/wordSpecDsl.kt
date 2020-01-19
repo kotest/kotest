@@ -4,7 +4,6 @@ import io.kotest.core.Tag
 import io.kotest.core.spec.SpecDsl
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.*
-import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -103,8 +102,8 @@ interface WordSpecDsl : SpecDsl {
    // this context is used so we can add the deprecated should method to stop nesting a should inside a should
    class FinalTestContext(val context: TestContext) : TestContext() {
 
-      override suspend fun registerTestCase(test: NestedTest) {
-         context.registerTestCase(test)
+      override suspend fun registerTestCase(nested: NestedTest) {
+         context.registerTestCase(nested)
       }
 
       override val coroutineContext: CoroutineContext = context.coroutineContext

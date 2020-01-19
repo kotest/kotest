@@ -3,10 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
-import io.kotest.core.test.createTestName
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -27,9 +24,10 @@ class ScenarioBuilder(val name: String, val context: TestContext, val dsl: SpecD
       timeout: Duration? = null,
       tags: Set<Tag>? = null,
       extensions: List<TestCaseExtension>? = null,
+      enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+      val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf)
       context.registerTestCase(name, test, config, TestType.Test)
    }
 }
@@ -37,9 +35,18 @@ class ScenarioBuilder(val name: String, val context: TestContext, val dsl: SpecD
 @KotestDsl
 class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
 
+   @Deprecated("use nested 'feature' rather than 'and'", ReplaceWith("feature(name, init)"))
    suspend fun and(name: String, init: suspend FeatureScope.() -> Unit) =
       context.registerTestCase(
          createTestName("And: ", name),
+         { FeatureScope(this, this@FeatureScope.dsl).init() },
+         dsl.defaultConfig(),
+         TestType.Container
+      )
+
+   suspend fun feature(name: String, init: suspend FeatureScope.() -> Unit) =
+      context.registerTestCase(
+         createTestName("Feature: ", name),
          { FeatureScope(this, this@FeatureScope.dsl).init() },
          dsl.defaultConfig(),
          TestType.Container

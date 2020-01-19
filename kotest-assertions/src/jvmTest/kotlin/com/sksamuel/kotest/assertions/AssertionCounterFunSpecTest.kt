@@ -11,21 +11,22 @@ import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.shouldBe
 import io.kotest.shouldThrow
 
-class AssertionCounterTest : FunSpec() {
+class AssertionCounterFunSpecTest : FunSpec() {
 
    override fun assertionMode() = AssertionMode.Error
 
    override fun extensions(): List<TestCaseExtension> = listOf(
       object : TestCaseExtension {
-         override suspend fun intercept(testCase: TestCase,
-                                        execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-                                        complete: suspend (TestResult) -> Unit) {
+         override suspend fun intercept(
+            testCase: TestCase,
+            execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+            complete: suspend (TestResult) -> Unit
+         ) {
             when (testCase.name) {
                "AssertionMode.Error assertion mode should fail the test if no assertions were present" -> {
                   execute(testCase) {
                      when (it.status) {
-                        TestStatus.Error, TestStatus.Failure -> complete(
-                           TestResult.success(it.duration))
+                        TestStatus.Error, TestStatus.Failure -> complete(TestResult.success(it.duration))
                         else -> complete(TestResult.error(RuntimeException("Should have failed"), it.duration))
                      }
                   }

@@ -9,7 +9,6 @@ import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.reflect.KClass
@@ -118,10 +117,11 @@ class JUnitTestEngineListener(
    override fun specStarted(kclass: KClass<out SpecConfiguration>) {
       logger.trace("specStarted [${kclass.qualifiedName}]")
       try {
-         val descriptor = createSpecDescriptor(kclass)
-         logger.trace("Registering junit dynamic test: $descriptor")
+         val descriptor = kclass.descriptor(root)
+         descriptors[kclass.description()] = descriptor
+
+         logger.trace("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
-         logger.trace("Notifying junit that execution has started: $descriptor")
          listener.executionStarted(descriptor)
       } catch (t: Throwable) {
          logger.error("Error in JUnit Platform listener", t)
@@ -162,7 +162,8 @@ class JUnitTestEngineListener(
    override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
       val description = kclass.description()
       val spec = descriptors[description]!!
-      val test = spec.append(description.append("Spec instantiation failed"), TestDescriptor.Type.TEST, null)
+      val test =
+         spec.append(description.append("Spec instantiation failed"), TestDescriptor.Type.TEST, null, Segments.test)
       if (!isVisible(description)) {
          listener.dynamicTestRegistered(test)
          listener.executionStarted(test)
@@ -202,31 +203,6 @@ class JUnitTestEngineListener(
       listener.executionSkipped(descriptor, reason)
    }
 
-   /**
-    * Creates a new [TestDescriptor] appended to the receiver, adds it as a child of the receiver,
-    * and registers it with the descriptors set.
-    */
-   private fun TestDescriptor.append(
-      description: Description,
-      type: TestDescriptor.Type,
-      source: TestSource?
-   ): TestDescriptor {
-      val segment = if (description.isSpec()) "spec" else "test"
-      val descriptor =
-         object : AbstractTestDescriptor(this.uniqueId.append(segment, description.name), description.name, source) {
-            override fun getType(): TestDescriptor.Type = type
-            override fun mayRegisterTests(): Boolean = TestDescriptor.Type.CONTAINER_AND_TEST == type
-         }
-      this.addChild(descriptor)
-      descriptors[description] = descriptor
-      return descriptor
-   }
-
-   private fun createSpecDescriptor(klass: KClass<out SpecConfiguration>): TestDescriptor {
-      val source = ClassSource.from(klass.java)
-      return root.append(klass.description(), TestDescriptor.Type.CONTAINER_AND_TEST, source)
-   }
-
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
       val parent = descriptors[testCase.description.parent()]
       if (parent == null) {
@@ -234,19 +210,9 @@ class JUnitTestEngineListener(
          logger.error(msg)
          error(msg)
       }
-
-      val source = FileSource.from(File(testCase.source.fileName), FilePosition.from(testCase.source.lineNumber))
-
-      // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
-      // see https://github.com/gradle/gradle/issues/4912
-      // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-      // update jan 2020: Seems we can use CONTAINER_AND_TEST now in intellij, and CONTAINER is invisible in output
-      val type = when (testCase.type) {
-         TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
-         TestType.Test -> TestDescriptor.Type.TEST
-      }
-
-      return parent.append(testCase.description, type, source)
+      val descriptor = parent.descriptor(testCase)
+      descriptors[testCase.description] = descriptor
+      return descriptor
    }
 
    /**
@@ -274,5 +240,3 @@ class JUnitTestEngineListener(
          .firstOrNull()
    }
 }
-
-fun UniqueId.appendSpec(description: Description) = this.append("spec", description.name)!!

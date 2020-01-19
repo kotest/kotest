@@ -1,6 +1,8 @@
 package io.kotest.runner.jvm
 
 import io.kotest.core.config.Project
+import io.kotest.core.executeWithAssertionsCheck
+import io.kotest.core.executeWithGlobalAssertSoftlyCheck
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
 import io.kotest.core.internal.unwrapIfReflectionCall
@@ -12,7 +14,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
-import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicBoolean
@@ -49,8 +50,16 @@ class TestExecutor(private val listener: TestEngineListener) {
    /**
     * Executes the given [TestCase] using the supplied [TestContext] and invoking [onResult]
     * with the outcome of the test.
+    *
+    * @param notifyListener if true, then will notify the [TestEngineListener] about lifecycle
+    * events for this test. Note that user listeners will always be notified.
     */
-   suspend fun execute(testCase: TestCase, context: TestContext, onResult: (TestResult) -> Unit) {
+   suspend fun execute(
+      testCase: TestCase,
+      context: TestContext,
+      notifyListener: Boolean,
+      onResult: (TestResult) -> Unit
+   ) {
       logger.trace("Evaluating $testCase")
 
       val start = System.currentTimeMillis()
@@ -59,10 +68,10 @@ class TestExecutor(private val listener: TestEngineListener) {
          testCase.spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
          Project.extensions().filterIsInstance<TestCaseExtension>()
 
-      runExtensions(testCase, context, start, extensions) {
+      runExtensions(testCase, context, start, notifyListener, extensions) {
          when (it.status) {
-            TestStatus.Ignored -> listener.testIgnored(testCase, null)
-            else -> listener.testFinished(testCase, it)
+            TestStatus.Ignored -> if (notifyListener) listener.testIgnored(testCase, null)
+            else -> if (notifyListener) listener.testFinished(testCase, it)
          }
          onResult(it)
       }
@@ -76,18 +85,19 @@ class TestExecutor(private val listener: TestEngineListener) {
       testCase: TestCase,
       context: TestContext,
       start: Long,
+      notifyListener: Boolean,
       remaining: List<TestCaseExtension>,
       onComplete: suspend (TestResult) -> Unit
    ) {
       when {
          remaining.isEmpty() -> {
-            val result = executeIfActive(testCase, context, start)
+            val result = executeIfActive(testCase, context, start, notifyListener)
             onComplete(result)
          }
          else -> {
             remaining.first().intercept(
                testCase,
-               { test, callback -> runExtensions(test, context, start, remaining.drop(1), callback) },
+               { test, callback -> runExtensions(test, context, start, notifyListener, remaining.drop(1), callback) },
                { onComplete(it) }
             )
          }
@@ -97,7 +107,8 @@ class TestExecutor(private val listener: TestEngineListener) {
    private suspend fun executeIfActive(
       testCase: TestCase,
       context: TestContext,
-      start: Long
+      start: Long,
+      notifyListener: Boolean
    ): TestResult {
 
       val active = testCase.isActive()
@@ -105,7 +116,7 @@ class TestExecutor(private val listener: TestEngineListener) {
 
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (active) {
-         true -> executeActiveTest(testCase, context, start)
+         true -> executeActiveTest(testCase, context, start, notifyListener)
          false -> TestResult.Ignored
       }
    }
@@ -113,10 +124,11 @@ class TestExecutor(private val listener: TestEngineListener) {
    private suspend fun executeActiveTest(
       testCase: TestCase,
       context: TestContext,
-      start: Long
+      start: Long,
+      notifyListener: Boolean
    ): TestResult {
       logger.trace("Executing active test $testCase")
-      listener.testStarted(testCase)
+      if (notifyListener) listener.testStarted(testCase)
       val result = try {
          notifyBeforeTest(testCase)
          invokeTestCase(testCase, context, start)
@@ -163,11 +175,14 @@ class TestExecutor(private val listener: TestEngineListener) {
 
                   // we ensure the timeout is honoured
                   withTimeout(timeout) {
-                     validateAssertions(
-                        { testCase.test.invoke(contextp) },
-                        testCase.description.name,
-                        testCase.spec.resolvedAssertionMode()
-                     )
+                     // we only run the assertions check for leaf tests
+                     when (testCase.type) {
+                        TestType.Container -> executeWithGlobalAssertSoftlyCheck { testCase.test.invoke(contextp) }
+                        TestType.Test -> testCase.spec.resolvedAssertionMode().executeWithAssertionsCheck(
+                           { testCase.test.invoke(contextp) },
+                           testCase.description.name
+                        )
+                     }
                   }
                }
 

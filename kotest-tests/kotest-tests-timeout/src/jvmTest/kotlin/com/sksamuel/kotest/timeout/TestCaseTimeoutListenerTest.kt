@@ -43,11 +43,11 @@ class TestCaseTimeoutListenerTest : FunSpec() {
          )
 
          val context = object : TestContext() {
-            override suspend fun registerTestCase(test: NestedTest) {}
+            override suspend fun registerTestCase(nested: NestedTest) {}
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase
          }
-         executor.execute(testCase, context) {}
+         executor.execute(testCase, context, false) {}
       }
    }
 }

@@ -20,13 +20,15 @@ data class TestCaseConfig constructor(
    val extensions: List<TestCaseExtension> = emptyList(),
    // an issue number, or link to the issue, can be used by plugins
    val issue: String? = null,
-   val enabledIf: () -> Boolean = { true }
+   val enabledIf: EnabledIf = { true }
 ) {
    init {
       require(threads > 0) { "Threads must be > 0" }
       require(invocations > 0) { "Invocations must be > 0" }
    }
 }
+
+typealias EnabledIf = () -> Boolean
 
 /**
  * Creates a [TestCaseConfig] from the given parameters, reverting to the
@@ -37,12 +39,14 @@ fun TestCaseConfig.deriveTestConfig(
    enabled: Boolean? = null,
    tags: Set<Tag>? = null,
    extensions: List<TestCaseExtension>? = null,
-   timeout: Duration? = null
+   timeout: Duration? = null,
+   enabledIf: EnabledIf? = null
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
    extensions = extensions ?: this.extensions,
-   timeout = timeout ?: this.timeout
+   timeout = timeout ?: this.timeout,
+   enabledIf = enabledIf ?: this.enabledIf
 )
 
 /**

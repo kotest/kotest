@@ -20,10 +20,10 @@ fun testContext(
    coroutineContext: CoroutineContext
 ): TestContext = object : TestContext() {
    override val testCase: TestCase = testCase
-   override suspend fun registerTestCase(test: NestedTest) {
-      it(test.name) {
+   override suspend fun registerTestCase(nested: NestedTest) {
+      it(nested.name) {
          GlobalScope.promise {
-            val t = test.test
+            val t = nested.test
             testContext(TODO(), coroutineContext).t()
          }
       }
