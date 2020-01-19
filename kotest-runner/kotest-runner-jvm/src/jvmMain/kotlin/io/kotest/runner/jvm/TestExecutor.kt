@@ -30,7 +30,7 @@ import kotlin.time.milliseconds
  * A [TestCase] is only executed if it is considered active (see [isActive]),
  * otherwise a result of [TestResult.Ignored] is returned.
  *
- * This class is thread safe.
+ * This class is not thread safe!
  */
 @UseExperimental(ExperimentalTime::class)
 class TestExecutor(private val listener: TestEngineListener) {

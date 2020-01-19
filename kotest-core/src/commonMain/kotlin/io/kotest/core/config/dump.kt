@@ -1,11 +1,14 @@
 package io.kotest.core.config
 
 import io.kotest.core.bestName
+import kotlin.time.ExperimentalTime
 
+@UseExperimental(ExperimentalTime::class)
 fun Project.dumpProjectConfig() {
 
    println("~~~ Project Configuration ~~~")
    buildOutput("Parallelism", parallelism().toString() + " thread(s)")
+   buildOutput("Test timeout", timeout().toLongMilliseconds().toString() + "ms")
    buildOutput("Test order", specExecutionOrder()::class.simpleName)
    buildOutput("Soft assertations", globalAssertSoftly().toString().capitalize())
    buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())

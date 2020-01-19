@@ -7,9 +7,7 @@ import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -20,7 +18,6 @@ import kotlin.coroutines.CoroutineContext
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val logger = LoggerFactory.getLogger(javaClass)
-   private val testExecutor = TestExecutor(listener)
    private val results = mutableMapOf<TestCase, TestResult>()
 
    inner class Context(
@@ -34,14 +31,20 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       // in the single instance runner we execute each nested test as soon as the are registered
       override suspend fun registerTestCase(test: NestedTest) {
          val nestedTestCase = test.toTestCase(testCase.spec, testCase.description)
-
          if (seen.contains(test.name))
             throw IllegalStateException("Cannot add duplicate test name ${test.name}")
          seen.add(test.name)
+         runTest(nestedTestCase, coroutineContext)
+      }
+   }
 
-         testExecutor.execute(nestedTestCase, Context(nestedTestCase, coroutineContext)) { result ->
-            results[testCase] = result
-         }
+   private suspend fun runTest(
+      testCase: TestCase,
+      coroutineContext: CoroutineContext
+   ) {
+      val testExecutor = TestExecutor(listener)
+      testExecutor.execute(testCase, Context(testCase, coroutineContext)) { result ->
+         results[testCase] = result
       }
    }
 
@@ -52,10 +55,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
                interceptSpec(spec) {
                   spec.materializeRootTests().forEach { rootTest ->
                      logger.trace("Executing test $rootTest")
-                     testExecutor.execute(
-                        rootTest.testCase,
-                        Context(rootTest.testCase, coroutineContext)
-                     ) { result -> results[rootTest.testCase] = result }
+                     runTest(rootTest.testCase, coroutineContext)
                   }
                }
             }
