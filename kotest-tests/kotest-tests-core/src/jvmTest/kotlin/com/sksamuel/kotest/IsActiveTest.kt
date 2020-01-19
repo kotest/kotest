@@ -22,6 +22,18 @@ class IsActiveTest : StringSpec() {
          test.isActive() shouldBe false
       }
 
+      "isActive should return false if the test is disabled using the isEnabledFn" {
+         val config = TestCaseConfig(enabledIf = { false })
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe false
+      }
+
+      "isActive should return true if the test is disabled using the isEnabledFn" {
+         val config = TestCaseConfig(enabledIf = { true })
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe true
+      }
+
       "isActive should return false if it has an excluded tag" {
 
          val mytag = StringTag("mytag")

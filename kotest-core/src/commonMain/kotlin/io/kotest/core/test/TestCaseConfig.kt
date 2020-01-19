@@ -19,7 +19,8 @@ data class TestCaseConfig constructor(
    val tags: Set<Tag> = emptySet(),
    val extensions: List<TestCaseExtension> = emptyList(),
    // an issue number, or link to the issue, can be used by plugins
-   val issue: String? = null
+   val issue: String? = null,
+   val enabledIf: () -> Boolean = { true }
 ) {
    init {
       require(threads > 0) { "Threads must be > 0" }

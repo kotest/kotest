@@ -25,7 +25,7 @@ import io.kotest.core.sysprop
 fun TestCase.isActive(): Boolean {
    val focused = isFocused() && isTopLevel()
    val hasFocused = spec.focusTests().isNotEmpty()
-   val enabledInConfig = config.enabled
+   val enabledInConfig = config.enabled && config.enabledIf()
    val bangEnabled = sysprop("kotest.bang.disable").isEmpty()
    val disabledViaBang = isBang() && bangEnabled
    val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec.tags)
