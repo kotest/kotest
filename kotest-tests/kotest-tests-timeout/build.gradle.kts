@@ -36,11 +36,9 @@ kotlin {
             implementation(project(":kotest-assertions"))
             implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
-            implementation("com.nhaarman:mockito-kotlin:1.6.0")
-            implementation("org.mockito:mockito-core:2.24.0")
-
+            implementation(Libs.Coroutines.core)
+            implementation(Libs.Slf4j.api)
+            implementation(Libs.Logback.classic)
          }
       }
    }

@@ -5,6 +5,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestStatus
 import java.lang.AssertionError
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -22,8 +23,8 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
          when (testCase.description.name) {
             "test1" -> complete(TestResult.Ignored)
             "test2" -> execute(testCase) {
-               when (it.error) {
-                  is RuntimeException -> complete(TestResult.success(Duration.ZERO))
+               when (it.status) {
+                  TestStatus.Error -> complete(TestResult.success(Duration.ZERO))
                   else -> complete(TestResult.failure(AssertionError("boom"), Duration.ZERO))
                }
             }

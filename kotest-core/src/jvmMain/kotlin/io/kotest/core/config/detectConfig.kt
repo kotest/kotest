@@ -33,6 +33,8 @@ actual fun detectConfig(): ProjectConf {
          specExecutionOrder = conf.specExecutionOrder ?: conf.specExecutionOrder(),
          failOnIgnoredTests = conf.failOnIgnoredTests,
          globalAssertSoftly = conf.globalAssertSoftly,
+         writeSpecFailureFile = conf.writeSpecFailureFile ?: conf.writeSpecFailureFile(),
+         timeout = conf.timeout,
          testCaseConfig = conf.defaultTestCaseConfig
       )
    }

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.timeout
 
-import com.nhaarman.mockito_kotlin.mock
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.*
 import io.kotest.runner.jvm.TestEngineListener
@@ -29,11 +28,11 @@ class TestCaseTimeoutListenerTest : FunSpec() {
 
       test("tests which timeout during a blocking operation should run the 'after test' listeners").config(timeout = 1000.milliseconds) {
 
-         val listener = mock<TestEngineListener> {}
+         val listener = object : TestEngineListener {}
          val executor = TestExecutor(listener)
 
          val testCase = TestCase.test(Description.spec("wibble"), this@TestCaseTimeoutListenerTest) {
-            Thread.sleep(500)
+            Thread.sleep(5000)
          }.copy(
             config = TestCaseConfig(
                true,

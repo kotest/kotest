@@ -101,7 +101,7 @@ abstract class AbstractProjectConfig {
    @Deprecated("use the val version")
    open fun writeSpecFailureFile(): Boolean = false
 
-   open val writeSpecFailureFile: Boolean = false
+   open val writeSpecFailureFile: Boolean? = null
 
    /**
     * Sets the order of top level tests in a spec.
