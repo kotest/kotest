@@ -3,8 +3,9 @@ package io.kotest.core.runtime
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.resolvedExtensions
-import io.kotest.core.spec.resolvedListeners
+import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
@@ -23,17 +24,41 @@ fun beforeAll() = Try {
 }
 
 suspend fun TestCase.invokeBeforeTest() {
-   val listeners = spec.resolvedListeners()
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.beforeTest(this)
    }
 }
 
 suspend fun TestCase.invokeAfterTest(result: TestResult) {
-   val listeners = spec.resolvedListeners()
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterTest(this, result)
    }
+}
+
+/**
+ * Notifies the user listeners that a [SpecConfiguration] is starting.
+ * This will be invoked for every instance of a spec.
+ */
+suspend fun SpecConfiguration.invokeBeforeSpec( ): Try<SpecConfiguration> = Try {
+   val listeners = resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.beforeSpec(this)
+   }
+   this
+}
+
+/**
+ * Notifies the user listeners that a [SpecConfiguration] has finished.
+ * This will be invoked for every instance of a spec.
+ */
+suspend fun SpecConfiguration.invokeAfterSpec( ): Try<SpecConfiguration> = Try {
+   val listeners = resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.afterSpec(this)
+   }
+   this
 }
 
 /**
@@ -44,5 +69,5 @@ suspend fun TestCase.invokeAfterTest(result: TestResult) {
 fun TestCase.extensions(): List<TestCaseExtension> {
    return config.extensions +
       spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
-      Project.extensions().filterIsInstance<TestCaseExtension>()
+      Project.testCaseExtensions()
 }

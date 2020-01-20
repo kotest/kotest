@@ -1,9 +1,9 @@
 package io.kotest.core.spec
 
 import io.kotest.core.*
+import io.kotest.core.extensions.Extension
 import io.kotest.core.test.*
-import io.kotest.core.extensions.SpecLevelExtension
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 
 /**
  * Contains methods which can be overriden to set config in the same way that KotlinTest 3.x allowed.
@@ -21,7 +21,7 @@ interface CompatibilitySpecConfiguration {
     * If you wish to register an extension across the project
     * then use [AbstractProjectConfig.extensions].
     */
-   fun extensions(): List<SpecLevelExtension> = listOf()
+   fun extensions(): List<Extension> = listOf()
 
    /**
     * Override this function to register instances of

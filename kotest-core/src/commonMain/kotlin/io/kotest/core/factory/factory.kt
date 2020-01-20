@@ -1,12 +1,11 @@
 package io.kotest.core.factory
 
-import io.kotest.core.test.AssertionMode
 import io.kotest.core.SourceRef
 import io.kotest.core.Tag
+import io.kotest.core.extensions.Extension
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.*
-import io.kotest.core.extensions.SpecLevelExtension
-import io.kotest.core.extensions.TestListener
 
 /**
  * A [TestFactory] is a generator of tests along with optional configuration and
@@ -19,7 +18,7 @@ data class TestFactory(
    val tags: Set<Tag>,
    val assertionMode: AssertionMode?,
    val listeners: List<TestListener>,
-   val extensions: List<SpecLevelExtension>,
+   val extensions: List<Extension>,
    val factories: List<TestFactory>
 )
 

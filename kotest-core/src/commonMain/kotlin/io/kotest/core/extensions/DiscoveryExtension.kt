@@ -9,10 +9,12 @@ import kotlin.reflect.KClass
  * The discovery phase is the part of the test cycle that finds
  * [SpecConfiguration] classes on the classpath.
  *
+ * This extension is only usable on the JVM target.
+ *
  * Note: If multiple [DiscoveryExtension]s are registered, the order
  * in which they execute is not specified.
  */
-interface DiscoveryExtension : ProjectLevelExtension {
+interface DiscoveryExtension : Extension {
 
    /**
     * Invoked as soon as the scan phase has completed. At this point,

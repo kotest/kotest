@@ -8,11 +8,12 @@ fun Project.dumpProjectConfig() {
 
    println("~~~ Project Configuration ~~~")
    buildOutput("Parallelism", parallelism().toString() + " thread(s)")
-   buildOutput("Test timeout", timeout().toLongMilliseconds().toString() + "ms")
-   buildOutput("Test order", specExecutionOrder()::class.simpleName)
-   buildOutput("Soft assertations", globalAssertSoftly().toString().capitalize())
+   buildOutput("Default Test timeout", timeout().toLongMilliseconds().toString() + "ms")
+   buildOutput("Default Test order", specExecutionOrder()::class.simpleName)
+   buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
    buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
    buildOutput("Fail on ignored tests", failOnIgnoredTests().toString().capitalize())
+   buildOutput("Spec execution order", specExecutionOrder().toString().capitalize())
 
    if (extensions().isNotEmpty()) {
       buildOutput("Extensions")
@@ -21,16 +22,9 @@ fun Project.dumpProjectConfig() {
       }
    }
 
-   if (testListeners().isNotEmpty()) {
+   if (listeners().isNotEmpty()) {
       buildOutput("Listeners")
       testListeners().map(::mapClassName).forEach {
-         buildOutput(it, indentation = 1)
-      }
-   }
-
-   if (filters().isNotEmpty()) {
-      buildOutput("Filters")
-      filters().map(::mapClassName).forEach {
          buildOutput(it, indentation = 1)
       }
    }

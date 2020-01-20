@@ -3,7 +3,7 @@ package io.kotest.core.factory
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.fp.Tuple2
 
 /**

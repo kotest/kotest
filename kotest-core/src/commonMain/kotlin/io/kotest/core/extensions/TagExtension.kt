@@ -21,13 +21,13 @@ import io.kotest.core.Tags
  * allows to configure tags at runtime (for example, during a configuration procedure)
  * using the properties `included` and `excluded`
  */
-interface TagExtension : ProjectLevelExtension {
-  fun tags(): Tags
+interface TagExtension : Extension {
+   fun tags(): Tags
 }
 
 class SpecifiedTagsTagExtension(private val included: Set<Tag>, private val excluded: Set<Tag>) :
    TagExtension {
-  override fun tags(): Tags {
-    return Tags(included, excluded)
-  }
+   override fun tags(): Tags {
+      return Tags(included, excluded)
+   }
 }

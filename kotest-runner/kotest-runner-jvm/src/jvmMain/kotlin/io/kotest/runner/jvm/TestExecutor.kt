@@ -1,7 +1,6 @@
 package io.kotest.runner.jvm
 
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.extensions.TestListener
 import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.runtime.executeWithTimeout
 import io.kotest.core.runtime.extensions

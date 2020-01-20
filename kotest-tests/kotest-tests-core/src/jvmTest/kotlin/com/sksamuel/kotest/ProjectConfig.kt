@@ -1,8 +1,9 @@
-package io.kotest.provided
+package com.sksamuel.kotest
 
-import com.sksamuel.kotest.TestCaseFilterTestFilter
+import com.sksamuel.kotest.extensions.SpecExtensionNumbers
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.extensions.ProjectLevelFilter
+import io.kotest.core.extensions.Extension
+import io.kotest.core.filters.Filter
 import io.kotest.core.spec.FailureFirstSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.properties.PropertyTesting
@@ -14,9 +15,13 @@ object ProjectConfig : AbstractProjectConfig() {
 
    val intercepterLog = StringBuilder()
 
-   override fun filters(): List<ProjectLevelFilter> = listOf(TestCaseFilterTestFilter)
+   override fun filters(): List<Filter> = listOf(TestCaseFilterTestFilter)
 
    override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
+
+   override fun extensions(): List<Extension> {
+      return listOf(SpecExtensionNumbers.ext)
+   }
 
    override fun beforeAll() {
       intercepterLog.append("B1.")

@@ -4,7 +4,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
 import io.kotest.core.spec.description
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission

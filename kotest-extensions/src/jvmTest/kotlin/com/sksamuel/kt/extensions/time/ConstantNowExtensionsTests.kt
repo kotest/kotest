@@ -1,6 +1,6 @@
 package com.sksamuel.kt.extensions.time
 
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase

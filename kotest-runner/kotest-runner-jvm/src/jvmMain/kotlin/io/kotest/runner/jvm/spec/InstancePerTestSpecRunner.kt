@@ -1,5 +1,7 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.core.runtime.invokeAfterSpec
+import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
@@ -81,13 +83,16 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * can be registered back with the stack for execution later.
     */
    private suspend fun executeInCleanSpec(test: TestCase) {
-      createInstance(test.spec::class).map { spec ->
+      createInstance(test.spec::class).flatMap { spec ->
+         spec.invokeBeforeSpec()
+      }.map { spec ->
          logger.trace("Created new spec instance $spec")
          interceptSpec(spec) {
             // we need to find the same root test but in the newly created spec
             val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
             logger.trace("Starting root test ${root.testCase.description} in search of ${test.description}")
             run(root.testCase, test)
+            spec.invokeAfterSpec()
          }
       }
    }

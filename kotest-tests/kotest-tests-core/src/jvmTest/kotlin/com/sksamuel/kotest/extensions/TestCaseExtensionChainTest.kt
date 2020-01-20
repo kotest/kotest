@@ -2,10 +2,10 @@ package com.sksamuel.kotest.extensions
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 
+// tests that we can change extensions
 class TestCaseExtensionChainTest : StringSpec() {
 
   object MyExt1 : TestCaseExtension {
@@ -26,7 +26,7 @@ class TestCaseExtensionChainTest : StringSpec() {
     }
   }
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(MyExt1, MyExt2)
+  override fun extensions() = listOf(MyExt1, MyExt2)
 
   init {
     "test1" {

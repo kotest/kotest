@@ -2,7 +2,8 @@ package io.kotest.core.config
 
 import io.github.classgraph.ClassGraph
 import io.kotest.core.extensions.Extension
-import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.filters.Filter
+import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
 
@@ -24,8 +25,7 @@ actual fun detectConfig(): ProjectConf {
       val conf = instantiate(Class.forName(fqn) as Class<AbstractProjectConfig>)
       return ProjectConf(
          extensions = conf.extensions(),
-         testListeners = conf.listeners(),
-         projectListeners = conf.projectListeners(),
+         listeners = conf.listeners() + conf.projectListeners(),
          filters = conf.filters(),
          isolationMode = conf.isolationMode ?: conf.isolationMode(),
          assertionMode = conf.assertionMode,
@@ -63,7 +63,8 @@ actual fun detectConfig(): ProjectConf {
    } else emptyList()
 
    return conf.copy(
-      projectListeners = conf.projectListeners + autoscanned.filterIsInstance<ProjectListener>(),
-      extensions = conf.extensions + autoscanned.filterIsInstance<Extension>()
+      listeners = (conf.listeners + autoscanned.filterIsInstance<Listener>()).distinctBy { it::class.java.name },
+      filters = conf.filters + autoscanned.filterIsInstance<Filter>().distinctBy { it::class.java.name },
+      extensions = conf.extensions + autoscanned.filterIsInstance<Extension>().distinctBy { it::class.java.name }
    )
 }

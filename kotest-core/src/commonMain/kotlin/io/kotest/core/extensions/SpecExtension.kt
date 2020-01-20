@@ -2,14 +2,14 @@ package io.kotest.core.extensions
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.spec.SpecConfiguration
+import kotlin.reflect.KClass
 
 /**
- * Reusable spec extension to be registered project wide
- * using [AbstractProjectConfig.extensions] or on a
- * per-spec basis by overriding `extensions()` in a [SpecConfiguration] class.
+ * Reusable spec extension that allows intercepting specs before they are executed.
+ * The callback is invoked for each [SpecConfiguration] that has been
+ * submitted for executed.
  */
-interface SpecExtension : ProjectLevelExtension,
-   SpecLevelExtension {
+interface SpecExtension : Extension {
 
    /**
     * Intercepts execution of a [SpecConfiguration].
@@ -25,5 +25,5 @@ interface SpecExtension : ProjectLevelExtension,
     *
     * @param process callback function required to continue spec processing
     */
-   suspend fun intercept(spec: SpecConfiguration, process: suspend () -> Unit)
+   suspend fun intercept(spec: KClass<out SpecConfiguration>, process: suspend () -> Unit)
 }

@@ -1,6 +1,6 @@
 package com.sksamuel.kt.spring
 
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe

@@ -1,6 +1,6 @@
 package com.sksamuel.kt.extensions.system
 
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration

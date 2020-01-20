@@ -4,13 +4,15 @@ package io.kotest.core.config
 
 import io.kotest.core.Tags
 import io.kotest.core.extensions.*
+import io.kotest.core.filters.Filter
+import io.kotest.core.filters.TestCaseFilter
+import io.kotest.core.listeners.Listener
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseFilter
-import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.*
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -29,8 +31,7 @@ object Project {
    private val userconf = detectConfig()
    private val defaultTimeout = 600.seconds
    private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension, RuntimeTagExtension)
-   private var projectListeners = userconf.projectListeners
-   private var testListeners = userconf.testListeners
+   private var listeners = userconf.listeners
    private var filters = userconf.filters
    private var timeout = userconf.timeout ?: defaultTimeout
    private var failOnIgnoredTests = userconf.failOnIgnoredTests ?: false
@@ -52,34 +53,44 @@ object Project {
       extensions = extensions - extension
    }
 
-   fun registerFilters(filters: Collection<ProjectLevelFilter>) = filters.forEach { registerFilter(it) }
+   fun registerFilters(filters: Collection<Filter>) =
+      filters.forEach { registerFilter(it) }
 
-   fun registerFilters(vararg filters: ProjectLevelFilter) = filters.forEach { registerFilter(it) }
-
-   fun registerFilter(filter: ProjectLevelFilter) {
+   fun registerFilter(filter: Filter) {
       filters = filters + filter
    }
 
-   fun registerListeners(vararg listeners: TestListener) = listeners.forEach { registerListener(it) }
-
-   fun registerListener(listener: TestListener) {
-      testListeners = testListeners + listener
+   fun registerFilters(vararg filters: Filter) {
+      registerFilters(filters.asList())
    }
 
-   fun registerProjectListener(listener: ProjectListener) {
-      projectListeners = projectListeners + listener
+   fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerListener(it) }
+
+   fun registerListener(listener: Listener) {
+      listeners = listeners + listener
+   }
+
+   fun extensions() = extensions
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
+
+   fun listeners() = listeners
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
+
+   @Deprecated("Use registerListener(Listener)")
+   fun registerProjectListener(listener: Listener) {
+      registerListener(listener)
    }
 
    /**
-    * Returns the registered [TagExtension]s.
+    * Uses the registerd [TagExtension]s to evaluate the currently included/excluded [Tag]s.
     */
    fun tags(): Tags {
-      val tags = extensions.filterIsInstance<TagExtension>().map { it.tags() }
+      val tags = tagExtensions().map { it.tags() }
       return if (tags.isEmpty()) Tags.Empty else tags.reduce { a, b -> a.combine(b) }
    }
 
    /**
-    * Returns the registered [TestCaseFilter].
+    * Returns all registered [TestCaseFilter].
     */
    fun testCaseFilters(): List<TestCaseFilter> = filters
       .filterIsInstance<TestCaseFilter>()
@@ -107,6 +118,10 @@ object Project {
       this.timeout = duration
    }
 
+   fun tagExtensions(): List<TagExtension> = extensions
+      .filterIsInstance<TagExtension>()
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
+
    fun constructorExtensions(): List<ConstructorExtension> = extensions
       .filterIsInstance<ConstructorExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
@@ -115,16 +130,16 @@ object Project {
       .filterIsInstance<DiscoveryExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   fun extensions(): List<Extension> = extensions
+   fun testCaseExtensions(): List<TestCaseExtension> = extensions
+      .filterIsInstance<TestCaseExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   fun filters(): List<ProjectLevelFilter> = filters
+   fun testListeners(): List<TestListener> = listeners
+      .filterIsInstance<TestListener>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   fun testListeners(): List<TestListener> = testListeners
-      .filterNot { autoScanIgnoredClasses().contains(it::class) }
-
-   fun projectListeners(): List<ProjectListener> = projectListeners
+   fun projectListeners(): List<ProjectListener> = listeners
+      .filterIsInstance<ProjectListener>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    /**
@@ -160,9 +175,8 @@ object Project {
 @UseExperimental(ExperimentalTime::class)
 data class ProjectConf constructor(
    val extensions: List<Extension> = emptyList(),
-   val projectListeners: List<ProjectListener> = emptyList(),
-   val testListeners: List<TestListener> = emptyList(),
-   val filters: List<ProjectLevelFilter> = emptyList(),
+   val listeners: List<Listener> = emptyList(),
+   val filters: List<Filter> = emptyList(),
    val isolationMode: IsolationMode? = null,
    val assertionMode: AssertionMode? = null,
    val testCaseOrder: TestCaseOrder? = null,

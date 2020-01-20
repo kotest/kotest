@@ -1,5 +1,7 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.core.runtime.invokeAfterSpec
+import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
@@ -50,7 +52,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
 
    override suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>> {
       return coroutineScope {
-         notifyBeforeSpec(spec)
+         spec.invokeBeforeSpec()
             .flatMap { spec ->
                interceptSpec(spec) {
                   spec.materializeRootTests().forEach { rootTest ->
@@ -59,7 +61,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
                   }
                }
             }
-            .flatMap { notifyAfterSpec(it) }
+            .flatMap { it.invokeAfterSpec() }
       }.map { results }
    }
 }

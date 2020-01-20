@@ -8,11 +8,10 @@ import io.kotest.core.test.TestResult
  *
  * These extensions can be registered project wide using
  * [AbstractProjectConfig.extensions], or on a per-spec basis
- * by overriding `extensions()` in a [Spec] class, or finally
+ * by setting `extensions()` in a [SpecConfiguration] class, or finally
  * on individual tests themselves via [TestCaseConfig].
  */
-interface TestCaseExtension : ProjectLevelExtension,
-   SpecLevelExtension {
+interface TestCaseExtension : Extension {
 
    /**
     * Intercepts a [TestCase].
@@ -49,8 +48,8 @@ interface TestCaseExtension : ProjectLevelExtension,
     * Note: A test cannot be skipped after it has been executed. Executing a test
     * and then returning [TestStatus.Ignored] can result in errors on the JUnit platform.
     *
-    * @param testCase the [TestCase] under interception - contains the [Spec]
-    * instance containing the [TestCase], the [TestCaseConfig] to be passed to the test
+    * @param testCase the [TestCase] under interception - contains the [SpecConfiguration]
+    * instance containing this test case, the [TestCaseConfig] to be passed to the test
     * and a [Description] which contains the id and parent ids of the test case.
     *
     * @param execute a function that is invoked to execute the test. Can be ignored if you

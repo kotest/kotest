@@ -2,7 +2,6 @@ package com.sksamuel.kotest.extensions
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestStatus
@@ -35,7 +34,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
       }
    }
 
-   override fun extensions(): List<SpecLevelExtension> = listOf(MyExt)
+   override fun extensions() = listOf(MyExt)
 
    init {
       // this exception should not be thrown as the extension will skip evaluation of the test

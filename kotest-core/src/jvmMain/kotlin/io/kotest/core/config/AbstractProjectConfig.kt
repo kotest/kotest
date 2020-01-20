@@ -1,14 +1,14 @@
 package io.kotest.core.config
 
+import io.kotest.core.extensions.Extension
+import io.kotest.core.filters.Filter
+import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.extensions.ProjectLevelExtension
-import io.kotest.core.extensions.ProjectLevelFilter
-import io.kotest.core.extensions.ProjectListener
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.TestCaseConfig
 import kotlin.reflect.KClass
@@ -33,22 +33,23 @@ abstract class AbstractProjectConfig {
    /**
     * List of project wide extensions, ie instances of [ProjectLevelExtension]
     */
-   open fun extensions(): List<ProjectLevelExtension> = emptyList()
+   open fun extensions(): List<Extension> = emptyList()
 
    /**
-    * List of project wide [TestListener] instances.
+    * List of project wide [Listener] instances.
     */
-   open fun listeners(): List<TestListener> = emptyList()
+   open fun listeners(): List<Listener> = emptyList()
 
    /**
     * List of project wide [ProjectListener] instances.
     */
+   @Deprecated("Override listeners() which now supports all type of listeners")
    open fun projectListeners(): List<ProjectListener> = emptyList()
 
    /**
-    * List of project wide [TestCaseFilter] instances.
+    * List of project wide [Filter] instances.
     */
-   open fun filters(): List<ProjectLevelFilter> = emptyList()
+   open fun filters(): List<Filter> = emptyList()
 
    /**
     * Override this function and return an instance of [SpecExecutionOrder] which will

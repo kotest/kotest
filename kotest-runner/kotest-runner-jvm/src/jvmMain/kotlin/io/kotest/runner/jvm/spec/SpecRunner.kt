@@ -3,7 +3,6 @@ package io.kotest.runner.jvm.spec
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecExtension
@@ -43,34 +42,8 @@ abstract class SpecRunner(val listener: TestEngineListener) {
          remaining.isEmpty() -> afterInterception()
          else -> {
             val rest = remaining.drop(1)
-            remaining.first().intercept(spec) { interceptSpec(spec, rest, afterInterception) }
+            remaining.first().intercept(spec::class) { interceptSpec(spec, rest, afterInterception) }
          }
-      }
-      spec
-   }
-
-   /**
-    * Notifies the user listeners that a [SpecConfiguration] is starting.
-    * This will be invoked for every instance of a spec.
-    */
-   protected fun notifyBeforeSpec(spec: SpecConfiguration): Try<SpecConfiguration> = Try {
-      logger.trace("Executing listeners beforeSpec")
-      val listeners = spec.resolvedListeners()
-      listeners.forEach {
-         it.beforeSpec(spec)
-      }
-      spec
-   }
-
-   /**
-    * Notifies the user listeners that a [SpecConfiguration] has finished.
-    * This will be invoked for every instance of a spec.
-    */
-   protected fun notifyAfterSpec(spec: SpecConfiguration): Try<SpecConfiguration> = Try {
-      logger.trace("Executing listeners beforeSpec")
-      val listeners = spec.resolvedListeners()
-      listeners.forEach {
-         it.afterSpec(spec)
       }
       spec
    }

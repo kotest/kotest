@@ -15,13 +15,3 @@ package io.kotest.core.extensions
  * add tags to tests from a database.
  */
 interface Extension
-
-/**
- * Marker interface for extensions that can be added project wide.
- */
-interface ProjectLevelExtension : Extension
-
-/**
- * Marker interface for extensions that can be added to specs.
- */
-interface SpecLevelExtension : Extension

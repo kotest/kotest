@@ -1,12 +1,12 @@
 package io.kotest.core.spec
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.generate
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
-import io.kotest.core.extensions.RootTest
-import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.listeners.RootTest
+import io.kotest.core.listeners.TestListener
 import io.kotest.fp.Tuple2
 
 /**
@@ -14,36 +14,36 @@ import io.kotest.fp.Tuple2
  * That is, the listeners defined directly on the spec, listeners generated from the
  * callback-dsl methods, and listeners defined in any included [TestFactory]s.
  */
-fun SpecConfiguration.resolvedListeners(): List<TestListener> {
+fun SpecConfiguration.resolvedTestListeners(): List<TestListener> {
 
    // listeners from the spec callbacks need to be wrapped into a TestListener
    val callbacks = object : TestListener {
       override suspend fun beforeTest(testCase: TestCase) {
-         this@resolvedListeners.beforeTests.forEach { it(testCase) }
-         this@resolvedListeners.beforeTest(testCase)
+         this@resolvedTestListeners.beforeTests.forEach { it(testCase) }
+         this@resolvedTestListeners.beforeTest(testCase)
       }
 
       override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-         this@resolvedListeners.afterTests.forEach { it(Tuple2(testCase, result)) }
-         this@resolvedListeners.afterTest(testCase, result)
+         this@resolvedTestListeners.afterTests.forEach { it(Tuple2(testCase, result)) }
+         this@resolvedTestListeners.afterTest(testCase, result)
       }
 
       override fun afterSpec(spec: SpecConfiguration) {
-         this@resolvedListeners.afterSpecs.forEach { it() }
-         this@resolvedListeners.afterSpec(spec)
+         this@resolvedTestListeners.afterSpecs.forEach { it() }
+         this@resolvedTestListeners.afterSpec(spec)
       }
 
       override fun beforeSpec(spec: SpecConfiguration) {
-         this@resolvedListeners.beforeSpecs.forEach { it() }
-         this@resolvedListeners.beforeSpec(spec)
+         this@resolvedTestListeners.beforeSpecs.forEach { it() }
+         this@resolvedTestListeners.beforeSpec(spec)
       }
    }
 
    return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
-fun SpecConfiguration.resolvedExtensions(): List<SpecLevelExtension> {
-   return this._extensions + this.extensions()
+fun SpecConfiguration.resolvedExtensions(): List<Extension> {
+   return this._extensions + this.extensions() + factories.flatMap { it.extensions }
 }
 
 fun SpecConfiguration.resolvedTestCaseOrder() =

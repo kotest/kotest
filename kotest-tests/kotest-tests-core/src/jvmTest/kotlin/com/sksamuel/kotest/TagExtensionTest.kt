@@ -7,7 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec

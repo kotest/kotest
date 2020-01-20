@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.config.Project
+import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
 import io.kotest.core.sysprop
 

@@ -1,6 +1,5 @@
-package io.kotest.core.extensions
+package io.kotest.core.listeners
 
-import io.kotest.core.test.Description
 import io.kotest.core.spec.IsolationMode.InstancePerLeaf
 import io.kotest.core.spec.IsolationMode.InstancePerTest
 import io.kotest.core.test.TestCase
@@ -8,7 +7,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.spec.SpecConfiguration
 import kotlin.reflect.KClass
 
-interface TestListener {
+interface TestListener : Listener {
 
    /**
     * This callback will be invoked before a [TestCase] is executed.
@@ -105,17 +104,6 @@ interface TestListener {
     * @param results a map of each test case mapped to its result.
     */
    fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>): Unit = Unit
-
-   /**
-    * Is invoked after all the [SpecConfiguration] classes have been discovered.
-    * This callback will be called SpecConfiguration any [DiscoveryExtension]s have been invoked.
-    *
-    * In other words the descriptions given here are after discovery extensions
-    * have had the chance to filter.
-    *
-    * @param descriptions the [Description] instance for each Spec class discovered.
-    */
-   fun afterDiscovery(descriptions: List<Description>): Unit = Unit
 }
 
 data class RootTest(val testCase: TestCase, val order: Int)

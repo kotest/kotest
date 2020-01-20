@@ -1,8 +1,8 @@
 package io.kotest.extensions.system
 
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
 import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -11,30 +11,30 @@ import java.io.PrintStream
  * A wrapper function that captures any writes to standard out.
  */
 fun captureStandardOut(fn: () -> Unit): String {
-  val previous = System.out
-  val buffer = ByteArrayOutputStream()
-  System.setOut(PrintStream(buffer))
-  try {
-    fn()
-    return String(buffer.toByteArray())
-  } finally {
-    System.setOut(previous)
-  }
+   val previous = System.out
+   val buffer = ByteArrayOutputStream()
+   System.setOut(PrintStream(buffer))
+   try {
+      fn()
+      return String(buffer.toByteArray())
+   } finally {
+      System.setOut(previous)
+   }
 }
 
 /**
  * A wrapper function that captures any writes to standard error.
  */
 fun captureStandardErr(fn: () -> Unit): String {
-  val previous = System.err
-  val buffer = ByteArrayOutputStream()
-  System.setErr(PrintStream(buffer))
-  try {
-    fn()
-    return String(buffer.toByteArray())
-  } finally {
-    System.setErr(previous)
-  }
+   val previous = System.err
+   val buffer = ByteArrayOutputStream()
+   System.setErr(PrintStream(buffer))
+   try {
+      fn()
+      return String(buffer.toByteArray())
+   } finally {
+      System.setErr(previous)
+   }
 }
 
 /**
@@ -46,27 +46,26 @@ fun captureStandardErr(fn: () -> Unit): String {
  * @param tee If true then any data written to standard out will be captured as well as written out.
  *            If false then the data written will be captured only.
  */
-class SystemOutWireListener(private val tee: Boolean = true) :
-    TestListener {
+class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 
-  private var buffer = ByteArrayOutputStream()
-  private var previous = System.out
+   private var buffer = ByteArrayOutputStream()
+   private var previous = System.out
 
-  fun output(): String = String(buffer.toByteArray())
+   fun output(): String = String(buffer.toByteArray())
 
-  override suspend fun beforeTest(testCase: TestCase) {
-    buffer = ByteArrayOutputStream()
-    previous = System.out
-    if (tee) {
-      System.setOut(PrintStream(TeeOutputStream(previous, buffer)))
-    } else {
-      System.setOut(PrintStream(buffer))
-    }
-  }
+   override suspend fun beforeTest(testCase: TestCase) {
+      buffer = ByteArrayOutputStream()
+      previous = System.out
+      if (tee) {
+         System.setOut(PrintStream(TeeOutputStream(previous, buffer)))
+      } else {
+         System.setOut(PrintStream(buffer))
+      }
+   }
 
-  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-    System.setOut(previous)
-  }
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      System.setOut(previous)
+   }
 }
 
 /**
@@ -76,24 +75,24 @@ class SystemOutWireListener(private val tee: Boolean = true) :
  * Users can query the written data by fetching the buffer by invoking [output].
  */
 class SystemErrWireListener(private val tee: Boolean = true) :
-    TestListener {
+   TestListener {
 
-  private var buffer = ByteArrayOutputStream()
-  private var previous = System.err
+   private var buffer = ByteArrayOutputStream()
+   private var previous = System.err
 
-  fun output(): String = String(buffer.toByteArray())
+   fun output(): String = String(buffer.toByteArray())
 
-  override suspend fun beforeTest(testCase: TestCase) {
-    buffer = ByteArrayOutputStream()
-    previous = System.err
-    if (tee) {
-      System.setErr(PrintStream(TeeOutputStream(previous, buffer)))
-    } else {
-      System.setErr(PrintStream(buffer))
-    }
-  }
+   override suspend fun beforeTest(testCase: TestCase) {
+      buffer = ByteArrayOutputStream()
+      previous = System.err
+      if (tee) {
+         System.setErr(PrintStream(TeeOutputStream(previous, buffer)))
+      } else {
+         System.setErr(PrintStream(buffer))
+      }
+   }
 
-  override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-    System.setErr(previous)
-  }
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      System.setErr(previous)
+   }
 }

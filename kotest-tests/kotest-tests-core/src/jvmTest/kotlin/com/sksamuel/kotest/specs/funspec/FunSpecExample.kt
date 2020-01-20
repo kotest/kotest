@@ -2,10 +2,10 @@ package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.Tag
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.description
 import io.kotest.core.spec.style.FunSpec

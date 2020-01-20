@@ -1,11 +1,12 @@
 package io.kotest.extensions.allure
 
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.AutoScan
 import io.qameta.allure.Allure
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory
 import java.nio.file.Paths
 import kotlin.reflect.KClass
 
+@AutoScan
 object AllureExtension : TestListener {
 
    private val logger = LoggerFactory.getLogger(javaClass)

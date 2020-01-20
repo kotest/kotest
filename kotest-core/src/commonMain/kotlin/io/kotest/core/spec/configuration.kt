@@ -4,12 +4,11 @@ package io.kotest.core.spec
 
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
-import io.kotest.core.extensions.ProjectListener
-import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.extensions.TestListener
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.configureRuntime
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
@@ -74,7 +73,7 @@ abstract class TestConfiguration {
    // test listeners
    // using underscore name to avoid clash in JS compiler with existing methods
    internal var _listeners = emptyList<TestListener>()
-   internal var _extensions = emptyList<SpecLevelExtension>()
+   internal var _extensions = emptyList<TestCaseExtension>()
 
    fun extension(f: TestCaseExtensionFn) {
       _extensions = _extensions + object : TestCaseExtension {
@@ -154,7 +153,7 @@ abstract class TestConfiguration {
     * This is a convenience method for creating a [ProjectListener] and registering it.
     */
    fun afterProject(f: AfterProject) {
-      Project.registerProjectListener(object : ProjectListener {
+      Project.registerListener(object : ProjectListener {
          override fun afterProject() {
             f()
          }
@@ -178,7 +177,7 @@ abstract class TestConfiguration {
       this._listeners = this._listeners + listener.toList()
    }
 
-   fun extensions(vararg extensions: SpecLevelExtension) {
+   fun extensions(vararg extensions: TestCaseExtension) {
       this._extensions = this._extensions + extensions.toList()
    }
 

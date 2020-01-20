@@ -2,7 +2,6 @@ package com.sksamuel.kotest.extensions
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.shouldBe
@@ -31,7 +30,7 @@ class TestCaseExtensionAdder(private val n: Int) : TestCaseExtension {
 // this tests that we can use around advice with intercept
 class TestCaseExtensionTest : WordSpec() {
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(TestCaseExtensionAdder(1), TestCaseExtensionAdder(2))
+  override fun extensions() = listOf(TestCaseExtensionAdder(1), TestCaseExtensionAdder(2))
 
   init {
 
