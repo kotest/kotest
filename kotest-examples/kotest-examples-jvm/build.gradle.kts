@@ -35,7 +35,9 @@ kotlin {
          }
       }
       val jvmTest by getting {
-         api(project(":kotest-runner:kotest-runner-junit5"))
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+         }
       }
    }
 }
