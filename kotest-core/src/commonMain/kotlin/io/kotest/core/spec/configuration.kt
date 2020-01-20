@@ -1,6 +1,8 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
+import io.kotest.core.config.Project
+import io.kotest.core.extensions.ProjectListener
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
@@ -16,6 +18,8 @@ typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = () -> Unit
 typealias AfterSpec = () -> Unit
+typealias BeforeProject = () -> Unit
+typealias AfterProject = () -> Unit
 typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
 typealias TestCaseExtensionFn = suspend (
@@ -140,6 +144,18 @@ abstract class TestConfiguration {
       listeners(object : TestListener {
          override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
             f(Tuple2(kclass, results))
+         }
+      })
+   }
+
+   /**
+    * Registers a callback that will execute after all specs have completed.
+    * This is a convenience method for creating a [ProjectListener] and registering it.
+    */
+   fun afterProject(f: AfterProject) {
+      Project.registerProjectListener(object : ProjectListener {
+         override fun afterProject() {
+            f()
          }
       })
    }
