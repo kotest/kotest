@@ -19,6 +19,12 @@ data class TestResult(
          duration
       )
 
+      fun throwable(e: Throwable?, duration: Duration): TestResult = when (e) {
+         null -> TestResult.success(duration)
+         is AssertionError -> failure(e, duration)
+         else -> error(e, duration)
+      }
+
       val Ignored = TestResult(
          TestStatus.Ignored,
          null,
@@ -58,15 +64,4 @@ enum class TestStatus {
    Error,
    // the test ran but an assertion failed
    Failure
-}
-
-@UseExperimental(ExperimentalTime::class)
-fun buildTestResult(
-   error: Throwable?,
-   metadata: Map<String, Any?>,
-   duration: Duration
-): TestResult = when (error) {
-   null -> TestResult.success(duration)
-   is AssertionError -> TestResult.failure(error, duration)
-   else -> TestResult.error(error, duration)
 }

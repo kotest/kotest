@@ -51,6 +51,8 @@ sealed class Try<out T> {
    })
 }
 
+fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): U = fold({ f(it) }, { it })
+
 fun <T> T.success() = Try.Success(this)
 
 expect fun nonFatal(t: Throwable): Boolean

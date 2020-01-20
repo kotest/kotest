@@ -13,7 +13,7 @@ import org.junit.platform.engine.reporting.ReportEntry
 
 class SpecInitializationErrorTest : FunSpec({
 
-   test("an error in a class field should mark spec as failed") {
+   test("an error in a class field should fail spec") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
@@ -39,7 +39,7 @@ class SpecInitializationErrorTest : FunSpec({
       )
    }
 
-   test("an error in a class initializer should mark spec as failed") {
+   test("an error in a class initializer should fail spec") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
       val finished = mutableMapOf<String, TestExecutionResult.Status>()

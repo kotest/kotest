@@ -21,7 +21,7 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalTime::class)
 val childFailsParentTest = funSpec {
 
-    test("failed test should fail parent and spec") {
+    test("a bad test should fail parent and spec") {
 
         val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
 

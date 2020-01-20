@@ -9,6 +9,8 @@ import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedListeners
 import io.kotest.core.test.*
+import io.kotest.fp.Try
+import io.kotest.fp.recover
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -129,16 +131,12 @@ class TestExecutor(private val listener: TestEngineListener) {
    ): TestResult {
       logger.trace("Executing active test $testCase")
       if (notifyListener) listener.testStarted(testCase)
-      val result = try {
-         notifyBeforeTest(testCase)
-         invokeTestCase(testCase, context, start)
-      } catch (e: AssertionError) {
-         TestResult.failure(e, (System.currentTimeMillis() - start).milliseconds)
-      } catch (e: Exception) {
-         TestResult.error(e, (System.currentTimeMillis() - start).milliseconds)
-      }
-      notifyAfterTest(testCase, result)
-      return result
+
+      return userBeforeTest(testCase)
+         .flatMap {
+            val result = invokeTestCase(testCase, context, start)
+            userAfterTest(testCase, result)
+         }.recover { TestResult.throwable(it, (System.currentTimeMillis() - start).milliseconds) }
    }
 
    private suspend fun invokeTestCase(testCase: TestCase, context: TestContext, start: Long): TestResult {
@@ -169,7 +167,7 @@ class TestExecutor(private val listener: TestEngineListener) {
                   // launched coroutines will take place on the test executors own coroutine
                   val contextp = object : TestContext() {
                      override val testCase: TestCase = context.testCase
-                     override suspend fun registerTestCase(test: NestedTest) = context.registerTestCase(test)
+                     override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
                      override val coroutineContext: CoroutineContext = this@runBlocking.coroutineContext
                   }
 
@@ -204,7 +202,7 @@ class TestExecutor(private val listener: TestEngineListener) {
          }
       }
 
-      val result = buildTestResult(error, emptyMap(), (System.currentTimeMillis() - start).milliseconds)
+      val result = TestResult.throwable(error, (System.currentTimeMillis() - start).milliseconds)
       logger.debug("Test completed with result $result")
       return result
    }
@@ -213,9 +211,9 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] is starting.
     * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun notifyBeforeTest(testCase: TestCase) {
+   private suspend fun userBeforeTest(testCase: TestCase): Try<TestCase> = Try {
       logger.trace("Executing listeners beforeTest")
-      suspendCoroutine<Unit> { cont ->
+      suspendCoroutine<TestCase> { cont ->
          executor.submit {
             try {
                runBlocking {
@@ -224,7 +222,7 @@ class TestExecutor(private val listener: TestEngineListener) {
                      it.beforeTest(testCase)
                   }
                }
-               cont.resumeWith(Result.success(Unit))
+               cont.resumeWith(Result.success(testCase))
             } catch (e: Throwable) {
                cont.resumeWith(Result.failure(e))
             }
@@ -236,26 +234,27 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] has finished.
     * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun notifyAfterTest(testCase: TestCase, result: TestResult) {
+   private suspend fun userAfterTest(testCase: TestCase, result: TestResult): Try<TestResult> = Try {
       logger.trace("Executing listeners afterTest")
 
-      suspend fun runListeners() {
+      suspend fun runListeners(): TestResult {
          val listeners = testCase.spec.resolvedListeners()
          listeners.forEach {
             it.afterTest(testCase, result)
          }
+         return result
       }
 
       // if the executor has been shutdown (because it timed out) then we have to run the listeners
       // on the main thread (as the executor is out of action!)
       if (executor.isShutdown) runListeners() else {
-         suspendCoroutine<Unit> { cont ->
+         suspendCoroutine<TestResult> { cont ->
             executor.submit {
                try {
                   runBlocking {
                      runListeners()
                   }
-                  cont.resumeWith(Result.success(Unit))
+                  cont.resumeWith(Result.success(result))
                } catch (e: Throwable) {
                   cont.resumeWith(Result.failure(e))
                }
