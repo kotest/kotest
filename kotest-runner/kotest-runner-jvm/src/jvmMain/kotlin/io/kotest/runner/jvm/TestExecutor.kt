@@ -3,7 +3,10 @@ package io.kotest.runner.jvm
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
 import io.kotest.core.internal.unwrapIfReflectionCall
-import io.kotest.core.runtime.*
+import io.kotest.core.runtime.executeWithTimeout
+import io.kotest.core.runtime.extensions
+import io.kotest.core.runtime.invokeAfterTest
+import io.kotest.core.runtime.invokeBeforeTest
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.fp.recover
@@ -61,18 +64,44 @@ class TestExecutor(private val listener: TestEngineListener) {
       logger.trace("Evaluating $testCase")
       val start = System.currentTimeMillis()
 
-      val action: suspend (TestCase) -> TestResult = { tc ->
-         val result = executeIfActive(tc) { executeActiveTest(tc, context, start, notifyListener) }
-         when (result.status) {
+      val onComplete: suspend (TestResult) -> Unit = {
+         when (it.status) {
             TestStatus.Ignored -> if (notifyListener) listener.testIgnored(testCase, null)
-            else -> if (notifyListener) listener.testFinished(testCase, result)
+            else -> if (notifyListener) listener.testFinished(testCase, it)
          }
-         onResult(result)
-         result
+         onResult(it)
       }
 
-      runExtensions(testCase, testCase.extensions(), action, onResult)
+      runExtensions(testCase, context, start , notifyListener, testCase.extensions(), onComplete)
    }
+
+   /**
+    * Recursively runs the extensions until no extensions are left.
+    * Each extension must invoke the callback given to it, or the test would hang.
+    */
+   private suspend fun runExtensions(
+      testCase: TestCase,
+      context: TestContext,
+      start: Long,
+      notifyListener: Boolean,
+      remaining: List<TestCaseExtension>,
+      onComplete: suspend (TestResult) -> Unit
+   ) {
+      when {
+         remaining.isEmpty() -> {
+            val result = executeIfActive(testCase) { executeActiveTest(testCase, context, start, notifyListener) }
+            onComplete(result)
+         }
+         else -> {
+            remaining.first().intercept(
+               testCase,
+               { test, callback -> runExtensions(test, context, start, notifyListener, remaining.drop(1), callback) },
+               { onComplete(it) }
+            )
+         }
+      }
+   }
+
 
    /**
     * Checks the active status of a [TestCase] before invoking it.

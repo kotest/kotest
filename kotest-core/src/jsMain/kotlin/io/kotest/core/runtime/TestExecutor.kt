@@ -1,5 +1,6 @@
 package io.kotest.core.runtime
 
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.TimeoutCancellationException
@@ -23,7 +24,6 @@ class TestExecutor {
 
    private fun executeWithCallback(testCase: TestCase, done: dynamic) {
       GlobalScope.promise {
-
          val context = object : TestContext() {
             override val testCase: TestCase = testCase
             override val coroutineContext: CoroutineContext = this@promise.coroutineContext
@@ -31,19 +31,41 @@ class TestExecutor {
                throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-js because the underlying JS frameworks do not support promises for outer test scopes. Please use FunSpec or StringSpec which ensure that only top level tests are used.")
             }
          }
-
-         val action: suspend (TestCase) -> TestResult = {
-            when (it.isActive()) {
-               true -> executeActiveTest(it, context, done)
-               false -> TestResult.Ignored
-            }
+         runExtensions(testCase, context, testCase.extensions()) {
+            done(it.error)
+            Unit
          }
-
-         runExtensions(testCase, testCase.extensions(), action, {})
       }
    }
 
-   private suspend fun executeActiveTest(testCase: TestCase, context: TestContext, done: dynamic): TestResult {
+   /**
+    * Recursively runs the given [TestCaseExtension]s until no extensions are left.
+    * Each extension must invoke the callback given to it, or the test will hang.
+    */
+   private suspend fun runExtensions(
+      testCase: TestCase,
+      context: TestContext,
+      extensions: List<TestCaseExtension>,
+      onComplete: suspend (TestResult) -> Unit
+   ) {
+      when {
+         extensions.isEmpty() -> {
+            when (testCase.isActive()) {
+               true -> executeActiveTest(testCase, context)
+               false -> TestResult.Ignored
+            }
+         }
+         else -> {
+            extensions.first().intercept(
+               testCase,
+               { test, callback -> runExtensions(test, context, extensions.drop(1), callback) },
+               { onComplete(it) }
+            )
+         }
+      }
+   }
+
+   private suspend fun executeActiveTest(testCase: TestCase, context: TestContext): TestResult {
       testCase.invokeBeforeTest()
       val timeout = testCase.config.resolvedTimeout()
       val error = try {
@@ -58,7 +80,6 @@ class TestExecutor {
       }
       val result = TestResult.throwable(error, Duration.ZERO)
       testCase.invokeAfterTest(result)
-      done(error)
       return result
    }
 }
