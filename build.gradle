@@ -23,7 +23,7 @@ buildscript {
 
    dependencies {
       classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
-      classpath 'com.android.tools.build:gradle:3.5.0'
+      classpath 'com.android.tools.build:gradle:3.5.3'
       //    classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
    }
    
