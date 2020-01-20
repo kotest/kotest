@@ -51,7 +51,10 @@ class TestExecutor {
       when {
          extensions.isEmpty() -> {
             when (testCase.isActive()) {
-               true -> executeActiveTest(testCase, context)
+               true -> {
+                  val result = executeActiveTest(testCase, context)
+                  onComplete(result)
+               }
                false -> TestResult.Ignored
             }
          }

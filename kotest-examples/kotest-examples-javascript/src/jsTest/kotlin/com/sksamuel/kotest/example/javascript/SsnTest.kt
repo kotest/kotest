@@ -21,10 +21,6 @@ class SsnTest : FunSpec({
       validateSocial("123-456-1111") shouldBe true
    }
 
-   test("failing test") {
-      validateSocial("xxxxx") shouldBe true
-   }
-
    test("invalid ssn") {
       listOf("a12-456-cccc", "", "123-4561117", "122", "1234567899").forAll {
          validateSocial(it) shouldBe false
