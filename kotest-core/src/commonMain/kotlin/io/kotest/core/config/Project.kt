@@ -11,6 +11,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseFilter
 import io.kotest.core.test.TestCaseOrder
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
@@ -37,6 +38,7 @@ object Project {
    private var writeSpecFailureFile = userconf.writeSpecFailureFile ?: false
    private var globalAssertSoftly = userconf.globalAssertSoftly ?: false
    private var parallelism = userconf.parallelism ?: 1
+   private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
@@ -79,11 +81,13 @@ object Project {
    /**
     * Returns the registered [TestCaseFilter].
     */
-   fun testCaseFilters(): List<TestCaseFilter> {
-      return filters.filterIsInstance<TestCaseFilter>()
-   }
+   fun testCaseFilters(): List<TestCaseFilter> = filters
+      .filterIsInstance<TestCaseFilter>()
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   fun specExtensions(): List<SpecExtension> = extensions.filterIsInstance<SpecExtension>()
+   fun specExtensions(): List<SpecExtension> = extensions
+      .filterIsInstance<SpecExtension>()
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    /**
     * Returns the [SpecExecutionOrder] set by the user or defaults to [LexicographicSpecExecutionOrder].
@@ -103,17 +107,25 @@ object Project {
       this.timeout = duration
    }
 
-   fun constructorExtensions(): List<ConstructorExtension> = extensions.filterIsInstance<ConstructorExtension>()
+   fun constructorExtensions(): List<ConstructorExtension> = extensions
+      .filterIsInstance<ConstructorExtension>()
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   fun discoveryExtensions(): List<DiscoveryExtension> = extensions.filterIsInstance<DiscoveryExtension>()
+   fun discoveryExtensions(): List<DiscoveryExtension> = extensions
+      .filterIsInstance<DiscoveryExtension>()
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    fun extensions(): List<Extension> = extensions
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    fun filters(): List<ProjectLevelFilter> = filters
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    fun testListeners(): List<TestListener> = testListeners
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    fun projectListeners(): List<ProjectListener> = projectListeners
+      .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
    /**
     * Returns the number of concurrent specs that can be executed.
@@ -129,6 +141,12 @@ object Project {
 
    fun setFailOnIgnoredTests(fail: Boolean) {
       failOnIgnoredTests = fail
+   }
+
+   fun autoScanIgnoredClasses() = autoScanIgnoredClasses
+
+   fun setAutoScanIgnoredClasses(classes: List<KClass<*>>) {
+      autoScanIgnoredClasses = classes
    }
 
    fun setGlobalAssertSoftly(g: Boolean) {
@@ -151,6 +169,8 @@ data class ProjectConf constructor(
    val specExecutionOrder: SpecExecutionOrder? = null,
    val failOnIgnoredTests: Boolean? = null,
    val globalAssertSoftly: Boolean? = null,
+   val autoScanEnabled: Boolean = true,
+   val autoScanIgnoredClasses: List<KClass<*>> = emptyList(),
    val writeSpecFailureFile: Boolean? = null,
    val parallelism: Int? = null,
    val timeout: Duration? = null,

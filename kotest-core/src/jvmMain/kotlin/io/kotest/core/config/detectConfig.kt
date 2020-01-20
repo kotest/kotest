@@ -33,6 +33,8 @@ actual fun detectConfig(): ProjectConf {
          specExecutionOrder = conf.specExecutionOrder ?: conf.specExecutionOrder(),
          failOnIgnoredTests = conf.failOnIgnoredTests,
          globalAssertSoftly = conf.globalAssertSoftly,
+         autoScanEnabled = conf.autoScanEnabled ?: true,
+         autoScanIgnoredClasses = conf.autoScanIgnoredClasses,
          writeSpecFailureFile = conf.writeSpecFailureFile ?: conf.writeSpecFailureFile(),
          timeout = conf.timeout,
          testCaseConfig = conf.defaultTestCaseConfig
@@ -53,11 +55,12 @@ actual fun detectConfig(): ProjectConf {
       .toOption()
       .fold({ ProjectConf() }, { from(it) })
 
-
-   val autoscanned = scanResult
-      .getClassesWithAnnotation(AutoScan::class.java.name)
-      .map { Class.forName(it.name) }
-      .map { instantiate(it) }
+   val autoscanned = if (conf.autoScanEnabled) {
+      scanResult
+         .getClassesWithAnnotation(AutoScan::class.java.name)
+         .map { Class.forName(it.name) }
+         .map { instantiate(it) }
+   } else emptyList()
 
    return conf.copy(
       projectListeners = conf.projectListeners + autoscanned.filterIsInstance<ProjectListener>(),

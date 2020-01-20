@@ -9,7 +9,9 @@ import io.kotest.core.extensions.ProjectLevelExtension
 import io.kotest.core.extensions.ProjectLevelFilter
 import io.kotest.core.extensions.ProjectListener
 import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.TestCaseConfig
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -124,7 +126,18 @@ abstract class AbstractProjectConfig {
     * Override this value and set it to true if you want all tests to behave as if they
     * were operating in an [assertSoftly] block.
     */
-   open val globalAssertSoftly: Boolean = false
+   open val globalAssertSoftly: Boolean? = null
+
+   /**
+    * Override this value and set it to false if you want to disable autoscanning of extensions
+    * and listeners.
+    */
+   open val autoScanEnabled: Boolean? = null
+
+   /**
+    * Override this value with a list of classes for which @autoscan is disabled.
+    */
+   open val autoScanIgnoredClasses: List<KClass<*>> = emptyList()
 
    /**
     * Override this value and set it to true if you want the build to be marked as failed
@@ -156,4 +169,3 @@ abstract class AbstractProjectConfig {
     */
    open fun afterAll() {}
 }
-
