@@ -87,6 +87,7 @@ object Project {
 
    /**
     * Returns the [SpecExecutionOrder] set by the user or defaults to [LexicographicSpecExecutionOrder].
+    * Note: This has no effect on non-JVM targets.
     */
    fun specExecutionOrder(): SpecExecutionOrder {
       return specExecutionOrder

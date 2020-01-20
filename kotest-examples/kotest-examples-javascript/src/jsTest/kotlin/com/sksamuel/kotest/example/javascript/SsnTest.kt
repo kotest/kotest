@@ -1,14 +1,28 @@
 package com.sksamuel.kotest.example.javascript
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCaseOrder
 import io.kotest.inspectors.forAll
 import io.kotest.shouldBe
 
 class SsnTest : FunSpec({
 
+   testOrder = TestCaseOrder.Lexicographic
+
+   beforeTest {
+      println("Starting test ${it.name}!")
+   }
+
+   afterTest {
+      println("Finished test ${it.a.name}!")
+   }
+
    test("valid ssns") {
       validateSocial("123-456-1111") shouldBe true
-      validateSocial("444-235-6453") shouldBe true
+   }
+
+   test("failing test") {
+      validateSocial("xxxxx") shouldBe true
    }
 
    test("invalid ssn") {

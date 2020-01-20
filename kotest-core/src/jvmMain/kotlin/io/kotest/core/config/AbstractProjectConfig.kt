@@ -60,6 +60,9 @@ abstract class AbstractProjectConfig {
    @Deprecated("use the val version")
    open fun specExecutionOrder(): SpecExecutionOrder? = null
 
+   /**
+    * Note: This has no effect on non-JVM targets.
+    */
    open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**

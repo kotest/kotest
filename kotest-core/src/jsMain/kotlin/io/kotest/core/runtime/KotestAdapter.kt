@@ -12,12 +12,9 @@ object KotestAdapter : FrameworkAdapter {
    override fun test(name: String, ignored: Boolean, testFn: () -> Any?) {
       // if the test name is the special marker method, we just invoke the function rather
       // than delegating to the test framework. This is to avoid the marker method appearing in
-      // test output. For other tests, they will be passed through to "it"
+      // test output.
       if (name == SpecConfiguration::javascriptTestInterceptor.name) {
-         println("foo")
          testFn()
-      } else {
-         it(name, testFn)
       }
    }
 }

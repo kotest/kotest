@@ -52,6 +52,11 @@ fun SpecConfiguration.resolvedTestCaseOrder() =
 fun SpecConfiguration.resolvedIsolationMode() =
    this.isolation ?: this.isolationMode() ?: IsolationMode.InstancePerLeaf
 
+/**
+ * Returns the root tests from this Spec and any included factories.
+ * The returned list will be ordered according to the [TestCaseOrder] returned by
+ * project config, or if not defined, the kotest default.
+ */
 fun SpecConfiguration.materializeRootTests(): List<RootTest> {
 
    val order = resolvedTestCaseOrder()

@@ -2,8 +2,9 @@ package io.kotest.runner.jvm
 
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
-import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
+import io.kotest.core.runtime.afterAll
+import io.kotest.core.runtime.beforeAll
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.core.test.TestCaseFilter
@@ -40,13 +41,7 @@ class KotestEngine(
          )
    }
 
-   private fun afterAll() = Try { Project.projectListeners().forEach { it.afterProject() } }
-
-   private fun start() = Try {
-      listener.engineStarted(classes)
-      Project.dumpProjectConfig()
-      Project.projectListeners().forEach { it.beforeProject() }
-   }
+   private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }
 
    private fun submitAll() = Try {
       logger.trace("Submitting ${classes.size} specs")
@@ -99,17 +94,19 @@ class KotestEngine(
    }
 
    fun execute() {
-      start().flatMap { submitAll() }.fold(
-         {
-            afterAll()
-            end(it)
-         },
-         {
-            afterAll().fold(
-               { t -> end(t) },
-               { end(null) }
-            )
-         }
-      )
+      notifyTestEngineListener()
+         .flatMap { beforeAll() }
+         .flatMap { submitAll() }.fold(
+            {
+               afterAll()
+               end(it)
+            },
+            {
+               afterAll().fold(
+                  { t -> end(t) },
+                  { end(null) }
+               )
+            }
+         )
    }
 }

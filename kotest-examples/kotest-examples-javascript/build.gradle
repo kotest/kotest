@@ -70,7 +70,7 @@ task installMocha(type: NpmTask) {
 
 task runMocha(type: NodeTask, dependsOn: [installMocha, compileTestKotlinJs, copyJsDependencies]) {
    script = file('node_modules/mocha/bin/mocha')
-   args = ["kotest-framework-adapter.js", compileTestKotlinJs.outputFile]
+   args = [compileTestKotlinJs.outputFile]
 }
 
 jsTest.dependsOn runMocha

@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.test.TestCase
+import io.kotest.core.spec.SpecConfiguration
 
-actual fun executeJavascriptTests(rootTests: List<TestCase>) {}
+actual fun executeSpec(spec: SpecConfiguration) {}
 actual fun configureRuntime() {}

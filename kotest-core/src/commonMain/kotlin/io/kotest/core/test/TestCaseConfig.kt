@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.Tag
+import io.kotest.core.config.Project
 import io.kotest.core.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -53,4 +54,4 @@ fun TestCaseConfig.deriveTestConfig(
  * Returns the timeout for a [TestCase] taking into account global settings.
  */
 @UseExperimental(ExperimentalTime::class)
-expect fun TestCaseConfig.resolvedTimeout(): Duration
+fun TestCaseConfig.resolvedTimeout(): Duration = this.timeout ?: Project.timeout()

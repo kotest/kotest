@@ -1,19 +1,14 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.config.Project
-import io.kotest.core.executeWithAssertionsCheck
-import io.kotest.core.executeWithGlobalAssertSoftlyCheck
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
 import io.kotest.core.internal.unwrapIfReflectionCall
-import io.kotest.core.spec.resolvedExtensions
-import io.kotest.core.spec.resolvedListeners
+import io.kotest.core.runtime.*
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.fp.recover
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -60,65 +55,33 @@ class TestExecutor(private val listener: TestEngineListener) {
       testCase: TestCase,
       context: TestContext,
       notifyListener: Boolean,
-      onResult: (TestResult) -> Unit
+      onResult: suspend (TestResult) -> Unit
    ) {
-      logger.trace("Evaluating $testCase")
 
+      logger.trace("Evaluating $testCase")
       val start = System.currentTimeMillis()
 
-      val extensions = testCase.config.extensions +
-         testCase.spec.resolvedExtensions().filterIsInstance<TestCaseExtension>() +
-         Project.extensions().filterIsInstance<TestCaseExtension>()
-
-      runExtensions(testCase, context, start, notifyListener, extensions) {
-         when (it.status) {
+      val action: suspend (TestCase) -> TestResult = { tc ->
+         val result = executeIfActive(tc) { executeActiveTest(tc, context, start, notifyListener) }
+         when (result.status) {
             TestStatus.Ignored -> if (notifyListener) listener.testIgnored(testCase, null)
-            else -> if (notifyListener) listener.testFinished(testCase, it)
+            else -> if (notifyListener) listener.testFinished(testCase, result)
          }
-         onResult(it)
+         onResult(result)
+         result
       }
+
+      runExtensions(testCase, testCase.extensions(), action, onResult)
    }
 
    /**
-    * Recursively runs the extensions until no extensions are left.
-    * Each extension must invoke the callback given to it, or the test would hang.
+    * Checks the active status of a [TestCase] before invoking it.
+    * If the test is inactive, then [TestResult.ignored] is returned.
     */
-   private suspend fun runExtensions(
-      testCase: TestCase,
-      context: TestContext,
-      start: Long,
-      notifyListener: Boolean,
-      remaining: List<TestCaseExtension>,
-      onComplete: suspend (TestResult) -> Unit
-   ) {
-      when {
-         remaining.isEmpty() -> {
-            val result = executeIfActive(testCase, context, start, notifyListener)
-            onComplete(result)
-         }
-         else -> {
-            remaining.first().intercept(
-               testCase,
-               { test, callback -> runExtensions(test, context, start, notifyListener, remaining.drop(1), callback) },
-               { onComplete(it) }
-            )
-         }
-      }
-   }
-
-   private suspend fun executeIfActive(
-      testCase: TestCase,
-      context: TestContext,
-      start: Long,
-      notifyListener: Boolean
-   ): TestResult {
-
-      val active = testCase.isActive()
-      logger.trace("Test ${testCase.description.fullName()} active=$active")
-
+   private suspend fun executeIfActive(testCase: TestCase, ifActive: suspend () -> TestResult): TestResult {
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
-      return when (active) {
-         true -> executeActiveTest(testCase, context, start, notifyListener)
+      return when (testCase.isActive()) {
+         true -> ifActive()
          false -> TestResult.Ignored
       }
    }
@@ -143,7 +106,7 @@ class TestExecutor(private val listener: TestEngineListener) {
       logger.trace("invokeTestCase $testCase")
 
       // we calculate the timeout, (if timeout has been configured) which will fail the test with a timed-out status
-      val timeout = testCase.config.resolvedTimeout().toLongMilliseconds()
+      val timeout = testCase.config.resolvedTimeout()
       val hasResumed = AtomicBoolean(false)
 
       val error = suspendCoroutine<Throwable?> { cont ->
@@ -155,7 +118,7 @@ class TestExecutor(private val listener: TestEngineListener) {
                executor.shutdownNow()
                cont.resumeWith(Result.success(t))
             }
-         }, timeout, TimeUnit.MILLISECONDS)
+         }, timeout.toLongMilliseconds(), TimeUnit.MILLISECONDS)
 
          // the test is running inside this executor so we can wait outside for it, but only up to the timeout
          // value. Without this executor we have no way of interrupting a test that isn't cooperative.
@@ -170,18 +133,7 @@ class TestExecutor(private val listener: TestEngineListener) {
                      override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
                      override val coroutineContext: CoroutineContext = this@runBlocking.coroutineContext
                   }
-
-                  // we ensure the timeout is honoured
-                  withTimeout(timeout) {
-                     // we only run the assertions check for leaf tests
-                     when (testCase.type) {
-                        TestType.Container -> executeWithGlobalAssertSoftlyCheck { testCase.test.invoke(contextp) }
-                        TestType.Test -> testCase.spec.resolvedAssertionMode().executeWithAssertionsCheck(
-                           { testCase.test.invoke(contextp) },
-                           testCase.description.name
-                        )
-                     }
-                  }
+                  testCase.executeWithTimeout(contextp, timeout)
                }
 
                if (hasResumed.compareAndSet(false, true))
@@ -217,10 +169,7 @@ class TestExecutor(private val listener: TestEngineListener) {
          executor.submit {
             try {
                runBlocking {
-                  val listeners = testCase.spec.resolvedListeners()
-                  listeners.forEach {
-                     it.beforeTest(testCase)
-                  }
+                  testCase.invokeBeforeTest()
                }
                cont.resumeWith(Result.success(testCase))
             } catch (e: Throwable) {
@@ -237,22 +186,18 @@ class TestExecutor(private val listener: TestEngineListener) {
    private suspend fun userAfterTest(testCase: TestCase, result: TestResult): Try<TestResult> = Try {
       logger.trace("Executing listeners afterTest")
 
-      suspend fun runListeners(): TestResult {
-         val listeners = testCase.spec.resolvedListeners()
-         listeners.forEach {
-            it.afterTest(testCase, result)
-         }
-         return result
-      }
-
       // if the executor has been shutdown (because it timed out) then we have to run the listeners
       // on the main thread (as the executor is out of action!)
-      if (executor.isShutdown) runListeners() else {
+      if (executor.isShutdown) {
+         testCase.invokeAfterTest(result)
+         result
+      } else {
          suspendCoroutine<TestResult> { cont ->
             executor.submit {
                try {
                   runBlocking {
-                     runListeners()
+                     testCase.invokeAfterTest(result)
+                     result
                   }
                   cont.resumeWith(Result.success(result))
                } catch (e: Throwable) {
