@@ -6,7 +6,6 @@ plugins {
 
 repositories {
    mavenCentral()
-   maven(url = "https://dl.bintray.com/konform-kt/konform")
 }
 
 kotlin {
