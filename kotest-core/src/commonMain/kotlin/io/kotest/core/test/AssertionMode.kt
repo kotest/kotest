@@ -21,4 +21,4 @@ enum class AssertionMode {
 }
 
 fun SpecConfiguration.resolvedAssertionMode(): AssertionMode =
-   this.assertionMode ?: this.assertionMode() ?: AssertionMode.None // todo add project mode
+   this.assertions ?: this.assertionMode() ?: AssertionMode.None // todo add project mode

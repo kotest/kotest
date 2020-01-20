@@ -14,10 +14,10 @@ fun TestFactoryConfiguration.build(): TestFactory {
    val factory = TestFactory(
       factoryId = TestFactoryId.next(),
       tests = this.tests,
-      tags = this.tags,
-      listeners = this.listeners,
-      extensions = this.extensions,
-      assertionMode = this.assertionMode,
+      tags = this._tags,
+      listeners = this._listeners,
+      extensions = this._extensions,
+      assertionMode = this.assertions,
       factories = this.factories
    )
 

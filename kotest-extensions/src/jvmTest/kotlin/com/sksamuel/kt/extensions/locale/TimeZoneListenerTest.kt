@@ -58,11 +58,11 @@ class TimeZoneExtensionFunctionTest : DescribeSpec() {
 
 class TimeZoneListenerTest : FunSpec() {
 
-   override fun listeners() = listOf(TimeZoneTestListener(TimeZone.getTimeZone(ZoneId.of("Africa/Dakar"))), assertions)
+   override fun listeners() = listOf(TimeZoneTestListener(TimeZone.getTimeZone(ZoneId.of("Africa/Dakar"))), listener)
 
    private var deftz: TimeZone? = null
 
-   private val assertions = object : TestListener {
+   private val listener = object : TestListener {
       override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
          deftz = TimeZone.getDefault()
       }

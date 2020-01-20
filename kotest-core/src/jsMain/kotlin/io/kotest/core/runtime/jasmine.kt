@@ -1,4 +1,4 @@
-package io.kotest.specs
+package io.kotest.core.runtime
 
 external fun describe(name: String, fn: () -> Unit)
 external fun xdescribe(name: String, fn: () -> Unit)

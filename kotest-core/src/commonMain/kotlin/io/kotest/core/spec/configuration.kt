@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
@@ -8,10 +10,13 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.extensions.TestListener
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.runtime.configureRuntime
+import io.kotest.core.runtime.executeJavascriptTests
 import io.kotest.core.sourceRef
 import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
 import org.junit.platform.commons.annotation.Testable
+import kotlin.random.Random
 import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
@@ -30,10 +35,6 @@ typealias TestCaseExtensionFn = suspend (
 
 typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
 
-// these functions call out to the js test methods
-// on the jvm these functions will be empty
-expect fun generateTests(rootTests: List<TestCase>)
-
 expect interface AutoCloseable {
    fun close()
 }
@@ -48,35 +49,36 @@ abstract class TestConfiguration {
     * Config applied to each test case if not overridden per test case.
     * If left null, then defaults to the project config default.
     */
-   var defaultTestCaseConfig: TestCaseConfig? = null
+   var defaultTestConfig: TestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
     */
-   var assertionMode: AssertionMode? = null
+   var assertions: AssertionMode? = null
 
    /**
     * Contains the [Tag]s that will be applied to every test.
     */
-   var tags: Set<Tag> = emptySet()
+   internal var _tags: Set<Tag> = emptySet()
 
    /**
     * Contains the [TestFactory] instances that have been included with this config.
     */
-   var factories = emptyList<TestFactory>()
+   internal var factories = emptyList<TestFactory>()
 
    // test lifecycle callbacks
-   var beforeTests = emptyList<BeforeTest>()
-   var afterTests = emptyList<AfterTest>()
-   var beforeSpecs = emptyList<BeforeSpec>()
-   var afterSpecs = emptyList<AfterSpec>()
+   internal var beforeTests = emptyList<BeforeTest>()
+   internal var afterTests = emptyList<AfterTest>()
+   internal var beforeSpecs = emptyList<BeforeSpec>()
+   internal var afterSpecs = emptyList<AfterSpec>()
 
    // test listeners
-   var listeners = emptyList<TestListener>()
-   var extensions = emptyList<SpecLevelExtension>()
+   // using underscore name to avoid clash in JS compiler with existing methods
+   internal var _listeners = emptyList<TestListener>()
+   internal var _extensions = emptyList<SpecLevelExtension>()
 
    fun extension(f: TestCaseExtensionFn) {
-      extensions = extensions + object : TestCaseExtension {
+      _extensions = _extensions + object : TestCaseExtension {
          override suspend fun intercept(
             testCase: TestCase,
             execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
@@ -88,7 +90,7 @@ abstract class TestConfiguration {
    }
 
    fun aroundTest(runtest: AroundTestFn) {
-      extensions = extensions + object : TestCaseExtension {
+      _extensions = _extensions + object : TestCaseExtension {
          override suspend fun intercept(
             testCase: TestCase,
             execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
@@ -166,7 +168,7 @@ abstract class TestConfiguration {
     * from this factory will have these tags applied.
     */
    fun tags(vararg tags: Tag) {
-      this.tags = this.tags + tags.toSet()
+      this._tags = this._tags + tags.toSet()
    }
 
    fun listener(listener: TestListener) {
@@ -174,11 +176,11 @@ abstract class TestConfiguration {
    }
 
    fun listeners(vararg listener: TestListener) {
-      this.listeners = this.listeners + listener.toList()
+      this._listeners = this._listeners + listener.toList()
    }
 
    fun extensions(vararg extensions: SpecLevelExtension) {
-      this.extensions = this.extensions + extensions.toList()
+      this._extensions = this._extensions + extensions.toList()
    }
 
    /**
@@ -197,6 +199,9 @@ abstract class TestConfiguration {
       return closeable
    }
 }
+
+// we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
+val initializeRuntime = configureRuntime()
 
 @Testable
 abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfiguration {
@@ -219,11 +224,16 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
    var testOrder: TestCaseOrder? = null
 
    /**
-    * This is a dummy method, intercepted by the kotlin.js framework adapter to generate tests.
+    * The annotation [JsTest] is intercepted by the kotlin.js framework adapter to generate tests.
+    *
+    * We need to use this function to invoke our actual tests taken from the kotest DSL.
+    * We then need to install a Javascript test-adapter to intercept calls to all tests so we can
+    * avoid passing this generating function to the underyling test framework so it doesn't appear
+    * in the test report.
     */
    @JsTest
-   fun kotestGenerateTests() {
-      generateTests(rootTestCases.toList())
+   fun javascriptTestInterceptor() {
+      executeJavascriptTests(rootTestCases.toList())
    }
 
    private fun createTestCase(

@@ -9,31 +9,6 @@ import io.kotest.core.extensions.RootTest
 import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.fp.Tuple2
 
-///**
-// * A [Spec] is the unit of execution in Kotest. It contains one or more
-// * [TestCase]s which are executed individually.  All tests in a spec must
-// * pass for the spec itself to be considered passing.
-// *
-// * Tests can either be root level, or nested inside other tests, depending
-// * on the style of spec in use.
-// *
-// * Specs also contain [TestListener]s and [SpecLevelExtension]s which are used
-// * to hook into the test lifecycle and interface with the test engine.
-// *
-// * A spec can define an [IsolationMode] used to control the instantiation of
-// * classes for test cases in that spec.
-// *
-// * A spec can define the [TestCaseOrder] which controls the ordering of the
-// * execution of root level tests in that spec.
-// */
-//data class Spec(
-//   val rootTests: List<RootTest>,
-//   val listeners: List<TestListener>,
-//   val extensions: List<SpecLevelExtension>,
-//   val isolationMode: IsolationMode?,
-//   val testCaseOrder: TestCaseOrder?
-//)
-
 /**
  * Returns the resolved listeners for a given [SpecConfiguration].
  * That is, the listeners defined directly on the spec, listeners generated from the
@@ -64,11 +39,11 @@ fun SpecConfiguration.resolvedListeners(): List<TestListener> {
       }
    }
 
-   return this.listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
+   return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
 fun SpecConfiguration.resolvedExtensions(): List<SpecLevelExtension> {
-   return this.extensions + this.extensions()
+   return this._extensions + this.extensions()
 }
 
 fun SpecConfiguration.resolvedTestCaseOrder() =
@@ -87,8 +62,8 @@ fun SpecConfiguration.materializeRootTests(): List<RootTest> {
    return allTests
       .map {
          it.copy(
-            assertionMode = it.assertionMode ?: this.assertionMode ?: this.assertionMode(),
-            config = it.config.copy(tags = it.config.tags + this.tags + this.tags())
+            assertionMode = it.assertionMode ?: this.assertions ?: this.assertionMode(),
+            config = it.config.copy(tags = it.config.tags + this._tags + this.tags())
          )
       }
       .ordered(order)

@@ -20,13 +20,13 @@ fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactor
 }
 
 class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : SpecConfiguration(), ExpectSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
-      defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
 

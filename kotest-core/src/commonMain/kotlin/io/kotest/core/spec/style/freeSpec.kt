@@ -20,13 +20,13 @@ fun freeSpec(block: FreeSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 }
 
 class FreeSpecTestFactoryConfiguration : TestFactoryConfiguration(), FreeSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class FreeSpec(body: FreeSpec.() -> Unit = {}) : SpecConfiguration(), FreeSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
-      defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
 

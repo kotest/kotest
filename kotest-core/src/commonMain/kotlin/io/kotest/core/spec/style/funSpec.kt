@@ -6,6 +6,7 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.test.TestCaseConfig
+import kotlin.random.Random
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -20,13 +21,13 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 }
 
 class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : SpecConfiguration(), FunSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
-      defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
 

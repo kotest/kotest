@@ -9,7 +9,7 @@ class StringSpecSingleInstanceDuplicateNameTest : StringSpec() {
    override fun isolationMode() = IsolationMode.SingleInstance
 
    init {
-      defaultTestCaseConfig = TestCaseConfig(invocations = 2)
+      defaultTestConfig = TestCaseConfig(invocations = 2)
 
       "foo" {}
       try {

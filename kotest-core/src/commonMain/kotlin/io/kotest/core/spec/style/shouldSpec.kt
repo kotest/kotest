@@ -38,13 +38,13 @@ fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactor
 }
 
 class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : SpecConfiguration(), ShouldSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
-      defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
 

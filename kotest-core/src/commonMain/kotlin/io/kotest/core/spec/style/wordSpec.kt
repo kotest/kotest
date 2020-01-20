@@ -25,12 +25,12 @@ fun wordSpec(block: WordSpecTestFactoryConfiguration.() -> Unit): TestFactory {
  * Decorates a [TestFactoryConfiguration] with the WordSpec DSL.
  */
 class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : SpecConfiguration(), WordSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
    override val addTest = ::addRootTestCase
 
    init {

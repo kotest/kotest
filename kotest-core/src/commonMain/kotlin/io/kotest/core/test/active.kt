@@ -28,7 +28,7 @@ fun TestCase.isActive(): Boolean {
    val enabledInConfig = config.enabled && config.enabledIf()
    val bangEnabled = sysprop("kotest.bang.disable").isEmpty()
    val disabledViaBang = isBang() && bangEnabled
-   val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec.tags)
+   val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
    val filtered = Project.testCaseFilters()
       .map { it.filter(description) }.any { it == TestFilterResult.Exclude }
    return focused || !hasFocused && enabledInConfig && !disabledViaBang && !filtered && activeViaTags

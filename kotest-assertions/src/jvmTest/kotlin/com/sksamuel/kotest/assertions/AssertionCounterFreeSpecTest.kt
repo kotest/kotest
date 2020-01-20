@@ -5,7 +5,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.shouldBe
 
 class AssertionCounterFreeSpecTest : FreeSpec({
-   assertionMode = AssertionMode.Error
+   assertions = AssertionMode.Error
    "container should not need to have an assertion" - {
       "neither should this container" - {
          "but this one does" {

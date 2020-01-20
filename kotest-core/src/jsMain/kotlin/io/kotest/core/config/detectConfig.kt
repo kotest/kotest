@@ -1,7 +1,7 @@
 package io.kotest.core.config
 
 /**
- * Loads a config object from the underlying target.
- * For example, on the JVM it may scan the classpath.
+ * On the Javascript platform this returns default platform config.
+ * Instead, config should be set using the setter methods on [Project].
  */
 actual fun detectConfig(): ProjectConf = ProjectConf()

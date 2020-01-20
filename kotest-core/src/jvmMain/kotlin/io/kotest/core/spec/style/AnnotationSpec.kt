@@ -18,7 +18,7 @@ abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfig
       body()
    }
 
-   private fun defaultConfig() = defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+   private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override fun beforeSpec(spec: SpecConfiguration) {
       executeBeforeSpecFunctions()
