@@ -96,12 +96,12 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       val isTarget = test.description == target.description
       coroutineScope {
          val context = object : TestContext() {
+            // check for duplicate names in the same scope
+            val namesInScope = mutableSetOf<String>()
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               // check for duplicate names in the same scope
-               val namesInScope = mutableSetOf<String>()
                if (namesInScope.contains(nested.name))
                   throw IllegalStateException("Cannot add duplicate test ${nested.name}")
                namesInScope.add(nested.name)
