@@ -10,6 +10,11 @@ object Libs {
       const val validation = "io.arrow-kt:arrow-validation:$version"
    }
 
+   object Allure {
+      private const val version = "2.13.1"
+      const val commons = "io.qameta.allure:allure-java-commons:$version"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.0-RC1"
       const val engine = "org.junit.platform:junit-platform-engine:$version"

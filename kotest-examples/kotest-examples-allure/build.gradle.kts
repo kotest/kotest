@@ -7,6 +7,7 @@ plugins {
 repositories {
    mavenCentral()
 }
+
 kotlin {
 
    targets {
@@ -28,25 +29,11 @@ kotlin {
    }
 
    sourceSets {
-
-      val jvmMain by getting {
-         dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(Libs.Allure.commons)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
-            implementation("javax.xml.bind:jaxb-api:2.3.1")
-            implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
-            implementation("com.sun.xml.bind:jaxb-impl:2.3.2")
-
-         }
-      }
-
       val jvmTest by getting {
-         dependsOn(jvmMain)
          dependencies {
+            api(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-extensions:kotest-extensions-allure"))
          }
       }
    }
@@ -55,17 +42,12 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      isFailOnNoMatchingTests = false
+      setFailOnNoMatchingTests(false)
    }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
-
-apply(from = "../../publish.gradle")

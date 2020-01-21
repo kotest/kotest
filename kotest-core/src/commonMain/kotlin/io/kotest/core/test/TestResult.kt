@@ -8,8 +8,7 @@ data class TestResult(
    val status: TestStatus,
    val error: Throwable?,
    val reason: String?,
-   val duration: Duration,
-   val metaData: Map<String, Any?> = emptyMap()
+   val duration: Duration
 ) {
    companion object {
       fun success(duration: Duration) = TestResult(
