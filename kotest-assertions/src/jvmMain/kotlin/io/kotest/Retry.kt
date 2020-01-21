@@ -6,30 +6,30 @@ import java.time.Duration
 
 /**
  * Retry the given lambda [f] in case of assertion error[AssertionError] and exception [Exception].
- * Stops trying when [maxRetry] or [maxDelay] duration is reached.
+ * Stops trying when [maxRetry] or [timeout] is reached.
  * */
 suspend fun <T> retry(
    maxRetry: Int,
-   maxDelay: Duration,
-   delay: Duration = maxDelay,
+   timeout: Duration,
+   delay: Duration = timeout,
    multiplier: Int = 1,
    f: () -> T
-): T = retry(maxRetry, maxDelay, delay, multiplier, Exception::class.java, f)
+): T = retry(maxRetry, timeout, delay, multiplier, Exception::class.java, f)
 
 
 /**
  * Retry the given lambda [f] in case of assertion error[AssertionError] and exception of type [exceptionClass].
- * Stops trying when [maxRetry] or [maxDelay] duration is reached. Or an exception other than [exceptionClass] is thrown
+ * Stops trying when [maxRetry] or [timeout] is reached. Or an exception other than [exceptionClass] is thrown
  * */
 suspend fun <T, E : Throwable> retry(
    maxRetry: Int,
-   maxDelay: Duration,
-   delay: Duration = maxDelay,
+   timeout: Duration,
+   delay: Duration = timeout,
    multiplier: Int = 1,
    exceptionClass: Class<E>,
    f: () -> T
 ): T {
-   val end = System.currentTimeMillis() + maxDelay.toMillis()
+   val end = System.currentTimeMillis() + timeout.toMillis()
    var retrySoFar = 0
    var nextAwaitDuration = delay.toMillis()
    var lastError: Throwable? = null
