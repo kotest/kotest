@@ -15,3 +15,12 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
          "$value should not be in range $range"
       )
 }
+
+
+fun Char.shouldBeBetween(from: Char, to: Char) = this should between(from, to)
+fun Char.shouldNotBeBetween(from: Char, to: Char) = this shouldNot between(from, to)
+fun between(from: Char, to: Char): Matcher<Char> = object : Matcher<Char> {
+   override fun test(value: Char) = MatcherResult(value in from..to,
+      "$value is between ($from, $to)",
+      "$value is not between ($from, $to)")
+}
