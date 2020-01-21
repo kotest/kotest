@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.3.21"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:1.3.61"
     compile 'javax.xml.bind:jaxb-api:2.2.12'
     compile 'javax.activation:activation:1.1.1'
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.1994-SNAPSHOT'
