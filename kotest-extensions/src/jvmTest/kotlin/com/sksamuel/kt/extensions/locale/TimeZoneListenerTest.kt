@@ -3,7 +3,7 @@ package com.sksamuel.kt.extensions.locale
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.TimeZoneTestListener
@@ -63,11 +63,11 @@ class TimeZoneListenerTest : FunSpec() {
    private var deftz: TimeZone? = null
 
    private val listener = object : TestListener {
-      override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+      override fun prepareSpec(kclass: KClass<out Spec>) {
          deftz = TimeZone.getDefault()
       }
 
-      override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+      override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
          TimeZone.getDefault() shouldBe deftz
       }
    }

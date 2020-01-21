@@ -1,18 +1,18 @@
 package io.kotest.runner.jvm
 
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 /**
- * Creates an instance of a [SpecConfiguration] by delegating to constructor extensions, with
+ * Creates an instance of a [Spec] by delegating to constructor extensions, with
  * a fallback to a reflection based zero-args constructor.
  */
-fun <T : SpecConfiguration> instantiateSpec(clazz: KClass<T>): Try<SpecConfiguration> = Try {
+fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> = Try {
 
-   val nullSpec: SpecConfiguration? = null
+   val nullSpec: Spec? = null
 
    val instance = Project.constructorExtensions()
       .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: clazz.createInstance()

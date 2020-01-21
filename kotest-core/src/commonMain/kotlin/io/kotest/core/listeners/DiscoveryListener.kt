@@ -1,12 +1,12 @@
 package io.kotest.core.listeners
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 
 interface DiscoveryListener {
 
    /**
-    * Is invoked after all the [SpecConfiguration] classes have been discovered.
+    * Is invoked after all the [Spec] classes have been discovered.
     * This callback will be called SpecConfiguration any [DiscoveryExtension]s have been invoked.
     *
     * In other words the descriptions given here are after discovery extensions

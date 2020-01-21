@@ -9,7 +9,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -17,7 +17,7 @@ import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [SpecConfiguration] and [TestCase]s.
+ * instance of this class will be applied to all [Spec] and [TestCase]s.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotest.provided`.

@@ -2,7 +2,7 @@ package io.kotest.runner.jvm
 
 import io.github.classgraph.ClassGraph
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.DiscoveryExtension
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
@@ -32,9 +32,9 @@ data class DiscoveryRequest(
 )
 
 /**
- * Contains [SpecConfiguration] classes discovered as part of a discovery request scan.
+ * Contains [Spec] classes discovered as part of a discovery request scan.
  */
-data class DiscoveryResult(val specs: List<KClass<out SpecConfiguration>>)
+data class DiscoveryResult(val specs: List<KClass<out Spec>>)
 
 /**
  * Scans for tests as specified by a [DiscoveryRequest].
@@ -47,7 +47,7 @@ object TestDiscovery {
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // filter functions
-   private val specOnly: (KClass<*>) -> Boolean = { SpecConfiguration::class.java.isAssignableFrom(it.java) }
+   private val specOnly: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
 
@@ -96,11 +96,11 @@ object TestDiscovery {
    }
 
    /**
-    * Returns a list of [SpecConfiguration] classes detected using classgraph in the list of
+    * Returns a list of [Spec] classes detected using classgraph in the list of
     * locations specified by the uris param.
     */
    @UseExperimental(ExperimentalTime::class)
-   private fun scanUris(uris: List<URI>): List<KClass<out SpecConfiguration>> {
+   private fun scanUris(uris: List<URI>): List<KClass<out Spec>> {
       logger.debug("Starting test discovery scan...")
       val (scanResult, time) = measureTimedValue {
          ClassGraph()
@@ -112,15 +112,15 @@ object TestDiscovery {
       logger.debug("Test discovery competed in $time")
 
       return scanResult
-         .getSubclasses(SpecConfiguration::class.java.name)
+         .getSubclasses(Spec::class.java.name)
          .map { Class.forName(it.name).kotlin }
-         .filterIsInstance<KClass<out SpecConfiguration>>()
+         .filterIsInstance<KClass<out Spec>>()
    }
 
    /**
-    * Returns a list of [SpecConfiguration] classes created from the input list of fully qualified class names.
+    * Returns a list of [Spec] classes created from the input list of fully qualified class names.
     */
-   private fun loadClasses(classes: List<String>): List<KClass<out SpecConfiguration>> =
+   private fun loadClasses(classes: List<String>): List<KClass<out Spec>> =
       classes.map { Class.forName(it).kotlin }
-         .filterIsInstance<KClass<out SpecConfiguration>>()
+         .filterIsInstance<KClass<out Spec>>()
 }

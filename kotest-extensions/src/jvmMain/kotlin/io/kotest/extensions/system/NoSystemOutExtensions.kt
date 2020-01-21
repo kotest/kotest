@@ -1,6 +1,6 @@
 package io.kotest.extensions.system
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.listeners.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -28,7 +28,7 @@ object NoSystemOutListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) = setup()
+   override fun beforeSpec(spec: Spec) = setup()
 }
 
 /**
@@ -51,5 +51,5 @@ object NoSystemErrListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) = setup()
+   override fun beforeSpec(spec: Spec) = setup()
 }

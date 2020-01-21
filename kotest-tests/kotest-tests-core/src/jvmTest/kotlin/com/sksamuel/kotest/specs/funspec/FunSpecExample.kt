@@ -6,7 +6,7 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
@@ -28,11 +28,11 @@ class FunSpecExample : FunSpec() {
       println("Starting test ${testCase.description}")
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) {
+   override fun beforeSpec(spec: Spec) {
       println("Starting spec ${spec::class.description()}")
    }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       println("Completed spec ${spec::class.description()}")
    }
 

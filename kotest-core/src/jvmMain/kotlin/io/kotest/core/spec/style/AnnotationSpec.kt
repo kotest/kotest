@@ -2,7 +2,7 @@ package io.kotest.core.spec.style
 
 import io.kotest.assertions.Failures
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
 import io.kotest.core.internal.unwrapIfReflectionCall
 import kotlin.reflect.KClass
@@ -12,7 +12,7 @@ import kotlin.reflect.full.memberFunctions
 
 typealias Test = AnnotationSpec.Test
 
-abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfiguration() {
+abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : Spec() {
 
    init {
       body()
@@ -20,7 +20,7 @@ abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfig
 
    private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
-   override fun beforeSpec(spec: SpecConfiguration) {
+   override fun beforeSpec(spec: Spec) {
       executeBeforeSpecFunctions()
    }
 
@@ -38,7 +38,7 @@ abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : SpecConfig
 
    private fun executeAfterTestFunctions() = this::class.findAfterTestFunctions().forEach { it.call(this) }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       executeAfterSpecFunctions()
    }
 

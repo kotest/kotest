@@ -1,7 +1,7 @@
 package io.kotest.extensions.allure
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -19,7 +19,7 @@ object AllureExtension : TestListener {
 
    private val logger = LoggerFactory.getLogger(javaClass)
 
-   override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+   override fun prepareSpec(kclass: KClass<out Spec>) {
       Paths.get("allure-results").toFile().deleteRecursively()
    }
 

@@ -2,7 +2,7 @@ package io.kotest.runner.jvm
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
@@ -16,9 +16,9 @@ interface TestEngineListener {
    /**
     * Is invoked when the [KotestEngine] is starting execution.
     *
-    * @param classes the [SpecConfiguration] classes that will be used by the [KotestEngine].
+    * @param classes the [Spec] classes that will be used by the [KotestEngine].
     */
-   fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {}
+   fun engineStarted(classes: List<KClass<out Spec>>) {}
 
    /**
     * Is invoked when the [KotestEngine] has finished execution.
@@ -29,20 +29,20 @@ interface TestEngineListener {
    fun engineFinished(t: Throwable?) {}
 
    /**
-    * Is invoked once per [SpecConfiguration] to indicate that this spec is about to
+    * Is invoked once per [Spec] to indicate that this spec is about to
     * begin execution.
     */
-   fun specStarted(kclass: KClass<out SpecConfiguration>) {}
+   fun specStarted(kclass: KClass<out Spec>) {}
 
    /**
-    * Is invoked once per [SpecConfiguration] to indicate that all [TestCase] instances
+    * Is invoked once per [Spec] to indicate that all [TestCase] instances
     * of the spec have completed.
     *
     * @param klass the spec that has completed
     * @param t if not null, then an error that occured when trying to execute this spec
     * @param results if t is null, then the results of the tests that were submitted.
     */
-   fun specFinished(klass: KClass<out SpecConfiguration>, t: Throwable?, results: Map<TestCase, TestResult>) {}
+   fun specFinished(klass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed (is active).
@@ -63,11 +63,11 @@ interface TestEngineListener {
    fun testFinished(testCase: TestCase, result: TestResult) {}
 
    /**
-    * Invoked each time an instance of a [SpecConfiguration] is created.
+    * Invoked each time an instance of a [Spec] is created.
     * A spec may be created once per class, or one per [TestCase].
     */
-   fun specInstantiated(spec: SpecConfiguration) {}
+   fun specInstantiated(spec: Spec) {}
 
-   fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {}
+   fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {}
 
 }

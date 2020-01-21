@@ -1,7 +1,6 @@
 package com.sksamuel.kt.koin
 
-import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinListener
 import io.kotest.shouldBe
@@ -23,7 +22,7 @@ class KotlinListenerTest : FunSpec(), KoinTest {
       }
    }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
    }
 }

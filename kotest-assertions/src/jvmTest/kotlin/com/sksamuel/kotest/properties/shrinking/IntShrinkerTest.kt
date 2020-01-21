@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.properties.shrinking
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
@@ -13,11 +13,11 @@ import io.kotest.properties.shrinking.IntShrinker
 
 class IntShrinkerTest : WordSpec() {
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       PropertyTesting.shouldPrintShrinkSteps = true
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) {
+   override fun beforeSpec(spec: Spec) {
       PropertyTesting.shouldPrintShrinkSteps = false
    }
 

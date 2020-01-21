@@ -1,6 +1,6 @@
 package io.kotest.core.factory
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.TestListener
@@ -36,11 +36,11 @@ fun TestFactoryConfiguration.build(): TestFactory {
          }
       }
 
-      override fun afterSpec(spec: SpecConfiguration) {
+      override fun afterSpec(spec: Spec) {
          this@build.afterSpecs.forEach { it() }
       }
 
-      override fun beforeSpec(spec: SpecConfiguration) {
+      override fun beforeSpec(spec: Spec) {
          this@build.beforeSpecs.forEach { it() }
       }
    }

@@ -11,11 +11,11 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.fp.Tuple2
 
 /**
- * Returns the resolved listeners for a given [SpecConfiguration].
+ * Returns the resolved listeners for a given [Spec].
  * That is, the listeners defined directly on the spec, listeners generated from the
  * callback-dsl methods, and listeners defined in any included [TestFactory]s.
  */
-fun SpecConfiguration.resolvedTestListeners(): List<TestListener> {
+fun Spec.resolvedTestListeners(): List<TestListener> {
 
    // listeners from the spec callbacks need to be wrapped into a TestListener
    val callbacks = object : TestListener {
@@ -29,12 +29,12 @@ fun SpecConfiguration.resolvedTestListeners(): List<TestListener> {
          this@resolvedTestListeners.afterTest(testCase, result)
       }
 
-      override fun afterSpec(spec: SpecConfiguration) {
+      override fun afterSpec(spec: Spec) {
          this@resolvedTestListeners.afterSpecs.forEach { it() }
          this@resolvedTestListeners.afterSpec(spec)
       }
 
-      override fun beforeSpec(spec: SpecConfiguration) {
+      override fun beforeSpec(spec: Spec) {
          this@resolvedTestListeners.beforeSpecs.forEach { it() }
          this@resolvedTestListeners.beforeSpec(spec)
       }
@@ -43,14 +43,14 @@ fun SpecConfiguration.resolvedTestListeners(): List<TestListener> {
    return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
-fun SpecConfiguration.resolvedExtensions(): List<Extension> {
+fun Spec.resolvedExtensions(): List<Extension> {
    return this._extensions + this.extensions() + factories.flatMap { it.extensions }
 }
 
-fun SpecConfiguration.resolvedTestCaseOrder() =
+fun Spec.resolvedTestCaseOrder() =
    this.testOrder ?: this.testCaseOrder() ?: Project.testCaseOrder()
 
-fun SpecConfiguration.resolvedIsolationMode() =
+fun Spec.resolvedIsolationMode() =
    this.isolation ?: this.isolationMode() ?: Project.isolationMode()
 
 /**
@@ -58,7 +58,7 @@ fun SpecConfiguration.resolvedIsolationMode() =
  * The returned list will be ordered according to the [TestCaseOrder] returned by
  * project config, or if not defined, the kotest default.
  */
-fun SpecConfiguration.materializeRootTests(): List<RootTest> {
+fun Spec.materializeRootTests(): List<RootTest> {
 
    val order = resolvedTestCaseOrder()
    // materialize the tests in the factories at this time

@@ -1,6 +1,6 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -30,11 +30,11 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       listener.engineFinished(t)
    }
 
-   override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
+   override fun engineStarted(classes: List<KClass<out Spec>>) {
       listener.engineStarted(classes)
    }
 
-   override fun specInstantiated(spec: SpecConfiguration) {
+   override fun specInstantiated(spec: Spec) {
       if (runningSpec.get() == spec::class.description()) {
          listener.specInstantiated(spec)
       } else {
@@ -44,7 +44,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
       if (runningSpec.get() == kclass.description()) {
          listener.specInstantiationError(kclass, t)
       } else {
@@ -84,7 +84,7 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   override fun specStarted(kclass: KClass<out SpecConfiguration>) {
+   override fun specStarted(kclass: KClass<out Spec>) {
       if (runningSpec.compareAndSet(null, kclass.description())) {
          listener.specStarted(kclass)
       } else {
@@ -94,16 +94,16 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
       }
    }
 
-   private fun isRunning(klass: KClass<out SpecConfiguration>): Boolean {
+   private fun isRunning(klass: KClass<out Spec>): Boolean {
       val running = runningSpec.get()
       val given = klass.description()
       return running == given
    }
 
    override fun specFinished(
-      klass: KClass<out SpecConfiguration>,
-      t: Throwable?,
-      results: Map<TestCase, TestResult>
+       klass: KClass<out Spec>,
+       t: Throwable?,
+       results: Map<TestCase, TestResult>
    ) {
       if (runningSpec.get() == klass.description()) {
          listener.specFinished(klass, t, results)

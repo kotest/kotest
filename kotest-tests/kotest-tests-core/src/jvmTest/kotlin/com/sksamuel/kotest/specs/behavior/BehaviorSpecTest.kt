@@ -1,14 +1,11 @@
 package com.sksamuel.kotest.specs.behavior
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.reflect.KClass
 
 class BehaviorSpecTest : BehaviorSpec() {
 
@@ -124,7 +121,7 @@ class BehaviorSpecTest : BehaviorSpec() {
       }
    }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       counter.get() shouldBe 6
    }
 }

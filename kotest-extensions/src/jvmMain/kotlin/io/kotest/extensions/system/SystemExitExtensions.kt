@@ -3,7 +3,7 @@ package io.kotest.extensions.system
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.Description
 import io.kotest.core.spec.description
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.listeners.TestListener
 import java.io.FileDescriptor
 import java.net.InetAddress
@@ -21,11 +21,11 @@ import kotlin.reflect.KClass
  *
  * Note: This listener will change the security manager
  * for all tests. If you want to change the security manager
- * for just a single [SpecConfiguration] then consider the
+ * for just a single [Spec] then consider the
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
-    override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+    override fun prepareSpec(kclass: KClass<out Spec>) {
         val previous = System.getSecurityManager()
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
@@ -52,14 +52,14 @@ object SpecSystemExitListener : TestListener {
 
     private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
 
-    override fun beforeSpec(spec: SpecConfiguration) {
+    override fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
             previousSecurityManagers[spec::class.description()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
-    override fun afterSpec(spec: SpecConfiguration) {
+    override fun afterSpec(spec: Spec) {
         if (previousSecurityManagers.contains(spec::class.description()))
             System.setSecurityManager(previousSecurityManagers[spec::class.description()])
         else

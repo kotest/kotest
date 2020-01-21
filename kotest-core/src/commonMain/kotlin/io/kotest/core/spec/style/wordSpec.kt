@@ -3,7 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.Matcher
 import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.test.TestCaseConfig
@@ -29,7 +29,7 @@ class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecDsl
    override val addTest = ::addDynamicTest
 }
 
-abstract class WordSpec(body: WordSpec.() -> Unit = {}) : SpecConfiguration(), WordSpecDsl {
+abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec(), WordSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
    override val addTest = ::addRootTestCase
 

@@ -1,7 +1,7 @@
 package com.sksamuel.kt.extensions.time
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -269,7 +269,7 @@ class ConstantNowExtensionsListenerTest : StringSpec() {
       ConstantNowTestListener(myNow),
       ConstantNowTestListener(myNow2),
       object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             HijrahDate.now() shouldNotBeSameInstanceAs myNow
             LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
          }

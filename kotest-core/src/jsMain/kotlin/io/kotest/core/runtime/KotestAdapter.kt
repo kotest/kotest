@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import kotlin.test.FrameworkAdapter
 
 object KotestAdapter : FrameworkAdapter {
@@ -13,7 +13,7 @@ object KotestAdapter : FrameworkAdapter {
       // if the test name is the special marker method, we just invoke the function rather
       // than delegating to the test framework. This is to avoid the marker method appearing in
       // test output.
-      if (name == SpecConfiguration::javascriptTestInterceptor.name) {
+      if (name == Spec::javascriptTestInterceptor.name) {
          testFn()
       }
    }

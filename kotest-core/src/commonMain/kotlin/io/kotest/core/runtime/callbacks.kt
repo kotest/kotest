@@ -3,7 +3,7 @@ package io.kotest.core.runtime
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.core.test.TestCase
@@ -38,10 +38,10 @@ suspend fun TestCase.invokeAfterTest(result: TestResult) {
 }
 
 /**
- * Notifies the user listeners that a [SpecConfiguration] is starting.
+ * Notifies the user listeners that a [Spec] is starting.
  * This will be invoked for every instance of a spec.
  */
-suspend fun SpecConfiguration.invokeBeforeSpec( ): Try<SpecConfiguration> = Try {
+suspend fun Spec.invokeBeforeSpec( ): Try<Spec> = Try {
    val listeners = resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.beforeSpec(this)
@@ -50,10 +50,10 @@ suspend fun SpecConfiguration.invokeBeforeSpec( ): Try<SpecConfiguration> = Try 
 }
 
 /**
- * Notifies the user listeners that a [SpecConfiguration] has finished.
+ * Notifies the user listeners that a [Spec] has finished.
  * This will be invoked for every instance of a spec.
  */
-suspend fun SpecConfiguration.invokeAfterSpec( ): Try<SpecConfiguration> = Try {
+suspend fun Spec.invokeAfterSpec( ): Try<Spec> = Try {
    val listeners = resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterSpec(this)

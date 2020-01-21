@@ -1,7 +1,7 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 
 expect class JsTestEngine {
-   fun execute(spec: SpecConfiguration)
+   fun execute(spec: Spec)
 }

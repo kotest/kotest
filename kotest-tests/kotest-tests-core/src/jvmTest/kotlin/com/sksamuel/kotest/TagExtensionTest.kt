@@ -8,7 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import kotlin.reflect.KClass
@@ -24,18 +24,18 @@ class TagExtensionTest : StringSpec() {
    }
 
 
-   override fun beforeSpec(spec: SpecConfiguration) {
+   override fun beforeSpec(spec: Spec) {
       Project.registerExtension(ext)
    }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       Project.deregisterExtension(ext)
    }
 
    init {
 
       listener(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
                "should be tagged with tagA and therefore included" to TestStatus.Success,
                "should be untagged and therefore excluded" to TestStatus.Ignored,

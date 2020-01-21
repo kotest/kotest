@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 
-actual fun executeSpec(spec: SpecConfiguration) {}
+actual fun executeSpec(spec: Spec) {}
 actual fun configureRuntime() {}

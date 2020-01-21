@@ -3,7 +3,7 @@ package io.kotest.plugin.pitest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.description
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.runner.jvm.KotestEngine
 import io.kotest.runner.jvm.TestEngineListener
 import org.pitest.testapi.Description
@@ -11,7 +11,7 @@ import org.pitest.testapi.ResultCollector
 import org.pitest.testapi.TestUnit
 import kotlin.reflect.KClass
 
-class KotestUnit(val klass: KClass<out SpecConfiguration>) : TestUnit {
+class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
 
    override fun getDescription(): Description = Description(klass.description().fullName(), klass.java)
 

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.assertSoftly
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.file.shouldNotExist
 import io.kotest.matchers.string.shouldHaveLength
@@ -46,7 +46,7 @@ class FunSpecTest : FunSpec() {
       }
    }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
       count.shouldBe(1)
    }
 }

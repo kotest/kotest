@@ -1,8 +1,8 @@
 package io.kotest.runner.jvm
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 interface SpecFilter {
-  fun invoke(klass: KClass<out SpecConfiguration>): Boolean
+  fun invoke(klass: KClass<out Spec>): Boolean
 }

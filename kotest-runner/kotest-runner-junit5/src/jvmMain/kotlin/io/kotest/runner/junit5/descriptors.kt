@@ -1,6 +1,6 @@
 package io.kotest.runner.junit5
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
@@ -26,7 +26,7 @@ object Segments {
  * Creates a new spec-level [TestDescriptor] from the given class, appending it to the
  * parent [TestDescriptor]. The created descriptor will have segment type [Segments.spec].
  */
-fun KClass<out SpecConfiguration>.descriptor(parent: TestDescriptor): TestDescriptor {
+fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
    return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source, Segments.spec)
 }

@@ -1,7 +1,7 @@
 package com.sksamuel.kt.spring
 
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.shouldBe
 import io.kotest.spring.SpringListener
@@ -32,7 +32,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     }
   }
 
-   override fun afterSpec(spec: SpecConfiguration) {
+   override fun afterSpec(spec: Spec) {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
     DummyTestExecutionListener.beforeTestMethod shouldBe 2
     DummyTestExecutionListener.beforeTestExecution shouldBe 2

@@ -2,11 +2,11 @@ package io.kotest.core.test
 
 import io.kotest.core.*
 import io.kotest.core.factory.TestFactoryId
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 
 /**
  * A [TestCase] describes an actual block of code that will be tested.
- * It contains a reference back to the [SpecConfiguration] instance in which it
+ * It contains a reference back to the [Spec] instance in which it
  * is being executed.
  *
  * It also captures a closure of the body of the test case.
@@ -14,9 +14,9 @@ import io.kotest.core.spec.SpecConfiguration
  * The context is used so that the test function can, at runtime,
  * register nested tests with the test engine. This allows
  * nested tests to be executed lazily as required, rather
- * than when the [SpecConfiguration] instance is created.
+ * than when the [Spec] instance is created.
  *
- * A test can be nested inside other tests if the [SpecConfiguration] supports it.
+ * A test can be nested inside other tests if the [Spec] supports it.
  *
  * For example, in the FunSpec we only allow top level tests.
  *
@@ -34,7 +34,7 @@ data class TestCase(
    // the description contains the names of all parents, plus the name of this test case
    val description: Description,
    // the spec that contains this testcase
-   val spec: SpecConfiguration,
+   val spec: Spec,
    // a closure of the test function
    val test: suspend TestContext.() -> Unit,
    val source: SourceRef,
@@ -58,7 +58,7 @@ data class TestCase(
 
    companion object {
 
-      fun test(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
+      fun test(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
             spec,
@@ -70,7 +70,7 @@ data class TestCase(
             null
          )
 
-      fun container(description: Description, spec: SpecConfiguration, test: suspend TestContext.() -> Unit): TestCase =
+      fun container(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
             spec,

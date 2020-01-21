@@ -2,7 +2,7 @@ package io.kotest.runner.jvm.spec
 
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
- * of the [SpecConfiguration] class.
+ * of the [Spec] class.
  *
  * This differs from the [InstancePerLeafSpecRunner] in that
  * every single test, whether of type [TestType.Test] or [TestType.Container], will be
@@ -55,7 +55,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
-    * of the containing [SpecConfiguration] class. Therefore, when we begin executing a test case from
+    * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
     * As test lambdas are executed, nested test cases will be registered, these should be ignored
@@ -65,14 +65,14 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   override suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>> = Try {
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
       spec.materializeRootTests().forEach { executeInCleanSpec(it.testCase) }
       results
    }
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
-    * of the containing [SpecConfiguration] class. Therefore, when we begin executing a test case from
+    * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     *
     * As test lambdas are executed, nested test cases will be registered, these should be ignored

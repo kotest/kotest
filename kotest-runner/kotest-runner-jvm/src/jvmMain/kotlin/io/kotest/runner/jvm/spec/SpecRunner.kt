@@ -2,7 +2,7 @@ package io.kotest.runner.jvm.spec
 
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecExtension
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
- * The base class for executing all the tests inside a [SpecConfiguration].
+ * The base class for executing all the tests inside a [Spec].
  *
  * Each spec can define how tests are isolated from each other, via an [IsolationMode].
  * The implementation for each mode is handled by an instance of [SpecRunner].
@@ -26,18 +26,18 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
    private val logger = LoggerFactory.getLogger(javaClass)
 
-   abstract suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>>
+   abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
-   suspend fun interceptSpec(spec: SpecConfiguration, afterInterception: suspend () -> Unit): Try<SpecConfiguration> {
+   suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit): Try<Spec> {
       val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
       return interceptSpec(spec, extensions, afterInterception)
    }
 
    private suspend fun interceptSpec(
-      spec: SpecConfiguration,
+      spec: Spec,
       remaining: List<SpecExtension>,
       afterInterception: suspend () -> Unit
-   ): Try<SpecConfiguration> = Try {
+   ): Try<Spec> = Try {
       when {
          remaining.isEmpty() -> afterInterception()
          else -> {
@@ -49,10 +49,10 @@ abstract class SpecRunner(val listener: TestEngineListener) {
    }
 
    /**
-    * Creates an instance of the supplied [SpecConfiguration] by delegating to the project constructors,
+    * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.
     */
-   protected fun createInstance(kclass: KClass<out SpecConfiguration>): Try<SpecConfiguration> =
+   protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       instantiateSpec(kclass).onSuccess {
          Try { listener.specInstantiated(it) }
       }.onFailure {

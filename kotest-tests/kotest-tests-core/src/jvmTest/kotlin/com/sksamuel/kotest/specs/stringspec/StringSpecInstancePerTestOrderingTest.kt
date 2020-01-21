@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.stringspec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.shouldBe
@@ -23,7 +23,7 @@ class StringSpecInstancePerTestOrderingTest : StringSpec() {
    init {
 
       listener(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             string shouldBe "a_z_b_y_c_"
          }
       })

@@ -1,7 +1,7 @@
 package io.kotest.runner.junit5
 
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
 import io.kotest.fp.Try
@@ -74,11 +74,11 @@ class JUnitTestEngineListener(
    private val results = mutableListOf<Pair<Description, TestResult>>()
 
    // contains any spec that failed so we can write out the failed specs file
-   private val failedSpecs = mutableSetOf<KClass<out SpecConfiguration>>()
+   private val failedSpecs = mutableSetOf<KClass<out Spec>>()
 
    private var specException: Throwable? = null
 
-   override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
+   override fun engineStarted(classes: List<KClass<out Spec>>) {
       logger.trace("Engine started; classes=[$classes]")
       listener.executionStarted(root)
    }
@@ -105,7 +105,7 @@ class JUnitTestEngineListener(
       listener.executionFinished(root, result)
    }
 
-   private fun writeSpecFailures(failures: Set<KClass<out SpecConfiguration>>): Try<Any> = Try {
+   private fun writeSpecFailures(failures: Set<KClass<out Spec>>): Try<Any> = Try {
       val dir = Paths.get(".kotest")
       dir.toFile().mkdirs()
       val path = dir.resolve("spec_failures").toAbsolutePath()
@@ -114,7 +114,7 @@ class JUnitTestEngineListener(
       Files.write(path, content.toByteArray())
    }
 
-   override fun specStarted(kclass: KClass<out SpecConfiguration>) {
+   override fun specStarted(kclass: KClass<out Spec>) {
       logger.trace("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = kclass.descriptor(root)
@@ -130,9 +130,9 @@ class JUnitTestEngineListener(
    }
 
    override fun specFinished(
-      klass: KClass<out SpecConfiguration>,
-      t: Throwable?,
-      results: Map<TestCase, TestResult>
+       klass: KClass<out Spec>,
+       t: Throwable?,
+       results: Map<TestCase, TestResult>
    ) {
       logger.trace("specFinished [$klass]")
 
@@ -159,7 +159,7 @@ class JUnitTestEngineListener(
     * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
     * failed test so that the spec shows up.
     */
-   override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
       val description = kclass.description()
       val spec = descriptors[description]!!
       val test =

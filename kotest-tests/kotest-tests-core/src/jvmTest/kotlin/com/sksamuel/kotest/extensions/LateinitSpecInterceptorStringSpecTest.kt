@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
@@ -12,7 +12,7 @@ class LateinitSpecInterceptorStringSpecTest : StringSpec() {
    private lateinit var string: String
 
    inner class Interceptor : SpecExtension {
-      override suspend fun intercept(spec: KClass<out SpecConfiguration>, process: suspend () -> Unit) {
+      override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
          this@LateinitSpecInterceptorStringSpecTest.string = "Hello"
          process()
       }

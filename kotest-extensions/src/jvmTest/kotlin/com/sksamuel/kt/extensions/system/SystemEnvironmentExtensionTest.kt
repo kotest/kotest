@@ -3,7 +3,7 @@ package com.sksamuel.kt.extensions.system
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FreeSpecScope
 import io.kotest.core.spec.style.WordSpec
@@ -80,11 +80,11 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
       listOf(SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride), listener)
 
    private val listener = object : TestListener {
-      override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+      override fun prepareSpec(kclass: KClass<out Spec>) {
          System.getenv("mop") shouldBe null
       }
 
-      override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+      override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
          System.getenv("mop") shouldBe null
       }
    }

@@ -1,16 +1,16 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.fp.Try
 
 actual class JsTestEngine {
 
-   private fun runTests(spec: SpecConfiguration) = Try {
+   private fun runTests(spec: Spec) = Try {
       spec.materializeRootTests().forEach { TestExecutor().execute(it.testCase) }
    }
 
-   actual fun execute(spec: SpecConfiguration) {
+   actual fun execute(spec: Spec) {
       beforeAll()
          .flatMap { runTests(spec) }
          .fold(

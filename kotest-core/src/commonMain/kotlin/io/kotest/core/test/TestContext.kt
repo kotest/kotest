@@ -2,7 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.SourceRef
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 
@@ -55,7 +55,7 @@ data class NestedTest(
    val sourceRef: SourceRef
 )
 
-fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase {
+fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
    return TestCase(
       parent.append(this.name),
       spec,

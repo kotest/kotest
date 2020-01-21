@@ -10,7 +10,7 @@ import io.kotest.core.listeners.TestListener
  * The preferred style is to call the DSL functions from within the tests but these methods are still
  * supported and will not be deprecated.
  */
-interface CompatibilitySpecConfiguration {
+interface SpecCallbackMethods {
 
    fun defaultTestCaseConfig(): TestCaseConfig? = null
 
@@ -42,7 +42,7 @@ interface CompatibilitySpecConfiguration {
 
    /**
     * Any tags added here will be in applied to all [TestCase]s defined
-    * in this [SpecConfiguration] in addition to any defined on the individual
+    * in this [Spec] in addition to any defined on the individual
     * tests themselves.
     */
    fun tags(): Set<Tag> = emptySet()
@@ -51,11 +51,11 @@ interface CompatibilitySpecConfiguration {
 
    fun assertionMode(): AssertionMode? = null
 
-   fun afterSpec(spec: SpecConfiguration) {}
+   fun afterSpec(spec: Spec) {}
 
    fun afterTest(testCase: TestCase, result: TestResult) {}
 
-   fun beforeSpec(spec: SpecConfiguration) {}
+   fun beforeSpec(spec: Spec) {}
 
    fun beforeTest(testCase: TestCase) {}
 }

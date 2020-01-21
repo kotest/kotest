@@ -1,6 +1,6 @@
 package io.kotest.core.factory
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 
@@ -11,9 +11,9 @@ import io.kotest.core.test.TestCase
  * tests included in the returned list.
  *
  * @param description the parent description for the generated tests.
- * @param spec the [SpecConfiguration] that will contain the generated tests.
+ * @param spec the [Spec] that will contain the generated tests.
  */
-fun TestFactory.generate(description: Description, spec: SpecConfiguration): List<TestCase> {
+fun TestFactory.generate(description: Description, spec: Spec): List<TestCase> {
    return tests.map { dyn ->
       TestCase(
          description = description.append(dyn.name),

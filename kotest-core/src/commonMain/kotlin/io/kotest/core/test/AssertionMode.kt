@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 
 /**
  * AssertionMode is used to detect and warn a developer that a test does not execute any assertions.
@@ -20,5 +20,5 @@ enum class AssertionMode {
    Error, Warn, None
 }
 
-fun SpecConfiguration.resolvedAssertionMode(): AssertionMode =
+fun Spec.resolvedAssertionMode(): AssertionMode =
    this.assertions ?: this.assertionMode() ?: AssertionMode.None // todo add project mode

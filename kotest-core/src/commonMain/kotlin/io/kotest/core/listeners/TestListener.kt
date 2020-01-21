@@ -4,7 +4,7 @@ import io.kotest.core.spec.IsolationMode.InstancePerLeaf
 import io.kotest.core.spec.IsolationMode.InstancePerTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 interface TestListener : Listener {
@@ -30,7 +30,7 @@ interface TestListener : Listener {
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
    /**
-    * This callback is invoked after the Engine instantiates a [SpecConfiguration]
+    * This callback is invoked after the Engine instantiates a [Spec]
     * to be used as part of a [TestCase] execution.
     *
     * If a spec is instantiated multiple times - for example, if
@@ -42,13 +42,13 @@ interface TestListener : Listener {
     * each time a new spec instance is created. If you simply need to
     * perform setup once per class file, then use [prepareSpec].
     *
-    * @param spec the [SpecConfiguration] instance.
+    * @param spec the [Spec] instance.
     */
-   fun beforeSpec(spec: SpecConfiguration): Unit = Unit
+   fun beforeSpec(spec: Spec): Unit = Unit
 
    /**
     * Is invoked after the [TestCase]s that are part of a particular
-    * [SpecConfiguration] instance have completed.
+    * [Spec] instance have completed.
     *
     * If a spec is instantiated multiple times - for example, if
     * [InstancePerTest] or [InstancePerLeaf] isolation modes are used,
@@ -60,12 +60,12 @@ interface TestListener : Listener {
     * after each individual spec instance. If you simply need to
     * perform cleanup once per class file, then use [finalizeSpec].
     *
-    * @param spec the [SpecConfiguration] instance.
+    * @param spec the [Spec] instance.
     */
-   fun afterSpec(spec: SpecConfiguration): Unit = Unit
+   fun afterSpec(spec: Spec): Unit = Unit
 
    /**
-    * Called once per [SpecConfiguration], when the engine is preparing to
+    * Called once per [Spec], when the engine is preparing to
     * execute the tests for that spec.
     *
     * Regardless of how many times the spec is instantiated,
@@ -83,13 +83,13 @@ interface TestListener : Listener {
     * The order of the list of tests is the same as the
     * order of execution.
     *
-    * @param kclass the [SpecConfiguration] class
+    * @param kclass the [Spec] class
     * @param tests the list of top level tests
     */
-   fun prepareSpec(kclass: KClass<out SpecConfiguration>): Unit = Unit
+   fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
 
    /**
-    * Called once per [SpecConfiguration], after all tests have completed for that spec.
+    * Called once per [Spec], after all tests have completed for that spec.
     *
     * Regardless of how many times the spec is instantiated,
     * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
@@ -100,10 +100,10 @@ interface TestListener : Listener {
     * the result of that test, including tests that were ignored (which
     * will have a TestResult that has TestStatus.Ignored)
     *
-    * @param spec the [SpecConfiguration] instance
+    * @param spec the [Spec] instance
     * @param results a map of each test case mapped to its result.
     */
-   fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>): Unit = Unit
+   fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>): Unit = Unit
 }
 
 data class RootTest(val testCase: TestCase, val order: Int)

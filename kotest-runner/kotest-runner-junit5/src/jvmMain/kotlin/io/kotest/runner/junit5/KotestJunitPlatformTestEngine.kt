@@ -1,7 +1,7 @@
 package io.kotest.runner.junit5
 
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.runner.jvm.IsolationTestEngineListener
 import io.kotest.runner.jvm.KotestEngine
 import io.kotest.runner.jvm.TestDiscovery
@@ -74,7 +74,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
 class KotestEngineDescriptor(
    id: UniqueId,
-   val classes: List<KClass<out SpecConfiguration>>
+   val classes: List<KClass<out Spec>>
 ) : EngineDescriptor(id, "Kotest") {
    override fun mayRegisterTests(): Boolean = true
 }

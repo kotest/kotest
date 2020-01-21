@@ -6,7 +6,7 @@ import io.kotest.core.extensions.SpecifiedTagsTagExtension
 import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.runtime.afterAll
 import io.kotest.core.runtime.beforeAll
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 class KotestEngine(
-   val classes: List<KClass<out SpecConfiguration>>,
+   val classes: List<KClass<out Spec>>,
    filters: List<TestCaseFilter>,
    val parallelism: Int,
    includedTags: Set<Tag>,
@@ -60,7 +60,7 @@ class KotestEngine(
       submitBatch(single, 1)
    }
 
-   private fun submitBatch(specs: List<KClass<out SpecConfiguration>>, parallelism: Int) {
+   private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
       val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotest-engine-%d"))
       specs.forEach { klass ->
          executor.submit {

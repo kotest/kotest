@@ -2,7 +2,7 @@ package io.kotest.runner.jvm.spec
 
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
- * same [SpecConfiguration] instance. In other words, only a single instance of the spec class
+ * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
@@ -50,7 +50,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       }
    }
 
-   override suspend fun execute(spec: SpecConfiguration): Try<Map<TestCase, TestResult>> {
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
       return coroutineScope {
          spec.invokeBeforeSpec()
             .flatMap { spec ->

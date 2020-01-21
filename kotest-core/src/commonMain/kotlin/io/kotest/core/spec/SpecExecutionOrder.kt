@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
  * Note: This has no effect on non-JVM targets.
  */
 interface SpecExecutionOrder {
-   fun sort(classes: List<KClass<out SpecConfiguration>>): List<KClass<out SpecConfiguration>>
+   fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
 }
 
 /**
@@ -14,7 +14,7 @@ interface SpecExecutionOrder {
  * a lexicographic order.
  */
 object LexicographicSpecExecutionOrder : SpecExecutionOrder {
-   override fun sort(classes: List<KClass<out SpecConfiguration>>): List<KClass<out SpecConfiguration>> =
+   override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> =
       classes.sortedBy { it.simpleName }
 }
 
@@ -23,6 +23,6 @@ object LexicographicSpecExecutionOrder : SpecExecutionOrder {
  * a different random order each time the are executed.
  */
 object RandomSpecExecutionOrder : SpecExecutionOrder {
-   override fun sort(classes: List<KClass<out SpecConfiguration>>): List<KClass<out SpecConfiguration>> =
+   override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> =
       classes.shuffled()
 }
