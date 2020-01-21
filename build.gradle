@@ -26,7 +26,7 @@ buildscript {
       classpath 'com.android.tools.build:gradle:3.5.3'
       //    classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
    }
-   
+
    repositories {
       mavenCentral()
       google()
@@ -40,6 +40,7 @@ plugins {
    id 'maven-publish'
    id 'signing'
    id 'net.researchgate.release' version '2.8.0'
+   id 'com.adarshr.test-logger' version '2.0.0'
 }
 
 // apply plugin: "io.kotest"

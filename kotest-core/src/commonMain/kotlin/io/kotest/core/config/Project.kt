@@ -40,6 +40,8 @@ object Project {
    private var globalAssertSoftly = userconf.globalAssertSoftly ?: false
    private var parallelism = userconf.parallelism ?: 1
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
+   private var testCaseOrder : TestCaseOrder = userconf.testCaseOrder ?: TestCaseOrder.Sequential
+   private var isolationMode : IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
@@ -141,6 +143,9 @@ object Project {
    fun projectListeners(): List<ProjectListener> = listeners
       .filterIsInstance<ProjectListener>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
+
+   fun isolationMode() = isolationMode
+   fun testCaseOrder() = testCaseOrder
 
    /**
     * Returns the number of concurrent specs that can be executed.

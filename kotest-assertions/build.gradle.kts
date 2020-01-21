@@ -2,6 +2,7 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -77,7 +78,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true

@@ -8,12 +8,13 @@ fun Project.dumpProjectConfig() {
 
    println("~~~ Project Configuration ~~~")
    buildOutput("Parallelism", parallelism().toString() + " thread(s)")
-   buildOutput("Default Test timeout", timeout().toLongMilliseconds().toString() + "ms")
-   buildOutput("Default Test order", specExecutionOrder()::class.simpleName)
+   buildOutput("Default test timeout", timeout().toLongMilliseconds().toString() + "ms")
+   buildOutput("Default test order", testCaseOrder()::class.simpleName)
+   buildOutput("Default isolation mode", isolationMode()::class.simpleName)
    buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
    buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
    buildOutput("Fail on ignored tests", failOnIgnoredTests().toString().capitalize())
-   buildOutput("Spec execution order", specExecutionOrder().toString().capitalize())
+   buildOutput("Spec execution order", specExecutionOrder()::class.simpleName)
 
    if (extensions().isNotEmpty()) {
       buildOutput("Extensions")

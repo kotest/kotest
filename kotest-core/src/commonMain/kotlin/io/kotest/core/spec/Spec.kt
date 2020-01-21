@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.generate
 import io.kotest.core.test.TestCase
@@ -47,10 +48,10 @@ fun SpecConfiguration.resolvedExtensions(): List<Extension> {
 }
 
 fun SpecConfiguration.resolvedTestCaseOrder() =
-   this.testOrder ?: this.testCaseOrder() ?: TestCaseOrder.Sequential
+   this.testOrder ?: this.testCaseOrder() ?: Project.testCaseOrder()
 
 fun SpecConfiguration.resolvedIsolationMode() =
-   this.isolation ?: this.isolationMode() ?: IsolationMode.InstancePerLeaf
+   this.isolation ?: this.isolationMode() ?: Project.isolationMode()
 
 /**
  * Returns the root tests from this Spec and any included factories.
