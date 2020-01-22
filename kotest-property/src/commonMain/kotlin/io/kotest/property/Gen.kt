@@ -1,71 +1,74 @@
 package io.kotest.property
 
-import io.kotest.property.arbitrary.PropertyInput
-import io.kotest.property.arbitrary.map
 import kotlin.random.Random
 
 /**
- * A Generator, or [Gen] is responsible for generating data to be used in property testing.
+ * A Generator, or [Gen] is responsible for generating data to be used in testing.
+ *
  * Each generator will generate data for a specific type <T>.
  *
- * There are two supported types of generators - [Arbitrary] and [Progression] - defined
- * as sub interfaces of this interface.
+ * There are many built in generators, such as for ints, doubles, etc, and there are many
+ * methods for manipulating generators, such as map, flatMap and so on.
  *
- * An arbitrary is used when you need random values across a large space.
- * A progression is useful when you want exhaustive values from a small space.
- *
- * Both types of generators can be mixed and matched in property tests. For example,
- * you could test a function with 1000 random positive integers (arbitrary) and every
- * even number from 0 to 200 (progression).
+ * A generator can be converted into an [Arbitrary] by calling [take] on a generator.
+ * The returned arbitrary can then be used inside a property test method such as forAll.
  */
 interface Gen<T> {
 
    /**
-    * @return the values provided by this [Gen] as a lazy list.
-    * @see [PropertyInput]
+    * Generates a single random value of type T.
     */
-   fun generate(random: Random): Sequence<PropertyInput<T>>
-}
+   fun generate(random: Random): T
 
-fun <T, U> Gen<T>.map(f: (T) -> U): Gen<U> = object : Gen<U> {
-   override fun generate(random: Random): Sequence<PropertyInput<U>> =
-      this@map.generate(random).map { it.map(f) }
-}
+   /**
+    * Returns an optional shrinker for the type T compatible with the values produced by this generator.
+    * If this type does not provide shrinking, then this function can return null.
+    */
+   fun shrinker(): Shrinker<T>? = null
 
-fun <T> Gen<T>.filter(predicate: (T) -> Boolean): Gen<T> = object : Gen<T> {
-   override fun generate(random: Random): Sequence<PropertyInput<T>> =
-      this@filter.generate(random).filter { predicate(it.value) }
+   /**
+    * When used in a property testing scenario, edge cases are used as common
+    *
+    * If edgecases are not applicable for the type T, or this generator is not intended for use in
+    * property testing, then this function can return an empty list.
+    */
+   fun edgecases(): Iterable<T> = emptyList()
+
+   companion object
 }
 
 /**
- * Returns a new [Gen] which will merge the values from this gen and the values of
- * the supplied gen together in turn.
- *
- * In other words, if GenA provides 1,2,3 and GenB provides 7,8,9 then this gen will output
- * 1,7,2,8,3,9.
- *
- * The supplied gen must be a subtype of the type of this gen.
- *
- * @param other the gen to merge with this one
- * @return the merged gen.
+ * Returns a new [Arbitrary] created from this [Gen] with a fixed number of iterations.
  */
-fun <T, U : T> Gen<T>.merge(other: Gen<U>): Gen<T> {
-   return object : Gen<T> {
-      override fun generate(random: Random): Sequence<PropertyInput<T>> =
-         this@merge.generate(random).zip(other.generate(random)).flatMap { (a, b) ->
-            sequenceOf(a, b)
+fun <T> Gen<T>.take(iterations: Int, mode: ShrinkingMode = ShrinkingMode.Bounded(10)): Arbitrary<T> {
+   require(iterations > 0)
+   if (iterations > 100000)
+      println("Warning: Iteration count is high at $iterations")
+   return object : Arbitrary<T> {
+      override fun samples(random: Random): Sequence<ArgumentValue<T>> {
+         return sequence {
+            for (k in 0 until iterations) {
+               val value = this@take.generate(random)
+               val rtree = this@take.shrinker()?.shrinks(value, mode) ?: RTree(value, emptyList())
+               yield(ArgumentValue(value, rtree))
+            }
          }
+      }
    }
 }
 
 /**
- * Returns a new [Gen]]which will return the values from this gen and once values
- * of this gen are exhausted will return the values from the supplied gen.
- * The supplied gen must be a subtype of the type of this gen.
+ * Returns a new [Gen] where the edge cases of the generator are replaced with the edge
+ * cases given as input to this function.
  */
-fun <T, U : T> Gen<T>.concat(other: Gen<U>): Gen<T> {
-   return object : Gen<T> {
-      override fun generate(random: Random): Sequence<PropertyInput<T>> =
-         this@concat.generate(random) + other.generate(random)
-   }
+fun <T> Gen<T>.setEdgeCases(vararg edgecases: T): Gen<T> = setEdgeCases(edgecases.asList())
+
+/**
+ * Returns a new [Gen] where the edge cases of the generator are replaced with the edge
+ * cases given as input to this function.
+ */
+fun <T> Gen<T>.setEdgeCases(edgecases: Iterable<T>): Gen<T> = object : Gen<T> {
+   override fun edgecases(): Iterable<T> = edgecases
+   override fun generate(random: Random): T = this@setEdgeCases.generate(random)
+   override fun shrinker(): Shrinker<T>? = this@setEdgeCases.shrinker()
 }

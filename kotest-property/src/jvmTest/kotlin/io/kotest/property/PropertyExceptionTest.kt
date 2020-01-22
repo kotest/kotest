@@ -1,7 +1,7 @@
 package io.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.property.progression.constant
+import io.kotest.property.exhaustive.constant
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 
@@ -9,7 +9,7 @@ class PropertyExceptionTest : FunSpec() {
    init {
       test("exception in a property test should report failing value") {
          shouldThrowAny {
-            checkAll(Progression.constant(1), Progression.constant(true)) { _, _ ->
+            checkAll(Exhaustive.constant(1), Exhaustive.constant(true)) { _, _ ->
                throw RuntimeException("foo")
             }
          }.message shouldBe """Property failed after 1 attempts

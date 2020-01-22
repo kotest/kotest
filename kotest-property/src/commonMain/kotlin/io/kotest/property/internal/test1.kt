@@ -3,58 +3,35 @@
 package io.kotest.property.internal
 
 import io.kotest.property.*
-import io.kotest.property.arbitrary.PropertyInput
 
 suspend fun <A> test1(
-   genA: Gen<A>,
-   args: PropTestArgs,
+   argA: Argument<A>,
+   config: PropTestConfig,
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
    val context = PropertyContext()
-   val random = args.seed.random()
+   val random = config.seed.random()
 
-   with(context) {
-      genA.generate(random).forEach { a ->
-         try {
-            property(a.value)
-            context.markSuccess()
-         } catch (e: AssertionError) {
-            context.markFailure()
-            if (args.maxFailure == 0) {
-               fail(a, shrink(a, property, args), e, attempts())
-            } else if (failures() > args.maxFailure) {
-               val t = AssertionError("Property failed ${failures()} times (maxFailure rate was ${args.maxFailure})")
-               fail(a, shrink(a, property, args), t, attempts())
-            }
-         }
-      }
-      context.checkMaxSuccess(args)
+   argA.values(random).forEach { a ->
+      runTest(context,
+         { property(a.value) },
+         { handleFailureAndShrink(context, a, it, config, property) }
+      )
    }
-
+   context.checkMaxSuccess(config)
    return context
 }
 
-// shrinks a single set of failed inputs returning a tuple of the smallest values
-suspend fun <A> shrink(
-   a: PropertyInput<A>,
-   property: suspend PropertyContext.(A) -> Unit,
-   args: PropTestArgs
-): A {
-   // we use a new context for the shrinks, as we don't want to affect classification etc
-   val context = PropertyContext()
-   return with(context) {
-      shrink(a, { property(it) }, args.shrinking)
-   }
-}
-
-// creates an exception for failed, shrunk, values and throws
-fun <A> fail(
-   a: PropertyInput<A>,
-   shrink: A,
-   e: Error, // the underlying failure reason,
-   attempts: Int
+suspend fun <A> handleFailureAndShrink(
+   context: PropertyContext,
+   a: ArgumentValue<A>,
+   t: Throwable,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A) -> Unit
 ) {
-   val inputs = listOf(PropertyFailureInput(a.value, shrink))
-   throw propertyAssertionError(e, attempts, inputs)
+   context.markFailure()
+   val error = context.checkMaxFailures(config.maxFailure, t)
+   if (error != null)
+      fail(a, shrink(a, property), error, context.attempts())
 }

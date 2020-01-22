@@ -2,10 +2,10 @@ package io.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.property.arbitrary.int
-import io.kotest.property.progression.constant
-import io.kotest.property.progression.int
-import io.kotest.property.progression.long
+import io.kotest.property.exhaustive.constant
+import io.kotest.property.exhaustive.int
+import io.kotest.property.exhaustive.long
+import io.kotest.property.gen.int
 import io.kotest.shouldBe
 import io.kotest.shouldThrowAny
 import kotlinx.coroutines.delay
@@ -15,8 +15,8 @@ class CheckAll2Test : FunSpec({
    test("checkAll with 2 arbitraries") {
 
       val context = checkAll(
-         Arbitrary.int(1000),
-         Arbitrary.int(10)
+         Gen.int().take(1000),
+         Gen.int().take(10)
       ) { a, b ->
          delay(10)
          a + b shouldBe b + a
@@ -30,8 +30,8 @@ class CheckAll2Test : FunSpec({
    test("checkAll with 2 progressions") {
 
       val context = checkAll(
-         Progression.int(0..100),
-         Progression.long(200L..300L)
+         Exhaustive.int(0..100),
+         Exhaustive.long(200L..300L)
       ) { a, b -> a + b shouldBe b + a }
 
       context.attempts() shouldBe 10201
@@ -60,8 +60,8 @@ class CheckAll2Test : FunSpec({
    test("checkAll with mixed arbitrary and progression") {
 
       val context = checkAll(
-         Arbitrary.int(1000),
-         Progression.int(0..100)
+         Gen.int().take(1000),
+         Exhaustive.int(0..100)
       ) { a, b ->
          a + b shouldBe b + a
       }
@@ -74,9 +74,9 @@ class CheckAll2Test : FunSpec({
    test("checkAll with maxFailure") {
       shouldThrowAny {
          checkAll(
-            Progression.int(0..10),
-            Progression.int(20..30),
-            PropTestArgs(maxFailure = 5)
+            Exhaustive.int(0..10),
+            Exhaustive.int(20..30),
+            PropTestConfig(maxFailure = 5)
          ) { a, b -> a shouldBeGreaterThan b }
       }.message shouldBe """Property failed for
 Arg 0: 0
@@ -88,9 +88,9 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
    test("checkAll with minSuccess") {
       shouldThrowAny {
          checkAll(
-            Progression.int(0..10),
-            Progression.constant(8),
-            PropTestArgs(maxFailure = 9, minSuccess = 9)
+            Exhaustive.int(0..10),
+            Exhaustive.constant(8),
+            PropTestConfig(maxFailure = 9, minSuccess = 9)
          ) { a, b -> a shouldBeGreaterThan b }
       }.message shouldBe """Property failed after 11 attempts
 Caused by: Property passed 2 times (minSuccess rate was 9)"""

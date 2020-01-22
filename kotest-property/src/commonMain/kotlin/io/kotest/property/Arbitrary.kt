@@ -1,10 +1,11 @@
 package io.kotest.property
 
-import io.kotest.property.arbitrary.*
+import io.kotest.property.gen.int
+import io.kotest.property.gen.long
 import kotlin.random.Random
 
 /**
- * An [Arbitrary] is a type of [Gen] which generates two types of values: [edgecases] and [samples].
+ * An [Arbitrary] is a type of [Argument] which generates two types of values: [edgecases] and [samples].
  *
  * Edge cases are values that are a common source of bugs. For example, a function using ints is
  * more likely to fail for common edge cases like zero, minus 1, positive 1, [Int.MAX_VALUE] and [Int.MIN_VALUE]
@@ -19,7 +20,7 @@ import kotlin.random.Random
  * could be from across the entire integer number line, or could be limited to a subset of ints
  * such as natural numbers or even numbers.
  */
-interface Arbitrary<T> : Gen<T> {
+interface Arbitrary<T> : Argument<T> {
 
    /**
     * Returns the values that are considered common edge case for the type.
@@ -31,46 +32,43 @@ interface Arbitrary<T> : Gen<T> {
     *
     * @return the common edge cases for type T.
     */
-   fun edgecases(): Iterable<T>
+   fun edgecases(): Iterable<T> = emptyList()
 
    /**
-    * Returns a sequence of random sample values to be used for testing.
+    * Returns a sequence of random sample values to be used for testing, along with an [RTree]
+    * of reduced values used for shrinking.
     *
     * @param random the [Random] instance to be used for generating values. This random instance is
     * seeded using the seed provided to the test framework so that tests can be deterministically re-run.
     * Implementations should honour the random provider whenever possible.
     *
-    * @return the random test values as instances of [PropertyInput].
+    * @return the random test values along with reduced values.
     */
-   fun samples(random: Random): Sequence<PropertyInput<T>>
+   fun samples(random: Random): Sequence<ArgumentValue<T>>
 
-   override fun generate(random: Random): Sequence<PropertyInput<T>> =
-      edgecases().map { PropertyInput(it) }.asSequence() + samples(random)
+   override fun values(random: Random): Sequence<ArgumentValue<T>> =
+      edgecases().map { ArgumentValue(it, RTree.empty(it)) }.asSequence() + samples(random)
 
    companion object
 }
 
+/**
+ * Returns a new [Arbitrary] with each value mapped using the supplied function.
+ * The reduced values and edgecases will also be mapped.
+ */
 fun <T, U> Arbitrary<T>.map(f: (T) -> U): Arbitrary<U> = object : Arbitrary<U> {
    override fun edgecases(): Iterable<U> = this@map.edgecases().map(f)
-   override fun samples(random: Random): Sequence<PropertyInput<U>> =
-      this@map.samples(random).map { it.map(f) }
+   override fun samples(random: Random): Sequence<ArgumentValue<U>> =
+      this@map.samples(random)
+         .map { ArgumentValue(f(it.value), it.shrinks.map(f)) }
 }
 
 fun <T> Arbitrary<T>.filter(predicate: (T) -> Boolean): Arbitrary<T> = object : Arbitrary<T> {
    override fun edgecases(): Iterable<T> = this@filter.edgecases().filter(predicate)
-   override fun samples(random: Random): Sequence<PropertyInput<T>> =
-      this@filter.samples(random).filter { predicate(it.value) }
-}
-
-/**
- * Returns a new [Arbitrary] where the edge cases of the receiver are replaced with the edge
- * cases given as input to this function. The samples are unchanged.
- */
-fun <T> Arbitrary<T>.setEdgeCases(vararg edgecases: T): Arbitrary<T> = setEdgeCases(edgecases.asList())
-
-fun <T> Arbitrary<T>.setEdgeCases(edgecases: Iterable<T>): Arbitrary<T> = object : Arbitrary<T> {
-   override fun edgecases(): Iterable<T> = edgecases
-   override fun samples(random: Random): Sequence<PropertyInput<T>> = this@setEdgeCases.samples(random)
+   override fun samples(random: Random): Sequence<ArgumentValue<T>> =
+      this@filter.samples(random)
+         .filter { predicate(it.value) }
+         .map { ArgumentValue(it.value, it.shrinks.filter(predicate)) }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -79,12 +77,13 @@ inline fun <reified T> Arbitrary.Companion.default(iterations: Int): Arbitrary<T
    return forClassName(classname, iterations) as Arbitrary<T>
 }
 
-fun Arbitrary.Companion.forClassName(className: String, iterations: Int): Arbitrary<*> {
+
+fun forClassName(className: String, iterations: Int): Arbitrary<*> {
    return when (className) {
-      "java.lang.Integer", "kotlin.Int", "Int" -> Arbitrary.int(iterations)
-      "java.lang.Long", "kotlin.Long", "Long" -> Arbitrary.long(iterations)
-      "java.lang.Float", "kotlin.Float", "Float" -> Arbitrary.float(iterations)
-      "java.lang.Double", "kotlin.Double", "Double" -> Arbitrary.double(iterations)
+      "java.lang.Integer", "kotlin.Int", "Int" -> Gen.int().take(iterations)
+      "java.lang.Long", "kotlin.Long", "Long" -> Gen.long().take(iterations)
+      //"java.lang.Float", "kotlin.Float", "Float" -> Gen.float(iterations)
+      //"java.lang.Double", "kotlin.Double", "Double" -> Gen.double(iterations)
       else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
    }
 }
