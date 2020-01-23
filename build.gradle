@@ -13,7 +13,6 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
-    //    classpath "io.kotlintest:kotlintest-gradle-plugin:1.1.1-LOCAL"
     }
 }
 
@@ -24,10 +23,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'net.researchgate.release' version '2.8.0'
-    id "io.kotlintest" version "1.1.1"
 }
-
-// apply plugin: "io.kotlintest"
 
 allprojects {
 
@@ -49,6 +45,9 @@ allprojects {
         failOnCommitNeeded = false
         failOnPublishNeeded = false
         failOnUnversionedFiles = false
+        git {
+            requireBranch = 'release/3.4'
+        }
     }
 
     afterReleaseBuild.dependsOn publish
