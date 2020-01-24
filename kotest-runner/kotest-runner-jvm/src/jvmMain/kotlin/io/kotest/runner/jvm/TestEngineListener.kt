@@ -38,11 +38,11 @@ interface TestEngineListener {
     * Is invoked once per [Spec] to indicate that all [TestCase] instances
     * of the spec have completed.
     *
-    * @param klass the spec that has completed
+    * @param kclass the spec that has completed
     * @param t if not null, then an error that occured when trying to execute this spec
     * @param results if t is null, then the results of the tests that were submitted.
     */
-   fun specFinished(klass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
+   fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {}
 
    /**
     * Invoked if a [TestCase] is about to be executed (is active).

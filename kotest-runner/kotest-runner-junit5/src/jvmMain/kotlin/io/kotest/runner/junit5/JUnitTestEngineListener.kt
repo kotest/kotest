@@ -130,19 +130,22 @@ class JUnitTestEngineListener(
    }
 
    override fun specFinished(
-      klass: KClass<out Spec>,
+      kclass: KClass<out Spec>,
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      logger.trace("specFinished [$klass]")
+      logger.trace("specFinished [$kclass]")
 
-      if (t != null)
-         checkSpecVisiblity(klass, t)
+      val descriptor = descriptors[kclass.description()]
+         ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
-      val descriptor = descriptors[klass.description()]
-         ?: throw RuntimeException("Error retrieving description for spec: ${klass.qualifiedName}")
+      // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
+      // this is because in gradle and intellij nested errors are not very obvious
+      val nestedFailure = findChildFailure(kclass.description())
 
-      val nestedFailure = findChildFailure(klass.description())
+      (specException ?: t ?: nestedFailure?.error)?.apply {
+         checkSpecVisiblity(kclass, this)
+      }
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
@@ -152,9 +155,6 @@ class JUnitTestEngineListener(
       }
 
       logger.trace("Notifying junit that execution has finished: $descriptor, $result")
-      // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
-      // this is because in gradle and intellij nested errors are not very obvious
-      //ensureSpecVisible(klass)
       listener.executionFinished(descriptor, result)
    }
 
@@ -163,20 +163,28 @@ class JUnitTestEngineListener(
     * failed test so that the spec shows up.
     */
    override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
-      checkSpecVisiblity(kclass, t)
+      specException = t
    }
 
+   /**
+    * Checks that the spec has at least one test attached in case of failure.
+    */
    private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
       val description = kclass.description()
-      val spec = descriptors[description]!!
-      val test = spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null, Segments.test)
       if (!isVisible(description)) {
+         val spec = descriptors[description]!!
+         val test =
+            spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null, Segments.test)
          listener.dynamicTestRegistered(test)
          listener.executionStarted(test)
          listener.executionFinished(test, TestExecutionResult.aborted(t))
       }
    }
 
+   /**
+    * Returns true if the given description is visible.
+    * That means it must have at least one non container test attached to it.
+    */
    private fun isVisible(description: Description) =
       results.any { description.isAncestorOf(it.first) }
 

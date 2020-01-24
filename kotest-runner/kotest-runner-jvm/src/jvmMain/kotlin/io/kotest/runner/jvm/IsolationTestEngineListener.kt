@@ -101,17 +101,17 @@ class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngine
    }
 
    override fun specFinished(
-       klass: KClass<out Spec>,
-       t: Throwable?,
-       results: Map<TestCase, TestResult>
+      kclass: KClass<out Spec>,
+      t: Throwable?,
+      results: Map<TestCase, TestResult>
    ) {
-      if (runningSpec.get() == klass.description()) {
-         listener.specFinished(klass, t, results)
+      if (runningSpec.get() == kclass.description()) {
+         listener.specFinished(kclass, t, results)
          runningSpec.set(null)
          replay()
       } else {
          queue {
-            specFinished(klass, t, results)
+            specFinished(kclass, t, results)
          }
       }
    }
