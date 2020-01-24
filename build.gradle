@@ -39,7 +39,7 @@ plugins {
    id 'java-library'
    id 'maven-publish'
    id 'signing'
-   id 'net.researchgate.release' version '2.8.0'
+   id 'net.researchgate.release' version '2.8.1'
    id 'com.adarshr.test-logger' version '2.0.0'
 }
 
