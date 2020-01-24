@@ -34,7 +34,7 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(SpecWithFieldError::class)
 
       finished.toMap() shouldBe mapOf(
-         "Spec instantiation failed" to TestExecutionResult.Status.ABORTED,
+         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
@@ -60,7 +60,7 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(SpecWithInitError::class)
 
       finished.toMap() shouldBe mapOf(
-         "Spec instantiation failed" to TestExecutionResult.Status.ABORTED,
+         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED
       )
    }

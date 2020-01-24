@@ -51,7 +51,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true

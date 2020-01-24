@@ -35,7 +35,9 @@ fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
  * The created descriptor will have segment type [Segments.test].
  */
 fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
-   val source = FileSource.from(File(testCase.source.fileName), FilePosition.from(testCase.source.lineNumber))
+
+   val pos = if (testCase.source.lineNumber <= 0) null else FilePosition.from(testCase.source.lineNumber)
+   val source = FileSource.from(File(testCase.source.fileName), pos)
    // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
    // see https://github.com/gradle/gradle/issues/4912
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container

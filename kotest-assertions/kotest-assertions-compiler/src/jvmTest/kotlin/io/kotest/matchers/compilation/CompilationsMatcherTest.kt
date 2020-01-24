@@ -1,10 +1,8 @@
-package com.sksamuel.kotest.matchers
+package io.kotest.matchers.compilation
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.matchers.shouldCompile
-import io.kotest.matchers.shouldNotCompile
 import java.io.File
 
 class CompilationsMatcherTest : StringSpec() {

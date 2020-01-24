@@ -71,7 +71,7 @@ class TestExecutor(private val listener: TestEngineListener) {
          onResult(it)
       }
 
-      runExtensions(testCase, context, start , notifyListener, testCase.extensions(), onComplete)
+      runExtensions(testCase, context, start, notifyListener, testCase.extensions(), onComplete)
    }
 
    /**
@@ -123,10 +123,10 @@ class TestExecutor(private val listener: TestEngineListener) {
       logger.trace("Executing active test $testCase")
       if (notifyListener) listener.testStarted(testCase)
 
-      return userBeforeTest(testCase)
+      return beforeTestListeners(testCase)
          .flatMap {
             val result = invokeTestCase(testCase, context, start)
-            userAfterTest(testCase, result)
+            afterTestListeners(testCase, result)
          }.recover { TestResult.throwable(it, (System.currentTimeMillis() - start).milliseconds) }
    }
 
@@ -191,7 +191,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] is starting.
     * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun userBeforeTest(testCase: TestCase): Try<TestCase> = Try {
+   private suspend fun beforeTestListeners(testCase: TestCase): Try<TestCase> = Try {
       logger.trace("Executing listeners beforeTest")
       suspendCoroutine<TestCase> { cont ->
          executor.submit {
@@ -211,7 +211,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [TestCase] has finished.
     * The listeners will not be invoked if the test case is disabled.
     */
-   private suspend fun userAfterTest(testCase: TestCase, result: TestResult): Try<TestResult> = Try {
+   private suspend fun afterTestListeners(testCase: TestCase, result: TestResult): Try<TestResult> = Try {
       logger.trace("Executing listeners afterTest")
 
       // if the executor has been shutdown (because it timed out) then we have to run the listeners

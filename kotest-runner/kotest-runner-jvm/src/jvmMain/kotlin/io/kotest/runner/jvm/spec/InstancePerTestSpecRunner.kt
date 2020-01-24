@@ -84,6 +84,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     */
    private suspend fun executeInCleanSpec(test: TestCase) {
       createInstance(test.spec::class).flatMap { spec ->
+         logger.trace("invokeBeforeSpec $spec")
          spec.invokeBeforeSpec()
       }.map { spec ->
          logger.trace("Created new spec instance $spec")

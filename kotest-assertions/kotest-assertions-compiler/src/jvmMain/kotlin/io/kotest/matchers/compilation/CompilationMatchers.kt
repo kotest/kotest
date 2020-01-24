@@ -1,4 +1,4 @@
-package io.kotest.matchers
+package io.kotest.matchers.compilation
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode

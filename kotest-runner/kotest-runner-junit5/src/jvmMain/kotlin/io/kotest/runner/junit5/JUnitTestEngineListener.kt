@@ -130,11 +130,14 @@ class JUnitTestEngineListener(
    }
 
    override fun specFinished(
-       klass: KClass<out Spec>,
-       t: Throwable?,
-       results: Map<TestCase, TestResult>
+      klass: KClass<out Spec>,
+      t: Throwable?,
+      results: Map<TestCase, TestResult>
    ) {
       logger.trace("specFinished [$klass]")
+
+      if (t != null)
+         checkSpecVisiblity(klass, t)
 
       val descriptor = descriptors[klass.description()]
          ?: throw RuntimeException("Error retrieving description for spec: ${klass.qualifiedName}")
@@ -160,10 +163,13 @@ class JUnitTestEngineListener(
     * failed test so that the spec shows up.
     */
    override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+      checkSpecVisiblity(kclass, t)
+   }
+
+   private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
       val description = kclass.description()
       val spec = descriptors[description]!!
-      val test =
-         spec.append(description.append("Spec instantiation failed"), TestDescriptor.Type.TEST, null, Segments.test)
+      val test = spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null, Segments.test)
       if (!isVisible(description)) {
          listener.dynamicTestRegistered(test)
          listener.executionStarted(test)

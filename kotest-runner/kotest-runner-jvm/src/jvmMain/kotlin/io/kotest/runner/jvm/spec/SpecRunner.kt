@@ -28,16 +28,17 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
-   suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit): Try<Spec> {
+   suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit) {
+      logger.trace("Intercepting spec $spec")
       val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
-      return interceptSpec(spec, extensions, afterInterception)
+      interceptSpec(spec, extensions, afterInterception)
    }
 
    private suspend fun interceptSpec(
       spec: Spec,
       remaining: List<SpecExtension>,
       afterInterception: suspend () -> Unit
-   ): Try<Spec> = Try {
+   ) {
       when {
          remaining.isEmpty() -> afterInterception()
          else -> {
@@ -45,7 +46,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
             remaining.first().intercept(spec::class) { interceptSpec(spec, rest, afterInterception) }
          }
       }
-      spec
    }
 
    /**

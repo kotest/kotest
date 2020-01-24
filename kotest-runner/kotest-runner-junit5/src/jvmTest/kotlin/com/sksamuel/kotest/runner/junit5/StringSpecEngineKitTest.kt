@@ -65,20 +65,20 @@ class StringSpecEngineKitTest : FunSpec({
             started().shouldHaveNames(
                "Kotest",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit",
-               "Spec instantiation failed"
+               "Spec execution failed"
             )
             skipped().shouldBeEmpty()
             failed().shouldHaveNames("com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit")
             succeeded().shouldHaveNames("Kotest")
             finished().shouldHaveNames(
-               "Spec instantiation failed",
+               "Spec execution failed",
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit",
                "Kotest"
             )
-            aborted().shouldHaveNames("Spec instantiation failed")
+            aborted().shouldHaveNames("Spec execution failed")
             dynamicallyRegistered().shouldHaveNames(
                "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInit",
-               "Spec instantiation failed"
+               "Spec execution failed"
             )
          }
    }
