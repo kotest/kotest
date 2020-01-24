@@ -3,6 +3,7 @@ package io.kotest.tables
 
 import io.kotest.assertions.Failures
 import io.kotest.assertions.MultiAssertionError
+import kotlin.jvm.JvmName
 
 fun headers(a: String) = Headers1(a)
 fun headers(a: String, b: String) = Headers2(a, b)

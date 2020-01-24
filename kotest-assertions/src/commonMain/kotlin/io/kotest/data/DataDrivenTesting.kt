@@ -13,7 +13,6 @@ import io.kotest.tables.Row9
 import io.kotest.tables.forAll
 import io.kotest.tables.headers
 import io.kotest.tables.table
-import kotlin.reflect.jvm.reflect
 
 
 fun <A> forall(vararg rows: Row1<A>, testfn: (A) -> Unit) {
@@ -175,5 +174,4 @@ internal inline fun <A, B, C, D, E, F, G, H, I, J> forall10(params: List<String>
   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forAll { a, b, c, d, e, f, g, h, i, j -> testfn(a, b, c, d, e, f, g, h, i, j) }
 }
 
-internal val Function<*>.paramNames
-  get() = reflect()?.parameters?.mapNotNull { it.name } ?: emptyList()
+internal expect val Function<*>.paramNames: List<String>
