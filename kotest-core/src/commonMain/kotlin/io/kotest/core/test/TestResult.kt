@@ -1,5 +1,6 @@
 package io.kotest.core.test
 
+import io.kotest.core.bestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -21,7 +22,7 @@ data class TestResult(
       fun throwable(e: Throwable?, duration: Duration): TestResult = when (e) {
          null -> success(duration)
          is AssertionError -> failure(e, duration)
-         else -> when (e::class.qualifiedName) {
+         else -> when (e::class.bestName()) {
             "org.opentest4j.AssertionFailedError" -> failure(e, duration)
             else -> error(e, duration)
          }
