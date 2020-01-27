@@ -13,7 +13,7 @@ import io.kotest.fp.Tuple2
 /**
  * Returns the resolved listeners for a given [Spec].
  * That is, the listeners defined directly on the spec, listeners generated from the
- * callback-dsl methods, and listeners defined in any included [TestFactory]s.
+ * callback-dsl methods, and listeners defined in any included test factories.
  */
 fun Spec.resolvedTestListeners(): List<TestListener> {
 
