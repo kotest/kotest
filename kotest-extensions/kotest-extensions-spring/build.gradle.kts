@@ -3,7 +3,7 @@ plugins {
    id("kotlin-multiplatform")
    id("java-library")
    id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
-
+   id("com.adarshr.test-logger")
 }
 
 repositories {

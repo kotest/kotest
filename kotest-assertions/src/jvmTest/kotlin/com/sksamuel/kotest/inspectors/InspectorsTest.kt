@@ -83,9 +83,6 @@ class InspectorsTest : WordSpec() {
       }
       "pass if an element throws an exception" {
         val items = listOf(1, 2, 3)
-        forNone(items) {
-          if (true) throw NullPointerException()
-        }
         items.forNone {
           if (true) throw NullPointerException()
         }

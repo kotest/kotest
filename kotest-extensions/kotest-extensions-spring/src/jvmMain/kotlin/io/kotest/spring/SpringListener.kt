@@ -15,6 +15,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory.AUTOW
 import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import kotlin.coroutines.Continuation
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -59,7 +60,7 @@ object SpringListener : TestListener {
 
          return if (Modifier.isFinal(klass.modifiers)) {
             logger.warn("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
-            this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java)
+            this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
          } else {
             val fakeSpec = ByteBuddy()
                .subclass(klass)

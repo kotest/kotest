@@ -23,7 +23,7 @@ class InspectingTest : WordSpec() {
       }
 
       "be usable within other inspectors"{
-        forOne(persons) {
+         persons.forOne {
           inspecting(it) {
             name shouldBe "John Doe"
             age shouldBe 20
