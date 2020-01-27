@@ -3,9 +3,7 @@ package io.kotest.matchers.equality
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.memberProperties
 
@@ -30,9 +28,13 @@ import kotlin.reflect.full.memberProperties
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
+ * Note: Throws [IllegalArgumentException] in case [properties] is not provided.
+ *
  */
-fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) =
-    this should beEqualToUsingFields(other, *properties)
+fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned for checking the equality" }
+   this should beEqualToUsingFields(other, *properties)
+}
 
 /**
  * Asserts that this is NOT equal to [other] using specific fields
@@ -59,7 +61,7 @@ fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KPropert
  *
  */
 fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) =
-    this shouldNot beEqualToUsingFields(other, *properties)
+   this shouldNot beEqualToUsingFields(other, *properties)
 
 /**
  * Matcher that compares values using specific fields
@@ -86,24 +88,24 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
+   override fun test(value: T): MatcherResult {
 
-    val failed = fields.mapNotNull {
-      val actual = it.getter.call(value)
-      val expected = it.getter.call(other)
-      if (actual == expected) null else {
-        "${it.name}: $actual != $expected"
+      val failed = fields.mapNotNull {
+         val actual = it.getter.call(value)
+         val expected = it.getter.call(other)
+         if (actual == expected) null else {
+            "${it.name}: $actual != $expected"
+         }
       }
-    }
 
-    val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
+      val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
-    return MatcherResult(
-        failed.isEmpty(),
-        "$value should be equal to $other using fields $fieldsString; Failed for $failed",
-        "$value should not be equal to $other using fields $fieldsString"
-    )
-  }
+      return MatcherResult(
+         failed.isEmpty(),
+         "$value should be equal to $other using fields $fieldsString; Failed for $failed",
+         "$value should not be equal to $other using fields $fieldsString"
+      )
+   }
 }
 
 /**
@@ -129,7 +131,7 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  *
  */
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
-    this should beEqualToIgnoringFields(other, *properties)
+   this should beEqualToIgnoringFields(other, *properties)
 
 /**
  * Asserts that this is not equal to [other] without using specific fields
@@ -152,7 +154,7 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
-    this shouldNot beEqualToIgnoringFields(other, *properties)
+   this shouldNot beEqualToIgnoringFields(other, *properties)
 
 /**
  * Matcher that compares values without using specific fields
@@ -178,25 +180,27 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KP
  * @see [shouldNotBeEqualToIgnoringFields]
  *
  */
-fun <T : Any> beEqualToIgnoringFields(other: T,
-                                      vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
+fun <T : Any> beEqualToIgnoringFields(
+   other: T,
+   vararg fields: KProperty<*>
+): Matcher<T> = object : Matcher<T> {
+   override fun test(value: T): MatcherResult {
 
-    val fieldNames = fields.map { it.name }
-    val failed = value::class.memberProperties.filterNot { fieldNames.contains(it.name) }.mapNotNull {
-      val actual = it.getter.call(value)
-      val expected = it.getter.call(other)
-      if (actual == expected) null else {
-        "${it.name}: $actual != $expected"
+      val fieldNames = fields.map { it.name }
+      val failed = value::class.memberProperties.filterNot { fieldNames.contains(it.name) }.mapNotNull {
+         val actual = it.getter.call(value)
+         val expected = it.getter.call(other)
+         if (actual == expected) null else {
+            "${it.name}: $actual != $expected"
+         }
       }
-    }
 
-    val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
+      val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
-    return MatcherResult(
-        failed.isEmpty(),
-        "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
-        "$value should not be equal to $other ignoring fields $fieldsString"
-    )
-  }
+      return MatcherResult(
+         failed.isEmpty(),
+         "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
+         "$value should not be equal to $other ignoring fields $fieldsString"
+      )
+   }
 }
