@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.matchers.maps
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.maps.*
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldThrow
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import java.util.LinkedList
 
 class MapMatchersTest : WordSpec() {

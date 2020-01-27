@@ -27,7 +27,7 @@ import io.kotest.matchers.reflection.shouldNotHaveFunction
 import io.kotest.matchers.reflection.shouldNotHaveMemberProperty
 import io.kotest.matchers.reflection.shouldNotHavePrimaryConstructor
 import io.kotest.matchers.reflection.shouldNotHaveVisibility
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.reflect.KVisibility

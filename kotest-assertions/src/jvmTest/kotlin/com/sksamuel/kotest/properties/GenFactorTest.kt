@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.properties
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.properties.Gen
 import io.kotest.properties.factors
-import io.kotest.shouldBe
 
 class GenFactorTest : FunSpec({
    test("factors of k") {

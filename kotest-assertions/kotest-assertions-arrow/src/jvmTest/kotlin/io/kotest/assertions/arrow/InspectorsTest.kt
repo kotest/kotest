@@ -6,12 +6,12 @@ import io.kotest.assertions.arrow.nel.forExactly
 import io.kotest.assertions.arrow.nel.forNone
 import io.kotest.assertions.arrow.nel.forOne
 import io.kotest.assertions.arrow.nel.forSome
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class InspectorsTest : WordSpec() {
 

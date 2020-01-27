@@ -1,13 +1,13 @@
 package io.kotest.matchers.types
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.beTheSameInstanceAs
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 /**
  * Verifies that this is instanceof T

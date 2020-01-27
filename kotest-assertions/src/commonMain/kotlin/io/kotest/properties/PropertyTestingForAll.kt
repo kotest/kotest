@@ -1,6 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> forAll(noinline fn: PropertyContext.(a: A) -> Boolean) = forAll(1000, fn)

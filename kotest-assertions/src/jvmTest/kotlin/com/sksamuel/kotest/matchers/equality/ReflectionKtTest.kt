@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.matchers.equality
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.equality.shouldBeEqualToUsingFields
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.shouldBe
 
 class ReflectionKtTest : FunSpec() {
 

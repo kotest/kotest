@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.matchers
 
 /**
  * A [Matcher] is the main abstraction in the assertions library.

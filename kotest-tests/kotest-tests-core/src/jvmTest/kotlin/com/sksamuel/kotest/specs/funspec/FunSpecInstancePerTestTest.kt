@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class FunSpecInstancePerTestTest : FunSpec() {
 

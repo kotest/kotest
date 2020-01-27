@@ -7,9 +7,9 @@ import arrow.fx.IO
 import arrow.fx.extensions.io.applicative.applicative
 import arrow.fx.fix
 import arrow.typeclasses.Applicative
-import io.kotest.Matcher
 import io.kotest.assertions.arrow.matcher
-import io.kotest.should
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should
 
 /**
  * Assertions for tagless final and polymorphic programs

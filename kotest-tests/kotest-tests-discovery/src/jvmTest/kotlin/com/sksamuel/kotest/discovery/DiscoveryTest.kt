@@ -3,9 +3,9 @@ package com.sksamuel.kotest.discovery
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.runner.jvm.DiscoveryRequest
 import io.kotest.runner.jvm.TestDiscovery
-import io.kotest.shouldBe
 
 class MyFunSpec : FunSpec()
 class MyStringSpec : StringSpec()

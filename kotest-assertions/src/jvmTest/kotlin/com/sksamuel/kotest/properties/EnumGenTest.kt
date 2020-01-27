@@ -2,8 +2,8 @@ package com.sksamuel.kotest.properties
 
 import io.kotest.properties.Gen
 import io.kotest.properties.enum
-import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 class EnumGenTest : StringSpec() {
   init {

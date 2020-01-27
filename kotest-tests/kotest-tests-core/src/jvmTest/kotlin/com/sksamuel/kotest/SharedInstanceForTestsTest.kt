@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class SharedInstanceForTestsTest : ShouldSpec() {
 

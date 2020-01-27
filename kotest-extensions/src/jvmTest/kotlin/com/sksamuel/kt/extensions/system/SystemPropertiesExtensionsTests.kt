@@ -12,8 +12,8 @@ import io.kotest.extensions.system.SystemPropertyTestListener
 import io.kotest.extensions.system.withSystemProperties
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.inspectors.forAll
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import java.util.Properties

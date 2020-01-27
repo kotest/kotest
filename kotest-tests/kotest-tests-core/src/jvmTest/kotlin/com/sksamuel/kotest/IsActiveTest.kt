@@ -10,7 +10,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class IsActiveTest : StringSpec() {
 

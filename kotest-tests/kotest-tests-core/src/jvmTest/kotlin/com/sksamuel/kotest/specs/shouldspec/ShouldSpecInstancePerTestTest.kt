@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.shouldspec
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
 class ShouldSpecInstancePerTestTest : ShouldSpec() {

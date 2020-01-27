@@ -2,8 +2,8 @@ package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.shouldBe
 import io.kotest.retry
-import io.kotest.shouldBe
 import java.time.Duration.ofMillis
 
 class RetryTest : StringSpec() {

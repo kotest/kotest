@@ -2,8 +2,8 @@ package com.sksamuel.kotest.factory
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 private val factory = funSpec {
 

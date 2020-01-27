@@ -4,7 +4,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.matchers.channels.*
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

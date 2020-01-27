@@ -1,5 +1,6 @@
 package com.sksamuel.kt.extensions.locale
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -8,9 +9,8 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.withDefaultLocale
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
-import io.kotest.shouldThrowAny
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import java.util.Locale
 import kotlin.reflect.KClass
 

@@ -1,7 +1,7 @@
 package io.kotest.core
 
-import io.kotest.assertSoftly
 import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.getAndReset
 import io.kotest.core.config.Project
 import io.kotest.core.test.AssertionMode

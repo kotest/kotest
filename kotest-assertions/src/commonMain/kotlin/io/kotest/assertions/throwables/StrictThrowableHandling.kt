@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.assertions.throwables
 
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.Failures

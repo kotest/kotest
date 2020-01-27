@@ -40,7 +40,6 @@ kotlin {
             api(Libs.Coroutines.core)
             api(Libs.Classgraph.classgraph)
             api(Libs.Slf4j.api)
-            api("io.arrow-kt:arrow-core:0.10.3")
          }
       }
 

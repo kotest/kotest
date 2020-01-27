@@ -1,9 +1,9 @@
 package io.kotest.property
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.progression.constant
-import io.kotest.shouldBe
-import io.kotest.shouldThrowAny
+import io.kotest.matchers.shouldBe
 
 class PropertyExceptionTest : FunSpec() {
    init {

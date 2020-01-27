@@ -1,13 +1,13 @@
 package io.kotest.property
 
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.property.arbitrary.int
 import io.kotest.property.progression.constant
 import io.kotest.property.progression.int
 import io.kotest.property.progression.long
-import io.kotest.shouldBe
-import io.kotest.shouldThrowAny
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 
 class CheckAll2Test : FunSpec({

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class ProjectListenerTest : WordSpec() {
   init {

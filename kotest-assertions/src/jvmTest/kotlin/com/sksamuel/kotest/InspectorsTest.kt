@@ -1,16 +1,16 @@
 package com.sksamuel.kotest
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.forAny
-import io.kotest.forExactly
-import io.kotest.forNone
-import io.kotest.forOne
-import io.kotest.forSome
+import io.kotest.inspectors.forAny
+import io.kotest.inspectors.forExactly
+import io.kotest.inspectors.forNone
+import io.kotest.inspectors.forOne
+import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class InspectorsTest : WordSpec() {
 

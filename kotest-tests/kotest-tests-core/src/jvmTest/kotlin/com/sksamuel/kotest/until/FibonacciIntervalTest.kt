@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.until
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.until.fibonacci
 
 class FibonacciIntervalTest : FunSpec() {

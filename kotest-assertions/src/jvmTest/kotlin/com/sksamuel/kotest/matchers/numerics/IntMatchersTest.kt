@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.numerics
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.ints.beEven
 import io.kotest.matchers.ints.beOdd
 import io.kotest.matchers.ints.shouldBeBetween
@@ -11,12 +12,11 @@ import io.kotest.matchers.ints.shouldBeNegative
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.ints.shouldNotBeZero
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
-import io.kotest.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import io.kotest.tables.forAll
 import io.kotest.tables.forNone
 import io.kotest.tables.headers

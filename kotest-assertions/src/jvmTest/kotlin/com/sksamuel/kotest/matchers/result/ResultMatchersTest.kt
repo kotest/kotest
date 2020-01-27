@@ -8,8 +8,8 @@ import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.result.shouldNotBeFailure
 import io.kotest.matchers.result.shouldNotBeFailureOfType
 import io.kotest.matchers.result.shouldNotBeSuccess
-import io.kotest.should
-import io.kotest.shouldBe
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import java.io.IOException
 
 class ResultMatchersTest : FreeSpec() {

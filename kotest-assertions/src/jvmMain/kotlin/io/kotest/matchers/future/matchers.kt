@@ -1,9 +1,11 @@
 package io.kotest.matchers.future
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import java.util.concurrent.CompletableFuture
 
 fun <T> CompletableFuture<T>.shouldBeCompletedExceptionally() = this shouldBe completedExceptionally<T>()

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.listeners
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
 class TestListenerBeforeSpecStartedTest : FunSpec() {

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
 internal class StringSpecTestCase : StringSpec({

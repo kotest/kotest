@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.properties
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.properties.Gen
 import io.kotest.properties.multiples
-import io.kotest.shouldBe
 
 class GenMultipleTest : FunSpec({
    test("multiples of k") {

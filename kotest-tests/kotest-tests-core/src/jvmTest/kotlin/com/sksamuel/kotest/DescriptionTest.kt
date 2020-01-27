@@ -5,7 +5,7 @@ import io.kotest.core.spec.CompositeSpec
 import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 val descriptionTests = stringSpec {
     "parents" {

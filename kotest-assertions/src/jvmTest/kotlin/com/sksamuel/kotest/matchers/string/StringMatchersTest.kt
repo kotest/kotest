@@ -1,7 +1,11 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.data.forall
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beBlank
 import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.beFalsy
@@ -76,10 +80,6 @@ import io.kotest.properties.Gen
 import io.kotest.properties.assertAll
 import io.kotest.properties.string
 import io.kotest.properties.uuid
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldThrow
 import io.kotest.tables.row
 import org.opentest4j.AssertionFailedError
 

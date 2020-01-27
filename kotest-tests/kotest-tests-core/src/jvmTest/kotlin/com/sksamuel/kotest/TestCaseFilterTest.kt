@@ -6,7 +6,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
 class TestCaseFilterTest : StringSpec() {

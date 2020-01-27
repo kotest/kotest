@@ -2,7 +2,7 @@ package com.sksamuel.kotest.extensions
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import kotlin.reflect.KClass
 

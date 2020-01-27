@@ -1,7 +1,7 @@
 package com.sksamuel.kt.spring
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

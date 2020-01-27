@@ -3,7 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldHaveLength
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 import java.util.concurrent.atomic.AtomicInteger

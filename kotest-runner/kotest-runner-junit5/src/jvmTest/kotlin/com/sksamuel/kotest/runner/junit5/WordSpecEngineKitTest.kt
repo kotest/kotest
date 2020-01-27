@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.testkit.engine.EngineTestKit
 

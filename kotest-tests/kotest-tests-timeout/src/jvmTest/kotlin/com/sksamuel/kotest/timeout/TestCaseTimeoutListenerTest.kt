@@ -1,10 +1,14 @@
 package com.sksamuel.kotest.timeout
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.NestedTest
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.matchers.shouldBe
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
-import io.kotest.shouldBe
 import kotlinx.coroutines.GlobalScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime

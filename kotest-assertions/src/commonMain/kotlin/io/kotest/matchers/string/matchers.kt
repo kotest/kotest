@@ -1,12 +1,9 @@
 package io.kotest.matchers.string
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.show.show
+import io.kotest.matchers.*
+import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.string.UUIDVersion.ANY
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldNot
 import kotlin.text.RegexOption.IGNORE_CASE
 
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
@@ -388,13 +385,13 @@ enum class UUIDVersion(
 
 /**
  * Asserts that this String is a valid UUID
- * 
+ *
  * Opposite of [shouldNotBeUUID]
- * 
+ *
  * Verifies that this string is a valid UUID as per RFC4122. Version depends on [version]. By default, all versions
- * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros), 
+ * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros),
  * which is considered a valid UUID. By default it's matched as valid.
- * 
+ *
  * ```
  * "123e4567-e89b-12d3-a456-426655440000".shouldBeUUID(version = ANY)  // Assertion passes
  * "123e4567-e89b-12d3-a456-426655440000".shouldBeUUID(version = V4)  // Assertion Fails (is V1 UUID)
@@ -402,7 +399,7 @@ enum class UUIDVersion(
  * "00000000-0000-0000-0000-000000000000".shouldBeUUID(considerNilValid = true)  // Assertion passes
  *
  * ```
- * 
+ *
  * @see [RFC4122] https://tools.ietf.org/html/rfc4122
  */
 fun String.shouldBeUUID(
@@ -456,6 +453,6 @@ fun beUUID(
     "String $value is not an UUID ($version), but should be",
     "String $value is an UUID ($version), but shouldn't be"
   )
-  
+
   private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }

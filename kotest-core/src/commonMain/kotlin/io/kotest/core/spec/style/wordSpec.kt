@@ -1,13 +1,13 @@
 package io.kotest.core.spec.style
 
-import io.kotest.Matcher
 import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.Spec
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.should as shouldBeMatcher
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should as shouldBeMatcher
 
 /**
  * Creates a [TestFactory] from the given block.

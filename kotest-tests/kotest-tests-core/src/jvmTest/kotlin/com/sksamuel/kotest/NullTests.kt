@@ -1,8 +1,8 @@
 package com.sksamuel.kotest
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.shouldBe
 
 class NullTests : WordSpec() {
 

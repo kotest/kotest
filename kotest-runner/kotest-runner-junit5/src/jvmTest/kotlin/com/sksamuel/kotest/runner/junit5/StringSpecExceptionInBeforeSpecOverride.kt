@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.Spec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
 internal class StringSpecExceptionInBeforeSpecOverride : StringSpec() {

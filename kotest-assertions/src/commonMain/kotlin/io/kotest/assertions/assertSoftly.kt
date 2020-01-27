@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.assertions
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.ErrorCollector

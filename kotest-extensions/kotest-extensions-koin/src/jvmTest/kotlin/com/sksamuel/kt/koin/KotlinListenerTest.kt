@@ -3,7 +3,7 @@ package com.sksamuel.kt.koin
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinListener
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.koin.core.context.GlobalContext
 import org.koin.test.KoinTest
 import org.koin.test.inject

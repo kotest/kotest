@@ -2,7 +2,7 @@ package com.sksamuel.kotest.factory
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 private fun factory(ref: AtomicBoolean) = funSpec {

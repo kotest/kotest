@@ -9,10 +9,10 @@ import io.kotest.assertions.arrow.either.shouldBeRight
 import io.kotest.assertions.arrow.either.shouldNotBeLeft
 import io.kotest.assertions.arrow.either.shouldNotBeLeftOfType
 import io.kotest.assertions.arrow.either.shouldNotBeRight
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class EitherMatchersTest : WordSpec() {
 

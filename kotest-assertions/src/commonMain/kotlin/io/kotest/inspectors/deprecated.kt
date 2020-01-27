@@ -1,8 +1,4 @@
-package io.kotest
-
-import io.kotest.inspectors.ElementPass
-import io.kotest.inspectors.buildAssertionError
-import io.kotest.inspectors.runTests
+package io.kotest.inspectors
 
 @Deprecated("use the extension function version of this", ReplaceWith("array.forAll(fn)"))
 fun <T> forAll(array: Array<T>, fn: (T) -> Unit) = forAll(array.asList(), fn)

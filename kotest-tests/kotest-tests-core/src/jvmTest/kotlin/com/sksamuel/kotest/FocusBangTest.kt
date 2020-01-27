@@ -5,7 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isBang
 import io.kotest.core.test.isFocused
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class FocusBangTest : FunSpec() {
 

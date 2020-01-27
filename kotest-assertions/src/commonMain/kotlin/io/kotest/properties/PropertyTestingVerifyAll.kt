@@ -1,6 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 inline fun <reified A> verifyAll(noinline fn: PropertyContext.(a: A) -> Boolean) = verifyAll(1000, fn)
 inline fun <reified A> verifyAll(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {

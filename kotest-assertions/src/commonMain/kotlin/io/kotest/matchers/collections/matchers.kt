@@ -1,15 +1,13 @@
 package io.kotest.matchers.collections
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.stringRepr
-import io.kotest.matchers.iterator.shouldBeEmpty
-import io.kotest.matchers.iterator.shouldNotBeEmpty
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldHave
-import io.kotest.shouldNot
 import kotlin.jvm.JvmName
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldHave
+import io.kotest.matchers.shouldNot
 
 fun <T> Array<T>.shouldContainOnlyNulls() = asList().shouldContainOnlyNulls()
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
@@ -284,7 +282,7 @@ infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleEl
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
 infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 infix fun <T> Array<T>.shouldHaveSize(size: Int) = asList().shouldHaveSize(size)
-infix fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size)
+infix fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size = size)
 infix fun <T> Array<T>.shouldNotHaveSize(size: Int) = asList().shouldNotHaveSize(size)
 infix fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
 

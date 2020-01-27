@@ -1,8 +1,5 @@
 package io.kotest.matchers
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.neverNullMatcher
 import kotlin.reflect.KClass
 
 // alias for beInstanceOf

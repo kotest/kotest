@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.eventually
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.eventually
 import io.kotest.matchers.string.shouldEndWith
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException

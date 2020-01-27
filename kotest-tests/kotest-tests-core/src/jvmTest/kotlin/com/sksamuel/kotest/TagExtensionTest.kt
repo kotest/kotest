@@ -9,7 +9,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import kotlin.reflect.KClass
 

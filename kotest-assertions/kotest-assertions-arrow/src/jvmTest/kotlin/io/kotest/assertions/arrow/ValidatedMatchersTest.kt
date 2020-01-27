@@ -9,10 +9,10 @@ import io.kotest.assertions.arrow.validation.beValid
 import io.kotest.assertions.arrow.validation.shouldBeInvalid
 import io.kotest.assertions.arrow.validation.shouldBeValid
 import io.kotest.assertions.arrow.validation.shouldNotBeValid
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 class ValidatedMatchersTest : StringSpec({
 

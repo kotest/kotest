@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers
 
-import io.kotest.assertSoftly
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.shouldNotContainExactly
@@ -11,14 +12,13 @@ import io.kotest.matchers.doubles.shouldBeNegative
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.maps.haveKey
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.shouldNotEndWith
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
-import io.kotest.shouldThrow
 
 class SoftAssertionsTest : FreeSpec({
 

@@ -11,7 +11,7 @@ import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.lang.RuntimeException
 import java.util.concurrent.atomic.AtomicInteger

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.listeners
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class TestListenerTest : WordSpec() {
 

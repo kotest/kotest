@@ -3,7 +3,7 @@ package com.sksamuel.kotest
 import io.kotest.core.StringTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 
 class TagTest : StringSpec() {

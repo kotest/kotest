@@ -5,7 +5,7 @@ import io.kotest.core.spec.AutoScan
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
 class AutoScanTestListenerTest : WordSpec({

@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.feature
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
 class FeatureSpecInstancePerTestTest : FeatureSpec() {

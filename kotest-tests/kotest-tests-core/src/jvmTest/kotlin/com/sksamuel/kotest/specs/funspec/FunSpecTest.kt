@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.specs.funspec
 
-import io.kotest.assertSoftly
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.file.shouldNotExist
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldNotBeBlank
 import io.kotest.matchers.string.shouldStartWith
-import io.kotest.shouldBe
 import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds

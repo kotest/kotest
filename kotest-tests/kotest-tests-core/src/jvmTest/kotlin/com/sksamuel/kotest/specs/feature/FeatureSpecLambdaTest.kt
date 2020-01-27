@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.feature
 
 import io.kotest.core.spec.style.FeatureSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class FeatureSpecLambdaTest : FeatureSpec({
 

@@ -3,11 +3,11 @@ package io.kotest.assertions.konform
 import io.konform.validation.Invalid
 import io.konform.validation.Valid
 import io.konform.validation.Validation
-import io.kotest.Matcher
-import io.kotest.MatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.should
+import io.kotest.matchers.should
 
 infix fun <T> Validation<T>.shouldBeValid(value: T) = this should beValid(value)
 

@@ -3,7 +3,7 @@ package com.sksamuel.kotest.example.javascript
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.inspectors.forAll
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class SsnTest : FunSpec({
 

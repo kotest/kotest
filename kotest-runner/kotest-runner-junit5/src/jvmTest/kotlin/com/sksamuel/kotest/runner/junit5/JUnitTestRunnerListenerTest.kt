@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.core.*
+import io.kotest.core.sourceRef
 import io.kotest.core.spec.CompositeSpec
 import io.kotest.core.spec.description
 import io.kotest.core.spec.style.funSpec
@@ -9,7 +9,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.runner.junit5.JUnitTestEngineListener
 import io.kotest.runner.junit5.KotestEngineDescriptor
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult

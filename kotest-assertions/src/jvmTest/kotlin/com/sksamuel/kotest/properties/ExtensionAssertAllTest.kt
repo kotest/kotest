@@ -1,12 +1,12 @@
 package com.sksamuel.kotest.properties
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldHaveSameLengthAs
 import io.kotest.properties.assertAll
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 fun reverse(a: String): String = a.reversed()
 fun concat(a: String, b: String): String = a + b

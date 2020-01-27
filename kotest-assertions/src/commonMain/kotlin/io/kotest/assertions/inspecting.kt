@@ -1,4 +1,4 @@
-package io.kotest
+package io.kotest.assertions
 
 /**
  * Inspecting allows to assert the properties of an object in a typed fashion providing a proper testing context.
