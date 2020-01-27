@@ -1,9 +1,10 @@
 package io.kotest.core.test
 
+import io.kotest.assertions.sysprop
 import io.kotest.core.config.Project
 import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
-import io.kotest.core.sysprop
+import io.kotest.fp.toOption
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -18,7 +19,7 @@ import io.kotest.core.sysprop
  * - Include tag filters have been specified and this test either has no tags, or does not have a tag that is one of those included
  * - The test is filtered out via a [TestCaseFilter]
  *
- * Note: tags are defined either through [TestCaseConfig] or in the [SpecConfiguration] dsl.
+ * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
  *
  * Note2: Focused tests will override any settings here.
  *
@@ -27,7 +28,7 @@ fun TestCase.isActive(): Boolean {
    val focused = isFocused() && isTopLevel()
    val hasFocused = spec.focusTests().isNotEmpty()
    val enabledInConfig = config.enabled && config.enabledIf()
-   val bangEnabled = sysprop("kotest.bang.disable").isEmpty()
+   val bangEnabled = sysprop("kotest.bang.disable").toOption().isEmpty()
    val disabledViaBang = isBang() && bangEnabled
    val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
    val filtered = Project.testCaseFilters()
