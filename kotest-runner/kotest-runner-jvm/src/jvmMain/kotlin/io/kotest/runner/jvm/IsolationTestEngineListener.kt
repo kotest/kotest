@@ -5,14 +5,12 @@ import io.kotest.core.spec.description
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
 @Suppress("LocalVariableName")
 class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
    private val runningSpec = AtomicReference<Description?>(null)
    private val callbacks = mutableListOf<() -> Unit>()
 

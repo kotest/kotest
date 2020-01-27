@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm
 
+import io.kotest.assertions.log
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.internal.unwrapIfReflectionCall
 import io.kotest.core.runtime.executeWithTimeout
@@ -11,7 +12,6 @@ import io.kotest.fp.Try
 import io.kotest.fp.recover
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -34,8 +34,6 @@ import kotlin.time.milliseconds
  */
 @UseExperimental(ExperimentalTime::class)
 class TestExecutor(private val listener: TestEngineListener) {
-
-   private val logger = LoggerFactory.getLogger(this.javaClass)
 
    // we run the entire test inside its own executor so that the before/after callbacks
    // and the test itself run on the same thread.
@@ -60,7 +58,7 @@ class TestExecutor(private val listener: TestEngineListener) {
       onResult: suspend (TestResult) -> Unit
    ) {
 
-      logger.trace("Evaluating $testCase")
+      log("Evaluating $testCase")
       val start = System.currentTimeMillis()
 
       val onComplete: suspend (TestResult) -> Unit = {
@@ -120,7 +118,7 @@ class TestExecutor(private val listener: TestEngineListener) {
       start: Long,
       notifyListener: Boolean
    ): TestResult {
-      logger.trace("Executing active test $testCase")
+      log("Executing active test $testCase")
       if (notifyListener) listener.testStarted(testCase)
 
       return beforeTestListeners(testCase)
@@ -131,7 +129,7 @@ class TestExecutor(private val listener: TestEngineListener) {
    }
 
    private suspend fun invokeTestCase(testCase: TestCase, context: TestContext, start: Long): TestResult {
-      logger.trace("invokeTestCase $testCase")
+      log("invokeTestCase $testCase")
 
       // we calculate the timeout, (if timeout has been configured) which will fail the test with a timed-out status
       val timeout = testCase.config.resolvedTimeout()
@@ -139,7 +137,7 @@ class TestExecutor(private val listener: TestEngineListener) {
 
       val error = suspendCoroutine<Throwable?> { cont ->
 
-         logger.trace("Scheduler will interrupt this test in ${timeout}ms")
+         log("Scheduler will interrupt this test in ${timeout}ms")
          scheduler.schedule({
             if (hasResumed.compareAndSet(false, true)) {
                val t = TimeoutException("Execution of test took longer than ${timeout}ms")
@@ -183,7 +181,7 @@ class TestExecutor(private val listener: TestEngineListener) {
       }
 
       val result = TestResult.throwable(error, (System.currentTimeMillis() - start).milliseconds)
-      logger.debug("Test completed with result $result")
+      log("Test completed with result $result")
       return result
    }
 
@@ -192,7 +190,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     * The listeners will not be invoked if the test case is disabled.
     */
    private suspend fun beforeTestListeners(testCase: TestCase): Try<TestCase> = Try {
-      logger.trace("Executing listeners beforeTest")
+      log("Executing listeners beforeTest")
       suspendCoroutine<TestCase> { cont ->
          executor.submit {
             try {
@@ -212,7 +210,7 @@ class TestExecutor(private val listener: TestEngineListener) {
     * The listeners will not be invoked if the test case is disabled.
     */
    private suspend fun afterTestListeners(testCase: TestCase, result: TestResult): Try<TestResult> = Try {
-      logger.trace("Executing listeners afterTest")
+      log("Executing listeners afterTest")
 
       // if the executor has been shutdown (because it timed out) then we have to run the listeners
       // on the main thread (as the executor is out of action!)

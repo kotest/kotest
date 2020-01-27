@@ -9,8 +9,8 @@ import io.kotest.core.spec.resolvedIsolationMode
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.instantiateSpec
-import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
+import io.kotest.assertions.log
 
 /**
  * Handles the execution of a single [Spec] class.
@@ -21,13 +21,11 @@ import kotlin.reflect.KClass
  */
 class SpecExecutor(private val listener: TestEngineListener) {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
-
    /**
     * Executes the given [Spec] and returns true if the spec returned normally.
     */
    suspend fun execute(kclass: KClass<out Spec>) {
-      logger.trace("Executing spec $kclass")
+      log("Executing spec $kclass")
       notifySpecStarted(kclass)
          .flatMap { notifyPrepareSpec(kclass) }
          .flatMap { createInstance(kclass) }
@@ -41,18 +39,18 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * This is called only once per spec regardless of the number of instantiation events.
     */
    private fun notifySpecStarted(kclass: KClass<out Spec>) = Try {
-      logger.trace("Executing engine listener callback:specStarted $kclass")
+      log("Executing engine listener callback:specStarted $kclass")
       listener.specStarted(kclass)
    }
 
    private fun notifySpecInstantiated(spec: Spec) = Try {
-      logger.trace("Executing engine listener callback:specInstantiated spec:$spec")
+      log("Executing engine listener callback:specInstantiated spec:$spec")
       listener.specInstantiated(spec)
    }
 
    private fun notifySpecInstantiationError(kclass: KClass<out Spec>, t: Throwable) = Try {
       t.printStackTrace()
-      logger.trace("Executing engine listener callback:specInstantiationError $kclass error:$t")
+      log("Executing engine listener callback:specInstantiationError $kclass error:$t")
       listener.specInstantiationError(kclass, t)
    }
 
@@ -66,7 +64,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       results: Map<TestCase, TestResult>
    ) = Try {
       t?.printStackTrace()
-      logger.trace("Executing engine listener callback:specFinished $kclass")
+      log("Executing engine listener callback:specFinished $kclass")
       listener.specFinished(kclass, t, results)
    }
 
@@ -96,7 +94,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * This is only invoked once per spec class, regardless of the number of invocations.
     */
    private suspend fun notifyPrepareSpec(kclass: KClass<out Spec>): Try<Unit> = Try {
-      logger.trace("Executing notifyPrepareSpec")
+      log("Executing notifyPrepareSpec")
       Project.testListeners().forEach {
          it.prepareSpec(kclass)
       }
@@ -110,7 +108,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ): Try<Map<TestCase, TestResult>> = Try {
-      logger.trace("Executing notifyFinalizeSpec")
+      log("Executing notifyFinalizeSpec")
       Project.testListeners().forEach {
          it.finalizeSpec(kclass, results)
       }

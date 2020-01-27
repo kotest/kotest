@@ -9,8 +9,8 @@ import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
+import io.kotest.assertions.log
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -44,8 +44,6 @@ import kotlin.coroutines.CoroutineContext
  * spec3.innerTestB
  */
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
-
-   private val logger = LoggerFactory.getLogger(this.javaClass)
 
    // a test may already have been discovered because we re-run the parents each time for a nested test
    // therefore this set is used to avoid repeated discoveries
@@ -84,14 +82,14 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     */
    private suspend fun executeInCleanSpec(test: TestCase) {
       createInstance(test.spec::class).flatMap { spec ->
-         logger.trace("invokeBeforeSpec $spec")
+         log("invokeBeforeSpec $spec")
          spec.invokeBeforeSpec()
       }.map { spec ->
-         logger.trace("Created new spec instance $spec")
+         log("Created new spec instance $spec")
          interceptSpec(spec) {
             // we need to find the same root test but in the newly created spec
             val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
-            logger.trace("Starting root test ${root.testCase.description} in search of ${test.description}")
+            log("Starting root test ${root.testCase.description} in search of ${test.description}")
             run(root.testCase, test)
             spec.invokeAfterSpec()
          }

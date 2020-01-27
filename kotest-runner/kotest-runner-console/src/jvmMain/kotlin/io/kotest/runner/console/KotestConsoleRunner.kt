@@ -8,7 +8,6 @@ import io.kotest.core.TestCaseFilter
 import io.kotest.runner.jvm.DiscoveryRequest
 import io.kotest.runner.jvm.TestDiscovery
 import io.kotest.runner.jvm.TestEngineListener
-import org.slf4j.LoggerFactory
 
 class KotestConsoleRunner(private val writer: TestEngineListener) {
 

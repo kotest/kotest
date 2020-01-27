@@ -45,7 +45,6 @@ kotlin {
             api(Libs.JUnitPlatform.api)
             api(Libs.JUnitPlatform.launcher)
             api(Libs.JUnitJupiter.api)
-            api(Libs.Slf4j.api)
          }
       }
 

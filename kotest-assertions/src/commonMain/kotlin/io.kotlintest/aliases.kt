@@ -30,3 +30,4 @@ infix fun <T, U : T> T.shouldBe(any: U?) = this shouldBe any
 @Deprecated("All package names are now io.kotest")
 infix fun <T> T.shouldNotBe(any: Any?) = this shouldNotBe any
 
+fun <T> assertSoftly(block: () -> T): T = io.kotest.assertions.assertSoftly(block)

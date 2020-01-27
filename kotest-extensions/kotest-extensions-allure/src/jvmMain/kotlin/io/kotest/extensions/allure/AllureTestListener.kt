@@ -1,5 +1,6 @@
 package io.kotest.extensions.allure
 
+import io.kotest.assertions.log
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.Description
@@ -11,7 +12,6 @@ import io.qameta.allure.Allure
 import io.qameta.allure.AllureLifecycle
 import io.qameta.allure.model.Status
 import io.qameta.allure.util.ResultsUtils.*
-import org.slf4j.LoggerFactory
 import java.nio.file.Paths
 import java.util.*
 import kotlin.reflect.KClass
@@ -19,7 +19,6 @@ import kotlin.reflect.KClass
 @AutoScan
 object AllureTestListener : TestListener {
 
-   private val logger = LoggerFactory.getLogger(javaClass)
    private val uuids = mutableMapOf<Description, UUID>()
 
    override suspend fun prepareSpec(kclass: KClass<out Spec>) {
@@ -32,7 +31,7 @@ object AllureTestListener : TestListener {
    private fun allure(): AllureLifecycle = try {
       Allure.getLifecycle() ?: throw IllegalStateException()
    } catch (t: Throwable) {
-      logger.error("Error getting allure lifecycle", t)
+      log("Error getting allure lifecycle", t)
       t.printStackTrace()
       throw t
    }
@@ -41,7 +40,7 @@ object AllureTestListener : TestListener {
       description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
 
    override suspend fun beforeTest(testCase: TestCase) {
-      logger.trace("Allure beforeTest $testCase")
+      log("Allure beforeTest $testCase")
 
       val uuid = UUID.randomUUID()
       uuids[testCase.description] = uuid
@@ -66,7 +65,7 @@ object AllureTestListener : TestListener {
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      logger.trace("Allure afterTest $testCase")
+      log("Allure afterTest $testCase")
       val uuid = uuids[testCase.description]
       allure().updateTestCase(uuid.toString()) {
          val status = when (result.status) {

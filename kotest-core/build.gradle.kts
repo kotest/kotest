@@ -64,7 +64,6 @@ kotlin {
             implementation(Libs.Coroutines.core)
             api(Libs.JUnitJupiter.api)
             implementation(Libs.Classgraph.classgraph)
-            implementation(Libs.Slf4j.api)
          }
       }
    }

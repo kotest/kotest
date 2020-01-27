@@ -6,14 +6,16 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalTime::class)
 fun Project.dumpProjectConfig() {
 
-   println("~~~ Project Configuration ~~~")
+   println("~~~ Kotest Configuration ~~~")
    buildOutput("Parallelism", parallelism().toString() + " thread(s)")
    buildOutput("Default test timeout", timeout().toLongMilliseconds().toString() + "ms")
    buildOutput("Default test order", testCaseOrder()::class.simpleName)
    buildOutput("Default isolation mode", isolationMode()::class.simpleName)
    buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
    buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
-   buildOutput("Spec failure file path", specFailureFilePath().capitalize())
+   if (writeSpecFailureFile()) {
+      buildOutput("Spec failure file path", specFailureFilePath().capitalize())
+   }
    buildOutput("Fail on ignored tests", failOnIgnoredTests().toString().capitalize())
    buildOutput("Spec execution order", specExecutionOrder()::class.simpleName)
 

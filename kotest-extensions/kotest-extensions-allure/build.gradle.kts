@@ -35,8 +35,6 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(Libs.Allure.commons)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
             implementation("javax.xml.bind:jaxb-api:2.3.1")
             implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
             implementation("com.sun.xml.bind:jaxb-impl:2.3.2")

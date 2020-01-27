@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm
 
+import io.kotest.assertions.log
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
@@ -12,7 +13,6 @@ import io.kotest.fp.Try
 import io.kotest.runner.jvm.internal.NamedThreadFactory
 import io.kotest.runner.jvm.spec.SpecExecutor
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
 import java.util.Collections.emptyList
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -27,7 +27,6 @@ class KotestEngine(
    val listener: TestEngineListener
 ) {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
    private val specExecutor = SpecExecutor(listener)
 
    init {
@@ -44,7 +43,7 @@ class KotestEngine(
    private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }
 
    private fun submitAll() = Try {
-      logger.trace("Submitting ${classes.size} specs")
+      log("Submitting ${classes.size} specs")
 
       // the classes are ordered using an instance of SpecExecutionOrder
       val specs = Project.specExecutionOrder().sort(classes)
@@ -70,24 +69,24 @@ class KotestEngine(
          }
       }
       executor.shutdown()
-      logger.trace("Waiting for spec execution to terminate")
+      log("Waiting for spec execution to terminate")
 
       val error = try {
          executor.awaitTermination(1, TimeUnit.DAYS)
          null
       } catch (t: InterruptedException) {
-         logger.error("Spec executor interupted", t)
+         log("Spec executor interupted", t)
          t
       }
 
-      logger.trace("Spec executor has terminated $error")
+      log("Spec executor has terminated $error")
 
       if (error != null) throw error
    }
 
    private fun end(t: Throwable?) = Try {
       if (t != null) {
-         logger.error("Error during test engine run", t)
+         log("Error during test engine run", t)
          t.printStackTrace()
       }
       listener.engineFinished(t)

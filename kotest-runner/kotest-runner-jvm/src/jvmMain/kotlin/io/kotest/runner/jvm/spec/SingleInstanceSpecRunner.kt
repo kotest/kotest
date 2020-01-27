@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.assertions.log
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
@@ -9,7 +10,6 @@ import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -19,7 +19,6 @@ import kotlin.coroutines.CoroutineContext
  */
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   private val logger = LoggerFactory.getLogger(javaClass)
    private val results = mutableMapOf<TestCase, TestResult>()
 
    inner class Context(
@@ -55,9 +54,9 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
          interceptSpec(spec) {
             val roots = spec.materializeRootTests()
-            logger.debug("Materialized roots: $roots")
+            log("Materialized roots: $roots")
             roots.forEach { rootTest ->
-               logger.trace("Executing test $rootTest")
+               log("Executing test $rootTest")
                runTest(rootTest.testCase, context)
             }
          }

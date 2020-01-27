@@ -40,7 +40,6 @@ kotlin {
             api(project(":kotest-extensions"))
             api(Libs.Coroutines.core)
             api(Libs.Classgraph.classgraph)
-            api(Libs.Slf4j.api)
          }
       }
 

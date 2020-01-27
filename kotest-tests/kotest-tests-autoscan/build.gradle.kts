@@ -41,8 +41,6 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
          }
       }
    }

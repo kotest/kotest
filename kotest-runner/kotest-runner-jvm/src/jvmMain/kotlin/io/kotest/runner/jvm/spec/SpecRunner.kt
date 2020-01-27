@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
@@ -10,7 +11,6 @@ import io.kotest.core.spec.resolvedExtensions
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.instantiateSpec
-import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
@@ -24,12 +24,10 @@ import kotlin.reflect.KClass
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
-   private val logger = LoggerFactory.getLogger(javaClass)
-
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
    suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit) {
-      logger.trace("Intercepting spec $spec")
+      log("Intercepting spec $spec")
       val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
       interceptSpec(spec, extensions, afterInterception)
    }

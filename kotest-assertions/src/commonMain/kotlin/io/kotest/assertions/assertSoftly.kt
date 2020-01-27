@@ -1,9 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.assertions.ErrorCollectionMode
-import io.kotest.assertions.ErrorCollector
-import io.kotest.assertions.throwCollectedErrors
-
 /**
  * Run multiple assertions and throw a single error after all are executed if any fail
  *

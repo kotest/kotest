@@ -1,10 +1,10 @@
 package io.kotest.runner.jvm
 
 import io.github.classgraph.ClassGraph
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.DiscoveryExtension
-import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
@@ -43,7 +43,6 @@ data class DiscoveryResult(val specs: List<KClass<out Spec>>)
  */
 object TestDiscovery {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
    private val requests = ConcurrentHashMap<DiscoveryRequest, DiscoveryResult>()
 
    // filter functions
@@ -59,13 +58,13 @@ object TestDiscovery {
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
 
       val fromClassNames = loadClasses(request.classNames)
-      logger.trace("Loaded ${fromClassNames.size} classes from classnames...")
+      log("Loaded ${fromClassNames.size} classes from classnames...")
 
       val fromClassPaths = if (request.uris.isEmpty() && request.classNames.isNotEmpty())
          emptyList()
       else
          scanUris(request.uris)
-      logger.trace("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
+      log("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
 
       val requestFilters: (KClass<*>) -> Boolean = { klass ->
          request.filters.isEmpty() || request.filters.all {
@@ -84,14 +83,14 @@ object TestDiscovery {
          .filter { request.allowInternal || !isInternal(it) }
          .toList()
 
-      logger.trace("After filters there are ${filtered.size} spec classes")
+      log("After filters there are ${filtered.size} spec classes")
 
       val afterExtensions = Project.discoveryExtensions()
          .fold(filtered) { cl, ext -> ext.afterScan(cl) }
          .sortedBy { it.simpleName }
-      logger.trace("After discovery extensions there are ${filtered.size} spec classes")
+      log("After discovery extensions there are ${filtered.size} spec classes")
 
-      logger.debug("Discovery is returning ${afterExtensions.size} specs")
+      log("Discovery is returning ${afterExtensions.size} specs")
       DiscoveryResult(afterExtensions)
    }
 
@@ -101,7 +100,7 @@ object TestDiscovery {
     */
    @UseExperimental(ExperimentalTime::class)
    private fun scanUris(uris: List<URI>): List<KClass<out Spec>> {
-      logger.debug("Starting test discovery scan...")
+      log("Starting test discovery scan...")
       val (scanResult, time) = measureTimedValue {
          ClassGraph()
             .enableClassInfo()
@@ -109,7 +108,7 @@ object TestDiscovery {
             .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
             .scan()
       }
-      logger.debug("Test discovery competed in $time")
+      log("Test discovery competed in $time")
 
       return scanResult
          .getSubclasses(Spec::class.java.name)

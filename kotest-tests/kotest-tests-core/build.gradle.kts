@@ -43,8 +43,6 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")
             implementation(Libs.JUnitPlatform.engine)

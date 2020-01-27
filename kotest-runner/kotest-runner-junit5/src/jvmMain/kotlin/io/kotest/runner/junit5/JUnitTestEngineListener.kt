@@ -1,5 +1,6 @@
 package io.kotest.runner.junit5
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.internal.writeSpecFailures
 import io.kotest.core.spec.Spec
@@ -8,7 +9,6 @@ import io.kotest.core.test.*
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
-import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
@@ -62,8 +62,6 @@ class JUnitTestEngineListener(
    val root: EngineDescriptor
 ) : TestEngineListener {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
-
    // contains a mapping of a Description to a junit TestDescription, so we can look up the parent
    // when we need to register a new test
    private val descriptors = mutableMapOf<Description, TestDescriptor>()
@@ -77,7 +75,7 @@ class JUnitTestEngineListener(
    private var specException: Throwable? = null
 
    override fun engineStarted(classes: List<KClass<out Spec>>) {
-      logger.trace("Engine started; classes=[$classes]")
+      log("Engine started; classes=[$classes]")
       listener.executionStarted(root)
    }
 
@@ -87,7 +85,7 @@ class JUnitTestEngineListener(
    private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
 
    override fun engineFinished(t: Throwable?) {
-      logger.trace("Engine finished; throwable=[$t]")
+      log("Engine finished; throwable=[$t]")
 
       if (Project.writeSpecFailureFile())
          writeSpecFailures(failedSpecs, Project.specFailureFilePath())
@@ -99,21 +97,21 @@ class JUnitTestEngineListener(
          else -> TestExecutionResult.successful()
       }
 
-      logger.trace("Notifying junit that root descriptor completed $root")
+      log("Notifying junit that root descriptor completed $root")
       listener.executionFinished(root, result)
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {
-      logger.trace("specStarted [${kclass.qualifiedName}]")
+      log("specStarted [${kclass.qualifiedName}]")
       try {
          val descriptor = kclass.descriptor(root)
          descriptors[kclass.description()] = descriptor
 
-         logger.trace("Registering junit dynamic test and notifiying start: $descriptor")
+         log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
          listener.executionStarted(descriptor)
       } catch (t: Throwable) {
-         logger.error("Error in JUnit Platform listener", t)
+         log("Error in JUnit Platform listener", t)
          specException = t
       }
    }
@@ -123,7 +121,7 @@ class JUnitTestEngineListener(
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      logger.trace("specFinished [$kclass]")
+      log("specFinished [$kclass]")
 
       val descriptor = descriptors[kclass.description()]
          ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
@@ -143,7 +141,7 @@ class JUnitTestEngineListener(
          else -> TestExecutionResult.successful()
       }
 
-      logger.trace("Notifying junit that execution has finished: $descriptor, $result")
+      log("Notifying junit that execution has finished: $descriptor, $result")
       listener.executionFinished(descriptor, result)
    }
 
@@ -179,9 +177,9 @@ class JUnitTestEngineListener(
 
    override fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)
-      logger.trace("Registering junit dynamic test: $descriptor")
+      log("Registering junit dynamic test: $descriptor")
       listener.dynamicTestRegistered(descriptor)
-      logger.trace("Notifying junit that execution has started: $descriptor")
+      log("Notifying junit that execution has started: $descriptor")
       listener.executionStarted(descriptor)
    }
 
@@ -196,7 +194,7 @@ class JUnitTestEngineListener(
          else -> result
       }
 
-      logger.trace("Notifying junit that execution has finished: $descriptor")
+      log("Notifying junit that execution has finished: $descriptor")
       listener.executionFinished(descriptor, resultp.testExecutionResult())
    }
 
@@ -210,7 +208,7 @@ class JUnitTestEngineListener(
       val parent = descriptors[testCase.description.parent()]
       if (parent == null) {
          val msg = "Cannot find parent description for: ${testCase.description}"
-         logger.error(msg)
+         log(msg)
          error(msg)
       }
       val descriptor = parent.descriptor(testCase)

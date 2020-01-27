@@ -42,7 +42,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(Libs.Logback.classic)
          }
       }
    }
