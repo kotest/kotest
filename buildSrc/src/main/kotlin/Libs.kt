@@ -29,13 +29,6 @@ object Libs {
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
 
-   object Log4j {
-      private const val version = "2.13.0"
-      const val api = "org.apache.logging.log4j:log4j-api:$version"
-      const val core = "org.apache.logging.log4j:log4j-core:$version"
-      const val slf4j = "org.apache.logging.log4j:log4j-slf4j-impl:$version"
-   }
-
    object Classgraph {
       const val classgraph = "io.github.classgraph:classgraph:4.8.60"
    }

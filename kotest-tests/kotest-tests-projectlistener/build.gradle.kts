@@ -42,7 +42,6 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")
             implementation(Libs.JUnitPlatform.engine)

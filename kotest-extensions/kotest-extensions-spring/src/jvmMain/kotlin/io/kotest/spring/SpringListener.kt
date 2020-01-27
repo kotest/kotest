@@ -27,7 +27,7 @@ object SpringListener : TestListener {
    // breaking client code
    private val testContexts = mutableMapOf<Spec, TestContextManager>()
 
-   override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
       testContexts[spec] = TestContextManager(spec.javaClass)
       spec.testContext.beforeTestClass()
       spec.testContext.prepareTestInstance(spec)
@@ -43,7 +43,7 @@ object SpringListener : TestListener {
       testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
    }
 
-   override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
       spec.testContext.afterTestClass()
    }
 

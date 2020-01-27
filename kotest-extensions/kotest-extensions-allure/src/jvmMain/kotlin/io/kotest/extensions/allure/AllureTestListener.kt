@@ -22,7 +22,7 @@ object AllureTestListener : TestListener {
    private val logger = LoggerFactory.getLogger(javaClass)
    private val uuids = mutableMapOf<Description, UUID>()
 
-   override fun prepareSpec(kclass: KClass<out Spec>) {
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
       Paths.get("allure-results").toFile().deleteRecursively()
    }
 

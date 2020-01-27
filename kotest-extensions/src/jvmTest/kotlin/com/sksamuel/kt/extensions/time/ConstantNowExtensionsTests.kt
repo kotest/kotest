@@ -269,7 +269,7 @@ class ConstantNowExtensionsListenerTest : StringSpec() {
       ConstantNowTestListener(myNow),
       ConstantNowTestListener(myNow2),
       object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             HijrahDate.now() shouldNotBeSameInstanceAs myNow
             LocalDateTime.now() shouldNotBeSameInstanceAs myNow2
          }

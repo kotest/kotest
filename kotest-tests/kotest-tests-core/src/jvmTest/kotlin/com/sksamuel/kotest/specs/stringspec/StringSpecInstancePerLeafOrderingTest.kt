@@ -23,7 +23,7 @@ class StringSpecInstancePerLeafOrderingTest : StringSpec() {
    init {
 
       listener(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             string shouldBe "a_z_b_y_c_"
          }
       })

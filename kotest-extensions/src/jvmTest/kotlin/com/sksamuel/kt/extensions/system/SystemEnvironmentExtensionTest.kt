@@ -80,11 +80,11 @@ class SystemEnvironmentTestListenerTest : WordSpec() {
       listOf(SystemEnvironmentTestListener("mop", "dop", mode = OverrideMode.SetOrOverride), listener)
 
    private val listener = object : TestListener {
-      override fun prepareSpec(kclass: KClass<out Spec>) {
+      override suspend fun prepareSpec(kclass: KClass<out Spec>) {
          System.getenv("mop") shouldBe null
       }
 
-      override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
          System.getenv("mop") shouldBe null
       }
    }

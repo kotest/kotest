@@ -13,6 +13,7 @@ fun Project.dumpProjectConfig() {
    buildOutput("Default isolation mode", isolationMode()::class.simpleName)
    buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
    buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
+   buildOutput("Spec failure file path", specFailureFilePath().capitalize())
    buildOutput("Fail on ignored tests", failOnIgnoredTests().toString().capitalize())
    buildOutput("Spec execution order", specExecutionOrder()::class.simpleName)
 
@@ -26,6 +27,20 @@ fun Project.dumpProjectConfig() {
    if (listeners().isNotEmpty()) {
       buildOutput("Listeners")
       testListeners().map(::mapClassName).forEach {
+         buildOutput(it, indentation = 1)
+      }
+   }
+
+   if (tags().included.isNotEmpty()) {
+      buildOutput("Included Tags")
+      tags().included.map(::mapClassName).forEach {
+         buildOutput(it, indentation = 1)
+      }
+   }
+
+   if (tags().included.isNotEmpty()) {
+      buildOutput("Excluded Tags")
+      tags().excluded.map(::mapClassName).forEach {
          buildOutput(it, indentation = 1)
       }
    }

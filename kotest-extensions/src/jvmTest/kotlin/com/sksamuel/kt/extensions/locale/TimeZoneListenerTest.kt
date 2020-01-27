@@ -63,11 +63,11 @@ class TimeZoneListenerTest : FunSpec() {
    private var deftz: TimeZone? = null
 
    private val listener = object : TestListener {
-      override fun prepareSpec(kclass: KClass<out Spec>) {
+      override suspend fun prepareSpec(kclass: KClass<out Spec>) {
          deftz = TimeZone.getDefault()
       }
 
-      override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
          TimeZone.getDefault() shouldBe deftz
       }
    }

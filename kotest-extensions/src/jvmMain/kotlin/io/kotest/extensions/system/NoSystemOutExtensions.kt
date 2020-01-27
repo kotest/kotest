@@ -28,7 +28,7 @@ object NoSystemOutListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: Spec) = setup()
+   override suspend fun beforeSpec(spec: Spec) = setup()
 }
 
 /**
@@ -51,5 +51,5 @@ object NoSystemErrListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: Spec) = setup()
+   override suspend fun beforeSpec(spec: Spec) = setup()
 }

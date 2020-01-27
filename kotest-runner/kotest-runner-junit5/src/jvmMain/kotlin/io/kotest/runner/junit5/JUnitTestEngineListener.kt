@@ -1,16 +1,14 @@
 package io.kotest.runner.junit5
 
 import io.kotest.core.config.Project
+import io.kotest.core.internal.writeSpecFailures
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
-import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
 import org.slf4j.LoggerFactory
-import java.nio.file.Files
-import java.nio.file.Paths
 import kotlin.reflect.KClass
 
 /**
@@ -92,7 +90,7 @@ class JUnitTestEngineListener(
       logger.trace("Engine finished; throwable=[$t]")
 
       if (Project.writeSpecFailureFile())
-         writeSpecFailures(failedSpecs)
+         writeSpecFailures(failedSpecs, Project.specFailureFilePath())
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
@@ -103,15 +101,6 @@ class JUnitTestEngineListener(
 
       logger.trace("Notifying junit that root descriptor completed $root")
       listener.executionFinished(root, result)
-   }
-
-   private fun writeSpecFailures(failures: Set<KClass<out Spec>>): Try<Any> = Try {
-      val dir = Paths.get(".kotest")
-      dir.toFile().mkdirs()
-      val path = dir.resolve("spec_failures").toAbsolutePath()
-      logger.trace("Writing report to $path")
-      val content = failures.distinct().joinToString("\n") { it.java.canonicalName }
-      Files.write(path, content.toByteArray())
    }
 
    override fun specStarted(kclass: KClass<out Spec>) {

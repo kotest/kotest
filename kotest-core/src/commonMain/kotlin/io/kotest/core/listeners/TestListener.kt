@@ -44,7 +44,7 @@ interface TestListener : Listener {
     *
     * @param spec the [Spec] instance.
     */
-   fun beforeSpec(spec: Spec): Unit = Unit
+   suspend fun beforeSpec(spec: Spec): Unit = Unit
 
    /**
     * Is invoked after the [TestCase]s that are part of a particular
@@ -62,7 +62,7 @@ interface TestListener : Listener {
     *
     * @param spec the [Spec] instance.
     */
-   fun afterSpec(spec: Spec): Unit = Unit
+   suspend fun afterSpec(spec: Spec): Unit = Unit
 
    /**
     * Called once per [Spec], when the engine is preparing to
@@ -86,7 +86,7 @@ interface TestListener : Listener {
     * @param kclass the [Spec] class
     * @param tests the list of top level tests
     */
-   fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
+   suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
 
    /**
     * Called once per [Spec], after all tests have completed for that spec.
@@ -103,7 +103,7 @@ interface TestListener : Listener {
     * @param spec the [Spec] instance
     * @param results a map of each test case mapped to its result.
     */
-   fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>): Unit = Unit
+   suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>): Unit = Unit
 }
 
 data class RootTest(val testCase: TestCase, val order: Int)

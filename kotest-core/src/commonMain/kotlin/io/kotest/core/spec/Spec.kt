@@ -29,12 +29,12 @@ fun Spec.resolvedTestListeners(): List<TestListener> {
          this@resolvedTestListeners.afterTest(testCase, result)
       }
 
-      override fun afterSpec(spec: Spec) {
+      override suspend fun afterSpec(spec: Spec) {
          this@resolvedTestListeners.afterSpecs.forEach { it() }
          this@resolvedTestListeners.afterSpec(spec)
       }
 
-      override fun beforeSpec(spec: Spec) {
+      override suspend fun beforeSpec(spec: Spec) {
          this@resolvedTestListeners.beforeSpecs.forEach { it() }
          this@resolvedTestListeners.beforeSpec(spec)
       }

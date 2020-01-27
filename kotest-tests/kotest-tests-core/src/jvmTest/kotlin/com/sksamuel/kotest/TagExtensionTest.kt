@@ -35,7 +35,7 @@ class TagExtensionTest : StringSpec() {
    init {
 
       listener(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
                "should be tagged with tagA and therefore included" to TestStatus.Success,
                "should be untagged and therefore excluded" to TestStatus.Ignored,

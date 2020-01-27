@@ -95,7 +95,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a new [Spec] is starting.
     * This is only invoked once per spec class, regardless of the number of invocations.
     */
-   private fun notifyPrepareSpec(kclass: KClass<out Spec>): Try<Unit> = Try {
+   private suspend fun notifyPrepareSpec(kclass: KClass<out Spec>): Try<Unit> = Try {
       logger.trace("Executing notifyPrepareSpec")
       Project.testListeners().forEach {
          it.prepareSpec(kclass)
@@ -106,7 +106,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * Notifies the user listeners that a [Spec] has finished all instances.
     * This is only invoked once per spec class, regardless of the number of invocations.
     */
-   private fun notifyFinalizeSpec(
+   private suspend fun notifyFinalizeSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ): Try<Map<TestCase, TestResult>> = Try {

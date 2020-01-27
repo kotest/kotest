@@ -83,11 +83,11 @@ class SystemPropertiesExtensionsTest : FreeSpec() {
 class SystemPropertyListenerTest : WordSpec() {
 
    private val assertion = object : TestListener {
-      override fun prepareSpec(kclass: KClass<out Spec>) {
+      override suspend fun prepareSpec(kclass: KClass<out Spec>) {
          System.getProperty("bee") shouldBe null
       }
 
-      override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+      override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
          System.getProperty("bee") shouldBe null
       }
    }

@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
-    override fun prepareSpec(kclass: KClass<out Spec>) {
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
         val previous = System.getSecurityManager()
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
@@ -40,7 +40,7 @@ object SystemExitListener : TestListener {
  * After the spec has completed, the original security manager
  * will be set.
  *
- * To use this, override `listeners`() in your [SpecClass] class.
+ * To use this, override `listeners`() in your [Spec] class.
  *
  * Note: This listener is only suitable for use if parallelism is
  * set to 1 (the default) otherwise a race condition could occur.
@@ -52,14 +52,14 @@ object SpecSystemExitListener : TestListener {
 
     private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
 
-    override fun beforeSpec(spec: Spec) {
+   override suspend fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
             previousSecurityManagers[spec::class.description()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
 
-    override fun afterSpec(spec: Spec) {
+   override suspend fun afterSpec(spec: Spec) {
         if (previousSecurityManagers.contains(spec::class.description()))
             System.setSecurityManager(previousSecurityManagers[spec::class.description()])
         else

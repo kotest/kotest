@@ -36,11 +36,11 @@ fun TestFactoryConfiguration.build(): TestFactory {
          }
       }
 
-      override fun afterSpec(spec: Spec) {
+      override suspend fun afterSpec(spec: Spec) {
          this@build.afterSpecs.forEach { it() }
       }
 
-      override fun beforeSpec(spec: Spec) {
+      override suspend fun beforeSpec(spec: Spec) {
          this@build.beforeSpecs.forEach { it() }
       }
    }

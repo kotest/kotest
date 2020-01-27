@@ -37,11 +37,12 @@ object Project {
    private var failOnIgnoredTests = userconf.failOnIgnoredTests ?: false
    private var specExecutionOrder = userconf.specExecutionOrder ?: LexicographicSpecExecutionOrder
    private var writeSpecFailureFile = userconf.writeSpecFailureFile ?: false
+   private var specFailureFilePath = userconf.specFailureFilePath ?: "./.kotest/spec_failures"
    private var globalAssertSoftly = userconf.globalAssertSoftly ?: false
    private var parallelism = userconf.parallelism ?: 1
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
-   private var testCaseOrder : TestCaseOrder = userconf.testCaseOrder ?: TestCaseOrder.Sequential
-   private var isolationMode : IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
+   private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: TestCaseOrder.Sequential
+   private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
@@ -82,6 +83,8 @@ object Project {
    fun registerProjectListener(listener: Listener) {
       registerListener(listener)
    }
+
+   fun specFailureFilePath(): String = specFailureFilePath
 
    /**
     * Uses the registerd [TagExtension]s to evaluate the currently included/excluded [Tag]s.
@@ -191,6 +194,7 @@ data class ProjectConf constructor(
    val autoScanEnabled: Boolean = true,
    val autoScanIgnoredClasses: List<KClass<*>> = emptyList(),
    val writeSpecFailureFile: Boolean? = null,
+   val specFailureFilePath: String? = null,
    val parallelism: Int? = null,
    val timeout: Duration? = null,
    val testCaseConfig: TestCaseConfig? = null

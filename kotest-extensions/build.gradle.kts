@@ -47,8 +47,6 @@ kotlin {
             implementation("org.mockito:mockito-core:2.24.0")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("io.mockk:mockk:1.9.3")
-            implementation("log4j:log4j:1.2.17")
-            implementation("org.slf4j:slf4j-log4j12:1.7.25")
          }
       }
    }

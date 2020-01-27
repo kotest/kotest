@@ -134,7 +134,7 @@ abstract class TestConfiguration {
 
    fun prepareSpec(f: PrepareSpec) {
       listeners(object : TestListener {
-         override fun prepareSpec(kclass: KClass<out Spec>) {
+         override suspend fun prepareSpec(kclass: KClass<out Spec>) {
             f(kclass)
          }
       })
@@ -142,7 +142,7 @@ abstract class TestConfiguration {
 
    fun finalizeSpec(f: FinalizeSpec) {
       listeners(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             f(Tuple2(kclass, results))
          }
       })
