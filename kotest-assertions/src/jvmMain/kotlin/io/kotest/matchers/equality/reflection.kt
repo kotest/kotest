@@ -28,7 +28,7 @@ import kotlin.reflect.full.memberProperties
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
- * Note: Throws [IllegalArgumentException] in case [properties] is not provided.
+ * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
  *
  */
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
@@ -129,9 +129,12 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
+ * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
  */
-fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
+fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) {
+   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned to be ignore for checking the equality" }
    this should beEqualToIgnoringFields(other, *properties)
+}
 
 /**
  * Asserts that this is not equal to [other] without using specific fields
