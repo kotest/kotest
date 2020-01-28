@@ -34,6 +34,7 @@ kotlin {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
             implementation(Libs.Allure.commons)
             implementation("javax.xml.bind:jaxb-api:2.3.1")
             implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")

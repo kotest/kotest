@@ -1,39 +1,46 @@
 package io.kotest.extensions.allure
 
 import io.kotest.assertions.log
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.Spec
+import io.kotest.core.spec.AutoScan
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.core.spec.AutoScan
-import io.qameta.allure.Allure
-import io.qameta.allure.AllureLifecycle
+import io.qameta.allure.*
+import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
+import io.qameta.allure.model.StatusDetails
 import io.qameta.allure.util.ResultsUtils.*
 import java.nio.file.Paths
 import java.util.*
-import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+
+fun TestCase.epic(): Label? = this.spec::class.findAnnotation<Epic>()?.let { createEpicLabel(it.value) }
+fun TestCase.feature(): Label? = this.spec::class.findAnnotation<Feature>()?.let { createFeatureLabel(it.value) }
+fun TestCase.severity(): Label? = this.spec::class.findAnnotation<Severity>()?.let { createSeverityLabel(it.value) }
+fun TestCase.story(): Label? = this.spec::class.findAnnotation<Story>()?.let { createStoryLabel(it.value) }
+fun TestCase.owner(): Label? = this.spec::class.findAnnotation<Owner>()?.let { createOwnerLabel(it.value) }
 
 @AutoScan
-object AllureTestListener : TestListener {
+object AllureTestListener : TestListener, ProjectListener {
 
-   private val uuids = mutableMapOf<Description, UUID>()
-
-   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
-      Paths.get("allure-results").toFile().deleteRecursively()
-   }
+   internal val uuids = mutableMapOf<Description, UUID>()
 
    /**
     * Loads the [AllureLifecycle] object which is used to report test lifecycle events.
     */
-   private fun allure(): AllureLifecycle = try {
+   internal fun allure(): AllureLifecycle = try {
       Allure.getLifecycle() ?: throw IllegalStateException()
    } catch (t: Throwable) {
       log("Error getting allure lifecycle", t)
       t.printStackTrace()
       throw t
+   }
+
+   override fun beforeProject() {
+      Paths.get("allure-results").toFile().deleteRecursively()
    }
 
    private fun safeId(description: Description): String =
@@ -45,11 +52,17 @@ object AllureTestListener : TestListener {
       val uuid = UUID.randomUUID()
       uuids[testCase.description] = uuid
 
-      val labels = listOf(
+      val labels = listOfNotNull(
+         createSuiteLabel(testCase.description.spec().name),
          createThreadLabel(),
          createHostLabel(),
          createLanguageLabel("kotlin"),
-         createFrameworkLabel("kotest")
+         createFrameworkLabel("kotest"),
+         testCase.epic(),
+         testCase.story(),
+         testCase.feature(),
+         testCase.severity(),
+         testCase.owner()
       )
 
       val result = io.qameta.allure.model.TestResult()
@@ -65,17 +78,24 @@ object AllureTestListener : TestListener {
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+
       log("Allure afterTest $testCase")
       val uuid = uuids[testCase.description]
+
+      val status = when (result.status) {
+         // what we call an error, allure calls a failure
+         TestStatus.Error -> Status.BROKEN
+         TestStatus.Failure -> Status.FAILED
+         TestStatus.Ignored -> Status.SKIPPED
+         TestStatus.Success -> Status.PASSED
+      }
+
+      val details = StatusDetails()
+      details.message = result.error?.message
+
       allure().updateTestCase(uuid.toString()) {
-         val status = when (result.status) {
-            // what we call an error, allure calls a failure
-            TestStatus.Error -> Status.BROKEN
-            TestStatus.Failure -> Status.FAILED
-            TestStatus.Ignored -> Status.SKIPPED
-            TestStatus.Success -> Status.PASSED
-         }
          it.status = status
+         it.statusDetails = details
       }
       allure().stopTestCase(uuid.toString())
       allure().writeTestCase(uuid.toString())
