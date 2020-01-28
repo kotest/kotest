@@ -1,5 +1,6 @@
 package io.kotest.matchers
 
+import io.kotest.assertions.show.show
 import kotlin.reflect.KClass
 
 // alias for beInstanceOf
@@ -8,8 +9,8 @@ fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
 fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
   MatcherResult(
      expected.isInstance(value),
-      "$value is of type ${value::class.qualifiedName} but expected ${expected.qualifiedName}",
-      "${value::class.qualifiedName} should not be of type ${expected.qualifiedName}"
+      "$value is of type ${value::class.show()} but expected ${expected.show()}",
+      "${value::class.show()} should not be of type ${expected.show()}"
   )
 }
 
@@ -22,8 +23,8 @@ inline fun <U : Any, reified T : U> beInstanceOf2(): Matcher<U> = object : Match
   override fun test(value: U): MatcherResult =
       MatcherResult(
           T::class.isInstance(value),
-          "$value is of type ${value::class.qualifiedName} but expected ${T::class.qualifiedName}",
-          "$value should not be an instance of ${T::class.qualifiedName}")
+          "$value is of type ${value::class.show()} but expected ${T::class.show()}",
+          "$value should not be an instance of ${T::class.show()}")
 
 }
 
@@ -34,8 +35,8 @@ inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = beInstanceOf(T::cla
 fun beOfType(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
   MatcherResult(
       expected == value::class,
-      "$value should be of type ${expected.qualifiedName}",
-      "$value should not be of type ${expected.qualifiedName}")
+      "$value should be of type ${expected.show()}",
+      "$value should not be of type ${expected.show()}")
 }
 
 inline fun <reified T : Any> beOfType(): Matcher<Any?> = beOfType(T::class)
