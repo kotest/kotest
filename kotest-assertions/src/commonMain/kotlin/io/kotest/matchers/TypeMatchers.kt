@@ -7,9 +7,9 @@ fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
 
 fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
   MatcherResult(
-      expected.java.isAssignableFrom(value.javaClass),
-      "$value is of type ${value.javaClass} but expected $expected",
-      "$value should not be of type $expected"
+     expected.isInstance(value),
+      "$value is of type ${value::class.qualifiedName} but expected ${expected.qualifiedName}",
+      "${value::class.qualifiedName} should not be of type ${expected.qualifiedName}"
   )
 }
 
@@ -21,9 +21,9 @@ inline fun <U : Any, reified T : U> beInstanceOf2(): Matcher<U> = object : Match
 
   override fun test(value: U): MatcherResult =
       MatcherResult(
-          T::class.java.isAssignableFrom(value.javaClass),
-          "$value is of type ${value.javaClass} but expected ${T::class.java.canonicalName}",
-          "$value should not be an instance of ${T::class.java.canonicalName}")
+          T::class.isInstance(value),
+          "$value is of type ${value::class.qualifiedName} but expected ${T::class.qualifiedName}",
+          "$value should not be an instance of ${T::class.qualifiedName}")
 
 }
 
@@ -33,7 +33,7 @@ inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = beInstanceOf(T::cla
 
 fun beOfType(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
   MatcherResult(
-      value.javaClass == expected.java,
+      expected == value::class,
       "$value should be of type ${expected.qualifiedName}",
       "$value should not be of type ${expected.qualifiedName}")
 }
