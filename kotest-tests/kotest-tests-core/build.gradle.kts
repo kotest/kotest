@@ -6,6 +6,7 @@ plugins {
    id("kotlin-multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
+   id "io.qameta.allure" version "2.8.1"
 }
 
 repositories {

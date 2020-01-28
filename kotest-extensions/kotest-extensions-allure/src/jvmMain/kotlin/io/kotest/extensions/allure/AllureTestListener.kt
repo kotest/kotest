@@ -40,7 +40,7 @@ object AllureTestListener : TestListener, ProjectListener {
    }
 
    override fun beforeProject() {
-      Paths.get("allure-results").toFile().deleteRecursively()
+      Paths.get("./allure-results").toFile().deleteRecursively()
    }
 
    private fun safeId(description: Description): String =
