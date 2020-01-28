@@ -20,7 +20,7 @@ fun <T : Any> showFor(t: T): Show<T> = when (t) {
   is Long, t is Boolean, t is Int, t is Double, t is Float, t is Short, t is Byte -> DefaultShow
   is KClass<*> -> KClassShow() as Show<T>
   else -> when {
-    // this won't work in JS so they'll get the boring old toString version
+    // this won't work in JS or native, so they'll get the boring old toString version
     t::class.isDataClass() -> dataClassShow<T>()
     else -> DefaultShow
   }

@@ -15,8 +15,8 @@ class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessag
 
       for ((i, err) in errors.withIndex()) {
         append(i + 1).append(") ").append(err.message).append("\n")
-        if (err.throwableLocation() != null) {
-          append("\tat ").append(err.throwableLocation()).append("\n")
+        err.throwableLocation()?.let {
+          append("\tat ").append(it).append("\n")
         }
       }
     }
