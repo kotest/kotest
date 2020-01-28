@@ -47,6 +47,7 @@ object Libs {
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
       const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
+      const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
    }
 
    object Ktor {

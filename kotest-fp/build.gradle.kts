@@ -8,6 +8,9 @@ repositories {
    mavenCentral()
 }
 
+val ideaActive = System.getProperty("idea.active") == "true"
+val os = org.gradle.internal.os.OperatingSystem.current()
+
 kotlin {
 
    targets {
@@ -24,6 +27,17 @@ kotlin {
                moduleKind = "commonjs"
             }
          }
+      }
+      if (!ideaActive) {
+         linuxX64()
+         mingwX64()
+         macosX64()
+      } else if (os.isMacOsX) {
+         macosX64("native")
+      } else if (os.isWindows) {
+         mingwX64("native")
+      } else {
+         linuxX64("native")
       }
    }
 
@@ -54,6 +68,16 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+         }
+      }
+
+      if (!ideaActive) {
+         val nativeMain by creating {
+            dependsOn(commonMain)
+         }
+
+         configure(listOf(getByName("macosX64Main"), getByName("linuxX64Main"), getByName("mingwX64Main"))) {
+            dependsOn(nativeMain)
          }
       }
    }
