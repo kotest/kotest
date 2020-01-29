@@ -30,7 +30,7 @@ fun Spec.resolvedTestListeners(): List<TestListener> {
       }
 
       override suspend fun afterSpec(spec: Spec) {
-         this@resolvedTestListeners.afterSpecs.forEach { it() }
+         this@resolvedTestListeners.afterSpecs.forEach { it(spec) }
          this@resolvedTestListeners.afterSpec(spec)
       }
 

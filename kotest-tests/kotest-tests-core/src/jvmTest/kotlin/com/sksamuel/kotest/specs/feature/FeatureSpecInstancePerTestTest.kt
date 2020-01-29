@@ -1,49 +1,62 @@
 package com.sksamuel.kotest.specs.feature
 
+import com.sksamuel.kotest.specs.feature.FeatureSpecInstancePerTestHolder.chars
+import com.sksamuel.kotest.specs.feature.FeatureSpecInstancePerTestHolder.specs
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
-import java.util.concurrent.atomic.AtomicInteger
 
-class FeatureSpecInstancePerTestTest : FeatureSpec() {
-   init {
-      isolation = IsolationMode.InstancePerTest
+object FeatureSpecInstancePerTestHolder {
+   var chars = ""
+   var specs = mutableSetOf<Int>()
+}
 
-      val count = AtomicInteger(0)
+class FeatureSpecInstancePerTestTest : FeatureSpec({
 
-      feature("A") {
-         count.incrementAndGet().shouldBe(1)
-         scenario("B") {
-            count.incrementAndGet().shouldBe(2)
-         }
-         feature("C") {
-            count.incrementAndGet().shouldBe(2)
-            scenario("D") {
-               count.incrementAndGet().shouldBe(3)
-            }
-            feature("E") {
-               count.incrementAndGet().shouldBe(3)
-               scenario("F") {
-                  count.incrementAndGet().shouldBe(4)
-               }
-               scenario("G") {
-                  count.incrementAndGet().shouldBe(4)
-               }
-            }
-         }
+   afterProject {
+      chars shouldBe "aabacacdaceacefaceghhihijhik"
+      specs.size shouldBe 11
+   }
+
+   afterSpec {
+      specs.add(it.hashCode())
+   }
+
+   isolation = IsolationMode.InstancePerTest
+
+   feature("A") {
+      chars += "a"
+      scenario("B") {
+         chars += "b"
       }
-
-      feature("H") {
-         count.incrementAndGet().shouldBe(1)
-         feature("I") {
-            count.incrementAndGet().shouldBe(2)
-            scenario("J") {
-               count.incrementAndGet().shouldBe(3)
+      feature("C") {
+         chars += "c"
+         scenario("D") {
+            chars += "d"
+         }
+         feature("E") {
+            chars += "e"
+            scenario("F") {
+               chars += "f"
             }
-            scenario("K") {
-               count.incrementAndGet().shouldBe(3)
+            scenario("G") {
+               chars += "g"
             }
          }
       }
    }
-}
+
+   feature("H") {
+      chars += "h"
+      feature("I") {
+         chars += "i"
+         scenario("J") {
+            chars += "j"
+         }
+         scenario("K") {
+            chars += "k"
+         }
+      }
+   }
+
+})

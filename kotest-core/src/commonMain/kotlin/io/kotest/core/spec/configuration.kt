@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = () -> Unit
-typealias AfterSpec = () -> Unit
+typealias AfterSpec = (Spec) -> Unit
 typealias BeforeProject = () -> Unit
 typealias AfterProject = () -> Unit
 typealias PrepareSpec = (KClass<out Spec>) -> Unit
@@ -191,7 +191,7 @@ abstract class TestConfiguration {
     * when the tests are completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpecs = listOf({ closeable.close() }) + afterSpecs
+      afterSpecs = listOf<AfterSpec>({ closeable.close() }) + afterSpecs
       return closeable
    }
 }
