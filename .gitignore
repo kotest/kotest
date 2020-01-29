@@ -8,6 +8,8 @@
 *.war
 *.ear
 
+.allure
+
 *.iml
 .idea
 

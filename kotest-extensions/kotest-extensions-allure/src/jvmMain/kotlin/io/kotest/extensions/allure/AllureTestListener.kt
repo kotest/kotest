@@ -22,6 +22,8 @@ fun TestCase.feature(): Label? = this.spec::class.findAnnotation<Feature>()?.let
 fun TestCase.severity(): Label? = this.spec::class.findAnnotation<Severity>()?.let { createSeverityLabel(it.value) }
 fun TestCase.story(): Label? = this.spec::class.findAnnotation<Story>()?.let { createStoryLabel(it.value) }
 fun TestCase.owner(): Label? = this.spec::class.findAnnotation<Owner>()?.let { createOwnerLabel(it.value) }
+fun TestCase.issue() = spec::class.findAnnotation<Issue>()?.let { createIssueLink(it.value) }
+fun TestCase.description() = spec::class.findAnnotation<io.qameta.allure.Description>()?.value
 
 @AutoScan
 object AllureTestListener : TestListener, ProjectListener {
@@ -58,11 +60,16 @@ object AllureTestListener : TestListener, ProjectListener {
          createHostLabel(),
          createLanguageLabel("kotlin"),
          createFrameworkLabel("kotest"),
+         createPackageLabel(testCase.spec::class.java.`package`.name),
          testCase.epic(),
          testCase.story(),
          testCase.feature(),
          testCase.severity(),
          testCase.owner()
+      )
+
+      val links = listOfNotNull(
+         testCase.issue()
       )
 
       val result = io.qameta.allure.model.TestResult()
@@ -72,6 +79,8 @@ object AllureTestListener : TestListener, ProjectListener {
          .setTestCaseId(safeId(testCase.description))
          .setHistoryId(testCase.description.name)
          .setLabels(labels)
+         .setLinks(links)
+         .setDescription(testCase.description())
 
       allure().scheduleTestCase(result)
       allure().startTestCase(uuid.toString())

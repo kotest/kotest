@@ -40,6 +40,7 @@ plugins {
    id 'signing'
    id 'net.researchgate.release' version '2.8.0'
    id 'com.adarshr.test-logger' version '2.0.0'
+   id 'io.qameta.allure' version "2.8.1"
 }
 
 // apply plugin: "io.kotest"
@@ -50,6 +51,12 @@ allprojects {
       mavenCentral()
       jcenter()
       google()
+   }
+
+   apply plugin: 'io.qameta.allure'
+
+   allure {
+      version = '2.13.1'
    }
 
    sourceCompatibility = 1.8
@@ -68,6 +75,12 @@ allprojects {
    }
 
    afterReleaseBuild.dependsOn publish
+}
+
+import io.qameta.allure.gradle.task.AllureReport
+
+task allureAggregatedReport(type: AllureReport) {
+   resultsDirs = subprojects.allure.resultsDir
 }
 
 dependencies {
