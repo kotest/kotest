@@ -1,5 +1,6 @@
 package io.kotest.core.runtime
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
@@ -41,7 +42,8 @@ suspend fun TestCase.invokeAfterTest(result: TestResult) {
  * Notifies the user listeners that a [Spec] is starting.
  * This will be invoked for every instance of a spec.
  */
-suspend fun Spec.invokeBeforeSpec( ): Try<Spec> = Try {
+suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
+   log("invokeBeforeSpec $this")
    val listeners = resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.beforeSpec(this)
@@ -53,7 +55,8 @@ suspend fun Spec.invokeBeforeSpec( ): Try<Spec> = Try {
  * Notifies the user listeners that a [Spec] has finished.
  * This will be invoked for every instance of a spec.
  */
-suspend fun Spec.invokeAfterSpec( ): Try<Spec> = Try {
+suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
+   log("invokeAfterSpec $this")
    val listeners = resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterSpec(this)

@@ -9,7 +9,7 @@ import io.kotest.core.runtime.invokeAfterTest
 import io.kotest.core.runtime.invokeBeforeTest
 import io.kotest.core.test.*
 import io.kotest.fp.Try
-import io.kotest.fp.recover
+import io.kotest.fp.getOrElse
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
@@ -125,7 +125,7 @@ class TestExecutor(private val listener: TestEngineListener) {
          .flatMap {
             val result = invokeTestCase(testCase, context, start)
             afterTestListeners(testCase, result)
-         }.recover { TestResult.throwable(it, (System.currentTimeMillis() - start).milliseconds) }
+         }.getOrElse { TestResult.throwable(it, (System.currentTimeMillis() - start).milliseconds) }
    }
 
    private suspend fun invokeTestCase(testCase: TestCase, context: TestContext, start: Long): TestResult {
@@ -223,7 +223,6 @@ class TestExecutor(private val listener: TestEngineListener) {
                try {
                   runBlocking {
                      testCase.invokeAfterTest(result)
-                     result
                   }
                   cont.resumeWith(Result.success(result))
                } catch (e: Throwable) {

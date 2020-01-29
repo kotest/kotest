@@ -24,6 +24,10 @@ import kotlin.reflect.KClass
  */
 abstract class SpecRunner(val listener: TestEngineListener) {
 
+   /**
+    * Executes all the tests in this spec, returning a Failure if there was an exception in a listener
+    * or class initializer. Otherwise returns the results for the tests in that spec.
+    */
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
    suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit) {

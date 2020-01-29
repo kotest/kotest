@@ -1,5 +1,6 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.assertions.log
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
@@ -10,7 +11,6 @@ import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
-import io.kotest.assertions.log
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -45,10 +45,6 @@ import io.kotest.assertions.log
  */
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   // a test may already have been discovered because we re-run the parents each time for a nested test
-   // therefore this set is used to avoid repeated discoveries
-   private val executed = mutableSetOf<Description>()
-
    private val results = mutableMapOf<TestCase, TestResult>()
 
    /**
@@ -64,7 +60,10 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.materializeRootTests().forEach { executeInCleanSpec(it.testCase) }
+      spec.materializeRootTests().forEach { test ->
+         executeInCleanSpec(test.testCase)
+            .getOrThrow()
+      }
       results
    }
 
@@ -80,19 +79,20 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   private suspend fun executeInCleanSpec(test: TestCase) {
-      createInstance(test.spec::class).flatMap { spec ->
-         log("invokeBeforeSpec $spec")
-         spec.invokeBeforeSpec()
-      }.map { spec ->
-         log("Created new spec instance $spec")
-         interceptSpec(spec) {
-            // we need to find the same root test but in the newly created spec
-            val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
-            log("Starting root test ${root.testCase.description} in search of ${test.description}")
-            run(root.testCase, test)
-            spec.invokeAfterSpec()
-         }
+   private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
+      return createInstance(test.spec::class)
+         .flatMap { it.invokeBeforeSpec() }
+         .flatMap { interceptAndRun(it, test) }
+         .flatMap { test.spec.invokeAfterSpec() }
+   }
+
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase) = Try {
+      log("Created new spec instance $spec")
+      interceptSpec(spec) {
+         // we need to find the same root test but in the newly created spec
+         val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
+         log("Starting root test ${root.testCase.description} in search of ${test.description}")
+         run(root.testCase, test)
       }
    }
 
@@ -115,7 +115,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
                // should begin execution of them in fresh specs
                // otherwise if the test is on the path we can continue in the same spec
                if (isTarget) {
-                  executeInCleanSpec(t)
+                  executeInCleanSpec(t).getOrThrow()
                } else if (t.description.isOnPath(target.description)) {
                   run(t, target)
                }

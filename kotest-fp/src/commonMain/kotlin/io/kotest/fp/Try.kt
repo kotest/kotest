@@ -18,6 +18,14 @@ sealed class Try<out T> {
       Try { f(it) }
    }
 
+   fun isSuccess() = this is Success
+   fun isFailure() = this is Failure
+
+   fun getOrThrow(): T = when (this) {
+      is Failure -> throw error
+      is Success -> value
+   }
+
    inline fun <U> flatMap(f: (T) -> Try<U>): Try<U> = when (this) {
       is Failure -> this
       is Success -> f(value)
@@ -51,8 +59,26 @@ sealed class Try<out T> {
    })
 }
 
-fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): U = fold({ f(it) }, { it })
+fun <T> Try<Try<T>>.flatten(): Try<T> = when (this) {
+   is Try.Success -> this.value
+   is Try.Failure -> this
+}
 
-fun <T> T.success() = Try.Success(this)
+inline fun <U, T : U> Try<T>.getOrElse(f: (Throwable) -> U): U = when (this) {
+   is Try.Success -> this.value
+   is Try.Failure -> f(this.error)
+}
+
+inline fun <U, T : U> Try<T>.recoverWith(f: (Throwable) -> Try<U>): Try<U> = when (this) {
+   is Try.Success -> this
+   is Try.Failure -> f(this.error)
+}
+
+fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): Try<U> = when (this) {
+   is Try.Success -> this
+   is Try.Failure -> Try { f(this.error) }
+}
+
+fun <T> T.success(): Try<T> = Try.Success(this)
 
 expect fun nonFatal(t: Throwable): Boolean

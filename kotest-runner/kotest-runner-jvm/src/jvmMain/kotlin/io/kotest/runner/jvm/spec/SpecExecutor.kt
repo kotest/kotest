@@ -1,16 +1,17 @@
 package io.kotest.runner.jvm.spec
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedIsolationMode
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
+import io.kotest.fp.flatten
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.instantiateSpec
 import kotlin.reflect.KClass
-import io.kotest.assertions.log
 
 /**
  * Handles the execution of a single [Spec] class.
@@ -31,7 +32,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
          .flatMap { createInstance(kclass) }
          .flatMap { runTests(it) }
          .flatMap { notifyFinalizeSpec(kclass, it) }
-         .fold({ notifySpecFinished(kclass, it, emptyMap()) }, { notifySpecFinished(kclass, null, it) })
+         .fold(
+            { notifySpecFinished(kclass, it, emptyMap()) },
+            { notifySpecFinished(kclass, null, it) }
+         )
    }
 
    /**
@@ -77,11 +81,11 @@ class SpecExecutor(private val listener: TestEngineListener) {
          .onFailure { notifySpecInstantiationError(kclass, it) }
          .onSuccess { notifySpecInstantiated(it) }
 
-   private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {
+   private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
       val mode = spec.resolvedIsolationMode()
       val runner = mode.runner()
-      return runner.execute(spec)
-   }
+      runner.execute(spec)
+   }.flatten()
 
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
@@ -92,6 +96,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    /**
     * Notifies the user listeners that a new [Spec] is starting.
     * This is only invoked once per spec class, regardless of the number of invocations.
+    * If this errors then no further callbacks or tests will be executed.
     */
    private suspend fun notifyPrepareSpec(kclass: KClass<out Spec>): Try<Unit> = Try {
       log("Executing notifyPrepareSpec")
