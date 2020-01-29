@@ -11,8 +11,8 @@ private val specs = mutableSetOf<Int>()
 class FreeSpecInstancePerTestTest : FreeSpec({
 
    afterProject {
-      tests.size shouldBe 7
-      specs.size shouldBe 7
+      tests.size shouldBe 9
+      specs.size shouldBe 9
    }
 
    afterSpec {
@@ -35,17 +35,23 @@ class FreeSpecInstancePerTestTest : FreeSpec({
          "c".config() {
             count.incrementAndGet().shouldBe(3)
          }
+         "d".config() {
+            count.incrementAndGet().shouldBe(3)
+         }
       }
-      "d" - {
+      "e" - {
          count.incrementAndGet().shouldBe(2)
-         "e" {
+         "f" {
             count.incrementAndGet().shouldBe(3)
          }
       }
    }
-   "f" - {
+   "g" - {
       count.incrementAndGet().shouldBe(1)
-      "g" {
+      "h" {
+         count.incrementAndGet().shouldBe(2)
+      }
+      "i" {
          count.incrementAndGet().shouldBe(2)
       }
    }

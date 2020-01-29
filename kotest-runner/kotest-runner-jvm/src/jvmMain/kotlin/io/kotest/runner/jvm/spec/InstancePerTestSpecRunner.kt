@@ -83,10 +83,10 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       return createInstance(test.spec::class)
          .flatMap { it.invokeBeforeSpec() }
          .flatMap { interceptAndRun(it, test) }
-         .flatMap { test.spec.invokeAfterSpec() }
+         .flatMap { it.invokeAfterSpec() }
    }
 
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase) = Try {
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
       interceptSpec(spec) {
          // we need to find the same root test but in the newly created spec
@@ -94,6 +94,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
          log("Starting root test ${root.testCase.description} in search of ${test.description}")
          run(root.testCase, test)
       }
+      spec
    }
 
    private suspend fun run(test: TestCase, target: TestCase) {
