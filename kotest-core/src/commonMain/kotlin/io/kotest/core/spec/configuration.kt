@@ -4,10 +4,10 @@ package io.kotest.core.spec
 
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.configureRuntime
 import io.kotest.core.runtime.executeSpec
@@ -19,9 +19,8 @@ import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
-typealias BeforeSpec = () -> Unit
+typealias BeforeSpec = (Spec) -> Unit
 typealias AfterSpec = (Spec) -> Unit
-typealias BeforeProject = () -> Unit
 typealias AfterProject = () -> Unit
 typealias PrepareSpec = (KClass<out Spec>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
@@ -109,7 +108,7 @@ abstract class TestConfiguration {
     * Registers a new before-test callback to be executed before every [TestCase].
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   fun beforeTest(f: BeforeTest) {
+   open fun beforeTest(f: BeforeTest) {
       beforeTests = beforeTests + f
    }
 
@@ -118,15 +117,15 @@ abstract class TestConfiguration {
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
     */
-   fun afterTest(f: AfterTest) {
+   open fun afterTest(f: AfterTest) {
       afterTests = afterTests + f
    }
 
-   fun beforeSpec(f: BeforeSpec) {
+   open fun beforeSpec(f: BeforeSpec) {
       beforeSpecs = beforeSpecs + f
    }
 
-   fun afterSpec(f: AfterSpec) {
+   open fun afterSpec(f: AfterSpec) {
       afterSpecs = afterSpecs + f
    }
 
@@ -197,6 +196,7 @@ abstract class TestConfiguration {
 }
 
 // we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
+@Suppress("unused")
 val initializeRuntime = configureRuntime()
 
 @Testable
@@ -218,6 +218,38 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
     * If left null, then the project default is applied.
     */
    var testOrder: TestCaseOrder? = null
+
+   override fun beforeTest(f: BeforeTest) {
+     listener(object: TestListener {
+        override suspend fun beforeTest(testCase: TestCase) {
+           f(testCase)
+        }
+     })
+   }
+
+   override fun afterTest(f: AfterTest) {
+      listener(object: TestListener {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            f(Tuple2(testCase, result))
+         }
+      })
+   }
+
+   override fun beforeSpec(f: BeforeSpec) {
+      listener(object: TestListener {
+         override suspend fun beforeSpec(spec: Spec) {
+            f(spec)
+         }
+      })
+   }
+
+   override fun afterSpec(f: AfterSpec) {
+      listener(object: TestListener {
+         override suspend fun afterSpec(spec: Spec) {
+            f(spec)
+         }
+      })
+   }
 
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js framework adapter to generate tests.

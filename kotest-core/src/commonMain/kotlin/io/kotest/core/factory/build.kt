@@ -24,7 +24,6 @@ fun TestFactoryConfiguration.build(): TestFactory {
    val callbacks = object : TestListener {
 
       override suspend fun beforeTest(testCase: TestCase) {
-         println("${testCase.factoryId} == ${factory.factoryId} is ${testCase.factoryId == factory.factoryId}")
          if (testCase.factoryId == factory.factoryId) {
             this@build.beforeTests.forEach { it(testCase) }
          }
@@ -41,7 +40,7 @@ fun TestFactoryConfiguration.build(): TestFactory {
       }
 
       override suspend fun beforeSpec(spec: Spec) {
-         this@build.beforeSpecs.forEach { it() }
+         this@build.beforeSpecs.forEach { it(spec) }
       }
    }
 
