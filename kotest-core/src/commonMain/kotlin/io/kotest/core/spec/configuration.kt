@@ -63,12 +63,6 @@ abstract class TestConfiguration {
     */
    internal var factories = emptyList<TestFactory>()
 
-   // test lifecycle callbacks
-   internal var beforeTests = emptyList<BeforeTest>()
-   internal var afterTests = emptyList<AfterTest>()
-   internal var beforeSpecs = emptyList<BeforeSpec>()
-   internal var afterSpecs = emptyList<AfterSpec>()
-
    // test listeners
    // using underscore name to avoid clash in JS compiler with existing methods
    internal var _listeners = emptyList<TestListener>()
@@ -108,25 +102,29 @@ abstract class TestConfiguration {
     * Registers a new before-test callback to be executed before every [TestCase].
     * The [TestCase] about to be executed is provided as the parameter.
     */
-   open fun beforeTest(f: BeforeTest) {
-      beforeTests = beforeTests + f
-   }
+   abstract fun beforeTest(f: BeforeTest)
 
    /**
     * Registers a new after-test callback to be executed after every [TestCase].
     * The callback provides two parameters - the test case that has just completed,
     * and the [TestResult] outcome of that test.
     */
-   open fun afterTest(f: AfterTest) {
-      afterTests = afterTests + f
+   abstract fun afterTest(f: AfterTest)
+
+   fun beforeSpec(f: BeforeSpec) {
+      listener(object : TestListener {
+         override suspend fun beforeSpec(spec: Spec) {
+            f(spec)
+         }
+      })
    }
 
-   open fun beforeSpec(f: BeforeSpec) {
-      beforeSpecs = beforeSpecs + f
-   }
-
-   open fun afterSpec(f: AfterSpec) {
-      afterSpecs = afterSpecs + f
+   fun afterSpec(f: AfterSpec) {
+      listener(object : TestListener {
+         override suspend fun afterSpec(spec: Spec) {
+            f(spec)
+         }
+      })
    }
 
    fun prepareSpec(f: PrepareSpec) {
@@ -190,7 +188,9 @@ abstract class TestConfiguration {
     * when the tests are completed.
     */
    fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpecs = listOf<AfterSpec>({ closeable.close() }) + afterSpecs
+      afterSpec {
+         closeable.close()
+      }
       return closeable
    }
 }
@@ -231,22 +231,6 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
       listener(object: TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
-         }
-      })
-   }
-
-   override fun beforeSpec(f: BeforeSpec) {
-      listener(object: TestListener {
-         override suspend fun beforeSpec(spec: Spec) {
-            f(spec)
-         }
-      })
-   }
-
-   override fun afterSpec(f: AfterSpec) {
-      listener(object: TestListener {
-         override suspend fun afterSpec(spec: Spec) {
-            f(spec)
          }
       })
    }

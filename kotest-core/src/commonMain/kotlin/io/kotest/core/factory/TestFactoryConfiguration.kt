@@ -1,10 +1,10 @@
 package io.kotest.core.factory
 
 import io.kotest.core.sourceRef
+import io.kotest.core.spec.AfterTest
+import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.TestConfiguration
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 
 /**
  * A [TestFactoryConfiguration] provides a DSL to allow for easy creation of a
@@ -19,6 +19,27 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * Contains the [DynamicTest]s that have been added to this configuration.
     */
    internal var tests = emptyList<DynamicTest>()
+
+   // test lifecycle callbacks
+   internal var beforeTests = emptyList<BeforeTest>()
+   internal var afterTests = emptyList<AfterTest>()
+
+   /**
+    * Registers a new before-test callback to be executed before every [TestCase].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun beforeTest(f: BeforeTest) {
+      beforeTests = beforeTests + f
+   }
+
+   /**
+    * Registers a new after-test callback to be executed after every [TestCase].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   override fun afterTest(f: AfterTest) {
+      afterTests = afterTests + f
+   }
 
    /**
     * Adds a new [DynamicTest] to this factory. When this factory is included

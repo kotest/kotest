@@ -1,6 +1,5 @@
 package io.kotest.core.factory
 
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.TestListener
@@ -22,7 +21,6 @@ fun TestFactoryConfiguration.build(): TestFactory {
    )
 
    val callbacks = object : TestListener {
-
       override suspend fun beforeTest(testCase: TestCase) {
          if (testCase.factoryId == factory.factoryId) {
             this@build.beforeTests.forEach { it(testCase) }
@@ -33,14 +31,6 @@ fun TestFactoryConfiguration.build(): TestFactory {
          if (testCase.factoryId == factory.factoryId) {
             this@build.afterTests.forEach { it(Tuple2(testCase, result)) }
          }
-      }
-
-      override suspend fun afterSpec(spec: Spec) {
-         this@build.afterSpecs.forEach { it(spec) }
-      }
-
-      override suspend fun beforeSpec(spec: Spec) {
-         this@build.beforeSpecs.forEach { it(spec) }
       }
    }
 

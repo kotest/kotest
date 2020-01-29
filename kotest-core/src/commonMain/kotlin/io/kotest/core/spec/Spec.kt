@@ -3,10 +3,11 @@ package io.kotest.core.spec
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.generate
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.listeners.RootTest
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestResult
 
 /**
  * Returns the resolved listeners for a given [Spec].
@@ -14,7 +15,24 @@ import io.kotest.core.listeners.TestListener
  * callback-dsl methods, and listeners defined in any included test factories.
  */
 fun Spec.resolvedTestListeners(): List<TestListener> {
-   return this._listeners + this.listeners() + factories.flatMap { it.listeners }
+   val callbacks = object : TestListener {
+      override suspend fun afterSpec(spec: Spec) {
+         this@resolvedTestListeners.afterSpec(spec)
+      }
+
+      override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+         this@resolvedTestListeners.afterTest(testCase, result)
+      }
+
+      override suspend fun beforeTest(testCase: TestCase) {
+         this@resolvedTestListeners.beforeTest(testCase)
+      }
+
+      override suspend fun beforeSpec(spec: Spec) {
+         this@resolvedTestListeners.beforeSpec(spec)
+      }
+   }
+   return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
 fun Spec.resolvedExtensions(): List<Extension> {
