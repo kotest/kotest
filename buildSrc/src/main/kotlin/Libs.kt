@@ -16,7 +16,7 @@ object Libs {
    }
 
    object JUnitPlatform {
-      private const val version = "1.6.0-RC1"
+      private const val version = "1.6.0"
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
       const val api = "org.junit.platform:junit-platform-suite-api:$version"
@@ -24,7 +24,7 @@ object Libs {
    }
 
    object JUnitJupiter {
-      private const val version = "5.6.0-RC1"
+      private const val version = "5.6.0"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
