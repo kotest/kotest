@@ -8,7 +8,7 @@ import java.nio.file.Files
 
 class JUnitHTMLReportTest : WordSpec() {
 
-  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag)
+  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag, GithubActionsTag)
 
   fun indexHtml(): String {
     val ReportPath = "kotest-tests/kotest-tests-core/build/reports/tests/test/index.html"
