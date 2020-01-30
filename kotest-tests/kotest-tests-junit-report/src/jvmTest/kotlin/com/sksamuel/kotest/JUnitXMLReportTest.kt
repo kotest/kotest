@@ -9,12 +9,16 @@ import java.io.File
 
 class JUnitXMLReportTest : WordSpec() {
 
-  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag)
+  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag, GithubActionsTag)
 
   fun root(): Element {
 
     val ReportPath = "kotest-tests/kotest-tests-core/build/test-results/test/TEST-com.sksamuel.kotest.specs.wordspec.WordSpecTest.xml"
     val file = when {
+      System.getenv("GITHUB_ACTIONS") == "true" -> {
+         println("XML: " + File(System.getenv("GITHUB_WORKSPACE") + "/kotlintest/kotest-tests/kotest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
+         File(System.getenv("GITHUB_WORKSPACE") + "/kotlintest/$ReportPath")
+      }
       System.getenv("TRAVIS") == "true" -> {
         println("XML: " + File(System.getenv("TRAVIS_BUILD_DIR") + "/kotest-tests/kotest-tests-core/build/test-results/test").listFiles().joinToString("\n"))
         File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
