@@ -1,0 +1,64 @@
+name: Test
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-latest, ubuntu-latest]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+
+      - name: Cache gradle
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      -  name: Cache gradle wrapper
+         uses: actions/cache@v1
+         with:
+            path: ~/.gradle/caches
+            key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+            restore-keys: |
+               ${{ runner.os }}-gradlewrapper-
+      -  name: Cache maven
+         uses: actions/cache@v1
+         with:
+            path: ~/.m2/repository/
+            key: ${{ runner.os }}-maven-${{ hashFiles('**/*.gradle') }}
+            restore-keys: |
+               ${{ runner.os }}-maven-
+
+      - name: Run ubuntu tests
+        if: matrix.os == 'ubuntu-latest'
+        run: ./gradlew check
+      - name: Run windows tests
+        if: matrix.os == 'windows-latest'
+        run: ./gradlew mingwX64Test
+      - name: Run macOS tests
+        if: matrix.os == 'macOS-latest'
+        run: ./gradlew macosX64Test
+
+      - name: Bundle the build report
+        if: failure()
+        run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+      - name: Upload the build report
+        if: failure()
+        uses: actions/upload-artifact@master
+        with:
+          name: error-report
+          path: build-reports.zip
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
