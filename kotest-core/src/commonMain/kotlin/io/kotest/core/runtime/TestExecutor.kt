@@ -89,7 +89,7 @@ class TestExecutor(
    ): TestResult {
       return when {
          extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, mark) }
-         else -> extensions.first().intercept(testCase) { intercept(testCase, context, mark, extensions.drop(1)) }
+         else -> extensions.first().intercept(testCase) { intercept(it, context, mark, extensions.drop(1)) }
       }
    }
 
