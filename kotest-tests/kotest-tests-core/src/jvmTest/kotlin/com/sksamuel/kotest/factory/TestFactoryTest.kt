@@ -6,9 +6,9 @@ import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicBoolean
 
 private fun factory(ref: AtomicBoolean) = funSpec {
-    test("this should becalled") {
-        ref.set(true)
-    }
+   test("this should becalled") {
+      ref.set(true)
+   }
 }
 
 class TestFactoryTest : FunSpec({
