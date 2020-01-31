@@ -3,7 +3,6 @@
 
 [![Build Status](https://github.com/kotlintest/kotlintest/workflows/build/badge.svg)](https://github.com/kotlintest/kotlintest/actions)
 [![Build Status](https://travis-ci.org/kotlintest/kotlintest.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest)
-[![Build status](https://ci.appveyor.com/api/projects/status/sr26tg49fk66yd82?svg=true)](https://ci.appveyor.com/project/sksamuel/kotlintest)
 [<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
