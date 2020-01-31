@@ -28,7 +28,7 @@ fun haveContent(content: String) = object : Matcher<TestApplicationResponse> {
   override fun test(value: TestApplicationResponse): MatcherResult {
     return MatcherResult(
         value.content!! == content,
-        "Response should have content $content had content ${value.content}",
+        "Response should have content $content but had content ${value.content}",
         "Response should not have content $content"
     )
   }
