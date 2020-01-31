@@ -14,22 +14,17 @@ import kotlin.time.ExperimentalTime
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
    object MyExt : TestCaseExtension {
-      override suspend fun intercept(
-         testCase: TestCase,
-         execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-         complete: suspend (TestResult) -> Unit
-      ) {
-         when (testCase.description.name) {
-            "test1" -> complete(TestResult.Ignored)
-            "test2" -> execute(testCase) {
-               when (it.status) {
-                  TestStatus.Error -> complete(TestResult.success(Duration.ZERO))
-                  else -> complete(TestResult.failure(AssertionError("boom"), Duration.ZERO))
+      override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+         return when (testCase.description.name) {
+            "test1" -> TestResult.Ignored
+            "test2" ->
+               when (execute(testCase).status) {
+                  TestStatus.Error -> TestResult.success(Duration.ZERO)
+                  else -> TestResult.failure(AssertionError("boom"), Duration.ZERO)
                }
-            }
-            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase) { complete(it) }
-            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false))) { complete(it) }
-            else -> execute(testCase) { complete(it) }
+            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
+            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
+            else -> execute(testCase)
          }
       }
    }

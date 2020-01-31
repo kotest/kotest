@@ -1,6 +1,9 @@
 package io.kotest.runner.jvm.spec
 
 import io.kotest.assertions.log
+import io.kotest.core.runtime.ExecutorExecutionContext
+import io.kotest.core.runtime.TestExecutionListener
+import io.kotest.core.runtime.TestExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
@@ -8,15 +11,16 @@ import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.ExperimentalTime
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
+@ExperimentalTime
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -43,10 +47,22 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       testCase: TestCase,
       coroutineContext: CoroutineContext
    ) {
-      val testExecutor = TestExecutor(listener)
-      testExecutor.execute(testCase, Context(testCase, coroutineContext), true) { result ->
-         results[testCase] = result
-      }
+      val testExecutor = TestExecutor(object : TestExecutionListener {
+         override fun testStarted(testCase: TestCase) {
+            listener.testStarted(testCase)
+         }
+
+         override fun testIgnored(testCase: TestCase) {
+            listener.testIgnored(testCase, null)
+         }
+
+         override fun testFinished(testCase: TestCase, result: TestResult) {
+            listener.testFinished(testCase, result)
+         }
+      }, ExecutorExecutionContext())
+
+      val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
+      results[testCase] = result
    }
 
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {

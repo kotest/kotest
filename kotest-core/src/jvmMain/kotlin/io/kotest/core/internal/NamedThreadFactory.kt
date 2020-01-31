@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm.internal
+package io.kotest.core.internal
 
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger

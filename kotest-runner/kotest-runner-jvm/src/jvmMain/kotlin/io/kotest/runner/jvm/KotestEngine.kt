@@ -10,7 +10,7 @@ import io.kotest.core.runtime.beforeAll
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
-import io.kotest.runner.jvm.internal.NamedThreadFactory
+import io.kotest.core.internal.NamedThreadFactory
 import io.kotest.runner.jvm.spec.SpecExecutor
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
@@ -60,7 +60,9 @@ class KotestEngine(
    }
 
    private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
-      val executor = Executors.newFixedThreadPool(parallelism, NamedThreadFactory("kotest-engine-%d"))
+      val executor = Executors.newFixedThreadPool(parallelism,
+          NamedThreadFactory("kotest-engine-%d")
+      )
       specs.forEach { klass ->
          executor.submit {
             runBlocking {

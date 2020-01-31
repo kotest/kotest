@@ -5,6 +5,7 @@ package io.kotest.core.spec
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.factory.DynamicTest
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.ProjectListener
@@ -70,33 +71,24 @@ abstract class TestConfiguration {
 
    fun extension(f: TestCaseExtensionFn) {
       _extensions = _extensions + object : TestCaseExtension {
-         override suspend fun intercept(
-            testCase: TestCase,
-            execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-            complete: suspend (TestResult) -> Unit
-         ) {
-            f(testCase, execute, complete)
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            return execute(testCase)
          }
       }
    }
 
-   fun aroundTest(runtest: AroundTestFn) {
-      _extensions = _extensions + object : TestCaseExtension {
-         override suspend fun intercept(
-            testCase: TestCase,
-            execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-            complete: suspend (TestResult) -> Unit
-         ) {
-            val f: suspend (suspend (TestResult) -> Unit) -> Unit = { callback ->
-               execute(testCase) { result ->
-                  callback(result)
-                  complete(result)
-               }
-            }
-            runtest.invoke(f)
-         }
-      }
-   }
+//   fun aroundTest(runtest: AroundTestFn) {
+//      _extensions = _extensions + object : TestCaseExtension {
+//         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+//            val f: suspend (suspend (TestResult) -> Unit) -> Unit = { callback ->
+//               val result = execute(testCase)
+//               callback(result)
+//               result
+//            }
+//            runtest(f)
+//         }
+//      }
+//   }
 
    /**
     * Registers a new before-test callback to be executed before every [TestCase].
@@ -184,6 +176,15 @@ abstract class TestConfiguration {
    }
 
    /**
+    * Includes the tests from the given [TestFactory] with the root tests of the
+    * factory given the prefix.
+    */
+   fun include(prefix: String, factory: TestFactory) {
+      fun DynamicTest.addPrefix() = copy(name = prefix + name)
+      factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
+   }
+
+   /**
     * Register an [AutoCloseable] so that it's close methods is automatically invoked
     * when the tests are completed.
     */
@@ -220,15 +221,15 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
    var testOrder: TestCaseOrder? = null
 
    override fun beforeTest(f: BeforeTest) {
-     listener(object: TestListener {
-        override suspend fun beforeTest(testCase: TestCase) {
-           f(testCase)
-        }
-     })
+      listener(object : TestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            f(testCase)
+         }
+      })
    }
 
    override fun afterTest(f: AfterTest) {
-      listener(object: TestListener {
+      listener(object : TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -236,9 +237,9 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
    }
 
    /**
-    * The annotation [JsTest] is intercepted by the kotlin.js framework adapter to generate tests.
-    *
-    * We need to use this function to invoke the javascript test engine.
+    * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
+    * javascript code. We need to hook into this function to invoke our execution code which will
+    * run tests defined by kotest.
     *
     * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests so we can
     * avoid passing this generating function to the underyling test framework so it doesn't appear

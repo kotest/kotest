@@ -12,6 +12,7 @@ import io.kotest.fp.flatten
 import io.kotest.runner.jvm.TestEngineListener
 import io.kotest.runner.jvm.instantiateSpec
 import kotlin.reflect.KClass
+import kotlin.time.ExperimentalTime
 
 /**
  * Handles the execution of a single [Spec] class.
@@ -87,6 +88,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       runner.execute(spec)
    }.flatten()
 
+   @UseExperimental(ExperimentalTime::class)
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)

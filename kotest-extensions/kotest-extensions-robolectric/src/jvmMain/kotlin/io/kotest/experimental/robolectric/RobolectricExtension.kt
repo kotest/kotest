@@ -22,16 +22,18 @@ class RobolectricExtension : ConstructorExtension, TestCaseExtension {
 
    override suspend fun intercept(
       testCase: TestCase,
-      execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-      complete: suspend (TestResult) -> Unit
-   ) {
-      if (testCase.spec::class.isRobolectricClass()) return
+      execute: suspend (TestCase) -> TestResult
+   ): TestResult {
+
+      if (testCase.spec::class.isRobolectricClass()) return TestResult.Ignored
 
       val containedRobolectricRunner = ContainedRobolectricRunner()
 
       beforeTest(containedRobolectricRunner)
-      execute(testCase) { complete(it) }
+      val result = execute(testCase)
       afterTest(containedRobolectricRunner)
+
+      return result
    }
 
    private fun beforeTest(containedRobolectricRunner: ContainedRobolectricRunner) {

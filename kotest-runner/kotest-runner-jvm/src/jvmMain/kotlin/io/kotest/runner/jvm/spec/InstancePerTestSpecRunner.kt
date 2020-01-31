@@ -1,6 +1,9 @@
 package io.kotest.runner.jvm.spec
 
 import io.kotest.assertions.log
+import io.kotest.core.runtime.ExecutorExecutionContext
+import io.kotest.core.runtime.TestExecutionListener
+import io.kotest.core.runtime.TestExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
@@ -8,9 +11,9 @@ import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.TestExecutor
 import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.ExperimentalTime
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -43,6 +46,7 @@ import kotlin.coroutines.CoroutineContext
  * spec3.outerTest
  * spec3.innerTestB
  */
+@ExperimentalTime
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -122,10 +126,21 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
                }
             }
          }
-         val testExecutor = TestExecutor(listener)
-         testExecutor.execute(test, context, isTarget) { result ->
-            results[test] = result
-         }
+         val testExecutor = TestExecutor(object : TestExecutionListener {
+            override fun testStarted(testCase: TestCase) {
+               if (isTarget) listener.testStarted(testCase)
+            }
+
+            override fun testIgnored(testCase: TestCase) {
+               if (isTarget) listener.testIgnored(testCase, null)
+            }
+
+            override fun testFinished(testCase: TestCase, result: TestResult) {
+               if (isTarget) listener.testFinished(testCase, result)
+            }
+         }, ExecutorExecutionContext())
+         val result = testExecutor.execute(test, context)
+         results[test] = result
       }
    }
 }

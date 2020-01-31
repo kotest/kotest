@@ -1,7 +1,6 @@
 package io.kotest.core.filters
 
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.filters.Filter
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -25,14 +24,10 @@ interface TestCaseFilter : Filter {
  * Creates an extension from this test case filter so it can be used as an extension.
  */
 fun TestCaseFilter.toExtension(): TestCaseExtension = object : TestCaseExtension {
-   override suspend fun intercept(
-      testCase: TestCase,
-      execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-      complete: suspend (TestResult) -> Unit
-   ) {
-      when (filter(testCase.description)) {
-         TestFilterResult.Include -> execute(testCase, complete)
-         TestFilterResult.Exclude -> complete(TestResult.Ignored)
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+      return when (filter(testCase.description)) {
+         TestFilterResult.Include -> execute(testCase)
+         TestFilterResult.Exclude -> TestResult.Ignored
       }
    }
 }
