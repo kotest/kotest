@@ -1,25 +1,28 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.assertions.timing
 
 import io.kotest.assertions.throwables.shouldThrowExactly
-import io.kotest.continually
+import io.kotest.assertions.timing.continually
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.shouldBe
-import java.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
+import kotlin.time.seconds
 
+@UseExperimental(ExperimentalTime::class)
 class ContinuallyTest : WordSpec() {
 
   init {
     "continually" should {
       "pass working tests" {
-        continually(Duration.ofMillis(500)) {
+        continually(500.milliseconds) {
           3.shouldBeLessThan(4)
         }
       }
       "fail broken tests immediately"  {
         shouldThrowExactly<AssertionError> {
-          continually(Duration.ofSeconds(3)) {
+          continually(3.seconds) {
             5.shouldBeLessThan(4)
           }
         }.message shouldBe "5 should be < 4"
@@ -27,7 +30,7 @@ class ContinuallyTest : WordSpec() {
       "fail tests start off as passing then fail within the period" {
         var n = 0
         val e = shouldThrowExactly<AssertionError> {
-          continually(Duration.ofSeconds(3)) {
+          continually(3.seconds) {
             Thread.sleep(10)
             n++ shouldBeLessThan 100
           }

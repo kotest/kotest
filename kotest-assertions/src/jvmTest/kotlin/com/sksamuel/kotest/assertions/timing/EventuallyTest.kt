@@ -1,82 +1,79 @@
-package com.sksamuel.kotest.eventually
+package com.sksamuel.kotest.assertions.timing
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.timing.eventually
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.eventually
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.days
+import kotlin.time.milliseconds
+import kotlin.time.seconds
 
+@UseExperimental(ExperimentalTime::class)
 class EventuallyTest : WordSpec() {
 
    init {
       "eventually" should {
          "pass working tests" {
-            eventually(Duration.ofDays(5)) {
+            eventually(5.days) {
                System.currentTimeMillis()
             }
          }
          "pass tests that completed within the time allowed"  {
             val end = System.currentTimeMillis() + 2000
-            eventually(Duration.ofSeconds(3)) {
+            eventually(3.seconds) {
                if (System.currentTimeMillis() < end)
                   throw RuntimeException("foo")
             }
          }
          "fail tests that do not complete within the time allowed" {
             shouldThrow<AssertionError> {
-               eventually(Duration.ofSeconds(2)) {
+               eventually(2.seconds) {
                   throw RuntimeException("foo")
                }
             }
          }
          "return the result computed inside" {
-            val result = eventually(Duration.ofSeconds(2)) {
+            val result = eventually(2.seconds) {
                1
             }
             result shouldBe 1
          }
          "pass tests that completed within the time allowed, AssertionError"  {
             val end = System.currentTimeMillis() + 2000
-            eventually(Duration.ofDays(5)) {
+            eventually(5.days) {
                if (System.currentTimeMillis() < end)
                   assert(false)
             }
          }
          "pass tests that completed within the time allowed, custom exception"  {
             val end = System.currentTimeMillis() + 2000
-            eventually(Duration.ofSeconds(5), FileNotFoundException::class.java) {
+            eventually(5.seconds, FileNotFoundException::class) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException()
             }
          }
          "fail tests throw unexpected exception type"  {
             shouldThrow<KotlinNullPointerException> {
-               eventually(Duration.ofSeconds(2), IOException::class.java) {
+               eventually(2.seconds, IOException::class) {
                   (null as String?)!!.length
                }
             }
          }
          "pass tests that throws FileNotFoundException for some time"  {
             val end = System.currentTimeMillis() + 2000
-            eventually(Duration.ofDays(5)) {
+            eventually(5.days) {
                if (System.currentTimeMillis() < end)
                   throw FileNotFoundException("foo")
             }
          }
-         "fail tests that fail a predicate" {
-            shouldThrow<AssertionError> {
-               eventually(Duration.ofSeconds(2), { it == 2 }) {
-                  1
-               }
-            }
-         }
          "handle kotlin assertion errors" {
             var thrown = false
-            eventually(Duration.ofMillis(100)) {
+            eventually(100.milliseconds) {
                if (!thrown) {
                   thrown = true
                   throw AssertionError("boom")
@@ -85,28 +82,22 @@ class EventuallyTest : WordSpec() {
          }
          "handle java assertion errors" {
             var thrown = false
-            eventually(Duration.ofMillis(100)) {
+            eventually(100.milliseconds) {
                if (!thrown) {
                   thrown = true
                   throw java.lang.AssertionError("boom")
                }
             }
          }
-         "pass tests that pass a predicate" {
-            val result = eventually(Duration.ofSeconds(2), { it == 1 }) {
-               1
-            }
-            result shouldBe 1
-         }
          "display the underlying assertion failure" {
             shouldThrow<AssertionError> {
-               eventually(Duration.ofMillis(100)) {
+               eventually(100.milliseconds) {
                   1 shouldBe 2
                }
             }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")
          }
          "allow suspendable functions" {
-            eventually(Duration.ofSeconds(2)) {
+            eventually(2.seconds) {
                delay(1000)
                System.currentTimeMillis()
             }

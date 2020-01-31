@@ -11,3 +11,11 @@ In project config, the way some settings are overridden has changed. So, instead
 Spring and Koin extensions are now auto scanned, so you no longer need to manual add them to a project (although they won't be registered twice if you do). Simply adding those modules to your gradle or maven build is sufficient.
 
 TestExtension now simplified to use a single callback
+
+continually now uses kotlin durations
+
+test case configuration now uses kotlin durations
+
+until and eventually are not duration based
+
+until is now suspended
