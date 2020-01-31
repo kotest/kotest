@@ -194,6 +194,13 @@ abstract class TestConfiguration {
       }
       return closeable
    }
+
+   fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
+      afterSpec {
+         closeable.value.close()
+      }
+      return closeable
+   }
 }
 
 // we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
