@@ -7,7 +7,7 @@ interface DiscoveryListener {
 
    /**
     * Is invoked after all the [Spec] classes have been discovered.
-    * This callback will be called SpecConfiguration any [DiscoveryExtension]s have been invoked.
+    * This callback will be called after any [DiscoveryExtension]s have been invoked.
     *
     * In other words the descriptions given here are after discovery extensions
     * have had the chance to filter.

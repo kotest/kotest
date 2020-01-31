@@ -43,7 +43,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
 
    /**
     * Adds a new [DynamicTest] to this factory. When this factory is included
-    * into a [SpecConfiguration] these tests will be added to the spec as root [TestCase]s.
+    * into a [Spec] these tests will be added to the spec as root [TestCase]s.
     */
    protected fun addDynamicTest(
       name: String,

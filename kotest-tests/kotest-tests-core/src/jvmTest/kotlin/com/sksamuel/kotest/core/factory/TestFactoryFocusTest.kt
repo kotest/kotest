@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.factory
+package com.sksamuel.kotest.core.factory
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec

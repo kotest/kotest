@@ -53,7 +53,7 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
 }
 
 internal fun equalsError(expected: Any?, actual: Any?): Throwable {
-  val largeStringDiffMinSize = readSystemProperty("kotest.assertions.multi-line-diff-size", "50").toInt()
+  val largeStringDiffMinSize = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
   val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual), largeStringDiffMinSize)
   val message = clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
   return Failures.failure(message, expectedRepr, actualRepr)

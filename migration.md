@@ -9,3 +9,5 @@ The little used `afterDiscovery` callback has been moved from `TestListener` to 
 In project config, the way some settings are overridden has changed. So, instead of overriding a function, you override a val. For example, `override fun assertionMode() = AssertionMode.Error` is now `override val assertions = AssertionMode.Error`. The former methods are still present, but deprecated.
 
 Spring and Koin extensions are now auto scanned, so you no longer need to manual add them to a project (although they won't be registered twice if you do). Simply adding those modules to your gradle or maven build is sufficient.
+
+TestExtension now simplified to use a single callback
