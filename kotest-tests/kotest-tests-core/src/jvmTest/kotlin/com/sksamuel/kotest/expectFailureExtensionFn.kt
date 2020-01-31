@@ -7,18 +7,10 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @UseExperimental(ExperimentalTime::class)
-val expectFailureExtension: TestCaseExtensionFn = { testCase, execute, complete ->
-   execute(testCase) { result ->
-      when (result.status) {
-         TestStatus.Failure, TestStatus.Error -> complete(
-             TestResult.success(Duration.ZERO)
-         )
-         else -> complete(
-             TestResult.failure(
-                 AssertionError("Should not happen"),
-                 Duration.ZERO
-             )
-         )
-      }
+val expectFailureExtension: TestCaseExtensionFn = { testCase, execute ->
+   val result = execute(testCase)
+   when (result.status) {
+      TestStatus.Failure, TestStatus.Error -> TestResult.success(Duration.ZERO)
+      else -> TestResult.failure(AssertionError("Should not happen"), Duration.ZERO)
    }
 }

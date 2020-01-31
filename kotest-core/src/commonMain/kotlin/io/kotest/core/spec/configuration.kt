@@ -27,9 +27,8 @@ typealias PrepareSpec = (KClass<out Spec>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
 typealias TestCaseExtensionFn = suspend (
    testCase: TestCase,
-   execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-   complete: suspend (TestResult) -> Unit
-) -> Unit
+   execute: suspend (TestCase) -> TestResult
+) -> TestResult
 
 typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
 
@@ -72,7 +71,7 @@ abstract class TestConfiguration {
    fun extension(f: TestCaseExtensionFn) {
       _extensions = _extensions + object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-            return execute(testCase)
+            return f(testCase, execute)
          }
       }
    }
