@@ -1,7 +1,6 @@
 package io.kotest.core
 
-import io.kotest.assertions.bestName
-
+import io.kotest.mpp.bestName
 
 /**
  * Base class for all tags. The simple name (without packages) of the singleton derived from this

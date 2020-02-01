@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.mpp.sysprop
+
 fun log(msg: String) {
    if (sysprop("kotest.log") == "true") println(msg)
 }

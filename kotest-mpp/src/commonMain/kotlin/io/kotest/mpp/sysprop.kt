@@ -1,4 +1,4 @@
-package io.kotest.assertions
+package io.kotest.mpp
 
 fun sysprop(key: String, default: String): String = sysprop(key) ?: default
 

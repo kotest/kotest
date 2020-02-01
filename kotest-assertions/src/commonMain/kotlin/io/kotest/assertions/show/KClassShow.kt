@@ -1,6 +1,6 @@
 package io.kotest.assertions.show
 
-import io.kotest.assertions.bestName
+import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 object KClassShow: Show<KClass<*>> {

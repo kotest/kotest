@@ -3,7 +3,7 @@ package io.kotest.inspectors
 import io.kotest.assertions.Failures
 import io.kotest.assertions.exceptionToMessage
 import io.kotest.assertions.show.show
-import io.kotest.assertions.sysprop
+import io.kotest.mpp.sysprop
 
 /**
  * Build assertion error message.

@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.assertions.bestName
+import io.kotest.mpp.bestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

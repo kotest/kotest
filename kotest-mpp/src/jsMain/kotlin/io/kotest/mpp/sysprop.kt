@@ -1,3 +1,3 @@
-package io.kotest.assertions
+package io.kotest.mpp
 
 actual fun sysprop(name: String): String? = null

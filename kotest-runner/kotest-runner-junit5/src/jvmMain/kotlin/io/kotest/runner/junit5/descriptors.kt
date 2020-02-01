@@ -32,6 +32,7 @@ fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
 }
 
 /**
+ * Creates a [TestDescriptor] for the given [TestCase] and attaches it to the receiver as a child.
  * The created descriptor will have segment type [Segments.test].
  */
 fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {

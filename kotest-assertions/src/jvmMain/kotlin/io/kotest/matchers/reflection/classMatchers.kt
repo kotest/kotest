@@ -3,9 +3,7 @@ package io.kotest.matchers.reflection
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
@@ -22,7 +20,7 @@ infix fun KClass<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot haveCl
 fun haveClassAnnontations(count: Int = -1) = object : Matcher<KClass<*>> {
   override fun test(value: KClass<*>) = if (count < 0) {
     MatcherResult(
-        value.annotations.size > 0,
+       value.annotations.isNotEmpty(),
         "Class $value should have annotations",
         "Class $value should not have annotations"
     )

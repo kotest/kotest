@@ -1,6 +1,6 @@
 package io.kotest.property
 
-import io.kotest.assertions.sysprop
+import io.kotest.mpp.sysprop
 
 /**
  * Global object for containing settings for property testing.

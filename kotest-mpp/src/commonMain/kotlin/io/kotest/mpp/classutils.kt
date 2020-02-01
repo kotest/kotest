@@ -1,0 +1,31 @@
+package io.kotest.mpp
+
+import kotlin.reflect.KClass
+
+/**
+ * Returns the longest possible name available for this class.
+ * That is, in order, the FQN, the simple name, or <none>.
+ */
+fun KClass<*>.bestName(): String = fqn() ?: simpleName ?: "<none>"
+
+/**
+ * Returns the fully qualified name for this class, or null
+ */
+expect fun KClass<*>.fqn(): String?
+
+/**
+ * Returns the annotations on this class or empty list if not supported
+ */
+expect fun KClass<*>.annotations(): List<Annotation>
+
+/**
+ * Finds the first annotation of type T on this class, or returns null if annotations
+ * are not supported on this platform or the annotation is missing.
+ */
+inline fun <reified T> KClass<*>.annotation(): T? = annotations().filterIsInstance<T>().firstOrNull()
+
+/**
+ * Returns true if this KClass is a data class, false if it is not, or null if the functionality
+ * is not supported on the platform.
+ */
+expect val <T : Any> KClass<T>.isDataClass: Boolean?

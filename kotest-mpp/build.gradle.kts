@@ -45,7 +45,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -54,10 +54,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(":kotest-mpp"))
-            implementation(kotlin("stdlib-common"))
-            api(project(":kotest-assertions"))
-            api(project(":kotest-fp"))
+            implementation (kotlin ("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -75,8 +72,10 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("com.github.wumpz:diffutils:2.2")
             implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.jdk8)
+            implementation("com.github.wumpz:diffutils:2.2")
+            implementation("com.univocity:univocity-parsers:2.8.3")
             implementation("com.github.mifmif:generex:1.0.2")
          }
       }
@@ -106,7 +105,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true

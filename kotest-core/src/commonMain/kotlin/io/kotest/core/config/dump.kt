@@ -1,6 +1,6 @@
 package io.kotest.core.config
 
-import io.kotest.assertions.bestName
+import io.kotest.mpp.bestName
 import kotlin.time.ExperimentalTime
 
 @UseExperimental(ExperimentalTime::class)

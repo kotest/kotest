@@ -1,6 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.assertions.sysprop
+import io.kotest.mpp.sysprop
 
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 object PropertyTesting {

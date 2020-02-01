@@ -1,11 +1,11 @@
 package io.kotest.core.extensions
 
-import io.kotest.assertions.sysprop
 import io.kotest.core.StringTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.fp.getOrElse
 import io.kotest.fp.toOption
+import io.kotest.mpp.sysprop
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties

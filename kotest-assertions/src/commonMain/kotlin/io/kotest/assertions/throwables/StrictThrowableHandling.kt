@@ -2,7 +2,7 @@ package io.kotest.assertions.throwables
 
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.Failures
-import io.kotest.assertions.bestName
+import io.kotest.mpp.bestName
 
 /**
  * Verifies that a block of code throws a Throwable of type [T], not including subclasses of [T]
