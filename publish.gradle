@@ -27,7 +27,7 @@ publishing {
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 
             name 'deploy'
-            url = isTravis ? snapshotsRepoUrl : releasesRepoUrl
+            url = isGithub ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
                 password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword

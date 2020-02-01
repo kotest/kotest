@@ -7,6 +7,7 @@ on:
          - '*.md'
       branches:
          - master
+
 jobs:
    build:
       strategy:
@@ -41,6 +42,19 @@ jobs:
             with:
                name: error-report
                path: build-reports.zip
+
+   deploy:
+      needs: build
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Generate build number
+            uses: einaregilsson/build-number@v2
+            with:
+               token: ${{secrets.github_token}}
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publish
+
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
