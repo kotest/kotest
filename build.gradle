@@ -64,7 +64,7 @@ allprojects {
 
    group = "io.kotest"
 
-   if (isTravis) {
+   if (isGithub) {
       version "4.0." + travisBuildNumber + "-SNAPSHOT"
    }
 
