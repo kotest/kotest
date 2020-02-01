@@ -289,6 +289,19 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "singleElement with predicate" should {
+      "test that a collection contains a single element by given predicate"  {
+        listOf(1) shouldHave singleElement { e -> e == 1}
+        listOf(1).shouldHaveSingleElement { e -> e == 1}
+        shouldThrow<AssertionError> {
+          listOf(1) shouldHave singleElement { e -> e == 2}
+        }
+        shouldThrow<AssertionError> {
+          listOf(2, 2) shouldHave singleElement { e -> e == 2 }
+        }
+      }
+    }
+
     "should contain element" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)

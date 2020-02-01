@@ -63,6 +63,17 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
   )
 }
 
+fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+   override fun test(value: Collection<T>): MatcherResult {
+      val filteredValue: List<T> = value.filter(p)
+      return MatcherResult(
+         filteredValue.size == 1,
+         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements" },
+         { "Collection should not have a single element by a given predicate" }
+      )
+   }
+}
+
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
