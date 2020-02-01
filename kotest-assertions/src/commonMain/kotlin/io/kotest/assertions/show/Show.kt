@@ -18,7 +18,7 @@ fun Any?.show(): String = if (this == null) DefaultShow.show(this) else showFor(
 fun <T : Any> showFor(t: T): Show<T> = when (t) {
   is String -> StringShow as Show<T>
   is Long, t is Boolean, t is Int, t is Double, t is Float, t is Short, t is Byte -> DefaultShow
-  is KClass<*> -> KClassShow() as Show<T>
+  is KClass<*> -> KClassShow as Show<T>
   else -> when {
     // this won't work in JS or native, so they'll get the boring old toString version
     t::class.isDataClass() -> dataClassShow<T>()

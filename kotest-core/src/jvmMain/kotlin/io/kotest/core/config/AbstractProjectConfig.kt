@@ -111,8 +111,8 @@ abstract class AbstractProjectConfig {
 
    /**
     * Sets the order of top level tests in a spec.
-    * The value set here will be used unless overriden in a [SpecClass].
-    * The value in a [SpecClass] is always taken in preference to the value here.
+    * The value set here will be used unless overriden in a [Spec].
+    * The value in a [Spec] is always taken in preference to the value here.
     * Nested tests will always be executed in discovery order.
     *
     * If this function returns null then the default of Sequential
@@ -148,7 +148,7 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this value to set a global [AssertionMode].
-    * If a [SpecClass] sets an assertion mode, then the spec will override.
+    * If a [Spec] sets an assertion mode, then the spec will override.
     */
    open val assertionMode: AssertionMode? = null
 

@@ -1,9 +1,8 @@
 package io.kotest.core.spec
 
-import io.kotest.core.bestName
+import io.kotest.assertions.bestName
 import io.kotest.core.displayName
 import io.kotest.core.test.Description
-import io.kotest.fp.getOrElse
 import kotlin.reflect.KClass
 
 /**
@@ -17,6 +16,6 @@ import kotlin.reflect.KClass
  * with another.
  */
 fun KClass<*>.description(): Description {
-   val name = this.displayName().getOrElse(bestName())
+   val name = this.displayName() ?: bestName()
    return Description.spec(name)
 }

@@ -1,6 +1,6 @@
 package io.kotest.core
 
-import io.kotest.assertions.classname
+import io.kotest.assertions.bestName
 
 
 /**
@@ -19,7 +19,7 @@ abstract class Tag {
    /**
     * Simple name of the singleton/class derived from this class.
     */
-   open val name: String = this::class.classname()
+   open val name: String = this::class.bestName()
 
    /**
     * Same as [name].
