@@ -58,7 +58,7 @@ jobs:
 
          -  name: deploy to sonatype snapshots
             run: ./gradlew publish
-            env: ${{ secrets.SuperSecret }}
+            env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
