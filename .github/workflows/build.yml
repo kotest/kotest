@@ -52,8 +52,15 @@ jobs:
             uses: einaregilsson/build-number@v2
             with:
                token: ${{secrets.github_token}}
+
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+
          -  name: deploy to sonatype snapshots
             run: ./gradlew publish
+            env: ${{ secrets.SuperSecret }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 
 env:
