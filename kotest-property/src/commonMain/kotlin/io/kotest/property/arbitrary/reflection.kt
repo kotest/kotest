@@ -8,10 +8,12 @@ inline fun <reified A> Arb.Companion.default(): Arb<A> {
 
 fun Arb.Companion.forClassName(className: String): Arb<*> {
    return when (className) {
-      "java.lang.Integer", "kotlin.Int", "Int" -> Arb.ints()
-      "java.lang.Long", "kotlin.Long", "Long" -> Arb.longs()
-      "java.lang.Float", "kotlin.Float", "Float" -> Arb.floats()
-      "java.lang.Double", "kotlin.Double", "Double" -> Arb.doubles()
+      "java.lang.String", "kotlin.String", "String" -> Arb.string()
+      "java.lang.Integer", "kotlin.Int", "Int" -> Arb.int()
+      "java.lang.Long", "kotlin.Long", "Long" -> Arb.long()
+      "java.lang.Float", "kotlin.Float", "Float" -> Arb.float()
+      "java.lang.Double", "kotlin.Double", "Double" -> Arb.double()
+      "java.lang.Byte", "kotlin.Byte", "Byte" -> Arb.byte()
       else -> throw IllegalArgumentException("Cannot infer generator for $className; specify generators explicitly")
    }
 }

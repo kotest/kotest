@@ -1,9 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Shrinker
-import io.kotest.property.Sample
-import io.kotest.property.sampleOf
-import kotlin.random.Random
 
 /**
  * Returns an [Arb] where each generated value is a map, with the entries of the map
@@ -45,20 +42,16 @@ fun <K, V> Arb.Companion.map(
    valueArb: Arb<V>,
    minSize: Int = 1,
    maxSize: Int = 100
-): Arb<Map<K, V>> = object : Arb<Map<K, V>> {
+): Arb<Map<K, V>> {
+   require(minSize >= 0) { "minSize must be positive" }
+   require(maxSize >= 0) { "maxSize must be positive" }
 
-   init {
-      require(minSize >= 0) { "minSize must be positive" }
-      require(maxSize >= 0) { "maxSize must be positive" }
-   }
-
-   override fun edgecases(): List<Map<K, V>> = emptyList()
-   override fun sample(random: Random): Sample<Map<K, V>> {
+   return arb(MapShrinker()) { random ->
       val size = random.nextInt(minSize, maxSize)
       val pairs = List(size) {
          keyArb.sample(random).value to valueArb.sample(random).value
       }
-      return sampleOf(pairs.toMap(), MapShrinker())
+      pairs.toMap()
    }
 }
 

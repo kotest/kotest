@@ -16,7 +16,7 @@ import kotlin.math.round
  * [Float.POSITIVE_INFINITY]
  *
  */
-fun Arb.Companion.floats(): Arb<Float> = arb(
+fun Arb.Companion.float(): Arb<Float> = arb(
    FloatShrinker,
    listOf(
       0F, 1.0F, -1.0F,
@@ -29,7 +29,7 @@ fun Arb.Companion.floats(): Arb<Float> = arb(
 ) { it.nextFloat() }
 
 /**
- * Returns an [Arb] which is the same as [floats] but does not include +INFINITY, -INFINITY or NaN.
+ * Returns an [Arb] which is the same as [float] but does not include +INFINITY, -INFINITY or NaN.
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */

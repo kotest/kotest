@@ -1,15 +1,12 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Shrinker
-import io.kotest.property.Sample
-import io.kotest.property.sampleOf
 import kotlin.math.abs
-import kotlin.random.Random
 import kotlin.random.nextLong
 
-fun Arb.Companion.longs(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE) = object : Arb<Long> {
-   override fun sample(random: Random): Sample<Long> = sampleOf(random.nextLong(range), LongShrinker)
-   override fun edgecases(): List<Long> = listOf(0, Long.MAX_VALUE, Long.MIN_VALUE)
+fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
+   val edgecases = listOf(0, Long.MAX_VALUE, Long.MIN_VALUE)
+   return arb(LongShrinker, edgecases) { it.nextLong(range) }
 }
 
 object LongShrinker : Shrinker<Long> {
