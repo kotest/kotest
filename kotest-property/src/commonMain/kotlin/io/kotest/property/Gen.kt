@@ -22,32 +22,16 @@ import kotlin.random.Random
  * even number from 0 to 200 (exhaustive).
  */
 interface Gen<out A> {
-   fun generate(random: Random): Sequence<GenValue<A>>
+   fun minIterations(): Int
+   fun generate(random: Random): Sequence<Sample<A>>
 }
-
-data class GenValue<out A>(
-   val value: A,
-   val shrinks: Lazy<Sequence<A>> = lazyOf(emptySequence()),
-   val shrinking: ShrinkingMode = ShrinkingMode.Bounded(1000)
-)
 
 /**
- * Contains a single generated value from a [Gen] and a sequence of lazily evaluated shrinks.
+ * Contains a single generated value from a [Gen] and an RTree of lazily evaluated shrinks.
  */
-data class Sample<out A>(val value: A, val shrinks: Lazy<Sequence<A>> = lazyOf(emptySequence()))
+data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree(value))
 
-fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, lazy { shrinker.shrinks(a) })
-
-fun <A, B> Sample<A>.map(f: (A) -> B): Sample<B> {
-   val b = f(value)
-   val shrinks = lazy { this@map.shrinks.value.map(f) }
-   return Sample(b, shrinks)
-}
-
-fun <A> Sample<A>.filter(predicate: (A) -> Boolean): Sample<A> {
-   val shrinks = lazy { this@filter.shrinks.value.filter(predicate) }
-   return Sample(value, shrinks)
-}
+fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
 
 /**
  * Returns a new [Gen] which returns the values from this arg and then the
@@ -59,10 +43,10 @@ fun <A> Sample<A>.filter(predicate: (A) -> Boolean): Sample<A> {
  * The given gen must be a subtype of the type of this gen.
  */
 fun <A, B : A> Gen<A>.concat(other: Gen<B>): Gen<A> = object : Gen<A> {
-   override fun generate(random: Random): Sequence<GenValue<A>> =
+   override fun minIterations(): Int = this@concat.minIterations() + other.minIterations()
+   override fun generate(random: Random): Sequence<Sample<A>> =
       this@concat.generate(random) + other.generate(random)
 }
-
 
 /**
  * Returns a new [Gen] which will merge the values from this gen and the values of
@@ -78,7 +62,8 @@ fun <A, B : A> Gen<A>.concat(other: Gen<B>): Gen<A> = object : Gen<A> {
  */
 
 fun <A, B : A> Gen<A>.merge(other: Gen<B>): Gen<A> = object : Gen<A> {
-   override fun generate(random: Random): Sequence<GenValue<A>> {
+   override fun minIterations(): Int = this@merge.minIterations() + other.minIterations()
+   override fun generate(random: Random): Sequence<Sample<A>> {
       return this@merge.generate(random).zip(other.generate(random)).flatMap { sequenceOf(it.first, it.second) }
    }
 }

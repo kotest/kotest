@@ -1,7 +1,7 @@
 package io.kotest.property.exhaustive
 
 import io.kotest.property.Gen
-import io.kotest.property.GenValue
+import io.kotest.property.Sample
 import kotlin.random.Random
 
 /**
@@ -25,9 +25,11 @@ interface Exhaustive<A> : Gen<A> {
    /**
     * Returns the values of this [Exhaustive].
     */
-   fun values(): Sequence<A>
+   val values: List<A>
 
-   override fun generate(random: Random): Sequence<GenValue<A>> = values().map { GenValue(it) }
+   override fun minIterations(): Int = values.size
+
+   override fun generate(random: Random): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
 
    companion object
 }

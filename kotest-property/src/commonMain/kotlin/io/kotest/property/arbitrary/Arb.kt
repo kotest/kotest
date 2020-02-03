@@ -1,10 +1,11 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Gen
-import io.kotest.property.GenValue
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.concat
+import io.kotest.property.map
 import io.kotest.property.sampleOf
 import kotlin.random.Random
 
@@ -27,11 +28,8 @@ import kotlin.random.Random
  * In order to use an [Arb] inside a property test, one must invoke the [take] method, passing in the
  * number of iterations required and optionally a [ShrinkingMode].
  */
-interface Arb<A> {
+interface Arb<A> : Gen<A> {
 
-   /**
-    * Generates a single arbitrary value along with lazily produced reduced values (shrinks).
-    */
    fun sample(random: Random): Sample<A>
 
    /**
@@ -39,21 +37,10 @@ interface Arb<A> {
     */
    fun edgecases(): List<A>
 
-   /**
-    * Returns a [Gen] that provides values using the samples and edgecases from this arb,
-    * shrinking values using the given shrinking mode.
-    */
-   fun take(iterations: Int, mode: ShrinkingMode = ShrinkingMode.Bounded(1000)): Gen<A> = object : Gen<A> {
-      override fun generate(random: Random): Sequence<GenValue<A>> {
-         val edges = edgecases().asSequence().map { GenValue(it) }
-         val samples = sequence {
-            val sample = sample(random)
-            val gv = GenValue(sample.value, sample.shrinks, mode)
-            yield(gv)
-         }.take(iterations)
-         return edges + samples
-      }
-   }
+   override fun minIterations(): Int = edgecases().size
+
+   override fun generate(random: Random): Sequence<Sample<A>> =
+      edgecases().asSequence().map { Sample(it) } + generateSequence { sample(random) }
 
    companion object
 }
@@ -98,9 +85,9 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A> {
 fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B> {
    override fun edgecases(): List<B> = this@map.edgecases().map(f)
    override fun sample(random: Random): Sample<B> {
-      val (a, shrinksA) = this@map.sample(random)
-      val b = f(a)
-      val shrinksB = lazy { shrinksA.value.map(f) }
-      return Sample(b, shrinksB)
+      val (a, treeA) = this@map.sample(random)
+      return Sample(f(a), treeA.map(f))
    }
 }
+
+operator fun <A, B : A> Arb<A>.plus(other: Arb<B>) = this.concat(other)

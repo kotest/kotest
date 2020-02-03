@@ -22,15 +22,20 @@ interface Shrinker<A> {
 
    /**
     * Returns the "next level" of shrinks for the given value, or empty list if a "base case" has been reached.
+    * For example, to shrink an int k we may decide to return k/2 and k-1.
     */
    fun shrink(value: A): List<A>
 }
 
 /**
- * Generates the shrinks for a given input as a lazily evaluated sequence.
- * It is acceptable for the sequence to include dups.
+ * Generates an [RTree] of all shrinks from an initial value.
  */
-fun <A> Shrinker<A>.shrinks(value: A): Sequence<A> {
-   val shrinks = shrink(value).asSequence()
-   return shrinks + shrinks.flatMap { shrinks(it) }
+fun <A> Shrinker<A>.rtree(a: A): RTree<A> = RTree(a, lazy { shrink(a).distinct().filter { it != a }.map { rtree(it) } })
+
+data class RTree<out A>(val value: A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
+
+fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
+   val b = f(value)
+   val c = lazy { children.value.map { it.map(f) } }
+   return RTree(b, c)
 }
