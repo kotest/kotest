@@ -2,9 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.properties.nextPrintableString
 import io.kotest.property.Shrinker
-import io.kotest.property.Sample
-import io.kotest.property.sampleOf
-import kotlin.random.Random
 
 /**
  * Returns an [Arb] where each random value is a String of length between minSize and maxSize.
@@ -19,21 +16,17 @@ import kotlin.random.Random
 fun Arb.Companion.string(
    minSize: Int = 0,
    maxSize: Int = 100
-): Arb<String> = object : Arb<String> {
+): Arb<String> {
 
-   private val range = minSize..maxSize
-
-   val literals = listOf(
+   val range = minSize..maxSize
+   val edgecases = listOf(
       "",
       "\n",
       "\nabc\n123\n",
       "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070"
-   )
-
-   override fun edgecases(): List<String> = literals.filter { it.length in range }
-   override fun sample(random: Random): Sample<String> {
-      val str = random.nextPrintableString(range.first + random.nextInt(range.last - range.first + 1))
-      return sampleOf(str, StringShrinker)
+   ).filter { it.length in range }
+   return arb(StringShrinker, edgecases) {
+      it.nextPrintableString(range.first + it.nextInt(range.last - range.first + 1))
    }
 }
 
@@ -42,13 +35,25 @@ fun Arb.Companion.string(range: IntRange): Arb<String> = Arb.string(range.first,
 object StringShrinker : Shrinker<String> {
 
    override fun shrink(value: String): List<String> {
-      return when (value.length) {
-         0 -> emptyList()
-         1 -> listOf("", "a")
+      return when {
+         value == "" -> emptyList()
+         value == "a" -> listOf("")
+         value.length == 1 -> listOf("", "a")
          else -> {
-            val first = value.take(value.length / 2 + value.length % 2)
-            val second = value.takeLast(value.length / 2)
-            listOf(first, first.padEnd(value.length, 'a'), second, second.padStart(value.length, 'a'))
+            val firstHalf = value.take(value.length / 2 + value.length % 2)
+            val secondHalf = value.takeLast(value.length / 2)
+            val secondHalfAs = firstHalf.padEnd(value.length, 'a')
+            val firstHalfAs = secondHalf.padStart(value.length, 'a')
+            val dropFirstChar = value.drop(1)
+            val dropLastChar = value.dropLast(1)
+            listOf(
+               firstHalf,
+               firstHalfAs,
+               secondHalf,
+               secondHalfAs,
+               dropFirstChar,
+               dropLastChar
+            )
          }
       }
    }

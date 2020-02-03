@@ -11,8 +11,8 @@ class MultipleArbitraryTest : FunSpec() {
    init {
       test("multiple generation") {
          Arb.multiples(3, 100)
-            .take(1000)
             .generate(Random.Default)
+            .take(100)
             .forAll { it.value % 3 shouldBe 0 }
       }
    }

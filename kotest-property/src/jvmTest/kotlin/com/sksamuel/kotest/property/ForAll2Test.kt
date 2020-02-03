@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.PropTestConfig
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.Arb
-import io.kotest.property.arbitrary.ints
+import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.exhaustive.Exhaustive
 import io.kotest.property.exhaustive.ints
@@ -19,54 +19,67 @@ class ForAll2Test : FunSpec({
    test("forAll with 2 arbs") {
 
       val context = forAll(
-         Arb.ints().take(1000),
-         Arb.ints().take(10)
+         1000,
+         Arb.int(),
+         Arb.int()
       ) { a, b ->
          a + b == b + a
       }
 
-      context.attempts() shouldBe 13039
-      context.successes() shouldBe 13039
+      context.attempts() shouldBe 1000
+      context.successes() shouldBe 1000
       context.failures() shouldBe 0
    }
 
    test("forAll with 2 exhaustives") {
 
       val context = forAll(
+         1000,
          Exhaustive.ints(0..100),
          Exhaustive.longs(200L..300L)
       ) { a, b -> a + b == b + a }
 
-      context.attempts() shouldBe 10201
-      context.successes() shouldBe 10201
+      context.attempts() shouldBe 1000
+      context.successes() shouldBe 1000
       context.failures() shouldBe 0
    }
 
    test("forAll with 2 implicit arbitraries") {
       val context = forAll<Int, Long> { a, b -> a + b == b + a }
-      context.attempts() shouldBe 10609
-      context.successes() shouldBe 10609
+      context.attempts() shouldBe 1000
+      context.successes() shouldBe 1000
       context.failures() shouldBe 0
+   }
+
+   test("should throw error if iteratons is less than min") {
+      shouldThrowAny {
+         forAll(
+            10,
+            Exhaustive.ints(0..100),
+            Exhaustive.longs(200L..300L)
+         ) { a, b -> a + b == b + a }
+      }.message shouldBe "Require at least 101 iterations to cover requirements"
    }
 
    test("forAll with mixed arbitrary and exhaustive") {
 
       val context = forAll(
-         Arb.ints().take(1000),
+         Arb.int(),
          Exhaustive.ints(0..100)
       ) { a, b ->
          a + b == b + a
       }
 
-      context.attempts() shouldBe 101303
-      context.successes() shouldBe 101303
+      context.attempts() shouldBe 1000
+      context.successes() shouldBe 1000
       context.failures() shouldBe 0
    }
 
    test("forAll with shrink mode") {
       forAll(
-         Arb.ints().take(1000, ShrinkingMode.Off),
-         Arb.ints().map { it * 4 }.take(1000, ShrinkingMode.Off)
+         Arb.int(),
+         Arb.int().map { it * 4 },
+         config = PropTestConfig(shrinkingMode = ShrinkingMode.Off)
       ) { a, b ->
          a + b == b + a
       }
@@ -80,7 +93,7 @@ class ForAll2Test : FunSpec({
             PropTestConfig(maxFailure = 5)
          ) { a, b -> a > b }
       }.message shouldBe """Property failed for
-Arg 0: 0
+Arg 0: 5
 Arg 1: 25
 after 6 attempts
 Caused by: Property failed 6 times (maxFailure rate was 5)"""
@@ -93,7 +106,10 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
             Exhaustive.single(8),
             PropTestConfig(maxFailure = 9, minSuccess = 9)
          ) { a, b -> a < b }
-      }.message shouldBe """Property failed after 11 attempts
-Caused by: Property passed 8 times (minSuccess rate was 9)"""
+      }.message shouldBe """Property failed for
+Arg 0: 8
+Arg 1: 8
+after 42 attempts
+Caused by: Property failed 10 times (maxFailure rate was 9)"""
    }
 })

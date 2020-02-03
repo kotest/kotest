@@ -12,15 +12,24 @@ suspend fun <A, B> checkAll(
    genB: Gen<B>,
    config: PropTestConfig = PropTestConfig(),
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest(genA, genB, config, property)
+): PropertyContext = checkAll(1000, genA, genB, config, property)
+
+suspend fun <A, B> checkAll(
+   iterations: Int = 1000,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   config: PropTestConfig = PropTestConfig(),
+   property: suspend PropertyContext.(A, B) -> Unit
+): PropertyContext = proptest(iterations, genA, genB, config, property)
 
 suspend inline fun <reified A, reified B> checkAll(
    iterations: Int = 1000,
    config: PropTestConfig = PropTestConfig(),
    noinline property: suspend PropertyContext.(A, B) -> Unit
 ) = proptest(
-   Arb.default<A>().take(iterations / 2),
-   Arb.default<B>().take(iterations / 2),
+   iterations,
+   Arb.default<A>(),
+   Arb.default<B>(),
    config,
    property
 )
@@ -30,14 +39,28 @@ suspend fun <A, B> forAll(
    genB: Gen<B>,
    config: PropTestConfig = PropTestConfig(),
    property: suspend PropertyContext.(A, B) -> Boolean
-) = proptest(genA, genB, config) { a, b -> property(a, b).shouldBeTrue() }
+) = forAll(1000, genA, genB, config, property)
+
+suspend fun <A, B> forAll(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   config: PropTestConfig = PropTestConfig(),
+   property: suspend PropertyContext.(A, B) -> Boolean
+) = proptest(iterations, genA, genB, config) { a, b -> property(a, b).shouldBeTrue() }
+
+suspend inline fun <reified A, reified B> forAll(
+   config: PropTestConfig = PropTestConfig(),
+   noinline property: suspend PropertyContext.(A, B) -> Boolean
+) = forAll(1000, config, property)
 
 suspend inline fun <reified A, reified B> forAll(
    iterations: Int = 1000,
    config: PropTestConfig = PropTestConfig(),
    noinline property: suspend PropertyContext.(A, B) -> Boolean
 ) = proptest(
-   Arb.default<A>().take(iterations / 2),
-   Arb.default<B>().take(iterations / 2),
+   iterations,
+   Arb.default<A>(),
+   Arb.default<B>(),
    config
 ) { a, b -> property(a, b).shouldBeTrue() }
