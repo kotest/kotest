@@ -3,75 +3,67 @@ package io.kotest.property.internal
 import io.kotest.assertions.show.show
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
-import io.kotest.property.arbitrary.PropertyInput
+import kotlin.time.ExperimentalTime
 
 /**
- * Accepts a failed value and tests it while shrinking it's value.
+ * Accepts a value of type A and a function that varies in type A (fixed in any other types) and attempts
+ * to shrink the value to find the smallest failing case.
  *
- * The shrinker will generate a smaller value, which will then be tested using the
- * given test function (which has been fixed in other parameters).
+ * If a value fails, then that failing value will be used as input to the shrinker to retrieve
+ * the next set of candidate values.
  *
- * If the test fails, the failing value will now be used as the input to the shrinker.
- * If the test now passes, the previous failing value is returned as the 'smallest'
- * failing case.
- *
- * @param mode specifies the [ShrinkingMode] which determines how many shrink steps should be attempted.
+ * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case.
  */
-suspend fun <T> shrink(input: PropertyInput<T>, test: suspend (T) -> Unit, mode: ShrinkingMode): T {
+@UseExperimental(ExperimentalTime::class)
+internal suspend fun <A> doShrinking(
+   initial: A,
+   shrinks: Sequence<A>,
+   mode: ShrinkingMode,
+   test: suspend (A) -> Unit
+): A {
 
    val sb = StringBuilder()
-   sb.append("Attempting to shrink failed arg ${input.show()}\n")
-   var candidate = input
-   val tested = HashSet<T>()
+   sb.append("Attempting to shrink failed arg ${initial.show()}\n")
+   var candidate = initial
    var count = 0
+   var passed = false
+   val tested = mutableSetOf<A>()
 
-   while (mode.shouldShrink(count)) {
-      val candidates = candidate.candidates().filterNot { tested.contains(it.value) }
-      when {
-         // if candidates is empty then that means that there were no further shrinks to test
-         candidates.isEmpty() -> return result(sb, candidate, count)
-         else -> {
-            val next = candidates.firstOrNull {
-               tested.add(it.value)
-               count++
-               try {
-                  test(it.value)
-                  sb.append("Shrink #$count: ${it.show()} pass\n")
-                  false
-               } catch (t: Throwable) {
-                  sb.append("Shrink #$count: ${it.show()} fail\n")
-                  true
-               }
-            }
-            when (next) {
-               // if next is null, that means all the shrinks passed so the original value is the smallest
-               null -> return result(sb, candidate, count)
-               else -> candidate = next
-            }
+   fun isShrinking(): Boolean = when (mode) {
+      ShrinkingMode.Off -> false
+      ShrinkingMode.Unbounded -> true
+      is ShrinkingMode.Bounded -> count < mode.bound
+   }
+
+   shrinks
+      .takeWhile { !passed }
+      .takeWhile { isShrinking() }
+      .filterNot { tested.contains(it) }
+      .forEach {
+         tested.add(it)
+         count++
+         try {
+            test(it)
+            sb.append("Shrink #$count: ${it.show()} pass\n")
+            passed = true
+         } catch (t: Throwable) {
+            sb.append("Shrink #$count: ${it.show()} fail\n")
+            candidate = it
          }
       }
-   }
-   return candidate.value
+
+   result(sb, candidate, count)
+   println(sb)
+   return candidate
 }
 
-fun <T> result(sb: StringBuilder, candidate: PropertyInput<T>, count: Int): T {
+private fun <A> result(sb: StringBuilder, candidate: A, count: Int): A {
    when (count) {
-      0 -> sb.append("Shrink result => ${candidate.value.show()}\n")
+      0 -> sb.append("Shrink result => ${candidate.show()}\n")
       else -> sb.append("Shrink result (after $count shrinks) => ${candidate.show()}\n")
    }
    if (PropertyTesting.shouldPrintShrinkSteps) {
       println(sb)
    }
-   return candidate.value
-}
-
-fun ShrinkingMode.shouldShrink(count: Int): Boolean = when (this) {
-   ShrinkingMode.Off -> false
-   ShrinkingMode.Unbounded -> true
-   is ShrinkingMode.Bounded -> count <= bound
-}
-
-fun <T> PropertyInput<T>.candidates(): List<PropertyInput<T>> = when (this) {
-   is PropertyInput.Value<T> -> emptyList()
-   is PropertyInput.ValueAndShrinker -> shrinker()
+   return candidate
 }
