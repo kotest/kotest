@@ -13,3 +13,6 @@ actual fun KClass<*>.annotations(): List<Annotation> = emptyList()
 // not supported on JS
 actual val <T : Any> KClass<T>.isDataClass: Boolean?
    get() = null
+
+actual val Function<*>.paramNames: List<String>
+   get() = emptyList()

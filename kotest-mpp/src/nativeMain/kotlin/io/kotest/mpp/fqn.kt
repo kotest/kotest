@@ -14,3 +14,6 @@ actual fun KClass<*>.annotations(): List<Annotation> = this.annotations()
 
 actual val <T : Any> KClass<T>.isDataClass: Boolean?
    get() = null
+
+actual val Function<*>.paramNames: List<String>
+   get() = emptyList() // kotlin-reflect doesn't support the `reflect()` function on native

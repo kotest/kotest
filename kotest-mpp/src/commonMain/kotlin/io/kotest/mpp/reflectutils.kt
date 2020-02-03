@@ -29,3 +29,9 @@ inline fun <reified T> KClass<*>.annotation(): T? = annotations().filterIsInstan
  * is not supported on the platform.
  */
 expect val <T : Any> KClass<T>.isDataClass: Boolean?
+
+/**
+ * Returns the names of the parameters if supported. Eg, for `fun foo(a: String, b: Boolean)` on the JVM
+ * it would return [a, b] and on unsupported platforms an empty list.
+ */
+expect val Function<*>.paramNames: List<String>
