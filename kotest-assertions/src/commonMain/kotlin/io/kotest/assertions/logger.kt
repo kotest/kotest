@@ -1,13 +1,14 @@
 package io.kotest.assertions
 
+import io.kotest.mpp.env
 import io.kotest.mpp.sysprop
 
-fun log(msg: String) {
-   if (sysprop("kotest.log") == "true") println(msg)
-}
+private fun enabled() = sysprop("kotest.log") != null || env("kotest.log") != null
+
+fun log(msg: String) = log(msg, null)
 
 fun log(msg: String, t: Throwable?) {
-   if (sysprop("kotest.log") == "true") {
+   if (enabled()) {
       println(msg)
       if (t != null) println(t)
    }
