@@ -20,6 +20,8 @@ class DumpTest : FunSpec({
   - io.kotest.core.extensions.SystemPropertyTagExtension
   - io.kotest.core.extensions.RuntimeTagExtension
 -> Listeners
+  - com.sksamuel.kotest.autoscan.MyClassProjectListener
+  - com.sksamuel.kotest.autoscan.MyObjectProjectListener
   - com.sksamuel.kotest.autoscan.MyTestListener
 """
    }

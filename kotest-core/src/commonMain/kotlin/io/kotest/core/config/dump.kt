@@ -29,7 +29,7 @@ fun Project.createConfigSummary(): String {
 
    if (listeners().isNotEmpty()) {
       sb.buildOutput("Listeners")
-      testListeners().map(::mapClassName).forEach {
+      listeners().map(::mapClassName).forEach {
          sb.buildOutput(it, indentation = 1)
       }
    }
