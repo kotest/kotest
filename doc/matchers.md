@@ -139,6 +139,8 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldHaveSingleElement(element)` | Asserts that the collection only contains a single element and that that element is the given one. |
 | `collection.shouldHaveSingleElement { block }` | Asserts that the collection contains a single element by a given predicate. |
 | `collection.shouldHaveSize(length)` | Asserts that the collection is exactly the given length. |
+| `collection.shouldBeSingleton()` | Asserts that the collection contains only one element. |
+| `collection.shouldBeSingleton { block }` | Asserts that the collection only one element, and then, runs the block with this element. |
 | `collection.shouldHaveLowerBound(element)` | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldHaveUpperBound(element)` | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldBeSmallerThan(col)` | Asserts that the collection is smaller than the other collection. |

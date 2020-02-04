@@ -400,6 +400,25 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "should be singleton with block" should {
+      "pass for collection with a single element" {
+        listOf(1).shouldBeSingleton { it shouldBe 1 }
+      }
+
+      "fail for collection with 0 elements" {
+        shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton { it shouldBe 1 } }
+      }
+
+      "fail for collection with a single incorrect elements" {
+        shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton { it shouldBe 1 } }
+      }
+
+      "fail for collection with 2+ elements" {
+        shouldThrow<AssertionError> { listOf(1, 2).shouldBeSingleton { it shouldBe 1} }
+        shouldThrow<AssertionError> { listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1} }
+      }
+    }
+
     "should not be singleton" should {
       "pass for collection with 0 elements" {
         listOf<Int>().shouldNotBeSingleton()
