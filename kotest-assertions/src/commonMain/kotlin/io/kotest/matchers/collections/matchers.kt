@@ -307,6 +307,15 @@ fun <T> Collection<T>.shouldBeSingleton() = this shouldHaveSize 1
 
 fun <T> Array<T>.shouldBeSingleton() = asList().shouldBeSingleton()
 
+inline fun <T> Collection<T>.shouldBeSingleton(fn: (T) -> Unit) {
+   this.shouldBeSingleton()
+   fn(this.first())
+}
+
+inline fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit) {
+   asList().shouldBeSingleton(fn)
+}
+
 /**
  * Verifies this collection doesn't contain only one element
  *
