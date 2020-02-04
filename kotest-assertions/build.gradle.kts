@@ -56,6 +56,7 @@ kotlin {
          dependencies {
             implementation (kotlin ("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
+            implementation(project(":kotest-mpp"))
          }
       }
 

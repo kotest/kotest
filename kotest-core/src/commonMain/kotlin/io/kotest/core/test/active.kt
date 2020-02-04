@@ -1,10 +1,9 @@
 package io.kotest.core.test
 
-import io.kotest.assertions.sysprop
 import io.kotest.core.config.Project
 import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
-import io.kotest.fp.toOption
+import io.kotest.mpp.sysprop
 
 /**
  * Returns true if the given [TestCase] is active.
@@ -28,7 +27,7 @@ fun TestCase.isActive(): Boolean {
    val focused = isFocused() && isTopLevel()
    val hasFocused = spec.focusTests().isNotEmpty()
    val enabledInConfig = config.enabled && config.enabledIf()
-   val bangEnabled = sysprop("kotest.bang.disable").toOption().isEmpty()
+   val bangEnabled = sysprop("kotest.bang.disable") == null
    val disabledViaBang = isBang() && bangEnabled
    val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
    val filtered = Project.testCaseFilters()

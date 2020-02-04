@@ -3,39 +3,41 @@
 package io.kotest.property
 
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.property.internal.test2
+import io.kotest.property.arbitrary.Arb
+import io.kotest.property.arbitrary.default
+import io.kotest.property.internal.proptest
 
 suspend fun <A, B> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
-   args: PropTestArgs = PropTestArgs(),
+   config: PropTestConfig = PropTestConfig(),
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = test2(genA, genB, args, property)
+): PropertyContext = proptest(genA, genB, config, property)
 
 suspend inline fun <reified A, reified B> checkAll(
-   iterations: Int = 100,
-   args: PropTestArgs = PropTestArgs(),
+   iterations: Int = 1000,
+   config: PropTestConfig = PropTestConfig(),
    noinline property: suspend PropertyContext.(A, B) -> Unit
-) = test2<A, B>(
-   Arbitrary.default(iterations),
-   Arbitrary.default(iterations),
-   args,
+) = proptest(
+   Arb.default<A>().take(iterations / 2),
+   Arb.default<B>().take(iterations / 2),
+   config,
    property
 )
 
 suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
-   args: PropTestArgs = PropTestArgs(),
+   config: PropTestConfig = PropTestConfig(),
    property: suspend PropertyContext.(A, B) -> Boolean
-) = test2(genA, genB, args) { a, b -> property(a, b).shouldBeTrue() }
+) = proptest(genA, genB, config) { a, b -> property(a, b).shouldBeTrue() }
 
 suspend inline fun <reified A, reified B> forAll(
-   iterations: Int = 100,
-   args: PropTestArgs = PropTestArgs(),
+   iterations: Int = 1000,
+   config: PropTestConfig = PropTestConfig(),
    noinline property: suspend PropertyContext.(A, B) -> Boolean
-) = test2<A, B>(
-   Arbitrary.default(iterations),
-   Arbitrary.default(iterations),
-   args
+) = proptest(
+   Arb.default<A>().take(iterations / 2),
+   Arb.default<B>().take(iterations / 2),
+   config
 ) { a, b -> property(a, b).shouldBeTrue() }

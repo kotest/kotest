@@ -16,7 +16,7 @@ actual fun detectConfig(): ProjectConf {
    fun <T> instantiate(klass: Class<T>): T =
       when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
          // if the static field for an object cannot be found, then instantiate
-         null -> klass.newInstance() as T
+         null -> klass.constructors[0].newInstance() as T
          // if the static field can be found then use it
          else -> field.get(null) as T
       }

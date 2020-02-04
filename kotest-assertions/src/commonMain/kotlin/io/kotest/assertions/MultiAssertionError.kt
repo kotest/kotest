@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.mpp.throwableLocation
+
 /** An error that bundles multiple other [Throwable]s together */
 class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessage(errors)) {
   companion object {
@@ -22,5 +24,3 @@ class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessag
     }
   }
 }
-
-expect fun Throwable.throwableLocation(): String?

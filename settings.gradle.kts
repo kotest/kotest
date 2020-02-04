@@ -1,5 +1,6 @@
 enableFeaturePreview("GRADLE_METADATA")
 
+include("kotest-mpp")
 include("kotest-core")
 include("kotest-assertions")
 include("kotest-property")

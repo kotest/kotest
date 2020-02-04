@@ -19,7 +19,7 @@ actual object Failures {
     * or
     *
     * ```
-    *     Failures.shouldRemoveKottestElementsFromStacktrace = false
+    *     Failures.shouldRemoveKotestElementsFromStacktrace = false
     * ```
     */
    var shouldRemoveKotestElementsFromStacktrace: Boolean =

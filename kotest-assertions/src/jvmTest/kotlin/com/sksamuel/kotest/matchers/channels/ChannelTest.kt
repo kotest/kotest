@@ -75,7 +75,7 @@ class ChannelTest : StringSpec() {
         channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
       }
     }
-    "shouldHaveSize should not fail when n elements are sent" {
+    "!shouldHaveSize should not fail when n elements are sent" {
       val channel: Channel<Int> = Channel()
       launch {
         repeat(10) { channel.send(1) }

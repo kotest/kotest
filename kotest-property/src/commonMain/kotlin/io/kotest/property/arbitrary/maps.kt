@@ -1,46 +1,34 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.property.*
+import io.kotest.property.Shrinker
+import io.kotest.property.Sample
+import io.kotest.property.sampleOf
 import kotlin.random.Random
 
 /**
- * Returns an [Arbitrary] where each generated value is a map, with the entries of the map
- * drawn from the given arbitrary. The size of each generated map is a random value between
- * the specified min and max bounds.
+ * Returns an [Arb] where each generated value is a map, with the entries of the map
+ * drawn from the given pair generating arb. The size of each
+ * generated map is a random value between the specified min and max bounds.
  *
  * There are no edgecases.
  *
  * This arbitrary uses a [Shrinker] which will reduce the size of a failing map by
- * removing elements until they map is empty.
+ * removing elements from the failed case until it is empty.
  *
  * @see MapShrinker
  */
-fun <K, V> Arbitrary.Companion.map(
-   iterations: Int,
-   arb: Arbitrary<Pair<K, V>>,
+fun <K, V> Arb.Companion.map(
+   arb: Arb<Pair<K, V>>,
    minSize: Int = 1,
    maxSize: Int = 100
-): Gen<Map<K, V>> = object :
-   Arbitrary<Map<K, V>> {
-
-   init {
-      require(minSize >= 0) { "minSize must be positive" }
-      require(maxSize >= 0) { "maxSize must be positive" }
-   }
-
-   override fun edgecases(): Iterable<Map<K, V>> = emptyList()
-
-   override fun samples(random: Random): Sequence<PropertyInput<Map<K, V>>> {
-      return generateSequence {
-         val size = random.nextInt(minSize, maxSize)
-         val map = arb.samples(random).take(size).map { it.value }.toList().toMap()
-         PropertyInput(map, MapShrinker())
-      }.take(iterations)
-   }
+): Arb<Map<K, V>> = arb(MapShrinker()) { rand ->
+   val size = rand.nextInt(minSize, maxSize)
+   val pairs = List(size) { arb.sample(rand).value }
+   pairs.toMap()
 }
 
 /**
- * Returns an [Arbitrary] where each generated value is a map, with the entries of the map
+ * Returns an [Arb] where each generated value is a map, with the entries of the map
  * drawn by combining values from the key arbitrary and value arbitrary. The size of each
  * generated map is a random value between the specified min and max bounds.
  *
@@ -52,43 +40,36 @@ fun <K, V> Arbitrary.Companion.map(
  * @see MapShrinker
  *
  */
-fun <K, V> Arbitrary.Companion.map(
-   iterations: Int,
-   keyArb: Arbitrary<K>,
-   valueArb: Arbitrary<V>,
+fun <K, V> Arb.Companion.map(
+   keyArb: Arb<K>,
+   valueArb: Arb<V>,
    minSize: Int = 1,
    maxSize: Int = 100
-): Gen<Map<K, V>> = object :
-   Arbitrary<Map<K, V>> {
+): Arb<Map<K, V>> = object : Arb<Map<K, V>> {
 
    init {
       require(minSize >= 0) { "minSize must be positive" }
       require(maxSize >= 0) { "maxSize must be positive" }
    }
 
-   override fun edgecases(): Iterable<Map<K, V>> = emptyList()
-
-   override fun samples(random: Random): Sequence<PropertyInput<Map<K, V>>> {
-      return generateSequence {
-         val size = random.nextInt(minSize, maxSize)
-         val map = keyArb.samples(random).zip(valueArb.samples(random))
-            .map { (a, b) -> Pair(a.value, b.value) }
-            .take(size)
-            .toList()
-            .toMap()
-         PropertyInput(map, MapShrinker())
-      }.take(iterations)
+   override fun edgecases(): List<Map<K, V>> = emptyList()
+   override fun sample(random: Random): Sample<Map<K, V>> {
+      val size = random.nextInt(minSize, maxSize)
+      val pairs = List(size) {
+         keyArb.sample(random).value to valueArb.sample(random).value
+      }
+      return sampleOf(pairs.toMap(), MapShrinker())
    }
 }
 
 class MapShrinker<K, V> : Shrinker<Map<K, V>> {
-   override fun shrink(value: Map<K, V>): List<PropertyInput<Map<K, V>>> {
+   override fun shrink(value: Map<K, V>): List<Map<K, V>> {
       return when (value.size) {
          0 -> emptyList()
-         1 -> listOf(PropertyInput(emptyMap()))
+         1 -> listOf(emptyMap())
          else -> listOf(
-            PropertyInput(value.toList().take(value.size / 2).toMap(), this),
-            PropertyInput(value.toList().drop(1).toMap(), this)
+            value.toList().take(value.size / 2).toMap(),
+            value.toList().drop(1).toMap()
          )
       }
    }

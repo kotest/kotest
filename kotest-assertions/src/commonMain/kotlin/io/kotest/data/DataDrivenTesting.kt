@@ -1,5 +1,6 @@
 package io.kotest.data
 
+import io.kotest.mpp.paramNames
 import io.kotest.tables.Row1
 import io.kotest.tables.Row10
 import io.kotest.tables.Row2
@@ -173,5 +174,3 @@ internal inline fun <A, B, C, D, E, F, G, H, I, J> forall10(params: List<String>
   val paramJ = params.getOrElse(9) { "j" }
   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forAll { a, b, c, d, e, f, g, h, i, j -> testfn(a, b, c, d, e, f, g, h, i, j) }
 }
-
-internal expect val Function<*>.paramNames: List<String>
