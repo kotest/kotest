@@ -410,7 +410,7 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "fail for collection with a single incorrect elements" {
-        shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton { it shouldBe 1 } }
+        shouldThrow<AssertionError> { listOf(2).shouldBeSingleton { it shouldBe 1 } }
       }
 
       "fail for collection with 2+ elements" {
