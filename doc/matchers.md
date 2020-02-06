@@ -12,6 +12,11 @@ Both styles are supported. The advantage of the extension function style is that
 Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
 For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
 
+### Android
+
+For Android-specific matchers, take a look [here](android_matchers.md)
+
+
 | General | |
 | -------- | ---- |
 | `obj.shouldBe(other)` | General purpose assertion that the given obj and other are both equal |
