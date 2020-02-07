@@ -23,6 +23,14 @@ fun <A> Exhaustive<A>.andNull() = object : Exhaustive<A?> {
 }
 
 /**
+ * Returns an Exhaustive which is the concatentation of this exhaustive values plus
+ * the given exhaustive's values.
+ */
+operator fun <A> Exhaustive<A>.plus(other: Exhaustive<A>) = object : Exhaustive<A> {
+   override val values: List<A> = this@plus.values + other.values
+}
+
+/**
  * Returns the cross product of two [Exhaustive]s.
  */
 operator fun <A, B : A> Exhaustive<A>.times(other: Exhaustive<B>) = object : Exhaustive<Pair<A, B>> {

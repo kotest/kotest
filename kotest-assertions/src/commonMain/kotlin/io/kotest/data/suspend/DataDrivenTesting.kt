@@ -10,7 +10,7 @@ import io.kotest.data.forall6
 import io.kotest.data.forall7
 import io.kotest.data.forall8
 import io.kotest.data.forall9
-import io.kotest.data.paramNames
+import io.kotest.mpp.paramNames
 import io.kotest.tables.Row1
 import io.kotest.tables.Row10
 import io.kotest.tables.Row2

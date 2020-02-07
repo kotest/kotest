@@ -34,21 +34,6 @@ data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree(value))
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
 
 /**
- * Returns a new [Gen] which returns the values from this arg and then the
- * values from the given gen.
- *
- * So f genA provides 1,2,3 and genB provides 7,8,9 then the concat output
- * would be 1,2,3,7,8,9
- *
- * The given gen must be a subtype of the type of this gen.
- */
-fun <A, B : A> Gen<A>.concat(other: Gen<B>): Gen<A> = object : Gen<A> {
-   override fun minIterations(): Int = this@concat.minIterations() + other.minIterations()
-   override fun generate(random: Random): Sequence<Sample<A>> =
-      this@concat.generate(random) + other.generate(random)
-}
-
-/**
  * Returns a new [Gen] which will merge the values from this gen and the values of
  * the supplied gen together, taking one from each in turn.
  *

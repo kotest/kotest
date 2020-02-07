@@ -4,7 +4,6 @@ import io.kotest.property.Gen
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
 import io.kotest.property.ShrinkingMode
-import io.kotest.property.concat
 import io.kotest.property.map
 import io.kotest.property.sampleOf
 import kotlin.random.Random
@@ -39,8 +38,9 @@ interface Arb<A> : Gen<A> {
 
    override fun minIterations(): Int = edgecases().size
 
-   override fun generate(random: Random): Sequence<Sample<A>> =
-      edgecases().asSequence().map { Sample(it) } + generateSequence { sample(random) }
+   override fun generate(random: Random): Sequence<Sample<A>> {
+      return edgecases().asSequence().map { Sample(it) } + generateSequence { sample(random) }
+   }
 
    companion object
 }
@@ -89,5 +89,3 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B> {
       return Sample(f(a), treeA.map(f))
    }
 }
-
-operator fun <A, B : A> Arb<A>.plus(other: Arb<B>) = this.concat(other)
