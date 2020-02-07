@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.properties
+package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
@@ -11,7 +11,7 @@ import io.kotest.properties.choose
 import io.kotest.properties.next
 import io.kotest.tables.row
 
-class GenChooseTest : FunSpec({
+class ChooseTest : FunSpec({
   test("<Int, Int> should give values between min and max inclusive") {
     // Test parameters include the test for negative bounds
     forall(

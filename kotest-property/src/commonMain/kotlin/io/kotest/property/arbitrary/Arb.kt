@@ -42,6 +42,10 @@ interface Arb<A> : Gen<A> {
       return edgecases().asSequence().map { Sample(it) } + generateSequence { sample(random) }
    }
 
+   fun take(count: Int): Sequence<A> = generateSequence { sample(Random.Default) }.take(count).map { it.value }
+
+   fun single(): A = sample(Random.Default).value
+
    companion object
 }
 

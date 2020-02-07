@@ -541,6 +541,7 @@ fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
  * Returns a stream of values, where each value is
  * a random Int between the given min and max.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.ints(min, max)")
 fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
   require(min < max) { "min must be < max" }
   return object : Gen<Int> {
@@ -558,6 +559,7 @@ fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
  * Returns a stream of values, where each value is a
  * Long between the given min and max.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.longs(min, max)")
 fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
   require(min < max) { "min must be < max" }
   return object : Gen<Long> {
@@ -578,6 +580,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
  * @throws IllegalArgumentException If any negative weight is given or only
  * weights of zero are given.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.choose(a, b, c, ...)")
 fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: Pair<Int, T>): Gen<T> {
   val allPairs = listOf(a, b) + cs
   val weights = allPairs.map { it.first }
@@ -709,6 +712,7 @@ fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
 
    // 1 is a factor of all ints

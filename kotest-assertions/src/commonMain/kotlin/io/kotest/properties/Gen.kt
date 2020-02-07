@@ -54,6 +54,7 @@ interface Gen<T> {
    /**
     * Create a new [Gen] by filtering the output of this gen.
     */
+   @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
    fun filter(pred: (T) -> Boolean): Gen<T> {
       val outer = this
       return object : Gen<T> {
@@ -196,6 +197,7 @@ inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequenc
  * val generatedValues: List<String> = gen.take(20)
  * ```
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen<T>.take(amount: Int, seed: Long? = null): List<T> {
    require(amount >= 0) { "Amount must be >= 0, but was $amount" }
 
@@ -229,6 +231,7 @@ fun <T> Gen<T>.take(amount: Int, seed: Long? = null): List<T> {
  * val filteredValue: String = gen.next { it != "hello" }
  * ```
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.single()")
 fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Long?): T {
    return random(seed).first(predicate)
 }

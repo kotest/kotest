@@ -20,3 +20,8 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
       else -> listOf(value - multiple)
    }
 }
+
+fun Arb.Companion.factors(k: Int): Arb<Int> = arb(listOf(1)) {
+   generateSequence { it.nextInt(k) }.filter { it > 0 }
+      .filter { k % it == 0 }.first()
+}

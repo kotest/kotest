@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.properties
+package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
@@ -6,7 +6,7 @@ import io.kotest.matchers.string.shouldMatch
 import io.kotest.properties.Gen
 import io.kotest.properties.regex
 
-class GenRegexTest : FunSpec({
+class RegexTest : FunSpec({
 
    test("regex generation") {
       val regex = "a.b.".toRegex(RegexOption.DOT_MATCHES_ALL)
