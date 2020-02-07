@@ -29,7 +29,7 @@ interface Exhaustive<A> : Gen<A> {
 
    override fun minIterations(): Int = values.size
 
-   override fun generate(random: RandomSource): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
+   override fun generate(rs: RandomSource): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
 
    companion object
 }

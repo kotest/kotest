@@ -156,6 +156,7 @@ interface Gen<T> {
  * This is useful if you have a type hierarchy and only want to retain
  * a particular subtype.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
    val outer = this
    return object : Gen<U> {
@@ -178,6 +179,7 @@ inline fun <T, reified U : T> Gen<T>.filterIsInstance(): Gen<U> {
  *
  * @return a new [Sequence] of [T] which always returns the result of [generator]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <T> generateInfiniteSequence(crossinline generator: () -> T): Sequence<T> =
    Sequence {
       object : Iterator<T> {
@@ -247,10 +249,12 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, n
 /**
  * Creates a sequence of unique values from the contents of [random], using [seed] to seed the random function.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen<T>.uniqueRandoms(seed: Long? = null): Sequence<T> = sequence {
    yieldAll(random(seed).distinct())
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 internal fun getRandomFor(aSeed:Long?):Random {
    return if (aSeed == null) Random.Default else Random(aSeed)
 }
