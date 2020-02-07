@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -9,7 +10,6 @@ import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import kotlin.random.Random
 
 /**
  * Arberates a random [Period]s.
@@ -23,8 +23,14 @@ import kotlin.random.Random
  */
 fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : Arb<Period> {
    override fun edgecases() = listOf(Period.ZERO)
-   override fun sample(random: Random): Sample<Period> {
-      return Sample(Period.of((0..maxYear).random(random), (0..11).random(random), (0..31).random(random)))
+   override fun sample(rs: RandomSource): Sample<Period> {
+      return Sample(
+         Period.of(
+            (0..maxYear).random(rs.random),
+            (0..11).random(rs.random),
+            (0..31).random(rs.random)
+         )
+      )
    }
 }
 
@@ -51,11 +57,11 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
       return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
    }
 
-   override fun sample(random: Random): Sample<LocalDate> {
+   override fun sample(rs: RandomSource): Sample<LocalDate> {
       val minDate = LocalDate.of(minYear, 1, 1)
       val maxDate = LocalDate.of(maxYear, 12, 31)
       val days = ChronoUnit.DAYS.between(minDate, maxDate)
-      return Sample(minDate.plusDays(random.nextLong(days + 1)))
+      return Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
    }
 }
 
@@ -70,8 +76,8 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
 fun Arb.Companion.localTime(): Arb<LocalTime> = object : Arb<LocalTime> {
 
    override fun edgecases(): List<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
-   override fun sample(random: Random): Sample<LocalTime> {
-      return Sample(LocalTime.of(random.nextInt(24), random.nextInt(60), random.nextInt(60)))
+   override fun sample(rs: RandomSource): Sample<LocalTime> {
+      return Sample(LocalTime.of(rs.random.nextInt(24), rs.random.nextInt(60), rs.random.nextInt(60)))
    }
 }
 
@@ -97,9 +103,9 @@ fun Arb.Companion.localDateTime(
       return localDates.flatMap { date -> times.map { date.atTime(it) } }
    }
 
-   override fun sample(random: Random): Sample<LocalDateTime> {
-      val date = localDate(minYear, maxYear).sample(random).value
-      val time = localTime().sample(random).value
+   override fun sample(rs: RandomSource): Sample<LocalDateTime> {
+      val date = localDate(minYear, maxYear).sample(rs).value
+      val time = localTime().sample(rs).value
       return Sample(date.atTime(time))
    }
 }

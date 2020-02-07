@@ -26,7 +26,7 @@ fun Arb.Companion.string(
       "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070"
    ).filter { it.length in range }
    return arb(StringShrinker, edgecases) {
-      it.nextPrintableString(range.first + it.nextInt(range.last - range.first + 1))
+      it.random.nextPrintableString(range.first + it.random.nextInt(range.last - range.first + 1))
    }
 }
 

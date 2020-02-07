@@ -382,17 +382,20 @@ fun <A, B, C> Gen.Companion.triple(genA: Gen<A>,
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, T> Gen.Companion.bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = gena.random().map { createFn(it) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, createFn: (A, B) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> =
       gena.random().zip(genb.random(seed)).map { createFn(it.first, it.second) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
                                     genb: Gen<B>,
                                     genc: Gen<C>,
@@ -406,6 +409,7 @@ fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
                                        createFn: (A, B, C, D) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -417,6 +421,7 @@ fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>,
       .map { createFn(it.first.first.first, it.first.first.second, it.first.second, it.second) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>,
                                           createFn: (A, B, C, D, E) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -435,6 +440,7 @@ fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
                                              genb: Gen<B>,
                                              genc: Gen<C>,
@@ -461,6 +467,7 @@ fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, G, T> Gen.Companion.bind(gena: Gen<A>,
                                                 genb: Gen<B>,
                                                 genc: Gen<C>,
@@ -512,6 +519,7 @@ fun <A> Gen.Companion.oneOf(vararg gens: Gen<out A>): Gen<A> = object : Gen<A> {
  * Returns a stream of values, where each
  * value is generated from the given function
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { fn() }

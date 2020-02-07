@@ -23,7 +23,13 @@ import kotlin.random.Random
  */
 interface Gen<out A> {
    fun minIterations(): Int
-   fun generate(random: Random): Sequence<Sample<A>>
+   fun generate(random: RandomSource): Sequence<Sample<A>>
+}
+
+data class RandomSource(val random: Random, val seed: Long) {
+   companion object {
+      val Default = RandomSource(Random.Default, 0)
+   }
 }
 
 /**
@@ -48,7 +54,9 @@ fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
 
 fun <A, B : A> Gen<A>.merge(other: Gen<B>): Gen<A> = object : Gen<A> {
    override fun minIterations(): Int = this@merge.minIterations() + other.minIterations()
-   override fun generate(random: Random): Sequence<Sample<A>> {
-      return this@merge.generate(random).zip(other.generate(random)).flatMap { sequenceOf(it.first, it.second) }
+   override fun generate(random: RandomSource): Sequence<Sample<A>> {
+      return this@merge.generate(random).zip(other.generate(random)).flatMap {
+         sequenceOf(it.first, it.second)
+      }
    }
 }

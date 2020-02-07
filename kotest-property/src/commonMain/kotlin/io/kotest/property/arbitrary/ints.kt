@@ -5,7 +5,7 @@ import kotlin.math.abs
 import kotlin.random.nextInt
 
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE) =
-   arb(IntShrinker, listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)) { it.nextInt(range) }
+   arb(IntShrinker, listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)) { it.random.nextInt(range) }
 
 /**
  * Returns an [Arb] where each value is a randomly chosen natural integer.
@@ -23,7 +23,7 @@ fun Arb.Companion.negativeInts(min: Int = Int.MIN_VALUE) = int(min..0)
  * Returns an [Arb] where each value is a randomly chosen positive integer.
  * The edge cases are: [Int.MAX_VALUE]
  */
-fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(0..Int.MAX_VALUE)
+fun Arb.Companion.positiveInts(max: Int = Int.MAX_VALUE) = int(0..max)
 
 object IntShrinker : Shrinker<Int> {
    override fun shrink(value: Int): List<Int> =

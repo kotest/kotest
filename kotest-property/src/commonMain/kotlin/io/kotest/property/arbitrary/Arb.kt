@@ -1,12 +1,12 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Gen
+import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.map
 import io.kotest.property.sampleOf
-import kotlin.random.Random
 
 /**
  * An [Arb] (for arbitrary) is a provider of property test data in two categories: edgecases and samples.
@@ -29,7 +29,7 @@ import kotlin.random.Random
  */
 interface Arb<A> : Gen<A> {
 
-   fun sample(random: Random): Sample<A>
+   fun sample(rs: RandomSource): Sample<A>
 
    /**
     * Edgecase values for this type A.
@@ -38,13 +38,13 @@ interface Arb<A> : Gen<A> {
 
    override fun minIterations(): Int = edgecases().size
 
-   override fun generate(random: Random): Sequence<Sample<A>> {
+   override fun generate(random: RandomSource): Sequence<Sample<A>> {
       return edgecases().asSequence().map { Sample(it) } + generateSequence { sample(random) }
    }
 
-   fun take(count: Int): Sequence<A> = generateSequence { sample(Random.Default) }.take(count).map { it.value }
+   fun take(count: Int): Sequence<A> = generateSequence { sample(RandomSource.Default) }.take(count).map { it.value }
 
-   fun single(): A = sample(Random.Default).value
+   fun single(): A = sample(RandomSource.Default).value
 
    companion object
 }
@@ -53,8 +53,8 @@ interface Arb<A> : Gen<A> {
  * Creates a new [Arb] that performs no shrinking, and generates each value
  * from successive invocations of the given function f.
  */
-fun <A> arb(edgecases: List<A> = emptyList(), f: (Random) -> A) = object : Arb<A> {
-   override fun sample(random: Random): Sample<A> = Sample(f(random))
+fun <A> arb(edgecases: List<A> = emptyList(), f: (RandomSource) -> A) = object : Arb<A> {
+   override fun sample(rs: RandomSource): Sample<A> = Sample(f(rs))
    override fun edgecases(): List<A> = edgecases
 }
 
@@ -65,10 +65,10 @@ fun <A> arb(edgecases: List<A> = emptyList(), f: (Random) -> A) = object : Arb<A
 fun <A> arb(
    shrinker: Shrinker<A>,
    edgecases: List<A> = emptyList(),
-   f: (Random) -> A
+   f: (RandomSource) -> A
 ) = object : Arb<A> {
    override fun edgecases(): List<A> = edgecases
-   override fun sample(random: Random): Sample<A> = sampleOf(f(random), shrinker)
+   override fun sample(rs: RandomSource): Sample<A> = sampleOf(f(rs), shrinker)
 }
 
 /**
@@ -78,8 +78,8 @@ fun <A> arb(
  */
 fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A> {
    override fun edgecases(): List<A> = this@filter.edgecases().filter(predicate)
-   override fun sample(random: Random): Sample<A> {
-      return sequence { yield(this@filter.sample(random)) }.filter { predicate(it.value) }.first()
+   override fun sample(rs: RandomSource): Sample<A> {
+      return sequence { yield(this@filter.sample(rs)) }.filter { predicate(it.value) }.first()
    }
 }
 
@@ -88,8 +88,8 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean) = object : Arb<A> {
  */
 fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B> {
    override fun edgecases(): List<B> = this@map.edgecases().map(f)
-   override fun sample(random: Random): Sample<B> {
-      val (a, treeA) = this@map.sample(random)
+   override fun sample(rs: RandomSource): Sample<B> {
+      val (a, treeA) = this@map.sample(rs)
       return Sample(f(a), treeA.map(f))
    }
 }

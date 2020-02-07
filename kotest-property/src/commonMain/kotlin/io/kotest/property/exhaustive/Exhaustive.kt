@@ -1,8 +1,8 @@
 package io.kotest.property.exhaustive
 
 import io.kotest.property.Gen
+import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import kotlin.random.Random
 
 /**
  * An exhaustive is a type of [Gen] which generates an exhaustive set of values from a defined range.
@@ -29,7 +29,7 @@ interface Exhaustive<A> : Gen<A> {
 
    override fun minIterations(): Int = values.size
 
-   override fun generate(random: Random): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
+   override fun generate(random: RandomSource): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
 
    companion object
 }

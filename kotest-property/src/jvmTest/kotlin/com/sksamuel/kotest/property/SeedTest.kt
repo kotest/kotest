@@ -8,12 +8,12 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
-import kotlin.random.Random
+import io.kotest.property.random
 
 class SeedTest : FunSpec({
    test("seeds should result in consistent randoms") {
       checkAll(Arb.long()) { seed ->
-         val random = Random(seed)
+         val random = seed.random()
          Arb.int().sample(random) shouldBe Arb.int().sample(random)
          Arb.long().sample(random) shouldBe Arb.long().sample(random)
          Arb.string().sample(random) shouldBe Arb.string().sample(random)

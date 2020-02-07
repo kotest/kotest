@@ -38,17 +38,20 @@ interface Gen<T> {
     * Returns the values that should always be used
     * if this generator is to give complete coverage.
     */
+   @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
    fun constants(): Iterable<T>
 
    /**
     * Generate a random sequence of type T, that is compatible
     * with the constraints of this generator.
     */
+   @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
    fun random(seed: Long? = null): Sequence<T>
 
    /**
     * @return the [Shrinker] for this gen or null if shrinking is not supported.
     */
+   @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
    fun shrinker(): Shrinker<T>? = null
 
    /**

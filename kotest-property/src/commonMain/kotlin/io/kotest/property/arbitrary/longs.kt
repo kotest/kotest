@@ -6,7 +6,7 @@ import kotlin.random.nextLong
 
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgecases = listOf(0, Long.MAX_VALUE, Long.MIN_VALUE)
-   return arb(LongShrinker, edgecases) { it.nextLong(range) }
+   return arb(LongShrinker, edgecases) { it.random.nextLong(range) }
 }
 
 object LongShrinker : Shrinker<Long> {

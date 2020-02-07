@@ -19,7 +19,7 @@ fun <K, V> Arb.Companion.map(
    minSize: Int = 1,
    maxSize: Int = 100
 ): Arb<Map<K, V>> = arb(MapShrinker()) { rand ->
-   val size = rand.nextInt(minSize, maxSize)
+   val size = rand.random.nextInt(minSize, maxSize)
    val pairs = List(size) { arb.sample(rand).value }
    pairs.toMap()
 }
@@ -47,7 +47,7 @@ fun <K, V> Arb.Companion.map(
    require(maxSize >= 0) { "maxSize must be positive" }
 
    return arb(MapShrinker()) { random ->
-      val size = random.nextInt(minSize, maxSize)
+      val size = random.random.nextInt(minSize, maxSize)
       val pairs = List(size) {
          keyArb.sample(random).value to valueArb.sample(random).value
       }

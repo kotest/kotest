@@ -19,7 +19,7 @@ fun Arb.Companion.double(): Arb<Double> {
       Double.NaN,
       Double.POSITIVE_INFINITY
    )
-   return arb(DoubleShrinker, edgecases) { it.nextDouble() }
+   return arb(DoubleShrinker, edgecases) { it.random.nextDouble() }
 }
 
 /**
@@ -32,7 +32,7 @@ fun Arb.Companion.numericDoubles(
    to: Double = Double.MAX_VALUE
 ): Arb<Double> {
    val edgecases = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
-   return arb(DoubleShrinker, edgecases) { it.nextDouble(from, to) }
+   return arb(DoubleShrinker, edgecases) { it.random.nextDouble(from, to) }
 }
 
 fun Arb.Companion.positiveDoubles(): Arb<Double> = double().filter { it > 0.0 }

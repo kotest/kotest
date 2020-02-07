@@ -26,7 +26,7 @@ fun Arb.Companion.float(): Arb<Float> = arb(
       Float.NaN,
       Float.POSITIVE_INFINITY
    )
-) { it.nextFloat() }
+) { it.random.nextFloat() }
 
 /**
  * Returns an [Arb] which is the same as [float] but does not include +INFINITY, -INFINITY or NaN.
@@ -43,7 +43,7 @@ fun Arb.Companion.numericFloats(
       Float.MIN_VALUE,
       Float.MAX_VALUE
    )
-) { it.nextDouble(from.toDouble(), to.toDouble()).toFloat() }
+) { it.random.nextDouble(from.toDouble(), to.toDouble()).toFloat() }
 
 object FloatShrinker : Shrinker<Float> {
    override fun shrink(value: Float): List<Float> {

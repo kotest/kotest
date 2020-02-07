@@ -1,7 +1,7 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import kotlin.random.Random
 
 /**
  * Returns a stream of values based on weights:
@@ -29,9 +29,9 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
       }
 
       override fun edgecases(): List<A> = emptyList()
-      override fun sample(random: Random): Sample<A> {
+      override fun sample(rs: RandomSource): Sample<A> {
          val total = weights.sum()
-         val n = random.nextInt(1, total + 1)
+         val n = rs.random.nextInt(1, total + 1)
          val value = pick(n, allPairs.asSequence())
          return Sample(value)
       }
