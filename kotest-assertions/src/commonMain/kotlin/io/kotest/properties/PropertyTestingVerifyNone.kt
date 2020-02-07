@@ -58,8 +58,8 @@ inline fun <reified A, reified B> verifyNone(noinline fn: PropertyContext.(a: A,
   verifyNone(Gen.default(), Gen.default(), fn)
 }
 
-inline fun <reified A, reified B> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B) -> Boolean) {
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+inline fun <reified A, reified B> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), fn)
 }
 
