@@ -3,6 +3,7 @@ package io.kotest.property.internal
 import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
+import io.kotest.property.RandomSource
 import io.kotest.property.random
 import kotlin.math.max
 
@@ -16,7 +17,7 @@ suspend fun <A> proptest(
    require(iterations >= genA.minIterations()) { "Require at least $iterations iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed.random()
+   val random = config.seed?.random() ?: RandomSource.Default
 
    genA.generate(random)
       .take(iterations)
@@ -44,7 +45,7 @@ suspend fun <A, B> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed.random()
+   val random = config.seed?.random() ?: RandomSource.Default
 
    genA.generate(random).zip(genB.generate(random))
       .take(iterations)
@@ -73,7 +74,7 @@ suspend fun <A, B, C> proptest(
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
-   val random = config.seed.random()
+   val random = config.seed?.random() ?: RandomSource.Default
 
    genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random))
       .take(iterations)

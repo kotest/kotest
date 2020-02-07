@@ -11,7 +11,7 @@ object PropertyTesting {
 }
 
 data class PropTestConfig(
-   val seed: Long = 0,
+   val seed: Long? = null,
    val minSuccess: Int = Int.MAX_VALUE,
    val maxFailure: Int = 0,
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)

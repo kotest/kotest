@@ -77,9 +77,9 @@ class ForAll2Test : FunSpec({
 
    test("forAll with shrink mode") {
       forAll(
+         PropTestConfig(shrinkingMode = ShrinkingMode.Off),
          Arb.int(),
-         Arb.int().map { it * 4 },
-         config = PropTestConfig(shrinkingMode = ShrinkingMode.Off)
+         Arb.int().map { it * 4 }
       ) { a, b ->
          a + b == b + a
       }
@@ -88,9 +88,9 @@ class ForAll2Test : FunSpec({
    test("forAll with maxFailure") {
       shouldThrowAny {
          forAll(
+            PropTestConfig(maxFailure = 5),
             Exhaustive.ints(0..10),
-            Exhaustive.ints(20..30),
-            PropTestConfig(maxFailure = 5)
+            Exhaustive.ints(20..30)
          ) { a, b -> a > b }
       }.message shouldBe """Property failed for
 Arg 0: 5
@@ -102,9 +102,9 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
    test("forAll with minSuccess") {
       shouldThrowAny {
          forAll(
+            PropTestConfig(maxFailure = 9, minSuccess = 9),
             Exhaustive.ints(0..10),
-            Exhaustive.single(8),
-            PropTestConfig(maxFailure = 9, minSuccess = 9)
+            Exhaustive.single(8)
          ) { a, b -> a < b }
       }.message shouldBe """Property failed for
 Arg 0: 8
