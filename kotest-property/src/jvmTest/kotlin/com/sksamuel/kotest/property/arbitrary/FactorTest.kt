@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.factors
+import io.kotest.property.arbitrary.take
 
 class FactorTest : FunSpec({
    test("factors of k") {
