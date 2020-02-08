@@ -7,6 +7,7 @@ import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.shouldBe
 import kotlin.time.ExperimentalTime
+import kotlin.time.hours
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
@@ -22,7 +23,7 @@ class ContinuallyTest : WordSpec() {
       }
       "fail broken tests immediately"  {
         shouldThrowExactly<AssertionError> {
-          continually(3.seconds) {
+          continually(12.hours) {
             5.shouldBeLessThan(4)
           }
         }.message shouldBe "5 should be < 4"
