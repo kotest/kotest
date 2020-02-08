@@ -12,4 +12,4 @@ _Note: In previous versions of Kotest/Kotlintest you needed to add the `AllureTe
 manually, but this is no longer required._
 
 With the module added to your build, execute your tests and report files will be written to the default location.
-Finally, you use the allure binary to (https://docs.qameta.io/allure/#_report_generation)[generate the report].
+Finally, you use the allure binary to [generate  the report](https://docs.qameta.io/allure/#_report_generation).
