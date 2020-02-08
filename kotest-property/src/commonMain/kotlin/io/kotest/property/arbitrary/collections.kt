@@ -22,15 +22,11 @@ fun <T> Arb.Companion.collection(collection: Collection<T>): Arb<T> = arb { coll
  * unique items to satify the required set size
  */
 @JvmOverloads
-fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> = object : Arb<Set<A>> {
-   override fun edgecases(): List<Set<A>> = emptyList()
-
-   override fun sample(rs: RandomSource): Sample<Set<A>> {
-      val size = rs.random.nextInt(range)
-      val set = mutableSetOf<A>()
-      gen.generate(rs).takeWhile { set.size < size }.forEach { set.add(it.value) }
-      return Sample(set)
-   }
+fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> = arb {
+   val size = it.random.nextInt(range)
+   val set = mutableSetOf<A>()
+   gen.generate(it).takeWhile { set.size < size }.forEach { set.add(it.value) }
+   set.toSet()
 }
 
 /**

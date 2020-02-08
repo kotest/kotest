@@ -29,7 +29,12 @@ interface Exhaustive<A> : Gen<A> {
 
    override fun minIterations(): Int = values.size
 
-   override fun generate(rs: RandomSource): Sequence<Sample<A>> = generateSequence { values.map { Sample(it) } }.flatten()
+   override fun generate(rs: RandomSource): Sequence<Sample<A>> =
+      generateSequence { values.map { Sample(it) } }.flatten()
 
    companion object
+}
+
+fun <A> exhaustive(`as`: List<A>) = object : Exhaustive<A> {
+   override val values: List<A> = `as`
 }
