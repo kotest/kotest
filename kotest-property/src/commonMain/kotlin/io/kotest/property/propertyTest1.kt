@@ -7,12 +7,10 @@ import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 
-const val DefaultIterationsCount = 1000
-
 suspend fun <A> checkAll(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(DefaultIterationsCount, genA, PropTestConfig(), property)
+): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, PropTestConfig(), property)
 
 suspend fun <A> checkAll(
    iterations: Int,
@@ -24,7 +22,7 @@ suspend fun <A> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(DefaultIterationsCount, genA, config, property)
+): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, config, property)
 
 suspend fun <A> checkAll(
    iterations: Int,
@@ -37,7 +35,7 @@ suspend fun <A> checkAll(
 suspend inline fun <reified A> checkAll(
    noinline property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(
-   DefaultIterationsCount,
+   PropertyTesting.defaultIterationCount,
    Arb.default<A>(),
    PropTestConfig(),
    property
@@ -56,7 +54,7 @@ suspend inline fun <reified A> checkAll(
 suspend inline fun <reified A> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = checkAll(DefaultIterationsCount, config, property)
+): PropertyContext = checkAll(PropertyTesting.defaultIterationCount, config, property)
 
 suspend inline fun <reified A> checkAll(
    iterations: Int,
@@ -72,19 +70,19 @@ suspend inline fun <reified A> checkAll(
 suspend fun <A> forAll(
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
-) = proptest(DefaultIterationsCount, genA, PropTestConfig()) { a -> property(a).shouldBeTrue() }
+) = forAll(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, property)
 
 suspend fun <A> forAll(
    iterations: Int,
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
-) = proptest(iterations, genA, PropTestConfig()) { a -> property(a).shouldBeTrue() }
+) = forAll(iterations, PropTestConfig(), genA, property)
 
 suspend fun <A> forAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
-) = proptest(DefaultIterationsCount, genA, config) { a -> property(a).shouldBeTrue() }
+) = forAll(PropertyTesting.defaultIterationCount, config, genA, property)
 
 suspend fun <A> forAll(
    iterations: Int,
@@ -93,9 +91,10 @@ suspend fun <A> forAll(
    property: PropertyContext.(A) -> Boolean
 ) = proptest(iterations, genA, config) { a -> property(a).shouldBeTrue() }
 
+
 suspend inline fun <reified A> forAll(
    crossinline property: suspend PropertyContext.(A) -> Boolean
-) = forAll(DefaultIterationsCount, PropTestConfig(), property)
+) = forAll(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
 
 suspend inline fun <reified A> forAll(
    iterations: Int,
@@ -105,7 +104,7 @@ suspend inline fun <reified A> forAll(
 suspend inline fun <reified A> forAll(
    config: PropTestConfig,
    crossinline property: suspend PropertyContext.(A) -> Boolean
-) = forAll(DefaultIterationsCount, config, property)
+) = forAll(PropertyTesting.defaultIterationCount, config, property)
 
 suspend inline fun <reified A> forAll(
    iterations: Int,

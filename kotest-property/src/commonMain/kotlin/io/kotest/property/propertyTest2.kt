@@ -11,14 +11,14 @@ suspend fun <A, B> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest<A, B>(DefaultIterationsCount, genA, genB, PropTestConfig(), property)
+): PropertyContext = proptest<A, B>(PropertyTesting.defaultIterationCount, genA, genB, PropTestConfig(), property)
 
 suspend fun <A, B> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = checkAll<A, B>(DefaultIterationsCount, config, genA, genB, property)
+): PropertyContext = checkAll<A, B>(PropertyTesting.defaultIterationCount, config, genA, genB, property)
 
 suspend fun <A, B> checkAll(
    iterations: Int,
@@ -39,7 +39,7 @@ suspend fun <A, B> checkAll(
 suspend inline fun <reified A, reified B> checkAll(
    noinline property: suspend PropertyContext.(A, B) -> Unit
 ) = proptest<A, B>(
-   DefaultIterationsCount,
+   PropertyTesting.defaultIterationCount,
    Arb.default<A>(),
    Arb.default<B>(),
    PropTestConfig(),
@@ -50,7 +50,7 @@ suspend inline fun <reified A, reified B> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A, B) -> Unit
 ) = proptest<A, B>(
-   DefaultIterationsCount,
+   PropertyTesting.defaultIterationCount,
    Arb.default<A>(),
    Arb.default<B>(),
    config,
@@ -85,14 +85,14 @@ suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(DefaultIterationsCount, PropTestConfig(), genA, genB, property)
+) = forAll<A, B>(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, genB, property)
 
 suspend fun <A, B> forAll(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(DefaultIterationsCount, config, genA, genB, property)
+) = forAll<A, B>(PropertyTesting.defaultIterationCount, config, genA, genB, property)
 
 suspend fun <A, B> forAll(
    iterations: Int,
@@ -112,12 +112,12 @@ suspend fun <A, B> forAll(
 
 suspend inline fun <reified A, reified B> forAll(
    crossinline property: PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(DefaultIterationsCount, PropTestConfig(), property)
+) = forAll<A, B>(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
 
 suspend inline fun <reified A, reified B> forAll(
    config: PropTestConfig = PropTestConfig(),
    crossinline property: PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(DefaultIterationsCount, config, property)
+) = forAll<A, B>(PropertyTesting.defaultIterationCount, config, property)
 
 suspend inline fun <reified A, reified B> forAll(
    iterations: Int,
