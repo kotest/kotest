@@ -32,6 +32,7 @@ fun Gen.Companion.period(maxYear: Int = 10): Gen<Period> = object : Gen<Period> 
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
 
 /**
@@ -39,6 +40,7 @@ fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigInteger
  * chosen created File object. The file objects do not necessarily
  * exist on disk.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {
@@ -52,6 +54,7 @@ fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
  *
  * This generator creates randomly generated Duration, of at most [maxDuration].
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Duration> = object : Gen<Duration> {
    private val maxDurationInSeconds = maxDuration.seconds
 
@@ -64,6 +67,7 @@ fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Dur
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.uuid(
    uuidVersion: UUIDVersion = UUIDVersion.V4,
    allowNilValue: Boolean = true
@@ -157,13 +161,17 @@ fun Gen.Companion.localDateTime(minYear: Int = 1970,
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified T : Enum<T>> Gen.Companion.enum(): Gen<T> = object : Gen<T> {
    val values = T::class.java.enumConstants.toList()
    override fun constants(): Iterable<T> = values
    override fun random(seed: Long?): Sequence<T> = from(values).random()
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.regex(regex: String) = RegexpGen(regex)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
 
 /**
@@ -171,6 +179,7 @@ fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
  * chosen File object from given directory. If the Directory does not exist, an empty sequence will be returned instead.
  * If recursive is true(default value is false) it gives files from inner directories as well recursively.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {

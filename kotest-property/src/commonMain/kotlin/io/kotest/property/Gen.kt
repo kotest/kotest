@@ -22,7 +22,13 @@ import kotlin.random.Random
  * even number from 0 to 200 (exhaustive).
  */
 interface Gen<out A> {
+
+   /**
+    * The minimum iteration count required for this [Gen] to be invoked.
+    * Requesting a property test with fewer than this cound will result in an exception.
+    */
    fun minIterations(): Int
+
    fun generate(rs: RandomSource): Sequence<Sample<A>>
 }
 

@@ -21,7 +21,7 @@ import java.time.temporal.TemporalQueries.localTime
  * Months will always be in range [0..11]
  * Days will always be in range [0..31]
  */
-fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : Arb<Period> {
+fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : BasicArb<Period> {
    override fun edgecases() = listOf(Period.ZERO)
    override fun sample(rs: RandomSource): Sample<Period> {
       return Sample(
@@ -45,7 +45,7 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : Arb<Period> 
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : Arb<LocalDate> {
+fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : BasicArb<LocalDate> {
 
    override fun edgecases(): List<LocalDate> {
       val yearRange = (minYear..maxYear)
@@ -73,7 +73,7 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
  * @see [localDateTime]
  * @see [localDate]
  */
-fun Arb.Companion.localTime(): Arb<LocalTime> = object : Arb<LocalTime> {
+fun Arb.Companion.localTime(): Arb<LocalTime> = object : BasicArb<LocalTime> {
 
    override fun edgecases(): List<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
    override fun sample(rs: RandomSource): Sample<LocalTime> {
@@ -95,7 +95,7 @@ fun Arb.Companion.localTime(): Arb<LocalTime> = object : Arb<LocalTime> {
 fun Arb.Companion.localDateTime(
    minYear: Int = 1970,
    maxYear: Int = 2030
-): Arb<LocalDateTime> = object : Arb<LocalDateTime> {
+): Arb<LocalDateTime> = object : BasicArb<LocalDateTime> {
 
    override fun edgecases(): List<LocalDateTime> {
       val localDates = localDate(minYear, maxYear).edgecases()
@@ -104,8 +104,8 @@ fun Arb.Companion.localDateTime(
    }
 
    override fun sample(rs: RandomSource): Sample<LocalDateTime> {
-      val date = localDate(minYear, maxYear).sample(rs).value
-      val time = localTime().sample(rs).value
+      val date = localDate(minYear, maxYear).single(rs)
+      val time = localTime().single(rs)
       return Sample(date.atTime(time))
    }
 }

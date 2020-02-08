@@ -11,6 +11,6 @@ import io.kotest.property.Sample
 @Suppress("UNCHECKED_CAST")
 inline fun <A, reified B : A> Arb<A>.filterIsInstance(): Arb<B> = object : Arb<B> {
    override fun edgecases(): List<B> = this@filterIsInstance.edgecases().filterIsInstance<B>()
-   override fun sample(rs: RandomSource): Sample<B> =
-      sequence { yield(this@filterIsInstance.sample(rs)) }.filter { it.value is B }.first() as Sample<B>
+   override fun samples(rs: RandomSource): Sequence<Sample<B>> =
+      this@filterIsInstance.samples(rs).filterIsInstance<Sample<B>>()
 }

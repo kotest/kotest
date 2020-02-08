@@ -4,6 +4,8 @@ import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextInt
 
+fun Arb.Companion.int(min: Int, max: Int) = int(min..max)
+
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE) =
    arb(IntShrinker, listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)) { it.random.nextInt(range) }
 

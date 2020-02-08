@@ -1,13 +1,13 @@
 package io.kotest.property.arbitrary
 
 fun <A, T> Arb.Companion.bind(arbA: Arb<A>, createFn: (A) -> T): Arb<T> = arb {
-   createFn(arbA.sample(it).value)
+   createFn(arbA.single(it))
 }
 
 fun <A, B, T> Arb.Companion.bind(arbA: Arb<A>, arbB: Arb<B>, createFn: (A, B) -> T): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   createFn(a.value, b.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   createFn(a, b)
 }
 
 fun <A, B, C, T> Arb.Companion.bind(
@@ -16,33 +16,33 @@ fun <A, B, C, T> Arb.Companion.bind(
    arbC: Arb<C>,
    createFn: (A, B, C) -> T
 ): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   val c = arbC.sample(it)
-   createFn(a.value, b.value, c.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   val c = arbC.single(it)
+   createFn(a, b, c)
 }
 
 fun <A, B, C, D, T> Arb.Companion.bind(
    arbA: Arb<A>, arbB: Arb<B>, arbC: Arb<C>, arbD: Arb<D>,
    createFn: (A, B, C, D) -> T
 ): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   val c = arbC.sample(it)
-   val d = arbD.sample(it)
-   createFn(a.value, b.value, c.value, d.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   val c = arbC.single(it)
+   val d = arbD.single(it)
+   createFn(a, b, c, d)
 }
 
 fun <A, B, C, D, E, T> Arb.Companion.bind(
    arbA: Arb<A>, arbB: Arb<B>, arbC: Arb<C>, arbD: Arb<D>, arbE: Arb<E>,
    createFn: (A, B, C, D, E) -> T
 ): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   val c = arbC.sample(it)
-   val d = arbD.sample(it)
-   val e = arbE.sample(it)
-   createFn(a.value, b.value, c.value, d.value, e.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   val c = arbC.single(it)
+   val d = arbD.single(it)
+   val e = arbE.single(it)
+   createFn(a, b, c, d, e)
 }
 
 fun <A, B, C, D, E, F, T> Arb.Companion.bind(
@@ -54,13 +54,13 @@ fun <A, B, C, D, E, F, T> Arb.Companion.bind(
    arbF: Arb<F>,
    createFn: (A, B, C, D, E, F) -> T
 ): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   val c = arbC.sample(it)
-   val d = arbD.sample(it)
-   val e = arbE.sample(it)
-   val f = arbF.sample(it)
-   createFn(a.value, b.value, c.value, d.value, e.value, f.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   val c = arbC.single(it)
+   val d = arbD.single(it)
+   val e = arbE.single(it)
+   val f = arbF.single(it)
+   createFn(a, b, c, d, e, f)
 }
 
 fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
@@ -73,12 +73,12 @@ fun <A, B, C, D, E, F, G, T> Arb.Companion.bind(
    arbG: Arb<G>,
    createFn: (A, B, C, D, E, F, G) -> T
 ): Arb<T> = arb {
-   val a = arbA.sample(it)
-   val b = arbB.sample(it)
-   val c = arbC.sample(it)
-   val d = arbD.sample(it)
-   val e = arbE.sample(it)
-   val f = arbF.sample(it)
-   val g = arbG.sample(it)
-   createFn(a.value, b.value, c.value, d.value, e.value, f.value, g.value)
+   val a = arbA.single(it)
+   val b = arbB.single(it)
+   val c = arbC.single(it)
+   val d = arbD.single(it)
+   val e = arbE.single(it)
+   val f = arbF.single(it)
+   val g = arbG.single(it)
+   createFn(a, b, c, d, e, f, g)
 }

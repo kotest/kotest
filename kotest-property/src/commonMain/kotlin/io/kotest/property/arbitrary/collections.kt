@@ -1,10 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Gen
-import io.kotest.property.RandomSource
-import io.kotest.property.Sample
 import io.kotest.property.Shrinker
-import io.kotest.property.sampleOf
 import kotlin.jvm.JvmOverloads
 import kotlin.random.nextInt
 
@@ -36,14 +33,9 @@ fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> = 
  * Shrinking is performed by removing elements from the list until the empty list.
  */
 @JvmOverloads
-fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> = object : Arb<List<A>> {
-   override fun edgecases(): List<List<A>> = emptyList()
-
-   override fun sample(rs: RandomSource): Sample<List<A>> {
-      val size = rs.random.nextInt(range)
-      val list = gen.generate(rs).take(size).map { it.value }.toList()
-      return sampleOf(list, ListShrinker())
-   }
+fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> = arb(ListShrinker()) { rs ->
+   val size = rs.random.nextInt(range)
+   gen.generate(rs).take(size).map { it.value }.toList()
 }
 
 class ListShrinker<A> : Shrinker<List<A>> {

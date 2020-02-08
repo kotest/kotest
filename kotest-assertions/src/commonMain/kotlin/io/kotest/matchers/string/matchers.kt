@@ -373,7 +373,7 @@ fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
 }
 
 enum class UUIDVersion(
-  internal val uuidRegex: Regex
+  val uuidRegex: Regex
 ) {
   ANY("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
   V1("[0-9a-f]{8}-[0-9a-f]{4}-[1][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),

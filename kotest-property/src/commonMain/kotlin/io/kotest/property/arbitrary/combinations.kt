@@ -18,7 +18,7 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
    val weights = allPairs.map { it.first }
    require(weights.all { it >= 0 }) { "Negative weights not allowed" }
    require(weights.any { it > 0 }) { "At least one weight must be greater than zero" }
-   return object : Arb<A> {
+   return object : BasicArb<A> {
       // The algorithm for pick is a migration of
       // the algorithm from Haskell QuickCheck
       // http://hackage.haskell.org/package/QuickCheck

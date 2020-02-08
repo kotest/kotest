@@ -23,16 +23,15 @@ fun <A, B, C> Arb.Companion.triple(
       }
    }
 
-   override fun sample(rs: RandomSource): Sample<Triple<A, B, C>> {
-      val a = arbA.sample(rs)
-      val b = arbB.sample(rs)
-      val c = arbC.sample(rs)
-      return Sample(
-         Triple(
-            a.value,
-            b.value,
-            c.value
+   override fun samples(rs: RandomSource): Sequence<Sample<Triple<A, B, C>>> {
+      return arbA.samples(rs).zip(arbB.samples(rs)).zip(arbC.samples(rs)).map {
+         Sample(
+            Triple(
+               it.first.first.value,
+               it.first.second.value,
+               it.second.value
+            )
          )
-      )
+      }
    }
 }

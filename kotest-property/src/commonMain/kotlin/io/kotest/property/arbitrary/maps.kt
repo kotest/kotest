@@ -18,15 +18,15 @@ fun <K, V> Arb.Companion.map(
    arb: Arb<Pair<K, V>>,
    minSize: Int = 1,
    maxSize: Int = 100
-): Arb<Map<K, V>> = arb(MapShrinker()) { rand ->
-   val size = rand.random.nextInt(minSize, maxSize)
-   val pairs = List(size) { arb.sample(rand).value }
+): Arb<Map<K, V>> = arb(MapShrinker()) { random ->
+   val size = random.random.nextInt(minSize, maxSize)
+   val pairs = List(size) { arb.single(random) }
    pairs.toMap()
 }
 
 /**
  * Returns an [Arb] where each generated value is a map, with the entries of the map
- * drawn by combining values from the key arbitrary and value arbitrary. The size of each
+ * drawn by combining values from the key gen and value gen. The size of each
  * generated map is a random value between the specified min and max bounds.
  *
  * There are no edgecases.
@@ -49,7 +49,7 @@ fun <K, V> Arb.Companion.map(
    return arb(MapShrinker()) { random ->
       val size = random.random.nextInt(minSize, maxSize)
       val pairs = List(size) {
-         keyArb.sample(random).value to valueArb.sample(random).value
+         keyArb.single(random) to valueArb.single(random)
       }
       pairs.toMap()
    }
@@ -66,4 +66,8 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
          )
       }
    }
+}
+
+fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arb {
+   k.single(it) to v.single(it)
 }

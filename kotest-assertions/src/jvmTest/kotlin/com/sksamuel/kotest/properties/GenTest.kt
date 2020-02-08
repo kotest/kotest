@@ -137,30 +137,7 @@
 //        gen.random().take(150).toList() shouldBe List(150) { it }
 //      }
 //    }
-//    "Gen.default" should {
-//      "generate the defaults for list" {
-//
-//        val gen = Gen.default<List<Int>>()
-//        forAll(10, gen) { inst ->
-//           inst.forAll { i ->
-//            (i is Int) shouldBe true
-//          }
-//          true
-//        }
-//      }
-//
-//      "generate the defaults for set" {
-//
-//        val gen = Gen.default<Set<String>>()
-//        forAll(gen) { inst ->
-//           inst.forAll { i ->
-//            (i is String) shouldBe true
-//          }
-//          true
-//
-//        }
-//
-//      }
+
 //
 //      "use forClass for everything else" {
 //
@@ -421,35 +398,6 @@
 //      }
 //    }
 //
-//    "Gen.list(maxSize)" should {
-//      "Generate lists of length up to 100 by default" {
-//        assertAll(10_000, Gen.list(Gen.double())) {
-//          it.shouldHaveAtMostSize(100)
-//        }
-//      }
-//      "Generate lists up to the given length" {
-//        assertAll(50, Gen.choose(1, 500)) { size: Int ->
-//          assertAll(1000, Gen.list(Gen.double(), size)) {
-//            it.shouldHaveAtMostSize(size)
-//          }
-//        }
-//      }
-//    }
-//
-//    "Gen.set(maxSize)" should {
-//      "Generate sets of length up to 100 by default" {
-//        assertAll(10_000, Gen.set(Gen.double())) {
-//          it.shouldHaveAtMostSize(100)
-//        }
-//      }
-//      "Generate sets up to the given length" {
-//        assertAll(50, Gen.choose(1, 500)) { size: Int ->
-//          assertAll(1000, Gen.set(Gen.double(), size)) {
-//            it.shouldHaveAtMostSize(size)
-//          }
-//        }
-//      }
-//    }
 //
 //    "Gen.map(keyGen, valueGen, maxSize)" should {
 //      val keyGen = Gen.int()
