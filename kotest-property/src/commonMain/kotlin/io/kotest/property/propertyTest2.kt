@@ -112,12 +112,12 @@ suspend fun <A, B> forAll(
 
 suspend inline fun <reified A, reified B> forAll(
    crossinline property: PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
+): PropertyContext = forAll<A, B>(PropertyTesting.defaultIterationCount, PropTestConfig(), property)
 
 suspend inline fun <reified A, reified B> forAll(
    config: PropTestConfig = PropTestConfig(),
    crossinline property: PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(PropertyTesting.defaultIterationCount, config, property)
+): PropertyContext = forAll<A, B>(PropertyTesting.defaultIterationCount, config, property)
 
 suspend inline fun <reified A, reified B> forAll(
    iterations: Int,

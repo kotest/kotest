@@ -25,18 +25,20 @@ class PropertyContext {
 
    fun classifications(): Map<String, Int> = classifications.toMap()
 
-   fun classify(condition: Boolean, trueLabel: String) {
+   fun classify(condition: Boolean, label: String) {
       if (condition) {
-         val current = classifications.getOrElse(trueLabel) { 0 }
-         classifications[trueLabel] = current + 1
+         val current = classifications.getOrElse(label) { 0 }
+         classifications[label] = current + 1
       }
    }
 
    fun classify(condition: Boolean, trueLabel: String, falseLabel: String) {
       if (condition) {
-         classify(condition, trueLabel)
+         val current = classifications.getOrElse(trueLabel) { 0 }
+         classifications[trueLabel] = current + 1
       } else {
-         classify(!condition, falseLabel)
+         val current = classifications.getOrElse(falseLabel) { 0 }
+         classifications[falseLabel] = current + 1
       }
    }
 }
