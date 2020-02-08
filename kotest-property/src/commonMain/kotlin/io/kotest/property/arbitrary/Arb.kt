@@ -62,6 +62,12 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequen
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = generate(rs).first().value
 
 /**
+ * Returns a single value from this [Arb] that matches the given predicate.
+ */
+fun <A> Arb<A>.single(predicate: (A) -> Boolean, rs: RandomSource = RandomSource.Default): A =
+   generate(rs).first { predicate(it.value) }.value
+
+/**
  * Creates a new [Arb] that performs no shrinking, and generates each value
  * from successive invocations of the given function f.
  */
@@ -144,3 +150,5 @@ fun <A> Arb<A>.distinct() = object : Arb<A> {
       return this@distinct.samples(rs).filter { seen.add(it.value) }
    }
 }
+
+fun <A> Arb.Companion.constant(a: A) = arb { a }
