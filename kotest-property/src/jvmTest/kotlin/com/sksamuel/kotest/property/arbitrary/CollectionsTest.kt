@@ -7,22 +7,26 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.create
 import io.kotest.property.arbitrary.list
+import io.kotest.property.arbitrary.set
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.Exhaustive
-import io.kotest.property.exhaustive.single
+import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class CollectionsTest : FunSpec({
 
-   test("gen list should not include empty edgecases as first list") {
+   test("Arb.list should not include empty edgecases as first sample") {
       val numGen = Arb.list(Arb.create { it.random.nextInt() }, 1..100)
-      forAll(1, numGen) { b ->
-         b.isNotEmpty()
-      }
+      forAll(1, numGen) { it.isNotEmpty() }
+   }
+
+   test("Arb.set should not include empty edgecases as first sample") {
+      val numGen = Arb.set(Arb.create { it.random.nextInt() }, 1..100)
+      forAll(1, numGen) { it.isNotEmpty() }
    }
 
    test("gen list should return lists of underlying generators") {
-      val gen = Arb.list(Exhaustive.single(1), 2..10)
+      val gen = Arb.list(Exhaustive.constant(1), 2..10)
       checkAll(gen) {
          it.shouldHaveAtLeastSize(2)
          it.shouldHaveAtMostSize(10)

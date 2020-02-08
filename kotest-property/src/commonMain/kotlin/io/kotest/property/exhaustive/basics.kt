@@ -10,7 +10,7 @@ fun Exhaustive.Companion.bools() = object : Exhaustive<Boolean> {
 /**
  * Returns a [Exhaustive] whose value is a single constant.
  */
-fun <A> Exhaustive.Companion.single(a: A) = object : Exhaustive<A> {
+fun <A> Exhaustive.Companion.constant(a: A) = object : Exhaustive<A> {
    override val values: List<A> = listOf(a)
 }
 

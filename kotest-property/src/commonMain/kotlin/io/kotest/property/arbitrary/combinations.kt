@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Gen
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
@@ -48,4 +49,12 @@ fun <A> Arb.Companion.shuffle(list: List<A>) = arb { list.shuffled(it.random) }
  */
 fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
    list.take(it.random.nextInt(0, list.size + 1))
+}
+
+/**
+ * Randomly selects one of the given generators to generate the next element.
+ * The input must be non-empty.
+ */
+fun <A> Arb.Companion.choice(vararg gens: Gen<A>) = arb {
+   gens.asList().shuffled(it.random).first().generate(it).first()
 }

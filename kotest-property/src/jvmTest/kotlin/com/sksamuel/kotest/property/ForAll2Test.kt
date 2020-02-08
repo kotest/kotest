@@ -11,7 +11,7 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.exhaustive.Exhaustive
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
-import io.kotest.property.exhaustive.single
+import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class ForAll2Test : FunSpec({
@@ -104,7 +104,7 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
          forAll(
             PropTestConfig(maxFailure = 9, minSuccess = 9),
             Exhaustive.ints(0..10),
-            Exhaustive.single(8)
+            Exhaustive.constant(8)
          ) { a, b -> a < b }
       }.message shouldBe """Property failed for
 Arg 0: 8
