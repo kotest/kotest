@@ -37,3 +37,15 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
       }
    }
 }
+
+/**
+ * Generates random permutations of a list.
+ */
+fun <A> Arb.Companion.shuffle(list: List<A>) = arb { list.shuffled(it.random) }
+
+/**
+ * Generates a random subsequence, including the empty list.
+ */
+fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
+   list.take(it.random.nextInt(0, list.size + 1))
+}
