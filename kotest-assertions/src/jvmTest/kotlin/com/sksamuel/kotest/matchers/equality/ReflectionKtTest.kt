@@ -11,6 +11,8 @@ class ReflectionKtTest : FunSpec() {
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
+   data class Car(val name: String, val price: Int, private val modelNumber: Int)
+
    init {
 
       test("shouldBeEqualToUsingFields") {
@@ -58,6 +60,13 @@ class ReflectionKtTest : FunSpec() {
          assertThrows<IllegalArgumentException>("At-least one field is required to be mentioned to be ignore for checking the equality") {
             Foo("sammy", 23, false).shouldBeEqualToIgnoringFields(Foo("danny", 23, false))
          }
+      }
+
+      test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
+         val car1 = Car("C1", 10000, 123)
+         val car2 = Car("C1", 123423, 123)
+
+         car2.shouldBeEqualToIgnoringFields(car1, Car::price)
       }
    }
 }
