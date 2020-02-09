@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.io.File
+import java.nio.charset.Charset
 import kotlin.random.Random
 
 /**
@@ -33,5 +34,12 @@ fun Arb.Companion.file(directoryName: String, recursive: Boolean = false): Arb<F
       val allFiles = files.toList()
       if (allFiles.isEmpty()) return emptySequence()
       return generateSequence { allFiles.shuffled(random) }.flatten().map { Sample(it) }
+   }
+}
+
+fun Arb.Companion.lines(file: File, charset: Charset = Charsets.UTF_8): Arb<String> {
+   val contents = file.readLines(charset)
+   return arb {
+      contents.shuffled(it.random).first()
    }
 }
