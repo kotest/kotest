@@ -1,16 +1,18 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.assertions
 
+import io.kotest.assertions.retry
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
-import io.kotest.retry
-import java.time.Duration.ofMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@UseExperimental(ExperimentalTime::class)
 class RetryTest : StringSpec() {
    init {
       "should call given assertion when until it pass in given number of times" {
          val testClass = TestClass(4)
-         retry(5, ofMillis(500), ofMillis(100)) {
+         retry(5, 500.milliseconds, 100.milliseconds) {
             testClass.isReady() shouldBe true
          }
       }
@@ -18,7 +20,7 @@ class RetryTest : StringSpec() {
       "should not call given assertion beyond given number of times" {
          val testClass = TestClass(4)
          runSafely {
-            retry(2, ofMillis(500), ofMillis(100), 1) {
+            retry(2, 500.milliseconds, 100.milliseconds, 1) {
                testClass.isReady() shouldBe true
             }
          }
@@ -28,7 +30,7 @@ class RetryTest : StringSpec() {
       "should not call given assertion beyond given max duration" {
          val testClass = TestClass(4)
          runSafely {
-            retry(5, ofMillis(500), ofMillis(400), 1) {
+            retry(5, 500.milliseconds, 400.milliseconds, 1) {
                testClass.isReady() shouldBe true
             }
          }
@@ -38,7 +40,7 @@ class RetryTest : StringSpec() {
       "should call given assertion exponentially" {
          val testClass = TestClass(4)
          runSafely {
-            retry(5, ofMillis(500), ofMillis(100), 2) {
+            retry(5, 500.milliseconds, 100.milliseconds, 2) {
                testClass.isReady() shouldBe true
             }
          }
@@ -52,7 +54,7 @@ class RetryTest : StringSpec() {
       "should not retry in case of unexpected exception" {
          val testClass = TestClass(2)
          runSafely {
-            retry(5, ofMillis(500), ofMillis(20), 1, IllegalArgumentException::class.java) {
+            retry(5, 500.milliseconds, 20.milliseconds, 1, IllegalArgumentException::class) {
                testClass.throwUnexpectedException()
             }
          }
