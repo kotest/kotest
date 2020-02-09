@@ -184,8 +184,9 @@ fun <T : Any> beEqualToIgnoringFields(
    override fun test(value: T): MatcherResult {
 
       val fieldNames = fields.map { it.name }
-      val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties.filterNot { fieldNames.contains(it.name) }
-      fieldsToBeConsidered.forEach { it.isAccessible = true }
+      val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties
+         .filterNot { fieldNames.contains(it.name) }
+         .onEach { it.isAccessible = true }
 
       val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
