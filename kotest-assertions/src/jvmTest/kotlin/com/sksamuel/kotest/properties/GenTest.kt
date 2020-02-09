@@ -227,31 +227,7 @@
 //      }
 //    }
 //
-//    "Gen.oneOf" should {
-//      "correctly handle multiple generators" {
-//        val gen = Gen.oneOf(Gen.positiveIntegers(), Gen.negativeIntegers())
-//        var positiveNumbers = 0
-//        var negativeNumbers = 0
-//        forAll(gen) {
-//          if (it > 0) {
-//            positiveNumbers++
-//          } else if (it < 0) {
-//            negativeNumbers++
-//          }
-//          it shouldNotBe 0
-//          true
-//        }
-//        positiveNumbers shouldBe beGreaterThan(1)
-//        negativeNumbers shouldBe beGreaterThan(1)
-//      }
-//      "support covariance" {
-//        Gen.oneOf(
-//            Gen.bind(Gen.int(), X::A),
-//            Gen.bind(Gen.int(), X::B),
-//            Gen.bind(Gen.int(), X::C)
-//        )
-//      }
-//    }
+
 //
 //    "Gen.numericDoubles(min, max)" should {
 //      val min = 1.0

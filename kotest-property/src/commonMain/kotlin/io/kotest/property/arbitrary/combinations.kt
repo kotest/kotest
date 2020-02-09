@@ -55,8 +55,8 @@ fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
  * Randomly selects one of the given generators to generate the next element.
  * The input must be non-empty.
  */
-fun <A> Arb.Companion.choice(vararg gens: Gen<A>) = arb {
-   gens.asList().shuffled(it.random).first().generate(it).first()
+fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Arb<A> = arb {
+   gens.asList().shuffled(it.random).first().generate(it).first().value
 }
 
 /**
