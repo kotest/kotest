@@ -1,6 +1,7 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.autoClose
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.core.spec.style.StringSpec
 import java.io.Closeable

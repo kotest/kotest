@@ -182,24 +182,6 @@ abstract class TestConfiguration {
       fun DynamicTest.addPrefix() = copy(name = prefix + name)
       factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
    }
-
-   /**
-    * Register an [AutoCloseable] so that it's close methods is automatically invoked
-    * when the tests are completed.
-    */
-   fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpec {
-         closeable.close()
-      }
-      return closeable
-   }
-
-   fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
-      afterSpec {
-         closeable.value.close()
-      }
-      return closeable
-   }
 }
 
 // we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
@@ -290,4 +272,20 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
    }
 }
 
+/**
+ * Register an [AutoCloseable] so that it's close methods is automatically invoked
+ * when the tests are completed.
+ */
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
+   afterSpec {
+      closeable.close()
+   }
+   return closeable
+}
 
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: Lazy<T>): Lazy<T> {
+   afterSpec {
+      closeable.value.close()
+   }
+   return closeable
+}
