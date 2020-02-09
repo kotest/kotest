@@ -3,7 +3,7 @@ package io.kotest.property.exhaustive
 /**
  * Returns a [Exhaustive] of the two possible boolean values - true and false.
  */
-fun Exhaustive.Companion.bools() = object : Exhaustive<Boolean> {
+fun Exhaustive.Companion.boolean() = object : Exhaustive<Boolean> {
    override val values: List<Boolean> = listOf(true, false)
 }
 

@@ -7,7 +7,7 @@ import io.kotest.property.Sample
 /**
  * Returns a stream of values based on weights:
  *
- * Gen.choose(1 to 'A', 2 to 'B') will generate 'A' 33% of the time
+ * Arb.choose(1 to 'A', 2 to 'B') will generate 'A' 33% of the time
  * and 'B' 66% of the time.
  *
  * @throws IllegalArgumentException If any negative weight is given or only
@@ -57,12 +57,4 @@ fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
  */
 fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Arb<A> = arb {
    gens.asList().shuffled(it.random).first().generate(it).first().value
-}
-
-/**
- * Randomly selects one of the elements from the given list.
- * The input must be non-empty.
- */
-fun <A> Arb.Companion.element(elements: List<A>) = arb {
-   elements.shuffled(it.random).first()
 }
