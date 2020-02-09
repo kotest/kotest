@@ -19,3 +19,5 @@ test case configuration now uses kotlin durations
 until and eventually are not duration based
 
 until is now suspended
+
+Invocations and threads removed from config
