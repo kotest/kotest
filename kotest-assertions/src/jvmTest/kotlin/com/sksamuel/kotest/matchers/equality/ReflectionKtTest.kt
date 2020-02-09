@@ -63,7 +63,7 @@ class ReflectionKtTest : FunSpec() {
       }
 
       test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
-         val car1 = Car("C1", 10000, 123)
+         val car1 = Car("C1", 10000, 430)
          val car2 = Car("C1", 123423, 123)
 
          car2.shouldBeEqualToIgnoringFields(car1, Car::price)

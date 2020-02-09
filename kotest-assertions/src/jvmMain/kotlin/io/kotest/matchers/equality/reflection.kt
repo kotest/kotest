@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.reflect.KProperty
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
@@ -186,7 +187,7 @@ fun <T : Any> beEqualToIgnoringFields(
       val fieldNames = fields.map { it.name }
       val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties
          .filterNot { fieldNames.contains(it.name) }
-         .onEach { it.isAccessible = true }
+         .filter { it.visibility == KVisibility.PUBLIC }
 
       val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
