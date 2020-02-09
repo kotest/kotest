@@ -38,6 +38,20 @@ suspend fun TestCase.invokeAfterTest(result: TestResult) {
    }
 }
 
+suspend fun TestCase.invokeBeforeInvocation(k: Int) {
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.beforeInvocation(this, k)
+   }
+}
+
+suspend fun TestCase.invokeAfterInvocation(k: Int) {
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.afterInvocation(this, k)
+   }
+}
+
 /**
  * Notifies the user listeners that a [Spec] is starting.
  * This will be invoked for every instance of a spec.

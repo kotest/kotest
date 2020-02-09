@@ -7,6 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
 import io.kotest.core.test.isActive
 import io.kotest.core.test.resolvedTimeout
 import io.kotest.fp.Try
@@ -25,27 +26,8 @@ interface TestExecutionListener {
 }
 
 @UseExperimental(ExperimentalTime::class)
-interface ExecutionContext {
-   suspend fun <T> execute(f: suspend () -> T): Try<T>
-   suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T
-}
-
-/**
- * Implementation of [ExecutionContext] to be used in environments which do not provide
- * the ability to spawn threads, such as Javascript. All executions occur on the same thread
- * as the caller. This means we cannot detect a deadlock in a test as we can
- * on the JVM by running the test in a seperate thread.
- */
-@UseExperimental(ExperimentalTime::class)
-object CallingThreadExecutionContext : ExecutionContext {
-   override suspend fun <T> execute(f: suspend () -> T): Try<T> = Try { f() }
-   override suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T = f()
-}
-
-@UseExperimental(ExperimentalTime::class)
 data class TimeoutException constructor(val duration: Duration) :
    Exception("Test did not completed within ${duration.toLongMilliseconds()}ms")
-
 
 /**
  * Executes a single [TestCase]. Uses a [TestExecutionListener] to notify callers of events in the test.
@@ -190,7 +172,17 @@ class TestExecutor(
                   // must use the outer coroutine that will wait for child coroutines
                   override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
                }
-               testCase.executeWithTimeout(contextp, timeout)
+
+               if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
+                  error("Cannot execute multiple invocations in leaf tests")
+
+               replay(
+                  testCase.config.invocations,
+                  testCase.config.threads,
+                  { testCase.invokeBeforeInvocation(it) },
+                  { testCase.invokeAfterInvocation(it) }) {
+                  testCase.executeWithTimeout(contextp, timeout)
+               }
             }
             null
          } catch (e: TimeoutCancellationException) {

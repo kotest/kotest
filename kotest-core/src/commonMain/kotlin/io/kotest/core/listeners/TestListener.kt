@@ -29,6 +29,10 @@ interface TestListener : Listener {
     */
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
+   suspend fun beforeInvocation(testCase: TestCase, iteration: Int): Unit = Unit
+
+   suspend fun afterInvocation(testCase: TestCase, iteration: Int): Unit = Unit
+
    /**
     * This callback is invoked after the Engine instantiates a [Spec]
     * to be used as part of a [TestCase] execution.

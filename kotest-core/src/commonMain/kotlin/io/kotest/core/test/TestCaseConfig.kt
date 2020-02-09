@@ -9,13 +9,21 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalTime::class)
 data class TestCaseConfig constructor(
    val enabled: Boolean = true,
+   val invocations: Int = 1,
+   val threads: Int = 1,
    val timeout: Duration? = null,
    val tags: Set<Tag> = emptySet(),
    val extensions: List<TestCaseExtension> = emptyList(),
    val enabledIf: EnabledIf = { true }
-)
+) {
+   init {
+      require(invocations > 0) { "Number of invocations must be greater than 0" }
+      require(threads > 0) { "Number of threads must be greater than 0" }
+      require(threads <= invocations) { "Number of threads must be <= number of invocations" }
+   }
+}
 
-typealias EnabledIf = () -> Boolean
+typealias EnabledIf = (TestCase) -> Boolean
 
 /**
  * Creates a [TestCaseConfig] from the given parameters, reverting to the
@@ -27,13 +35,17 @@ fun TestCaseConfig.deriveTestConfig(
    tags: Set<Tag>? = null,
    extensions: List<TestCaseExtension>? = null,
    timeout: Duration? = null,
-   enabledIf: EnabledIf? = null
+   enabledIf: EnabledIf? = null,
+   invocations: Int? = null,
+   threads: Int? = null
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
    extensions = extensions ?: this.extensions,
    timeout = timeout ?: this.timeout,
-   enabledIf = enabledIf ?: this.enabledIf
+   enabledIf = enabledIf ?: this.enabledIf,
+   invocations = invocations ?: this.invocations,
+   threads = threads ?: this.threads
 )
 
 /**

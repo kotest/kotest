@@ -30,7 +30,7 @@ typealias TestCaseExtensionFn = suspend (
    execute: suspend (TestCase) -> TestResult
 ) -> TestResult
 
-typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
+typealias AroundTestFn = suspend (TestCase, suspend (TestCase) -> TestResult) -> TestResult
 
 expect interface AutoCloseable {
    fun close()
@@ -76,18 +76,14 @@ abstract class TestConfiguration {
       }
    }
 
-//   fun aroundTest(runtest: AroundTestFn) {
-//      _extensions = _extensions + object : TestCaseExtension {
-//         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-//            val f: suspend (suspend (TestResult) -> Unit) -> Unit = { callback ->
-//               val result = execute(testCase)
-//               callback(result)
-//               result
-//            }
-//            runtest(f)
-//         }
-//      }
-//   }
+   fun aroundTest(aroundTestFn: AroundTestFn) {
+      _extensions = _extensions + object : TestCaseExtension {
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            val f: suspend (TestCase) -> TestResult = { execute(it) }
+            return aroundTestFn(testCase, f)
+         }
+      }
+   }
 
    /**
     * Registers a new before-test callback to be executed before every [TestCase].
