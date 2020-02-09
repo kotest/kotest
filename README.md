@@ -1,4 +1,4 @@
-# kotlintest-intellij-plugin
-The official KotlinTest plugin for Intellij and Android Studio
+# kotest-intellij-plugin
+The official Kotest plugin for Intellij and Android Studio
 
-[![Build Status](https://travis-ci.org/kotlintest/kotlintest-intellij-plugin.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest-intellij-plugin)
+[![Build Status](https://travis-ci.org/kotest/kotest-intellij-plugin.svg?branch=master)](https://travis-ci.org/kotest/kotest-intellij-plugin)
