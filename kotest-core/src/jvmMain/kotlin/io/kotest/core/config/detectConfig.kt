@@ -8,8 +8,8 @@ import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
 
 /**
- * Loads a config object from the underlying target.
- * For example, on the JVM it may scan the classpath.
+ * Loads a config object from the underlying target by scanning the classpath
+ * for instances of [AbstractProjectConfig].
  */
 actual fun detectConfig(): ProjectConf {
 

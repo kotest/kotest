@@ -31,7 +31,7 @@ import kotlin.time.ExperimentalTime
 abstract class AbstractProjectConfig {
 
    /**
-    * List of project wide extensions, ie instances of [ProjectLevelExtension]
+    * List of project wide [Extension] instances.
     */
    open fun extensions(): List<Extension> = emptyList()
 
