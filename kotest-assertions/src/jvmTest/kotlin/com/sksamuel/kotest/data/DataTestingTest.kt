@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.tables
+package com.sksamuel.kotest.data
 
 import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.fail
@@ -11,17 +11,17 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import io.kotest.tables.forAll
-import io.kotest.tables.forNone
-import io.kotest.tables.headers
-import io.kotest.tables.row
-import io.kotest.tables.table
+import io.kotest.data.forAll
+import io.kotest.data.forNone
+import io.kotest.data.headers
+import io.kotest.data.row
+import io.kotest.data.table
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.jvm.kotlinFunction
 
-class TableTestingTest : StringSpec() {
+class DataTestingTest : StringSpec() {
   init {
 
     "names should not be empty strings" {
@@ -114,16 +114,16 @@ class TableTestingTest : StringSpec() {
       }
     }
 
-    "should use table with maximum columns" {
-      val table5 = table(
-          headers("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "result"),
-          row(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 231),
-          row(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 21)
-      )
-      forAll(table5) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, result ->
-        a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u shouldBe result
-      }
-    }
+//    "should use table with maximum columns" {
+//      val table5 = table(
+//          headers("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "result"),
+//          row(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 231),
+//          row(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 21)
+//      )
+//      forAll(table5) { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, result ->
+//        a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u shouldBe result
+//      }
+//    }
 
     "should be able to combine subtypes in one table" {
       abstract class Shape

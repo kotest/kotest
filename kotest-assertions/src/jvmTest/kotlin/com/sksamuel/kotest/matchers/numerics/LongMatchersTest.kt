@@ -13,11 +13,11 @@ import io.kotest.matchers.longs.shouldNotBeZero
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.tables.forAll
-import io.kotest.tables.forNone
-import io.kotest.tables.headers
-import io.kotest.tables.row
-import io.kotest.tables.table
+import io.kotest.data.forAll
+import io.kotest.data.forNone
+import io.kotest.data.headers
+import io.kotest.data.row
+import io.kotest.data.table
 
 class LongMatchersTest : StringSpec() {
   init {

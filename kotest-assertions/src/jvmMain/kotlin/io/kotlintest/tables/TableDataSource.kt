@@ -1,4 +1,4 @@
-package io.kotest.tables
+package io.kotlintest.tables
 
 import com.univocity.parsers.common.record.Record
 import com.univocity.parsers.csv.CsvFormat

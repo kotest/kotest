@@ -1,5 +1,5 @@
 @file:JvmName("TableTestingKt")
-package io.kotest.tables
+package io.kotlintest.tables
 
 import io.kotest.assertions.Failures
 import io.kotest.assertions.MultiAssertionError

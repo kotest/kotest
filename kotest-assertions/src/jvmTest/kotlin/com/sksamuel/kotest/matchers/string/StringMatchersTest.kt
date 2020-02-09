@@ -2,7 +2,7 @@ package com.sksamuel.kotest.matchers.string
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.data.forall
+import io.kotest.data.forAll
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
@@ -80,7 +80,7 @@ import io.kotest.properties.Gen
 import io.kotest.properties.assertAll
 import io.kotest.properties.string
 import io.kotest.properties.uuid
-import io.kotest.tables.row
+import io.kotest.data.row
 import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
@@ -103,7 +103,7 @@ class StringMatchersTest : FreeSpec() {
       }
 
       "should report when only line endings differ" {
-        forall(
+        forAll(
           row("a\nb", "a\r\nb"),
           row("a\nb\nc", "a\nb\r\nc"),
           row("a\r\nb", "a\nb"),

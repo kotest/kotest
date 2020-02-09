@@ -4,6 +4,8 @@ import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextLong
 
+fun Arb.Companion.long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE) = long(min..max)
+
 fun Arb.Companion.long(range: LongRange = Long.MIN_VALUE..Long.MAX_VALUE): Arb<Long> {
    val edgecases = listOf(0, Long.MAX_VALUE, Long.MIN_VALUE)
    return arb(LongShrinker, edgecases) { it.random.nextLong(range) }

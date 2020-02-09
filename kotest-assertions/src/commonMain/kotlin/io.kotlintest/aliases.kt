@@ -18,10 +18,19 @@ inline fun shouldThrowAnyUnit(block: () -> Unit) = io.kotest.assertions.throwabl
 inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T =
    io.kotest.assertions.throwables.shouldThrow(block)
 
+@Deprecated("All package names are now io.kotest")
 infix fun String?.shouldHaveLength(length: Int) = this should haveLength(length)
+
+@Deprecated("All package names are now io.kotest")
 infix fun String?.shouldMatch(regex: String) = this should match(regex)
+
+@Deprecated("All package names are now io.kotest")
 infix fun String?.shouldMatch(regex: Regex) = this should match(regex)
+
+@Deprecated("All package names are now io.kotest")
 infix fun String?.shouldEndWith(suffix: String) = this should endWith(suffix)
+
+@Deprecated("All package names are now io.kotest")
 infix fun String?.shouldStartWith(prefix: String) = this should startWith(prefix)
 
 @Deprecated("All package names are now io.kotest")
@@ -30,4 +39,5 @@ infix fun <T, U : T> T.shouldBe(any: U?) = this shouldBe any
 @Deprecated("All package names are now io.kotest")
 infix fun <T> T.shouldNotBe(any: Any?) = this shouldNotBe any
 
+@Deprecated("All package names are now io.kotest")
 fun <T> assertSoftly(block: () -> T): T = io.kotest.assertions.assertSoftly(block)

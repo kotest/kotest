@@ -280,6 +280,7 @@ private object CharSets {
  * Gen.char('A'..'C', 'D'..'E')
  * Ths will choose A, B, C, D, and E each 20% of the time.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
   return Gen.char(listOf(range) + ranges)
 }
@@ -293,6 +294,7 @@ fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
  *
  * If no parameter is given, ASCII characters will be generated.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char> = object : Gen<Char> {
   init {
     require(ranges.all { !it.isEmpty() }) { "Ranges cannot be empty" }
