@@ -8,8 +8,9 @@ import io.kotest.assertions.show.show
  */
 internal fun throwPropertyTestAssertionError(
    e: Throwable, // the underlying failure reason,
-   attempts: Int
-): Unit = throw propertyAssertionError(e, attempts, emptyList())
+   attempts: Int,
+   seed: Long
+): Unit = throw propertyAssertionError(e, attempts, seed, emptyList())
 
 /**
  * Generates an [AssertionError] for a property test with arg details and then throws it.
@@ -23,10 +24,11 @@ internal fun throwPropertyTestAssertionError(
    values: List<Any?>,
    shrinks: List<Any?>,
    e: Throwable,
-   attempts: Int
+   attempts: Int,
+   seed: Long
 ) {
    val inputs = values.zip(shrinks).map { PropertyFailureInput(it.first, it.second) }
-   throw propertyAssertionError(e, attempts, inputs)
+   throw propertyAssertionError(e, attempts, seed, inputs)
 }
 
 /**
@@ -44,9 +46,10 @@ data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 internal fun propertyAssertionError(
    e: Throwable,
    attempt: Int,
+   seed: Long,
    inputs: List<PropertyFailureInput<out Any?>>
 ): AssertionError {
-   return Failures.failure(propertyTestFailureMessage(attempt, inputs, e), e)
+   return Failures.failure(propertyTestFailureMessage(attempt, inputs, seed, e), e)
 }
 
 /**
@@ -56,30 +59,32 @@ internal fun propertyAssertionError(
 internal fun propertyTestFailureMessage(
    attempt: Int,
    inputs: List<PropertyFailureInput<out Any?>>,
+   seed: Long,
    cause: Throwable
 ): String {
    val sb = StringBuilder()
-   if (inputs.isEmpty()) {
-      sb.append("Property failed after $attempt attempts\n")
-   } else {
-      sb.append("Property failed for")
+   sb.append("Property failed after $attempt attempts\n")
+   if (inputs.isNotEmpty()) {
       sb.append("\n")
       inputs.withIndex().forEach {
          val input = if (it.value.shrunk == it.value.original) {
-            "Arg ${it.index}: ${it.value.shrunk.show()}"
+            "\tArg ${it.index}: ${it.value.shrunk.show()}"
          } else {
-            "Arg ${it.index}: ${it.value.shrunk.show()} (shrunk from ${it.value.original})"
+            "\tArg ${it.index}: ${it.value.shrunk.show()} (shrunk from ${it.value.original})"
          }
          sb.append(input)
          sb.append("\n")
       }
-      sb.append("after $attempt attempts\n")
    }
+   sb.append("\n")
+
    // don't bother to include the exception type if it's AssertionError
    val causedBy = when (cause::class.simpleName) {
       "AssertionError" -> "Caused by: ${cause.message?.trim()}"
       else -> "Caused by ${cause::class.simpleName}: ${cause.message?.trim()}"
    }
    sb.append(causedBy)
+   sb.append("\n\n")
+   sb.append("Repeat this test by using seed $seed\n")
    return sb.toString()
 }

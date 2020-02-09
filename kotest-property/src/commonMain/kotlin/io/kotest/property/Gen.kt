@@ -34,7 +34,10 @@ interface Gen<out A> {
 
 data class RandomSource(val random: Random, val seed: Long) {
    companion object {
-      val Default = RandomSource(Random.Default, 0)
+      val Default = lazy {
+         val seed = Random.Default.nextLong()
+         RandomSource(Random(seed), seed)
+      }.value
    }
 }
 

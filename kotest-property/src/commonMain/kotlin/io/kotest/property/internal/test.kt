@@ -12,6 +12,7 @@ internal suspend fun test(
    config: PropTestConfig,
    shrinkfn: ShrinkFn,
    inputs: List<Any?>,
+   seed: Long,
    fn: suspend () -> Any
 ) {
    try {
@@ -19,15 +20,15 @@ internal suspend fun test(
       context.markSuccess()
    } catch (e: AssertionError) { // we track assertion errors and try to shrink them
       context.markFailure()
-      handleException(context, shrinkfn, inputs, e, config)
+      handleException(context, shrinkfn, inputs, seed, e, config)
    } catch (e: Exception) {
       context.markFailure()
       when (e::class.simpleName) {
          "AssertionError",
          "AssertionFailedError",
-         "ComparisonFailure" -> handleException(context, shrinkfn, inputs, e, config)
+         "ComparisonFailure" -> handleException(context, shrinkfn, inputs, seed, e, config)
          // any other non assertion error exception is an immediate fail without shrink
-         else -> throwPropertyTestAssertionError(e, context.attempts())
+         else -> throwPropertyTestAssertionError(e, context.attempts(), seed)
       }
    }
 }
@@ -36,13 +37,14 @@ internal suspend fun handleException(
    context: PropertyContext,
    shrinkfn: ShrinkFn,
    inputs: List<Any?>,
+   seed: Long,
    e: Throwable,
    config: PropTestConfig
 ) {
    if (config.maxFailure == 0) {
-      throwPropertyTestAssertionError(inputs, shrinkfn(), e, context.attempts())
+      throwPropertyTestAssertionError(inputs, shrinkfn(), e, context.attempts(), seed)
    } else if (context.failures() > config.maxFailure) {
       val t = AssertionError("Property failed ${context.failures()} times (maxFailure rate was ${config.maxFailure})")
-      throwPropertyTestAssertionError(inputs, shrinkfn(), t, context.attempts())
+      throwPropertyTestAssertionError(inputs, shrinkfn(), t, context.attempts(), seed)
    }
 }
