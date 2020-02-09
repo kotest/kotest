@@ -57,9 +57,9 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequen
    generate(rs).take(count).map { it.value }
 
 /**
- * Returns a single value generated from this arb
+ * Returns a single value generated from this arb ignoring edgecases.
  */
-fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = generate(rs).first().value
+fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = samples(rs).first().value
 fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**

@@ -23,18 +23,18 @@ class PropertyContext {
 
   fun classificationCounts(): Map<String, Int> = counts.toMap()
 
-  fun classify(condition: Boolean, trueLabel: String) {
-    if (condition) {
-      val current = counts.getOrElse(trueLabel) { 0 }
-      counts[trueLabel] = current + 1
-    }
-  }
-
-  fun classify(condition: Boolean, trueLabel: String, falseLabel: String) {
-    if (condition) {
-      classify(condition, trueLabel)
-    } else {
-      classify(!condition, falseLabel)
-    }
-  }
+//  fun classify(condition: Boolean, trueLabel: String) {
+//    if (condition) {
+//      val current = counts.getOrElse(trueLabel) { 0 }
+//      counts[trueLabel] = current + 1
+//    }
+//  }
+//
+//  fun classify(condition: Boolean, trueLabel: String, falseLabel: String) {
+//    if (condition) {
+//      classify(condition, trueLabel)
+//    } else {
+//      classify(!condition, falseLabel)
+//    }
+//  }
 }

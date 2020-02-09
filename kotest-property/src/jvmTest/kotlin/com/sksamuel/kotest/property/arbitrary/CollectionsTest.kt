@@ -26,7 +26,7 @@ class CollectionsTest : FunSpec({
       forAll(1, numGen) { it.isNotEmpty() }
    }
 
-   test("gen list should return lists of underlying generators") {
+   test("Arb.list should return lists of underlying generators") {
       val gen = Arb.list(Exhaustive.constant(1), 2..10)
       checkAll(gen) {
          it.shouldHaveAtLeastSize(2)
@@ -43,7 +43,7 @@ class CollectionsTest : FunSpec({
 
    test("Arb.list should generate lists in the given range") {
       checkAll(1000, Arb.list(Arb.double(), 250..500)) {
-         it.shouldHaveAtMostSize(250)
+         it.shouldHaveAtLeastSize(250)
          it.shouldHaveAtMostSize(500)
       }
    }
@@ -56,7 +56,7 @@ class CollectionsTest : FunSpec({
 
    test("Arb.list should generate sets in the given range") {
       checkAll(1000, Arb.set(Arb.double(), 250..500)) {
-         it.shouldHaveAtMostSize(250)
+         it.shouldHaveAtLeastSize(250)
          it.shouldHaveAtMostSize(500)
       }
    }
