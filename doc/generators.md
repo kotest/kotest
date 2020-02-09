@@ -36,6 +36,7 @@ Most generators are available on all platforms. Some are JVM specific.
 | `Exhaustive.azstring(range)` | Returns all A-Z strings in the given range. For example if range was 1..2 then a, b, c, ...., yz, zz would be included. | ✓ | ✓ | ✓ |
 | `Arb.email(userRange, domainRange)` | Generates random emails where the username and domain are random strings with the size determined by the range parameters. | ✓ | ✓ | ✓ |
 | `Arb.uuid(type)` | Generates random UUIDs of the given type | ✓ |  |  |
+
 | Builders    | Description | JVM | JS  | Native |
 | -------- | ----------- | --- | --- | ------ |
 | `Arb.create(fn)` | Generates values using the supplied function. | ✓ | ✓ | ✓ |
