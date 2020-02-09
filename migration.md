@@ -20,4 +20,4 @@ until and eventually are not duration based
 
 until is now suspended
 
-Invocations and threads removed from config
+Invocations and threads removed from config. Use repeat(k) from the kotlin standard library or repeat(k, threads = n) from the kotlintest assertions library.

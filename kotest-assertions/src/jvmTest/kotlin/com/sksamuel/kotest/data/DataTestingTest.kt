@@ -216,28 +216,3 @@ class DataTestingTest : StringSpec() {
     }
   }
 }
-
-class TableTestingCoroutinesTests : FreeSpec() {
-
-  init {
-    "Should allow suspend execution" {
-      allFunctionsThatTakeALambda().shouldHaveTheInlineModifier()
-    }
-  }
-
-  private fun allFunctionsThatTakeALambda(): List<KFunction<*>> {
-    return Class
-            .forName("io.kotest.tables.TableTestingKt")
-            .declaredMethods
-            .map { it.kotlinFunction!! }
-            .filter { fn -> fn.parameters.any { it.type.isSubtypeOf(Function::class.starProjectedType) } }
-  }
-
-  private fun List<KFunction<*>>.shouldHaveTheInlineModifier() {
-    forEach {
-      if (!it.isInline) {
-        fail("$it should be inlined")
-      }
-    }
-  }
-}

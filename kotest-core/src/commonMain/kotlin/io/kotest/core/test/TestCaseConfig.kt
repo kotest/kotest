@@ -9,12 +9,9 @@ import kotlin.time.ExperimentalTime
 @UseExperimental(ExperimentalTime::class)
 data class TestCaseConfig constructor(
    val enabled: Boolean = true,
-   // max time of the test, in millis
    val timeout: Duration? = null,
    val tags: Set<Tag> = emptySet(),
    val extensions: List<TestCaseExtension> = emptyList(),
-   // an issue number, or link to the issue, can be used by plugins
-   val issue: String? = null,
    val enabledIf: EnabledIf = { true }
 )
 
