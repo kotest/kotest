@@ -28,11 +28,8 @@ fun containADigit() = neverNullMatcher<String> { value ->
     "${value.show()} should not contain any digits")
 }
 
-infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(
-  substr)
-
-infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(
-  substr)
+infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(substr)
+infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
@@ -68,11 +65,8 @@ fun beEmpty() = neverNullMatcher<String> { value ->
     "${value.show()} should not be empty")
 }
 
-infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(
-  other)
-
-infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(
-  other)
+infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(other)
+infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(other)
 fun haveSameLengthAs(other: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.length == other.length,
@@ -167,8 +161,7 @@ fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
 }
 
 infix fun String?.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
-infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(
-  length)
+infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
 
 fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
   MatcherResult(
@@ -178,13 +171,8 @@ fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
 }
 
 
-fun String?.shouldHaveLengthBetween(min: Int, max: Int) = this should haveLengthBetween(
-  min,
-  max)
-
-fun String?.shouldNotHaveLengthBetween(min: Int, max: Int) = this shouldNot haveLengthBetween(
-  min,
-  max)
+fun String?.shouldHaveLengthBetween(min: Int, max: Int) = this should haveLengthBetween(min, max)
+fun String?.shouldNotHaveLengthBetween(min: Int, max: Int) = this shouldNot haveLengthBetween(min, max)
 
 fun haveLengthBetween(min: Int, max: Int): Matcher<String?> {
   require(min <= max)
@@ -236,8 +224,7 @@ infix fun String?.shouldNotStartWith(prefix: String) = this shouldNot startWith(
  * @see [shouldNotBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
-infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(
-  other)
+infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(  other)
 
 /**
  * Asserts that [this] is NOT equal to [other] (ignoring case)
@@ -256,8 +243,7 @@ infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqual
  * @see [shouldBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
-infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(
-  other)
+infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(  other)
 
 
 /**
