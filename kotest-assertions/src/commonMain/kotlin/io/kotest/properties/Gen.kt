@@ -244,6 +244,7 @@ fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }, seed: Long?): T {
 /**
  * @return the result of calling [next] with the given [predicate] defaulting seed to `null`
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen<T>.next(predicate: (T) -> Boolean = { true }): T = next(predicate, null)
 
 /**

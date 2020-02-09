@@ -60,12 +60,7 @@ fun <A> Arb<A>.take(count: Int, rs: RandomSource = RandomSource.Default): Sequen
  * Returns a single value generated from this arb
  */
 fun <A> Arb<A>.single(rs: RandomSource = RandomSource.Default): A = generate(rs).first().value
-
-/**
- * Returns a single value from this [Arb] that matches the given predicate.
- */
-fun <A> Arb<A>.single(predicate: (A) -> Boolean, rs: RandomSource = RandomSource.Default): A =
-   generate(rs).first { predicate(it.value) }.value
+fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**
  * Creates a new [Arb] that performs no shrinking, and generates each value

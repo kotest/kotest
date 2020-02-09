@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.properties
+package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -7,27 +7,28 @@ import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
-import io.kotest.properties.Gen
-import io.kotest.properties.char
-import io.kotest.properties.next
-import io.kotest.properties.take
+import io.kotest.property.arbitrary.Arb
+import io.kotest.property.arbitrary.char
+import io.kotest.property.arbitrary.next
+import io.kotest.property.arbitrary.take
+import io.kotest.property.random
 import io.kotest.tables.row
 
-class GenCharTest : FunSpec({
+class CharTest : FunSpec({
+
   test("should honour seed") {
-    val seed: Long? = 1234909
-    val seedListA = Gen.char().random(seed).take(120).toList()
-    val seedListB = Gen.char().random(seed).take(120).toList()
+    val seedListA = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
+    val seedListB = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
     seedListA shouldBe seedListB
 
     val ranges = listOf('A'..'L', 'P'..'Z')
-    val seedListC = Gen.char(ranges).random(seed).take(120).toList()
-    val seedListD = Gen.char(ranges).random(seed).take(120).toList()
+    val seedListC = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
+    val seedListD = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
     seedListC shouldBe seedListD
   }
 
   test("should give values evenly across all characters in ranges") {
-    val genCount = 100000
+    val iterations = 100000
     forall(
       row(listOf('A'..'A'), mapOf('A' to 1.0)),
       row(listOf('A'..'C', 'D'..'D'), mapOf('A' to 0.25, 'B' to 0.25, 'C' to 0.25, 'D' to 0.25)),
@@ -36,11 +37,11 @@ class GenCharTest : FunSpec({
       // Duplicate ranges
       row(listOf('A'..'C', 'A'..'C'), mapOf('A' to 0.33, 'B' to 0.33, 'C' to 0.33))
     ) { ranges, expectedRatioMap ->
-      val charGen = Gen.char(ranges)
-      val actualRatioMap = (1..genCount)
+      val charGen = Arb.char(ranges)
+      val actualRatioMap = (1..iterations)
         .map { charGen.next() }
         .groupBy { it }
-        .map { (k, v) -> k to (v.count().toDouble() / genCount) }.toMap()
+        .map { (k, v) -> k to (v.count().toDouble() / iterations) }.toMap()
 
       actualRatioMap.keys shouldBe expectedRatioMap.keys
       actualRatioMap.forEach { (actualKey, actualRatio) ->
@@ -51,10 +52,8 @@ class GenCharTest : FunSpec({
   }
 
   test("vararg CharRange overload should give same results as List<CharRange> version") {
-    val seed: Long? = 9045638172
-    val listResults = Gen.char(listOf('A'..'C', 'D'..'F')).take(500, seed).toList()
-    val varargResults = Gen.char('A'..'C', 'D'..'F').take(500, seed).toList()
-
+    val listResults = Arb.char(listOf('A'..'C', 'D'..'F')).take(500, 9045638172L.random()).toList()
+    val varargResults = Arb.char('A'..'C', 'D'..'F').take(500, 9045638172L.random()).toList()
     varargResults shouldBe listResults
   }
 
@@ -66,19 +65,19 @@ class GenCharTest : FunSpec({
       row(listOf('B'..'A', 'C'..'B', 'A'..'B'))
     ) { ranges ->
       shouldThrow<IllegalArgumentException> {
-        Gen.char(ranges)
+         Arb.char(ranges)
       }
     }
   }
 
   test("should not allow empty list parameter") {
     shouldThrow<IllegalArgumentException> {
-      Gen.char(emptyList())
+      Arb.char(emptyList())
     }
   }
 
   test("should only give ASCII characters when no parameters given")  {
-    val actualChars = Gen.char().take(100000).map(Char::toInt)
+    val actualChars = Arb.char().take(100000).map(Char::toInt).toList()
     actualChars.min() as Int shouldBeGreaterThanOrEqual 0x0021
     actualChars.max() as Int shouldBeLessThanOrEqual 0x007E
   }
