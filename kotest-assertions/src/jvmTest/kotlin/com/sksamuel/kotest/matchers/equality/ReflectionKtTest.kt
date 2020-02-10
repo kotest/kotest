@@ -6,6 +6,8 @@ import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.equality.shouldBeEqualToUsingFields
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.assertThrows
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.memberProperties
 
 class ReflectionKtTest : FunSpec() {
 
@@ -67,6 +69,16 @@ class ReflectionKtTest : FunSpec() {
          val car2 = Car("C1", 123423, 123)
 
          car2.shouldBeEqualToIgnoringFields(car1, Car::price)
+      }
+
+      test("shouldBeEqualToUsingFields should throw exception when called with properties of visibility other than public") {
+         val car1 = Car("Car", 12345, 23)
+         val car2 = Car("Car", 12345, 23)
+         val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
+
+         assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+            car1.shouldBeEqualToUsingFields(car2, aPrivateField)
+         }
       }
    }
 }
