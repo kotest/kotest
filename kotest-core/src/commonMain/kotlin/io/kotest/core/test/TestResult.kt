@@ -20,9 +20,7 @@ data class TestResult(
       )
 
       fun throwable(e: Throwable?, duration: Duration): TestResult {
-         if (e != null)
-            println("Creating error for ${e::class}")
-         val result = when (e) {
+         return when (e) {
             null -> success(duration)
             is AssertionError -> failure(e, duration)
             else -> when (e::class.bestName()) {
@@ -30,8 +28,6 @@ data class TestResult(
                else -> error(e, duration)
             }
          }
-         println(result)
-         return result
       }
 
       val Ignored = TestResult(
