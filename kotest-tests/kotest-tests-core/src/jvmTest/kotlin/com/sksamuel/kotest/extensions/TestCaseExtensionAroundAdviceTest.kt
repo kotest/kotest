@@ -20,7 +20,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test2" ->
                when (execute(testCase).status) {
                   TestStatus.Error -> TestResult.success(Duration.ZERO)
-                  else -> TestResult.failure(AssertionError("boom"), Duration.ZERO)
+                  else -> TestResult.throwable(AssertionError("boom"), Duration.ZERO)
                }
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))

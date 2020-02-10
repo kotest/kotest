@@ -13,7 +13,7 @@ class InvocationThreadErrorTest : FunSpec({
       val result = f(testCase)
       when (result.status) {
          TestStatus.Error -> TestResult.success(Duration.ZERO)
-         else -> TestResult.failure(RuntimeException("should fail"), Duration.ZERO)
+         else -> TestResult.throwable(RuntimeException("should fail"), Duration.ZERO)
       }
    }
 

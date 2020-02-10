@@ -19,13 +19,19 @@ data class TestResult(
          duration
       )
 
-      fun throwable(e: Throwable?, duration: Duration): TestResult = when (e) {
-         null -> success(duration)
-         is AssertionError -> failure(e, duration)
-         else -> when (e::class.bestName()) {
-            "org.opentest4j.AssertionFailedError" -> failure(e, duration)
-            else -> error(e, duration)
+      fun throwable(e: Throwable?, duration: Duration): TestResult {
+         if (e != null)
+            println("Creating error for ${e::class}")
+         val result = when (e) {
+            null -> success(duration)
+            is AssertionError -> failure(e, duration)
+            else -> when (e::class.bestName()) {
+               "org.opentest4j.AssertionFailedError" -> failure(e, duration)
+               else -> error(e, duration)
+            }
          }
+         println(result)
+         return result
       }
 
       val Ignored = TestResult(
@@ -35,14 +41,14 @@ data class TestResult(
          Duration.ZERO
       )
 
-      fun failure(e: Throwable, duration: Duration) = TestResult(
+      private fun failure(e: Throwable, duration: Duration) = TestResult(
          TestStatus.Failure,
          e,
          null,
          duration
       )
 
-      fun error(t: Throwable, duration: Duration) = TestResult(
+      private fun error(t: Throwable, duration: Duration) = TestResult(
          TestStatus.Error,
          t,
          null,

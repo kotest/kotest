@@ -23,7 +23,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
                   val result = execute(testCase)
                   when (result.status) {
                      TestStatus.Error, TestStatus.Failure -> TestResult.success(result.duration)
-                     else -> TestResult.error(RuntimeException("Should have failed"), result.duration)
+                     else -> TestResult.throwable(RuntimeException("Should have failed"), result.duration)
                   }
                }
                else -> execute(testCase)

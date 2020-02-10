@@ -69,6 +69,7 @@ internal fun equalsError(expected: Any?, actual: Any?): Throwable {
 
 private val linebreaks = Regex("\r?\n|\r")
 
+// This is the format intellij requires to do the diff: https://github.com/JetBrains/intellij-community/blob/3f7e93e20b7e79ba389adf593b3b59e46a3e01d1/plugins/testng/src/com/theoryinpractice/testng/model/TestProxy.java#L50
 internal fun equalsErrorMessage(expected: Any?, actual: Any?): String {
    return when {
        expected is String && actual is String &&

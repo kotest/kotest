@@ -64,22 +64,23 @@ actual object Failures {
       }
 
       /** If JUnit5 is present, return an org.opentest4j.AssertionFailedError */
-      fun junit5AssertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
-         return callPublicConstructor("org.opentest4j.AssertionFailedError",
-            arrayOf(String::class.java, Object::class.java, Object::class.java),
-            arrayOf(message, expected, actual)) as? Throwable
-      }
+      // this assertion seems to create an errored test in intellij now, rather than a failed
+//      fun junit5AssertionFailedError(message: String, expected: Any?, actual: Any?): Throwable? {
+//         return callPublicConstructor("org.opentest4j.AssertionFailedError2",
+//            arrayOf(String::class.java, Object::class.java, Object::class.java),
+//            arrayOf(message, expected, actual)) as? Throwable
+//      }
 
       /** If JUnit4 is present, return a org.junit.ComparisonFailure */
-      fun junit4comparisonFailure(message: String, expected: String, actual: String): Throwable? {
-         return callPublicConstructor("org.junit.ComparisonFailure",
-            arrayOf(String::class.java, String::class.java, String::class.java),
-            arrayOf(message, expected, actual)) as? Throwable
-      }
+//      fun junit4comparisonFailure(message: String, expected: String, actual: String): Throwable? {
+//         return callPublicConstructor(
+//            "org.junit.ComparisonFailure",
+//            arrayOf(String::class.java, String::class.java, String::class.java),
+//            arrayOf(message, expected, actual)
+//         ) as? Throwable
+//      }
 
-      val t = junit5AssertionFailedError(message, expectedRepr, actualRepr)
-         ?: junit4comparisonFailure(message, expectedRepr, actualRepr)
-         ?: AssertionError(message)
+      val t = AssertionError(message)
       clean(t)
       return t
    }
