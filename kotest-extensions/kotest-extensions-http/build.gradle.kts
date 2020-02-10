@@ -2,14 +2,12 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
    mavenCentral()
 }
-
-val ideaActive = System.getProperty("idea.active") == "true"
-val os = org.gradle.internal.os.OperatingSystem.current()
 
 kotlin {
 
@@ -28,17 +26,6 @@ kotlin {
             }
          }
       }
-      if (!ideaActive) {
-         linuxX64()
-         mingwX64()
-         macosX64()
-      } else if (os.isMacOsX) {
-         macosX64("native")
-      } else if (os.isWindows) {
-         mingwX64("native")
-      } else {
-         linuxX64("native")
-      }
    }
 
    targets.all {
@@ -54,6 +41,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
+            implementation(Libs.Ktor.clientCore)
          }
       }
 
@@ -61,6 +49,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-js"))
+            implementation(Libs.Ktor.clientJs)
          }
       }
 
@@ -68,19 +57,35 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            implementation(Libs.Ktor.clientApache)
          }
       }
 
-      if (!ideaActive) {
-         val nativeMain by creating {
-            dependsOn(commonMain)
-         }
 
-         configure(listOf(getByName("macosX64Main"), getByName("linuxX64Main"), getByName("mingwX64Main"))) {
-            dependsOn(nativeMain)
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-extensions:kotest-extensions-mockserver"))
          }
       }
    }
 }
 
-apply(from = "../publish.gradle")
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+   }
+}
+
+apply(from = "../../publish.gradle")
