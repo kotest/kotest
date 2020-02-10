@@ -92,7 +92,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
-      IsolationMode.InstancePerLeaf -> SingleInstanceSpecRunner(listener) // topo restore per leaf
+      IsolationMode.InstancePerLeaf -> InstanceLeafSpecRunner(listener) // topo restore per leaf
    }
 
    /**
