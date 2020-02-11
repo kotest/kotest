@@ -1,12 +1,18 @@
 package io.kotest.matchers.date
 
+import com.soywiz.klock.Date
+import com.soywiz.klock.DateTime
 import com.soywiz.klock.Time
+import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
 class DateMatchersTest : StringSpec() {
    init {
+
+      // Time tests
+
       "Time should have same millis ignoring other fields" {
          Time(1, 2, 3, 4) should haveSameMilliseconds(Time(5, 6, 7, 4))
          Time(1, 2, 3, 4) shouldNot haveSameMilliseconds(Time(1, 2, 3, 8))
@@ -75,5 +81,80 @@ class DateMatchersTest : StringSpec() {
          Time(11, 1, 2, 7777).shouldBeBetween(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
          Time(7, 1, 2, 7777).shouldNotBeBetween(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
       }
+
+      // Date tests
+
+      "Date should have same year ignoring other fields" {
+         Date(2014, 1, 2) should haveSameYear(Date(2014, 5, 6))
+         Date(2014, 1, 2) shouldNot haveSameYear(Date(2018, 5, 6))
+         Date(2014, 1, 2) shouldHaveSameYearAs (Date(2014, 5, 6))
+         Date(2014, 1, 2) shouldNotHaveSameYearAs (Date(2018, 5, 6))
+
+         Date(2014, 1, 2) should haveYear(2014.toLong())
+         Date(2014, 1, 2) shouldNot haveYear(2018.toLong())
+         Date(2014, 1, 2) shouldHaveYear (2014.toLong())
+         Date(2014, 1, 2) shouldNotHaveYear (2018.toLong())
+      }
+
+      "Date should have same month ignoring other fields" {
+         Date(2014, 1, 2) should haveSameMonth(Date(2016, 1, 6))
+         Date(2014, 1, 2) shouldNot haveSameMonth(Date(2018, 4, 6))
+         Date(2014, 1, 2) shouldHaveSameMonthAs (Date(2016, 1, 6))
+         Date(2014, 1, 2) shouldNotHaveSameMonthAs (Date(2018, 4, 6))
+
+         Date(2014, 1, 2) should haveMonth(1.toLong())
+         Date(2014, 1, 2) shouldNot haveMonth(4.toLong())
+         Date(2014, 1, 2) shouldHaveMonth (1.toLong())
+         Date(2014, 1, 2) shouldNotHaveMonth (4.toLong())
+      }
+
+      "Date should have same day ignoring other fields" {
+         Date(2014, 1, 2) should haveSameDay(Date(2014, 1, 2))
+         Date(2014, 1, 2) shouldNot haveSameDay(Date(2014, 4, 6))
+         Date(2014, 1, 2) shouldHaveSameDayAs (Date(2014, 1, 2))
+         Date(2014, 1, 2) shouldNotHaveSameDayAs (Date(2014, 4, 6))
+
+         Date(2014, 1, 2) should haveDay(2.toLong())
+         Date(2014, 1, 2) shouldNot haveDay(6.toLong())
+         Date(2014, 1, 2) shouldHaveDay (2.toLong())
+         Date(2014, 1, 2) shouldNotHaveDay (6.toLong())
+      }
+
+      "Date.shouldBeToday() should match today" {
+         DateTime.now().date.shouldBeToday()
+      }
+
+      "Date.shouldBeToday() should not match the past" {
+         shouldFail {
+            Date(2002, 4, 1).shouldBeToday()
+         }
+      }
+
+      "Date.shouldNotBeToday()" {
+         Date(2002, 4, 2).shouldNotBeToday()
+         shouldFail {
+            DateTime.now().date.shouldNotBeToday()
+         }
+      }
+
+      "Date should be after" {
+         Date(2014, 1, 2) should after(Date(2012, 1, 2))
+         Date(2014, 1, 2) shouldNot after(Date(2016, 4, 6))
+         Date(2014, 1, 2) shouldBeAfter (Date(2012, 1, 2))
+      }
+
+      "Date should be before" {
+         Date(2014, 1, 2) should before(Date(2016, 4, 6))
+         Date(2014, 1, 2) shouldNot before(Date(2012, 1, 2))
+         Date(2014, 1, 2) shouldBeBefore (Date(2016, 1, 2))
+      }
+
+      "Date should be between" {
+         Date(2014, 1, 2) should between(Date(2012, 4, 6), Date(2016, 4, 6))
+         Date(2010, 1, 2) shouldNot between(Date(2012, 4, 6), Date(2016, 4, 6))
+         Date(2014, 1, 2).shouldBeBetween(Date(2012, 4, 6), Date(2016, 4, 6))
+         Date(2010, 1, 2).shouldNotBeBetween(Date(2012, 4, 6), Date(2016, 4, 6))
+      }
+
    }
 }
