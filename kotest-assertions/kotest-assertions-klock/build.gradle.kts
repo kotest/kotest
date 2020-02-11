@@ -11,6 +11,16 @@ repositories {
 kotlin {
    sourceSets {
 
+      targets {
+         jvm {
+            compilations.all {
+               kotlinOptions {
+                  jvmTarget = "1.8"
+               }
+            }
+         }
+      }
+
       targets.all {
          compilations.all {
             kotlinOptions {
@@ -24,6 +34,13 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Klock.klock)
             implementation(project(":kotest-assertions"))
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(commonMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
          }
       }
    }

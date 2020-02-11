@@ -73,7 +73,7 @@ fun haveSameSeconds(time: Time): Matcher<Time> = object : Matcher<Time> {
 
 infix fun Time.shouldHaveSeconds(seconds: Long) = this should haveSeconds(seconds)
 
-infix fun Time.shouldNotSameSeconds(seconds: Long) = this shouldNot haveSeconds(seconds)
+infix fun Time.shouldNotHaveSeconds(seconds: Long) = this shouldNot haveSeconds(seconds)
 
 fun haveSeconds(seconds: Long): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
