@@ -8,8 +8,8 @@ import io.kotest.matchers.shouldNot
 fun beBetween(a: Int, b: Int) = between(a, b)
 fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
   override fun test(value: Int) = MatcherResult(value in a..b,
-    "$value is between ($a, $b)",
-    "$value is not between ($a, $b)")
+    "$value is not between ($a, $b)",
+    "$value is between ($a, $b)")
 }
 
 fun lt(x: Int) = beLessThan(x)
