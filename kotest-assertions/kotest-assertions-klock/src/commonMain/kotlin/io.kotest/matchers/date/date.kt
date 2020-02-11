@@ -7,6 +7,84 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
+infix fun Date.shouldHaveSameYear(date: Date) = this shouldBe haveSameYear(date)
+
+infix fun Date.shouldNotHaveSameYear(date: Date) = this shouldNotBe haveSameYear(date)
+
+fun haveSameYear(date: Date) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.year == date.year,
+         { "$value should have year ${date.year}" },
+         { "$value should not have year ${date.year}" }
+      )
+}
+
+infix fun Date.shouldHaveSameYear(year: Long) = this shouldBe haveSameYear(year)
+
+infix fun Date.shouldNotHaveSameYear(year: Long) = this shouldNotBe haveSameYear(year)
+
+fun haveSameYear(year: Long) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.year.toLong() == year,
+         { "$value should have year $year" },
+         { "$value should not have year $year" }
+      )
+}
+
+infix fun Date.shouldHaveSameMonth(date: Date) = this shouldBe haveSameMonth(date)
+
+infix fun Date.shouldNotHaveSameMonth(date: Date) = this shouldNotBe haveSameMonth(date)
+
+fun haveSameMonth(date: Date) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.month == date.month,
+         { "$value should have month ${date.month}" },
+         { "$value should not have month ${date.month}" }
+      )
+}
+
+infix fun Date.shouldHaveSameMonth(month: Long) = this shouldBe haveSameMonth(month)
+
+infix fun Date.shouldNotHaveSameMonth(month: Long) = this shouldNotBe haveSameMonth(month)
+
+fun haveSameMonth(month: Long) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.month.index1.toLong() == month,
+         { "$value should have month $month" },
+         { "$value should not have month $month" }
+      )
+}
+
+infix fun Date.shouldHaveSameDay(date: Date) = this shouldBe haveSameDay(date)
+
+infix fun Date.shouldNotHaveSameDay(date: Date) = this shouldNotBe haveSameDay(date)
+
+fun haveSameDay(date: Date) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.day == date.day,
+         { "$value should have day ${date.day}" },
+         { "$value should not have day ${date.day}" }
+      )
+}
+
+infix fun Date.shouldHaveSameDay(day: Long) = this shouldBe haveSameMonth(day)
+
+infix fun Date.shouldNotHaveSameDay(day: Long) = this shouldNotBe haveSameMonth(day)
+
+fun haveSameDay(day: Long) = object : Matcher<Date> {
+   override fun test(value: Date) =
+      MatcherResult(
+         value.day.toLong() == day,
+         { "$value should have day $day" },
+         { "$value should not have day $day" }
+      )
+}
+
 fun Date.shouldBeToday() = this shouldBe beToday()
 
 fun Date.shouldNotBeToday() = this shouldNotBe beToday()
