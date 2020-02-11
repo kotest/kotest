@@ -135,3 +135,18 @@ fun after(time: Time): Matcher<Time> = object : Matcher<Time> {
          { "$value should not be after $time" }
       )
 }
+
+fun Time.shouldBeBetween(a: Time, b: Time) = this should between(a, b)
+
+fun Time.shouldNotBeBetween(a: Time, b: Time) = this shouldNot between(a, b)
+
+fun between(a: Time, b: Time): Matcher<Time> = object : Matcher<Time> {
+   override fun test(value: Time): MatcherResult {
+      val passed = value > a && value < b
+      return MatcherResult(
+         passed,
+         { "$value should be after $a and before $b" },
+         { "$value should not be be after $a and before $b" }
+      )
+   }
+}
