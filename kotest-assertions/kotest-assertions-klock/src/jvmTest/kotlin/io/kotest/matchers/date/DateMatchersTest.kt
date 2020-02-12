@@ -50,36 +50,36 @@ class DateMatchersTest : StringSpec() {
       }
 
       "Time should have same hours ignoring other fields" {
-         Time(12, 1, 2, 7777) should haveSameHours(Time(12, 59, 58, 9999))
-         Time(3, 59, 58, 9999) shouldNot haveSameHours(Time(12, 59, 58, 9999))
-         Time(12, 1, 2, 7777) shouldHaveSameHoursAs Time(12, 59, 58, 9999)
-         Time(3, 59, 58, 9999) shouldNotHaveSameHoursAs Time(12, 59, 58, 9999)
+         Time(12, 1, 2, 0) should haveSameHours(Time(12, 59, 58, 0))
+         Time(3, 59, 58, 0) shouldNot haveSameHours(Time(12, 59, 58, 0))
+         Time(12, 1, 2, 0) shouldHaveSameHoursAs Time(12, 59, 58, 0)
+         Time(3, 59, 58, 0) shouldNotHaveSameHoursAs Time(12, 59, 58, 0)
 
-         Time(12, 1, 2, 7777) should haveHours(12.toLong())
-         Time(3, 59, 58, 9999) shouldNot haveHours(12.toLong())
-         Time(12, 1, 2, 7777) shouldHaveHours (12.toLong())
-         Time(3, 59, 58, 9999) shouldNotHaveHours (12.toLong())
+         Time(12, 1, 2, 0) should haveHours(12.toLong())
+         Time(3, 59, 58, 0) shouldNot haveHours(12.toLong())
+         Time(12, 1, 2, 0) shouldHaveHours (12.toLong())
+         Time(3, 59, 58, 0) shouldNotHaveHours (12.toLong())
       }
 
       "Time should be after" {
-         Time(12, 1, 2, 7777) should after(Time(10, 1, 2, 7777))
-         Time(7, 1, 2, 7777) shouldNot after(Time(10, 1, 2, 7777))
-         Time(12, 1, 2, 7777) shouldBeAfter (Time(10, 1, 2, 7777))
-         Time(7, 1, 2, 7777) shouldNotBeAfter (Time(10, 1, 2, 7777))
+         Time(12, 1, 2, 0) should after(Time(10, 1, 2, 0))
+         Time(7, 1, 2, 0) shouldNot after(Time(10, 1, 2, 0))
+         Time(12, 1, 2, 0) shouldBeAfter (Time(10, 1, 2, 0))
+         Time(7, 1, 2, 0) shouldNotBeAfter (Time(10, 1, 2, 0))
       }
 
       "Time should be before" {
-         Time(7, 1, 2, 7777) should before(Time(10, 1, 2, 7777))
-         Time(12, 1, 2, 7777) shouldNot before(Time(10, 1, 2, 7777))
-         Time(7, 1, 2, 7777) shouldBeBefore (Time(10, 1, 2, 7777))
-         Time(12, 1, 2, 7777) shouldNotBeBefore (Time(10, 1, 2, 7777))
+         Time(7, 1, 2, 0) should before(Time(10, 1, 2, 0))
+         Time(12, 1, 2, 0) shouldNot before(Time(10, 1, 2, 0))
+         Time(7, 1, 2, 0) shouldBeBefore (Time(10, 1, 2, 0))
+         Time(12, 1, 2, 0) shouldNotBeBefore (Time(10, 1, 2, 0))
       }
 
       "Time is between" {
-         Time(11, 1, 2, 7777) should between(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
-         Time(7, 1, 2, 7777) shouldNot between(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
-         Time(11, 1, 2, 7777).shouldBeBetween(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
-         Time(7, 1, 2, 7777).shouldNotBeBetween(Time(10, 1, 2, 7777), Time(12, 1, 2, 7777))
+         Time(11, 1, 2, 0) should between(Time(10, 1, 2, 0), Time(12, 1, 2, 0))
+         Time(7, 1, 2, 0) shouldNot between(Time(10, 1, 2, 0), Time(12, 1, 2, 0))
+         Time(11, 1, 2, 0).shouldBeBetween(Time(10, 1, 2, 0), Time(12, 1, 2, 0))
+         Time(7, 1, 2, 0).shouldNotBeBetween(Time(10, 1, 2, 0), Time(12, 1, 2, 0))
       }
 
       // Date tests
