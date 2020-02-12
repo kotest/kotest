@@ -38,8 +38,15 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      val jvmMain by getting {
          dependsOn(commonMain)
+         dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
          }
