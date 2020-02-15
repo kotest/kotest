@@ -10,11 +10,17 @@ repositories {
 }
 
 dependencies {
-   implementation(kotlin("stdlib-jdk8"))
    implementation(project(":kotest-assertions"))
-   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(kotlin("reflect"))
+   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
    implementation("com.jayway.jsonpath:json-path:2.4.0")
    testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("test") {

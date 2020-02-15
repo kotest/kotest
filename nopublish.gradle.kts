@@ -8,3 +8,7 @@ fun Project.publishing(action: PublishingExtension.() -> Unit) =
 tasks.named("publish") {
    enabled = false
 }
+
+tasks.named("publishToMavenLocal") {
+   enabled = false
+}

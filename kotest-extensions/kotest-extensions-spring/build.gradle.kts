@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
    id("java")
    kotlin("jvm")
@@ -15,7 +13,6 @@ repositories {
 dependencies {
    implementation(project(":kotest-core"))
    implementation(project(":kotest-assertions"))
-   implementation(project(":kotest-runner:kotest-runner-jvm"))
    implementation(kotlin("stdlib-jdk8"))
    implementation(kotlin("reflect"))
    implementation("org.springframework:spring-test:5.2.2.RELEASE")
@@ -25,7 +22,7 @@ dependencies {
    testImplementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
 }
 
-tasks.withType<KotlinCompile>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
    kotlinOptions.jvmTarget = "1.8"
 }

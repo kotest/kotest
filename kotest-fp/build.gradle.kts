@@ -83,4 +83,4 @@ kotlin {
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish-mpp.gradle.kts")

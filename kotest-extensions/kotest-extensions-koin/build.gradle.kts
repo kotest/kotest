@@ -6,7 +6,9 @@ plugins {
 
 repositories {
    mavenCentral()
+   jcenter()
 }
+
 kotlin {
 
    targets {
@@ -45,7 +47,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-
          }
       }
    }
@@ -54,7 +55,7 @@ kotlin {
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
