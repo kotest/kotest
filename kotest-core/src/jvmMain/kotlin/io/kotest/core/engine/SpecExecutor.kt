@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm.spec
+package io.kotest.core.engine
 
 import io.kotest.assertions.log
 import io.kotest.core.config.Project
@@ -9,8 +9,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
-import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.instantiateSpec
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 
@@ -92,7 +90,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
-      IsolationMode.InstancePerLeaf -> InstanceLeafSpecRunner(listener) // topo restore per leaf
+      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
    }
 
    /**

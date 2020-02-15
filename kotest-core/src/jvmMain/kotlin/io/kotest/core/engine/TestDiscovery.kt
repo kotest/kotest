@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm
+package io.kotest.core.engine
 
 import io.github.classgraph.ClassGraph
 import io.kotest.assertions.log

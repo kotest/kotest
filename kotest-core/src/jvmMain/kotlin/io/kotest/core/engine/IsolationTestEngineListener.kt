@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm
+package io.kotest.core.engine
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
@@ -9,7 +9,8 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.reflect.KClass
 
 @Suppress("LocalVariableName")
-class IsolationTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
+class IsolationTestEngineListener(val listener: TestEngineListener) :
+   TestEngineListener {
 
    private val runningSpec = AtomicReference<Description?>(null)
    private val callbacks = mutableListOf<() -> Unit>()

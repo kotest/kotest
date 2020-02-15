@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm.spec
+package io.kotest.core.engine
 
 import io.kotest.assertions.log
 import io.kotest.core.runtime.ExecutorExecutionContext
@@ -10,7 +10,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
-import io.kotest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime

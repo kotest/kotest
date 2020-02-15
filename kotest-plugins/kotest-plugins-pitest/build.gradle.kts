@@ -12,7 +12,6 @@ dependencies {
    implementation(kotlin("stdlib-jdk8"))
    implementation(kotlin("reflect"))
    implementation(project(":kotest-core"))
-   implementation(project(":kotest-runner:kotest-runner-jvm"))
    implementation("org.pitest:pitest:1.4.11")
    testImplementation(project(":kotest-runner:kotest-runner-junit5"))
 }

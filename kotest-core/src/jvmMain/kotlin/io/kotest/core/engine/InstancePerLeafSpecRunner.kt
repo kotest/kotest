@@ -1,11 +1,9 @@
-package io.kotest.runner.jvm.spec
+package io.kotest.core.engine
 
 import io.kotest.assertions.log
 import io.kotest.core.runtime.ExecutorExecutionContext
 import io.kotest.core.runtime.TestExecutionListener
 import io.kotest.core.runtime.TestExecutor
-import io.kotest.core.runtime.invokeAfterSpec
-import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.Description
@@ -15,14 +13,13 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.toTestCase
 import io.kotest.fp.Try
-import io.kotest.runner.jvm.TestEngineListener
 import kotlinx.coroutines.coroutineScope
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
-class InstanceLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
+class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
 
@@ -46,7 +43,12 @@ class InstanceLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener
    })
 
    private fun enqueue(testCase: TestCase) {
-      queue.add(Enqueued(testCase, counter.incrementAndGet()))
+      queue.add(
+         Enqueued(
+            testCase,
+            counter.incrementAndGet()
+         )
+      )
    }
 
    /**

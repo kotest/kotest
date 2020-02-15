@@ -3,7 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit5.JUnitTestEngineListener
 import io.kotest.runner.junit5.KotestEngineDescriptor
-import io.kotest.runner.jvm.spec.SpecExecutor
+import io.kotest.core.engine.SpecExecutor
 import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor

@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm
+package io.kotest.core.engine
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult

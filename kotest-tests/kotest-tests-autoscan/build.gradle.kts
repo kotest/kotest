@@ -38,7 +38,6 @@ kotlin {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(Libs.Coroutines.core)
          }

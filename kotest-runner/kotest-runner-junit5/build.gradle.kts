@@ -17,7 +17,6 @@ dependencies {
    implementation(project(":kotest-fp"))
    api(project(":kotest-core"))
 //            api(project(":kotest-runner:kotest-runner-console"))
-   api(project(":kotest-runner:kotest-runner-jvm"))
    api(Libs.JUnitPlatform.engine)
    api(Libs.JUnitPlatform.api)
    api(Libs.JUnitPlatform.launcher)
@@ -25,7 +24,6 @@ dependencies {
 
    testImplementation(project(":kotest-core"))
    testImplementation(project(":kotest-assertions"))
-   testImplementation(project(":kotest-runner:kotest-runner-jvm"))
    testImplementation(project(":kotest-runner:kotest-runner-junit5"))
    testImplementation(Libs.JUnitPlatform.testkit)
    testImplementation(Libs.Slf4j.api)

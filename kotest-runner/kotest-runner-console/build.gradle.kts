@@ -39,7 +39,6 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
             api(project(":kotest-core"))
-            api(project(":kotest-runner:kotest-runner-jvm"))
             api("net.sourceforge.argparse4j:argparse4j:0.8.1")
             api("com.github.ajalt:mordant:1.2.1")
          }

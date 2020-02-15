@@ -2,7 +2,6 @@ package io.kotest.runner.junit5
 
 import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
-import io.kotest.runner.jvm.SpecFilter
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
@@ -30,4 +29,8 @@ class ClassMethodAdaptingFilter(private val filter: PostDiscoveryFilter,
       parent.addChild(descriptor)
       return filter.apply(descriptor).included()
    }
+}
+
+interface SpecFilter {
+   fun invoke(klass: KClass<out Spec>): Boolean
 }

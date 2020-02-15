@@ -3,9 +3,9 @@ package io.kotest.runner.junit5
 import io.kotest.assertions.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
-import io.kotest.runner.jvm.IsolationTestEngineListener
-import io.kotest.runner.jvm.KotestEngine
-import io.kotest.runner.jvm.TestDiscovery
+import io.kotest.core.engine.IsolationTestEngineListener
+import io.kotest.core.engine.KotestEngine
+import io.kotest.core.engine.TestDiscovery
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -30,10 +30,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
       log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       val listener = IsolationTestEngineListener(
-         JUnitTestEngineListener(
-            SynchronizedEngineExecutionListener(request.engineExecutionListener),
-            root
-         )
+          JUnitTestEngineListener(
+              SynchronizedEngineExecutionListener(request.engineExecutionListener),
+              root
+          )
       )
       val runner = KotestEngine(
          root.classes,

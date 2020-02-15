@@ -39,7 +39,6 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
             // we use the internals of the JVM project in the tests
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)

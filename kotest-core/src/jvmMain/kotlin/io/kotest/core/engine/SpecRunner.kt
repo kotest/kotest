@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm.spec
+package io.kotest.core.engine
 
 import io.kotest.assertions.log
 import io.kotest.core.config.Project
@@ -9,8 +9,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.fp.Try
-import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.instantiateSpec
 import kotlin.reflect.KClass
 
 /**

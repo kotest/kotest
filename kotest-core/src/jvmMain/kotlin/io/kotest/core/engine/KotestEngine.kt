@@ -1,4 +1,4 @@
-package io.kotest.runner.jvm
+package io.kotest.core.engine
 
 import io.kotest.assertions.log
 import io.kotest.core.Tag
@@ -11,7 +11,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
 import io.kotest.core.internal.NamedThreadFactory
-import io.kotest.runner.jvm.spec.SpecExecutor
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
 import java.util.concurrent.Executors

@@ -6,7 +6,7 @@ import io.kotest.core.internal.writeSpecFailures
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
-import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.core.engine.TestEngineListener
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
 import kotlin.reflect.KClass
