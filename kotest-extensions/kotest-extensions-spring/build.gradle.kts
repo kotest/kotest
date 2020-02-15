@@ -21,13 +21,13 @@ dependencies {
    implementation("org.springframework:spring-test:5.2.2.RELEASE")
    implementation("org.springframework:spring-context:5.2.2.RELEASE")
    implementation("net.bytebuddy:byte-buddy:1.10.7")
-
    testImplementation(project(":kotest-runner:kotest-runner-junit5"))
    testImplementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
    kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("test") {
@@ -43,4 +43,4 @@ tasks.named<Test>("test") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")

@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
 }
 
@@ -8,49 +8,17 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
-   sourceSets {
-
-      val jvmMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(project(":kotest-assertions"))
-            implementation("org.jsoup:jsoup:1.12.1")
-         }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-         }
-      }
-   }
+dependencies {
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(project(":kotest-assertions"))
+   implementation("org.jsoup:jsoup:1.12.1")
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
@@ -60,4 +28,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")

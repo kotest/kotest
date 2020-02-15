@@ -11,26 +11,13 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
+dependencies {
+   implementation(project(":kotest-core"))
+   implementation(kotlin("stdlib-jdk8"))
+   api("org.mock-server:mockserver-netty:5.9.0")
+   api("org.mock-server:mockserver-client-java:5.9.0")
 
-   sourceSets {
-
-      val main by getting {
-         dependencies {
-            implementation(project(":kotest-core"))
-            implementation(kotlin("stdlib-jdk8"))
-            api("org.mock-server:mockserver-netty:5.9.0")
-            api("org.mock-server:mockserver-client-java:5.9.0")
-         }
-      }
-
-      val test by getting {
-         dependsOn(main)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-         }
-      }
-   }
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -51,4 +38,4 @@ tasks.named<Test>("test") {
 }
 
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")

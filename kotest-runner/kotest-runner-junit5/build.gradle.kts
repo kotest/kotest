@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -12,67 +12,42 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
-   sourceSets {
-
-      val jvmMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            api(project(":kotest-fp"))
-            api(project(":kotest-core"))
+dependencies {
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(project(":kotest-fp"))
+   api(project(":kotest-core"))
 //            api(project(":kotest-runner:kotest-runner-console"))
-            api(project(":kotest-runner:kotest-runner-jvm"))
-            api(Libs.JUnitPlatform.engine)
-            api(Libs.JUnitPlatform.api)
-            api(Libs.JUnitPlatform.launcher)
-            api(Libs.JUnitJupiter.api)
-         }
-      }
+   api(project(":kotest-runner:kotest-runner-jvm"))
+   api(Libs.JUnitPlatform.engine)
+   api(Libs.JUnitPlatform.api)
+   api(Libs.JUnitPlatform.launcher)
+   api(Libs.JUnitJupiter.api)
 
-      val jvmTest by getting {
-         dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(Libs.JUnitPlatform.testkit)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
-         }
-      }
-   }
+   testImplementation(project(":kotest-core"))
+   testImplementation(project(":kotest-assertions"))
+   testImplementation(project(":kotest-runner:kotest-runner-jvm"))
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+   testImplementation(Libs.JUnitPlatform.testkit)
+   testImplementation(Libs.Slf4j.api)
+   testImplementation(Libs.Logback.classic)
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")

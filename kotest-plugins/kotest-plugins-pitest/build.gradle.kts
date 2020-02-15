@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
 }
 
@@ -8,58 +8,19 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-      js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
-   sourceSets {
-
-      val jvmMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(kotlin("reflect"))
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
-            implementation("org.pitest:pitest:1.4.5")
-         }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-         }
-      }
-   }
+dependencies {
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(kotlin("reflect"))
+   implementation(project(":kotest-core"))
+   implementation(project(":kotest-runner:kotest-runner-jvm"))
+   implementation("org.pitest:pitest:1.4.11")
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
@@ -69,4 +30,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")

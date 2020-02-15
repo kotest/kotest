@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -9,53 +9,26 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
-
-   sourceSets {
-
-      val jvmMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-jdk8"))
-            api(kotlin("reflect"))
-            api(project(":kotest-fp"))
-            api(project(":kotest-core"))
-            api(project(":kotest-extensions"))
-            api(Libs.Coroutines.core)
-            api(Libs.Classgraph.classgraph)
-         }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-         }
-      }
-   }
+dependencies {
+   implementation(kotlin("stdlib-jdk8"))
+   api(kotlin("reflect"))
+   implementation(project(":kotest-fp"))
+   api(project(":kotest-core"))
+   api(project(":kotest-extensions"))
+   api(Libs.Coroutines.core)
+   api(Libs.Classgraph.classgraph)
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
@@ -65,4 +38,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-jvm.gradle.kts")
