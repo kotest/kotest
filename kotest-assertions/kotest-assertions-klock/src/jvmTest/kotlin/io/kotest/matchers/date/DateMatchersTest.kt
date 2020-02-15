@@ -31,10 +31,10 @@ class DateMatchersTest : StringSpec() {
          Time(1, 2, 3, 4).shouldHaveSameSecondsAs(Time(5, 6, 3, 4))
          Time(1, 2, 3, 4).shouldNotHaveSameSecondsAs(Time(1, 2, 5, 4))
 
-         Time(1, 2, 3, 4) should haveSeconds(3.toLong())
-         Time(1, 2, 3, 4) shouldNot haveSeconds(5.toLong())
-         Time(1, 2, 3, 4) shouldHaveSeconds (3.toLong())
-         Time(1, 2, 3, 4) shouldNotHaveSeconds (5.toLong())
+         Time(1, 2, 3, 4) should haveSeconds(3)
+         Time(1, 2, 3, 4) shouldNot haveSeconds(5)
+         Time(1, 2, 3, 4) shouldHaveSeconds (3)
+         Time(1, 2, 3, 4) shouldNotHaveSeconds (5)
       }
 
       "Time should have same minutes ignoring other fields" {
@@ -43,10 +43,10 @@ class DateMatchersTest : StringSpec() {
          Time(1, 2, 3, 4) shouldHaveSameMinutesAs Time(5, 2, 7, 8)
          Time(1, 2, 3, 4) shouldNotHaveSameMinutesAs Time(1, 5, 3, 4)
 
-         Time(1, 2, 3, 4) should haveMinutes(2.toLong())
-         Time(1, 2, 3, 4) shouldNot haveMinutes(5.toLong())
-         Time(1, 2, 3, 4) shouldHaveMinutes (2.toLong())
-         Time(1, 2, 3, 4) shouldNotHaveMinutes (5.toLong())
+         Time(1, 2, 3, 4) should haveMinutes(2)
+         Time(1, 2, 3, 4) shouldNot haveMinutes(5)
+         Time(1, 2, 3, 4) shouldHaveMinutes (2)
+         Time(1, 2, 3, 4) shouldNotHaveMinutes (5)
       }
 
       "Time should have same hours ignoring other fields" {
@@ -55,10 +55,10 @@ class DateMatchersTest : StringSpec() {
          Time(12, 1, 2, 0) shouldHaveSameHoursAs Time(12, 59, 58, 0)
          Time(3, 59, 58, 0) shouldNotHaveSameHoursAs Time(12, 59, 58, 0)
 
-         Time(12, 1, 2, 0) should haveHours(12.toLong())
-         Time(3, 59, 58, 0) shouldNot haveHours(12.toLong())
-         Time(12, 1, 2, 0) shouldHaveHours (12.toLong())
-         Time(3, 59, 58, 0) shouldNotHaveHours (12.toLong())
+         Time(12, 1, 2, 0) should haveHours(12)
+         Time(3, 59, 58, 0) shouldNot haveHours(12)
+         Time(12, 1, 2, 0) shouldHaveHours (12)
+         Time(3, 59, 58, 0) shouldNotHaveHours (12)
       }
 
       "Time should be after" {
@@ -90,10 +90,10 @@ class DateMatchersTest : StringSpec() {
          Date(2014, 1, 2) shouldHaveSameYearAs (Date(2014, 5, 6))
          Date(2014, 1, 2) shouldNotHaveSameYearAs (Date(2018, 5, 6))
 
-         Date(2014, 1, 2) should haveYear(2014.toLong())
-         Date(2014, 1, 2) shouldNot haveYear(2018.toLong())
-         Date(2014, 1, 2) shouldHaveYear (2014.toLong())
-         Date(2014, 1, 2) shouldNotHaveYear (2018.toLong())
+         Date(2014, 1, 2) should haveYear(2014)
+         Date(2014, 1, 2) shouldNot haveYear(2018)
+         Date(2014, 1, 2) shouldHaveYear (2014)
+         Date(2014, 1, 2) shouldNotHaveYear (2018)
       }
 
       "Date should have same month ignoring other fields" {
@@ -102,10 +102,10 @@ class DateMatchersTest : StringSpec() {
          Date(2014, 1, 2) shouldHaveSameMonthAs (Date(2016, 1, 6))
          Date(2014, 1, 2) shouldNotHaveSameMonthAs (Date(2018, 4, 6))
 
-         Date(2014, 1, 2) should haveMonth(1.toLong())
-         Date(2014, 1, 2) shouldNot haveMonth(4.toLong())
-         Date(2014, 1, 2) shouldHaveMonth (1.toLong())
-         Date(2014, 1, 2) shouldNotHaveMonth (4.toLong())
+         Date(2014, 1, 2) should haveMonth(1)
+         Date(2014, 1, 2) shouldNot haveMonth(4)
+         Date(2014, 1, 2) shouldHaveMonth (1)
+         Date(2014, 1, 2) shouldNotHaveMonth (4)
       }
 
       "Date should have same day ignoring other fields" {
@@ -114,10 +114,10 @@ class DateMatchersTest : StringSpec() {
          Date(2014, 1, 2) shouldHaveSameDayAs (Date(2014, 1, 2))
          Date(2014, 1, 2) shouldNotHaveSameDayAs (Date(2014, 4, 6))
 
-         Date(2014, 1, 2) should haveDay(2.toLong())
-         Date(2014, 1, 2) shouldNot haveDay(6.toLong())
-         Date(2014, 1, 2) shouldHaveDay (2.toLong())
-         Date(2014, 1, 2) shouldNotHaveDay (6.toLong())
+         Date(2014, 1, 2) should haveDay(2)
+         Date(2014, 1, 2) shouldNot haveDay(6)
+         Date(2014, 1, 2) shouldHaveDay (2)
+         Date(2014, 1, 2) shouldNotHaveDay (6)
       }
 
       "Date.shouldBeToday() should match today" {

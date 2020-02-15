@@ -20,14 +20,14 @@ fun haveSameYear(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveYear(year: Long) = this shouldBe haveYear(year)
+infix fun Date.shouldHaveYear(year: Int) = this shouldBe haveYear(year)
 
-infix fun Date.shouldNotHaveYear(year: Long) = this shouldNotBe haveYear(year)
+infix fun Date.shouldNotHaveYear(year: Int) = this shouldNotBe haveYear(year)
 
-fun haveYear(year: Long) = object : Matcher<Date> {
+fun haveYear(year: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
       MatcherResult(
-         value.year.toLong() == year,
+         value.year == year,
          { "$value should have year $year" },
          { "$value should not have year $year" }
       )
@@ -46,14 +46,14 @@ fun haveSameMonth(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveMonth(month: Long) = this shouldBe haveMonth(month)
+infix fun Date.shouldHaveMonth(month: Int) = this shouldBe haveMonth(month)
 
-infix fun Date.shouldNotHaveMonth(month: Long) = this shouldNotBe haveMonth(month)
+infix fun Date.shouldNotHaveMonth(month: Int) = this shouldNotBe haveMonth(month)
 
-fun haveMonth(month: Long) = object : Matcher<Date> {
+fun haveMonth(month: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
       MatcherResult(
-         value.month.index1.toLong() == month,
+         value.month.index1 == month,
          { "$value should have month $month" },
          { "$value should not have month $month" }
       )
@@ -72,14 +72,14 @@ fun haveSameDay(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveDay(day: Long) = this shouldBe haveDay(day)
+infix fun Date.shouldHaveDay(day: Int) = this shouldBe haveDay(day)
 
-infix fun Date.shouldNotHaveDay(day: Long) = this shouldNotBe haveDay(day)
+infix fun Date.shouldNotHaveDay(day: Int) = this shouldNotBe haveDay(day)
 
-fun haveDay(day: Long) = object : Matcher<Date> {
+fun haveDay(day: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
       MatcherResult(
-         value.day.toLong() == day,
+         value.day == day,
          { "$value should have day $day" },
          { "$value should not have day $day" }
       )

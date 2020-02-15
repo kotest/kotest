@@ -19,14 +19,14 @@ fun haveSameHours(time: Time): Matcher<Time> = object : Matcher<Time> {
       )
 }
 
-infix fun Time.shouldHaveHours(hours: Long) = this should haveHours(hours)
+infix fun Time.shouldHaveHours(hours: Int) = this should haveHours(hours)
 
-infix fun Time.shouldNotHaveHours(hours: Long) = this shouldNot haveHours(hours)
+infix fun Time.shouldNotHaveHours(hours: Int) = this shouldNot haveHours(hours)
 
-fun haveHours(hours: Long): Matcher<Time> = object : Matcher<Time> {
+fun haveHours(hours: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
-         value.hour.toLong() == hours,
+         value.hour == hours,
          { "$value should have hours $hours" },
          { "$value should not have hours $hours" }
       )
@@ -45,14 +45,14 @@ fun haveSameMinutes(time: Time): Matcher<Time> = object : Matcher<Time> {
       )
 }
 
-infix fun Time.shouldHaveMinutes(minutes: Long) = this should haveMinutes(minutes)
+infix fun Time.shouldHaveMinutes(minutes: Int) = this should haveMinutes(minutes)
 
-infix fun Time.shouldNotHaveMinutes(minutes: Long) = this shouldNot haveMinutes(minutes)
+infix fun Time.shouldNotHaveMinutes(minutes: Int) = this shouldNot haveMinutes(minutes)
 
-fun haveMinutes(minutes: Long): Matcher<Time> = object : Matcher<Time> {
+fun haveMinutes(minutes: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
-         value.minute.toLong() == minutes,
+         value.minute == minutes,
          { "$value should have minutes $minutes" },
          { "$value should not have minutes $minutes" }
       )
@@ -71,14 +71,14 @@ fun haveSameSeconds(time: Time): Matcher<Time> = object : Matcher<Time> {
       )
 }
 
-infix fun Time.shouldHaveSeconds(seconds: Long) = this should haveSeconds(seconds)
+infix fun Time.shouldHaveSeconds(seconds: Int) = this should haveSeconds(seconds)
 
-infix fun Time.shouldNotHaveSeconds(seconds: Long) = this shouldNot haveSeconds(seconds)
+infix fun Time.shouldNotHaveSeconds(seconds: Int) = this shouldNot haveSeconds(seconds)
 
-fun haveSeconds(seconds: Long): Matcher<Time> = object : Matcher<Time> {
+fun haveSeconds(seconds: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
-         value.second.toLong() == seconds,
+         value.second == seconds,
          { "$value should have seconds $seconds" },
          { "$value should not have seconds $seconds" }
       )
