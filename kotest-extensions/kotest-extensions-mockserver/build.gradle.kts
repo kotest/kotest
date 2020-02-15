@@ -1,35 +1,21 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
    mavenCentral()
 }
+
 kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
 
    sourceSets {
 
-      val jvmMain by getting {
+      val main by getting {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
@@ -38,8 +24,8 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
-         dependsOn(jvmMain)
+      val test by getting {
+         dependsOn(main)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
          }
@@ -47,7 +33,11 @@ kotlin {
    }
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+}
+
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
       isFailOnNoMatchingTests = false

@@ -12,33 +12,18 @@ repositories {
    mavenCentral()
 }
 
-kotlin {
+dependencies {
+   implementation(project(":kotest-core"))
+   implementation(project(":kotest-assertions"))
+   implementation(project(":kotest-runner:kotest-runner-jvm"))
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(kotlin("reflect"))
+   implementation("org.springframework:spring-test:5.2.2.RELEASE")
+   implementation("org.springframework:spring-context:5.2.2.RELEASE")
+   implementation("net.bytebuddy:byte-buddy:1.10.7")
 
-   sourceSets {
-
-      val main by getting {
-         dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
-            implementation(kotlin("stdlib-jdk8"))
-            implementation(kotlin("reflect"))
-            implementation("org.springframework:spring-test:5.2.2.RELEASE")
-            implementation("org.springframework:spring-context:5.2.2.RELEASE")
-            implementation("net.bytebuddy:byte-buddy:1.10.1")
-
-         }
-      }
-
-      val test by getting {
-         dependsOn(main)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
-
-         }
-      }
-   }
+   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+   testImplementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
