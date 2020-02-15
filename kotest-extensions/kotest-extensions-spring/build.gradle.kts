@@ -1,37 +1,22 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("jvm")
    id("java-library")
-   id("org.jetbrains.kotlin.plugin.spring") version "1.3.41"
+   id("org.jetbrains.kotlin.plugin.spring") version "1.3.61"
    id("com.adarshr.test-logger")
 }
 
 repositories {
    mavenCentral()
 }
+
 kotlin {
-
-   targets {
-      jvm {
-         compilations.all {
-            kotlinOptions {
-               jvmTarget = "1.8"
-            }
-         }
-      }
-   }
-
-   targets.all {
-      compilations.all {
-         kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
-         }
-      }
-   }
 
    sourceSets {
 
-      val jvmMain by getting {
+      val main by getting {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
@@ -45,8 +30,8 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
-         dependsOn(jvmMain)
+      val test by getting {
+         dependsOn(main)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
@@ -56,10 +41,14 @@ kotlin {
    }
 }
 
-tasks.named<Test>("jvmTest") {
+tasks.withType<KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+}
+
+tasks.named<Test>("test") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
