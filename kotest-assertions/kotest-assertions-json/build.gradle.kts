@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+   implementation(project(":kotest-core"))
    implementation(project(":kotest-assertions"))
    implementation(kotlin("stdlib-jdk8"))
    implementation(kotlin("reflect"))
