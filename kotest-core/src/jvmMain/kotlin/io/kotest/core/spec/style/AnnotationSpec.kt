@@ -12,11 +12,7 @@ import kotlin.reflect.full.memberFunctions
 
 typealias Test = AnnotationSpec.Test
 
-abstract class AnnotationSpec(body: AnnotationSpec.() -> Unit = {}) : Spec() {
-
-   init {
-      body()
-   }
+abstract class AnnotationSpec : Spec() {
 
    private fun defaultConfig() = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 

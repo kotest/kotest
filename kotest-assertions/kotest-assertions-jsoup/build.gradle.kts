@@ -9,10 +9,16 @@ repositories {
 }
 
 dependencies {
-   implementation(kotlin("stdlib-jdk8"))
    implementation(project(":kotest-assertions"))
-   implementation("org.jsoup:jsoup:1.12.1")
+   implementation(kotlin("stdlib-jdk8"))
+   implementation(kotlin("reflect"))
+   implementation("org.jsoup:jsoup:1.12.2")
    testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("test") {
