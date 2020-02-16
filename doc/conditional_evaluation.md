@@ -16,7 +16,7 @@ If you're looking for something like JUnit's `@Ignore`, this is for you.
 
 You can use the same mechanism to run tests only under certain conditions.
  For example you could run certain tests only on Linux systems using
- [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
+ [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS) .IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
 
 ```kotlin
 "should do something".config(enabled = IS_OS_LINUX) {
@@ -29,7 +29,7 @@ You can use the same mechanism to run tests only under certain conditions.
 
 ### Focus
 
-KotlinTest supports isolating a single top level test by preceding the test name with `f:`.
+Kotest supports isolating a single top level test by preceding the test name with `f:`.
 Then only that test (and any subtests defined inside that scope) will be executed, with the rest being skipped.
 
 For example, in the following snippet only the middle test will be executed.
@@ -74,7 +74,7 @@ class BangExample : StringSpec({
 ```
 
 ### SkipTestException
-Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, KotlinTest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
+Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, Kotest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
 
 ```kotlin
 class SkipTestExceptionExample : StringSpec({
