@@ -34,12 +34,6 @@ tasks.dokka {
    outputDirectory = "$buildDir/javadoc"
 }
 
-signing {
-   useGpgCmd()
-   if (Ci.isReleaseVersion)
-      sign(publishing.publications)
-}
-
 // apply plugin: "io.kotest"
 
 allprojects {
@@ -55,4 +49,11 @@ allprojects {
    if (isGithub) {
       version = "4.0.0." + Ci.githubBuildNumber + "-SNAPSHOT"
    }
+}
+
+val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
+
+signing {
+   useGpgCmd()
+   sign(publications)
 }

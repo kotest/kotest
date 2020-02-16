@@ -19,6 +19,13 @@ fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
 
 val dokka = tasks.named("dokka")
 
+val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
+
+signing {
+   useGpgCmd()
+   sign(publications)
+}
+
 // Create dokka Jar task from dokka task output
 val dokkaJar by tasks.creating(Jar::class) {
    group = JavaBasePlugin.DOCUMENTATION_GROUP

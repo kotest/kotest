@@ -8,9 +8,6 @@ repositories {
    mavenCentral()
 }
 
-val ideaActive = System.getProperty("idea.active") == "true"
-val os = org.gradle.internal.os.OperatingSystem.current()
-
 kotlin {
 
    targets {
