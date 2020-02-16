@@ -46,7 +46,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 
 | Iterables ||
 | ------- | ---- |
-| `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value. 
+| `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value.
 
 | Maps ||
 | -------- | ---- |
@@ -137,11 +137,11 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
 | `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
-| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n | 
+| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n |
 | `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equ
-| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n | 
-| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n | 
-| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range | 
+| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n |
+| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
+| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range |
 
 | Channels ||
 | -------- | ---- |
@@ -224,7 +224,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
 | `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
 | `file.shouldBeSymbolicLink()` | Asserts that the file is a symbolic link. |
-| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name | 
+| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name |
 
 | Dates ||
 | -------- | ---- |
@@ -293,31 +293,31 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 
 | Reflection |     |
 | ---------- | --- |
-| `kclass.shouldHaveAnnotations()` | Asserts that the class has some annotation | 
-| `kclass.shouldHaveAnnotations(n)` | Asserts that the class has exactly N annotation | 
+| `kclass.shouldHaveAnnotations()` | Asserts that the class has some annotation |
+| `kclass.shouldHaveAnnotations(n)` | Asserts that the class has exactly N annotation |
 | `kclass.shouldBeAnnotatedWith<T>()` | Asserts that the class is annotated with the given type |
-| `kclass.shouldBeAnnotatedWith<T> { block }` | Asserts that the class is annotated with the given type, and then, runs the block with the annotation | 
-| `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name | 
+| `kclass.shouldBeAnnotatedWith<T> { block }` | Asserts that the class is annotated with the given type, and then, runs the block with the annotation |
+| `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name |
 | `kclass.shouldHaveFunction(name) { block }` | Asserts that the class have a function with the given name, and then, runs the block with the function |
-| `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name | 
+| `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name |
 | `kclass.shouldHaveMemberProperty(name) { block }` | Asserts that the class have a member property with the given name, and then, runs the block with the function |
 | `kclass.shouldBeSubtypeOf<T>()` | Asserts that the class is a subtype of T |
 | `kclass.shouldBeSupertypeOf<T>()` | Asserts that the class is a supertype of T |
 | `kclass.shouldBeData()` | Asserts that the class is a data class |
-| `kclass.shouldBeSealed()` | Asserts that the class is a sealed class | 
-| `kclass.shouldBeCompanion()` | Asserts that the class is a companion object | 
+| `kclass.shouldBeSealed()` | Asserts that the class is a sealed class |
+| `kclass.shouldBeCompanion()` | Asserts that the class is a companion object |
 | `kclass.shouldHavePrimaryConstructor()` | Asserts that the class has a primary constructor |
-| `kclass.shouldHaveVisibility(visibility)` | Asserts that the class has the given visibility | 
-| `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation | 
-| `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation | 
+| `kclass.shouldHaveVisibility(visibility)` | Asserts that the class has the given visibility |
+| `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation |
+| `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation |
 | `kfunction.shouldBeAnnotatedWith<T>()` | Asserts that the function is annotated with the given type |
-| `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation | 
+| `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation |
 | `kfunction.shouldHaveReturnType<T>()` | Asserts that the function returns the given type |
 | `kfunction.shouldBeInline()` | Asserts that the function is inline |
 | `kfunction.shouldBeInfix()` | Asserts that the function is infix |
 | `kproperty.shouldBeOfType<T>()` | Asserts that the property is of the given type |
-| `kproperty.shouldBeConst()` | Asserts that the property is a const | 
-| `kproperty.shouldBeLateInit()` | Asserts that the property is a late init var | 
+| `kproperty.shouldBeConst()` | Asserts that the property is a const |
+| `kproperty.shouldBeLateInit()` | Asserts that the property is a late init var |
 | `kcallable.shouldHaveVisibility(visibility)` | Asserts that the member have the given visibility |
 | `kcallable.shouldBeFinal()` | Asserts that the member is final |
 | `kcallable.shouldBeOpen()` | Asserts that the member is open |
@@ -327,7 +327,14 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `kcallable.shouldAcceptParameters(parameters) { block }` | Asserts that the member can be called with the parameters (check the types), and then, runs the block with the annotation |
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
-| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T |
+
+
+| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
 
 
 | JSoup |     |
@@ -336,8 +343,14 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 
 | Regex |     |
 | ---------- | --- |
-| `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     | 
-| `regex.shouldHavePattern(regexPattern)`              | Asserts that regex have given regexPattern | 
-| `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions| 
-| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption| 
-| `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions| 
+| `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     |
+| `regex.shouldHavePattern(regexPattern)`              | Asserts that regex have given regexPattern |
+| `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions|
+| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption|
+| `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions|
+
+| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
