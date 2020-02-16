@@ -8,6 +8,8 @@
 *.war
 *.ear
 
+.allure
+
 *.iml
 .idea
 
@@ -26,9 +28,10 @@ allure-results/
 !gradle/wrapper/gradle-wrapper.jar
 
 allure.log
-kotlintest.log
-kotlintest-tests-junit-report.log
-kotlintest-tests-core.log
+kotest.log
+kotest-tests-junit-report.log
+kotest-tests-core.log
 
 local.properties
-.kotlintest
+.kotest
+/kotest-examples/kotest-examples-javascript/node_modules/
