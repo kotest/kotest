@@ -1,6 +1,8 @@
 apply(plugin = "java")
 apply(plugin = "java-library")
 apply(plugin = "maven-publish")
+apply(plugin = "signing")
+apply(plugin = "org.jetbrains.dokka")
 
 repositories {
    mavenCentral()
@@ -15,8 +17,8 @@ fun Project.publishing(action: PublishingExtension.() -> Unit) =
 publishing {
    repositories {
       maven {
-         val releasesRepoUrl = java.net.URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-         val snapshotsRepoUrl = java.net.URI("https://oss.sonatype.org/content/repositories/snapshots/")
+         val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+         val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
          name = "deploy"
          url = if (Ci.isGithub) snapshotsRepoUrl else releasesRepoUrl
          credentials {
@@ -25,4 +27,13 @@ publishing {
          }
       }
    }
+}
+
+tasks.create<Jar>("sourcesJar") {
+   archiveClassifier.set("sources")
+   //from(sourceSets.main.all)
+}
+
+tasks.create<Jar>("javadocJar") {
+   archiveClassifier.set("javadoc")
 }

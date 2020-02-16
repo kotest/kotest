@@ -54,4 +54,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../nopublish.gradle.kts")
+apply(from = "../../nopublish.gradle")
