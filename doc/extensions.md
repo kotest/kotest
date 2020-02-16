@@ -1,11 +1,11 @@
-KotlinTest Extensions
+Kotest Extensions
 ====================
 
 
 ### Arrow
 
-The arrow assertion extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
- To use this library you need to add `kotlintest-assertions-arrow` to your build.
+The arrow assertion module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
+To use this library you need to add `kotest-assertions-arrow` to your build.
 
 Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
 
@@ -26,12 +26,12 @@ list.forOne {
 }
 ```
 
-Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotlintest/kotlintest/blob/master/doc/reference.md#inspectors) for more details.
+Other inspectors include `forNone`, `forAll`, `forExactly(n)`, `forSome` and so on. See the section on [inspectors](https://github.com/kotest/kotest/blob/master/doc/reference.md#inspectors) for more details.
 
 ### Spring
 
-KotlinTest offers a Spring extension that allows you to test code that wires dependencies using Spring.
-To use this extension add the `kotlintest-extensions-spring` module to your test compile path.
+Kotest offers a Spring extension that allows you to test code that wires dependencies using Spring.
+To use this extension add the `kotest-extensions-spring` module to your test compile path.
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
 This should point to a class annotated with the Spring `@Configuration` annotation. Alternatively, you can use `@ActiveProfile` to
@@ -97,17 +97,17 @@ class SpringAutowiredConstructorTest(service: UserService) : WordSpec() {
 
 ### Koin
 
-The [Koin DI Framework](https://insert-koin.io/) can be used with KotlinTest through the `KoinListener` test listener and its own interface `KoinTest`.
+The [Koin DI Framework](https://insert-koin.io/) can be used with Kotest through the `KoinListener` test listener and its own interface `KoinTest`.
 
 To add the listener to your project, add the depency to your project:
 ```groovy
-testImplementation("io.kotlintest:kotlintest-extensions-koin:${kotlinTestVersion}")
+testImplementation("io.kotest:kotest-extensions-koin-jvm:${version}")
 ```
 
 With the dependency added, we can use Koin in our tests!
 
 ```kotlin
-class KotlinTestAndKoin : FunSpec(), KoinTest {
+class KotestAndKoin : FunSpec(), KoinTest {
 
     override fun listeners() = listOf(KoinListener(myKoinModule))
 
@@ -123,9 +123,49 @@ class KotlinTestAndKoin : FunSpec(), KoinTest {
 ```
 
 
+### Compilation test
+
+The ```kotest-assertions-compiler``` extension provides matchers to assert that given kotlin code snippet compiles or not.
+This extension is a wrapper over [kotlin-compile-testing](https://github.com/tschuchortdev/kotlin-compile-testing) and provides following matchers
+
+* String.shouldCompile()
+* String.shouldNotCompile()
+* File.shouldCompile()
+* File.shouldNotCompile()
+
+To add the compilation matcher, add the following dependency to your project
+
+```groovy
+testImplementation("io.kotest:kotest-assertions-compiler-jvm:${version}")
+```
+
+Usage:
+```kotlin
+    class CompilationTest: StringSpec() {
+        init {
+            "shouldCompile test" {
+                val codeSnippet = """ val aString: String = "A valid assignment" """.trimMargin()
+
+                codeSnippet.shouldCompile()
+                File("SourceFile.kt").shouldCompile()
+            }
+
+            "shouldNotCompile test" {
+                val codeSnippet = """ val aInteger: Int = "A invalid assignment" """.trimMargin()
+
+                codeSnippet.shouldNotCompile()
+                File("SourceFile.kt").shouldNotCompile()
+            }
+        }
+    }
+```
+
+During checking of code snippet compilation the classpath of calling process is inherited, which means any dependencies which are available in calling process will also be available while compiling the code snippet.
+
+
 ### System Extensions
 
-Sometimes your code might use some functionalities straight from the JVM, which are very hard to simulate. With KotlinTest System Extensions, these difficulties are made easy to mock and simulate, and your code can be tested correctly. After changing the system and using the extensions, the previous state will be restored.
+Sometimes your code might use some functionalities straight from the JVM, which are very hard to simulate. With Kotest System Extensions, these difficulties are made easy to mock and simulate, and your code can be tested correctly. After changing the system and using the extensions, the previous state will be restored.
 
 **Attention**: These code is very sensitive to concurrency. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is unknown.
 
@@ -133,7 +173,7 @@ Sometimes your code might use some functionalities straight from the JVM, which 
 
 With *System Environment Extension* you can simulate how the System Environment is behaving. That is, what you're obtaining from `System.getenv()`.
 
-KotlinTest provides some extension functions that provides a System Environment in a specific scope:
+Kotest provides some extension functions that provides a System Environment in a specific scope:
 
 ```kotlin
 withEnvironment("FooKey", "BarValue") {
@@ -259,7 +299,7 @@ class MyTest : FreeSpec() {
 
 Maybe you want to guarantee that you didn't leave any debug messages around, or that you're always using a Logger in your logging.
 
-For that, KotlinTest provides you with `NoSystemOutListener` and `NoSystemErrListener`. These listeners won't allow any messages to be printed straight to `System.out` or `System.err`, respectively:
+For that, Kotest provides you with `NoSystemOutListener` and `NoSystemErrListener`. These listeners won't allow any messages to be printed straight to `System.out` or `System.err`, respectively:
 
 ```kotlin
     // In Project or in Spec
@@ -269,7 +309,7 @@ For that, KotlinTest provides you with `NoSystemOutListener` and `NoSystemErrLis
 ### Locale/Timezone listeners
 
 Some codes use and/or are sensitive to the default Locale and default Timezone. Instead of manipulating the system defaults no your own,
-let KotlinTest do it for you!
+let Kotest do it for you!
 
 ```kotlin
 withDefaultLocale(Locale.FRANCE) {
@@ -302,7 +342,7 @@ Sometimes you may want to use the `now` static functions located in `java.time` 
 But what to do when you want to test that value? `now` will be different
 each time you call it!
 
-For that, KotlinTest provides `ConstantNowListener` and `withConstantNow` functions.
+For that, Kotest provides `ConstantNowListener` and `withConstantNow` functions.
 
 While executing your code, your `now` will always be the value that you want to test against.
 
