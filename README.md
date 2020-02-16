@@ -1,14 +1,14 @@
-![KotlinTest](doc/logo4.png)
+![Kotest](doc/logo6.png)
 ==========
 
-[![Build Status](https://github.com/kotlintest/kotlintest/workflows/build/badge.svg)](https://github.com/kotlintest/kotlintest/actions)
-[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+[![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotest/kotest.svg)]()
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 [Full documentation](doc/reference.md)
 
-**Previously known as Kotlintest**
+**Previously known as Kotlintest - From release 4.0 this project is now known as Kotest**
 
 
 For latest updates see [Changelog](CHANGELOG.md)
@@ -16,7 +16,7 @@ For latest updates see [Changelog](CHANGELOG.md)
 Community
 ---------
 * [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
-* [KotlinTest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
+* [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
 * [Contribute](https://github.com/kotest/kotest/wiki/contribute)
 
 Test with Style

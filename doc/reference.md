@@ -13,7 +13,8 @@ Project Rename!
 
 Starting with release 4.0 **KotlinTest** was renamed to **Kotest** to avoid confusion with the Jetbrains provided `kotlin.test` package.
 
-All packages are now `io.kotest` instead of `io.kotlintest`. Similarly the modules released to maven are in the form `kotest-xyz`.
+**Note:** All packages are now `io.kotest` instead of `io.kotlintest`. Similarly the modules released to maven are in the form `kotest-xyz`.
+There is an upgrade cost. Please be prepared when you upgrade that you will need to do more work than updating the versions in your build file.
 
 There are typealiases for most of the common classes and functions
 so that existing imports will continue to work albeit with deprecation warnings. For lesser used functionality, you will need to update the imports.
