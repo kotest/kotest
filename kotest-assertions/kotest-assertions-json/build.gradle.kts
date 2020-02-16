@@ -19,24 +19,6 @@ kotlin {
             }
          }
       }
-      js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
-      }
-      if (!Ci.ideaActive) {
-         linuxX64()
-         mingwX64()
-         macosX64()
-      } else if (Ci.os.isMacOsX) {
-         macosX64("native")
-      } else if (Ci.os.isWindows) {
-         mingwX64("native")
-      } else {
-         linuxX64("native")
-      }
    }
 
    targets.all {
