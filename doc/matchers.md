@@ -327,7 +327,16 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `kcallable.shouldAcceptParameters(parameters) { block }` | Asserts that the member can be called with the parameters (check the types), and then, runs the block with the annotation |
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
-| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T |
+
+
+| Statistic ||
+| ---------- | --- |
+| `collection.shouldHaveMean(mean)` | Asserts that collection has specific mean with default precision = 4 |
+| `collection.shouldHaveMean(mean, precision)` | Asserts that collection has specific mean with specific precision |
+| `collection.shouldHaveVariance(mean)` | Asserts that collection has specific variance with default precision = 4 |
+| `collection.shouldHaveVariance(mean, precision)` | Asserts that collection has specific variance with specific precision |
+| `collection.shouldHaveStandardDeviation(mean)` | Asserts that collection has specific standard deviation with default precision = 4 |
+| `collection.shouldHaveStandardDeviation(mean, precision)` | Asserts that collection has specific standard deviation with specific precision |
 
 
 | [Konform (optional)](https://github.com/konform-kt/konform/) |     |
@@ -341,6 +350,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | ----- | --- |
 | JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
 
+
 | Regex |     |
 | ---------- | --- |
 | `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     |
@@ -348,6 +358,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions|
 | `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption|
 | `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions|
+
 
 | [Konform (optional)](https://github.com/konform-kt/konform/) |     |
 | ---------- | --- |
