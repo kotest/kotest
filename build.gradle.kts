@@ -55,5 +55,6 @@ val publications: PublicationContainer = (extensions.getByName("publishing") as 
 
 signing {
    useGpgCmd()
-   sign(publications)
+   if (Ci.isReleaseVersion)
+      sign(publications)
 }

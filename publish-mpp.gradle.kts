@@ -23,7 +23,8 @@ val publications: PublicationContainer = (extensions.getByName("publishing") as 
 
 signing {
    useGpgCmd()
-   sign(publications)
+   if (Ci.isReleaseVersion)
+      sign(publications)
 }
 
 // Create dokka Jar task from dokka task output
