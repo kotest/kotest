@@ -1,21 +1,21 @@
 package com.sksamuel.kotest.matchers
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.assertSoftly
 import io.kotest.assertions.asClue
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.haveSameHashCodeAs
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.haveLength
 import io.kotest.matchers.string.shouldContain
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
-import io.kotest.shouldThrow
 import java.util.ArrayList
 
 class MatchersTest : FreeSpec({

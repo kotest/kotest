@@ -1,10 +1,10 @@
 package io.kotest.assertions.arrow.nel
 
 import arrow.core.NonEmptyList
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 
 fun <T> NonEmptyList<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> NonEmptyList<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()

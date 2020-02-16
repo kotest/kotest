@@ -3,11 +3,11 @@ package com.sksamuel.kotest
 import io.kotest.matchers.collections.singleElement
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldHave
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 
 class DslExamples {
   init {

@@ -161,7 +161,7 @@
 //    fail("This should never execute as the test is marked with @Ignore")
 //  }
 //
-//  override fun finalizeSpec(spec: SpecConfiguration, results: Map<TestCase, TestResult>) {
+//  override fun finalizeSpec(spec: Spec, results: Map<TestCase, TestResult>) {
 //    counterAfterAll.get() shouldBe 2
 //    counterAfterEach.get() shouldBe 6
 //

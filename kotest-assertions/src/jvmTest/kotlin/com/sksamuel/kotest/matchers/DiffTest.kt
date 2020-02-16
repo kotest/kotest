@@ -2,8 +2,8 @@ package com.sksamuel.kotest.matchers
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.Diff
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.startWith
-import io.kotest.shouldBe
 
 class DiffTest : WordSpec() {
   init {

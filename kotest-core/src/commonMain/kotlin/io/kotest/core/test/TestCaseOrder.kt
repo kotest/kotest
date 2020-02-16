@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 /**
- * This enum is used to configure the order of root test execution in a [SpecConfiguration].
+ * This enum is used to configure the order of root test execution in a [Spec].
  *
  * The default, [Sequential] executes tests in the order they are defined in code.
  * [Random] will randomize the test case ordering

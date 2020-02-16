@@ -15,7 +15,7 @@ import io.kotest.matchers.reflection.shouldNotBeInfix
 import io.kotest.matchers.reflection.shouldNotBeInline
 import io.kotest.matchers.reflection.shouldNotHaveAnnotations
 import io.kotest.matchers.reflection.shouldNotHaveReturnType
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class FunctionMatchersTest : FreeSpec() {
   init {

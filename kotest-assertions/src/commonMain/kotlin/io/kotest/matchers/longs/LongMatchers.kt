@@ -1,9 +1,9 @@
 package io.kotest.matchers.longs
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 
 fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
   override fun test(value: Long) = MatcherResult(value in a..b,

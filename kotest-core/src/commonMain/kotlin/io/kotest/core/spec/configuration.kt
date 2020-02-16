@@ -1,11 +1,17 @@
+@file:Suppress("PropertyName")
+
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
-import io.kotest.core.extensions.SpecLevelExtension
+import io.kotest.core.config.Project
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.factory.DynamicTest
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.runtime.configureRuntime
+import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
 import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
@@ -14,20 +20,17 @@ import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
-typealias BeforeSpec = () -> Unit
-typealias AfterSpec = () -> Unit
-typealias PrepareSpec = (KClass<out SpecConfiguration>) -> Unit
-typealias FinalizeSpec = (Tuple2<KClass<out SpecConfiguration>, Map<TestCase, TestResult>>) -> Unit
+typealias BeforeSpec = (Spec) -> Unit
+typealias AfterSpec = (Spec) -> Unit
+typealias AfterProject = () -> Unit
+typealias PrepareSpec = (KClass<out Spec>) -> Unit
+typealias FinalizeSpec = (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
 typealias TestCaseExtensionFn = suspend (
    testCase: TestCase,
-   execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-   complete: suspend (TestResult) -> Unit
-) -> Unit
-typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
+   execute: suspend (TestCase) -> TestResult
+) -> TestResult
 
-// these functions call out to the js test methods
-// on the jvm these functions will be empty
-expect fun generateTests(rootTests: List<TestCase>)
+typealias AroundTestFn = suspend (TestCase, suspend (TestCase) -> TestResult) -> TestResult
 
 expect interface AutoCloseable {
    fun close()
@@ -35,7 +38,7 @@ expect interface AutoCloseable {
 
 /**
  * The parent of all configuration DSL objects and contains configuration methods
- * common to both [SpecConfiguration] and [TestFactoryConfiguration] implementations.
+ * common to both [Spec] and [TestFactoryConfiguration] implementations.
  */
 abstract class TestConfiguration {
 
@@ -43,93 +46,77 @@ abstract class TestConfiguration {
     * Config applied to each test case if not overridden per test case.
     * If left null, then defaults to the project config default.
     */
-   var defaultTestCaseConfig: TestCaseConfig? = null
+   var defaultTestConfig: TestCaseConfig? = null
 
    /**
     * Sets an assertion mode which is applied to every test.
     */
-   var assertionMode: AssertionMode? = null
+   var assertions: AssertionMode? = null
 
    /**
     * Contains the [Tag]s that will be applied to every test.
     */
-   var tags: Set<Tag> = emptySet()
+   internal var _tags: Set<Tag> = emptySet()
 
    /**
     * Contains the [TestFactory] instances that have been included with this config.
     */
-   var factories = emptyList<TestFactory>()
-
-   // test lifecycle callbacks
-   var beforeTests = emptyList<BeforeTest>()
-   var afterTests = emptyList<AfterTest>()
-   var beforeSpecs = emptyList<BeforeSpec>()
-   var afterSpecs = emptyList<AfterSpec>()
+   internal var factories = emptyList<TestFactory>()
 
    // test listeners
-   var listeners = emptyList<TestListener>()
-   var extensions = emptyList<SpecLevelExtension>()
+   // using underscore name to avoid clash in JS compiler with existing methods
+   internal var _listeners = emptyList<TestListener>()
+   internal var _extensions = emptyList<TestCaseExtension>()
 
    fun extension(f: TestCaseExtensionFn) {
-      extensions = extensions + object : TestCaseExtension {
-         override suspend fun intercept(
-            testCase: TestCase,
-            execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-            complete: suspend (TestResult) -> Unit
-         ) {
-            f(testCase, execute, complete)
+      _extensions = _extensions + object : TestCaseExtension {
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            return f(testCase, execute)
          }
       }
    }
 
-   fun aroundTest(runtest: AroundTestFn) {
-      extensions = extensions + object : TestCaseExtension {
-         override suspend fun intercept(
-            testCase: TestCase,
-            execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-            complete: suspend (TestResult) -> Unit
-         ) {
-            val f: suspend (suspend (TestResult) -> Unit) -> Unit = { callback ->
-               execute(testCase) { result ->
-                  callback(result)
-                  complete(result)
-               }
-            }
-            runtest.invoke(f)
+   fun aroundTest(aroundTestFn: AroundTestFn) {
+      _extensions = _extensions + object : TestCaseExtension {
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            val f: suspend (TestCase) -> TestResult = { execute(it) }
+            return aroundTestFn(testCase, f)
          }
       }
    }
 
    /**
-    * Registers a new before-test callback to be executed before every [TestCase] generated by
-    * this [TestFactoryConfiguration]. The callback will only be executed for tests generated by this factory
-    * and not other tests in a [Spec].
+    * Registers a new before-test callback to be executed before every [TestCase].
+    * The [TestCase] about to be executed is provided as the parameter.
     */
-   fun beforeTest(f: BeforeTest) {
-      beforeTests = beforeTests + f
-   }
+   abstract fun beforeTest(f: BeforeTest)
 
    /**
     * Registers a new after-test callback to be executed after every [TestCase].
     * The callback provides two parameters - the test case that has just completed,
-    * and the [TestResult] outcome of that test.  The callback will only be executed
-    * for tests generated by this factory and not other tests in a [Spec].
+    * and the [TestResult] outcome of that test.
     */
-   fun afterTest(f: AfterTest) {
-      afterTests = afterTests + f
-   }
+   abstract fun afterTest(f: AfterTest)
 
    fun beforeSpec(f: BeforeSpec) {
-      beforeSpecs = beforeSpecs + f
+      listener(object : TestListener {
+         override suspend fun beforeSpec(spec: Spec) {
+            f(spec)
+         }
+      })
    }
 
    fun afterSpec(f: AfterSpec) {
-      afterSpecs = afterSpecs + f
+      listener(object : TestListener {
+         override suspend fun afterSpec(spec: Spec) {
+            f(spec)
+         }
+      })
    }
 
    fun prepareSpec(f: PrepareSpec) {
       listeners(object : TestListener {
-         override fun prepareSpec(kclass: KClass<out SpecConfiguration>) {
+         override suspend fun prepareSpec(kclass: KClass<out Spec>) {
             f(kclass)
          }
       })
@@ -137,8 +124,20 @@ abstract class TestConfiguration {
 
    fun finalizeSpec(f: FinalizeSpec) {
       listeners(object : TestListener {
-         override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
             f(Tuple2(kclass, results))
+         }
+      })
+   }
+
+   /**
+    * Registers a callback that will execute after all specs have completed.
+    * This is a convenience method for creating a [ProjectListener] and registering it.
+    */
+   fun afterProject(f: AfterProject) {
+      Project.registerListener(object : ProjectListener {
+         override fun afterProject() {
+            f()
          }
       })
    }
@@ -149,15 +148,19 @@ abstract class TestConfiguration {
     * from this factory will have these tags applied.
     */
    fun tags(vararg tags: Tag) {
-      this.tags = this.tags + tags.toSet()
+      this._tags = this._tags + tags.toSet()
+   }
+
+   fun listener(listener: TestListener) {
+      listeners(listener)
    }
 
    fun listeners(vararg listener: TestListener) {
-      this.listeners = this.listeners + listener.toList()
+      this._listeners = this._listeners + listener.toList()
    }
 
-   fun extensions(vararg extensions: SpecLevelExtension) {
-      this.extensions = this.extensions + extensions.toList()
+   fun extensions(vararg extensions: TestCaseExtension) {
+      this._extensions = this._extensions + extensions.toList()
    }
 
    /**
@@ -168,17 +171,21 @@ abstract class TestConfiguration {
    }
 
    /**
-    * Register an [AutoCloseable] so that it's close methods is automatically invoked
-    * when the tests are completed.
+    * Includes the tests from the given [TestFactory] with the root tests of the
+    * factory given the prefix.
     */
-   fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpecs = listOf({ closeable.close() }) + afterSpecs
-      return closeable
+   fun include(prefix: String, factory: TestFactory) {
+      fun DynamicTest.addPrefix() = copy(name = prefix + name)
+      factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
    }
 }
 
+// we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
+@Suppress("unused")
+val initializeRuntime = configureRuntime()
+
 @Testable
-abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfiguration {
+abstract class Spec : TestConfiguration(), SpecCallbackMethods {
 
    /**
     * Contains the root [TestCase]s used in this spec.
@@ -197,12 +204,34 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
     */
    var testOrder: TestCaseOrder? = null
 
+   override fun beforeTest(f: BeforeTest) {
+      listener(object : TestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            f(testCase)
+         }
+      })
+   }
+
+   override fun afterTest(f: AfterTest) {
+      listener(object : TestListener {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            f(Tuple2(testCase, result))
+         }
+      })
+   }
+
    /**
-    * This is a dummy method, intercepted by the kotlin.js framework adapter to generate tests.
+    * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
+    * javascript code. We need to hook into this function to invoke our execution code which will
+    * run tests defined by kotest.
+    *
+    * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests so we can
+    * avoid passing this generating function to the underyling test framework so it doesn't appear
+    * in the test report.
     */
    @JsTest
-   fun kotestGenerateTests() {
-      generateTests(rootTestCases.toList())
+   fun javascriptTestInterceptor() {
+      executeSpec(this)
    }
 
    private fun createTestCase(
@@ -239,4 +268,20 @@ abstract class SpecConfiguration : TestConfiguration(), CompatibilitySpecConfigu
    }
 }
 
+/**
+ * Register an [AutoCloseable] so that it's close methods is automatically invoked
+ * when the tests are completed.
+ */
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
+   afterSpec {
+      closeable.close()
+   }
+   return closeable
+}
 
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: Lazy<T>): Lazy<T> {
+   afterSpec {
+      closeable.value.close()
+   }
+   return closeable
+}

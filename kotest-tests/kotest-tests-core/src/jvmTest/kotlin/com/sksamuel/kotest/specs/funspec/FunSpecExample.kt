@@ -1,12 +1,13 @@
 package com.sksamuel.kotest.specs.funspec
 
 import io.kotest.core.spec.IsolationMode
-import io.kotest.core.SpecClass
 import io.kotest.core.Tag
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.description
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
@@ -27,12 +28,12 @@ class FunSpecExample : FunSpec() {
       println("Starting test ${testCase.description}")
    }
 
-   override fun beforeSpec(spec: SpecClass) {
-      println("Starting spec ${spec.description()}")
+   override fun beforeSpec(spec: Spec) {
+      println("Starting spec ${spec::class.description()}")
    }
 
-   override fun afterSpec(spec: SpecClass) {
-      println("Completed spec ${spec.description()}")
+   override fun afterSpec(spec: Spec) {
+      println("Completed spec ${spec::class.description()}")
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {

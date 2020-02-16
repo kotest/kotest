@@ -1,14 +1,16 @@
 package io.kotest.core.test
 
+import io.kotest.mpp.bestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @UseExperimental(ExperimentalTime::class)
-data class TestResult(val status: TestStatus,
-                      val error: Throwable?,
-                      val reason: String?,
-                      val duration: Duration,
-                      val metaData: Map<String, Any?> = emptyMap()) {
+data class TestResult(
+   val status: TestStatus,
+   val error: Throwable?,
+   val reason: String?,
+   val duration: Duration
+) {
    companion object {
       fun success(duration: Duration) = TestResult(
          TestStatus.Success,
@@ -16,24 +18,39 @@ data class TestResult(val status: TestStatus,
          null,
          duration
       )
+
+      fun throwable(e: Throwable?, duration: Duration): TestResult {
+         return when (e) {
+            null -> success(duration)
+            is AssertionError -> failure(e, duration)
+            else -> when (e::class.bestName()) {
+               "org.opentest4j.AssertionFailedError" -> failure(e, duration)
+               else -> error(e, duration)
+            }
+         }
+      }
+
       val Ignored = TestResult(
          TestStatus.Ignored,
          null,
          null,
          Duration.ZERO
       )
-      fun failure(e: AssertionError, duration: Duration) = TestResult(
+
+      private fun failure(e: Throwable, duration: Duration) = TestResult(
          TestStatus.Failure,
          e,
          null,
          duration
       )
-      fun error(t: Throwable, duration: Duration) = TestResult(
+
+      private fun error(t: Throwable, duration: Duration) = TestResult(
          TestStatus.Error,
          t,
          null,
          duration
       )
+
       fun ignored(reason: String?) = TestResult(
          TestStatus.Ignored,
          null,

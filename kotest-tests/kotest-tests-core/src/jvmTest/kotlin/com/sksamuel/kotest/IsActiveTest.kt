@@ -10,7 +10,7 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.test.isActive
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class IsActiveTest : StringSpec() {
 
@@ -20,6 +20,18 @@ class IsActiveTest : StringSpec() {
          val config = TestCaseConfig(enabled = false)
          val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
          test.isActive() shouldBe false
+      }
+
+      "isActive should return false if the test is disabled using the isEnabledFn" {
+         val config = TestCaseConfig(enabledIf = { false })
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe false
+      }
+
+      "isActive should return true if the test is disabled using the isEnabledFn" {
+         val config = TestCaseConfig(enabledIf = { true })
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe true
       }
 
       "isActive should return false if it has an excluded tag" {

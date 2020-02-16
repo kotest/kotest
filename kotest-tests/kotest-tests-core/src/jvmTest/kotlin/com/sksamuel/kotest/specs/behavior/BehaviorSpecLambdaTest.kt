@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.behavior
 
 import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class BehaviorSpecLambdaTest : BehaviorSpec({
 

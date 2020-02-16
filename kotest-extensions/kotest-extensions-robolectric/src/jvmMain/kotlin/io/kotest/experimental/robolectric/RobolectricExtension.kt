@@ -1,10 +1,10 @@
 package io.kotest.experimental.robolectric
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
@@ -12,26 +12,26 @@ class RobolectricExtension : ConstructorExtension, TestCaseExtension {
 
    private val containedRobolectricRunner = ContainedRobolectricRunner()
 
-   override fun <T : SpecConfiguration> instantiate(clazz: KClass<T>): SpecConfiguration? {
-      if (clazz.isRobolectricClass()) return null
-      return containedRobolectricRunner.sdkEnvironment.bootstrappedClass<SpecConfiguration>(clazz.java).newInstance()
+   override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
+      if (clazz.isNotRobolectricClass()) return null
+      return containedRobolectricRunner.sdkEnvironment.bootstrappedClass<Spec>(clazz.java).newInstance()
    }
 
-   private fun <T : SpecConfiguration> KClass<T>.isRobolectricClass() =
+   private fun <T : Spec> KClass<T>.isNotRobolectricClass() =
       findAnnotation<RobolectricTest>() == null
 
-   override suspend fun intercept(
-      testCase: TestCase,
-      execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-      complete: suspend (TestResult) -> Unit
-   ) {
-      if (testCase.spec::class.isRobolectricClass()) return
+   override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+
+      if (testCase.spec::class.isNotRobolectricClass()) {
+         return TestResult.Ignored
+      }
 
       val containedRobolectricRunner = ContainedRobolectricRunner()
 
       beforeTest(containedRobolectricRunner)
-      execute(testCase) { complete(it) }
+      val result = execute(testCase)
       afterTest(containedRobolectricRunner)
+      return result
    }
 
    private fun beforeTest(containedRobolectricRunner: ContainedRobolectricRunner) {

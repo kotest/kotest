@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.matchers.collections
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
@@ -91,15 +93,13 @@ import io.kotest.matchers.collections.strictlyDecreasing
 import io.kotest.matchers.collections.strictlyDecreasingWith
 import io.kotest.matchers.collections.strictlyIncreasing
 import io.kotest.matchers.collections.strictlyIncreasingWith
+import io.kotest.matchers.should
 import io.kotest.matchers.throwable.shouldHaveMessage
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldHave
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
-import io.kotest.shouldNotHave
-import io.kotest.shouldNotThrow
-import io.kotest.shouldThrow
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldHave
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.shouldNotHave
 import java.util.ArrayList
 import java.util.Comparator
 
@@ -289,6 +289,19 @@ class CollectionMatchersTest : WordSpec() {
       }
     }
 
+    "singleElement with predicate" should {
+      "test that a collection contains a single element by given predicate"  {
+        listOf(1) shouldHave singleElement { e -> e == 1}
+        listOf(1).shouldHaveSingleElement { e -> e == 1}
+        shouldThrow<AssertionError> {
+          listOf(1) shouldHave singleElement { e -> e == 2}
+        }
+        shouldThrow<AssertionError> {
+          listOf(2, 2) shouldHave singleElement { e -> e == 2 }
+        }
+      }
+    }
+
     "should contain element" should {
       "test that a collection contains an element"  {
         val col = listOf(1, 2, 3)
@@ -384,6 +397,25 @@ class CollectionMatchersTest : WordSpec() {
       "fail for collection with 2+ elements" {
         shouldThrow<AssertionError> { listOf(1, 2).shouldBeSingleton() }
         shouldThrow<AssertionError> { listOf(1, 2, 3, 4).shouldBeSingleton() }
+      }
+    }
+
+    "should be singleton with block" should {
+      "pass for collection with a single element" {
+        listOf(1).shouldBeSingleton { it shouldBe 1 }
+      }
+
+      "fail for collection with 0 elements" {
+        shouldThrow<AssertionError> { listOf<Int>().shouldBeSingleton { it shouldBe 1 } }
+      }
+
+      "fail for collection with a single incorrect elements" {
+        shouldThrow<AssertionError> { listOf(2).shouldBeSingleton { it shouldBe 1 } }
+      }
+
+      "fail for collection with 2+ elements" {
+        shouldThrow<AssertionError> { listOf(1, 2).shouldBeSingleton { it shouldBe 1} }
+        shouldThrow<AssertionError> { listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1} }
       }
     }
 

@@ -28,13 +28,6 @@ This page lists all current matchers in the KotlinTest arrow matchers extension 
 | `nel.shouldBeSingleElement(e)` | Asserts that the NonEmptyList has a single element which is e |
 | `nel.shouldBeSorted()` | Asserts that the NonEmptyList is sorted |
 
-| Try | |
-| -------- | ---- |
-| `try.shouldBeSuccess()` | Asserts that the try is of type Success |
-| `try.shouldBeSuccess(v)` | Asserts that the try is of type Success with specified value v |
-| `try.shouldBeFailure()` | Asserts that the try is of type Failure |
-| `try.shouldBeFailureOfType<A : Throwable>()` | Asserts that the try is of type Failure with a specified exception type A |
-
 | Validated | |
 | -------- | ---- |
 | `validated.shouldBeValid()` | Asserts that the validated is of type Valid |

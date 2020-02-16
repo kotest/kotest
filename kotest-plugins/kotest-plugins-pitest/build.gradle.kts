@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -12,20 +12,9 @@ kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
-            }
-         }
-      }
-      js {
-         val main by compilations.getting {
+         compilations.all {
             kotlinOptions {
-               moduleKind = "commonjs"
+               jvmTarget = "1.8"
             }
          }
       }
@@ -34,7 +23,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -46,8 +35,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
-            implementation("org.pitest:pitest:1.4.5")
+            implementation("org.pitest:pitest:1.4.11")
          }
       }
 
@@ -60,19 +48,22 @@ kotlin {
    }
 }
 
-tasks {
-   test {
-      useJUnitPlatform()
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-         )
-         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.named<Test>("test") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

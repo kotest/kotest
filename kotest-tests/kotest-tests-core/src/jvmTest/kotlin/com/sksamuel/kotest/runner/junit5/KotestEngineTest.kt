@@ -2,7 +2,7 @@ package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit5.KotestJunitPlatformTestEngine
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import org.junit.platform.engine.FilterResult
 import org.junit.platform.engine.UniqueId

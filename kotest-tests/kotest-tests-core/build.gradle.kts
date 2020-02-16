@@ -5,6 +5,7 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -26,7 +27,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -38,11 +39,9 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
             // we use the internals of the JVM project in the tests
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
-            implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.12.1")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")
             implementation(Libs.JUnitPlatform.engine)
@@ -58,6 +57,9 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
@@ -66,4 +68,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../nopublish.gradle")

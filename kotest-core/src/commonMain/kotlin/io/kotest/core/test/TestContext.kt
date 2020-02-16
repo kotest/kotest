@@ -1,9 +1,8 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
-import io.kotest.core.SpecClass
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.KotestDsl
 import kotlinx.coroutines.CoroutineScope
 
@@ -30,20 +29,6 @@ abstract class TestContext : CoroutineScope {
    abstract val testCase: TestCase
 
    /**
-    * Creates a new [TestCase] and then notifies the test runner of this nested test.
-    */
-   @Deprecated("to be removed once all specs moved to spec config")
-   suspend fun registerTestCase(
-      name: String,
-      spec: SpecClass,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ) {
-      TODO()
-   }
-
-   /**
     * Creates a [NestedTest] and then registers with the [TestContext].
     */
    suspend fun registerTestCase(
@@ -59,7 +44,7 @@ abstract class TestContext : CoroutineScope {
    /**
     * Notifies the test runner about a test in a nested scope.
     */
-   abstract suspend fun registerTestCase(test: NestedTest)
+   abstract suspend fun registerTestCase(nested: NestedTest)
 }
 
 data class NestedTest(
@@ -70,7 +55,7 @@ data class NestedTest(
    val sourceRef: SourceRef
 )
 
-fun NestedTest.toTestCase(spec: SpecConfiguration, parent: Description): TestCase {
+fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
    return TestCase(
       parent.append(this.name),
       spec,

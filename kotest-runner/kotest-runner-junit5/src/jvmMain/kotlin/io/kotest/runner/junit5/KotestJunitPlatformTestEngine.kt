@@ -1,10 +1,11 @@
 package io.kotest.runner.junit5
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
-import io.kotest.runner.jvm.IsolationTestEngineListener
-import io.kotest.runner.jvm.KotestEngine
-import io.kotest.runner.jvm.TestDiscovery
+import io.kotest.core.spec.Spec
+import io.kotest.core.engine.IsolationTestEngineListener
+import io.kotest.core.engine.KotestEngine
+import io.kotest.core.engine.TestDiscovery
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -12,15 +13,12 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
-import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
 /**
  * A Kotest implementation of the Junit Platform [TestEngine].
  */
 class KotestJunitPlatformTestEngine : TestEngine {
-
-   private val logger = LoggerFactory.getLogger(this.javaClass)
 
    companion object {
       const val EngineId = "kotest"
@@ -29,13 +27,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun getId(): String = EngineId
 
    override fun execute(request: ExecutionRequest) {
-      logger.debug("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
+      log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       val listener = IsolationTestEngineListener(
-         JUnitTestEngineListener(
-            SynchronizedEngineExecutionListener(request.engineExecutionListener),
-            root
-         )
+          JUnitTestEngineListener(
+              SynchronizedEngineExecutionListener(request.engineExecutionListener),
+              root
+          )
       )
       val runner = KotestEngine(
          root.classes,
@@ -52,8 +50,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId
    ): KotestEngineDescriptor {
-      logger.debug("uniqueId=$uniqueId")
-      logger.debug(request.string())
+      log("uniqueId=$uniqueId")
+      log(request.string())
 
       val postFilters = request.postFilters()
 
@@ -74,7 +72,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
 class KotestEngineDescriptor(
    id: UniqueId,
-   val classes: List<KClass<out SpecConfiguration>>
+   val classes: List<KClass<out Spec>>
 ) : EngineDescriptor(id, "Kotest") {
    override fun mayRegisterTests(): Boolean = true
 }

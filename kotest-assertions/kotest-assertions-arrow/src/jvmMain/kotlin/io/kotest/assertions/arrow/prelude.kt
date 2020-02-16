@@ -2,8 +2,8 @@ package io.kotest.assertions.arrow
 
 import arrow.Kind
 import arrow.typeclasses.ApplicativeError
-import io.kotest.Matcher
-import io.kotest.MatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import kotlin.random.Random
 
 internal fun <A> matcher(

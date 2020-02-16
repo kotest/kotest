@@ -8,6 +8,8 @@
 *.war
 *.ear
 
+.allure
+
 *.iml
 .idea
 
@@ -32,3 +34,4 @@ kotest-tests-core.log
 
 local.properties
 .kotest
+/kotest-examples/kotest-examples-javascript/node_modules/

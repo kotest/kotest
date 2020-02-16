@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.expect
 
 import io.kotest.core.spec.style.ExpectSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class ExpectSpecLambdaTest : ExpectSpec({
 

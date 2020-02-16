@@ -4,7 +4,7 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -20,13 +20,13 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
 }
 
 class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestCaseConfig ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
 }
 
-abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : SpecConfiguration(), FeatureSpecDsl {
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : Spec(), FeatureSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
-      defaultTestCaseConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
 

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.types
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.beOfType
@@ -7,6 +8,9 @@ import io.kotest.matchers.beTheSameInstanceAs
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.types.haveAnnotation
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -14,10 +18,6 @@ import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.types.shouldHaveAnnotation
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeTypeOf
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldThrow
 import java.util.ArrayList
 import java.util.LinkedList
 

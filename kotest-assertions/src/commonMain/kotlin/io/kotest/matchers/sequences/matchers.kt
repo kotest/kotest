@@ -1,11 +1,6 @@
 package io.kotest.matchers.sequences
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldHave
-import io.kotest.shouldNot
+import io.kotest.matchers.*
 
 private fun <T> Sequence<T>.toString(limit: Int = 10) = this.joinToString(", ", limit = limit)
 

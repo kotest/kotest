@@ -1,7 +1,8 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -23,13 +24,12 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
 
    sourceSets {
-
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-assertions"))
@@ -38,7 +38,6 @@ kotlin {
             implementation(Libs.Arrow.syntax)
          }
       }
-
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
@@ -50,16 +49,15 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
-
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

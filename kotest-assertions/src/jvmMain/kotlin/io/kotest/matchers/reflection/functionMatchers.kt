@@ -1,9 +1,9 @@
 package io.kotest.matchers.reflection
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
@@ -14,7 +14,7 @@ infix fun KFunction<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot hav
 fun haveFunctionAnnotations(count: Int = -1) = object : Matcher<KFunction<*>> {
   override fun test(value: KFunction<*>) = if (count < 0) {
     MatcherResult(
-        value.annotations.size > 0,
+       value.annotations.isNotEmpty(),
         "Function $value should have annotations",
         "Function $value should not have annotations"
     )

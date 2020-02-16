@@ -8,10 +8,8 @@ import io.konform.validation.jsonschema.minimum
 import io.kotest.assertions.konform.shouldBeInvalid
 import io.kotest.assertions.konform.shouldBeValid
 import io.kotest.assertions.konform.shouldContainError
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.shouldThrow
 import java.lang.AssertionError
 
 class ValidatedMatchersTest : StringSpec({

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.SpecClass
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 
@@ -8,7 +8,7 @@ class FocusTest : WordSpec() {
 
   private var focus = false
 
-  override fun afterSpec(spec: SpecClass) {
+  override fun afterSpec(spec: Spec) {
     focus.shouldBeTrue()
   }
 

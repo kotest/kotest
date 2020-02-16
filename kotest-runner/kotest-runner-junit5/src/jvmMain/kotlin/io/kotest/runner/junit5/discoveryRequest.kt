@@ -1,7 +1,7 @@
 package io.kotest.runner.junit5
 
-import io.kotest.runner.jvm.DiscoveryFilter
-import io.kotest.runner.jvm.DiscoveryRequest
+import io.kotest.core.engine.DiscoveryFilter
+import io.kotest.core.engine.DiscoveryRequest
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.discovery.ClassNameFilter
 import org.junit.platform.engine.discovery.ClassSelector
@@ -65,5 +65,6 @@ internal fun discoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest
       request.getSelectorsByType(DirectorySelector::class.java).map { it.path.toUri() } +
       request.getSelectorsByType(UriSelector::class.java).map { it.uri }
 
-   return DiscoveryRequest(uris, classnames, filters)
+   val allowInternal = request.configurationParameters.get("allow_internal").isPresent
+   return DiscoveryRequest(uris, classnames, filters, allowInternal)
 }

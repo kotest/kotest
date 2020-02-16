@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.autoscan
 
-import io.kotest.core.extensions.ProjectListener
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.AutoScan
 
 object Container {

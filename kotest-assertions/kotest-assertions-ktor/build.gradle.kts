@@ -2,6 +2,7 @@ plugins {
    id("java")
    id("kotlin-multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -49,6 +50,9 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      setFailOnNoMatchingTests(false)
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
@@ -57,4 +61,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

@@ -2,8 +2,8 @@ package io.kotest.extensions.system
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.ProjectListener
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 
 /**
  * Replaces System Security Manager with [securityManager]

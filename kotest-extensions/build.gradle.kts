@@ -34,8 +34,7 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
             implementation("commons-io:commons-io:2.6")
-            implementation("io.mockk:mockk:1.9.3")
-
+            implementation(Libs.Mocking.mockk)
          }
       }
 
@@ -43,12 +42,10 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
+            implementation(Libs.Coroutines.core)
             implementation("org.mockito:mockito-core:2.24.0")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
-            implementation("io.mockk:mockk:1.9.3")
-            implementation("log4j:log4j:1.2.17")
-            implementation("org.slf4j:slf4j-log4j12:1.7.25")
+            implementation(Libs.Mocking.mockk)
          }
       }
    }
@@ -56,6 +53,9 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
@@ -64,4 +64,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish-mpp.gradle.kts")

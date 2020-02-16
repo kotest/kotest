@@ -2,11 +2,6 @@
 
 package io.kotest.matchers
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
-
 fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
 fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)
 

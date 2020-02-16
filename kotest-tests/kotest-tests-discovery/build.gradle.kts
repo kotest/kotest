@@ -35,13 +35,12 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
          }
       }
    }
@@ -49,6 +48,9 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
@@ -57,4 +59,3 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")

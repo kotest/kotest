@@ -3,8 +3,9 @@ package io.kotest.core.extensions
 import io.kotest.core.StringTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
-import io.kotest.core.sysprop
 import io.kotest.fp.getOrElse
+import io.kotest.fp.toOption
+import io.kotest.mpp.sysprop
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties
@@ -17,7 +18,7 @@ object SystemPropertyTagExtension : TagExtension {
    override fun tags(): Tags {
 
       fun readTagsProperty(name: String): List<Tag> =
-         sysprop(name).getOrElse("").split(',').filter { it.isNotBlank() }.map {
+         sysprop(name).toOption().getOrElse("").split(',').filter { it.isNotBlank() }.map {
             StringTag(
                it.trim()
             )

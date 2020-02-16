@@ -1,15 +1,15 @@
 package io.kotest.matchers.longs
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.matchers.comparables.gt
 import io.kotest.matchers.comparables.gte
 import io.kotest.matchers.comparables.lt
 import io.kotest.matchers.comparables.lte
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 
 fun Long.shouldBePositive() = this shouldBe positiveL()
 fun positiveL() = object : Matcher<Long> {

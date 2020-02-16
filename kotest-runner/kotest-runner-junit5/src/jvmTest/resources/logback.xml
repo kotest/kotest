@@ -5,7 +5,7 @@
       </encoder>
    </appender>
 
-   <logger name="io.kotest" level="TRACE" />
+   <logger name="io.kotest" level="DEBUG" />
 
    <root level="INFO">
       <appender-ref ref="STDOUT" />

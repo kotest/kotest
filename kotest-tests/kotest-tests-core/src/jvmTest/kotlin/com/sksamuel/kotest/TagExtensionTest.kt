@@ -1,6 +1,5 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.SpecClass
 import io.kotest.core.Tag
 import io.kotest.core.Tags
 import io.kotest.core.config.Project
@@ -8,40 +7,47 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.core.extensions.TagExtension
-import io.kotest.shouldBe
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
+import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
+import kotlin.reflect.KClass
 
 class TagExtensionTest : StringSpec() {
 
-  object TagA : Tag()
-  object TagB : Tag()
+   object TagA : Tag()
+   object TagB : Tag()
 
-  private val ext = object : TagExtension {
-    override fun tags(): Tags =
-        Tags(setOf(TagA), setOf(TagB))
-  }
+   private val ext = object : TagExtension {
+      override fun tags(): Tags =
+         Tags(setOf(TagA), setOf(TagB))
+   }
 
-  override fun afterSpecClass(spec: SpecClass, results: Map<TestCase, TestResult>) {
-    results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
-        "should be tagged with tagA and therefore included" to TestStatus.Success,
-        "should be untagged and therefore excluded" to TestStatus.Ignored,
-        "should be tagged with tagB and therefore excluded" to TestStatus.Ignored
-    )
-  }
 
-  override fun beforeSpec(spec: SpecClass) {
-     Project.registerExtension(ext)
-  }
+   override fun beforeSpec(spec: Spec) {
+      Project.registerExtension(ext)
+   }
 
-  override fun afterSpec(spec: SpecClass) {
-    Project.deregisterExtension(ext)
-  }
+   override fun afterSpec(spec: Spec) {
+      Project.deregisterExtension(ext)
+   }
 
-  init {
-    "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
+   init {
 
-    "should be untagged and therefore excluded" { }
+      listener(object : TestListener {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+            results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
+               "should be tagged with tagA and therefore included" to TestStatus.Success,
+               "should be untagged and therefore excluded" to TestStatus.Ignored,
+               "should be tagged with tagB and therefore excluded" to TestStatus.Ignored
+            )
+         }
+      })
 
-    "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
-  }
+      "should be tagged with tagA and therefore included".config(tags = setOf(TagA)) { }
+
+      "should be untagged and therefore excluded" { }
+
+      "should be tagged with tagB and therefore excluded".config(tags = setOf(TagB)) { }
+   }
 }

@@ -1,9 +1,11 @@
 package io.kotest.matchers.reflection
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter

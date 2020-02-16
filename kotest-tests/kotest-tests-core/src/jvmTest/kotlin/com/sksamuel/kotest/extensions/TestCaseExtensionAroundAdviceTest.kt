@@ -2,9 +2,9 @@ package com.sksamuel.kotest.extensions
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.SpecLevelExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestStatus
 import java.lang.AssertionError
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -14,27 +14,22 @@ import kotlin.time.ExperimentalTime
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
    object MyExt : TestCaseExtension {
-      override suspend fun intercept(
-         testCase: TestCase,
-         execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-         complete: suspend (TestResult) -> Unit
-      ) {
-         when (testCase.description.name) {
-            "test1" -> complete(TestResult.Ignored)
-            "test2" -> execute(testCase) {
-               when (it.error) {
-                  is RuntimeException -> complete(TestResult.success(Duration.ZERO))
-                  else -> complete(TestResult.failure(AssertionError("boom"), Duration.ZERO))
+      override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+         return when (testCase.description.name) {
+            "test1" -> TestResult.Ignored
+            "test2" ->
+               when (execute(testCase).status) {
+                  TestStatus.Error -> TestResult.success(Duration.ZERO)
+                  else -> TestResult.throwable(AssertionError("boom"), Duration.ZERO)
                }
-            }
-            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase) { complete(it) }
-            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false))) { complete(it) }
-            else -> execute(testCase) { complete(it) }
+            "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
+            "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))
+            else -> execute(testCase)
          }
       }
    }
 
-   override fun extensions(): List<SpecLevelExtension> = listOf(MyExt)
+   override fun extensions() = listOf(MyExt)
 
    init {
       // this exception should not be thrown as the extension will skip evaluation of the test

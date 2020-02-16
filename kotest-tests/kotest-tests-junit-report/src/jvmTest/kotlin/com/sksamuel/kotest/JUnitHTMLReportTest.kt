@@ -3,15 +3,12 @@ package com.sksamuel.kotest
 import io.kotest.Tag
 import io.kotest.matchers.string.shouldContain
 import io.kotest.specs.WordSpec
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 
 class JUnitHTMLReportTest : WordSpec() {
 
-  private val logger = LoggerFactory.getLogger(this.javaClass)
-
-  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag)
+  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag, GithubActionsTag)
 
   fun indexHtml(): String {
     val ReportPath = "kotest-tests/kotest-tests-core/build/reports/tests/test/index.html"

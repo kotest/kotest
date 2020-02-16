@@ -5,8 +5,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.extensions.system.SecurityManagerTestListener
 import io.kotest.extensions.system.withSecurityManager
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.shouldBe
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import java.security.Permission
 
 class SecurityManagerExtensionFunctionTests : StringSpec() {

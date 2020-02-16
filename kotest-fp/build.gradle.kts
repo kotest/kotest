@@ -25,12 +25,17 @@ kotlin {
             }
          }
       }
+      when {
+         Ci.os.isMacOsX -> macosX64("native")
+         Ci.os.isWindows -> mingwX64("native")
+         else -> linuxX64("native")
+      }
    }
 
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -56,7 +61,11 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
          }
       }
+
+      val nativeMain by getting {
+         dependsOn(commonMain)
+      }
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish-mpp.gradle.kts")

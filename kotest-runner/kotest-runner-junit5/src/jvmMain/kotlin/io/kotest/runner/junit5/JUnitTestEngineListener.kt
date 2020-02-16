@@ -1,17 +1,14 @@
 package io.kotest.runner.junit5
 
+import io.kotest.assertions.log
 import io.kotest.core.config.Project
-import io.kotest.core.spec.SpecConfiguration
+import io.kotest.core.internal.writeSpecFailures
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
-import io.kotest.fp.Try
-import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.core.engine.TestEngineListener
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
-import org.slf4j.LoggerFactory
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import kotlin.reflect.KClass
 
 /**
@@ -65,8 +62,6 @@ class JUnitTestEngineListener(
    val root: EngineDescriptor
 ) : TestEngineListener {
 
-   private val logger = LoggerFactory.getLogger(this.javaClass)
-
    // contains a mapping of a Description to a junit TestDescription, so we can look up the parent
    // when we need to register a new test
    private val descriptors = mutableMapOf<Description, TestDescriptor>()
@@ -75,12 +70,12 @@ class JUnitTestEngineListener(
    private val results = mutableListOf<Pair<Description, TestResult>>()
 
    // contains any spec that failed so we can write out the failed specs file
-   private val failedSpecs = mutableSetOf<KClass<out SpecConfiguration>>()
+   private val failedSpecs = mutableSetOf<KClass<out Spec>>()
 
    private var specException: Throwable? = null
 
-   override fun engineStarted(classes: List<KClass<out SpecConfiguration>>) {
-      logger.trace("Engine started; classes=[$classes]")
+   override fun engineStarted(classes: List<KClass<out Spec>>) {
+      log("Engine started; classes=[$classes]")
       listener.executionStarted(root)
    }
 
@@ -90,10 +85,10 @@ class JUnitTestEngineListener(
    private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
 
    override fun engineFinished(t: Throwable?) {
-      logger.trace("Engine finished; throwable=[$t]")
+      log("Engine finished; throwable=[$t]")
 
       if (Project.writeSpecFailureFile())
-         writeSpecFailures(failedSpecs)
+         writeSpecFailures(failedSpecs, Project.specFailureFilePath())
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
@@ -102,44 +97,42 @@ class JUnitTestEngineListener(
          else -> TestExecutionResult.successful()
       }
 
-      logger.trace("Notifying junit that root descriptor completed $root")
+      log("Notifying junit that root descriptor completed $root")
       listener.executionFinished(root, result)
    }
 
-   private fun writeSpecFailures(failures: Set<KClass<out SpecConfiguration>>): Try<Any> = Try {
-      val dir = Paths.get(".kotest")
-      dir.toFile().mkdirs()
-      val path = dir.resolve("spec_failures").toAbsolutePath()
-      logger.trace("Writing report to $path")
-      val content = failures.distinct().joinToString("\n") { it.java.canonicalName }
-      Files.write(path, content.toByteArray())
-   }
-
-   override fun specStarted(kclass: KClass<out SpecConfiguration>) {
-      logger.trace("specStarted [${kclass.qualifiedName}]")
+   override fun specStarted(kclass: KClass<out Spec>) {
+      log("specStarted [${kclass.qualifiedName}]")
       try {
-         val descriptor = createSpecDescriptor(kclass)
-         logger.trace("Registering junit dynamic test: $descriptor")
+         val descriptor = kclass.descriptor(root)
+         descriptors[kclass.description()] = descriptor
+
+         log("Registering junit dynamic test and notifiying start: $descriptor")
          listener.dynamicTestRegistered(descriptor)
-         logger.trace("Notifying junit that execution has started: $descriptor")
          listener.executionStarted(descriptor)
       } catch (t: Throwable) {
-         logger.error("Error in JUnit Platform listener", t)
+         log("Error in JUnit Platform listener", t)
          specException = t
       }
    }
 
    override fun specFinished(
-      klass: KClass<out SpecConfiguration>,
+      kclass: KClass<out Spec>,
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) {
-      logger.trace("specFinished [$klass]")
+      log("specFinished [$kclass]")
 
-      val descriptor = descriptors[klass.description()]
-         ?: throw RuntimeException("Error retrieving description for spec: ${klass.qualifiedName}")
+      val descriptor = descriptors[kclass.description()]
+         ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
 
-      val nestedFailure = findChildFailure(klass.description())
+      // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
+      // this is because in gradle and intellij nested errors are not very obvious
+      val nestedFailure = findChildFailure(kclass.description())
+
+      (specException ?: t ?: nestedFailure?.error)?.apply {
+         checkSpecVisiblity(kclass, this)
+      }
 
       val result = when {
          t != null -> TestExecutionResult.failed(t)
@@ -148,10 +141,7 @@ class JUnitTestEngineListener(
          else -> TestExecutionResult.successful()
       }
 
-      logger.trace("Notifying junit that execution has finished: $descriptor, $result")
-      // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
-      // this is because in gradle and intellij nested errors are not very obvious
-      //ensureSpecVisible(klass)
+      log("Notifying junit that execution has finished: $descriptor, $result")
       listener.executionFinished(descriptor, result)
    }
 
@@ -159,25 +149,37 @@ class JUnitTestEngineListener(
     * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
     * failed test so that the spec shows up.
     */
-   override fun specInstantiationError(kclass: KClass<out SpecConfiguration>, t: Throwable) {
+   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
+      specException = t
+   }
+
+   /**
+    * Checks that the spec has at least one test attached in case of failure.
+    */
+   private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
       val description = kclass.description()
-      val spec = descriptors[description]!!
-      val test = spec.append(description.append("Spec instantiation failed"), TestDescriptor.Type.TEST, null)
       if (!isVisible(description)) {
+         val spec = descriptors[description]!!
+         val test =
+            spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null, Segments.test)
          listener.dynamicTestRegistered(test)
          listener.executionStarted(test)
          listener.executionFinished(test, TestExecutionResult.aborted(t))
       }
    }
 
+   /**
+    * Returns true if the given description is visible.
+    * That means it must have at least one non container test attached to it.
+    */
    private fun isVisible(description: Description) =
       results.any { description.isAncestorOf(it.first) }
 
    override fun testStarted(testCase: TestCase) {
       val descriptor = createTestDescriptor(testCase)
-      logger.trace("Registering junit dynamic test: $descriptor")
+      log("Registering junit dynamic test: $descriptor")
       listener.dynamicTestRegistered(descriptor)
-      logger.trace("Notifying junit that execution has started: $descriptor")
+      log("Notifying junit that execution has started: $descriptor")
       listener.executionStarted(descriptor)
    }
 
@@ -192,7 +194,7 @@ class JUnitTestEngineListener(
          else -> result
       }
 
-      logger.trace("Notifying junit that execution has finished: $descriptor")
+      log("Notifying junit that execution has finished: $descriptor")
       listener.executionFinished(descriptor, resultp.testExecutionResult())
    }
 
@@ -202,51 +204,16 @@ class JUnitTestEngineListener(
       listener.executionSkipped(descriptor, reason)
    }
 
-   /**
-    * Creates a new [TestDescriptor] appended to the receiver, adds it as a child of the receiver,
-    * and registers it with the descriptors set.
-    */
-   private fun TestDescriptor.append(
-      description: Description,
-      type: TestDescriptor.Type,
-      source: TestSource?
-   ): TestDescriptor {
-      val segment = if (description.isSpec()) "spec" else "test"
-      val descriptor =
-         object : AbstractTestDescriptor(this.uniqueId.append(segment, description.name), description.name, source) {
-            override fun getType(): TestDescriptor.Type = type
-            override fun mayRegisterTests(): Boolean = TestDescriptor.Type.CONTAINER_AND_TEST == type
-         }
-      this.addChild(descriptor)
-      descriptors[description] = descriptor
-      return descriptor
-   }
-
-   private fun createSpecDescriptor(klass: KClass<out SpecConfiguration>): TestDescriptor {
-      val source = ClassSource.from(klass.java)
-      return root.append(klass.description(), TestDescriptor.Type.CONTAINER_AND_TEST, source)
-   }
-
    private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
       val parent = descriptors[testCase.description.parent()]
       if (parent == null) {
          val msg = "Cannot find parent description for: ${testCase.description}"
-         logger.error(msg)
+         log(msg)
          error(msg)
       }
-
-      val source = FileSource.from(File(testCase.source.fileName), FilePosition.from(testCase.source.lineNumber))
-
-      // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
-      // see https://github.com/gradle/gradle/issues/4912
-      // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-      // update jan 2020: Seems we can use CONTAINER_AND_TEST now in intellij, and CONTAINER is invisible in output
-      val type = when (testCase.type) {
-         TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
-         TestType.Test -> TestDescriptor.Type.TEST
-      }
-
-      return parent.append(testCase.description, type, source)
+      val descriptor = parent.descriptor(testCase)
+      descriptors[testCase.description] = descriptor
+      return descriptor
    }
 
    /**
@@ -274,5 +241,3 @@ class JUnitTestEngineListener(
          .firstOrNull()
    }
 }
-
-fun UniqueId.appendSpec(description: Description) = this.append("spec", description.name)!!

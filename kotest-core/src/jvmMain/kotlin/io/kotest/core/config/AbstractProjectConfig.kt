@@ -1,21 +1,23 @@
 package io.kotest.core.config
 
+import io.kotest.core.extensions.Extension
+import io.kotest.core.filters.Filter
+import io.kotest.core.listeners.Listener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.extensions.ProjectLevelExtension
-import io.kotest.core.extensions.ProjectLevelFilter
-import io.kotest.core.extensions.ProjectListener
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 /**
  * Project-wide configuration. Extensions returned by an
- * instance of this class will be applied to all [SpecConfiguration] and [TestCase]s.
+ * instance of this class will be applied to all [Spec] and [TestCase]s.
  *
  * Create an object that is derived from this class, name the object `ProjectConfig`
  * and place it in your classpath in a package called `io.kotest.provided`.
@@ -29,24 +31,25 @@ import kotlin.time.ExperimentalTime
 abstract class AbstractProjectConfig {
 
    /**
-    * List of project wide extensions, ie instances of [ProjectLevelExtension]
+    * List of project wide [Extension] instances.
     */
-   open fun extensions(): List<ProjectLevelExtension> = emptyList()
+   open fun extensions(): List<Extension> = emptyList()
 
    /**
-    * List of project wide [TestListener] instances.
+    * List of project wide [Listener] instances.
     */
-   open fun listeners(): List<TestListener> = emptyList()
+   open fun listeners(): List<Listener> = emptyList()
 
    /**
     * List of project wide [ProjectListener] instances.
     */
+   @Deprecated("Override listeners() which now supports all type of listeners")
    open fun projectListeners(): List<ProjectListener> = emptyList()
 
    /**
-    * List of project wide [TestCaseFilter] instances.
+    * List of project wide [Filter] instances.
     */
-   open fun filters(): List<ProjectLevelFilter> = emptyList()
+   open fun filters(): List<Filter> = emptyList()
 
    /**
     * Override this function and return an instance of [SpecExecutionOrder] which will
@@ -60,6 +63,9 @@ abstract class AbstractProjectConfig {
    @Deprecated("use the val version")
    open fun specExecutionOrder(): SpecExecutionOrder? = null
 
+   /**
+    * Note: This has no effect on non-JVM targets.
+    */
    open val specExecutionOrder: SpecExecutionOrder? = null
 
    /**
@@ -101,12 +107,12 @@ abstract class AbstractProjectConfig {
    @Deprecated("use the val version")
    open fun writeSpecFailureFile(): Boolean = false
 
-   open val writeSpecFailureFile: Boolean = false
+   open val writeSpecFailureFile: Boolean? = null
 
    /**
     * Sets the order of top level tests in a spec.
-    * The value set here will be used unless overriden in a [SpecClass].
-    * The value in a [SpecClass] is always taken in preference to the value here.
+    * The value set here will be used unless overriden in a [Spec].
+    * The value in a [Spec] is always taken in preference to the value here.
     * Nested tests will always be executed in discovery order.
     *
     * If this function returns null then the default of Sequential
@@ -121,7 +127,18 @@ abstract class AbstractProjectConfig {
     * Override this value and set it to true if you want all tests to behave as if they
     * were operating in an [assertSoftly] block.
     */
-   open val globalAssertSoftly: Boolean = false
+   open val globalAssertSoftly: Boolean? = null
+
+   /**
+    * Override this value and set it to false if you want to disable autoscanning of extensions
+    * and listeners.
+    */
+   open val autoScanEnabled: Boolean? = null
+
+   /**
+    * Override this value with a list of classes for which @autoscan is disabled.
+    */
+   open val autoScanIgnoredClasses: List<KClass<*>> = emptyList()
 
    /**
     * Override this value and set it to true if you want the build to be marked as failed
@@ -131,7 +148,7 @@ abstract class AbstractProjectConfig {
 
    /**
     * Override this value to set a global [AssertionMode].
-    * If a [SpecClass] sets an assertion mode, then the spec will override.
+    * If a [Spec] sets an assertion mode, then the spec will override.
     */
    open val assertionMode: AssertionMode? = null
 
@@ -153,4 +170,3 @@ abstract class AbstractProjectConfig {
     */
    open fun afterAll() {}
 }
-

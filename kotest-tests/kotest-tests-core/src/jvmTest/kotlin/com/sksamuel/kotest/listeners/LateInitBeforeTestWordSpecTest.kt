@@ -2,7 +2,7 @@ package com.sksamuel.kotest.listeners
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class LateInitBeforeTestWordSpecTest : WordSpec() {
 

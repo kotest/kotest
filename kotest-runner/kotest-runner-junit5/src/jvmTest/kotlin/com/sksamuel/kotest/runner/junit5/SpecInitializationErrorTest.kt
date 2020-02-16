@@ -3,8 +3,8 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.runner.junit5.JUnitTestEngineListener
 import io.kotest.runner.junit5.KotestEngineDescriptor
-import io.kotest.runner.jvm.spec.SpecExecutor
-import io.kotest.shouldBe
+import io.kotest.core.engine.SpecExecutor
+import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -13,7 +13,7 @@ import org.junit.platform.engine.reporting.ReportEntry
 
 class SpecInitializationErrorTest : FunSpec({
 
-   test("an error in a class field should mark spec as failed") {
+   test("an error in a class field should fail spec") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
@@ -34,12 +34,12 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(SpecWithFieldError::class)
 
       finished.toMap() shouldBe mapOf(
-         "Spec instantiation failed" to TestExecutionResult.Status.ABORTED,
+         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithFieldError" to TestExecutionResult.Status.FAILED
       )
    }
 
-   test("an error in a class initializer should mark spec as failed") {
+   test("an error in a class initializer should fail spec") {
 
       val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
       val finished = mutableMapOf<String, TestExecutionResult.Status>()
@@ -60,13 +60,13 @@ class SpecInitializationErrorTest : FunSpec({
       executor.execute(SpecWithInitError::class)
 
       finished.toMap() shouldBe mapOf(
-         "Spec instantiation failed" to TestExecutionResult.Status.ABORTED,
+         "Spec execution failed" to TestExecutionResult.Status.ABORTED,
          "com.sksamuel.kotest.runner.junit5.SpecWithInitError" to TestExecutionResult.Status.FAILED
       )
    }
 })
 
-private class SpecWithFieldError : FunSpec() {
+internal class SpecWithFieldError : FunSpec() {
    private val err = "failme".apply { error("foo") }
 
    init {
@@ -75,7 +75,7 @@ private class SpecWithFieldError : FunSpec() {
    }
 }
 
-private class SpecWithInitError : FunSpec() {
+internal class SpecWithInitError : FunSpec() {
    init {
       error("foo")
       test("foo") {

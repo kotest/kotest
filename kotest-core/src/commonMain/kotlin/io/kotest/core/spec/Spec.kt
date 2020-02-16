@@ -1,96 +1,67 @@
 package io.kotest.core.spec
 
+import io.kotest.core.config.Project
+import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.generate
+import io.kotest.core.listeners.RootTest
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.TestListener
-import io.kotest.core.extensions.RootTest
-import io.kotest.core.extensions.SpecLevelExtension
-import io.kotest.fp.Tuple2
-
-///**
-// * A [Spec] is the unit of execution in Kotest. It contains one or more
-// * [TestCase]s which are executed individually.  All tests in a spec must
-// * pass for the spec itself to be considered passing.
-// *
-// * Tests can either be root level, or nested inside other tests, depending
-// * on the style of spec in use.
-// *
-// * Specs also contain [TestListener]s and [SpecLevelExtension]s which are used
-// * to hook into the test lifecycle and interface with the test engine.
-// *
-// * A spec can define an [IsolationMode] used to control the instantiation of
-// * classes for test cases in that spec.
-// *
-// * A spec can define the [TestCaseOrder] which controls the ordering of the
-// * execution of root level tests in that spec.
-// */
-//data class Spec(
-//   val rootTests: List<RootTest>,
-//   val listeners: List<TestListener>,
-//   val extensions: List<SpecLevelExtension>,
-//   val isolationMode: IsolationMode?,
-//   val testCaseOrder: TestCaseOrder?
-//)
 
 /**
- * Returns the resolved listeners for a given [SpecConfiguration].
+ * Returns the resolved listeners for a given [Spec].
  * That is, the listeners defined directly on the spec, listeners generated from the
- * callback-dsl methods, and listeners defined in any included [TestFactory]s.
+ * callback-dsl methods, and listeners defined in any included test factories.
  */
-fun SpecConfiguration.resolvedListeners(): List<TestListener> {
-
-   // listeners from the spec callbacks need to be wrapped into a TestListener
+fun Spec.resolvedTestListeners(): List<TestListener> {
    val callbacks = object : TestListener {
-      override suspend fun beforeTest(testCase: TestCase) {
-         this@resolvedListeners.beforeTests.forEach { it(testCase) }
-         this@resolvedListeners.beforeTest(testCase)
+      override suspend fun afterSpec(spec: Spec) {
+         this@resolvedTestListeners.afterSpec(spec)
       }
 
       override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-         this@resolvedListeners.afterTests.forEach { it(Tuple2(testCase, result)) }
-         this@resolvedListeners.afterTest(testCase, result)
+         this@resolvedTestListeners.afterTest(testCase, result)
       }
 
-      override fun afterSpec(spec: SpecConfiguration) {
-         this@resolvedListeners.afterSpecs.forEach { it() }
-         this@resolvedListeners.afterSpec(spec)
+      override suspend fun beforeTest(testCase: TestCase) {
+         this@resolvedTestListeners.beforeTest(testCase)
       }
 
-      override fun beforeSpec(spec: SpecConfiguration) {
-         this@resolvedListeners.beforeSpecs.forEach { it() }
-         this@resolvedListeners.beforeSpec(spec)
+      override suspend fun beforeSpec(spec: Spec) {
+         this@resolvedTestListeners.beforeSpec(spec)
       }
    }
-
-   return this.listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
+   return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }
 }
 
-fun SpecConfiguration.resolvedExtensions():List<SpecLevelExtension> {
-   return this.extensions + this.extensions()
+fun Spec.resolvedExtensions(): List<Extension> {
+   return this._extensions + this.extensions() + factories.flatMap { it.extensions }
 }
 
-fun SpecConfiguration.resolvedTestCaseOrder() =
-   this.testOrder ?: this.testCaseOrder() ?: TestCaseOrder.Sequential
+fun Spec.resolvedTestCaseOrder() =
+   this.testOrder ?: this.testCaseOrder() ?: Project.testCaseOrder()
 
-fun SpecConfiguration.resolvedIsolationMode() =
-   this.isolation ?: this.isolationMode() ?: IsolationMode.InstancePerLeaf
+fun Spec.resolvedIsolationMode() =
+   this.isolation ?: this.isolationMode() ?: Project.isolationMode()
 
-fun SpecConfiguration.materializeRootTests(): List<RootTest> {
+/**
+ * Returns the root tests from this Spec and any included factories.
+ * The returned list will be ordered according to the [TestCaseOrder] returned by
+ * project config, or if not defined, the kotest default.
+ */
+fun Spec.materializeRootTests(): List<RootTest> {
 
    val order = resolvedTestCaseOrder()
-   val allTests = this.rootTestCases + factories
-      .flatMap { it.generate(this::class.description(), this) }
-
    // materialize the tests in the factories at this time
-   // and apply the configuration from the spec config
-   // then order by the test case order
+   val allTests = this.rootTestCases + factories.flatMap { it.generate(this::class.description(), this) }
+
+   // apply the configuration from this spec to each resolved test
    return allTests
       .map {
          it.copy(
-            assertionMode = it.assertionMode ?: this.assertionMode ?: this.assertionMode(),
-            config = it.config.copy(tags = it.config.tags + this.tags + this.tags())
+            assertionMode = it.assertionMode ?: this.assertions ?: this.assertionMode(),
+            config = it.config.copy(tags = it.config.tags + this._tags + this.tags())
          )
       }
       .ordered(order)

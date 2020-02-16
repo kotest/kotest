@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.matchers.regex
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.regex.*
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
+import io.kotest.matchers.shouldBe
 import kotlin.text.RegexOption.*
 
 class RegexMatchersTest : FreeSpec() {

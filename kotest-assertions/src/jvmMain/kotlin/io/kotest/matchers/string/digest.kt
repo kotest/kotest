@@ -1,11 +1,7 @@
 package io.kotest.matchers.string
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.show.convertValueToString
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.*
 import java.math.BigInteger
 import java.security.MessageDigest
 

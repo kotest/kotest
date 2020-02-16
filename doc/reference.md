@@ -1,20 +1,33 @@
-KotlinTest
+Kotest
 ==========
 
-[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest) [![GitHub license](https://img.shields.io/github/license/kotest/kotest.svg)]()
 
-This version of the document is for version 3.3+.
-For previous versions see [here](reference_3.2.md)
+This version of the document is for the upcoming 4.0 release.
+For previous versions see [here](reference_3.3.md)
+
+**Note:** Release 4.0 is currently early beta and things may still change. Version 3.4.2 is the most recent stable release.
+
+Project Rename!
+------
+
+Starting with release 4.0 **KotlinTest** was renamed to **Kotest** to avoid confusion with the Jetbrains provided `kotlin.test` package.
+
+**Note:** All packages are now `io.kotest` instead of `io.kotlintest`. Similarly the modules released to maven are in the form `kotest-xyz`.
+There is an upgrade cost. Please be prepared when you upgrade that you will need to do more work than updating the versions in your build file.
+
+There are typealiases for most of the common classes and functions
+so that existing imports will continue to work albeit with deprecation warnings. For lesser used functionality, you will need to update the imports.
 
 How to use
 ----------
 
-KotlinTest is published to Maven Central so you can get the latest version from the little badge at the top of the readme.
+Kotest is published to Maven Central so you can get the latest version from the little badge at the top of the readme.
 
 #### Gradle
 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
- as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the KotlinTest dependency.
+ as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the Kotest dependency.
 
 
 <details open>
@@ -26,7 +39,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
+  testImplementation 'io.kotest:kotest-runner-junit5:<version>'
 }
 ```
 
@@ -44,7 +57,7 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.2'
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>'
 }
 ```
 
@@ -61,7 +74,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+  testImplementation("io.kotest:kotest-runner-junit5:<version>")
 }
 ```
 
@@ -80,13 +93,13 @@ For maven you must configure the surefire plugin for junit tests.
 </plugin>
 ```
 
-And then add the KotlinTest JUnit5 runner to your build.
+And then add the Kotest JUnit5 runner to your build.
 
 ```xml
 <dependency>
-    <groupId>io.kotlintest</groupId>
-    <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.3.0</version>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-runner-junit5</artifactId>
+    <version><version></version>
     <scope>test</scope>
 </dependency>
 ```
@@ -103,7 +116,7 @@ And then add the KotlinTest JUnit5 runner to your build.
 Testing Styles
 --------------
 
-KotlinTest is permissive in the way you can lay out tests, which it calls a testing _style_.
+Kotest is permissive in the way you can lay out tests, which it calls a testing _style_.
 There are [several styles](styles.md) to pick from. There is no functional difference between these -
  it is simply a matter of preference how you structure your tests. It is common to see several styles in one project.
 
@@ -128,8 +141,7 @@ class MyTests : StringSpec() {
 }
 ```
 
-Using the lambda expression avoids another level of indentation and looks neater,
- but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
+Using the lambda expression avoids another level of indentation but it is purely a matter of preference.
 
 All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
 
@@ -146,12 +158,11 @@ Note: Test cases inside each spec will always run in a certain order (either in 
 
 
 
-
 Matchers and Assertions
 --------
 
 Matchers are used to assert a variable or function should have a particular value.
-KotlinTest has over 100 built in matchers. Matchers can be used in two styles:
+Kotest has over 100 built in matchers. Matchers can be used in two styles:
 
 * Extension functions like `a.shouldBe(b)` or `a.shouldStartWith("foo")`
 * Infix functions like `a shouldBe b` or `a should startWith("foo")`
@@ -162,8 +173,8 @@ but some people may prefer the infix style as it is slightly cleaner.
 Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
 For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
 
-Matchers are available in the `kotlintest-assertions` module, which is usually added to the build
-when you add a KotlinTest test runner to your build (eg, `kotlintest-runner-junit5`). Of course, you could always add
+Matchers are available in the `kotest-assertions` module, which is usually added to the build
+when you add a Kotest test runner to your build (eg, `kotest-runner-junit5`). Of course, you could always add
 this to your build explicitly.
 
 The simplest matcher is that a value should be equal to something, eg: `x.shouldBe(y)`.
@@ -217,7 +228,7 @@ Soft Assertions
 
 Normally, assertions like `shouldBe` throw an exception when they fail.
 But sometimes you want to perform multiple assertions in a test, and
-would like to see all of the assertions that failed. KotlinTest provides
+would like to see all of the assertions that failed. Kotest provides
 the `assertSoftly` function for this purpose.
 
 ```kotlin
@@ -327,7 +338,7 @@ Listeners
 ---------
 
 It is a common requirement to run setup or teardown code before and after a test, or before and after all tests in a Spec class. Or sometimes
- before and after the entire project. For this KotlinTest provides the `TestListener` interface. Instances of this interface can be registered
+ before and after the entire project. For this Kotest provides the `TestListener` interface. Instances of this interface can be registered
  with a `Spec` class or project wide by using [ProjectConfig](#project-config).
 
  This interface contains several functions,
@@ -404,12 +415,12 @@ The full list of the functions in the `TestListener` interface is as follows:
 Project Config
 --------------
 
-KotlinTest is flexible and has many ways to configure tests.
+Kotest is flexible and has many ways to configure tests.
  Project-wide configuration is used by creating a special singleton object
- which is loaded at runtime by KotlinTest.
+ which is loaded at runtime by Kotest.
 
 To do this, create an object that is derived from `AbstractProjectConfig`, name this object `ProjectConfig`
-and place it in a package called `io.kotlintest.provided`. KotlinTest will detect it's presence and use any configuration
+and place it in a package called `io.kotest.provided`. Kotest will detect it's presence and use any configuration
 defined there when executing tests.
 
 Some of the configuration available in `ProjectConfig` includes parallelism of tests, executing code before and after
@@ -423,7 +434,7 @@ To execute some logic before the very first test case and/or after the very last
 Example:
 
 ```kotlin
-package io.kotlintest.provided
+package io.kotest.provided
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -447,7 +458,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
 ### Parallelism
 
-KotlinTest supports running specs in parallel to take advantage of modern cpus with several cores. To do this, override
+Kotest supports running specs in parallel to take advantage of modern cpus with several cores. To do this, override
  the `parallelism` function inside the project config.
 
 ```kotlin
@@ -463,30 +474,10 @@ By default the value is 1, which will run each spec serially.
 
 
 
-### Discovery Extension
+### Discovery Extensions
 
-_Advanced Feature_
-
-Another type of extension that can be used inside `ProjectConfig` is the `DiscoveryExtension`. This extension is designed
- to allow customisation of the way spec classes are discovered and instantiated. There are two functions of interest that
- can be overridden.
-
-The first is `afterScan` which accepts a list of Spec classes that were discovered by KotlinTest during the _discovery_ phase
- of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
- overriding this function, you are able to filter which classes are used, or even add in extra classes not originally discovered.
-
-The second function is `instantiate` which accepts a `KClass<Spec>` and then attempts to create an instance of this Spec class in order
- to then run the test cases defined in it. By default, Spec classes are assumed to have a zero-arg primary constructor.
- If you wish to use non-zero arg primary constructors this function can be implemented with logic on how to instantiate a test class.
-
-An implementation can choose to create a new instance, or it can choose to return null if it wishes to pass control to the next
-extension (or if no more extensions, then back to the Test Engine itself).
-
-By overriding this function, extensions are able to customize the way classes are created, to support things like constructors
-with parameters, or classes that require special initialization logic. This type of extension is how the Spring Constructor Injection
-add-on works for example.
-
-
+Kotest allows developers to configure how test classes are discovered. By default classes are scanned from the classpath
+but this extension allows developers to inject classes from any source. For full details see [here](discovery_extension.md)
 
 
 
@@ -497,64 +488,13 @@ Property-based Testing <a name="property-based"></a>
 
 ### Property Testing
 
-To automatically test your code with many combinations of values, you can allow KotlinTest to do the boilerplate
-by using property testing with `generators`. You invoke `assertAll` or `assertNone` and pass in a lambda, where the lambda
-parameters are populated automatically with many different values. The lambda must specify explicitly the parameter
-types as KotlinTest will use those to determine what types of values to pass in.
+Regular unit tests work by the developer setting up an example and providing assertions on what that example
+should evaluate to. For instance, `"ko" + "test" should have length 6` is a single example based test on string concatenation.
 
-For example, here is a property test that checks that for any two Strings, the length of `a + b`
-is the same as the length of `a` plus the length of `b`. In this example KotlinTest would
-execute the test 1000 times for random String combinations.
+A more powerful approach is to allow a test framework to generate the examples for you, randomly or exhaustively,
+and the developer provides _properties_ which should always be _true_ or _false_ given the inputs.
 
-```kotlin
-class PropertyExample: StringSpec() {
-  init {
-
-    "String size" {
-      assertAll({ a: String, b: String ->
-        (a + b).length shouldBe a.length + b.length
-      })
-    }
-
-  }
-}
-```
-
-You can also specify the number of times a test is going to be run. Here is the same test but this time it will run 2300 times.
-
-```kotlin
-class PropertyExample: StringSpec() {
-  init {
-
-    "String size" {
-      forAll(2300) { a: String, b: String ->
-        (a + b).length == a.length + b.length
-      }
-    }
-
-  }
-}
-```
-
-There are generators defined for all the common base types - String, Ints, UUIDs, etc. If you need to generate custom types
-then you can simply specify the generator manually (or write your own). For example here is the same test again but
-with the generators explicitly specified.
-
-```kotlin
-class PropertyExample: StringSpec() {
-  init {
-
-    "String size" {
-      forAll(Gen.string(), Gen.string(), { a: String, b: String ->
-        (a + b).length == a.length + b.length
-      })
-    }
-
-  }
-}
-```
-
-
+Kotest has a comprehesive and powerful property support out of the box which is described in detail [here](property_testing.md).
 
 
 
@@ -597,11 +537,11 @@ class PersonGenerator : Gen<Person> {
 
 
 
-Table-driven Testing
+Data-driven Testing
 --------------------
 
 To test your code with different parameter combinations, you can use a table of values as input for your test
-cases. This is sometimes called _data driven testing_ and other times called _table driven testing_.
+cases. This is called _data driven testing_ also known as _table driven testing_.
 
 Invoke the `forAll` or `forNone` function, passing in one or more `row` objects, where each row object contains
 the values to be used be a single invocation of the test. After the `forAll` or `forNone` function, setup your
@@ -623,73 +563,7 @@ types in the test function.
 }
 ```
 
-In the above example, the `root` and `square` parameters are automatically inferrred to be integers.
-
-If there is an error for any particular input row, then the test will fail and KotlinTest will automatically
-match up each input to the corresponding parameter names. For example, if we change the previous example to include the row `row(5,55)`
-then the test will be marked as a failure with the following erorr message.
-
-```
-Test failed for (root, 5), (square, 55) with error expected: 55 but was: 25
-```
-
-Table testing can be used within any spec. Here is an example using `StringSpec`.
-
-```kotlin
-class StringSpecExample : StringSpec({
-  "string concat" {
-    forall(
-      row("a", "b", "c", "abc"),
-      row("hel", "lo wo", "rld", "hello world"),
-      row("", "z", "", "z")
-    ) { a, b, c, d ->
-      a + b + c shouldBe d
-    }
-  }
-})
-```
-
-It may be desirable to have each row of data parameters as an individual test. To generating such individual tests follow a similar pattern for each spec style. An example in the `FreeSpec` is below.
-
-```kotlin
-class IntegerMathSpec : FreeSpec({
-    "Addition" - {
-        listOf(
-            row("1 + 0", 1) { 1 + 0 },
-            row("1 + 1", 2) { 1 + 1 }
-        ).map { (description: String, expected: Int, math: () -> Int) ->
-            description {
-                math() shouldBe expected
-            }
-        }
-    }
-    // ...
-    "Complex Math" - {
-        listOf(
-            row("8/2(2+2)", 16) { 8 / 2 * (2 + 2) },
-            row("5/5 + 1*1 + 3-2", 3) { 5 / 5 + 1 * 1 + 3 - 2 }
-        ).map { (description: String, expected: Int, math: () -> Int) ->
-            description {
-                math() shouldBe expected
-            }
-        }
-    }
-})
-```
-
-Produces 4 tests and 2 parent descriptions:
-
-```txt
-IntegerMathSpec
-  ✓ Addition
-    ✓ 1 + 0
-    ✓ 1 + 1
-  ✓ Complex Math
-    ✓ 8/2(2+2)
-    ✓ 5/5 + 1*1 + 3-2
-```
-
-
+For more details see the [data driven testing page](data_driven_testing.md).
 
 
 
@@ -697,13 +571,11 @@ IntegerMathSpec
 Isolation Modes
 ---------------
 
-Note: Isolation modes replace _One Instance Per Test_ which was a setting in version 3.1 and earlier.
+In Kotest one instance of the Spec class is created and then each test case is executed until they all complete.
+This is different to the JUnit default where a new class is instantiated for every test.
 
-By default, one instance of the Spec class is created and then each test case is executed until they all complete.
-This is different to the default in JUnit where a new class is instantiated for every test.
-
-However sometimes it may be desirable for each test - or each outer test - to be executed in a different
-instance of the Spec class, much like JUnit. In this case, you will want to change the isolation mode.
+However sometimes it may be desirable for each test scope - or each outer test scope - to be executed in a different
+instance of the Spec class, much like JUnit. In this case, you will want to change what is called the _isolation mode_.
 
 All specs allow you to control the isolation mode. Full instructions can be found [here](isolation_mode.md)
 
@@ -779,10 +651,6 @@ class MySpec : StringSpec() {
 
 
 
-
-
-
-
 Disabling Test Cases and Running Test Cases Conditionally
 ---------------------------------------------------------
 
@@ -790,187 +658,20 @@ Sometimes we want to temporarily disable some tests in of a test suite.
 Perhaps we’re experimenting with some API changes and don’t want to have to keep changing all the tests until we’re happy with the new API.
 Or perhaps we’re debugging and want to reduce the noise in the output.
 
-There are several ways to disable tests.
-
-### By Config
-
-You can disable a test case simply by setting the config parameter `enabled` to `false`.
-If you're looking for something like JUnit's `@Ignore`, this is for you.
-
-```kotlin
-"should do something".config(enabled = false) {
-  ...
-}
-```
-
-You can use the same mechanism to run tests only under certain conditions.
- For example you could run certain tests only on Linux systems using
- [SystemUtils](http://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/SystemUtils.html#IS_OS_WINDOWS).IS_OS_LINUX from [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/).
-
-```kotlin
-"should do something".config(enabled = IS_OS_LINUX) {
-  ...
-}
-```
-
-`isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
+Kotest has many options for disabling/enable tests at runtime. See this [page](conditional_evaluation.md) for full details.
 
 
-### Focus
-
-KotlinTest supports isolating a single top level test by preceding the test name with `f:`.
-Then only that test (and any subtests defined inside that scope) will be executed, with the rest being skipped.
-
-For example, in the following snippet only the middle test will be executed.
-
-```kotlin
-class FocusExample : StringSpec({
-    "test 1" {
-     // this will be skipped
-    }
-
-    "f:test 2" {
-     // this will be executed
-    }
-
-    "test 3" {
-     // this will be skipped
-    }
-})
-```
 
 
-### Bang
 
-The opposite of focus is possible, which is to prefix a test with an exclamation mark `!` and then that test (and any subtests defined inside that scope) will be skipped.
-In the next example we’ve disabled the first test by adding the “!” prefix.
-
-```kotlin
-class BangExample : StringSpec({
-
-  "!test 1" {
-    // this will be ignored
-  }
-
-  "test 2" {
-    // this will run
-  }
-
-  "test 3" {
-    // this will run too
-  }
-})
-```
-
-### SkipTestException
-Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, KotlinTest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
-
-```kotlin
-class SkipTestExceptionExample : StringSpec({
-
-  "Test should be skipped" {
-    if(isLocalEnvironment()) {
-      throw SkipTestException("Cannot run this test in local environment.")
-    }
-  }
-
-})
-```
-
-`SkipTestException` is an open class, so you may extend it and customize it if you need it.
 
 
 Grouping Tests with Tags
 ------------------------
 
-Sometimes you don't want to run all tests and KotlinTest provides tags to be able to run only
-certain tests. Tags are objects inheriting from `io.kotlintest.Tag`.
-
-To group tests by operating system you could define the following tags:
-
-```kotlin
-object Linux : Tag()
-object Windows: Tag()
-```
-
-Test cases are marked with tags with the `config` function:
-
-```kotlin
-import io.kotlintest.specs.StringSpec
-
-class MyTest : StringSpec() {
-  init {
-    "should run on Windows".config(tags = setOf(Windows)) {
-      // ...
-    }
-
-    "should run on Linux".config(tags = setOf(Linux)) {
-      // ...
-    }
-
-    "should run on Windows and Linux".config(tags = setOf(Windows, Linux)) {
-      // ...
-    }
-  }
-}
-```
-
-Then by invoking the test runner with a system property of `kotlintest.tags.include` and/or `kotlintest.tags.exclude`, you
-can control which tests are run:
-
-* If no `kotlintest.tags.include` and/or `kotlintest.tags.exclude` are specified, all tests (both tagged and untagged ones) are run.
-* If only `kotlintest.tags.include` are specified, only tests with that tag are run (untagged test are *not* run).
-* If only `kotlintest.tags.exclude` are specified, only tests without that tag are run (untagged tests *are* run).
-* If you provide more than one tag for `kotlintest.tags.include` or `kotlintest.tags.exclude`, a test case with at least one of the given tags is included/excluded.
-
-Provide the simple names of tag object (without package) when you run the tests.
-Please pay attention to the use of upper case and lower case! If two tag objects have the same simple name (in different name spaces) they are treated as the same tag.
-
-Example: To run only test tagged with `Linux`, but not tagged with `Database`, you would invoke
-Gradle like this:
-
-```
-gradle test -Dkotlintest.tags.include=Linux -Dkotlintest.tags.exclude=Database
-```
-
-If you use `kotlintest.tags.include` and `kotlintest.tags.exclude` in combination, only the tests tagged with a tag from
-`kotlintest.tags.include` but not tagged with a tag from `kotlintest.tags.exclude` are run. If you use only `kotlintest.tags.exclude`
-all tests but the tests tagged with the given tags are are run.
-
-Tags can also be included/excluded in runtime (for example, if you're running a project configuration instead of properties) through the `RuntimeTagExtension`:
-
-```kotlin
-RuntimeTagExtension.included += MyTag
-RuntimeTagExtension.excluded += MyOtherTag
-```
-
-Everything else will work like the described above.
-
-
-
-**A special attention is needed in your gradle configuration**
-
-To use System Properties (-Dx=y), your gradle must be configured to propagate them to the test executors, and an extra configuration must be added to your tests:
-
-Groovy:
-```
-test {
-    //... Other configurations ...
-    systemProperties = System.properties
-}
-```
-
-Kotlin Gradle DSL:
-```
-val test by tasks.getting(Test::class) {
-    // ... Other configurations ...
-    systemProperties = System.getProperties().map { it.key.toString() to it.value }.toMap()
-}
-```
-
-This will guarantee that the system property is correctly read by the JVM
-
-
+Sometimes you don't want to run all tests all the time and Kotest provides _tags_ to be able to select
+only a subset of tests to run. Tags are added to tests and then one or more tag can be included or excluded
+from a test run. For full details read this [page](tags.md).
 
 
 
@@ -979,7 +680,7 @@ This will guarantee that the system property is correctly read by the JVM
 Closing resource automatically
 --------------------------------------------
 
-You can let KotlinTest close resources automatically after all tests have been run:
+You can let Kotest close resources automatically after all tests have been run:
 
 ```kotlin
 class StringSpecExample : StringSpec() {
@@ -1008,14 +709,14 @@ Futures
 -------
 
 When testing future based code, it's useful to have a test run as soon as a future has completed, rather than blocking and waiting.
-KotlinTest allows you to do this, by using the `whenReady(future, fn)` construct.
+Kotest allows you to do this, by using the `future.whenReady(fn)` extension function.
 
 ```kotlin
 class MyTests : StringSpec({
 
     "test a future" {
         val f: CompletableFuture<String> = someFuture()
-        whenReady(f) {
+        f.whenReady {
             it shouldBe "wibble"
         }
     }
@@ -1028,7 +729,7 @@ Non-determinstic Tests
 ----------------------
 
 Sometimes you have to work with code that are non-deterministic in nature. This is never ideal, but if you have no choice then
-KotlinTest has this covered with two functions called `eventually` and `continually`.
+Kotest has this covered with two functions called `eventually` and `continually`.
 
 Eventually will repeatedly run a code block either it either succeeds or the given duration has expired.
 Continually is kind of the opposite - it will repeatedly run a code block requiring that it suceeds every time until the given duration has expired.
@@ -1041,7 +742,7 @@ See full docs [here](nondeterministic.md)
 Extensions
 ----------
 
-KotlinTest provides you with several extensions and listeners to test execution out of the box.
+Kotest provides you with several extensions and listeners to test execution out of the box.
 
 Some of them provide unique integrations with external systems, such as [Spring Boot](extensions.md#Spring) and [Arrow](extensions.md#Arrow).
 Some others provides helpers to tricky System Testing situations, such as `System Environment`, `System Properties`, `System Exit` and `System Security Manager`.
@@ -1054,7 +755,7 @@ Take a better look at all the extensions available in the [extensions-reference]
 Plugins
 ----------
 
-Sometimes it's not enough to use Extensions or Listeners to integrat with external systems or tools, and for this we use custom Plugins, available at `kotlintest-plugins` module.
+Sometimes it's not enough to use Extensions or Listeners to integrat with external systems or tools, and for this we use custom Plugins, available at `kotest-plugins` module.
 
 Integrations such as `Pitest` require a more complex solution, and thus the plugins module was necessary.
 

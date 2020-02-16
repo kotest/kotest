@@ -6,7 +6,9 @@ plugins {
 
 repositories {
    mavenCentral()
+   jcenter()
 }
+
 kotlin {
 
    targets {
@@ -45,25 +47,23 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-
          }
       }
    }
 }
 
-tasks {
-   test {
-      useJUnitPlatform()
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-         )
-         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
-apply(from = "../../publish.gradle")
+
+apply(from = "../../publish-mpp.gradle.kts")

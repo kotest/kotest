@@ -1,13 +1,16 @@
 package io.kotest.extensions.system
 
-import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.spec.Spec
+import io.kotest.core.listeners.TestListener
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 class SystemOutWriteException(val str: String?) : RuntimeException()
 class SystemErrWriteException(val str: String?) : RuntimeException()
 
+/**
+ * A [TestListener] that throws an error if anything is written to standard out.
+ */
 object NoSystemOutListener : TestListener {
    private fun setup() {
       val out = ByteArrayOutputStream()
@@ -25,9 +28,12 @@ object NoSystemOutListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) = setup()
+   override suspend fun beforeSpec(spec: Spec) = setup()
 }
 
+/**
+ * A [TestListener] that throws an error if anything is written to standard err.
+ */
 object NoSystemErrListener : TestListener {
    private fun setup() {
       val out = ByteArrayOutputStream()
@@ -45,5 +51,5 @@ object NoSystemErrListener : TestListener {
       })
    }
 
-   override fun beforeSpec(spec: SpecConfiguration) = setup()
+   override suspend fun beforeSpec(spec: Spec) = setup()
 }

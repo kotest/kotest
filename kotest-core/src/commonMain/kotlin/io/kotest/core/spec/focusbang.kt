@@ -9,4 +9,4 @@ import io.kotest.core.test.isFocused
  *
  * Returns an empty list if no test is marked as focused.
  */
-fun SpecConfiguration.focusTests(): List<TestCase> = rootTestCases.filter { it.isFocused() }
+fun Spec.focusTests(): List<TestCase> = materializeRootTests().map { it.testCase }.filter { it.isFocused() }

@@ -1,6 +1,9 @@
 package io.kotest.matchers.date
 
-import io.kotest.*
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import java.sql.Timestamp
 
 fun beAfter(timestamp: Timestamp) = object: Matcher<Timestamp>  {

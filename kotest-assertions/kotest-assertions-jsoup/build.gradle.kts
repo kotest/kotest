@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -23,7 +23,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -32,9 +32,11 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
+            implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
-            implementation("org.jsoup:jsoup:1.12.1")
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            implementation("org.jsoup:jsoup:1.12.2")
          }
       }
 
@@ -47,17 +49,22 @@ kotlin {
    }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
+      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

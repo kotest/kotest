@@ -1,11 +1,11 @@
 package io.kotest.assertions.arrow.either
 
 import arrow.core.Either
-import io.kotest.Matcher
-import io.kotest.MatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.beInstanceOf2
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -18,7 +18,7 @@ fun <T> Either<*, T>.shouldBeRight() {
 }
 
 fun <T> Either<Any?, T>.shouldNotBeRight() = this shouldNot beRight()
-fun <T> beRight() = beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
+fun <T> beRight() =   beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
 
 inline infix fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
   this should beRight()

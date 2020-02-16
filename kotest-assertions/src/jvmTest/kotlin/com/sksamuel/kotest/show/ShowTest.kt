@@ -3,7 +3,7 @@ package com.sksamuel.kotest.show
 import io.kotest.assertions.show.Show
 import io.kotest.assertions.show.show
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class ShowTest : FunSpec() {
   init {

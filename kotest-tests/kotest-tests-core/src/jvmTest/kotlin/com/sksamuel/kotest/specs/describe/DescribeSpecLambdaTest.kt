@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.describe
 
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 
 class DescribeSpecLambdaTest : DescribeSpec({
 

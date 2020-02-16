@@ -2,10 +2,10 @@ package io.kotest.assertions.arrow.order
 
 import arrow.typeclasses.Eq
 import arrow.typeclasses.Order
-import io.kotest.Matcher
 import io.kotest.assertions.arrow.eq.EqAssertions
 import io.kotest.assertions.arrow.matcher
-import io.kotest.should
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should
 
 /**
  * Provides assertions for [Order]

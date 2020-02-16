@@ -3,8 +3,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
+   id("maven-publish")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -26,7 +28,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -36,24 +38,24 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
-            api(project(":kotest-fp"))
+            implementation(kotlin("reflect"))
+            implementation(project(":kotest-fp"))
             api(project(":kotest-core"))
-//            api(project(":kotest-runner:kotest-runner-console"))
-            api(project(":kotest-runner:kotest-runner-jvm"))
+            api(project(":kotest-extensions"))
+            api(project(":kotest-assertions"))
+            api(Libs.Coroutines.core)
             api(Libs.JUnitPlatform.engine)
             api(Libs.JUnitPlatform.api)
             api(Libs.JUnitPlatform.launcher)
             api(Libs.JUnitJupiter.api)
-            api(Libs.Slf4j.api)
          }
       }
 
       val jvmTest by getting {
+         dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.JUnitPlatform.testkit)
             implementation(Libs.Slf4j.api)
             implementation(Libs.Logback.classic)
          }
@@ -63,15 +65,16 @@ kotlin {
 
 tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(
-         TestLogEvent.FAILED,
-         TestLogEvent.PASSED
-      )
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
       exceptionFormat = TestExceptionFormat.FULL
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")
+

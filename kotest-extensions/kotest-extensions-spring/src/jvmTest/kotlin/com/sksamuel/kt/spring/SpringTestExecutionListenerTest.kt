@@ -1,17 +1,14 @@
 package com.sksamuel.kt.spring
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.spec.SpecConfiguration
-import io.kotest.core.extensions.TestListener
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.kotest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.TestExecutionListeners
-import kotlin.reflect.KClass
 import org.springframework.test.context.TestExecutionListener as SpringTestExecutionListener
 
 @TestExecutionListeners(DummyTestExecutionListener::class, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -35,7 +32,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     }
   }
 
-  override fun finalizeSpec(kclass: KClass<out SpecConfiguration>, results: Map<TestCase, TestResult>) {
+   override fun afterSpec(spec: Spec) {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
     DummyTestExecutionListener.beforeTestMethod shouldBe 2
     DummyTestExecutionListener.beforeTestExecution shouldBe 2

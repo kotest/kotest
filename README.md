@@ -1,22 +1,24 @@
-![KotlinTest](doc/logo4.png)
+![Kotest](doc/logo6.png)
 ==========
 
-[![Build Status](https://travis-ci.org/kotlintest/kotlintest.svg?branch=master)](https://travis-ci.org/kotlintest/kotlintest) 
-[![Build status](https://ci.appveyor.com/api/projects/status/sr26tg49fk66yd82?svg=true)](https://ci.appveyor.com/project/sksamuel/kotlintest)
-[<img src="https://img.shields.io/maven-central/v/io.kotlintest/kotlintest-core.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotlintest) [![GitHub license](https://img.shields.io/github/license/kotlintest/kotlintest.svg)]()
+[![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest) 
+![GitHub](https://img.shields.io/github/license/kotest/kotest)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
-__KotlinTest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/).__  
+__Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 [Full documentation](doc/reference.md)
+
+**Previously known as Kotlintest - From release 4.0 this project is now known as Kotest**
 
 
 For latest updates see [Changelog](CHANGELOG.md)
 
 Community
 ---------
-* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotlintest) (don't forget to use the tag "kotlintest".)
-* [KotlinTest channel](https://kotlinlang.slack.com/messages/kotlintest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
-* [Contribute](https://github.com/kotlintest/kotlintest/wiki/contribute)
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/kotest) (don't forget to use the tag "kotest".)
+* [Kotest channel](https://kotlinlang.slack.com/messages/kotest) in the Kotlin Slack (get an invite [here](http://slack.kotlinlang.org/))
+* [Contribute](https://github.com/kotest/kotest/wiki/contribute)
 
 Test with Style
 ---------------
@@ -34,7 +36,7 @@ class MyTests : StringSpec({
 })
 ```
 
-KotlinTest comes with several [testing styles](doc/reference.md#testing-styles) so you can choose one that fits your needs.
+Kotest comes with several [testing styles](doc/reference.md#testing-styles) so you can choose one that fits your needs.
 
 Multitude of Matchers
 ---------------------
@@ -71,28 +73,27 @@ Matchers are extension methods and so your IDE will auto complete. See the [full
 Let the Computer Generate Your Test Data
 ----------------------------------------
 
-Use [property based testing](doc/reference.md#property-based) to test your code with automatically generated test data:
+Use [property based testing](doc/property_testing.md) to test your code with automatically generated test data:
 
 ```kotlin
-class PropertyExample: StringSpec() {
-  init {
-    "String size" {
-      assertAll { a: String, b: String ->
-        (a + b) should haveLength(a.length + b.length)
-      }
+class PropertyExample: StringSpec({
+  "String size" {
+    checkAll<String, String> { a, b ->
+      (a + b) should haveLength(a.length + b.length)
     }
-}
+  }
+})
 ```
 
 Check all the Tricky Cases With Data Driven Testing
 --------------------------
 
-Handle even an enormous amount of input parameter combinations easily with [data driven tests](doc/reference.md#table-driven-testing):
+Handle even an enormous amount of input parameter combinations easily with [data driven tests](doc/data_driven_testing.md):
 
 ```kotlin
 class StringSpecExample : StringSpec({
   "maximum of two numbers" {
-    forall(
+    forAll(
         row(1, 5, 5),
         row(1, 0, 1),
         row(0, 0, 0)
@@ -106,7 +107,7 @@ class StringSpecExample : StringSpec({
 Test Exceptions
 ---------------
 
-Testing for [exceptions](doc/reference.md#exceptions) is easy with KotlinTest:
+Testing for [exceptions](doc/reference.md#exceptions) is easy with Kotest:
 
 ```kotlin
 val exception = shouldThrow<IllegalAccessException> {
@@ -123,14 +124,9 @@ And you can group tests by tags or disable them conditionally.
 All you need is [`config`](doc/reference.md#config):
 
 ```kotlin
-class MySpec : StringSpec() {
-
-  override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
-
-  init {
-    "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
-      // ...
-    }
+class MySpec : StringSpec({
+  "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
+    // test here
   }
 }
 ```
@@ -138,13 +134,13 @@ class MySpec : StringSpec() {
 And More ...
 ------------
 
-This page gives you just a short overview of KotlinTest. There are many more features:
+This page gives you just a short overview of Kotest. There are many more features:
 
 * Test whole collections with [Inspectors](doc/reference.md#inspectors).
 * Write elegant conditions with the [matcher DSL](doc/reference.md#matchers-and-assertions): `"hello".shouldHaveSubstring("ell")`.
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and non-deterministic code with [`eventually`](doc/nondeterministic.md) or [`continually`](doc/nondeterministic.md)
-* Let KotlinTest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
+* Let Kotest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
 * Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
@@ -158,7 +154,7 @@ Use
 #### Gradle
 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
- as simple as adding `useJUnitPlatform()` inside the tasks with type `Test` and then adding the KotlinTest dependency.
+ as simple as adding `useJUnitPlatform()` inside the tasks with type `Test` and then adding the Kotest dependency.
 
 <details open>
 <summary>Groovy (build.gradle)</summary>
@@ -169,7 +165,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>'
 }
 ```
 
@@ -187,7 +183,7 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>'
 }
 ```
 
@@ -204,7 +200,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>")
 }
 ```
 
@@ -223,13 +219,13 @@ For maven you must configure the surefire plugin for junit tests.
 </plugin>
 ```
 
-And then add the KotlinTest JUnit5 runner to your build.
+And then add the Kotest JUnit5 runner to your build.
 
 ```xml
 <dependency>
-    <groupId>io.kotlintest</groupId>
-    <artifactId>kotlintest-runner-junit5</artifactId>
-    <version>3.3.2</version>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <version>{version}</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -243,5 +239,3 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
 ```
-
-Currently, in snapshot builds only, our artifacts and packages are using a new name: **Kotest**. To use them, change every instance of `io.kotlintest` to `io.kotest`, and you should be good to go.
