@@ -327,6 +327,11 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
 | `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
 
+
+| JSoup |     |
+| ----- | --- |
+| JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
+
 | Regex |     |
 | ---------- | --- |
 | `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     | 
