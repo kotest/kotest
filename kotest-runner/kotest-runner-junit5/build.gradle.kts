@@ -38,10 +38,12 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
             implementation(project(":kotest-fp"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
             api(project(":kotest-assertions"))
+            api(Libs.Coroutines.core)
             api(Libs.JUnitPlatform.engine)
             api(Libs.JUnitPlatform.api)
             api(Libs.JUnitPlatform.launcher)
