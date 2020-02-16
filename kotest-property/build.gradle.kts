@@ -26,17 +26,6 @@ kotlin {
             }
          }
       }
-      if (!Ci.ideaActive) {
-         linuxX64()
-         mingwX64()
-         macosX64()
-      } else if (Ci.os.isMacOsX) {
-         macosX64("native")
-      } else if (Ci.os.isWindows) {
-         mingwX64("native")
-      } else {
-         linuxX64("native")
-      }
    }
 
    targets.all {
@@ -82,19 +71,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-         }
-      }
-
-      if (!Ci.ideaActive) {
-         val nativeMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-               implementation(Libs.Coroutines.coreNative)
-            }
-         }
-
-         configure(listOf(getByName("macosX64Main"), getByName("linuxX64Main"), getByName("mingwX64Main"))) {
-            dependsOn(nativeMain)
          }
       }
    }

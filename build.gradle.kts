@@ -19,20 +19,28 @@ buildscript {
 }
 
 plugins {
-   id("java")
+   java
    kotlin("multiplatform") version Libs.kotlinVersion
    id("java-library")
    id("maven-publish")
+   signing
    id("com.adarshr.test-logger") version "2.0.0"
    id("org.jetbrains.dokka") version "0.10.1"
 }
 
-// apply plugin: "io.kotest"
-
-tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokka") {
+// Configure existing Dokka task to output HTML to typical Javadoc directory
+tasks.dokka {
    outputFormat = "html"
-   outputDirectory = "dokka"
+   outputDirectory = "$buildDir/javadoc"
 }
+
+signing {
+   useGpgCmd()
+   if (Ci.isReleaseVersion)
+      sign(publishing.publications)
+}
+
+// apply plugin: "io.kotest"
 
 allprojects {
 

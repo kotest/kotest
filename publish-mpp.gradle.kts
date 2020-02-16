@@ -12,7 +12,20 @@ val ossrhUsername: String by project
 val ossrhPassword: String by project
 
 fun Project.publishing(action: PublishingExtension.() -> Unit) =
-   configure<PublishingExtension>(action)
+   configure(action)
+
+fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
+   configure(configure)
+
+val dokka = tasks.named("dokka")
+
+// Create dokka Jar task from dokka task output
+val dokkaJar by tasks.creating(Jar::class) {
+   group = JavaBasePlugin.DOCUMENTATION_GROUP
+   description = "Assembles Kotlin docs with Dokka"
+   archiveClassifier.set("javadoc")
+   from(dokka)
+}
 
 publishing {
    repositories {
@@ -27,13 +40,36 @@ publishing {
          }
       }
    }
-}
 
-tasks.create<Jar>("sourcesJar") {
-   archiveClassifier.set("sources")
-   //from(sourceSets.main.all)
-}
+   publications.withType<MavenPublication>().forEach {
+      it.apply {
+         artifact(dokkaJar)
+         pom {
+            name.set("Kotest")
+            description.set("Kotlin Test Framework")
+            url.set("http://www.github.com/kotest/kotest")
 
-tasks.create<Jar>("javadocJar") {
-   archiveClassifier.set("javadoc")
+            scm {
+               connection.set("scm:git:http://www.github.com/kotest/kotest/")
+               developerConnection.set("scm:git:http://github.com/sksamuel/")
+               url.set("http://www.github.com/kotest/kotest/")
+            }
+
+            licenses {
+               license {
+                  name.set("The Apache 2.0 License")
+                  url.set("https://opensource.org/licenses/Apache-2.0")
+               }
+            }
+
+            developers {
+               developer {
+                  id.set("sksamuel")
+                  name.set("Stephen Samuel")
+                  email.set("sam@sksamuel.com")
+               }
+            }
+         }
+      }
+   }
 }
