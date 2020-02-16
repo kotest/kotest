@@ -92,7 +92,7 @@ Handle even an enormous amount of input parameter combinations easily with [data
 ```kotlin
 class StringSpecExample : StringSpec({
   "maximum of two numbers" {
-    forall(
+    forAll(
         row(1, 5, 5),
         row(1, 0, 1),
         row(0, 0, 0)
@@ -123,14 +123,9 @@ And you can group tests by tags or disable them conditionally.
 All you need is [`config`](doc/reference.md#config):
 
 ```kotlin
-class MySpec : StringSpec() {
-
-  override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
-
-  init {
-    "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
-      // ...
-    }
+class MySpec : StringSpec({
+  "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
+    // test here
   }
 }
 ```
@@ -169,7 +164,7 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5:<version>'
+  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>'
 }
 ```
 
@@ -204,7 +199,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5:<version>")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>")
 }
 ```
 
@@ -228,7 +223,7 @@ And then add the Kotest JUnit5 runner to your build.
 ```xml
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5</artifactId>
+    <artifactId>kotest-runner-junit5-jvm</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>
