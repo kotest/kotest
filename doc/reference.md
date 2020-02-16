@@ -141,15 +141,13 @@ class MyTests : StringSpec() {
 }
 ```
 
-Using the lambda expression avoids another level of indentation and looks neater,
- but it means you cannot override methods in the parent class such as `beforeTest` and `afterTest`.
+Using the lambda expression avoids another level of indentation but it is purely a matter of preference.
 
 All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
 
 [See an example](styles.md) of each testing style.
 
 Note: Test cases inside each spec will always run in a certain order (either in definition order, or in a random order, see [documentation](/doc/test_ordering.md#test-ordering) on test ordering).
-
 
 
 
