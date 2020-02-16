@@ -1,46 +1,51 @@
 package com.sksamuel.kotest.specs.stringspec
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.reflect.KClass
 
 class StringSpecInstancePerLeafOrderingTest : StringSpec() {
 
-  companion object {
-    var string = ""
-  }
+   companion object {
+      var string = ""
+   }
 
-  override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
+   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
-    string shouldBe "a_z_b_y_c_"
-  }
+   private var uniqueCount = AtomicInteger(0)
 
-  private var uniqueCount = AtomicInteger(0)
+   init {
 
-  init {
-    "a" {
-      string += "a_"
-    }
+      listener(object : TestListener {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+            string shouldBe "a_z_b_y_c_"
+         }
+      })
 
-    "z" {
-      string += "z_"
-    }
+      "a" {
+         string += "a_"
+      }
 
-    "b" {
-      string += "b_"
-    }
+      "z" {
+         string += "z_"
+      }
 
-    "y" {
-      string += "y_"
-    }
+      "b" {
+         string += "b_"
+      }
 
-    "c" {
-      string += "c_"
-    }
-  }
+      "y" {
+         string += "y_"
+      }
+
+      "c" {
+         string += "c_"
+      }
+   }
 }

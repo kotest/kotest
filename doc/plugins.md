@@ -1,27 +1,27 @@
-## KotlinTest Plugins
+## Kotest Plugins
 
-Sometimes there's a need for special integration with some tools. These integrations are available at the `kotlintest-plugins` modules and they can be whatever it's necessary to integrate with a specific tool.
+Sometimes there's a need for special integration with some tools. These integrations are available at the `Kotest-plugins` modules and they can be whatever it's necessary to integrate with a specific tool.
 
 Sometimes this is available with less complex integrations, such as using [Listeners](reference.md#listeners) or [Extensions](reference.md#extensions), but in some cases this isn't possible, and thus plugins are necessary.
 
 
 ### Pitest
 
-The Mutation Testing tool [Pitest](https://pitest.org/) is integrated via plugin with KotlinTest. After [configuring](https://gradle-pitest-plugin.solidsoft.info/) the Pitest extension, add the KotlinTest Plugin dependency to your dependencies as well:
+The Mutation Testing tool [Pitest](https://pitest.org/) is integrated via plugin with Kotest. After [configuring](https://gradle-pitest-plugin.solidsoft.info/) the Pitest extension, add the Kotest Plugin dependency to your dependencies as well:
 
 ```kotlin
-    testImplementation("io.kotlintest:kotlintest-plugins-pitest:{kotlintestVersion}")
+    testImplementation("io.Kotest:Kotest-plugins-pitest-jvm:<version>")
 ```
 
-After doing that, tell Pitest that we're going to use the `KotlinTest` as a `testPlugin`:
+After doing that, tell Pitest that we're going to use the `Kotest` as a `testPlugin`:
 
 ```kotlin
 // Assuming that you have already configured the Gradle/Maven extension
 configure<PitestPluginExtension> {
 
-    testPlugin.set("KotlinTest")    // <-- Telling Pitest that we're using KotlinTest
-    
-    
+    testPlugin.set("Kotest")    // <-- Telling Pitest that we're using Kotest
+
+
     targetClasses.set(listOf("my.company.package.*"))
 }
 ```

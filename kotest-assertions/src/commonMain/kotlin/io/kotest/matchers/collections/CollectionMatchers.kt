@@ -1,9 +1,9 @@
 package io.kotest.matchers.collections
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.stringRepr
-import io.kotest.neverNullMatcher
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.neverNullMatcher
 
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
@@ -61,6 +61,17 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
     { "Collection should be a single element of $t but has ${value.size} elements" },
     { "Collection should not be a single element of $t" }
   )
+}
+
+fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
+   override fun test(value: Collection<T>): MatcherResult {
+      val filteredValue: List<T> = value.filter(p)
+      return MatcherResult(
+         filteredValue.size == 1,
+         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements" },
+         { "Collection should not have a single element by a given predicate" }
+      )
+   }
 }
 
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()

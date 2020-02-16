@@ -1,9 +1,9 @@
 package io.kotest.matchers.string
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.show.show
-import io.kotest.neverNullMatcher
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.neverNullMatcher
 import kotlin.math.min
 
 fun startWith(prefix: String) = neverNullMatcher<String> { value ->

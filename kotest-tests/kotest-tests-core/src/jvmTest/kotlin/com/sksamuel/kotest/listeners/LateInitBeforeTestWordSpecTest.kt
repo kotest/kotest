@@ -1,22 +1,22 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.Description
-import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.core.test.TestCase
+import io.kotest.matchers.shouldBe
 
 class LateInitBeforeTestWordSpecTest : WordSpec() {
 
-  private lateinit var string: String
+   private lateinit var string: String
 
-  override fun beforeTest(description: Description) {
-    string = "Hello"
-  }
+   override fun beforeTest(testCase: TestCase) {
+      string = "Hello"
+   }
 
-  init {
-    "setting a late init var" should {
-      "be supported by word spec" {
-        string shouldBe "Hello"
+   init {
+      "setting a late init var" should {
+         "be supported by word spec" {
+            string shouldBe "Hello"
+         }
       }
-    }
-  }
+   }
 }

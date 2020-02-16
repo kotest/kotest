@@ -1,13 +1,13 @@
 package com.sksamuel.kotest
 
-import io.kotest.Description
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
-import io.kotest.core.TestCaseFilter
-import io.kotest.core.TestFilterResult
-import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.filters.TestCaseFilter
+import io.kotest.core.filters.TestFilterResult
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 
 class TestCaseFilterTest : StringSpec() {
 

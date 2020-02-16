@@ -1,6 +1,6 @@
 package io.kotest.provided
 
-import io.kotest.AbstractProjectConfig
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.assertions.fail
 
 object ProjectConfig : AbstractProjectConfig() {

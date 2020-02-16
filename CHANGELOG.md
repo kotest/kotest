@@ -26,7 +26,20 @@ Changelog
 * Feature: Unique generator values #971
 * Feature: Iterator matcher #1060
 * Feature: Regex Matchers #1074
+* Feature: Add matchers for java.time.Instant #1127
 * Bugfix: shouldNotThrowAny return T instead of Unit #981
+* Removed arrow try
+* Composable specs
+* Bugfix: Empty test name throws an error
+* whenReady(f) has been replaced with f.whenReady which is coroutine enabled
+* Alphabetic test case ordering
+* SkipTestException removed
+* Fixed file matchers to check for null
+* Test callbacks now coroutine enabled
+* Bugfix: Error in spec initialization is cryptic with recent intellij #1097
+* Feature: Project wide default test case config
+* Feature: AutoScan
+* Feature: forEachAsClue
 
 #### 3.4.2
 
@@ -82,7 +95,7 @@ Changelog
 * Feature: Add support to change sizes of generated lists, sets, maps #757
 * Feature: Allow exclusion/inclusion tags at runtime #761
 * Bugfix: Added missing part of shouldHaveLength message #870)
-* Bugfix: Updated json matchers to include actual json in the error 
+* Bugfix: Updated json matchers to include actual json in the error
 * Bugfix: Fix for before/after test listeners not failing tests #842 #865
 * Bugfix: Changed autoClose to accept an AutoCloseable #847
 * Bugfix: Fixed left vs right issue #612
@@ -159,7 +172,7 @@ Changelog
 * Feature: Infix suport to Map matchers #417
 * Feature: `shouldNotBePositive` and `shouldNotBeNegative` for Double matchers #435
 * Feature: Support for Duration in time matchers #423
-* Feature: arrow-assertion Failure matcher that checks underlying throwable equality #427 
+* Feature: arrow-assertion Failure matcher that checks underlying throwable equality #427
 * Feature: `shouldNotBeTrue` and `shouldNotBeFalse` for Boolean matchers #452
 * Improvement: Documentation for `Gen.int()` #419
 * Improvement: Javadocs for Date matchers #420
@@ -703,8 +716,8 @@ Version 3.0.x - March 29 2018
 KotlinTest has been split into multiple modules. These include core, assertions, the junit runner, and extensions such as spring,
 allure and junit-xml.
 
-The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta). 
-When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build 
+The idea is that in a future release, further runners could be added (TestNG) or for JS support (once multi-platform Kotlin is out of beta).
+When upgrading you will typically want to add the  `kotlintest-core`,  `kotlintest-assertions` and `kotlintest-runner-junit5` to your build
 rather than the old `kotlintest` module which is now defunct. When upgrading, you might find that you need to update imports
 to some matchers.
 
@@ -716,10 +729,10 @@ testCompile 'io.kotlintest:kotlintest-runner-junit5:3.0.0'
 
 Gradle Users:
 
-Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your project and 
-`classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"` to the `dependencies` section of your `buildscript` 
+Also you _must_ include `apply plugin: 'org.junit.platform.gradle.plugin'` in your project and
+`classpath "org.junit.platform:junit-platform-gradle-plugin:1.1.0"` to the `dependencies` section of your `buildscript`
 or tests will not run (or worse, will hang). This allows gradle to execute
-_jUnit-platform-5_ based tests (which KotlinTest builds upon). Note: Gradle says that this is **not** required as of 4.6 but even 
+_jUnit-platform-5_ based tests (which KotlinTest builds upon). Note: Gradle says that this is **not** required as of 4.6 but even
 with 4.6 it seems to be required.
 
 Maven users:
@@ -740,8 +753,8 @@ You need to include the following in your plugins:
     </dependencies>
 </plugin>
 ```
-            
-And you must include 
+
+And you must include
 
 ```xml
         <dependency>
@@ -752,16 +765,16 @@ And you must include
         </dependency>
 ```
 
-as a regular dependency.                     
+as a regular dependency.
 
 * **Breaking: ProjectConfig**
 
 Project wide config in KotlinTest is controlled by implementing a subclass of `AbstractProjectConfig`. In previous versions you could
 call this what you wanted, and place it where you wanted, and `KotlinTest` would attempt to find it and use it. This was the cause of
-many bug reports about project start up times and reflection errors. So in version 3.0.x onwards, KotlinTest will 
+many bug reports about project start up times and reflection errors. So in version 3.0.x onwards, KotlinTest will
 no longer attempt to scan the classpath.
 
-Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of 
+Instead you must call this class `ProjectConfig` and place it in a package `io.kotlintest.provided`. It must still be a subclass of
 `AbstractProjectConfig` This means kotlintest can do a simple `Class.forName` to find it, and so there is no
  startup penalty nor reflection issues.
 
@@ -869,7 +882,7 @@ val stringFuture: CompletableFuture<String> = ...
 * **Breaking: Exception Matcher Changes**
 
 The `shouldThrow<T>` method has been changed to also test for subclasses. For example, `shouldThrow<IOException>` will also match
-exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to 
+exceptions of type `FileNotFoundException`. This is different to the behavior in all previous KotlinTest versions. If you wish to
 have functionality as before - testing exactly for that type - then you can use the newly added `shouldThrowExactly<T>`.
 
 * **JUnit XML Module**
@@ -878,7 +891,7 @@ Support for writing out reports in junit-format XML has added via the `kotlintes
 provides a `JUnitXmlListener` which you can register with your project to autowire your tests. You can register this by overriding
 `listeners()` in `ProjectConfig`.
 
-```kotlin  
+```kotlin
 class ProjectConfig : AbstractProjectConfig() {
     override fun listeners() = listOf(JUnitXmlListener)
 }
@@ -890,7 +903,7 @@ Spring support has been added via the `kotlintest-extensions-spring` module whic
 provides a `SpringListener` which you can register with your project to autowire your tests. You can register this for just some classes
 by overriding the `listeners()` function inside your spec, for example:
 
-```kotlin  
+```kotlin
 class MySpec : ParentSpec() {
     override fun listeners() = listOf(SpringListener)
 }
@@ -1003,7 +1016,7 @@ The ability to use matchers in property testing has been added. Previously prope
   forAll(Gen.string(), Gen.string(), { a, b ->
     (a + b).startsWith(a)
   })
-} 
+}
 ```
 
 But now you can use `assertAll` and `assertNone` and then use regular matchers inside the block. For example:
@@ -1013,7 +1026,7 @@ But now you can use `assertAll` and `assertNone` and then use regular matchers i
   assertAll(Gen.string(), Gen.string(), { a, b ->
     a + b should startWith(a)
   })
-} 
+}
 ```
 
 This gives you the ability to use multiple matchers inside the same block, and not have to worry about combining all possible errors
@@ -1022,9 +1035,9 @@ into a single boolean result.
 * **Generator Edge Cases**
 
 Staying with property testing - the _Generator_ interface has been changed to now provide two types of data.
- 
+
 The first are values that should always be included - those edge cases values which are common sources of bugs.
-For example, a generator for Ints should always include values like zero, minus 1, positive 1, Integer.MAX_VALUE and Integer.MIN_VALUE. 
+For example, a generator for Ints should always include values like zero, minus 1, positive 1, Integer.MAX_VALUE and Integer.MIN_VALUE.
 Another example would be for a generator for enums. That should include _all_ the values of the enum to ensure
 each value is tested.
 
@@ -1040,25 +1053,25 @@ cases first and the random values afterwards.
 This interface added a couple of helpers for Mockito, and was used primarily before Kotlin specific mocking libraries appeared.
 Now there is little value in this mini-wrapper so it was removed. Simply add whatever mocking library you like to your build
 and use it as normal.
- 
-* **CsvDataSource** 
+
+* **CsvDataSource**
 
 This class has been added for loading data for table testing. A simple example:
 
 ```kotlin
 class CsvDataSourceTest : WordSpec() {
   init {
-  
+
     "CsvDataSource" should {
       "read data from csv file" {
-      
+
         val source = CsvDataSource(javaClass.getResourceAsStream("/user_data.csv"), CsvFormat())
-        
+
         val table = source.createTable<Long, String, String>(
             { it: Record -> Row3(it.getLong("id"), it.getString("name"), it.getString("location")) },
             { it: Array<String> -> Headers3(it[0], it[1], it[2]) }
         )
-        
+
         forAll(table) { a, b, c ->
           a shouldBe gt(0)
           b shouldNotBe null
@@ -1190,8 +1203,8 @@ class StringSpecExample : StringSpec() {
 }
 ```
 
-* Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for 
-edge cases and other specific values you want to test. The headers are used for when values fail, 
+* Table Tests. Tables allow you to manually specific combinations of values that should be used, and are useful for
+edge cases and other specific values you want to test. The headers are used for when values fail,
 the output can show you what inputs were used for what labels. An example of using a table consisting of two-value tuples:
 
 ```kotlin
@@ -1233,7 +1246,7 @@ That test will be executed 100 times with random values in each test. See more i
 ```kotlin
 class StringSpecExample : StringSpec() {
   val reader = autoClose(StringReader("xyz"))
-  
+
   ...
 }
 ```
@@ -1292,7 +1305,7 @@ map should contain(1, "a")
 
 #### Replaced `timeout` + `timeUnit` with `Duration` ([#29](https://github.com/kotlintest/kotlintest/issues/29))
 
-You can now write `config(timeout = 2.seconds)` instead of 
+You can now write `config(timeout = 2.seconds)` instead of
 `config(timeout = 2, timeoutUnit = TimeUnit.SECONDS)`.
 
 ### Deprecated

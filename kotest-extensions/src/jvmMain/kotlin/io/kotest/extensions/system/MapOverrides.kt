@@ -39,17 +39,14 @@ sealed class OverrideMode {
    object SetOrError : OverrideMode() {
       override fun override(originalValues: Map<String, String>,
                             newValues: Map<String, String?>): MutableMap<String, String> {
-         val keysToForbidOverride = originalValues.keys
-
-         return if (newValues.keys.any { it in keysToForbidOverride }) {
-            throw IllegalOverrideException()
+         return if (newValues.keys.any { it in originalValues.keys }) {
+            throw IllegalOverrideException(newValues)
          } else {
             SetOrOverride.override(originalValues, newValues)
          }
-
       }
 
-      class IllegalOverrideException : IllegalArgumentException("Overriding a variable when mode is set to SetOrError. Use another OverrideMode to allow this.")
+      class IllegalOverrideException(values: Map<String, String?>) : IllegalArgumentException("Overriding a variable when mode is set to SetOrError. Use another OverrideMode to allow this. Trying to set $values")
    }
 }
 

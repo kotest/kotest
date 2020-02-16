@@ -1,11 +1,11 @@
 package io.kotest.matchers.result
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.ErrorCollector
 import io.kotest.assertions.Failures
 import io.kotest.assertions.clueContextAsString
 import io.kotest.assertions.collectOrThrow
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KClass
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
@@ -29,7 +29,7 @@ class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
     return when {
       !value.isSuccess -> defaultResult(false)
       expected == null -> defaultResult(true)
-      else -> io.kotest.MatcherResult(
+      else -> MatcherResult(
         value.getOrNull() == expected,
         "Result should be a Success($expected), but instead got Succes(${value.getOrNull()}).",
         "Result should not be a Success($expected)"
@@ -38,7 +38,7 @@ class BeSuccess<T>(val expected: T? = null) : Matcher<Result<T>> {
   }
 
   private fun defaultResult(passed: Boolean) =
-    io.kotest.MatcherResult(passed, "Result should be a success.", "Result should not be a success")
+    MatcherResult(passed, "Result should be a success.", "Result should not be a success")
 }
 
 fun Result<Any>.shouldBeFailure(block: ((Throwable?) -> Unit)? = null) {
@@ -50,7 +50,7 @@ fun Result<Any>.shouldNotBeFailure() = test(inverse = true) {
   BeFailure().test(this)
 }
 class BeFailure : Matcher<Result<Any>> {
-  override fun test(value: Result<Any>) = io.kotest.MatcherResult(
+  override fun test(value: Result<Any>) = MatcherResult(
     value.isFailure,
     "Result should be a failure",
     "Result should not be a failure"

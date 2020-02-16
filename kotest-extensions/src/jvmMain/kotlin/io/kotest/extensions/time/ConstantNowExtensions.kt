@@ -1,8 +1,9 @@
 package io.kotest.extensions.time
 
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -27,41 +28,42 @@ import kotlin.reflect.full.staticFunctions
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
 inline fun <T, reified Time : Temporal> withConstantNow(now: Time, block: () -> T): T {
-  mockNow(now, Time::class)
-  try {
-    return block()
-  } finally {
-    unmockNow(Time::class)
-  }
+   mockNow(now, Time::class)
+   try {
+      return block()
+   } finally {
+      unmockNow(Time::class)
+   }
 }
 
 @PublishedApi
 internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
-  mockkStatic(klass)
-  every { getNoParameterNowFunction(klass).call() } returns value
+   mockkStatic(klass)
+   every { getNoParameterNowFunction(klass).call() } returns value
 }
 
 @PublishedApi
 internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<Time>): KFunction<*> {
-  return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
+   return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
 }
 
 @PublishedApi
 internal fun <Time : Temporal> unmockNow(klass: KClass<Time>) {
-  unmockkStatic(klass)
+   unmockkStatic(klass)
 }
 
-abstract class ConstantNowListener<Time : Temporal>(private val now: Time) : TestListener {
-  
-  private val nowKlass = now::class as KClass<Time>
-  
-  protected fun changeNow() {
-    mockNow(now, nowKlass)
-  }
-  
-  protected fun resetNow() {
-    unmockNow(nowKlass)
-  }
+abstract class ConstantNowListener<Time : Temporal>(private val now: Time) {
+
+   @Suppress("UNCHECKED_CAST")
+   private val nowKlass = now::class as KClass<Time>
+
+   protected fun changeNow() {
+      mockNow(now, nowKlass)
+   }
+
+   protected fun resetNow() {
+      unmockNow(nowKlass)
+   }
 }
 
 
@@ -80,15 +82,16 @@ abstract class ConstantNowListener<Time : Temporal>(private val now: Time) : Tes
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now) {
-  
-  override fun beforeTest(testCase: TestCase) {
-    changeNow()
-  }
-  
-  override fun afterTest(testCase: TestCase, result: TestResult) {
-    resetNow()
-  }
+class ConstantNowTestListener<Time : Temporal>(now: Time) :
+   ConstantNowListener<Time>(now), TestListener {
+
+   override suspend fun beforeTest(testCase: TestCase) {
+      changeNow()
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetNow()
+   }
 }
 
 /**
@@ -106,13 +109,14 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowProjectListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now) {
-  
-  override fun beforeProject() {
-    changeNow()
-  }
-  
-  override fun afterProject() {
-    resetNow()
-  }
+class ConstantNowProjectListener<Time : Temporal>(now: Time) :
+   ConstantNowListener<Time>(now), ProjectListener {
+
+   override fun beforeProject() {
+      changeNow()
+   }
+
+   override fun afterProject() {
+      resetNow()
+   }
 }

@@ -1,10 +1,10 @@
 package io.kotest.matchers.date
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.equalityMatcher
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.equalityMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import java.time.ZonedDateTime
 
 fun beInTodayZDT() = object : Matcher<ZonedDateTime> {

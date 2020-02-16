@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.matchers
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.doubles.exactly
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.file.haveExtension
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.endWith
 import io.kotest.matchers.string.startWith
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
 import java.io.File
 import java.io.FileNotFoundException
 

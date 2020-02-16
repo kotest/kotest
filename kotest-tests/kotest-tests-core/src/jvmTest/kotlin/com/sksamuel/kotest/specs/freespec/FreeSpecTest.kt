@@ -1,16 +1,15 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
 
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class FreeSpecTest : FreeSpec() {
 
   private var count = 0
 
-  override fun afterSpec(description: Description, spec: Spec) {
+  override fun afterSpec(spec: Spec) {
     count shouldBe 3
   }
 
@@ -31,7 +30,7 @@ class FreeSpecTest : FreeSpec() {
 
 
     "params" - {
-      "support config".config(invocations = 5) {
+      "support config".config(enabled = true) {
       }
     }
   }

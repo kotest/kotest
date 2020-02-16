@@ -2,18 +2,36 @@ package io.kotest.properties
 
 import io.kotest.assertions.Failures
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> verifyNone(noinline fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A) -> Boolean) {
   verifyNone(iterations, Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> verifyNone(gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, gena, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A) -> Boolean) = verifyNone(iterations, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A) -> Boolean) = verifyNone(iterations, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A) -> Boolean) = verifyNone(iterations, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A) -> Boolean) = verifyNone(iterations, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A) -> Boolean) = verifyNone(iterations, this, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> Gen<A>.verifyNone(iterations: Int = 1000, fn: PropertyContext.(a0: A, a1: A, a2: A, a3: A, a4: A, a5: A) -> Boolean) = verifyNone(iterations, this, this, this, this, this, this, fn)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> verifyNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
@@ -35,16 +53,20 @@ fun <A> verifyNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> 
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B> verifyNone(noinline fn: PropertyContext.(a: A, b: B) -> Boolean) {
   verifyNone(Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> verifyNone(gena: Gen<A>, genb: Gen<B>, fn: PropertyContext.(a: A, b: B) -> Boolean) = verifyNone(1000, gena, genb, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyContext.(a: A, b: B) -> Boolean) {
   val context = PropertyContext()
   fun test(a: A, b: B) {
@@ -69,17 +91,21 @@ fun <A, B> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyC
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C> verifyNone(noinline fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) {
   verifyNone(1000, fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C> verifyNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) =
     verifyNone(1000, gena, genb, genc, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, fn: PropertyContext.(a: A, b: B, c: C) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
@@ -110,17 +136,21 @@ fun <A, B, C> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D> verifyNone(noinline fn: PropertyContext.(a: A, b: B, c: C, D) -> Boolean) {
   verifyNone(1000, fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, D) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D> verifyNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Boolean) =
     verifyNone(1000, gena, genb, genc, gend, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, fn: PropertyContext.(a: A, b: B, c: C, d: D) -> Boolean) {
   val context = PropertyContext()
   fun test(a: A, b: B, c: C, d: D) {
@@ -149,16 +179,20 @@ fun <A, B, C, D> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: G
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E> verifyNone(noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) =
     verifyNone(1000, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E> verifyNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) =
     verifyNone(1000, gena, genb, genc, gend, gene, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
   val context = PropertyContext()
@@ -196,17 +230,21 @@ fun <A, B, C, D, E> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
   outputClassifications(context)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> verifyNone(noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
   verifyNone(1000, fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A, reified B, reified C, reified D, reified E, reified F> verifyNone(iterations: Int, noinline fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
   verifyNone(iterations, Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), Gen.default(), fn)
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F> verifyNone(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) =
     verifyNone(1000, gena, genb, genc, gend, gene, genf, fn)
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, genf: Gen<F>, fn: PropertyContext.(a: A, b: B, c: C, d: D, e: E, f: F) -> Boolean) {
   if (iterations <= 0) throw IllegalArgumentException("Iterations should be a positive number")
 

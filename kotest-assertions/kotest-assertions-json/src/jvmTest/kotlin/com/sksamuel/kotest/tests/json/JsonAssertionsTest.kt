@@ -8,9 +8,9 @@ import io.kotest.assertions.json.shouldNotContainJsonKey
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotMatchJson
 import io.kotest.assertions.json.shouldNotMatchJsonResource
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 const val json = """{
     "store": {

@@ -1,26 +1,22 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.extensions.TestListener
-import io.kotest.shouldBe
-import io.kotest.specs.WordSpec
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 
-class TestListenerTest : WordSpec(), TestListener {
+class TestListenerTest : WordSpec() {
 
-  var a: String? = null
+   var a: String? = null
 
-  override fun beforeSpec(description: Description, spec: Spec) {
-    a = "wibble"
-  }
+   override fun beforeSpec(spec: Spec) {
+      a = "wibble"
+   }
 
-  override fun listeners(): List<TestListener> = listOf(this)
-
-  init {
-    "TestListener" should {
-      "invoke before each spec" {
-        a shouldBe "wibble"
+   init {
+      "TestListener" should {
+         "invoke before each spec" {
+            a shouldBe "wibble"
+         }
       }
-    }
-  }
+   }
 }

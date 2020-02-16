@@ -12,7 +12,7 @@ import io.kotest.matchers.floats.shouldNotBeGreaterThanOrEqual
 import io.kotest.matchers.floats.shouldNotBeLessThan
 import io.kotest.matchers.floats.shouldNotBeLessThanOrEqual
 import io.kotest.matchers.floats.shouldNotBeZero
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class FloatMatchersTest : StringSpec() {
   init {

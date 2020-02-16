@@ -1,8 +1,9 @@
 package io.kotest.extensions.system
 
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 
 /**
  * Replaces System Security Manager with [securityManager]
@@ -14,31 +15,29 @@ import io.kotest.extensions.TestListener
  * will replace it. However, all other tests are going to use it if tests are running in parallel.
  */
 inline fun <reified T> withSecurityManager(securityManager: SecurityManager?, block: () -> T): T {
-  val originalSecurityManager = System.getSecurityManager()
-  
-  System.setSecurityManager(securityManager)
-  
-  try {
-    return block()
-  } finally {
-    System.setSecurityManager(originalSecurityManager)
-  }
+   val originalSecurityManager = System.getSecurityManager()
+
+   System.setSecurityManager(securityManager)
+
+   try {
+      return block()
+   } finally {
+      System.setSecurityManager(originalSecurityManager)
+   }
 }
 
 
-abstract class SecurityManagerListener(
-        protected val securityManager: SecurityManager?
-) : TestListener {
-  
-  private val originalSecurityManager = System.getSecurityManager()
-  
-  protected fun changeSecurityManager() {
-    System.setSecurityManager(securityManager)
-  }
-  
-  protected fun resetSecurityManager() {
-    System.setSecurityManager(originalSecurityManager)
-  }
+abstract class SecurityManagerListener(protected val securityManager: SecurityManager?) {
+
+   private val originalSecurityManager = System.getSecurityManager()
+
+   protected fun changeSecurityManager() {
+      System.setSecurityManager(securityManager)
+   }
+
+   protected fun resetSecurityManager() {
+      System.setSecurityManager(originalSecurityManager)
+   }
 }
 
 /**
@@ -53,17 +52,16 @@ abstract class SecurityManagerListener(
  * **Attention**: This code is subject to race conditions. As Java's System Manager is only one per JVM, this code
  * will replace it. However, all other tests are going to use it if tests are running in parallel.
  */
-class SecurityManagerTestListener(
-        securityManager: SecurityManager?
-) : SecurityManagerListener(securityManager) {
-  
-  override fun beforeTest(testCase: TestCase) {
-    changeSecurityManager()
-  }
-  
-  override fun afterTest(testCase: TestCase, result: TestResult) {
-    resetSecurityManager()
-  }
+class SecurityManagerTestListener(securityManager: SecurityManager?) : SecurityManagerListener(securityManager),
+   TestListener {
+
+   override suspend fun beforeTest(testCase: TestCase) {
+      changeSecurityManager()
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetSecurityManager()
+   }
 }
 
 /**
@@ -79,14 +77,14 @@ class SecurityManagerTestListener(
  * will replace it. However, all other tests are going to use it if tests are running in parallel.
  */
 class SecurityManagerProjectListener(
-        securityManager: SecurityManager?
-) : SecurityManagerListener(securityManager) {
-  
-  override fun beforeProject() {
-    changeSecurityManager()
-  }
-  
-  override fun afterProject() {
-    resetSecurityManager()
-  }
+   securityManager: SecurityManager?
+) : SecurityManagerListener(securityManager), ProjectListener {
+
+   override fun beforeProject() {
+      changeSecurityManager()
+   }
+
+   override fun afterProject() {
+      resetSecurityManager()
+   }
 }

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.matchers.date
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.date.after
 import io.kotest.matchers.date.atSameZone
 import io.kotest.matchers.date.before
@@ -44,12 +45,11 @@ import io.kotest.matchers.date.shouldNotHaveSameNanosAs
 import io.kotest.matchers.date.shouldNotHaveSameSecondsAs
 import io.kotest.matchers.date.shouldNotHaveSameYearAs
 import io.kotest.matchers.date.within
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldNotBe
-import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import java.time.DayOfWeek.SATURDAY
 import java.time.Duration
 import java.time.LocalDate
@@ -265,7 +265,6 @@ class DateMatchersTest : StringSpec() {
       LocalDate.of(2014, 1, 2) shouldNotBe within(Period.ofDays(3), LocalDate.of(2014, 1, 6))
       LocalDate.of(2014, 1, 2).shouldBeWithin(Period.ofDays(3), LocalDate.of(2014, 1, 5))
       LocalDate.of(2014, 1, 2).shouldNotBeWithin(Period.ofDays(3), LocalDate.of(2014, 1, 6))
-
     }
 
     "LocalDateTime shouldBe within(period, date)" {

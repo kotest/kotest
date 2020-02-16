@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
 
 class FreeSpecLambdaTest : FreeSpec({
 

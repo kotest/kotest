@@ -1,7 +1,7 @@
 package io.kotest.matchers.booleans
 
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 /**
  * Asserts that this [Boolean] is true

@@ -1,8 +1,9 @@
 package com.sksamuel.kotest
 
-import io.kotest.extensions.TestListener
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.autoClose
 import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.io.Closeable
 
 // this is here to test for github issue #294
@@ -25,7 +26,7 @@ class AutoCloseTest : StringSpec() {
   }
 }
 
-object AutoCloseListener : TestListener {
+object AutoCloseListener : ProjectListener {
   override fun afterProject() {
     AutoCloseable1.closed.shouldBeTrue()
     Closeable2.closed.shouldBeTrue()

@@ -1,5 +1,8 @@
 package com.sksamuel.kotest.matchers.url
 
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.url.haveHost
 import io.kotest.matchers.url.haveParameter
 import io.kotest.matchers.url.haveParameterValue
@@ -18,9 +21,6 @@ import io.kotest.matchers.url.shouldNotHaveParameter
 import io.kotest.matchers.url.shouldNotHaveParameterValue
 import io.kotest.matchers.url.shouldNotHavePort
 import io.kotest.matchers.url.shouldNotHaveProtocol
-import io.kotest.should
-import io.kotest.shouldNot
-import io.kotest.specs.WordSpec
 import java.net.URL
 
 class UrlMatchersTest : WordSpec() {

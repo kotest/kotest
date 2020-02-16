@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.matchers.stats
 
-import io.kotest.data.forall
+import io.kotest.data.forAll
 import io.kotest.matchers.stats.shouldHaveMean
 import io.kotest.matchers.stats.shouldHaveStandardDeviation
 import io.kotest.matchers.stats.shouldHaveVariance
 import io.kotest.matchers.stats.shouldNotHaveMean
 import io.kotest.matchers.stats.shouldNotHaveStandardDeviation
 import io.kotest.matchers.stats.shouldNotHaveVariance
-import io.kotest.specs.StringSpec
-import io.kotest.tables.row
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.row
 import java.math.BigDecimal
 
 class StatsMatchersTest : StringSpec() {
@@ -54,7 +54,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct mean value with default precision" {
-         forall(
+         forAll(
             row(1.0, listOf(1)),
             row(0.0, listOf<Int>()),
             row(0.0, listOf(0)),
@@ -79,7 +79,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should NOT have correct mean value with default precision" {
-         forall(
+         forAll(
             row(1.0, listOf(-1, 1)),
             row(0.1, listOf(-1, 1)),
             row(0.01, listOf(-1, 1)),
@@ -107,7 +107,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct mean with specific precision" {
-         forall(
+         forAll(
             row(266.6666666667, 10, listOf(1, 2, 797)),
             row(266.666667, 6, listOf(1, 2, 797)),
             row(266.66667, 5, listOf(1, 2, 797)),
@@ -123,7 +123,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct mean value with default precision" {
-         forall(
+         forAll(
             row(1.0, listOf(1.0)),
             row(0.0, listOf()),
             row(0.0, listOf(0.0)),
@@ -148,7 +148,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should NOT have correct mean value with default precision" {
-         forall(
+         forAll(
             row(1.0, listOf(-1.0, 1.0)),
             row(0.1, listOf(-1.0, 1.0)),
             row(0.01, listOf(-1.0, 1.0)),
@@ -176,7 +176,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct mean with specific precision" {
-         forall(
+         forAll(
             row(266.6666666667, 10, listOf(1.0, 2.0, 797.0)),
             row(266.666667, 6, listOf(1.0, 2.0, 797.0)),
             row(266.66667, 5, listOf(1.0, 2.0, 797.0)),
@@ -192,7 +192,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Number> should have correct mean with mix types" {
-         forall(
+         forAll(
             row(266.6666666667, 10, listOf<Number>(1.0f, 2, 797.0)),
             row(3.43333, 5, listOf<Number>(1, 2.0, 3.1f, 4L, 5.toBigInteger(), BigDecimal("5.5")))
          ) { mean: Double, precision: Int, value: Collection<Number> ->
@@ -202,7 +202,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct variance value with default precision" {
-         forall(
+         forAll(
             row(0.6667, listOf(1, 3, 2)),
             row(0.6667, listOf(-1, -3, -2)),
             row(4.2222, listOf(-1, 2, -3)),
@@ -214,7 +214,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should NOT have correct variance value with default precision" {
-         forall(
+         forAll(
             row(0.1234, listOf(1, 3, 2)),
             row(0.6666, listOf(-1, -3, -2)),
             row(4.0, listOf(-1, 2, -3)),
@@ -226,7 +226,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct variance value with specific precision" {
-         forall(
+         forAll(
             row(1.0, 0, listOf(1, 3, 2)),
             row(0.7, 1, listOf(1, 3, 2)),
             row(0.67, 2, listOf(1, 3, 2)),
@@ -240,7 +240,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct variance value with default precision" {
-         forall(
+         forAll(
             row(0.6667, listOf(1.0, 3.0, 2.0)),
             row(0.6667, listOf(-1.0, -3.0, -2.0)),
             row(4.2222, listOf(-1.0, 2.0, -3.0)),
@@ -252,7 +252,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should NOT have correct variance value with default precision" {
-         forall(
+         forAll(
             row(0.1234, listOf(1.0, 3.0, 2.0)),
             row(0.6666, listOf(-1.0, -3.0, -2.0)),
             row(4.0, listOf(-1.0, 2.0, -3.0)),
@@ -264,7 +264,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct variance value with specific precision" {
-         forall(
+         forAll(
             row(1.0, 0, listOf(1.0, 3.0, 2.0)),
             row(0.7, 1, listOf(1.0, 3.0, 2.0)),
             row(0.67, 2, listOf(1.0, 3.0, 2.0)),
@@ -278,7 +278,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct standard deviation value with default precision" {
-         forall(
+         forAll(
             row(0.8165, listOf(1, 3, 2)),
             row(0.8165, listOf(-1, -3, -2)),
             row(2.0548, listOf(-1, 2, -3)),
@@ -290,7 +290,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should NOT have correct standard deviation value with default precision" {
-         forall(
+         forAll(
             row(0.8165, listOf(1, 3, 2, 4)),
             row(0.81, listOf(-1, -3, -2, 0)),
             row(2.0548, listOf(-1, 2)),
@@ -302,7 +302,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Int> should have correct standard deviation value with specific precision" {
-         forall(
+         forAll(
             row(1.0, 0, listOf(1, 3, 2)),
             row(0.8, 1, listOf(1, 3, 2)),
             row(0.82, 2, listOf(1, 3, 2)),
@@ -318,7 +318,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct standard deviation value with default precision" {
-         forall(
+         forAll(
             row(0.8165, listOf(1.0, 3.0, 2.0)),
             row(0.8165, listOf(-1.0, -3.0, -2.0)),
             row(2.0548, listOf(-1.0, 2.0, -3.0)),
@@ -330,7 +330,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should NOT have correct standard deviation value with default precision" {
-         forall(
+         forAll(
             row(0.8165, listOf(1.0, 3.0, 2.0, 4.0)),
             row(0.81, listOf(-1.0, -3.0, -2.0, 0.0)),
             row(2.0548, listOf(-1.0, 2.0)),
@@ -342,7 +342,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "Collection<Double> should have correct standard deviation value with specific precision" {
-         forall(
+         forAll(
             row(1.0, 0, listOf(1.0, 3.0, 2.0)),
             row(0.8, 1, listOf(1.0, 3.0, 2.0)),
             row(0.82, 2, listOf(1.0, 3.0, 2.0)),
@@ -358,7 +358,7 @@ class StatsMatchersTest : StringSpec() {
       }
 
       "check matchers with big numbers" {
-         forall(
+         forAll(
             row(
                BigDecimal("493833345678.55532725"),
                BigDecimal("243859180040573015450155.6869068511"),

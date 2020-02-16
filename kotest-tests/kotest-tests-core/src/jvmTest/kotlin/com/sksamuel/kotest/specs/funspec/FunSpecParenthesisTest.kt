@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.funspec
 
-import io.kotest.specs.FunSpec
+import io.kotest.core.spec.style.FunSpec
 
 class FunSpecParenthesisTest : FunSpec() {
   init {

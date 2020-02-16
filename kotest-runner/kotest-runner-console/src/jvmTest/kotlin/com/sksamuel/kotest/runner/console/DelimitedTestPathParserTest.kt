@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 import io.kotest.runner.console.DelimitedTestPathParser
 import io.kotest.shouldBe
 import io.kotest.specs.FunSpec
@@ -18,11 +18,13 @@ class DelimitedTestPathParserTest : FunSpec() {
     }
 
     test("should parse multiple tests") {
-      DelimitedTestPathParser.parse(Description.spec("myspec"),
+      DelimitedTestPathParser.parse(
+          Description.spec("myspec"),
           "testa -- testb -- testc") shouldBe
           Description.spec("myspec").append("testa").append("testb").append("testc")
 
-      DelimitedTestPathParser.parse(Description.spec("myspec"),
+      DelimitedTestPathParser.parse(
+          Description.spec("myspec"),
           "testa -- testb-- -- testc") shouldBe
           Description.spec("myspec").append("testa").append("testb--").append("testc")
     }

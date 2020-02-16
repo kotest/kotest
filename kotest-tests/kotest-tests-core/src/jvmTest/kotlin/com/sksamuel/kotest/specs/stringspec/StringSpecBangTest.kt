@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.stringspec
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class StringSpecBangTest : StringSpec() {
 

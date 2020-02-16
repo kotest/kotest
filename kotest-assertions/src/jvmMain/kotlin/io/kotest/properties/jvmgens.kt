@@ -1,13 +1,18 @@
 package io.kotest.properties
 
+import io.kotest.matchers.string.UUIDVersion
 import java.io.File
 import java.math.BigInteger
-import java.time.*
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Period
+import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.util.*
-import kotlin.random.Random
+import java.util.UUID
 
 /**
  * Generates a stream of random Periods
@@ -19,6 +24,7 @@ import kotlin.random.Random
  * Months will always be in range [0..11]
  * Days will always be in range [0..31]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.period(maxYear: Int = 10): Gen<Period> = object : Gen<Period> {
    override fun constants(): Iterable<Period> = listOf(Period.ZERO)
    override fun random(seed: Long?): Sequence<Period> = generateSequence {
@@ -26,6 +32,7 @@ fun Gen.Companion.period(maxYear: Int = 10): Gen<Period> = object : Gen<Period> 
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigIntegerGen(maxNumBits)
 
 /**
@@ -33,6 +40,7 @@ fun Gen.Companion.bigInteger(maxNumBits: Int = 32): Gen<BigInteger> = BigInteger
  * chosen created File object. The file objects do not necessarily
  * exist on disk.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {
@@ -46,6 +54,7 @@ fun Gen.Companion.file(): Gen<File> = object : Gen<File> {
  *
  * This generator creates randomly generated Duration, of at most [maxDuration].
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Duration> = object : Gen<Duration> {
    private val maxDurationInSeconds = maxDuration.seconds
 
@@ -58,9 +67,18 @@ fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Dur
    }
 }
 
-fun Gen.Companion.uuid(): Gen<UUID> = object : Gen<UUID> {
-   override fun constants(): Iterable<UUID> = emptyList()
-   override fun random(seed: Long?): Sequence<UUID> = generateSequence { UUID.randomUUID() }
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+fun Gen.Companion.uuid(
+   uuidVersion: UUIDVersion = UUIDVersion.V4,
+   allowNilValue: Boolean = true
+): Gen<UUID> = object: Gen<UUID> {
+   override fun constants() = if(allowNilValue)
+      listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+   else emptyList()
+
+   override fun random(seed: Long?) = Gen.regex(uuidVersion.uuidRegex).random(seed).map {
+      UUID.fromString(it)
+   }
 }
 
 /**
@@ -74,6 +92,7 @@ fun Gen.Companion.uuid(): Gen<UUID> = object : Gen<UUID> {
  * @see [localDateTime]
  * @see [localTime]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<LocalDate> = object : Gen<LocalDate> {
   override fun constants(): Iterable<LocalDate> {
     val yearRange = (minYear..maxYear)
@@ -104,6 +123,7 @@ fun Gen.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Gen<Local
  * @see [localDateTime]
  * @see [localDate]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
    override fun constants(): Iterable<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
    override fun random(seed: Long?): Sequence<LocalTime> {
@@ -125,6 +145,7 @@ fun Gen.Companion.localTime(): Gen<LocalTime> = object : Gen<LocalTime> {
  * @see [localDateTime]
  * @see [localTime]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.localDateTime(minYear: Int = 1970,
                                 maxYear: Int = 2030): Gen<LocalDateTime> = object : Gen<LocalDateTime> {
    override fun constants(): Iterable<LocalDateTime> {
@@ -140,13 +161,17 @@ fun Gen.Companion.localDateTime(minYear: Int = 1970,
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified T : Enum<T>> Gen.Companion.enum(): Gen<T> = object : Gen<T> {
    val values = T::class.java.enumConstants.toList()
    override fun constants(): Iterable<T> = values
    override fun random(seed: Long?): Sequence<T> = from(values).random()
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.regex(regex: String) = RegexpGen(regex)
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
 
 /**
@@ -154,6 +179,7 @@ fun Gen.Companion.regex(regex: Regex) = regex(regex.pattern)
  * chosen File object from given directory. If the Directory does not exist, an empty sequence will be returned instead.
  * If recursive is true(default value is false) it gives files from inner directories as well recursively.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.file(directoryName: String, recursive: Boolean = false): Gen<File> = object : Gen<File> {
    override fun constants(): Iterable<File> = emptyList()
    override fun random(seed: Long?): Sequence<File> {

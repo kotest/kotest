@@ -1,7 +1,7 @@
 package io.kotest.runner.console
 
-import io.kotest.Description
-import io.kotest.Spec
+import io.kotest.core.Description
+import io.kotest.SpecClass
 import io.kotest.core.TestCaseFilter
 import io.kotest.core.TestFilterResult
 import io.kotest.core.fromSpecClass
@@ -11,9 +11,9 @@ import kotlin.reflect.full.allSuperclasses
 /**
  * A [TestCaseFilter] that parses the a test path by detecting the type of spec in use.
  */
-class SpecAwareTestFilter(testPath: String, spec: KClass<out Spec>) : TestCaseFilter {
+class SpecAwareTestFilter(testPath: String, spec: KClass<out SpecClass>) : TestCaseFilter {
 
-  private fun KClass<out Spec>.isSpec(classname: String): Boolean =
+  private fun KClass<out SpecClass>.isSpec(classname: String): Boolean =
       this.allSuperclasses.map { it.qualifiedName }.contains(classname)
 
   private val parser = spec.run {

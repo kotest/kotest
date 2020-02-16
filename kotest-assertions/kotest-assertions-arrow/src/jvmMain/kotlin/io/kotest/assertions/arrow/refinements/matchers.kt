@@ -1,11 +1,11 @@
 package io.kotest.assertions.arrow.refinements
 
 import arrow.validation.Refinement
-import io.kotest.Matcher
 import io.kotest.assertions.arrow.matcher
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should
 import io.kotest.properties.Gen
 import io.kotest.properties.PropertyContext
-import io.kotest.should
 
 /**
  * Asserts that a value of type [A] complies with the [refinement]

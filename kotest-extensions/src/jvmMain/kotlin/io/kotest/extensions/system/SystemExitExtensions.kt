@@ -1,13 +1,15 @@
 package io.kotest.extensions.system
 
-import io.kotest.AbstractProjectConfig
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.extensions.TestListener
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.test.Description
+import io.kotest.core.spec.description
+import io.kotest.core.spec.Spec
+import io.kotest.core.listeners.TestListener
 import java.io.FileDescriptor
 import java.net.InetAddress
 import java.security.Permission
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 /**
  * Will replace the [SecurityManager] used by the Java runtime
@@ -23,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
  * alternative [SpecSystemExitListener]
  */
 object SystemExitListener : TestListener {
-    override fun beforeProject() {
+   override suspend fun prepareSpec(kclass: KClass<out Spec>) {
         val previous = System.getSecurityManager()
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
@@ -47,19 +49,19 @@ object SystemExitListener : TestListener {
  * project, then use the alternative [SystemExitListener]
  */
 object SpecSystemExitListener : TestListener {
-    
+
     private val previousSecurityManagers = ConcurrentHashMap<Description, SecurityManager>()
-    
-    override fun beforeSpec(spec: Spec) {
+
+   override suspend fun beforeSpec(spec: Spec) {
         val previous = System.getSecurityManager()
         if (previous != null)
-            previousSecurityManagers[spec.description()] = previous
+            previousSecurityManagers[spec::class.description()] = previous
         System.setSecurityManager(NoExitSecurityManager(previous))
     }
-    
-    override fun afterSpec(spec: Spec) {
-        if (previousSecurityManagers.contains(spec.description()))
-            System.setSecurityManager(previousSecurityManagers[spec.description()])
+
+   override suspend fun afterSpec(spec: Spec) {
+        if (previousSecurityManagers.contains(spec::class.description()))
+            System.setSecurityManager(previousSecurityManagers[spec::class.description()])
         else
             System.setSecurityManager(null)
     }
@@ -77,120 +79,120 @@ class SystemExitException(val exitCode: Int) : RuntimeException()
  */
 @Suppress("OverridingDeprecatedMember", "DEPRECATION")
 class NoExitSecurityManager(private val originalSecurityManager: SecurityManager?) : SecurityManager() {
-    
+
     override fun checkExit(status: Int) = throw SystemExitException(status)
-    
+
     override fun getSecurityContext(): Any {
         return if (originalSecurityManager == null)
             super.getSecurityContext()
         else
             originalSecurityManager.securityContext
     }
-    
+
     override fun checkPermission(perm: Permission) {
         originalSecurityManager?.checkPermission(perm)
     }
-    
+
     override fun checkPermission(perm: Permission, context: Any) {
         originalSecurityManager?.checkPermission(perm, context)
     }
-    
+
     override fun checkCreateClassLoader() {
         originalSecurityManager?.checkCreateClassLoader()
     }
-    
+
     override fun checkAccess(t: Thread) {
         originalSecurityManager?.checkAccess(t)
     }
-    
+
     override fun checkAccess(g: ThreadGroup) {
         originalSecurityManager?.checkAccess(g)
     }
-    
+
     override fun checkExec(cmd: String) {
         originalSecurityManager?.checkExec(cmd)
     }
-    
+
     override fun checkLink(lib: String) {
         originalSecurityManager?.checkLink(lib)
     }
-    
+
     override fun checkRead(fd: FileDescriptor) {
         originalSecurityManager?.checkRead(fd)
     }
-    
+
     override fun checkRead(file: String) {
         originalSecurityManager?.checkRead(file)
     }
-    
+
     override fun checkRead(file: String, context: Any) {
         originalSecurityManager?.checkRead(file, context)
     }
-    
+
     override fun checkWrite(fd: FileDescriptor) {
         originalSecurityManager?.checkWrite(fd)
     }
-    
+
     override fun checkWrite(file: String) {
         originalSecurityManager?.checkWrite(file)
     }
-    
+
     override fun checkDelete(file: String) {
         originalSecurityManager?.checkDelete(file)
     }
-    
+
     override fun checkConnect(host: String, port: Int) {
         originalSecurityManager?.checkConnect(host, port)
     }
-    
+
     override fun checkConnect(host: String, port: Int, context: Any) {
         originalSecurityManager?.checkConnect(host, port, context)
     }
-    
+
     override fun checkListen(port: Int) {
         originalSecurityManager?.checkListen(port)
     }
-    
+
     override fun checkAccept(host: String, port: Int) {
         originalSecurityManager?.checkAccept(host, port)
     }
-    
+
     override fun checkMulticast(maddr: InetAddress) {
         originalSecurityManager?.checkMulticast(maddr)
     }
-    
+
     override fun checkMulticast(maddr: InetAddress, ttl: Byte) {
         originalSecurityManager?.checkMulticast(maddr, ttl)
     }
-    
+
     override fun checkPropertiesAccess() {
         originalSecurityManager?.checkPropertiesAccess()
     }
-    
+
     override fun checkPropertyAccess(key: String) {
         originalSecurityManager?.checkPropertyAccess(key)
     }
-    
+
     override fun checkPrintJobAccess() {
         originalSecurityManager?.checkPrintJobAccess()
     }
-    
+
     override fun checkPackageAccess(pkg: String) {
         originalSecurityManager?.checkPackageAccess(pkg)
     }
-    
+
     override fun checkPackageDefinition(pkg: String) {
         originalSecurityManager?.checkPackageDefinition(pkg)
     }
-    
+
     override fun checkSetFactory() {
         originalSecurityManager?.checkSetFactory()
     }
-    
+
     override fun checkSecurityAccess(target: String) {
         originalSecurityManager?.checkSecurityAccess(target)
     }
-    
+
     override fun getThreadGroup(): ThreadGroup {
         return if (originalSecurityManager == null)
             super.getThreadGroup()

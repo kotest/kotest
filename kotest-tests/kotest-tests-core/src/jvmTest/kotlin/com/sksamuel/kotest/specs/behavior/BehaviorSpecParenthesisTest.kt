@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.behavior
 
-import io.kotest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecParenthesisTest : BehaviorSpec() {
   init {

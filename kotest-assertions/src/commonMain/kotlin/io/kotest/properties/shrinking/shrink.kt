@@ -18,7 +18,7 @@ fun <T> shrink2(t: T, shrinker: Shrinker<T>?, test: (T) -> Unit): T {
 
 fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
   val sb = StringBuilder()
-  sb.append("Attempting to io.kotest.properties.shrinking.shrink failed arg ${t.show()}\n")
+  sb.append("Attempting to shrink failed arg ${t.show()}\n")
   var candidate = t
   val tested = HashSet<T>()
   var count = 0

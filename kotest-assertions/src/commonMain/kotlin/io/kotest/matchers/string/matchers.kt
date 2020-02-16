@@ -1,11 +1,10 @@
 package io.kotest.matchers.string
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.show.show
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.*
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.string.UUIDVersion.ANY
+import kotlin.text.RegexOption.IGNORE_CASE
 
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
 fun String?.shouldNotContainOnlyDigits() = this shouldNot containOnlyDigits()
@@ -29,11 +28,8 @@ fun containADigit() = neverNullMatcher<String> { value ->
     "${value.show()} should not contain any digits")
 }
 
-infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(
-  substr)
-
-infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(
-  substr)
+infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(substr)
+infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot containOnlyOnce(substr)
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
@@ -69,11 +65,8 @@ fun beEmpty() = neverNullMatcher<String> { value ->
     "${value.show()} should not be empty")
 }
 
-infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(
-  other)
-
-infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(
-  other)
+infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(other)
+infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot haveSameLengthAs(other)
 fun haveSameLengthAs(other: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.length == other.length,
@@ -168,8 +161,7 @@ fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
 }
 
 infix fun String?.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
-infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(
-  length)
+infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLength(length)
 
 fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
   MatcherResult(
@@ -179,13 +171,8 @@ fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
 }
 
 
-fun String?.shouldHaveLengthBetween(min: Int, max: Int) = this should haveLengthBetween(
-  min,
-  max)
-
-fun String?.shouldNotHaveLengthBetween(min: Int, max: Int) = this shouldNot haveLengthBetween(
-  min,
-  max)
+fun String?.shouldHaveLengthBetween(min: Int, max: Int) = this should haveLengthBetween(min, max)
+fun String?.shouldNotHaveLengthBetween(min: Int, max: Int) = this shouldNot haveLengthBetween(min, max)
 
 fun haveLengthBetween(min: Int, max: Int): Matcher<String?> {
   require(min <= max)
@@ -237,8 +224,7 @@ infix fun String?.shouldNotStartWith(prefix: String) = this shouldNot startWith(
  * @see [shouldNotBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
-infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(
-  other)
+infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqualIgnoringCase(  other)
 
 /**
  * Asserts that [this] is NOT equal to [other] (ignoring case)
@@ -257,8 +243,7 @@ infix fun String?.shouldBeEqualIgnoringCase(other: String) = this should beEqual
  * @see [shouldBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
-infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(
-  other)
+infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot beEqualIgnoringCase(  other)
 
 
 /**
@@ -371,4 +356,89 @@ fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
          { """${value.show()} should not be equal ignoring case one of values: $falsyValues""" }
      )
    }
+}
+
+enum class UUIDVersion(
+  val uuidRegex: Regex
+) {
+  ANY("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
+  V1("[0-9a-f]{8}-[0-9a-f]{4}-[1][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
+  V2("[0-9a-f]{8}-[0-9a-f]{4}-[2][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
+  V3("[0-9a-f]{8}-[0-9a-f]{4}-[3][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
+  V4("[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE)),
+  V5("[0-9a-f]{8}-[0-9a-f]{4}-[5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(IGNORE_CASE));
+}
+
+/**
+ * Asserts that this String is a valid UUID
+ *
+ * Opposite of [shouldNotBeUUID]
+ *
+ * Verifies that this string is a valid UUID as per RFC4122. Version depends on [version]. By default, all versions
+ * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros),
+ * which is considered a valid UUID. By default it's matched as valid.
+ *
+ * ```
+ * "123e4567-e89b-12d3-a456-426655440000".shouldBeUUID(version = ANY)  // Assertion passes
+ * "123e4567-e89b-12d3-a456-426655440000".shouldBeUUID(version = V4)  // Assertion Fails (is V1 UUID)
+ * "123e4567e89b12d3a456426655440000".shouldBeUUID()      // Assertion fails
+ * "00000000-0000-0000-0000-000000000000".shouldBeUUID(considerNilValid = true)  // Assertion passes
+ *
+ * ```
+ *
+ * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ */
+fun String.shouldBeUUID(
+  version: UUIDVersion = ANY,
+  considerNilValid: Boolean = true
+) = this should beUUID(version, considerNilValid)
+
+/**
+ * Asserts that this String is NOT a valid UUID
+ *
+ * Opposite of [shouldBeUUID]
+ *
+ * Verifies that this string is a NOT valid UUID as per RFC4122. Version depends on [version]. By default, all versions
+ * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros),
+ * which is considered a valid UUID. By default it's matched as valid.
+ *
+ * ```
+ * "123e4567-e89b-12d3-a456-426655440000".shouldNotBeUUID(version = ANY)  // Assertion fails
+ * "123e4567e89b12d3a456426655440000".shouldNotBeUUID()      // Assertion passes
+ * "00000000-0000-0000-0000-000000000000".shouldNotBeUUID(considerNilValid = true)  // Assertion fails
+ *
+ * ```
+ *
+ * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ */
+fun String.shouldNotBeUUID(
+  version: UUIDVersion = ANY,
+  considerNilValid: Boolean = true
+) = this shouldNot beUUID(version, considerNilValid)
+
+
+/**
+ * Matcher that verifies if a String is an UUID
+ *
+ *
+ * Verifies that a string is a valid UUID as per RFC4122. Version depends on [version]. By default, all versions
+ * (v1 through v5) are matched. A special attention is necessary for the NIL UUID (an UUID with all zeros),
+ * which is considered a valid UUID. By default it's matched as valid.
+ *
+ *
+ * @see [RFC4122] https://tools.ietf.org/html/rfc4122
+ * @see shouldBeUUID
+ * @see shouldNotBeUUID
+ */
+fun beUUID(
+  version: UUIDVersion = ANY,
+  considerNilValid: Boolean = true
+) = object : Matcher<String> {
+  override fun test(value: String) = MatcherResult(
+    value.matches(version.uuidRegex) || (considerNilValid && value.isNilUUID()),
+    "String $value is not an UUID ($version), but should be",
+    "String $value is an UUID ($version), but shouldn't be"
+  )
+
+  private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }

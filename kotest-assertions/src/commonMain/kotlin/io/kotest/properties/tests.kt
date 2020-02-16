@@ -7,6 +7,7 @@ import io.kotest.properties.shrinking.shrink
 import io.kotest.properties.shrinking.shrink2
 import io.kotest.properties.shrinking.shrinkInputs
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A> testAndShrink(a: A, shrinkera: Shrinker<A>?, context: PropertyContext, fn: PropertyContext.(a: A) -> Unit) {
   context.inc()
   try {
@@ -18,6 +19,7 @@ fun <A> testAndShrink(a: A, shrinkera: Shrinker<A>?, context: PropertyContext, f
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B> testAndShrink(a: A, b: B, shrinkera: Shrinker<A>?, shrinkerb: Shrinker<B>?, context: PropertyContext, fn: PropertyContext.(a: A, b: B) -> Unit) {
   context.inc()
   try {
@@ -33,6 +35,7 @@ fun <A, B> testAndShrink(a: A, b: B, shrinkera: Shrinker<A>?, shrinkerb: Shrinke
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C> testAndShrink(a: A, b: B, c: C, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, context: PropertyContext, fn: PropertyContext.(a: A, b: B, c: C) -> Unit) {
   context.inc()
   try {
@@ -50,6 +53,7 @@ fun <A, B, C> testAndShrink(a: A, b: B, c: C, gena: Gen<A>, genb: Gen<B>, genc: 
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D> testAndShrink(a: A, b: B, c: C, d: D, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, context: PropertyContext, fn: PropertyContext.(a: A, b: B, c: C, D) -> Unit) {
   context.inc()
   try {
@@ -59,6 +63,7 @@ fun <A, B, C, D> testAndShrink(a: A, b: B, c: C, d: D, gena: Gen<A>, genb: Gen<B
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E> testAndShrink(a: A, b: B, c: C, d: D, e: E, gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>, context: PropertyContext, fn: PropertyContext.(a: A, b: B, c: C, D, E) -> Unit) {
   context.inc()
   try {
