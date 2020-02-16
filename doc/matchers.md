@@ -12,6 +12,11 @@ Both styles are supported. The advantage of the extension function style is that
 Matchers can be negated by using `shouldNot` instead of `should` for the infix style. For example, `a shouldNot startWith("boo")`.
 For the extension function style, each function has an equivalent negated version, for example, `a.shouldNotStartWith("boo")`.
 
+### Android
+
+For Android-specific matchers, take a look [here](android_matchers.md)
+
+
 | General | |
 | -------- | ---- |
 | `obj.shouldBe(other)` | General purpose assertion that the given obj and other are both equal |
@@ -29,6 +34,20 @@ For the extension function style, each function has an equivalent negated versio
 | `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
 | `obj.shouldBeNull()` | Asserts that a given reference is null.|
 
+
+| Comparables ||
+| ---- | ---- |
+| `comp.shouldBeLessThan(other)` | Uses `compareTo` to verify that `comp` is less than `other` |
+| `comp.shouldBeLessThanOrEqualTo(other)` | Uses `compareTo` to verify that `comp` is less than or equal to `other` |
+| `comp.shouldBeEqualComparingTo(other)` | Uses `compareTo` to verify that `comp` is equal to `other` |
+| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other` |
+| `comp.shouldBeGreaterThan(other)` | Uses `compareTo` to verify that `comp` is greater than `other` |
+| `comp.shouldBeGreaterThanOrEqualTo(other)` | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
+
+| Iterables ||
+| ------- | ---- |
+| `iterable.shouldBeEmpty()` | Asserts that the iterable's iterator does not have a next value.
+
 | Maps ||
 | -------- | ---- |
 | `map.shouldContain("key", "value")` | Asserts that the map contains the mapping "key" to "value" |
@@ -38,6 +57,7 @@ For the extension function style, each function has an equivalent negated versio
 | `map.shouldContainKeys(keys)` | Asserts that the map contains mappings for all the given keys. |
 | `map.shouldContainValue(value)` | Asserts that the map contains at least one mapping where the value is `value`. |
 | `map.shouldContainValues(values)` | Asserts that the map contains all the given values. |
+| `map.shouldBeEmpty()` | Asserts that this map is empty.\1 |
 
 | Strings ||
 | -------- | ---- |
@@ -60,6 +80,9 @@ For the extension function style, each function has an equivalent negated versio
 | `str.shouldMatch(regex)` | Asserts that the string fully matches the given regex. |
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
+| `str.shouldBeUUID()` | Asserts that the string is a valid UUID (v1 through v5). |
+| `str.shouldBeTruthy()` | Asserts that the string is truthy ("true", "yes", "y" and "1", case insensitive). |
+| `str.shouldBeFalse()` | Asserts that the string is falsy ("false", "no", "n" and "0", case insensitive). |
 
 | JSON ||
 | -------- | ---- |
@@ -114,11 +137,22 @@ For the extension function style, each function has an equivalent negated versio
 | `bigDecimal.shouldBePositive()` | Asserts that the bigDecimal is positive |
 | `bigDecimal.shouldBeNegative()` | Asserts that the bigDecimal is negative |
 | `bigDecimal.shouldBeZero()` | Asserts that the bigDecimal is zero |
-| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n | 
+| `bigDecimal.shouldBeLessThan(n)` | Asserts that the bigDecimal is less than the given value n |
 | `bigDecimal.shouldBeLessThanOrEquals(n)` | Asserts that the bigDecimal is less than or equ
-| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n | 
-| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n | 
-| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range | 
+| `bigDecimal.shouldBeGreaterThan(n)` | Asserts that the bigDecimal is greater than the given value n |
+| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
+| `bigDecimal.shouldBeInRange(r)` | Asserts that the bigDecimal is in the given range |
+
+| Channels ||
+| -------- | ---- |
+| `channel.shouldReceiveWithin(duration)` | Asserts that the channel should receive within duration |
+| `channel.shouldReceiveNoElementsWithin(duration)` | Asserts that the channel should not receive any elements within duration |
+| `channel.shouldHaveSize(n)` | Asserts that the channel should receive exactly n elements before closing |
+| `channel.shouldReceiveAtLeast(n)` | Asserts that the channel should receive >= n elements |
+| `channel.shouldReceiveAtMost(n)` | Asserts that the channel should receive <=n elements before closing |
+| `channel.shouldBeClosed()` | Asserts that the channel is closed |
+| `channel.shouldBeOpen()` | Asserts that the channel is open |
+| `channel.shouldBeEmpty()` | Asserts that the channel is empty |
 
 | Collections ||
 | -------- | ---- |
@@ -128,25 +162,30 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldContainAll(e1, e2, ..., en)` | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.  |
 | `collection.shouldContainDuplicates()` | Asserts that the collection contains at least one duplicate element. |
 | `collection.shouldContainExactly()` | Assert that a collection contains exactly the given values and nothing else, in order. |
-| `collection.shouldContainExactlyInAnyOrder()` | Assert that a collection contains exactly the given values and nothing else, in _any_ order. |
+| `collection.shouldContainAllInAnyOrder()` | Assert that a collection contains all the given values and nothing else, in _any_ order. |
 | `collection.shouldContainNoNulls()` | Asserts that the collection contains no null elements, or is empty. |
 | `collection.shouldContainNull()` | Asserts that the collection contains at least one null element. |
 | `collection.shouldContainOnlyNulls()` | Asserts that the collection contains only null elements, or is empty. |
 | `collection.shouldHaveSingleElement(element)` | Asserts that the collection only contains a single element and that that element is the given one. |
+| `collection.shouldHaveSingleElement { block }` | Asserts that the collection contains a single element by a given predicate. |
 | `collection.shouldHaveSize(length)` | Asserts that the collection is exactly the given length. |
+| `collection.shouldBeSingleton()` | Asserts that the collection contains only one element. |
+| `collection.shouldBeSingleton { block }` | Asserts that the collection only one element, and then, runs the block with this element. |
 | `collection.shouldHaveLowerBound(element)` | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldHaveUpperBound(element)` | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable. |
 | `collection.shouldBeSmallerThan(col)` | Asserts that the collection is smaller than the other collection. |
 | `collection.shouldBeLargerThan(col)` | Asserts that the collection is larger than the other collection. |
 | `collection.shouldBeSameSizeAs(col)` | Asserts that the collection has the same size as the other collection. |
 | `collection.shouldHaveAtLeastSize(n)` | Asserts that the collection has at least size n. |
-| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
+| `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. | 
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
 | `value.shouldBeOneOf(collection)` | Asserts that a specific instance is contained in a collection. |
+| `collection.shouldContainAnyOf(collection)` | Asserts that the collection has at least one of the elements in `collection` |
+| `value.shouldBeIn(collection)` | Asserts that an object is contained in collection, checking by value and not by reference. |
 
 | URIs ||
 | -------- | ---- |
@@ -185,7 +224,7 @@ For the extension function style, each function has an equivalent negated versio
 | `dir.shouldContainFileDeep(name)` | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
 | `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
 | `file.shouldBeSymbolicLink()` | Asserts that the file is a symbolic link. |
-| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name | 
+| `file.shouldHaveParent(name)` |  Assert that the file has a parent with the given name |
 
 | Dates ||
 | -------- | ---- |
@@ -254,31 +293,31 @@ For the extension function style, each function has an equivalent negated versio
 
 | Reflection |     |
 | ---------- | --- |
-| `kclass.shouldHaveAnnotations()` | Asserts that the class has some annotation | 
-| `kclass.shouldHaveAnnotations(n)` | Asserts that the class has exactly N annotation | 
+| `kclass.shouldHaveAnnotations()` | Asserts that the class has some annotation |
+| `kclass.shouldHaveAnnotations(n)` | Asserts that the class has exactly N annotation |
 | `kclass.shouldBeAnnotatedWith<T>()` | Asserts that the class is annotated with the given type |
-| `kclass.shouldBeAnnotatedWith<T> { block }` | Asserts that the class is annotated with the given type, and then, runs the block with the annotation | 
-| `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name | 
+| `kclass.shouldBeAnnotatedWith<T> { block }` | Asserts that the class is annotated with the given type, and then, runs the block with the annotation |
+| `kclass.shouldHaveFunction(name)` | Asserts that the class have a function with the given name |
 | `kclass.shouldHaveFunction(name) { block }` | Asserts that the class have a function with the given name, and then, runs the block with the function |
-| `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name | 
+| `kclass.shouldHaveMemberProperty(name)` | Asserts that the class have a member property with the given name |
 | `kclass.shouldHaveMemberProperty(name) { block }` | Asserts that the class have a member property with the given name, and then, runs the block with the function |
 | `kclass.shouldBeSubtypeOf<T>()` | Asserts that the class is a subtype of T |
 | `kclass.shouldBeSupertypeOf<T>()` | Asserts that the class is a supertype of T |
 | `kclass.shouldBeData()` | Asserts that the class is a data class |
-| `kclass.shouldBeSealed()` | Asserts that the class is a sealed class | 
-| `kclass.shouldBeCompanion()` | Asserts that the class is a companion object | 
+| `kclass.shouldBeSealed()` | Asserts that the class is a sealed class |
+| `kclass.shouldBeCompanion()` | Asserts that the class is a companion object |
 | `kclass.shouldHavePrimaryConstructor()` | Asserts that the class has a primary constructor |
-| `kclass.shouldHaveVisibility(visibility)` | Asserts that the class has the given visibility | 
-| `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation | 
-| `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation | 
+| `kclass.shouldHaveVisibility(visibility)` | Asserts that the class has the given visibility |
+| `kfunction.shouldHaveAnnotations()` | Asserts that the function has some annotation |
+| `kfunction.shouldHaveAnnotations(n)` | Asserts that the function has exactly N annotation |
 | `kfunction.shouldBeAnnotatedWith<T>()` | Asserts that the function is annotated with the given type |
-| `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation | 
+| `kfunction.shouldBeAnnotatedWith<T> { block }` | Asserts that the function is annotated with the given type, and then, runs the block with the annotation |
 | `kfunction.shouldHaveReturnType<T>()` | Asserts that the function returns the given type |
 | `kfunction.shouldBeInline()` | Asserts that the function is inline |
 | `kfunction.shouldBeInfix()` | Asserts that the function is infix |
 | `kproperty.shouldBeOfType<T>()` | Asserts that the property is of the given type |
-| `kproperty.shouldBeConst()` | Asserts that the property is a const | 
-| `kproperty.shouldBeLateInit()` | Asserts that the property is a late init var | 
+| `kproperty.shouldBeConst()` | Asserts that the property is a const |
+| `kproperty.shouldBeLateInit()` | Asserts that the property is a late init var |
 | `kcallable.shouldHaveVisibility(visibility)` | Asserts that the member have the given visibility |
 | `kcallable.shouldBeFinal()` | Asserts that the member is final |
 | `kcallable.shouldBeOpen()` | Asserts that the member is open |
@@ -288,7 +327,7 @@ For the extension function style, each function has an equivalent negated versio
 | `kcallable.shouldAcceptParameters(parameters) { block }` | Asserts that the member can be called with the parameters (check the types), and then, runs the block with the annotation |
 | `kcallable.shouldHaveParametersWithName(parameters)` | Asserts that the member has the parameters with the given name |
 | `kcallable.shouldHaveParametersWithName(parameters) { block }` | Asserts that the member has the parameters with the given name, and then, runs the block with the annotation |
-| `ktype.shouldBeOfType<T>()` | Asserts that the KType has the type T | 
+
 
 | Statistic ||
 | ---------- | --- |
@@ -298,3 +337,31 @@ For the extension function style, each function has an equivalent negated versio
 | `collection.shouldHaveVariance(mean, precision)` | Asserts that collection has specific variance with specific precision |
 | `collection.shouldHaveStandardDeviation(mean)` | Asserts that collection has specific standard deviation with default precision = 4 |
 | `collection.shouldHaveStandardDeviation(mean, precision)` | Asserts that collection has specific standard deviation with specific precision |
+
+
+| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
+
+
+| JSoup |     |
+| ----- | --- |
+| JSoup matchers require `kotlintest-assertions-jsoup` |  [See More](jsoup-matchers.md) |
+
+
+| Regex |     |
+| ---------- | --- |
+| `regex.shouldBeRegex(anotherRegex)`                  | Asserts that regex is equal to anotherRegex by comparing their pattern and regexOptions     |
+| `regex.shouldHavePattern(regexPattern)`              | Asserts that regex have given regexPattern |
+| `regex.shouldHaveExactRegexOptions(regexOptions)`    | Asserts that regex have exactly the given regexOptions|
+| `regex.shouldIncludeRegexOption(regexOption)`        | Asserts that regex include the given regexOption|
+| `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions|
+
+
+| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
+| ---------- | --- |
+| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
+| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
+| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |

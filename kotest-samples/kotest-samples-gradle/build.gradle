@@ -1,0 +1,30 @@
+buildscript {
+    ext.kotlin_version = '1.3.41'
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.41"
+    id "io.kotest" version "1.0.2"
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib"
+    testCompile 'io.kotest:kotest-runner-console:3.4.1993-SNAPSHOT'
+    testCompile 'io.kotest:kotest-runner-junit5:3.4.1993-SNAPSHOT'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.26'
+}
