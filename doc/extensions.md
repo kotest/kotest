@@ -4,7 +4,7 @@ KotlinTest Extensions
 
 ### Arrow
 
-The arrow extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
+The arrow assertion extension module provives assertions for the functional programming library [arrow-kt](https://arrow-kt.io/) for types such as `Option`, `Try`, and so on.
  To use this library you need to add `kotlintest-assertions-arrow` to your build.
 
 Here is an example asserting that an `Option` variable is a `Some` with a value `"Foo"`.
@@ -110,9 +110,9 @@ With the dependency added, we can use Koin in our tests!
 class KotlinTestAndKoin : FunSpec(), KoinTest {
 
     override fun listeners() = listOf(KoinListener(myKoinModule))
-    
+
     val userService by inject<UserService>()
-    
+
     init {
       test("Use user service") {
         userService.getUser().username shouldBe "Kerooker"
@@ -194,15 +194,15 @@ And with similar Listeners:
 
 ```kotlin
     class MyTest : FreeSpec() {
-    
+
           override fun listeners() = listOf(SystemPropertyListener("foo", "bar"))
-    
+
         init {
           "MyTest" {
             System.getProperty("foo") shouldBe "bar"
           }
         }
-    
+
     }
 ```
 
@@ -222,13 +222,13 @@ And the Listeners:
 
 ```kotlin
     class MyTest : FreeSpec() {
-        
+
               override fun listeners() = listOf(SecurityManagerListener(myManager))
-        
+
             init {
               // Use my security manager
             }
-        
+
         }
 ```
 
@@ -239,18 +239,18 @@ Sometimes you want to test that your code calls `System.exit`. For that you can 
 ```kotlin
 
 class MyTest : FreeSpec() {
-        
+
   override fun listeners() = listOf(SpecSystemExitListener)
-        
+
   init {
     "Catch exception" {
       val thrown: SystemExitException = shouldThrow<SystemExitException> {
         System.exit(22)
       }
-                
+
       thrown.exitCode shouldBe 22
     }
-  }      
+  }
 }
 
 ```
@@ -298,7 +298,7 @@ And with the listeners
 Sometimes you may want to use the `now` static functions located in `java.time` classes for multiple reasons, such as setting the creation date of an entity
 
 `data class MyEntity(creationDate: LocalDateTime = LocalDateTime.now())`.
- 
+
 But what to do when you want to test that value? `now` will be different
 each time you call it!
 

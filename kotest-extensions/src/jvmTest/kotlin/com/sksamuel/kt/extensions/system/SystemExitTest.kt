@@ -1,10 +1,10 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.extensions.system.SpecSystemExitListener
 import io.kotest.extensions.system.SystemExitException
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import kotlin.system.exitProcess
 
 class SystemExitTest : StringSpec() {

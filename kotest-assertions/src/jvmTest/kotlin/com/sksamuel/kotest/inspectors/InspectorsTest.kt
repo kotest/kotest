@@ -1,6 +1,8 @@
 package com.sksamuel.kotest.inspectors
 
-import io.kotest.forNone
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.inspectors.forAny
 import io.kotest.inspectors.forExactly
@@ -10,11 +12,8 @@ import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.shouldThrowAny
-import io.kotest.specs.WordSpec
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 
 @Suppress("ConstantConditionIf")
 class InspectorsTest : WordSpec() {
@@ -84,9 +83,6 @@ class InspectorsTest : WordSpec() {
       }
       "pass if an element throws an exception" {
         val items = listOf(1, 2, 3)
-        forNone(items) {
-          if (true) throw NullPointerException()
-        }
         items.forNone {
           if (true) throw NullPointerException()
         }

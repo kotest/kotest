@@ -1,9 +1,9 @@
 package io.kotest.matchers.uri
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import java.net.URI
 
 fun URI.shouldBeOpaque() = this should beOpaque()

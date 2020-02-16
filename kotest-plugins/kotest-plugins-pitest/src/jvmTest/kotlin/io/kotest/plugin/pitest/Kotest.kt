@@ -1,11 +1,11 @@
 package io.kotest.plugin.pitest
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.plugin.pitest.specs.FunSpecs
 import io.kotest.plugin.pitest.specs.StringSpecs
 import io.kotest.plugin.pitest.specs.WordSpecs
-import io.kotest.specs.FunSpec
 
 class Kotest : FunSpec() {
 

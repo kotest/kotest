@@ -1,9 +1,9 @@
 package io.kotest.matchers.floats
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.shouldBe
-import io.kotest.shouldNotBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 fun exactly(d: Float): Matcher<Float> = object : Matcher<Float> {
   override fun test(value: Float) = MatcherResult(value == d, "$value is not equal to expected value $d", "$value should not be equal to $d")

@@ -1,1 +1,1 @@
-io.kotest.runner.junit5.KotestEngine
+io.kotest.runner.junit5.KotestJunitPlatformTestEngine

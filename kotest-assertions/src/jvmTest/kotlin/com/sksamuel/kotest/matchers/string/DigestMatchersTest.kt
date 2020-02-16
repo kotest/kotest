@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveDigest
 import io.kotest.matchers.string.shouldNotHaveDigest
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.FunSpec
 
 class DigestMatchersTest : FunSpec({
 

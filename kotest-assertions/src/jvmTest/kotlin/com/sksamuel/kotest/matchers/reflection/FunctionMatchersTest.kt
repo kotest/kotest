@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.reflection
 import com.sksamuel.kotest.matchers.reflection.annotations.Fancy
 import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
 import com.sksamuel.kotest.matchers.reflection.classes.SimpleItem
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeAnnotatedWith
 import io.kotest.matchers.reflection.shouldBeInfix
 import io.kotest.matchers.reflection.shouldBeInline
@@ -14,8 +15,7 @@ import io.kotest.matchers.reflection.shouldNotBeInfix
 import io.kotest.matchers.reflection.shouldNotBeInline
 import io.kotest.matchers.reflection.shouldNotHaveAnnotations
 import io.kotest.matchers.reflection.shouldNotHaveReturnType
-import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
+import io.kotest.matchers.shouldBe
 
 class FunctionMatchersTest : FreeSpec() {
   init {

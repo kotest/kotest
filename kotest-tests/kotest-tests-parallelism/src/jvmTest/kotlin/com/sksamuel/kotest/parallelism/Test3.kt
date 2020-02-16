@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.parallelism
 
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 
 class Test3 : StringSpec({
   "3" {

@@ -1,6 +1,6 @@
 package io.kotest.runner.console
 
-import io.kotest.Description
+import io.kotest.core.Description
 
 interface StyleParser {
   fun parse(root: Description, testPath: String): Description

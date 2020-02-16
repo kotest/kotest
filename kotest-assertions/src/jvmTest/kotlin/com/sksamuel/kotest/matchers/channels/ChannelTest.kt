@@ -3,7 +3,8 @@ package com.sksamuel.kotest.matchers.channels
 import io.kotest.assertions.shouldFail
 import io.kotest.matchers.channels.*
 import io.kotest.matchers.ints.shouldBeExactly
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -34,23 +35,19 @@ class ChannelTest : StringSpec() {
       channel.receive() shouldBeExactly 1
       channel.shouldBeEmpty()
     }
-    "shouldBeEmpty should fail on non-empty channels" {
-      val channel: Channel<Int> = Channel()
-      launch {
+     "shouldBeEmpty should fail on non-empty channels" {
+        val channel: Channel<Int> = Channel(1)
         channel.send(1)
-      }
-      shouldFail {
-        channel.shouldBeEmpty()
-      }
-      channel.receive() shouldBeExactly 1
-    }
-    "shouldReceiveWithin should not fail on non-empty channels" {
-      val channel: Channel<Int> = Channel()
-      launch {
+        shouldFail {
+           channel.shouldBeEmpty()
+        }
+        channel.receive() shouldBe 1
+     }
+     "shouldReceiveWithin should not fail on non-empty channels" {
+        val channel: Channel<Int> = Channel(1)
         channel.send(1)
-      }
-      channel.shouldReceiveWithin(Duration.ofSeconds(1))
-    }
+        channel.shouldReceiveWithin(Duration.ofSeconds(1))
+     }
     "shouldReceiveWithin should not fail when elements are received later" {
       val channel: Channel<Int> = Channel()
       launch {
@@ -78,7 +75,7 @@ class ChannelTest : StringSpec() {
         channel.shouldReceiveNoElementsWithin(Duration.ofSeconds(1))
       }
     }
-    "shouldHaveSize should not fail when n elements are sent" {
+    "!shouldHaveSize should not fail when n elements are sent" {
       val channel: Channel<Int> = Channel()
       launch {
         repeat(10) { channel.send(1) }

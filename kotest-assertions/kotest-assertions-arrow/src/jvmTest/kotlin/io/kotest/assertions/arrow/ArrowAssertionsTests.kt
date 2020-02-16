@@ -21,7 +21,7 @@
 //import io.kotest.properties.Gen
 //import io.kotest.properties.forAll
 //import io.kotest.shouldThrow
-//import io.kotest.specs.StringSpec
+//import io.kotest.core.spec.style.StringSpec
 //import io.kotest.assertions.arrow.gen.gen.fx.fx
 //
 //class ArrowAssertionsTests : StringSpec({

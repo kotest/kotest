@@ -1,34 +1,30 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.extensions.TopLevelTest
-import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
 class TestListenerBeforeSpecStartedTest : FunSpec() {
 
-  private val counter = AtomicInteger(0)
+   private val counter = AtomicInteger(0)
 
-  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
-  // this should only be invoked once regardless of extra specs instantiated
-  override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
-    counter.incrementAndGet()
-  }
+   init {
 
-  override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
-    counter.get() shouldBe 1
-  }
+      // this should only be invoked once regardless of extra specs instantiated
+      prepareSpec {
+         counter.incrementAndGet()
+      }
 
-  init {
+      finalizeSpec {
+         counter.get() shouldBe 1
+      }
 
-    test("a") { }
-    test("b") { }
-    test("c") { }
-    test("d") { }
-  }
+      test("a") { }
+      test("b") { }
+      test("c") { }
+      test("d") { }
+   }
 }

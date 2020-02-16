@@ -16,7 +16,7 @@ import io.kotest.matchers.bigdecimal.shouldNotBeInRange
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThan
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEquals
 import io.kotest.matchers.bigdecimal.shouldNotHaveScale
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
 import java.math.BigDecimal
 
 class BigDecimalMatchersTest : StringSpec() {

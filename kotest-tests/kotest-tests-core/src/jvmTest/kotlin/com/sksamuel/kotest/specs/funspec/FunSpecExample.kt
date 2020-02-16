@@ -1,18 +1,22 @@
 package com.sksamuel.kotest.specs.funspec
 
-import io.kotest.IsolationMode
-import io.kotest.Spec
-import io.kotest.Tag
-import io.kotest.TestCase
-import io.kotest.TestCaseOrder
-import io.kotest.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.Tag
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestResult
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.description
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.locale.LocaleTestListener
 import io.kotest.extensions.locale.TimeZoneTestListener
-import io.kotest.specs.FunSpec
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@UseExperimental(ExperimentalTime::class)
 class FunSpecExample : FunSpec() {
 
    private val linuxTag = Tag("linux")
@@ -25,11 +29,11 @@ class FunSpecExample : FunSpec() {
    }
 
    override fun beforeSpec(spec: Spec) {
-      println("Starting spec ${spec.description()}")
+      println("Starting spec ${spec::class.description()}")
    }
 
    override fun afterSpec(spec: Spec) {
-      println("Completed spec ${spec.description()}")
+      println("Completed spec ${spec::class.description()}")
    }
 
    override fun afterTest(testCase: TestCase, result: TestResult) {
@@ -47,7 +51,7 @@ class FunSpecExample : FunSpec() {
       test("this is a test") {
          // test here
       }
-      test("this test has config").config(invocations = 1, enabled = true) {
+      test("this test has config").config(timeout = 412.milliseconds, enabled = true) {
          // test here
       }
    }

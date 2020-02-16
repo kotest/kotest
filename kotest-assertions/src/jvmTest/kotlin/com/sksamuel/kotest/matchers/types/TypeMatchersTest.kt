@@ -1,11 +1,16 @@
 package com.sksamuel.kotest.matchers.types
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.beTheSameInstanceAs
 import io.kotest.matchers.nulls.beNull
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.types.haveAnnotation
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
@@ -13,11 +18,6 @@ import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.types.shouldHaveAnnotation
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeTypeOf
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
 import java.util.ArrayList
 import java.util.LinkedList
 
@@ -75,6 +75,20 @@ class TypeMatchersTest : WordSpec() {
         }
       }
 
+      "Returns typecasted value when invoked with a lambda" {
+        val list = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>> {}
+        typecastedList shouldBeSameInstanceAs list
+      }
+
+      "Returns typecasted value when invoked without arguments" {
+        val list = arrayListOf(1, 2, 3)
+        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>>()
+
+        typecastedList shouldBeSameInstanceAs list
+      }
+
       "accepts null values" {
         val arrayList: List<Int>? = null
         shouldThrow<AssertionError> { arrayList should beInstanceOf(ArrayList::class) }
@@ -106,6 +120,22 @@ class TypeMatchersTest : WordSpec() {
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1
         }
+      }
+
+      "Returns typecasted value when executed with a lambda" {
+        val list: Any = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>> {}
+        typecastedList shouldBeSameInstanceAs list
+        typecastedList[0] shouldBe 1
+      }
+
+      "Returns typecasted value when executed without argument" {
+        val list: Any = arrayListOf(1, 2, 3)
+
+        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>>()
+        typecastedList shouldBeSameInstanceAs list
+        typecastedList[0] shouldBe 1
       }
 
       "accepts null values" {
@@ -178,7 +208,7 @@ class TypeMatchersTest : WordSpec() {
       }
 
       "Allow automatic type cast" {
-        fun useString(string: String) {  }
+        fun useString(string: String) {}
 
         nonNullString.shouldNotBeNull()
         useString(nonNullString)

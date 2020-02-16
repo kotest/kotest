@@ -24,6 +24,7 @@ import kotlin.random.nextLong
  * a UTF8 string.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
    val literals = listOf("",
       "\n",
@@ -32,7 +33,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
 
    override fun constants(): Iterable<String> = literals.filter { it.length in minSize..maxSize }
    override fun random(seed: Long?): Sequence<String> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          r.nextPrintableString(minSize + r.nextInt(maxSize - minSize + 1))
       }
@@ -43,13 +44,14 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Int]. The values always returned include
- * the following edge cases: [Int.MIN_VALUE, Int.MAX_VALUE, 0]
+ * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.int() = object : Gen<Int> {
-   val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0)
+   val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 1, -1)
    override fun constants(): Iterable<Int> = literals
    override fun random(seed: Long?): Sequence<Int> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextInt() }
    }
 
@@ -59,14 +61,14 @@ fun Gen.Companion.int() = object : Gen<Int> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UInt]. The values always returned include
- * the following edge cases: [UInt.MIN_VALUE, UInt.MAX_VALUE]
+ * the following edge cases: [[UInt.MIN_VALUE], [UInt.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.uint() = object : Gen<UInt> {
    val literals = listOf(UInt.MIN_VALUE, UInt.MAX_VALUE)
    override fun constants(): Iterable<UInt> = literals
    override fun random(seed: Long?): Sequence<UInt> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextInt().toUInt() }
    }
 }
@@ -74,29 +76,32 @@ fun Gen.Companion.uint() = object : Gen<UInt> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Short]. The values always returned include
- * the following edge cases: [Short.MIN_VALUE, Short.MAX_VALUE, 0]
+ * the following edge cases: [[Short.MIN_VALUE], [Short.MAX_VALUE], 0]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS).toShort() }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UShort]. The values always returned include
- * the following edge cases: [UShort.MIN_VALUE, UShort.MAX_VALUE]
+ * the following edge cases: [[UShort.MIN_VALUE], [UShort.MAX_VALUE]]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort() }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [Byte]. The values always returned include
- * the following edge cases: [Byte.MIN_VALUE, Byte.MAX_VALUE, 0]
+ * the following edge cases: [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [UByte]. The values always returned include
- * the following edge cases: [UByte.MIN_VALUE, UByte.MAX_VALUE]
+ * the following edge cases: [[UByte.MIN_VALUE], [UByte.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS).toByte() }
@@ -106,6 +111,7 @@ fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS
  * chosen positive value. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
 
 /**
@@ -113,6 +119,7 @@ fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
  * chosen natural number. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
 
 /**
@@ -120,12 +127,14 @@ fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
  * chosen negative value. The values returned always include
  * the following edge cases: [Int.MIN_VALUE]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeIntegers(): Gen<Int> = int().filter { it < 0 }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
   val literals = listOf(0.0,
     1.0,
@@ -139,7 +148,7 @@ fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
 
   override fun constants(): Iterable<Double> = literals
    override fun random(seed: Long?): Sequence<Double> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextDouble() }
    }
   override fun shrinker(): Shrinker<Double>? = DoubleShrinker
@@ -150,20 +159,24 @@ fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
                                  to: Double = Double.MAX_VALUE
 ): Gen<Double> = object : Gen<Double> {
    val literals = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
    override fun constants(): Iterable<Double> = literals
    override fun random(seed: Long?): Sequence<Double> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextDouble(from, to) }
    }
 
    override fun shrinker(): Shrinker<Double>? = DoubleShrinker
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
+
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
 
 
@@ -171,6 +184,7 @@ fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
  * Returns a stream of values where each value is a randomly
  * chosen Float.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
   val literals = listOf(0F,
     Float.MIN_VALUE,
@@ -181,7 +195,7 @@ fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
 
   override fun constants(): Iterable<Float> = literals
    override fun random(seed: Long?): Sequence<Float> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextFloat() }
    }
   override fun shrinker() = FloatShrinker
@@ -192,6 +206,7 @@ fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericFloats(
    from: Float = Float.MIN_VALUE,
    to: Float = Float.MAX_VALUE
@@ -201,7 +216,7 @@ fun Gen.Companion.numericFloats(
 
    // There's no nextFloat(from, to) method, so borrowing it from Double
    override fun random(seed: Long?): Sequence<Float> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          r.nextDouble(from.toDouble(), to.toDouble()).toFloat()
       }
@@ -213,13 +228,14 @@ fun Gen.Companion.numericFloats(
 /**
  * Returns a stream of values where each value is a randomly
  * chosen long. The values returned always include
- * the following edge cases: [Long.MIN_VALUE, Long.MAX_VALUE]
+ * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE], 0, 1, -1]
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
-  val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE)
+  val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE, 0L, 1L, -1L)
   override fun constants(): Iterable<Long> = literals
    override fun random(seed: Long?): Sequence<Long> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { abs(r.nextLong()) }
    }
 }
@@ -227,14 +243,14 @@ fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
 /**
  * Returns a stream of values where each value is a randomly
  * chosen [ULong]. The values returned always include
- * the following edge cases: [ULong.MIN_VALUE, ULong.MAX_VALUE]
+ * the following edge cases: [[ULong.MIN_VALUE], [ULong.MAX_VALUE]]
  */
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
   val literals = listOf(ULong.MIN_VALUE, ULong.MAX_VALUE)
   override fun constants(): Iterable<ULong> = literals
    override fun random(seed: Long?): Sequence<ULong> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextLong().toULong() }
    }
 }
@@ -242,10 +258,11 @@ fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
 /**
  * Returns both boolean values
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
   override fun constants(): Iterable<Boolean> = listOf(true, false)
    override fun random(seed: Long?): Sequence<Boolean> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextBoolean() }
    }
 }
@@ -263,6 +280,7 @@ private object CharSets {
  * Gen.char('A'..'C', 'D'..'E')
  * Ths will choose A, B, C, D, and E each 20% of the time.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
   return Gen.char(listOf(range) + ranges)
 }
@@ -276,6 +294,7 @@ fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
  *
  * If no parameter is given, ASCII characters will be generated.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char> = object : Gen<Char> {
   init {
     require(ranges.all { !it.isEmpty() }) { "Ranges cannot be empty" }
@@ -283,7 +302,7 @@ fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char
   }
   override fun constants(): Iterable<Char> = emptyList()
   override fun random(seed: Long?): Sequence<Char> {
-    val r = if (seed == null) Random.Default else Random(seed)
+    val r = getRandomFor(seed)
     val genRange =
       if (ranges.size == 1) Gen.constant(ranges.first())
       else makeRangeWeightedGen()
@@ -306,6 +325,7 @@ fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char
  * a set of values generated by the given generator.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object : Gen<Set<T>> {
    init {
       require(maxSize >= 0) { "maxSize must be positive" }
@@ -313,7 +333,7 @@ fun <T> Gen.Companion.set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object
 
    override fun constants(): Iterable<Set<T>> = listOf(gen.constants().take(maxSize).toSet())
    override fun random(seed: Long?): Sequence<Set<T>> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          val size = r.nextInt(maxSize)
          gen.random().take(size).toSet()
@@ -326,6 +346,7 @@ fun <T> Gen.Companion.set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object
  * a list of values generated by the underlying generator.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = object : Gen<List<T>> {
    init {
       require(maxSize >= 0) { "maxSize must be positive" }
@@ -333,7 +354,7 @@ fun <T> Gen.Companion.list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = obje
 
    override fun constants(): Iterable<List<T>> = listOf(gen.constants().take(maxSize).toList())
    override fun random(seed: Long?): Sequence<List<T>> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          val size = r.nextInt(maxSize)
          gen.random().take(size).toList()
@@ -347,6 +368,7 @@ fun <T> Gen.Companion.list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = obje
  * Returns a [[Gen]] where each value is a [[Triple]] generated
  * by a value from each of three supplied generators.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C> Gen.Companion.triple(genA: Gen<A>,
                                    genB: Gen<B>,
                                    genC: Gen<C>): Gen<Triple<A, B, C>> = object : Gen<Triple<A, B, C>> {
@@ -367,17 +389,20 @@ fun <A, B, C> Gen.Companion.triple(genA: Gen<A>,
   }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, T> Gen.Companion.bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = gena.random().map { createFn(it) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, createFn: (A, B) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> =
       gena.random().zip(genb.random(seed)).map { createFn(it.first, it.second) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
                                     genb: Gen<B>,
                                     genc: Gen<C>,
@@ -391,6 +416,7 @@ fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
                                        createFn: (A, B, C, D) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -402,6 +428,7 @@ fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>,
       .map { createFn(it.first.first.first, it.first.first.second, it.first.second, it.second) }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>,
                                           createFn: (A, B, C, D, E) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -420,6 +447,7 @@ fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
                                              genb: Gen<B>,
                                              genc: Gen<C>,
@@ -446,6 +474,7 @@ fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, G, T> Gen.Companion.bind(gena: Gen<A>,
                                                 genb: Gen<B>,
                                                 genc: Gen<C>,
@@ -482,7 +511,7 @@ fun <A> Gen.Companion.oneOf(vararg gens: Gen<out A>): Gen<A> = object : Gen<A> {
       require(gens.isNotEmpty()) { "List of generators cannot be empty" }
 
       val iterators = gens.map { it.random(seed).iterator() }
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
 
       return generateInfiniteSequence {
          val iteratorLocation = r.nextInt(0, iterators.size)
@@ -497,6 +526,7 @@ fun <A> Gen.Companion.oneOf(vararg gens: Gen<out A>): Gen<A> = object : Gen<A> {
  * Returns a stream of values, where each
  * value is generated from the given function
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { fn() }
@@ -507,26 +537,32 @@ inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : 
  * values will be picked. May not choose every
  * item in the list.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateInfiniteSequence { values[r.nextInt(0, values.size)] }
    }
 }
 
+/**
+ * @return a new [Gen] created from the given [values] (see [from] List for more details)
+ */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
 
 /**
  * Returns a stream of values, where each value is
  * a random Int between the given min and max.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.ints(min, max)")
 fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
   require(min < max) { "min must be < max" }
   return object : Gen<Int> {
     override fun constants(): Iterable<Int> = emptyList()
      override fun random(seed: Long?): Sequence<Int> {
-        val r = if (seed == null) Random.Default else Random(seed)
+        val r = getRandomFor(seed)
         return generateSequence { r.nextInt(min..max) }
      }
 
@@ -538,12 +574,13 @@ fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
  * Returns a stream of values, where each value is a
  * Long between the given min and max.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.longs(min, max)")
 fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
   require(min < max) { "min must be < max" }
   return object : Gen<Long> {
      override fun constants(): Iterable<Long> = emptyList()
      override fun random(seed: Long?): Sequence<Long> {
-        val r = if (seed == null) Random.Default else Random(seed)
+        val r = getRandomFor(seed)
         return generateSequence { r.nextLong(min..max) }
      }
   }
@@ -558,6 +595,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
  * @throws IllegalArgumentException If any negative weight is given or only
  * weights of zero are given.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.choose(a, b, c, ...)")
 fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: Pair<Int, T>): Gen<T> {
   val allPairs = listOf(a, b) + cs
   val weights = allPairs.map { it.first }
@@ -575,7 +613,7 @@ fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: 
     }
     override fun constants(): Iterable<T> = emptyList()
     override fun random(seed: Long?): Sequence<T> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       val total = weights.sum()
       return generateSequence {
         val n = r.nextInt(1, total + 1)
@@ -589,6 +627,7 @@ fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: 
  * Returns a stream of values, where each value is
  * a pair generated by the underlying generators.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = object : Gen<Pair<K, V>> {
   override fun constants(): Iterable<Pair<K, V>> {
     val keys = genK.constants().toList()
@@ -604,6 +643,7 @@ fun <K, V> Gen.Companion.pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = obj
  * from the underlying generators.
  */
 @JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -611,7 +651,7 @@ fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Ge
 
   override fun constants(): Iterable<Map<K, V>> = emptyList()
    override fun random(seed: Long?): Sequence<Map<K, V>> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          val size = r.nextInt(maxSize)
          genK.random().take(size).zip(genV.random().take(size)).toMap()
@@ -619,6 +659,12 @@ fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Ge
    }
 }
 
+/**
+ * @return a stream of values, where each value is a [Map] of [Pair]s from the given [gen]
+ *   the size of the [Map] is bounded between [0, [maxSize])
+ */
+@JvmOverloads
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -626,7 +672,7 @@ fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<
 
   override fun constants(): Iterable<Map<K, V>> = emptyList()
    override fun random(seed: Long?): Sequence<Map<K, V>> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          val size = r.nextInt(maxSize)
          gen.random(seed).take(size).toMap()
@@ -636,14 +682,25 @@ fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<
 
 /**
  * Returns the next pseudorandom, uniformly distributed value
- * from the ASCII range 33-126.
+ * from the ASCII range 32-126.
  */
-fun Random.nextPrintableChar(): Char {
-  val low = 32
-  val high = 127
-  return (nextInt(high - low) + low).toChar()
-}
+fun Random.nextPrintableChar(): Char = nextInt(from = 32, until = 127).toChar()
 
+/**
+ * Generates a [String] of [length] by calling [nextPrintableChar]
+ *
+ * ```kotlin
+ * // Examples
+ * val r = Random.Default
+ * r.nextPrintableString(-10) // ""
+ * r.nextPrintableString(0)   // ""
+ * r.nextPrintableString(1)   // " ", "a", "Z", etc.
+ * r.nextPrintableString(5)   // "Ha Ha", "gens!", "[{-}]", etc.
+ * ```
+ *
+ * @param length of String
+ * @return a given length String of random printable Chars
+ */
 fun Random.nextPrintableString(length: Int): String {
    return (0 until length).map { nextPrintableChar() }.joinToString("")
 }
@@ -651,31 +708,34 @@ fun Random.nextPrintableString(length: Int): String {
 /**
  * Returns a [[Gen]] which always returns the same value.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
    override fun constants(): Iterable<T> = listOf(value)
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { value }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
 
    // 0 is a multiple of everything
    override fun constants(): Iterable<Int> = listOf(0)
 
    override fun random(seed: Long?): Sequence<Int> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence {
          r.nextInt(max / k) * k
       }.filter { it >= 0 }
    }
 }
 
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
 
    // 1 is a factor of all ints
    override fun constants(): Iterable<Int> = listOf(1)
 
    override fun random(seed: Long?): Sequence<Int> {
-      val r = if (seed == null) Random.Default else Random(seed)
+      val r = getRandomFor(seed)
       return generateSequence { r.nextInt(k) }.filter { it > 0 }
          .filter { k % it == 0 }
    }
@@ -685,6 +745,7 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
  * Returns a [Gen] which returns the sample values in the same order as they are passed in, once all sample values are used
  * it repeats elements from start.
  */
+@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
     private fun getNextSampleElementProvider(): () -> T  {
         var currentIndex = 0;

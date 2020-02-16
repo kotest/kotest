@@ -1,9 +1,9 @@
 package io.kotest.assertions.arrow.eq
 
 import arrow.typeclasses.Eq
-import io.kotest.Matcher
 import io.kotest.assertions.arrow.matcher
-import io.kotest.should
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.should
 
 /**
  * Provides assertions for [Eq]

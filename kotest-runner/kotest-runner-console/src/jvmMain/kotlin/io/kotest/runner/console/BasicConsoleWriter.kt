@@ -1,11 +1,11 @@
 package io.kotest.runner.console
 
 import com.github.ajalt.mordant.TermColors
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.TestStatus
+import io.kotest.core.Description
+import io.kotest.SpecClass
+import io.kotest.core.TestCase
+import io.kotest.core.TestResult
+import io.kotest.core.TestStatus
 import io.kotest.core.fromSpecClass
 import java.time.Duration
 import kotlin.reflect.KClass
@@ -33,7 +33,7 @@ class BasicConsoleWriter : ConsoleWriter {
 
   override fun hasErrors(): Boolean = errors
 
-  override fun engineStarted(classes: List<KClass<out Spec>>) {
+  override fun engineStarted(classes: List<KClass<out SpecClass>>) {
     start = System.currentTimeMillis()
   }
 
@@ -45,7 +45,7 @@ class BasicConsoleWriter : ConsoleWriter {
     results[testCase.description] = result
   }
 
-  override fun afterSpecClass(klass: KClass<out Spec>, t: Throwable?) {
+  override fun afterSpecClass(klass: KClass<out SpecClass>, t: Throwable?) {
 
     n += 1
     val specDesc = Description.fromSpecClass(klass)

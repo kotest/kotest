@@ -1,10 +1,11 @@
 package io.kotest.matchers.equality
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.reflect.KProperty
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
 /**
@@ -28,9 +29,15 @@ import kotlin.reflect.full.memberProperties
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
+ * Note:
+ * 1) Throws [IllegalArgumentException] in case [properties] parameter is not provided.
+ * 2) Throws [IllegalArgumentException] if [properties] contains any non public property
+ *
  */
-fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) =
-    this should beEqualToUsingFields(other, *properties)
+fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned for checking the equality" }
+   this should beEqualToUsingFields(other, *properties)
+}
 
 /**
  * Asserts that this is NOT equal to [other] using specific fields
@@ -51,13 +58,19 @@ fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KPropert
  * firstFoo.shouldNotBeEqualToUsingFields(secondFoo, Foo::description) // Assertion passes
  *
  * ```
+ * Note:
+ * 1) Throws [IllegalArgumentException] in case [properties] parameter is not provided.
+ * 2) Throws [IllegalArgumentException] if [properties] contains any non public property
+ *
  *
  * @see [beEqualToUsingFields]
  * @see [shouldNotBeEqualToIgnoringFields]
  *
  */
-fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) =
-    this shouldNot beEqualToUsingFields(other, *properties)
+fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned for checking the equality" }
+   this shouldNot beEqualToUsingFields(other, *properties)
+}
 
 /**
  * Matcher that compares values using specific fields
@@ -78,30 +91,28 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  *
  * ```
  *
+ * Note: Throws [IllegalArgumentException] if [fields] contains any non public property
+ *
  * @see [shouldBeEqualToUsingFields]
  * @see [shouldNotBeEqualToUsingFields]
  * @see [beEqualToIgnoringFields]
  *
  */
 fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
-
-    val failed = fields.mapNotNull {
-      val actual = it.getter.call(value)
-      val expected = it.getter.call(other)
-      if (actual == expected) null else {
-        "${it.name}: $actual != $expected"
+   override fun test(value: T): MatcherResult {
+      val nonPublicFields = fields.filterNot { it.visibility == KVisibility.PUBLIC }
+      if(nonPublicFields.isNotEmpty()) {
+         throw IllegalArgumentException("Fields of only public visibility are allowed to be use for used for checking equality")
       }
-    }
+      val failed = checkEqualityOfFields(fields.toList(), value, other)
+      val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
-    val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
-
-    return MatcherResult(
-        failed.isEmpty(),
-        "$value should be equal to $other using fields $fieldsString; Failed for $failed",
-        "$value should not be equal to $other using fields $fieldsString"
-    )
-  }
+      return MatcherResult(
+         failed.isEmpty(),
+         "$value should be equal to $other using fields $fieldsString; Failed for $failed",
+         "$value should not be equal to $other using fields $fieldsString"
+      )
+   }
 }
 
 /**
@@ -125,9 +136,12 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
+ * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
  */
-fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
-    this should beEqualToIgnoringFields(other, *properties)
+fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) {
+   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned to be ignore for checking the equality" }
+   this should beEqualToIgnoringFields(other, *properties)
+}
 
 /**
  * Asserts that this is not equal to [other] without using specific fields
@@ -150,7 +164,7 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
-    this shouldNot beEqualToIgnoringFields(other, *properties)
+   this shouldNot beEqualToIgnoringFields(other, *properties)
 
 /**
  * Matcher that compares values without using specific fields
@@ -176,25 +190,35 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KP
  * @see [shouldNotBeEqualToIgnoringFields]
  *
  */
-fun <T : Any> beEqualToIgnoringFields(other: T,
-                                      vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
+fun <T : Any> beEqualToIgnoringFields(
+   other: T,
+   vararg fields: KProperty<*>
+): Matcher<T> = object : Matcher<T> {
+   override fun test(value: T): MatcherResult {
 
-    val fieldNames = fields.map { it.name }
-    val failed = value::class.memberProperties.filterNot { fieldNames.contains(it.name) }.mapNotNull {
+      val fieldNames = fields.map { it.name }
+      val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties
+         .filterNot { fieldNames.contains(it.name) }
+         .filter { it.visibility == KVisibility.PUBLIC }
+
+      val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
+      val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
+
+      return MatcherResult(
+         failed.isEmpty(),
+         "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
+         "$value should not be equal to $other ignoring fields $fieldsString"
+      )
+   }
+
+}
+
+private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: T): List<String> {
+   return fields.mapNotNull {
       val actual = it.getter.call(value)
       val expected = it.getter.call(other)
       if (actual == expected) null else {
-        "${it.name}: $actual != $expected"
+         "${it.name}: $actual != $expected"
       }
-    }
-
-    val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
-
-    return MatcherResult(
-        failed.isEmpty(),
-        "$value should be equal to $other ignoring fields $fieldsString; Failed for $failed",
-        "$value should not be equal to $other ignoring fields $fieldsString"
-    )
-  }
+   }
 }

@@ -1,15 +1,14 @@
 package com.sksamuel.kotest.listeners
 
-import io.kotest.Description
-import io.kotest.Spec
-import io.kotest.shouldBe
-import io.kotest.specs.StringSpec
+import io.kotest.core.spec.Spec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 
 class LateInitBeforeSpecStringSpecTest : StringSpec() {
 
   private lateinit var string: String
 
-  override fun beforeSpec(description: Description, spec: Spec) {
+  override fun beforeSpec(spec: Spec) {
     string = "Hello"
   }
 

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.PathNotFoundException
-import io.kotest.Matcher
-import io.kotest.MatcherResult
-import io.kotest.should
-import io.kotest.shouldNot
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 
 private val mapper by lazy { ObjectMapper().registerKotlinModule() }
 
@@ -16,14 +16,14 @@ infix fun String.shouldNotMatchJson(json: String) = this shouldNot matchJson(jso
 fun matchJson(json: String) = object : Matcher<String> {
 
   override fun test(value: String): MatcherResult {
-    
+
     val actualJson = mapper.readTree(value)
     val expectedJson = mapper.readTree(json)
 
     return MatcherResult(
         actualJson == expectedJson,
-        "Expected $expectedJson but was $actualJson",
-        "Value should not be $expectedJson"
+        "expected: $expectedJson but was: $actualJson",
+        "expected not to match with: $expectedJson but match: $actualJson"
     )
   }
 }
@@ -39,8 +39,8 @@ fun matchJsonResource(resource: String) = object : Matcher<String> {
 
     return MatcherResult(
         actualJson == expectedJson,
-        "Expected $expectedJson but was $actualJson",
-        "Value should not be $expectedJson"
+        "expected: $expectedJson but was: $actualJson",
+        "expected not to match with: $expectedJson but match: $actualJson"
     )
   }
 }

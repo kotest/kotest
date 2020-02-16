@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.feature
 
+import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.specs.FeatureSpec
 
 class FeatureSpecTest : FeatureSpec() {
 

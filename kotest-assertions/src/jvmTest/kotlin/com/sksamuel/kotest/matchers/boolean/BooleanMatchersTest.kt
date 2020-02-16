@@ -1,17 +1,16 @@
 package com.sksamuel.kotest.matchers.boolean
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.booleans.shouldNotBeFalse
 import io.kotest.matchers.booleans.shouldNotBeTrue
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
 import org.opentest4j.AssertionFailedError
+import io.kotest.matchers.shouldBe
 
 @Suppress("SimplifyBooleanWithConstants")
 class BooleanMatchersTest : FreeSpec() {
-
 
     init {
         "Boolean shouldBeTrue should not fail for true booleans" {

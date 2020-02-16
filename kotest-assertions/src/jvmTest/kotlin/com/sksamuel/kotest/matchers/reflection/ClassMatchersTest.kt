@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.reflection
 import com.sksamuel.kotest.matchers.reflection.annotations.Fancy
 import com.sksamuel.kotest.matchers.reflection.classes.FancyItem
 import com.sksamuel.kotest.matchers.reflection.classes.SimpleItem
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.reflection.shouldBeAnnotatedWith
 import io.kotest.matchers.reflection.shouldBeCompanion
 import io.kotest.matchers.reflection.shouldBeData
@@ -26,8 +27,7 @@ import io.kotest.matchers.reflection.shouldNotHaveFunction
 import io.kotest.matchers.reflection.shouldNotHaveMemberProperty
 import io.kotest.matchers.reflection.shouldNotHavePrimaryConstructor
 import io.kotest.matchers.reflection.shouldNotHaveVisibility
-import io.kotest.shouldBe
-import io.kotest.specs.FreeSpec
+import io.kotest.matchers.shouldBe
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.reflect.KVisibility

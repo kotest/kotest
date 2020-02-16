@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
-import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FreeSpec
 
 class FreeSpecDslTest : FreeSpec() {
 

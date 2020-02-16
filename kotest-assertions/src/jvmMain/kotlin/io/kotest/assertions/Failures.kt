@@ -19,7 +19,7 @@ actual object Failures {
     * or
     *
     * ```
-    *     Failures.shouldRemoveKottestElementsFromStacktrace = false
+    *     Failures.shouldRemoveKotestElementsFromStacktrace = false
     * ```
     */
    var shouldRemoveKotestElementsFromStacktrace: Boolean =
@@ -71,14 +71,14 @@ actual object Failures {
       }
 
       /** If JUnit4 is present, return a org.junit.ComparisonFailure */
-      fun junit4comparisonFailure(expected: String, actual: String): Throwable? {
+      fun junit4comparisonFailure(message: String, expected: String, actual: String): Throwable? {
          return callPublicConstructor("org.junit.ComparisonFailure",
             arrayOf(String::class.java, String::class.java, String::class.java),
-            arrayOf("", expected, actual)) as? Throwable
+            arrayOf(message, expected, actual)) as? Throwable
       }
 
       val t = junit5AssertionFailedError(message, expectedRepr, actualRepr)
-         ?: junit4comparisonFailure(expectedRepr, actualRepr)
+         ?: junit4comparisonFailure(message, expectedRepr, actualRepr)
          ?: AssertionError(message)
       clean(t)
       return t

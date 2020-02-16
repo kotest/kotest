@@ -1,14 +1,14 @@
 package com.sksamuel.kotest.throwablehandling
 
+import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldNotThrowUnit
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowUnit
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.shouldBe
-import io.kotest.shouldNotThrow
-import io.kotest.shouldNotThrowUnit
-import io.kotest.shouldThrow
-import io.kotest.shouldThrowUnit
-import io.kotest.specs.FreeSpec
 import kotlin.reflect.KClass
 
 class CovariantThrowableHandlingTest : FreeSpec() {

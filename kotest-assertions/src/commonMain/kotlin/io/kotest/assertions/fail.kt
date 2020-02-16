@@ -1,8 +1,6 @@
 package io.kotest.assertions
 
-import io.kotest.shouldThrow
-import io.kotest.shouldThrowAny
-import io.kotest.shouldThrowExactly
+import io.kotest.assertions.throwables.shouldThrow
 
 /**
  * Verifies that [block] throws an [AssertionError]

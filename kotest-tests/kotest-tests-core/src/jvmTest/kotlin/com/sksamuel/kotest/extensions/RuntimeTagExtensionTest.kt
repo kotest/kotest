@@ -1,23 +1,23 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.Spec
-import io.kotest.Tag
 import io.kotest.assertions.fail
-import io.kotest.extensions.RuntimeTagExtension
-import io.kotest.specs.StringSpec
+import io.kotest.core.Tag
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.extensions.RuntimeTagExtension
 
 class RuntimeTagExtensionTest : StringSpec() {
 
-    object MyRuntimeExcludedTag : Tag()
+   object MyRuntimeExcludedTag : Tag()
 
-    init {
+   init {
 
-        "Test marked with a runtime excluded tag".config(tags = setOf(MyRuntimeExcludedTag)) {
-          fail("Should never execute (configured to be excluded in beforeSpec)")
-        }
-    }
+      "Test marked with a runtime excluded tag".config(tags = setOf(MyRuntimeExcludedTag)) {
+         fail("Should never execute (configured to be excluded in beforeSpec)")
+      }
+   }
 
-    override fun beforeSpec(spec: Spec) {
-        RuntimeTagExtension.excluded += MyRuntimeExcludedTag
-    }
+   override fun beforeSpec(spec: Spec) {
+      RuntimeTagExtension.excluded += MyRuntimeExcludedTag
+   }
 }

@@ -1,16 +1,16 @@
 package io.kotest.provided
 
-import io.kotest.AbstractProjectConfig
-import io.kotest.Spec
-import io.kotest.extensions.DiscoveryExtension
-import io.kotest.extensions.ProjectLevelExtension
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.Spec
+import io.kotest.core.extensions.DiscoveryExtension
+import io.kotest.core.extensions.Extension
 import kotlin.reflect.KClass
 
 class ProjectConfig : AbstractProjectConfig() {
-  override fun extensions(): List<ProjectLevelExtension> =
+   override fun extensions(): List<Extension> =
       listOf(object : DiscoveryExtension {
-        override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
-          return if (classes.size == 1) classes else classes.filterNot { it.qualifiedName!!.contains("Specs") }
-        }
+         override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
+            return if (classes.size == 1) classes else classes.filterNot { it.qualifiedName!!.contains("Specs") }
+         }
       })
 }

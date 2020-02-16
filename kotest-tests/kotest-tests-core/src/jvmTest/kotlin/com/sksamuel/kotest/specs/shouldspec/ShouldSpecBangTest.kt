@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.specs.shouldspec
 
 import com.sksamuel.kotest.specs.attemptToFail
-import io.kotest.specs.ShouldSpec
+import io.kotest.core.spec.style.ShouldSpec
 
 class ShouldSpecBangTest : ShouldSpec() {
 

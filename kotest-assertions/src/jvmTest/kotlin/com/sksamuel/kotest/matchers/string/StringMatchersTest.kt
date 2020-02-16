@@ -1,5 +1,11 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.data.forAll
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.beBlank
 import io.kotest.matchers.string.beEmpty
 import io.kotest.matchers.string.beFalsy
@@ -28,6 +34,7 @@ import io.kotest.matchers.string.shouldBeFalsy
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeSingleLine
 import io.kotest.matchers.string.shouldBeTruthy
+import io.kotest.matchers.string.shouldBeUUID
 import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainADigit
@@ -49,6 +56,7 @@ import io.kotest.matchers.string.shouldNotBeEmpty
 import io.kotest.matchers.string.shouldNotBeEqualIgnoringCase
 import io.kotest.matchers.string.shouldNotBeLowerCase
 import io.kotest.matchers.string.shouldNotBeSingleLine
+import io.kotest.matchers.string.shouldNotBeUUID
 import io.kotest.matchers.string.shouldNotBeUpperCase
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotContainADigit
@@ -68,11 +76,11 @@ import io.kotest.matchers.string.shouldNotMatch
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.string.startWith
-import io.kotest.should
-import io.kotest.shouldBe
-import io.kotest.shouldNot
-import io.kotest.shouldThrow
-import io.kotest.specs.FreeSpec
+import io.kotest.properties.Gen
+import io.kotest.properties.assertAll
+import io.kotest.properties.string
+import io.kotest.properties.uuid
+import io.kotest.data.row
 import org.opentest4j.AssertionFailedError
 
 class StringMatchersTest : FreeSpec() {
@@ -91,6 +99,34 @@ class StringMatchersTest : FreeSpec() {
         }.let {
           it.actual.value shouldBe "\"a\""
           it.expected.value shouldBe "\"b\""
+        }
+      }
+
+      "should report when only line endings differ" {
+        forAll(
+          row("a\nb", "a\r\nb"),
+          row("a\nb\nc", "a\nb\r\nc"),
+          row("a\r\nb", "a\nb"),
+          row("a\nb", "a\rb"),
+          row("a\rb", "a\r\nb")
+        ) { expected, actual  ->
+          shouldThrow<AssertionFailedError> {
+            actual shouldBe expected
+          }.let {
+            it.actual.value shouldBe "\"$actual\""
+            it.expected.value shouldBe "\"$expected\""
+            it.message shouldBe "line contents match, but line-break characters differ"
+          }
+        }
+      }
+
+      "should show diff when newline count differs" {
+        shouldThrow<AssertionFailedError> {
+          "a\nb" shouldBe "a\n\nb"
+        }.let {
+          it.actual.value shouldBe "\"a\nb\""
+          it.expected.value shouldBe "\"a\n\nb\""
+          it.message should startWith("expected: \"a")
         }
       }
     }
@@ -898,6 +934,42 @@ class StringMatchersTest : FreeSpec() {
             .message.shouldBe("yes should be equal ignoring case one of values: [false, no, n, 0]")
         shouldThrow<AssertionError> { "FALSE" shouldNot beFalsy() }
             .message.shouldBe("FALSE should not be equal ignoring case one of values: [false, no, n, 0]")
+      }
+    }
+
+    "Should be UUID" - {
+      "Should pass for Java generated UUIDs" {
+        Gen.uuid().assertAll { uuid ->
+          uuid.toString().shouldBeUUID()
+          uuid.toString().toUpperCase().shouldBeUUID()
+          uuid.toString().toLowerCase().shouldBeUUID()
+          shouldThrow<AssertionError> { uuid.toString().shouldNotBeUUID() }
+        }
+      }
+
+      "Should pass for nil UUID" {
+        "00000000-0000-0000-0000-000000000000".shouldBeUUID()
+        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldNotBeUUID() }
+      }
+
+      "Should fail for nil UUID if it should be considered invalid" {
+        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldBeUUID(considerNilValid = false) }
+        "00000000-0000-0000-0000-000000000000".shouldNotBeUUID(considerNilValid = false)
+      }
+
+      "Should fail for strings" {
+        Gen.string(31, 41).assertAll(iterations = 10_000) { str ->
+          shouldThrow<AssertionError> { str.shouldBeUUID() }
+          str.shouldNotBeUUID()
+        }
+      }
+
+      "Should fail for UUIDs without hyphens (not in accordance with specification)" {
+        Gen.uuid().assertAll { uuid ->
+          val nonHyphens = uuid.toString().replace("-", "")
+          nonHyphens.shouldNotBeUUID()
+          shouldThrow<AssertionError> { nonHyphens.shouldBeUUID() }
+        }
       }
     }
   }

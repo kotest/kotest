@@ -1,8 +1,9 @@
 package io.kotest.extensions.locale
 
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.extensions.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 import java.util.TimeZone
 
 /**
@@ -15,28 +16,28 @@ import java.util.TimeZone
  * change the timeZone while it was already changed, the result may be inconsistent.
  */
 inline fun <reified T> withDefaultTimeZone(timeZone: TimeZone, block: () -> T): T {
-  val previous = TimeZone.getDefault()
-  
-  TimeZone.setDefault(timeZone)
-  
-  try {
-    return block()
-  } finally {
-    TimeZone.setDefault(previous)
-  }
+   val previous = TimeZone.getDefault()
+
+   TimeZone.setDefault(timeZone)
+
+   try {
+      return block()
+   } finally {
+      TimeZone.setDefault(previous)
+   }
 }
 
-abstract class TimeZoneListener(private val timeZone: TimeZone) : TestListener {
-  
-  private val originalTimeZone = TimeZone.getDefault()
-  
-  protected fun changeTimeZone() {
-    TimeZone.setDefault(timeZone)
-  }
-  
-  protected fun resetTimeZone() {
-    TimeZone.setDefault(originalTimeZone)
-  }
+abstract class TimeZoneListener(private val timeZone: TimeZone) {
+
+   private val originalTimeZone = TimeZone.getDefault()
+
+   protected fun changeTimeZone() {
+      TimeZone.setDefault(timeZone)
+   }
+
+   protected fun resetTimeZone() {
+      TimeZone.setDefault(originalTimeZone)
+   }
 }
 
 /**
@@ -48,15 +49,15 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) : TestListener {
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.
  */
-class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
-  
-  override fun beforeTest(testCase: TestCase) {
-    changeTimeZone()
-  }
-  
-  override fun afterTest(testCase: TestCase, result: TestResult) {
-    resetTimeZone()
-  }
+class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), TestListener {
+
+   override suspend fun beforeTest(testCase: TestCase) {
+      changeTimeZone()
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetTimeZone()
+   }
 }
 
 /**
@@ -68,13 +69,14 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
  * **Attention:** This code is subject to race conditions. The System can only have one default timezone, and if you
  * change the timezone while it was already changed, the result may be inconsistent.
  */
-class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone) {
-  
-  override fun beforeProject() {
-    changeTimeZone()
-  }
-  
-  override fun afterProject() {
-    resetTimeZone()
-  }
+class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
+   ProjectListener {
+
+   override fun beforeProject() {
+      changeTimeZone()
+   }
+
+   override fun afterProject() {
+      resetTimeZone()
+   }
 }

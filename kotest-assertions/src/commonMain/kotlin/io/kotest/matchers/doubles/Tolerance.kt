@@ -1,7 +1,7 @@
 package io.kotest.matchers.doubles
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import kotlin.math.abs
 
 /**

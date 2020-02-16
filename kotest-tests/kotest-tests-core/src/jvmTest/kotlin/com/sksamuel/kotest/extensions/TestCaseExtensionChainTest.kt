@@ -1,46 +1,44 @@
 package com.sksamuel.kotest.extensions
 
-import io.kotest.TestCase
-import io.kotest.TestResult
-import io.kotest.extensions.SpecLevelExtension
-import io.kotest.extensions.TestCaseExtension
-import io.kotest.specs.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.style.StringSpec
 
+// tests that we can change extensions
 class TestCaseExtensionChainTest : StringSpec() {
 
-  class WibbleException : RuntimeException()
+   object MyExt1 : TestCaseExtension {
+      override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+         return if (testCase.description.name == "test1")
+            TestResult.Ignored
+         else
+            execute(testCase)
+      }
+   }
 
-  object MyExt1 : TestCaseExtension {
-    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      if (testCase.description.name == "test1")
-        complete(TestResult.Ignored)
-      else
-        execute(testCase) { complete(it) }
-    }
-  }
+   object MyExt2 : TestCaseExtension {
+      override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+         return if (testCase.description.name == "test2")
+            TestResult.Ignored
+         else
+            execute(testCase)
+      }
+   }
 
-  object MyExt2 : TestCaseExtension {
-    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit, complete: suspend (TestResult) -> Unit) {
-      if (testCase.description.name == "test2")
-        complete(TestResult.Ignored)
-      else
-        execute(testCase) { complete(it) }
-    }
-  }
+   override fun extensions() = listOf(MyExt1, MyExt2)
 
-  override fun extensions(): List<SpecLevelExtension> = listOf(MyExt1, MyExt2)
+   init {
+      "test1" {
+         // this exception should not be thrown as the first interceptor should ignore it
+         throw RuntimeException()
+      }
+      "test2" {
+         // this exception should not be thrown as the second interceptor should ignore it
+         throw RuntimeException()
+      }
+      "test3" {
 
-  init {
-    "test1" {
-      // this exception should not be thrown as the first interceptor should ignore it
-      throw RuntimeException()
-    }
-    "test2" {
-      // this exception should not be thrown as the second interceptor should ignore it
-      throw RuntimeException()
-    }
-    "test3" {
-
-    }
-  }
+      }
+   }
 }

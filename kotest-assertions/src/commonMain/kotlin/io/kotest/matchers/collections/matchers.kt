@@ -1,13 +1,13 @@
 package io.kotest.matchers.collections
 
-import io.kotest.Matcher
-import io.kotest.MatcherResult
 import io.kotest.assertions.stringRepr
-import io.kotest.neverNullMatcher
-import io.kotest.should
-import io.kotest.shouldHave
-import io.kotest.shouldNot
 import kotlin.jvm.JvmName
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldHave
+import io.kotest.matchers.shouldNot
 
 fun <T> Array<T>.shouldContainOnlyNulls() = asList().shouldContainOnlyNulls()
 fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
@@ -99,7 +99,7 @@ infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot conta
 fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
   override fun test(value: C) = MatcherResult(
     value.contains(t),
-    { "Collection should contain element ${stringRepr(t)}" },
+    { "Collection should contain element ${stringRepr(t)}; listing some elements ${value.take(5)}" },
     { "Collection should not contain element ${stringRepr(t)}" }
   )
 }
@@ -148,12 +148,16 @@ fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val passed = value.size == expected.size && expected.all { value.contains(it) }
-   MatcherResult(
-      passed,
-      "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
-      "Collection should not contain exactly ${stringRepr(expected)} in any order"
-   )
+  val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
+  val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
+  val passed = expectedGroupedCounts.size == valueGroupedCounts.size
+    && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
+
+  MatcherResult(
+    passed,
+    "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
+    "Collection should not contain exactly ${stringRepr(expected)} in any order"
+  )
 }
 
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T) = asList().shouldHaveUpperBound(t)
@@ -274,11 +278,13 @@ fun <T> List<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) 
 fun <T> Array<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeStrictlyDecreasingWith(comparator)
 
 infix fun <T> Array<T>.shouldHaveSingleElement(t: T) = asList().shouldHaveSingleElement(t)
+infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean) = asList().shouldHaveSingleElement(p)
 infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
+infix fun <T> Collection<T>.shouldHaveSingleElement(p: (T) -> Boolean) = this should singleElement(p)
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
 infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 infix fun <T> Array<T>.shouldHaveSize(size: Int) = asList().shouldHaveSize(size)
-infix fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size)
+infix fun <T> Collection<T>.shouldHaveSize(size: Int) = this should haveSize(size = size)
 infix fun <T> Array<T>.shouldNotHaveSize(size: Int) = asList().shouldNotHaveSize(size)
 infix fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSize(size)
 
@@ -300,6 +306,15 @@ infix fun <T> Collection<T>.shouldNotHaveSize(size: Int) = this shouldNot haveSi
 fun <T> Collection<T>.shouldBeSingleton() = this shouldHaveSize 1
 
 fun <T> Array<T>.shouldBeSingleton() = asList().shouldBeSingleton()
+
+inline fun <T> Collection<T>.shouldBeSingleton(fn: (T) -> Unit) {
+   this.shouldBeSingleton()
+   fn(this.first())
+}
+
+inline fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit) {
+   asList().shouldBeSingleton(fn)
+}
 
 /**
  * Verifies this collection doesn't contain only one element

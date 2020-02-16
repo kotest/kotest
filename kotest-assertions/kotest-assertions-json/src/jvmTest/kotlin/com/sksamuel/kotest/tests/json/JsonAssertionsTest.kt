@@ -8,9 +8,9 @@ import io.kotest.assertions.json.shouldNotContainJsonKey
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotMatchJson
 import io.kotest.assertions.json.shouldNotMatchJsonResource
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.StringSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 const val json = """{
     "store": {
@@ -37,14 +37,23 @@ const val json = """{
 
 class JsonAssertionsTest : StringSpec({
 
+  val json1 = """ { "name" : "sam", "location" : "london" } """
+  val json2 = """ { "location": "london", "name" : "sam" } """
+  val json3 = """ { "location": "chicago", "name" : "sam" } """
+
   "test json equality" {
-
-    val json1 = """ { "name" : "sam", "location" : "london" } """
-    val json2 = """ { "location": "london", "name" : "sam" } """
-    val json3 = """ { "location": "chicago", "name" : "sam" } """
-
     json1.shouldMatchJson(json2)
     json1.shouldNotMatchJson(json3)
+  }
+
+  "should return correct error message on failure" {
+    shouldThrow<AssertionError> {
+      json1 shouldMatchJson json3
+    }.message shouldBe """expected: {"location":"chicago","name":"sam"} but was: {"name":"sam","location":"london"}"""
+
+    shouldThrow<AssertionError> {
+      json1 shouldNotMatchJson json2
+    }.message shouldBe """expected not to match with: {"location":"london","name":"sam"} but match: {"name":"sam","location":"london"}"""
   }
 
   "test json path" {
@@ -82,14 +91,14 @@ class JsonAssertionsTest : StringSpec({
 
   "test json match by resource" {
 
-    val json1 = """ { "name" : "sam", "location" : "chicago" } """
-    val json2 = """ { "name" : "sam", "location" : "london" } """
+    val testJson1 = """ { "name" : "sam", "location" : "chicago" } """
+    val testJson2 = """ { "name" : "sam", "location" : "london" } """
 
-    json1.shouldMatchJsonResource("/json1.json")
-    json2.shouldNotMatchJsonResource("/json1.json")
+    testJson1.shouldMatchJsonResource("/json1.json")
+    testJson2.shouldNotMatchJsonResource("/json1.json")
 
     shouldThrow<AssertionError> {
-      json2.shouldMatchJsonResource("/json1.json")
-    }
+      testJson2.shouldMatchJsonResource("/json1.json")
+    }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
   }
 })

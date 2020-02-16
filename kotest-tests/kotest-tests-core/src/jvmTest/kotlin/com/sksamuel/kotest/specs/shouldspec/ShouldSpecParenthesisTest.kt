@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.shouldspec
 
-import io.kotest.specs.ShouldSpec
+import io.kotest.core.spec.style.ShouldSpec
 
 class ShouldSpecParenthesisTest : ShouldSpec() {
   init {

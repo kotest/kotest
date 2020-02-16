@@ -1,8 +1,11 @@
 package com.sksamuel.kotest.specs.shouldspec
 
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.specs.ShouldSpec
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@UseExperimental(ExperimentalTime::class)
 class ShouldSpecTest : ShouldSpec() {
 
   init {
@@ -10,7 +13,7 @@ class ShouldSpecTest : ShouldSpec() {
       should("a test") {
         1.shouldBeLessThan(2)
       }
-      should("a test with config").config(invocations = 3) {
+      should("a test with config").config(enabled = true, timeout = 12321.milliseconds) {
         1.shouldBeLessThan(2)
       }
       "a nested context" {

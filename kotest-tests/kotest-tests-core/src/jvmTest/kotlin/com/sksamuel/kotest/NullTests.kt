@@ -1,15 +1,15 @@
 package com.sksamuel.kotest
 
-import io.kotest.shouldBe
-import io.kotest.shouldThrow
-import io.kotest.specs.WordSpec
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 
 class NullTests : WordSpec() {
 
   // don't want compiler to compile this away
-  fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()
+  private fun getNull(): String? = if (System.currentTimeMillis() > 1234) null else throw RuntimeException()
 
-  fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
+  private fun notNull(): String? = if (System.currentTimeMillis() > 1234) "qwerty" else throw RuntimeException()
 
   init {
 
