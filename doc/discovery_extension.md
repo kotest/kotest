@@ -6,7 +6,7 @@ Another type of extension that can be used inside `ProjectConfig` is the `Discov
  to allow customisation of the way spec classes are discovered and instantiated. There are two functions of interest that
  can be overridden.
 
-The first is `afterScan` which accepts a list of Spec classes that were discovered by KotlinTest during the _discovery_ phase
+The first is `afterScan` which accepts a list of Spec classes that were discovered by Kotest during the _discovery_ phase
  of the test engine. This function then returns a list of the classes that should actually be instantiated and executed. By
  overriding this function, you are able to filter which classes are used, or even add in extra classes not originally discovered.
 
