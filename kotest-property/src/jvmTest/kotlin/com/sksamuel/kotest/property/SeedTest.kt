@@ -1,8 +1,6 @@
 package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain

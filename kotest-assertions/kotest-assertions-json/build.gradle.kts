@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   kotlin("jvm")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -9,14 +9,63 @@ repositories {
    mavenCentral()
 }
 
-dependencies {
-   implementation(project(":kotest-core"))
-   implementation(project(":kotest-assertions"))
-   implementation(kotlin("stdlib-jdk8"))
-   implementation(kotlin("reflect"))
-   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
-   implementation("com.jayway.jsonpath:json-path:2.4.0")
-   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+kotlin {
+
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+      js {
+         val main by compilations.getting {
+            kotlinOptions {
+               moduleKind = "commonjs"
+            }
+         }
+      }
+      if (!Ci.ideaActive) {
+         linuxX64()
+         mingwX64()
+         macosX64()
+      } else if (Ci.os.isMacOsX) {
+         macosX64("native")
+      } else if (Ci.os.isWindows) {
+         mingwX64("native")
+      } else {
+         linuxX64("native")
+      }
+   }
+
+   targets.all {
+      compilations.all {
+         kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+         }
+      }
+   }
+
+   sourceSets {
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(project(":kotest-assertions"))
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
+            implementation("com.jayway.jsonpath:json-path:2.4.0")
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+         }
+      }
+   }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -37,4 +86,4 @@ tasks.named<Test>("test") {
    }
 }
 
-apply(from = "../../publish-jvm.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")

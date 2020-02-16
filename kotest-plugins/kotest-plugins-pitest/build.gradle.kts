@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   kotlin("jvm")
+   kotlin("multiplatform")
    id("java-library")
 }
 
@@ -8,12 +8,49 @@ repositories {
    mavenCentral()
 }
 
-dependencies {
-   implementation(kotlin("stdlib-jdk8"))
-   implementation(kotlin("reflect"))
-   implementation(project(":kotest-core"))
-   implementation("org.pitest:pitest:1.4.11")
-   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+kotlin {
+
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+
+   targets.all {
+      compilations.all {
+         kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+         }
+      }
+   }
+
+   sourceSets {
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            implementation(project(":kotest-core"))
+            implementation("org.pitest:pitest:1.4.11")
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+         }
+      }
+   }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("test") {
@@ -29,4 +66,4 @@ tasks.named<Test>("test") {
    }
 }
 
-apply(from = "../../publish-jvm.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")

@@ -3,8 +3,9 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
    id("java")
-   kotlin("jvm")
+   kotlin("multiplatform")
    id("java-library")
+   id("maven-publish")
    id("com.adarshr.test-logger")
 }
 
@@ -12,30 +13,55 @@ repositories {
    mavenCentral()
 }
 
-dependencies {
-   implementation(kotlin("stdlib-jdk8"))
-   implementation(project(":kotest-fp"))
-   api(project(":kotest-core"))
-//            api(project(":kotest-runner:kotest-runner-console"))
-   api(Libs.JUnitPlatform.engine)
-   api(Libs.JUnitPlatform.api)
-   api(Libs.JUnitPlatform.launcher)
-   api(Libs.JUnitJupiter.api)
+kotlin {
 
-   testImplementation(project(":kotest-core"))
-   testImplementation(project(":kotest-assertions"))
-   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
-   testImplementation(Libs.JUnitPlatform.testkit)
-   testImplementation(Libs.Slf4j.api)
-   testImplementation(Libs.Logback.classic)
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+
+   targets.all {
+      compilations.all {
+         kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+         }
+      }
+   }
+
+   sourceSets {
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(project(":kotest-fp"))
+            api(project(":kotest-core"))
+            api(project(":kotest-extensions"))
+            api(project(":kotest-assertions"))
+            api(Libs.JUnitPlatform.engine)
+            api(Libs.JUnitPlatform.api)
+            api(Libs.JUnitPlatform.launcher)
+            api(Libs.JUnitJupiter.api)
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.JUnitPlatform.testkit)
+            implementation(Libs.Slf4j.api)
+            implementation(Libs.Logback.classic)
+         }
+      }
+   }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
-   kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.named<Test>("test") {
+tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
       isFailOnNoMatchingTests = false
@@ -48,4 +74,5 @@ tasks.named<Test>("test") {
    }
 }
 
-apply(from = "../../publish-jvm.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")
+

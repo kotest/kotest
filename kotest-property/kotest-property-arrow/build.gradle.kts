@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   kotlin("jvm")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -9,19 +9,56 @@ repositories {
    mavenCentral()
 }
 
-dependencies {
-   implementation(kotlin("stdlib-jdk8"))
-   implementation(kotlin("reflect"))
-   api(project(":kotest-assertions"))
-   api(project(":kotest-property"))
-   implementation("io.arrow-kt:arrow-core:0.10.4")
-   testImplementation(project(":kotest-runner:kotest-runner-junit5"))
+kotlin {
+
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+
+   targets.all {
+      compilations.all {
+         kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+         }
+      }
+   }
+
+   sourceSets {
+
+      val jvmMain by getting {
+         dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
+            api(project(":kotest-assertions"))
+            api(project(":kotest-property"))
+            implementation("io.arrow-kt:arrow-core:0.10.4")
+         }
+      }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(":kotest-runner:kotest-runner-junit5"))
+         }
+      }
+   }
 }
 
-tasks.named<Test>("test") {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
-      setFailOnNoMatchingTests(false)
+      isFailOnNoMatchingTests = false
    }
    testLogging {
       showExceptions = true
@@ -34,4 +71,4 @@ tasks.named<Test>("test") {
    }
 }
 
-apply(from = "../../publish-jvm.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")

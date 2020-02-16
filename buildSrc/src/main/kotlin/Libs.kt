@@ -41,6 +41,10 @@ object Libs {
       const val api = "org.slf4j:slf4j-api:1.7.30"
    }
 
+   object Mocking {
+      const val mockk = "io.mockk:mockk:1.9.3"
+   }
+
    object Coroutines {
       private const val version = "1.3.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
