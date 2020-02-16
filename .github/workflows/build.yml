@@ -26,11 +26,11 @@ jobs:
 
          -  name: Run windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test
+            run: ./gradlew nativeTest
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew macosX64Test
+            run: ./gradlew nativeTest
 
          -  name: Bundle the build report
             if: failure()
@@ -56,7 +56,7 @@ jobs:
                name: BUILD_NUMBER
                path: BUILD_NUMBER
 
-   deploy-mac-and-linux:
+   deploy-linux-and-common:
       needs: build
       runs-on: macOS-latest
 
@@ -76,6 +76,26 @@ jobs:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
+   deploy-mac:
+      needs: build
+      runs-on: macOS-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+         -  name: Download build number
+            uses: actions/download-artifact@v1
+            with:
+               name: BUILD_NUMBER
+         -  name: Restore build number
+            id: buildnumber
+            uses: einaregilsson/build-number@v2
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publishNativePublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+
    deploy-windows:
       needs: build
       runs-on: windows-latest
@@ -91,7 +111,7 @@ jobs:
             id: buildnumber
             uses: einaregilsson/build-number@v2
          -  name: deploy to sonatype snapshots
-            run: ./gradlew publishMingwX64PublicationToDeployRepository
+            run: ./gradlew publishNativePublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}

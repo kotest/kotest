@@ -26,16 +26,10 @@ kotlin {
             }
          }
       }
-      if (!Ci.ideaActive) {
-         linuxX64()
-         mingwX64()
-         macosX64()
-      } else if (Ci.os.isMacOsX) {
-         macosX64("native")
-      } else if (Ci.os.isWindows) {
-         mingwX64("native")
-      } else {
-         linuxX64("native")
+      when {
+         Ci.os.isMacOsX -> macosX64("native")
+         Ci.os.isWindows -> mingwX64("native")
+         else -> linuxX64("native")
       }
    }
 
@@ -51,7 +45,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation (kotlin ("stdlib-common"))
+            implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(":kotest-mpp"))
          }
@@ -85,16 +79,10 @@ kotlin {
          }
       }
 
-      if (!Ci.ideaActive) {
-         val nativeMain by creating {
-            dependsOn(commonMain)
-            dependencies {
-               implementation(Libs.Coroutines.coreNative)
-            }
-         }
-
-         configure(listOf(getByName("macosX64Main"), getByName("linuxX64Main"), getByName("mingwX64Main"))) {
-            dependsOn(nativeMain)
+      val nativeMain by getting {
+         dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Coroutines.coreNative)
          }
       }
    }
@@ -108,7 +96,10 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
