@@ -359,12 +359,6 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `regex.shouldIncludeRegexOptions(regexOptions)`       | Asserts that regex include of the given regexOptions|
 
 
-| [Konform (optional)](https://github.com/konform-kt/konform/) |     |
-| ---------- | --- |
-| `validation.shouldBeValid(value)` | Asserts that the validation is valid for the given value |
-| `validation.shouldBeInvalid(value)` | Asserts that the validation is invalid for the given value |
-| `validation.shouldBeInvalid(value) { block }` | Asserts that the validation is invalid for the given value, and then, runs the block with invalid value |
-
 | Instant ||
 | -------- | ---- |
 | `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
