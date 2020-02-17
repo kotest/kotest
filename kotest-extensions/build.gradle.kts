@@ -42,6 +42,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(Libs.Coroutines.core)
             implementation("org.mockito:mockito-core:2.24.0")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
