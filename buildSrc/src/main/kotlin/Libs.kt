@@ -63,4 +63,9 @@ object Libs {
       const val clientApache = "io.ktor:ktor-client-apache:$version"
       const val clientCurl = "io.ktor:ktor-client-curl:$version"
    }
+
+   object Klock {
+      private const val version = "1.7.0"
+      const val klock = "com.soywiz.korlibs.klock:klock:$version"
+   }
 }
