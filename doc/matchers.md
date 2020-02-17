@@ -370,3 +370,9 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `instant.shouldBeAfter(anotherInstant)` | Asserts that the instant is after anotherInstant |
 | `instant.shouldBeBefore(anotherInstant)` | Asserts that the instant is before anotherInstant |
 | `instant.shouldBeBetween(fromInstant, toInstant)` | Asserts that the instant is between fromInstant and toInstant |
+
+| Timestamp ||
+| -------- | ---- |
+| `timestamp.shouldBeAfter(anotherTimestamp)` | Asserts that the timestamp is after anotherTimestamp |
+| `timestamp.shouldBeBefore(anotherTimestamp)` | Asserts that the timestamp is before anotherTimestamp |
+| `timestamp.shouldBeBetween(fromTimestamp, toTimestamp)` | Asserts that the timestamp is between fromTimestamp and toTimestamp|
