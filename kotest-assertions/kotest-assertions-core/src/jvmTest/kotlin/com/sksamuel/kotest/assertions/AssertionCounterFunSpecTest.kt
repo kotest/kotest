@@ -9,7 +9,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldHaveLength
 
 class AssertionCounterFunSpecTest : FunSpec() {
 
@@ -38,7 +37,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
          // using the shouldBe here at the start will also increase the count
          AssertionCounter.get() shouldBe 0
          1 shouldBe 1
-         "hello".shouldHaveLength(5)
+         "hello".length shouldBe 5
          AssertionCounter.get() shouldBe 3
       }
 

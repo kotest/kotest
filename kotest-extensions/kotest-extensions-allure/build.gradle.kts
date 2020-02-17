@@ -33,6 +33,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
+            implementation(project(":kotest-mpp"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Allure.commons)
@@ -46,6 +47,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
    }

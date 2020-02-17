@@ -35,6 +35,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation("io.konform:konform:0.1.0")
          }
       }

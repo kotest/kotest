@@ -3,7 +3,6 @@ package com.sksamuel.kotest.assertions.timing
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.eventually
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
@@ -94,7 +93,7 @@ class EventuallyTest : WordSpec() {
                eventually(100.milliseconds) {
                   1 shouldBe 2
                }
-            }.message.shouldEndWith("; underlying cause was expected: 2 but was: 1")
+            }.message?.endsWith("; underlying cause was expected: 2 but was: 1") shouldBe true
          }
          "allow suspendable functions" {
             eventually(2.seconds) {

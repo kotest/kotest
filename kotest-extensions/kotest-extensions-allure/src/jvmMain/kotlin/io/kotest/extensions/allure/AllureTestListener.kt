@@ -1,6 +1,6 @@
 package io.kotest.extensions.allure
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan

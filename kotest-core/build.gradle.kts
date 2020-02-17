@@ -40,7 +40,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(project(":kotest-mpp"))
-            implementation(project(":kotest-assertions"))
+            api(project(":kotest-assertions"))
             // this seems to need to be API otherwise it won't find it in projects that depend on core
             api(project(":kotest-fp"))
             api(kotlin("stdlib-common"))
