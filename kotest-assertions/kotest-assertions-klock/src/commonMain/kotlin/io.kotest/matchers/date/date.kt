@@ -2,14 +2,11 @@ package io.kotest.matchers.date
 
 import com.soywiz.klock.Date
 import com.soywiz.klock.DateTime
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.*
 
-infix fun Date.shouldHaveSameYearAs(date: Date) = this shouldBe haveSameYear(date)
+infix fun Date.shouldHaveSameYearAs(date: Date) = this should haveSameYear(date)
 
-infix fun Date.shouldNotHaveSameYearAs(date: Date) = this shouldNotBe haveSameYear(date)
+infix fun Date.shouldNotHaveSameYearAs(date: Date) = this shouldNot haveSameYear(date)
 
 fun haveSameYear(date: Date) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -20,9 +17,9 @@ fun haveSameYear(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveYear(year: Int) = this shouldBe haveYear(year)
+infix fun Date.shouldHaveYear(year: Int) = this should haveYear(year)
 
-infix fun Date.shouldNotHaveYear(year: Int) = this shouldNotBe haveYear(year)
+infix fun Date.shouldNotHaveYear(year: Int) = this shouldNot haveYear(year)
 
 fun haveYear(year: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -33,9 +30,9 @@ fun haveYear(year: Int) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveSameMonthAs(date: Date) = this shouldBe haveSameMonth(date)
+infix fun Date.shouldHaveSameMonthAs(date: Date) = this should haveSameMonth(date)
 
-infix fun Date.shouldNotHaveSameMonthAs(date: Date) = this shouldNotBe haveSameMonth(date)
+infix fun Date.shouldNotHaveSameMonthAs(date: Date) = this shouldNot haveSameMonth(date)
 
 fun haveSameMonth(date: Date) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -46,9 +43,9 @@ fun haveSameMonth(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveMonth(month: Int) = this shouldBe haveMonth(month)
+infix fun Date.shouldHaveMonth(month: Int) = this should haveMonth(month)
 
-infix fun Date.shouldNotHaveMonth(month: Int) = this shouldNotBe haveMonth(month)
+infix fun Date.shouldNotHaveMonth(month: Int) = this shouldNot haveMonth(month)
 
 fun haveMonth(month: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -59,9 +56,9 @@ fun haveMonth(month: Int) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveSameDayAs(date: Date) = this shouldBe haveSameDay(date)
+infix fun Date.shouldHaveSameDayAs(date: Date) = this should haveSameDay(date)
 
-infix fun Date.shouldNotHaveSameDayAs(date: Date) = this shouldNotBe haveSameDay(date)
+infix fun Date.shouldNotHaveSameDayAs(date: Date) = this shouldNot haveSameDay(date)
 
 fun haveSameDay(date: Date) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -72,9 +69,9 @@ fun haveSameDay(date: Date) = object : Matcher<Date> {
       )
 }
 
-infix fun Date.shouldHaveDay(day: Int) = this shouldBe haveDay(day)
+infix fun Date.shouldHaveDay(day: Int) = this should haveDay(day)
 
-infix fun Date.shouldNotHaveDay(day: Int) = this shouldNotBe haveDay(day)
+infix fun Date.shouldNotHaveDay(day: Int) = this shouldNot haveDay(day)
 
 fun haveDay(day: Int) = object : Matcher<Date> {
    override fun test(value: Date) =
@@ -85,9 +82,9 @@ fun haveDay(day: Int) = object : Matcher<Date> {
       )
 }
 
-fun Date.shouldBeToday() = this shouldBe beToday()
+fun Date.shouldBeToday() = this should beToday()
 
-fun Date.shouldNotBeToday() = this shouldNotBe beToday()
+fun Date.shouldNotBeToday() = this shouldNot beToday()
 
 fun beToday() = object : Matcher<Date> {
    override fun test(value: Date): MatcherResult =

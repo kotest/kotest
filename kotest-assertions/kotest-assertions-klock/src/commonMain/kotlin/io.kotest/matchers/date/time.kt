@@ -14,8 +14,8 @@ fun haveSameHours(time: Time): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.hour == time.hour,
-         { "$value should have hours ${time.hour}" },
-         { "$value should not have hours ${time.hour}" }
+         { "$value should have ${time.hour} hours" },
+         { "$value should not have ${time.hour} hours" }
       )
 }
 
@@ -27,8 +27,8 @@ fun haveHours(hours: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.hour == hours,
-         { "$value should have hours $hours" },
-         { "$value should not have hours $hours" }
+         { "$value should have $hours hours" },
+         { "$value should not have $hours hours" }
       )
 }
 
@@ -40,8 +40,8 @@ fun haveSameMinutes(time: Time): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.minute == time.minute,
-         { "$value should have minutes ${time.minute}" },
-         { "$value should not have minutes ${time.minute}" }
+         { "$value should have ${time.minute} minutes" },
+         { "$value should not have ${time.minute} minutes" }
       )
 }
 
@@ -53,8 +53,8 @@ fun haveMinutes(minutes: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.minute == minutes,
-         { "$value should have minutes $minutes" },
-         { "$value should not have minutes $minutes" }
+         { "$value should have $minutes minutes" },
+         { "$value should not have $minutes minutes" }
       )
 }
 
@@ -66,8 +66,8 @@ fun haveSameSeconds(time: Time): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.second == time.second,
-         { "$value should have seconds ${time.second}" },
-         { "$value should not have seconds ${time.second}" }
+         { "$value should have ${time.second} seconds" },
+         { "$value should not have ${time.second} seconds" }
       )
 }
 
@@ -79,8 +79,8 @@ fun haveSeconds(seconds: Int): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.second == seconds,
-         { "$value should have seconds $seconds" },
-         { "$value should not have seconds $seconds" }
+         { "$value should have $seconds seconds" },
+         { "$value should not have $seconds seconds" }
       )
 }
 
@@ -92,8 +92,8 @@ fun haveSameMilliseconds(time: Time): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.millisecond == time.millisecond,
-         { "$value should have milliseconds ${time.millisecond}" },
-         { "$value should not have milliseconds ${time.millisecond}" }
+         { "$value should have ${time.millisecond} milliseconds" },
+         { "$value should not have ${time.millisecond} milliseconds" }
       )
 }
 
@@ -105,8 +105,8 @@ fun haveMilliseconds(millis: Long): Matcher<Time> = object : Matcher<Time> {
    override fun test(value: Time): MatcherResult =
       MatcherResult(
          value.millisecond.toLong() == millis,
-         { "$value should have milliseconds $millis" },
-         { "$value should not have milliseconds $millis" }
+         { "$value should have $millis milliseconds" },
+         { "$value should not have $millis milliseconds" }
       )
 }
 
