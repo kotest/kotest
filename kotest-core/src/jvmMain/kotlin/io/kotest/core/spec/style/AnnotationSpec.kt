@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style
 
-import io.kotest.assertions.Failures
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
@@ -79,11 +78,11 @@ abstract class AnnotationSpec : Spec() {
    }
 
    private fun failNoExceptionThrown(expected: KClass<out Throwable>): Nothing {
-      throw Failures.failure("Expected exception of class ${expected.simpleName}, but no exception was thrown.")
+      throw AssertionError("Expected exception of class ${expected.simpleName}, but no exception was thrown.")
    }
 
    private fun failWrongExceptionThrown(expected: KClass<out Throwable>, thrown: Throwable): Nothing {
-      throw Failures.failure("Expected exception of class ${expected.simpleName}, but ${thrown::class.simpleName} was thrown instead.")
+      throw AssertionError("Expected exception of class ${expected.simpleName}, but ${thrown::class.simpleName} was thrown instead.")
    }
 
 

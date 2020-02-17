@@ -40,6 +40,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(project(":kotest-fp"))
+            implementation(project(":kotest-mpp"))
             api(project(":kotest-core"))
             api(project(":kotest-extensions"))
             api(project(":kotest-assertions"))

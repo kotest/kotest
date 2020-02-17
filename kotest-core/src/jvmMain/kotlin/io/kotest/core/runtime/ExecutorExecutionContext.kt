@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.fp.Try
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors

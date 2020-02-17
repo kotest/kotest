@@ -1,6 +1,5 @@
 package io.kotest.properties
 
-import io.kotest.matchers.string.UUIDVersion
 import java.io.File
 import java.math.BigInteger
 import java.time.Duration
@@ -65,6 +64,17 @@ fun Gen.Companion.duration(maxDuration: Duration = Duration.ofDays(10)): Gen<Dur
          Duration.ofSeconds(r.nextLong(maxDurationInSeconds))
       }
    }
+}
+
+enum class UUIDVersion(
+   val uuidRegex: Regex
+) {
+   ANY("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE)),
+   V1("[0-9a-f]{8}-[0-9a-f]{4}-[1][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE)),
+   V2("[0-9a-f]{8}-[0-9a-f]{4}-[2][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE)),
+   V3("[0-9a-f]{8}-[0-9a-f]{4}-[3][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE)),
+   V4("[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE)),
+   V5("[0-9a-f]{8}-[0-9a-f]{4}-[5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}".toRegex(RegexOption.IGNORE_CASE));
 }
 
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")

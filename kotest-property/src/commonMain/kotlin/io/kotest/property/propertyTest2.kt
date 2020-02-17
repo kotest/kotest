@@ -2,7 +2,7 @@
 
 package io.kotest.property
 
-import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
@@ -107,7 +107,7 @@ suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Boolean
-) = proptest<A, B>(iterations, genA, genB, config) { a, b -> property(a, b).shouldBeTrue() }
+) = proptest<A, B>(iterations, genA, genB, config) { a, b -> property(a, b) shouldBe true }
 
 
 suspend inline fun <reified A, reified B> forAll(
@@ -133,4 +133,4 @@ suspend inline fun <reified A, reified B> forAll(
    Arb.default<A>(),
    Arb.default<B>(),
    config
-) { a, b -> property(a, b).shouldBeTrue() }
+) { a, b -> property(a, b) shouldBe true }

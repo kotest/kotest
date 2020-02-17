@@ -1,6 +1,6 @@
 package io.kotest.core.engine
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec

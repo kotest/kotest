@@ -1,7 +1,4 @@
-package io.kotest.assertions
-
-import io.kotest.mpp.env
-import io.kotest.mpp.sysprop
+package io.kotest.mpp
 
 private fun enabled() = sysprop("KOTEST_DEBUG") != null || env("KOTEST_DEBUG") != null
 

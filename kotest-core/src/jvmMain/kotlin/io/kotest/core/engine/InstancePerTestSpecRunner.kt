@@ -1,6 +1,6 @@
 package io.kotest.core.engine
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.runtime.ExecutorExecutionContext
 import io.kotest.core.runtime.TestExecutionListener
 import io.kotest.core.runtime.TestExecutor

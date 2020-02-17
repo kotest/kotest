@@ -1,6 +1,6 @@
 package io.kotest.runner.junit5
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.engine.IsolationTestEngineListener

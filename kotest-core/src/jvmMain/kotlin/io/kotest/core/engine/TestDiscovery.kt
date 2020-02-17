@@ -1,7 +1,7 @@
 package io.kotest.core.engine
 
 import io.github.classgraph.ClassGraph
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.DiscoveryExtension

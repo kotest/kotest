@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension

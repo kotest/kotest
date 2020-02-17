@@ -1,6 +1,6 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.matchers.string.UUIDVersion
+import io.kotest.properties.UUIDVersion
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.util.*

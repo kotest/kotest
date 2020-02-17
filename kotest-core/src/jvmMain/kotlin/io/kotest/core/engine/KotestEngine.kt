@@ -1,6 +1,5 @@
 package io.kotest.core.engine
 
-import io.kotest.assertions.log
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
@@ -11,6 +10,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
 import io.kotest.core.internal.NamedThreadFactory
+import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
 import java.util.concurrent.Executors
