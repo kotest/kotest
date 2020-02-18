@@ -60,11 +60,12 @@ fun containColumn(columnName: String) = object : Matcher<ResultSet> {
    }
 }
 
-fun ResultSet.shouldHaveColumn(columnName: String, next: (List<String>) -> Unit) {
+@Suppress("UNCHECKED_CAST")
+fun <T> ResultSet.shouldHaveColumn(columnName: String, next: (List<T>) -> Unit) {
    this shouldContainColumn columnName
-   val data = mutableListOf<String>()
+   val data = mutableListOf<T>()
    while (this.next()) {
-      data += this.getString(columnName)
+      data += this.getObject(columnName) as T
    }
    next(data)
 }

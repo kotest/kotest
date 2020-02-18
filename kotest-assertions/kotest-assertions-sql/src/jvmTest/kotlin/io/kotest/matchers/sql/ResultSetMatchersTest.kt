@@ -47,10 +47,21 @@ class ResultSetMatchersTest : StringSpec() {
          every { resultSet.next() } returnsMany listOf(true, true, true, false)
          every { resultSet.metaData.columnCount } returns 1
          every { resultSet.metaData.getColumnLabel(1) } returns TEST_COLUMN
-         every { resultSet.getString(TEST_COLUMN) } returnsMany TEST_COLUMN_VALUES
+         every { resultSet.getObject(TEST_COLUMN) } returnsMany TEST_COLUMN_VALUES
 
-         resultSet.shouldHaveColumn(TEST_COLUMN) {
+         resultSet.shouldHaveColumn<String>(TEST_COLUMN) {
             it shouldBe TEST_COLUMN_VALUES
+         }
+      }
+      "ResultSet should have column with diff type" {
+         val resultSet = mockk<ResultSet>()
+         every { resultSet.next() } returnsMany listOf(true, true, true, false)
+         every { resultSet.metaData.columnCount } returns 1
+         every { resultSet.metaData.getColumnLabel(1) } returns TEST_COLUMN
+         every { resultSet.getObject(TEST_COLUMN) } returnsMany TEST_COLUMN_VALUES2
+
+         resultSet.shouldHaveColumn<Int>(TEST_COLUMN) {
+            it shouldBe TEST_COLUMN_VALUES2
          }
       }
       "ResultSet should have row" {
@@ -72,6 +83,7 @@ class ResultSetMatchersTest : StringSpec() {
    companion object {
       private const val TEST_COLUMN = "Test-Column"
       private val TEST_COLUMN_VALUES = listOf("Test1", "Test2", "Test3")
+      private val TEST_COLUMN_VALUES2 = listOf(1, 2, 3)
       private val TEST_ROW_VALUES = listOf(1, "SomeName", true)
    }
 }
