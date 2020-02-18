@@ -1,6 +1,10 @@
 package io.kotest.matchers.sql
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -49,10 +53,25 @@ class ResultSetMatchersTest : StringSpec() {
             it shouldBe TEST_COLUMN_VALUES
          }
       }
+      "ResultSet should have row" {
+         val resultSet = mockk<ResultSet>(relaxed = true)
+         every { resultSet.metaData.columnCount } returns TEST_ROW_VALUES.size
+         every { resultSet.getObject(any<Int>()) } returnsMany TEST_ROW_VALUES
+
+         resultSet.shouldHaveRow(1) {
+            it shouldContainAll TEST_ROW_VALUES
+            it shouldContain TEST_ROW_VALUES[0]
+            it shouldContain TEST_ROW_VALUES[1]
+            it shouldContain TEST_ROW_VALUES[2]
+            it shouldContainExactly TEST_ROW_VALUES
+            it shouldNotContain "RANDOM_ROW_VALUE"
+         }
+      }
    }
 
    companion object {
       private const val TEST_COLUMN = "Test-Column"
       private val TEST_COLUMN_VALUES = listOf("Test1", "Test2", "Test3")
+      private val TEST_ROW_VALUES = listOf(1, "SomeName", true)
    }
 }

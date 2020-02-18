@@ -69,4 +69,15 @@ fun ResultSet.shouldHaveColumn(columnName: String, next: (List<String>) -> Unit)
    next(data)
 }
 
+fun ResultSet.shouldHaveRow(rowNum: Int, next: (List<Any>) -> Unit) {
+   val metaData = this.metaData
+   val colCount = metaData.columnCount
+   val row = mutableListOf<Any>()
+   this.absolute(rowNum)
+   (1..colCount).forEach { colNum ->
+      row += this.getObject(colNum)
+   }
+   next(row)
+}
+
 
