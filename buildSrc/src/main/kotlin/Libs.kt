@@ -68,4 +68,9 @@ object Libs {
       private const val version = "1.7.0"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
+
+   object Jdbc {
+      private const val version = "19.3.0.0"
+      const val jdbc = "com.oracle.jdbc:ojdbc8:$version"
+   }
 }
