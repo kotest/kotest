@@ -1,8 +1,8 @@
-![Kotest](doc/logo6.png)
+![Kotest](doc/logo7-with-text.png)
 ==========
 
 [![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest) 
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest)
 ![GitHub](https://img.shields.io/github/license/kotest/kotest)
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
