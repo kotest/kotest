@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -33,8 +33,8 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(Libs.Klock.klock)
             implementation(project(":kotest-assertions"))
+            implementation(Libs.Klock.klock)
          }
       }
 
@@ -67,4 +67,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mmp.gradle.kts")
