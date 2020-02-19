@@ -67,4 +67,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish-mmp.gradle.kts")
+apply(from = "../../publish-mpp.gradle.kts")
