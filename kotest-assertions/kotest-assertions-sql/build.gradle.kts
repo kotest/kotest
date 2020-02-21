@@ -30,18 +30,11 @@ kotlin {
          }
       }
 
-      val commonMain by getting {
-         dependencies {
-            implementation(kotlin("stdlib-common"))
-            implementation(project(":kotest-assertions"))
-            implementation(Libs.Klock.klock)
-         }
-      }
-
       val jvmMain by getting {
-         dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
 
@@ -49,6 +42,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.Mocking.mockk)
          }
       }
    }
@@ -62,7 +56,10 @@ tasks.named<Test>("jvmTest") {
    testLogging {
       showExceptions = true
       showStandardStreams = true
-      events = setOf(org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED, org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED)
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
       exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
