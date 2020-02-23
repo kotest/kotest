@@ -121,7 +121,7 @@ abstract class AbstractProjectConfig {
    @Deprecated("use the val version")
    open fun testCaseOrder(): TestCaseOrder? = null
 
-   val testCaseOrder: TestCaseOrder? = null
+   open val testCaseOrder: TestCaseOrder? = null
 
    /**
     * Override this value and set it to true if you want all tests to behave as if they

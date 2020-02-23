@@ -4,8 +4,11 @@ import io.github.classgraph.ClassGraph
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filters.Filter
 import io.kotest.core.listeners.Listener
+import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
+import kotlin.math.max
 
 /**
  * Loads a config object from the underlying target by scanning the classpath
@@ -22,22 +25,31 @@ actual fun detectConfig(): ProjectConf {
       }
 
    fun from(fqn: String): ProjectConf {
-      val conf = instantiate(Class.forName(fqn) as Class<AbstractProjectConfig>)
+      val confClass = instantiate(Class.forName(fqn) as Class<AbstractProjectConfig>)
+      val beforeAfterAllListener = object : ProjectListener {
+         override fun beforeProject() {
+            confClass.beforeAll()
+         }
+         override fun afterProject() {
+            confClass.afterAll()
+         }
+      }
       return ProjectConf(
-         extensions = conf.extensions(),
-         listeners = conf.listeners() + conf.projectListeners(),
-         filters = conf.filters(),
-         isolationMode = conf.isolationMode ?: conf.isolationMode(),
-         assertionMode = conf.assertionMode,
-         testCaseOrder = conf.testCaseOrder ?: conf.testCaseOrder(),
-         specExecutionOrder = conf.specExecutionOrder ?: conf.specExecutionOrder(),
-         failOnIgnoredTests = conf.failOnIgnoredTests,
-         globalAssertSoftly = conf.globalAssertSoftly,
-         autoScanEnabled = conf.autoScanEnabled ?: true,
-         autoScanIgnoredClasses = conf.autoScanIgnoredClasses,
-         writeSpecFailureFile = conf.writeSpecFailureFile ?: conf.writeSpecFailureFile(),
-         timeout = conf.timeout,
-         testCaseConfig = conf.defaultTestCaseConfig
+         extensions = confClass.extensions(),
+         listeners = confClass.listeners() + confClass.projectListeners() + listOf(beforeAfterAllListener),
+         filters = confClass.filters(),
+         isolationMode = confClass.isolationMode ?: confClass.isolationMode(),
+         assertionMode = confClass.assertionMode,
+         testCaseOrder = confClass.testCaseOrder ?: confClass.testCaseOrder(),
+         specExecutionOrder = confClass.specExecutionOrder ?: confClass.specExecutionOrder(),
+         failOnIgnoredTests = confClass.failOnIgnoredTests,
+         globalAssertSoftly = confClass.globalAssertSoftly,
+         autoScanEnabled = confClass.autoScanEnabled ?: true,
+         autoScanIgnoredClasses = confClass.autoScanIgnoredClasses,
+         writeSpecFailureFile = confClass.writeSpecFailureFile ?: confClass.writeSpecFailureFile(),
+         parallelism = max(confClass.parallelism, confClass.parallelism()),
+         timeout = confClass.timeout,
+         testCaseConfig = confClass.defaultTestCaseConfig
       )
    }
 
