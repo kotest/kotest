@@ -1,6 +1,7 @@
 package com.sksamuel.kotest
 
 import com.sksamuel.kotest.extensions.SpecExtensionNumbers
+import com.sksamuel.kotest.extensions.TagFilteredDiscoveryExtensionTest
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.filters.Filter
@@ -20,7 +21,7 @@ object ProjectConfig : AbstractProjectConfig() {
    override fun specExecutionOrder(): SpecExecutionOrder = FailureFirstSpecExecutionOrder
 
    override fun extensions(): List<Extension> {
-      return listOf(SpecExtensionNumbers.ext)
+      return listOf(SpecExtensionNumbers.ext, TagFilteredDiscoveryExtensionTest.ext)
    }
 
    override fun beforeAll() {

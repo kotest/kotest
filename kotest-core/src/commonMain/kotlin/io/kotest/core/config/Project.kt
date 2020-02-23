@@ -30,7 +30,7 @@ object Project {
 
    private val userconf = detectConfig()
    private val defaultTimeout = 600.seconds
-   private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension, RuntimeTagExtension)
+   private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension, RuntimeTagExtension, TagFilteredDiscoveryExtension)
    private var listeners = userconf.listeners
    private var filters = userconf.filters
    private var timeout = userconf.timeout ?: defaultTimeout
