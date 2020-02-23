@@ -34,7 +34,7 @@ fun Arb.Companion.float(): Arb<Float> = arb(
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
 fun Arb.Companion.numericFloats(
-   from: Float = Float.MIN_VALUE,
+   from: Float = -Float.MAX_VALUE,
    to: Float = Float.MAX_VALUE
 ) = arb(
    FloatShrinker,

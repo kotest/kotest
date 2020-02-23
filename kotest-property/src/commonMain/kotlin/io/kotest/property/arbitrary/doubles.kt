@@ -28,7 +28,7 @@ fun Arb.Companion.double(): Arb<Double> {
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
 fun Arb.Companion.numericDoubles(
-   from: Double = Double.MIN_VALUE,
+   from: Double = -Double.MAX_VALUE,
    to: Double = Double.MAX_VALUE
 ): Arb<Double> {
    val edgecases = listOf(0.0, 1.0, -1.0, 1e300, Double.MIN_VALUE, Double.MAX_VALUE).filter { it in (from..to) }
