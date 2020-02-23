@@ -399,8 +399,6 @@ The full list of the functions in the `TestListener` interface is as follows:
 |afterTest|Is invoked each time after a Test Case is executed. If the test is marked as Ignored, this won't execute. This will execute even if the test fails |
 |beforeSpec|Is invoked each time a Spec is started, before any `beforeTest` functions are invoked. |
 |afterSpec|Is invoked each time a Spec completes, after all `afterTest` functions are invoked. |
-|beforeSpecClass|Is invoked when the engine is preparing the spec to be executed. It will be executed only once, regardless of how many times the [Spec is instantiated](isolation_mode.md)
-|afterSpecClass|Is invoked once all tests for a `Spec` have completed, regardless of how many times the [Spec is instantiated](isolation_mode.md)
 |beforeProject|Is invoked as soon as the Test Engine is started.|
 |afterProject|Is invoked as soon as the Test Engine has finished.|
 |afterDiscovery|Is invoked after all the Spec classes have been discovered, but before any `beforeSpec` functions are called, and before any specs are instantiated by the Test Engine. |
