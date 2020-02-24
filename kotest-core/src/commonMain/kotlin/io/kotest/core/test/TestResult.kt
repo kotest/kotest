@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.core.bestName
+import io.kotest.mpp.bestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -19,12 +19,14 @@ data class TestResult(
          duration
       )
 
-      fun throwable(e: Throwable?, duration: Duration): TestResult = when (e) {
-         null -> success(duration)
-         is AssertionError -> failure(e, duration)
-         else -> when (e::class.bestName()) {
-            "org.opentest4j.AssertionFailedError" -> failure(e, duration)
-            else -> error(e, duration)
+      fun throwable(e: Throwable?, duration: Duration): TestResult {
+         return when (e) {
+            null -> success(duration)
+            is AssertionError -> failure(e, duration)
+            else -> when (e::class.bestName()) {
+               "org.opentest4j.AssertionFailedError" -> failure(e, duration)
+               else -> error(e, duration)
+            }
          }
       }
 
@@ -35,14 +37,14 @@ data class TestResult(
          Duration.ZERO
       )
 
-      fun failure(e: Throwable, duration: Duration) = TestResult(
+      private fun failure(e: Throwable, duration: Duration) = TestResult(
          TestStatus.Failure,
          e,
          null,
          duration
       )
 
-      fun error(t: Throwable, duration: Duration) = TestResult(
+      private fun error(t: Throwable, duration: Duration) = TestResult(
          TestStatus.Error,
          t,
          null,

@@ -30,7 +30,7 @@ typealias TestCaseExtensionFn = suspend (
    execute: suspend (TestCase) -> TestResult
 ) -> TestResult
 
-typealias AroundTestFn = suspend (suspend (suspend (TestResult) -> Unit) -> Unit) -> Unit
+typealias AroundTestFn = suspend (TestCase, suspend (TestCase) -> TestResult) -> TestResult
 
 expect interface AutoCloseable {
    fun close()
@@ -76,18 +76,14 @@ abstract class TestConfiguration {
       }
    }
 
-//   fun aroundTest(runtest: AroundTestFn) {
-//      _extensions = _extensions + object : TestCaseExtension {
-//         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-//            val f: suspend (suspend (TestResult) -> Unit) -> Unit = { callback ->
-//               val result = execute(testCase)
-//               callback(result)
-//               result
-//            }
-//            runtest(f)
-//         }
-//      }
-//   }
+   fun aroundTest(aroundTestFn: AroundTestFn) {
+      _extensions = _extensions + object : TestCaseExtension {
+         override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
+            val f: suspend (TestCase) -> TestResult = { execute(it) }
+            return aroundTestFn(testCase, f)
+         }
+      }
+   }
 
    /**
     * Registers a new before-test callback to be executed before every [TestCase].
@@ -182,24 +178,6 @@ abstract class TestConfiguration {
       fun DynamicTest.addPrefix() = copy(name = prefix + name)
       factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
    }
-
-   /**
-    * Register an [AutoCloseable] so that it's close methods is automatically invoked
-    * when the tests are completed.
-    */
-   fun <T : AutoCloseable> autoClose(closeable: T): T {
-      afterSpec {
-         closeable.close()
-      }
-      return closeable
-   }
-
-   fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
-      afterSpec {
-         closeable.value.close()
-      }
-      return closeable
-   }
 }
 
 // we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
@@ -290,4 +268,20 @@ abstract class Spec : TestConfiguration(), SpecCallbackMethods {
    }
 }
 
+/**
+ * Register an [AutoCloseable] so that it's close methods is automatically invoked
+ * when the tests are completed.
+ */
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
+   afterSpec {
+      closeable.close()
+   }
+   return closeable
+}
 
+fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: Lazy<T>): Lazy<T> {
+   afterSpec {
+      closeable.value.close()
+   }
+   return closeable
+}

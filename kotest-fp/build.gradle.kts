@@ -8,9 +8,6 @@ repositories {
    mavenCentral()
 }
 
-val ideaActive = System.getProperty("idea.active") == "true"
-val os = org.gradle.internal.os.OperatingSystem.current()
-
 kotlin {
 
    targets {
@@ -28,23 +25,17 @@ kotlin {
             }
          }
       }
-      if (!ideaActive) {
-         linuxX64()
-         mingwX64()
-         macosX64()
-      } else if (os.isMacOsX) {
-         macosX64("native")
-      } else if (os.isWindows) {
-         mingwX64("native")
-      } else {
-         linuxX64("native")
+      when {
+         Ci.os.isMacOsX -> macosX64("native")
+         Ci.os.isWindows -> mingwX64("native")
+         else -> linuxX64("native")
       }
    }
 
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -71,16 +62,10 @@ kotlin {
          }
       }
 
-      if (!ideaActive) {
-         val nativeMain by creating {
-            dependsOn(commonMain)
-         }
-
-         configure(listOf(getByName("macosX64Main"), getByName("linuxX64Main"), getByName("mingwX64Main"))) {
-            dependsOn(nativeMain)
-         }
+      val nativeMain by getting {
+         dependsOn(commonMain)
       }
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish-mpp.gradle.kts")

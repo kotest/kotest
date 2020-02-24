@@ -37,9 +37,8 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             // we use the internals of the JVM project in the tests
-            implementation(project(":kotest-runner:kotest-runner-jvm"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
@@ -69,4 +68,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../nopublish.gradle")

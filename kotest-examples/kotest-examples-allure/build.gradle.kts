@@ -33,6 +33,7 @@ kotlin {
          dependencies {
             api(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(project(":kotest-extensions:kotest-extensions-allure"))
          }
       }

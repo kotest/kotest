@@ -3,8 +3,8 @@ package com.sksamuel.kotest.runner.jvm
 import com.nhaarman.mockito_kotlin.*
 import io.kotest.core.spec.description
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.runner.jvm.IsolationTestEngineListener
-import io.kotest.runner.jvm.TestEngineListener
+import io.kotest.core.engine.IsolationTestEngineListener
+import io.kotest.core.engine.TestEngineListener
 
 class IsolationTestEngineListenerTest : WordSpec({
 

@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -8,6 +8,7 @@ plugins {
 repositories {
    mavenCentral()
 }
+
 kotlin {
 
    targets {
@@ -23,23 +24,22 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
 
    sourceSets {
-
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
+            implementation(project(":kotest-mpp"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Allure.commons)
             implementation("javax.xml.bind:jaxb-api:2.3.1")
             implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
             implementation("com.sun.xml.bind:jaxb-impl:2.3.2")
-
          }
       }
 
@@ -47,6 +47,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
    }
@@ -68,4 +69,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

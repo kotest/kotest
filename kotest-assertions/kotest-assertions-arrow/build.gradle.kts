@@ -1,6 +1,6 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
 }
@@ -24,22 +24,21 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
 
    sourceSets {
-
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-assertions"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(Libs.Arrow.fx)
             implementation(Libs.Arrow.validation)
             implementation(Libs.Arrow.syntax)
          }
       }
-
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
@@ -62,4 +61,4 @@ tasks.named<Test>("jvmTest") {
    }
 }
 
-apply(from = "../../publish.gradle")
+apply(from = "../../publish-mpp.gradle.kts")

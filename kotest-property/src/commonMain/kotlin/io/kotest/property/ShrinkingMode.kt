@@ -1,5 +1,8 @@
 package io.kotest.property
 
+import kotlin.time.ExperimentalTime
+
+@UseExperimental(ExperimentalTime::class)
 sealed class ShrinkingMode {
 
    /**
@@ -13,7 +16,7 @@ sealed class ShrinkingMode {
    object Unbounded : ShrinkingMode()
 
    /**
-    * Shrink a maximum number of times
+    * Shrinks until a maximum number of values have been found.
     */
    data class Bounded(val bound: Int) : ShrinkingMode()
 }

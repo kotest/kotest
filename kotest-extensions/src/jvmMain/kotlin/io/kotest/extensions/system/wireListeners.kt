@@ -10,7 +10,7 @@ import java.io.PrintStream
 /**
  * A wrapper function that captures any writes to standard out.
  */
-fun captureStandardOut(fn: () -> Unit): String {
+inline fun captureStandardOut(fn: () -> Unit): String {
    val previous = System.out
    val buffer = ByteArrayOutputStream()
    System.setOut(PrintStream(buffer))
@@ -25,7 +25,7 @@ fun captureStandardOut(fn: () -> Unit): String {
 /**
  * A wrapper function that captures any writes to standard error.
  */
-fun captureStandardErr(fn: () -> Unit): String {
+inline fun captureStandardErr(fn: () -> Unit): String {
    val previous = System.err
    val buffer = ByteArrayOutputStream()
    System.setErr(PrintStream(buffer))

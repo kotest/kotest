@@ -1,71 +1,71 @@
 package io.kotest.property
 
-import io.kotest.property.arbitrary.PropertyInput
-import io.kotest.property.arbitrary.map
 import kotlin.random.Random
 
 /**
- * A Generator, or [Gen] is responsible for generating data to be used in property testing.
- * Each generator will generate data for a specific type <T>.
+ * A [Gen] is responsible for providing values to be used in property testing. You can think of it as like
+ * an input stream for values. Each arg will provide data for a specific type <A>.
  *
- * There are two supported types of generators - [Arbitrary] and [Progression] - defined
- * as sub interfaces of this interface.
+ * Gens can be created in two ways: with arbitrary (random) values from instances of [Arb] and
+ * exhaustive values over a closed space from instances of [Exhaustive].
  *
- * An arbitrary is used when you need random values across a large space.
- * A progression is useful when you want exhaustive values from a small space.
+ * Arbs generate random values across a given space. The values may be repeated, and some
+ * values may never be generated at all. For example generating 1000 random integers between 0 and Int.MAX
+ * will clearly not return all possible values, and some values may happen to be generated more than once.
  *
- * Both types of generators can be mixed and matched in property tests. For example,
- * you could test a function with 1000 random positive integers (arbitrary) and every
- * even number from 0 to 200 (progression).
+ * Exhaustives generate all values from a given space. This is useful when you want to ensure every
+ * value in that space is used. For instance for enum values, it is usually more helpful to ensure each
+ * enum is used, rather than picking randomly from the enums values.
+ *
+ * Both types of gens can be mixed and matched in property tests. For example,
+ * you could test a function with 100 random positive integers (arbitrary) alongside every
+ * even number from 0 to 200 (exhaustive).
  */
-interface Gen<T> {
+interface Gen<out A> {
 
    /**
-    * @return the values provided by this [Gen] as a lazy list.
-    * @see [PropertyInput]
+    * The minimum iteration count required for this [Gen] to be invoked.
+    * Requesting a property test with fewer than this cound will result in an exception.
     */
-   fun generate(random: Random): Sequence<PropertyInput<T>>
+   fun minIterations(): Int
+
+   fun generate(rs: RandomSource): Sequence<Sample<A>>
 }
 
-fun <T, U> Gen<T>.map(f: (T) -> U): Gen<U> = object : Gen<U> {
-   override fun generate(random: Random): Sequence<PropertyInput<U>> =
-      this@map.generate(random).map { it.map(f) }
-}
-
-fun <T> Gen<T>.filter(predicate: (T) -> Boolean): Gen<T> = object : Gen<T> {
-   override fun generate(random: Random): Sequence<PropertyInput<T>> =
-      this@filter.generate(random).filter { predicate(it.value) }
-}
-
-/**
- * Returns a new [Gen] which will merge the values from this gen and the values of
- * the supplied gen together in turn.
- *
- * In other words, if GenA provides 1,2,3 and GenB provides 7,8,9 then this gen will output
- * 1,7,2,8,3,9.
- *
- * The supplied gen must be a subtype of the type of this gen.
- *
- * @param other the gen to merge with this one
- * @return the merged gen.
- */
-fun <T, U : T> Gen<T>.merge(other: Gen<U>): Gen<T> {
-   return object : Gen<T> {
-      override fun generate(random: Random): Sequence<PropertyInput<T>> =
-         this@merge.generate(random).zip(other.generate(random)).flatMap { (a, b) ->
-            sequenceOf(a, b)
-         }
+data class RandomSource(val random: Random, val seed: Long) {
+   companion object {
+      val Default = lazy {
+         val seed = Random.Default.nextLong()
+         RandomSource(Random(seed), seed)
+      }.value
    }
 }
 
 /**
- * Returns a new [Gen]]which will return the values from this gen and once values
- * of this gen are exhausted will return the values from the supplied gen.
- * The supplied gen must be a subtype of the type of this gen.
+ * Contains a single generated value from a [Gen] and an RTree of lazily evaluated shrinks.
  */
-fun <T, U : T> Gen<T>.concat(other: Gen<U>): Gen<T> {
-   return object : Gen<T> {
-      override fun generate(random: Random): Sequence<PropertyInput<T>> =
-         this@concat.generate(random) + other.generate(random)
+data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree(value))
+
+fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
+
+/**
+ * Returns a new [Gen] which will merge the values from this gen and the values of
+ * the supplied gen together, taking one from each in turn.
+ *
+ * In other words, if genA provides 1,2,3 and genB provides 7,8,9 then the merged
+ * gen would output 1,7,2,8,3,9.
+ *
+ * The supplied gen must be a subtype of the type of this gen.
+ *
+ * @param other the arg to merge with this one
+ * @return the merged arg.
+ */
+
+fun <A, B : A> Gen<A>.merge(other: Gen<B>): Gen<A> = object : Gen<A> {
+   override fun minIterations(): Int = this@merge.minIterations() + other.minIterations()
+   override fun generate(rs: RandomSource): Sequence<Sample<A>> {
+      return this@merge.generate(rs).zip(other.generate(rs)).flatMap {
+         sequenceOf(it.first, it.second)
+      }
    }
 }

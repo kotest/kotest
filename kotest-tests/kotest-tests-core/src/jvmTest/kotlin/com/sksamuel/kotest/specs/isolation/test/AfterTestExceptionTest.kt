@@ -7,8 +7,8 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.runner.jvm.TestEngineListener
-import io.kotest.runner.jvm.spec.SpecExecutor
+import io.kotest.core.engine.TestEngineListener
+import io.kotest.core.engine.SpecExecutor
 
 internal class BehaviorSpecWithAfterTestError : BehaviorSpec({
    isolation = IsolationMode.InstancePerTest

@@ -1,7 +1,6 @@
 package io.kotest.core
 
-import io.kotest.assertions.classname
-
+import io.kotest.mpp.bestName
 
 /**
  * Base class for all tags. The simple name (without packages) of the singleton derived from this
@@ -19,7 +18,7 @@ abstract class Tag {
    /**
     * Simple name of the singleton/class derived from this class.
     */
-   open val name: String = this::class.classname()
+   open val name: String = this::class.bestName()
 
    /**
     * Same as [name].

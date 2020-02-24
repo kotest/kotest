@@ -14,42 +14,42 @@ package io.kotest.matchers
  */
 interface Matcher<T> {
 
-  fun test(value: T): MatcherResult
+   fun test(value: T): MatcherResult
 
-  fun <U> contramap(f: (U) -> T): Matcher<U> = object : Matcher<U> {
-    override fun test(value: U): MatcherResult = this@Matcher.test(f(value))
-  }
+   fun <U> contramap(f: (U) -> T): Matcher<U> = object : Matcher<U> {
+      override fun test(value: U): MatcherResult = this@Matcher.test(f(value))
+   }
 
-  fun invert(): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): MatcherResult {
-      val result = this@Matcher.test(value)
-      return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
-    }
-  }
+   fun invert(): Matcher<T> = object : Matcher<T> {
+      override fun test(value: T): MatcherResult {
+         val result = this@Matcher.test(value)
+         return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
+      }
+   }
 
-  infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
-    override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
-  }
+   infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
+      override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
+   }
 
-  infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): MatcherResult {
-      val r = this@Matcher.test(value)
-      return if (!r.passed())
-        r
-      else
-        other.test(value)
-    }
-  }
+   infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
+      override fun test(value: T): MatcherResult {
+         val r = this@Matcher.test(value)
+         return if (!r.passed())
+            r
+         else
+            other.test(value)
+      }
+   }
 
-  infix fun or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-    override fun test(value: T): MatcherResult {
-      val r = this@Matcher.test(value)
-      return if (r.passed())
-        r
-      else
-        other.test(value)
-    }
-  }
+   infix fun or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
+      override fun test(value: T): MatcherResult {
+         val r = this@Matcher.test(value)
+         return if (r.passed())
+            r
+         else
+            other.test(value)
+      }
+   }
 }
 
 /**
@@ -59,22 +59,22 @@ interface Matcher<T> {
  * should fail on `null` values, whether called with `should` or `shouldNot`.
  */
 internal abstract class NeverNullMatcher<T : Any> : Matcher<T?> {
-  final override fun test(value: T?): MatcherResult {
-    return if (value == null) MatcherResult(false, "Expecting actual not to be null", "")
-    else testNotNull(value)
-  }
+   final override fun test(value: T?): MatcherResult {
+      return if (value == null) MatcherResult(false, "Expecting actual not to be null", "")
+      else testNotNull(value)
+   }
 
-  override fun invert(): Matcher<T?> = object : NeverNullMatcher<T>() {
-    override fun testNotNull(value: T): MatcherResult {
-      val result = this@NeverNullMatcher.testNotNull(value)
-      return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
-    }
-  }
+   override fun invert(): Matcher<T?> = object : NeverNullMatcher<T>() {
+      override fun testNotNull(value: T): MatcherResult {
+         val result = this@NeverNullMatcher.testNotNull(value)
+         return MatcherResult(!result.passed(), result.negatedFailureMessage(), result.failureMessage())
+      }
+   }
 
-  abstract fun testNotNull(value: T): MatcherResult
+   abstract fun testNotNull(value: T): MatcherResult
 }
 
-internal fun <T : Any> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T?> {
+fun <T : Any> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T?> {
    return object : NeverNullMatcher<T>() {
       override fun testNotNull(value: T): MatcherResult {
          return test(value)
@@ -87,44 +87,48 @@ internal fun <T : Any> neverNullMatcher(test: (T) -> MatcherResult): Matcher<T?>
  */
 interface MatcherResult {
 
-  /**
-   * Returns true if the matcher indicated this was a valid
-   * value and false if the matcher indicated an invalid value.
-   */
-  fun passed(): Boolean
+   /**
+    * Returns true if the matcher indicated this was a valid
+    * value and false if the matcher indicated an invalid value.
+    */
+   fun passed(): Boolean
 
-  /**
-   * Returns a message indicating why the evaluation failed
-   * for when this matcher is used in the positive sense. For example,
-   * if a size matcher was used like `mylist should haveSize(5)` then
-   * an appropriate error message would be "list should be size 5".
-   */
-  fun failureMessage(): String
+   /**
+    * Returns a message indicating why the evaluation failed
+    * for when this matcher is used in the positive sense. For example,
+    * if a size matcher was used like `mylist should haveSize(5)` then
+    * an appropriate error message would be "list should be size 5".
+    */
+   fun failureMessage(): String
 
-  /**
-   * Returns a message indicating why the evaluation
-   * failed for when this matcher is used in the negative sense. For example,
-   * if a size matcher was used like `mylist shouldNot haveSize(5)` then
-   * an appropriate negated failure would be "List should not have size 5".
-   */
-  fun negatedFailureMessage(): String
+   /**
+    * Returns a message indicating why the evaluation
+    * failed for when this matcher is used in the negative sense. For example,
+    * if a size matcher was used like `mylist shouldNot haveSize(5)` then
+    * an appropriate negated failure would be "List should not have size 5".
+    */
+   fun negatedFailureMessage(): String
 
-  companion object {
+   companion object {
 
-    operator fun invoke(passed: Boolean,
-                        failureMessage: String,
-                        negatedFailureMessage: String) = object : MatcherResult {
-      override fun passed(): Boolean = passed
-      override fun failureMessage(): String = failureMessage
-      override fun negatedFailureMessage(): String = negatedFailureMessage
-    }
+      operator fun invoke(
+         passed: Boolean,
+         failureMessage: String,
+         negatedFailureMessage: String
+      ) = object : MatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessage
+         override fun negatedFailureMessage(): String = negatedFailureMessage
+      }
 
-    operator fun invoke(passed: Boolean,
-                        failureMessageFn: () -> String,
-                        negatedFailureMessageFn: () -> String) = object : MatcherResult {
-      override fun passed(): Boolean = passed
-      override fun failureMessage(): String = failureMessageFn()
-      override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-    }
-  }
+      operator fun invoke(
+         passed: Boolean,
+         failureMessageFn: () -> String,
+         negatedFailureMessageFn: () -> String
+      ) = object : MatcherResult {
+         override fun passed(): Boolean = passed
+         override fun failureMessage(): String = failureMessageFn()
+         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+      }
+   }
 }

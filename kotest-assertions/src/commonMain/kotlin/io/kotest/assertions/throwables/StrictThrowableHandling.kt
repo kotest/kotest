@@ -2,7 +2,7 @@ package io.kotest.assertions.throwables
 
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.Failures
-import io.kotest.assertions.classname
+import io.kotest.mpp.bestName
 
 /**
  * Verifies that a block of code throws a Throwable of type [T], not including subclasses of [T]
@@ -99,10 +99,10 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
    }
 
    return when {
-      thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.classname()} but no exception was thrown.")
+      thrownThrowable == null -> throw Failures.failure("Expected exception ${T::class.bestName()} but no exception was thrown.")
       thrownThrowable::class == expectedExceptionClass -> thrownThrowable as T  // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
       thrownThrowable is AssertionError -> throw thrownThrowable
-      else -> throw Failures.failure("Expected exception ${expectedExceptionClass.classname()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
+      else -> throw Failures.failure("Expected exception ${expectedExceptionClass.bestName()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
          thrownThrowable)
    }
 }

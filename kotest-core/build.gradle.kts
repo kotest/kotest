@@ -30,7 +30,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -39,6 +39,7 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(project(":kotest-mpp"))
             api(project(":kotest-assertions"))
             // this seems to need to be API otherwise it won't find it in projects that depend on core
             api(project(":kotest-fp"))
@@ -69,4 +70,4 @@ kotlin {
    }
 }
 
-apply(from = "../publish.gradle")
+apply(from = "../publish-mpp.gradle.kts")

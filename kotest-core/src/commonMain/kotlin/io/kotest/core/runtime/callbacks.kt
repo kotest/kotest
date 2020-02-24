@@ -1,6 +1,6 @@
 package io.kotest.core.runtime
 
-import io.kotest.assertions.log
+import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
@@ -35,6 +35,20 @@ suspend fun TestCase.invokeAfterTest(result: TestResult) {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterTest(this, result)
+   }
+}
+
+suspend fun TestCase.invokeBeforeInvocation(k: Int) {
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.beforeInvocation(this, k)
+   }
+}
+
+suspend fun TestCase.invokeAfterInvocation(k: Int) {
+   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   listeners.forEach {
+      it.afterInvocation(this, k)
    }
 }
 

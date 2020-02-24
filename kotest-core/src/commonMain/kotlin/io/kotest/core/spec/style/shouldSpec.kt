@@ -6,8 +6,6 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.should as shouldBeMatcher
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -54,5 +52,5 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec(), ShouldSpec
 
    // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
    // clash with the other should method
-   infix fun String.should(matcher: Matcher<String>) = this shouldBeMatcher matcher
+   // infix fun String.should(matcher: Matcher<String>) = TODO()
 }

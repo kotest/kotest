@@ -19,8 +19,10 @@ inline fun <T> continually(duration: Duration, f: () -> T): T? {
       try {
          result = f()
       } catch (e: AssertionError) {
+         // if this is the first time the check was executed then just rethrow the underlying error
          if (times == 0)
             throw e
+         // if not the first attempt then include how many times/for how long the test passed
          throw Failures.failure(
             "Test failed after ${mark.elapsedNow().toLongMilliseconds()}ms; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
             e

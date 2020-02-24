@@ -82,6 +82,8 @@ data class Description(val parents: List<String>, val name: String) {
     */
    fun isOnPath(description: Description): Boolean = this == description || this.isAncestorOf(description)
 
+   fun isDescendentOf(description: Description): Boolean = description.isOnPath(this)
+
    /**
     * Returns true if this test is a top level test. In other words, if the
     * test has no parents other than the spec itself.

@@ -41,6 +41,10 @@ object Libs {
       const val api = "org.slf4j:slf4j-api:1.7.30"
    }
 
+   object Mocking {
+      const val mockk = "io.mockk:mockk:1.9.3"
+   }
+
    object Coroutines {
       private const val version = "1.3.3"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
@@ -51,8 +55,17 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.2.6"
+      private const val version = "1.3.0"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
+      const val clientJs = "io.ktor:ktor-client-js:$version"
+      const val clientCore = "io.ktor:ktor-client-core:$version"
+      const val clientApache = "io.ktor:ktor-client-apache:$version"
+      const val clientCurl = "io.ktor:ktor-client-curl:$version"
+   }
+
+   object Klock {
+      private const val version = "1.7.0"
+      const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
 }

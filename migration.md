@@ -12,10 +12,6 @@ Spring and Koin extensions are now auto scanned, so you no longer need to manual
 
 TestExtension now simplified to use a single callback
 
-continually now uses kotlin durations
-
-test case configuration now uses kotlin durations
-
-until and eventually are not duration based
+All duration/time based parameters are now using kotlinx.time duration.
 
 until is now suspended

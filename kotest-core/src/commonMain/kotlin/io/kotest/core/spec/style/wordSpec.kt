@@ -6,8 +6,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.should as shouldBeMatcher
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -30,7 +28,9 @@ class WordSpecTestFactoryConfiguration : TestFactoryConfiguration(), WordSpecDsl
 }
 
 abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec(), WordSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+   override fun defaultConfig(): TestCaseConfig =
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
+
    override val addTest = ::addRootTestCase
 
    init {
@@ -39,5 +39,5 @@ abstract class WordSpec(body: WordSpec.() -> Unit = {}) : Spec(), WordSpecDsl {
 
    // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
    // clash with the other should method
-   infix fun String?.should(matcher: Matcher<String?>) = this shouldBeMatcher matcher
+   //infix fun String?.should(matcher: Matcher<String?>) = TODO()
 }

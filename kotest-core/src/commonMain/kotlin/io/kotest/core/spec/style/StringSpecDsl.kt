@@ -3,6 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
+import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
@@ -24,12 +25,15 @@ interface StringSpecDsl : SpecDsl {
 
    fun String.config(
       enabled: Boolean? = null,
+      invocations: Int? = null,
+      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
+      enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
       addTest(this, test, config, TestType.Test)
    }
 

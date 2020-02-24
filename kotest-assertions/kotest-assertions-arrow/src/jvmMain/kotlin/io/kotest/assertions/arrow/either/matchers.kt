@@ -18,7 +18,7 @@ fun <T> Either<*, T>.shouldBeRight() {
 }
 
 fun <T> Either<Any?, T>.shouldNotBeRight() = this shouldNot beRight()
-fun <T> beRight() = beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
+fun <T> beRight() =   beInstanceOf2<Either<Any?, T>, Either.Right<T>>()
 
 inline infix fun <B> Either<*, B>.shouldBeRight(fn: (B) -> Unit) {
   this should beRight()

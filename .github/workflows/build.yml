@@ -26,11 +26,11 @@ jobs:
 
          -  name: Run windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew mingwX64Test
+            run: ./gradlew nativeTest
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew macosX64Test
+            run: ./gradlew nativeTest
 
          -  name: Bundle the build report
             if: failure()
@@ -43,25 +43,78 @@ jobs:
                name: error-report
                path: build-reports.zip
 
-   deploy:
-      needs: build
-      runs-on: ubuntu-latest
-
-      steps:
          -  name: Generate build number
+            if: success()
             uses: einaregilsson/build-number@v2
             with:
                token: ${{secrets.github_token}}
 
+         -  name: Upload build number
+            if: success()
+            uses: actions/upload-artifact@v1
+            with:
+               name: BUILD_NUMBER
+               path: BUILD_NUMBER
+
+   deploy-linux-and-common:
+      needs: build
+      runs-on: macOS-latest
+
+      steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
-
+         -  name: Download build number
+            uses: actions/download-artifact@v1
+            with:
+               name: BUILD_NUMBER
+         -  name: Restore build number
+            id: buildnumber
+            uses: einaregilsson/build-number@v2
          -  name: deploy to sonatype snapshots
             run: ./gradlew publish
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
+   deploy-mac:
+      needs: build
+      runs-on: macOS-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+         -  name: Download build number
+            uses: actions/download-artifact@v1
+            with:
+               name: BUILD_NUMBER
+         -  name: Restore build number
+            id: buildnumber
+            uses: einaregilsson/build-number@v2
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publishNativePublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+
+   deploy-windows:
+      needs: build
+      runs-on: windows-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+         -  name: Download build number
+            uses: actions/download-artifact@v1
+            with:
+               name: BUILD_NUMBER
+         -  name: Restore build number
+            id: buildnumber
+            uses: einaregilsson/build-number@v2
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publishNativePublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
