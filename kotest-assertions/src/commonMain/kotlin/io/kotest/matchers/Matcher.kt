@@ -12,7 +12,7 @@ package io.kotest.matchers
  * functions in the assertions DSL. For example, `2 should beLessThan(4)`
  *
  */
-interface Matcher<T> {
+interface Matcher<in T> {
 
    fun test(value: T): MatcherResult
 
@@ -30,25 +30,25 @@ interface Matcher<T> {
    infix fun <U> compose(fn: (U) -> T): Matcher<U> = object : Matcher<U> {
       override fun test(value: U): MatcherResult = this@Matcher.test(fn(value))
    }
+}
 
-   infix fun and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-      override fun test(value: T): MatcherResult {
-         val r = this@Matcher.test(value)
-         return if (!r.passed())
-            r
-         else
-            other.test(value)
-      }
+infix fun <T> Matcher<T>.and(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
+   override fun test(value: T): MatcherResult {
+      val r = this@and.test(value)
+      return if (!r.passed())
+         r
+      else
+         other.test(value)
    }
+}
 
-   infix fun or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
-      override fun test(value: T): MatcherResult {
-         val r = this@Matcher.test(value)
-         return if (r.passed())
-            r
-         else
-            other.test(value)
-      }
+infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = object : Matcher<T> {
+   override fun test(value: T): MatcherResult {
+      val r = this@or.test(value)
+      return if (r.passed())
+         r
+      else
+         other.test(value)
    }
 }
 

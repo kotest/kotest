@@ -95,15 +95,15 @@ fun <T> containNoNulls() = object : Matcher<Collection<T>> {
 }
 
 infix fun <T> Array<T>.shouldContain(t: T) = asList().shouldContain(t)
-infix fun <T> Collection<T>.shouldContain(t: T) = this should contain(t)
+infix fun <T, C : Collection<T>> C.shouldContain(t: T) = this should contain(t)
 infix fun <T> Array<T>.shouldNotContain(t: T) = asList().shouldNotContain(t)
-infix fun <T> Collection<T>.shouldNotContain(t: T) = this shouldNot contain(t)
-fun <T> contain(t: T) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.contains(t),
-    { "Collection should contain element ${stringRepr(t)}; listing some elements ${value.take(5)}" },
-    { "Collection should not contain element ${stringRepr(t)}" }
-  )
+infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
+fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
+   override fun test(value: C) = MatcherResult(
+      value.contains(t),
+      { "Collection should contain element ${stringRepr(t)}; listing some elements ${value.take(5)}" },
+      { "Collection should not contain element ${stringRepr(t)}" }
+   )
 }
 
 infix fun <T> Array<T>.shouldNotContainExactly(expected: Array<T>) = asList().shouldNotContainExactly(expected.asList())
