@@ -57,7 +57,7 @@ fun <K, V> haveSize(size: Int): Matcher<Map<K,V>> = object : Matcher<Map<K, V>> 
       )
 }
 
-fun be(map: Map<*, *>) = object : Matcher<Map<*, *>> {
+fun beEqualTo(map: Map<*, *>) = object : Matcher<Map<*, *>> {
    override fun test(value: Map<*, *>): MatcherResult {
       return MatcherResult(
          map == value,
