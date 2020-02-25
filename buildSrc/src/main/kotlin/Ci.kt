@@ -1,7 +1,7 @@
 object Ci {
 
    val isGithub = System.getenv("GITHUB_ACTIONS") == "true"
-   val githubBuildNumber: String = System.getenv("BUILD_NUMBER") ?: "0"
+   val githubBuildNumber: String = System.getenv("GITHUB_RUN_ID") ?: "0"
 
    val isReleaseVersion = !isGithub
 

@@ -18,37 +18,17 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v2
 
-      - name: Cache gradle
-        uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      -  name: Cache gradle wrapper
-         uses: actions/cache@v1
-         with:
-            path: ~/.gradle/caches
-            key: ${{ runner.os }}-gradlewrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-            restore-keys: |
-               ${{ runner.os }}-gradlewrapper-
-      -  name: Cache maven
-         uses: actions/cache@v1
-         with:
-            path: ~/.m2/repository/
-            key: ${{ runner.os }}-maven-${{ hashFiles('**/*.gradle') }}
-            restore-keys: |
-               ${{ runner.os }}-maven-
-
       - name: Run ubuntu tests
         if: matrix.os == 'ubuntu-latest'
         run: ./gradlew check
+
       - name: Run windows tests
         if: matrix.os == 'windows-latest'
-        run: ./gradlew mingwX64Test
+        run: ./gradlew nativeTest
+
       - name: Run macOS tests
         if: matrix.os == 'macOS-latest'
-        run: ./gradlew macosX64Test
+        run: ./gradlew nativeTest
 
       - name: Bundle the build report
         if: failure()
