@@ -12,7 +12,7 @@ package io.kotest.matchers
  * functions in the assertions DSL. For example, `2 should beLessThan(4)`
  *
  */
-interface Matcher<in T> {
+interface Matcher<T> {
 
    fun test(value: T): MatcherResult
 
