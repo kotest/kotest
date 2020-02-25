@@ -48,6 +48,9 @@ fun <K, V> Map<K, V>.shouldNotContainValues(vararg values: V) = this shouldNot h
 fun <K, V> Map<K, V>.shouldBeEmpty() = this should beEmpty()
 fun <K, V> Map<K, V>.shouldNotBeEmpty() = this shouldNot beEmpty()
 
+infix fun <K, V> Map<K, V>.shouldBeEqualTo(anotherMap: Map<K, V>) = this should be(anotherMap)
+infix fun <K, V> Map<K, V>.shouldNotBeEqualTo(anotherMap: Map<K, V>) = this shouldNot be(anotherMap)
+
 fun beEmpty() = object : Matcher<Map<*, *>> {
    override fun test(value: Map<*, *>): MatcherResult {
       return MatcherResult(

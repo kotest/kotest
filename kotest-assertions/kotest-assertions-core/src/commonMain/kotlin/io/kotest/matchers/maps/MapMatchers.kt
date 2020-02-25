@@ -1,5 +1,6 @@
 package io.kotest.matchers.maps
 
+import io.kotest.assertions.stringRepr
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.Diff
@@ -56,6 +57,17 @@ fun <K, V> haveSize(size: Int): Matcher<Map<K,V>> = object : Matcher<Map<K, V>> 
       )
 }
 
+fun be(map: Map<*, *>) = object : Matcher<Map<*, *>> {
+   override fun test(value: Map<*, *>): MatcherResult {
+      return MatcherResult(
+         map == value,
+         { buildFailureMessage(map, value) },
+         { buildNegateFailureMessage(map, value) }
+      )
+   }
+
+}
+
 class MapContainsMatcher<K, V>(
   private val expected: Map<K, V>,
   private val ignoreExtraKeys: Boolean = false
@@ -95,4 +107,27 @@ class MapContainsMatcher<K, V>(
       diff.isEmpty(), failureMsg, negatedFailureMsg
     )
   }
+}
+
+private fun Map<*, *>.toFormattedString(): String {
+   if (isEmpty()) return "{}"
+   val indentation = "  "
+   val newLine = "\n"
+   return toList()
+      .joinToString(
+         separator = ",$newLine",
+         prefix = "{$newLine",
+         postfix = "$newLine}",
+         limit = 10
+      ) { "$indentation${stringRepr(it.first)} = ${stringRepr(it.second)}" }
+}
+
+private fun buildFailureMessage(map: Map<*, *>, value: Map<*, *>): String {
+   val keysHavingDifferentValues = map.keys.filterNot { value[it] == map[it] }
+   return "Expected\n${value.toFormattedString()}\nto be equal to\n${map.toFormattedString()}\n" +
+      "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = 10)}"
+}
+
+private fun buildNegateFailureMessage(map: Map<*, *>, value: Map<*, *>): String {
+   return "Expected\n${value.toFormattedString()}\nto be not equal to\n${map.toFormattedString()}"
 }
