@@ -4,7 +4,9 @@ import io.kotest.assertions.ktor.shouldHaveContent
 import io.kotest.assertions.ktor.shouldHaveCookie
 import io.kotest.assertions.ktor.shouldHaveHeader
 import io.kotest.assertions.ktor.shouldHaveStatus
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
@@ -31,7 +33,7 @@ class KtorAssertionsTest : StringSpec({
   "test status code matcher" {
     withTestApplication({ testableModule() }) {
       handleRequest(HttpMethod.Get, "/").apply {
-        response.shouldHaveStatus(200)
+        response shouldHaveStatus 200
       }
     }
   }
@@ -39,7 +41,7 @@ class KtorAssertionsTest : StringSpec({
   "test status code matcher (enum version)" {
     withTestApplication({ testableModule() }) {
       handleRequest(HttpMethod.Get, "/").apply {
-        response.shouldHaveStatus(HttpStatusCode.OK)
+        response shouldHaveStatus HttpStatusCode.OK
       }
     }
   }
@@ -55,7 +57,7 @@ class KtorAssertionsTest : StringSpec({
   "test content matcher" {
     withTestApplication({ testableModule() }) {
       handleRequest(HttpMethod.Get, "/").apply {
-        response.shouldHaveContent("ok")
+        response shouldHaveContent "ok"
       }
     }
   }
@@ -65,6 +67,18 @@ class KtorAssertionsTest : StringSpec({
       handleRequest(HttpMethod.Get, "/").apply {
         response.shouldHaveCookie("mycookie", "myvalue")
       }
+    }
+  }
+
+  "test null response doesn't end with KotlinNullpointerException" {
+    withTestApplication({ testableModule() }) {
+      handleRequest(HttpMethod.Get, "/not-mapped").apply {
+        response.content shouldBe null
+        shouldThrow<AssertionError> {
+          response shouldHaveContent "fail"
+        }
+      }
+
     }
   }
 })

@@ -8,10 +8,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.response.ApplicationResponse
 import io.ktor.server.testing.TestApplicationResponse
 
-fun TestApplicationResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldHaveStatus(httpStatusCode.value)
-fun TestApplicationResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
-fun TestApplicationResponse.shouldNotHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldNotHaveStatus(httpStatusCode.value)
-fun TestApplicationResponse.shouldNotHaveStatus(code: Int) = this shouldNot haveStatus(code)
+infix fun TestApplicationResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldHaveStatus(httpStatusCode.value)
+infix fun TestApplicationResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
+infix fun TestApplicationResponse.shouldNotHaveStatus(httpStatusCode: HttpStatusCode) = this.shouldNotHaveStatus(httpStatusCode.value)
+infix fun TestApplicationResponse.shouldNotHaveStatus(code: Int) = this shouldNot haveStatus(code)
 fun haveStatus(code: Int) = object : Matcher<TestApplicationResponse> {
   override fun test(value: TestApplicationResponse): MatcherResult {
     return MatcherResult(
@@ -22,12 +22,12 @@ fun haveStatus(code: Int) = object : Matcher<TestApplicationResponse> {
   }
 }
 
-fun TestApplicationResponse.shouldHaveContent(content: String) = this should haveContent(content)
-fun TestApplicationResponse.shouldNotHaveContent(content: String) = this shouldNot haveContent(content)
+infix fun TestApplicationResponse.shouldHaveContent(content: String) = this should haveContent(content)
+infix fun TestApplicationResponse.shouldNotHaveContent(content: String) = this shouldNot haveContent(content)
 fun haveContent(content: String) = object : Matcher<TestApplicationResponse> {
   override fun test(value: TestApplicationResponse): MatcherResult {
     return MatcherResult(
-        value.content!! == content,
+        value.content == content,
         "Response should have content $content but had content ${value.content}",
         "Response should not have content $content"
     )
