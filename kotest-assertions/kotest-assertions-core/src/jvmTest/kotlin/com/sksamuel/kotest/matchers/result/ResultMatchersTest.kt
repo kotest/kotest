@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.result
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.beInstanceOf
 import io.kotest.matchers.result.shouldBeFailure
@@ -11,11 +12,15 @@ import io.kotest.matchers.result.shouldNotBeSuccess
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import java.io.IOException
+import java.lang.AssertionError
 
 class ResultMatchersTest : FreeSpec() {
   init {
     "with success result" - {
       "shouldBeSuccess" - {
+        shouldThrow<AssertionError> {
+           Result.runCatching { throw TestException() }.shouldBeSuccess<Unit>()
+        }
         Result.runCatching { "Test 01" }.shouldBeSuccess { data ->
           data shouldBe "Test 01"
         }
