@@ -9,7 +9,7 @@ import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KClass
 
 fun <T> Result<T>.shouldBeSuccess(block: ((T?) -> Unit)? = null) {
-  BeSuccess<T>().test(this)
+  test { BeSuccess<T>().test(this) }
   block?.invoke(getOrNull())
 }
 
