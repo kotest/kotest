@@ -5,7 +5,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.filters.Filter
 import io.kotest.core.listeners.Listener
 import io.kotest.core.listeners.ProjectListener
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
 import io.kotest.fp.toOption
 import kotlin.math.max
@@ -19,7 +18,11 @@ actual fun detectConfig(): ProjectConf {
    fun <T> instantiate(klass: Class<T>): T =
       when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
          // if the static field for an object cannot be found, then instantiate
-         null -> klass.constructors[0].newInstance() as T
+         null -> {
+            val zeroArgsConstructor = klass.constructors.find { it.parameterCount == 0 }
+                ?: throw IllegalArgumentException("Class ${klass.name} should have a zero-arg constructor")
+            zeroArgsConstructor.newInstance() as T
+         }
          // if the static field can be found then use it
          else -> field.get(null) as T
       }
