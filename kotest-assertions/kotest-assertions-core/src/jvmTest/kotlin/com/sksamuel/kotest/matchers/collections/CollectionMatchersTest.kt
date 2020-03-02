@@ -284,12 +284,14 @@ class CollectionMatchersTest : WordSpec() {
          "test that a collection contains a single given element"  {
             listOf(1) shouldBe singleElement(1)
             listOf(1).shouldHaveSingleElement(1)
+
             shouldThrow<AssertionError> {
                listOf(1) shouldBe singleElement(2)
-            }
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 1 elements: 1")
+
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
-            }
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: 1,2")
          }
       }
 
@@ -386,7 +388,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotHaveSize(3)
-            }.shouldHaveMessage("Collection should not have size 3")
+            }.shouldHaveMessage("Collection should not have size 3. Values: 1,2,3")
          }
       }
 
@@ -398,13 +400,13 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
+            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: ")
          }
 
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
+            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: 1,2")
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton()
@@ -420,7 +422,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
+            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: ")
          }
 
          "fail for collection with a single incorrect elements" {
@@ -432,7 +434,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
+            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: 1,2")
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1 }
@@ -453,7 +455,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with a single element" {
             shouldThrow<AssertionError> {
                listOf(1).shouldNotBeSingleton()
-            }.shouldHaveMessage("Collection should not have size 1")
+            }.shouldHaveMessage("Collection should not have size 1. Values: 1")
          }
       }
 

@@ -9,8 +9,8 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
     MatcherResult(
       value.size == size,
-      { "Collection should have size $size but has size ${value.size}. Values: ${stringRepr(value)}" },
-      { "Collection should not have size $size" }
+      { "Collection should have size $size but has size ${value.size}. Values: ${value.getCollectionSnippet()}" },
+      { "Collection should not have size $size. Values: ${value.getCollectionSnippet()}" }
     )
 }
 
