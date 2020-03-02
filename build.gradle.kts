@@ -24,8 +24,8 @@ plugins {
    id("java-library")
    id("maven-publish")
    signing
-   id("com.adarshr.test-logger") version "2.0.0"
-   id("org.jetbrains.dokka") version "0.10.1"
+   id("com.adarshr.test-logger") version Libs.adarshrTestLoggerVersion
+   id("org.jetbrains.dokka") version Libs.dokkaVersion
 }
 
 // Configure existing Dokka task to output HTML to typical Javadoc directory
