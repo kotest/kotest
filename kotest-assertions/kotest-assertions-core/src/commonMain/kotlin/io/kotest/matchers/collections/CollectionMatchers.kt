@@ -9,7 +9,6 @@ private object CollectionMatchersConstants {
     const val maxSnippetSize = 10
 }
 
-
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
     MatcherResult(
