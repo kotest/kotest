@@ -410,7 +410,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
+            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: 1,2,3,4")
          }
       }
 
@@ -438,7 +438,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
+            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: 1,2,3,4")
          }
       }
 
