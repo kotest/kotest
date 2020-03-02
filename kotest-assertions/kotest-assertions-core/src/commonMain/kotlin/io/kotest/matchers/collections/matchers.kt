@@ -619,9 +619,10 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
     if (collection.isEmpty()) throwEmptyCollectionError()
 
     val match = value in collection
+
     return MatcherResult(match,
-      "Collection should contain the element, but doesn't.",
-      "Collection should not contain the element, but does.")
+      "Collection should contain ${stringRepr(value)}, but doesn't. Possible values: ${collection.getCollectionSnippet()}",
+      "Collection should not contain ${stringRepr(value)}, but does. Possible values: ${collection.getCollectionSnippet()}")
   }
 }
 

@@ -5,10 +5,6 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 
-private object CollectionMatchersConstants {
-    const val maxSnippetSize = 10
-}
-
 fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
     MatcherResult(
@@ -209,8 +205,3 @@ private fun <T> testStrictlyDecreasingWith(value: List<T>, comparator: Comparato
   )
 }
 
-private fun <TValue> Iterable<TValue>.getCollectionSnippet(): String {
-   return joinToString(separator = ",", limit = CollectionMatchersConstants.maxSnippetSize) {
-      stringRepr(it)
-   }
-}

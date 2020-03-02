@@ -922,7 +922,7 @@ class CollectionMatchersTest : WordSpec() {
             val list = listOf(foo1)
             shouldThrow<AssertionError> {
                foo2.shouldBeIn(list)
-            }.shouldHaveMessage("Collection should contain the element, but doesn't.")
+            }.shouldHaveMessage("Collection should contain Foo(bar=Booz), but doesn't. Possible values: Foo(bar=Bar)")
          }
 
          "Pass when there's an equal element, but not the same instance in the list" {
@@ -958,7 +958,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                foo shouldNotBeIn list
-            }.shouldHaveMessage("Collection should not contain the element, but does.")
+            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Possible values: Foo(bar=Bar)")
          }
 
          "Pass when the element is not in the list" {
@@ -966,7 +966,9 @@ class CollectionMatchersTest : WordSpec() {
             val foo2 = Foo("Booz")
 
             val list = listOf(foo1)
-            shouldNotThrow<AssertionError> { foo2.shouldNotBeIn(list) }
+            shouldNotThrow<AssertionError> {
+               foo2.shouldNotBeIn(list)
+            }
          }
 
          "Fail when there's an equal element, but not the same instance in the list" {
@@ -974,16 +976,19 @@ class CollectionMatchersTest : WordSpec() {
             val foo2 = Foo("Bar")
 
             val list = listOf(foo1)
-            shouldThrow<AssertionError> { foo2 shouldNotBeIn list }
+            shouldThrow<AssertionError> {
+               foo2 shouldNotBeIn list
+            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Possible values: Foo(bar=Bar)")
          }
 
          "Fail when the list is empty" {
             val foo = Foo("Bar")
 
             val list = emptyList<Foo>()
-            shouldThrow<AssertionError> { foo shouldNotBeIn list }
+            shouldThrow<AssertionError> {
+               foo shouldNotBeIn list
+            }.shouldHaveMessage("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
          }
-
       }
    }
 }
