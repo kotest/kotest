@@ -26,6 +26,11 @@ plugins {
    signing
    id("com.adarshr.test-logger") version Libs.adarshrTestLoggerVersion
    id("org.jetbrains.dokka") version Libs.dokkaVersion
+
+   // To get versions report, execute:
+   // Win: .\gradlew.bat dependencyUpdates -Drevision=release
+   // Other: gradle dependencyUpdates -Drevision=release
+   id("com.github.ben-manes.versions") version Libs.gradleVersionsPluginVersion
 }
 
 // Configure existing Dokka task to output HTML to typical Javadoc directory
