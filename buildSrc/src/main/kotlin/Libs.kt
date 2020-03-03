@@ -1,7 +1,9 @@
 object Libs {
 
-   val kotlinVersion = "1.3.61"
-   val dokkaVersion = "0.10.0"
+   const val kotlinVersion = "1.3.61"
+   const val dokkaVersion = "0.10.1"
+   const val adarshrTestLoggerVersion = "2.0.0"
+   const val gradleVersionsPluginVersion = "0.28.0"
 
    object Arrow {
       private const val version = "0.10.4"
