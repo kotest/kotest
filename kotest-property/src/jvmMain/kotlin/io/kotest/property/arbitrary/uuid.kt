@@ -15,6 +15,6 @@ fun Arb.Companion.uuid(
    else emptyList()
 
    override fun samples(rs: RandomSource): Sequence<Sample<UUID>> {
-      return Arb.regex(uuidVersion.uuidRegex).samples(rs).map { Sample(UUID.fromString(it.value)) }
+      return Arb.stringPattern(uuidVersion.uuidRegex.pattern).samples(rs).map { Sample(UUID.fromString(it.value)) }
    }
 }
