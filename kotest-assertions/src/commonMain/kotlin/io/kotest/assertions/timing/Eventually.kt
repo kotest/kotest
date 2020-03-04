@@ -4,14 +4,14 @@ import io.kotest.assertions.Failures
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource
 
 @UseExperimental(ExperimentalTime::class)
 inline fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class, f)
 
 @UseExperimental(ExperimentalTime::class)
 inline fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KClass<E>, f: () -> T): T {
-   val end = MonoClock.markNow().plus(duration)
+   val end = TimeSource.Monotonic.markNow().plus(duration)
    var times = 0
    var lastError: Throwable? = null
    while (end.hasNotPassedNow()) {

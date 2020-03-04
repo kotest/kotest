@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource
 
 /**
  * Retry the given lambda [f] in case of assertion error[AssertionError] and exception [Exception].
@@ -35,7 +35,7 @@ suspend fun <T, E : Throwable> retry(
    exceptionClass: KClass<E>,
    f: () -> T
 ): T {
-   val mark = MonoClock.markNow()
+   val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(timeout)
    var retrySoFar = 0
    var nextAwaitDuration = delay.toLongMilliseconds()

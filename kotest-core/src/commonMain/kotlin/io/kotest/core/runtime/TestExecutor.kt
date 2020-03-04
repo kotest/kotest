@@ -14,10 +14,10 @@ import io.kotest.fp.Try
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ClockMark
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 interface TestExecutionListener {
    fun testStarted(testCase: TestCase)
@@ -50,7 +50,7 @@ class TestExecutor(
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       validateTestCase(testCase)
-      val mark = MonoClock.markNow()
+      val mark = TimeSource.Monotonic.markNow()
       return intercept(testCase, context, mark, testCase.extensions()).apply {
          when (status) {
             TestStatus.Ignored -> listener.testIgnored(testCase)
@@ -66,7 +66,7 @@ class TestExecutor(
    private suspend fun intercept(
       testCase: TestCase,
       context: TestContext,
-      mark: ClockMark,
+      mark: TimeMark,
       extensions: List<TestCaseExtension>
    ): TestResult {
       return when {
@@ -106,7 +106,7 @@ class TestExecutor(
    private suspend fun executeActiveTest(
       testCase: TestCase,
       context: TestContext,
-      mark: ClockMark
+      mark: TimeMark
    ): TestResult {
 
       log("Executing active test $testCase")
@@ -154,7 +154,7 @@ class TestExecutor(
    private suspend fun ExecutionContext.invokeTestCase(
       testCase: TestCase,
       context: TestContext,
-      mark: ClockMark
+      mark: TimeMark
    ): Try<TestResult> = Try {
       log("invokeTestCase $testCase")
 

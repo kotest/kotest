@@ -3,7 +3,7 @@ package io.kotest.assertions.timing
 import io.kotest.assertions.Failures
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 
 @UseExperimental(ExperimentalTime::class)
@@ -11,7 +11,7 @@ inline fun <T> continually(durationMs: Long, f: () -> T): T? = continually(durat
 
 @UseExperimental(ExperimentalTime::class)
 inline fun <T> continually(duration: Duration, f: () -> T): T? {
-   val mark = MonoClock.markNow()
+   val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(duration)
    var times = 0
    var result: T? = null

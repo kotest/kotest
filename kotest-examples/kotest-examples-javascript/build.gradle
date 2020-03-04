@@ -7,7 +7,7 @@ buildscript {
 
 plugins {
    id 'org.jetbrains.kotlin.multiplatform'
-   id "com.github.node-gradle.node" version "2.2.0"
+   id "com.github.node-gradle.node" version "2.2.3"
 }
 
 repositories {

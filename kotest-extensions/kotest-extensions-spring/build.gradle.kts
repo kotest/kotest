@@ -38,8 +38,8 @@ kotlin {
             implementation(project(":kotest-assertions"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation("org.springframework:spring-test:5.2.2.RELEASE")
-            implementation("org.springframework:spring-context:5.2.2.RELEASE")
+            implementation("org.springframework:spring-test:5.2.4.RELEASE")
+            implementation("org.springframework:spring-context:5.2.4.RELEASE")
             implementation("net.bytebuddy:byte-buddy:1.10.7")
          }
       }
@@ -48,7 +48,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation("org.springframework.boot:spring-boot-starter-test:2.2.2.RELEASE")
+            implementation("org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE")
          }
       }
    }

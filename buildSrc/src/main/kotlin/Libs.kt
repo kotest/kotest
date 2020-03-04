@@ -1,7 +1,9 @@
 object Libs {
 
-   val kotlinVersion = "1.3.61"
-   val dokkaVersion = "0.10.0"
+   const val kotlinVersion = "1.3.70"
+   const val dokkaVersion = "0.10.1"
+   const val adarshrTestLoggerVersion = "2.0.0"
+   const val gradleVersionsPluginVersion = "0.28.0"
 
    object Arrow {
       private const val version = "0.10.4"
@@ -11,7 +13,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.1"
+      private const val version = "2.13.2"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -30,7 +32,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.60"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.65"
    }
 
    object Logback {
@@ -55,7 +57,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.3.0"
+      private const val version = "1.3.1"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
