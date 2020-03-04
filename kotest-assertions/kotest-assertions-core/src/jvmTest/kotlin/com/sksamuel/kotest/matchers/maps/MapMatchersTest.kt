@@ -2,7 +2,6 @@ package com.sksamuel.kotest.matchers.maps
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.and
 import io.kotest.matchers.maps.*
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe

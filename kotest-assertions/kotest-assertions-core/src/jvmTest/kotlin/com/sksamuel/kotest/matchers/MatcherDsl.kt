@@ -1,7 +1,6 @@
 package com.sksamuel.kotest.matchers
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.and
 import io.kotest.matchers.doubles.exactly
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.file.haveExtension
