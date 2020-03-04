@@ -156,4 +156,4 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A> {
    }
 }
 
-fun <A> Arb.Companion.constant(a: A) = arb { a }
+fun <A> Arb.Companion.constant(a: A) = element(a)
