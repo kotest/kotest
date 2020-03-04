@@ -78,15 +78,14 @@ fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i + 1] }
-    val snippet = stringRepr(value)
     val elementMessage = when (failure) {
       null -> ""
       else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
     }
     return MatcherResult(
       failure == null,
-      { "List $snippet should be sorted$elementMessage" },
-      { "List $snippet should not be sorted" }
+      { "List ${stringRepr(value)} should be sorted$elementMessage" },
+      { "List ${stringRepr(value)} should not be sorted" }
     )
   }
 }

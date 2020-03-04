@@ -105,9 +105,9 @@ import java.util.Comparator
 
 class CollectionMatchersTest : WordSpec() {
 
-   val countdown = (10 downTo 0).toList()
-   val asc = { a: Int, b: Int -> a - b }
-   val desc = { a: Int, b: Int -> b - a }
+   private val countdown = (10 downTo 0).toList()
+   private val asc = { a: Int, b: Int -> a - b }
+   private val desc = { a: Int, b: Int -> b - a }
 
    init {
 
@@ -202,6 +202,14 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotBeSorted()
             }.shouldHaveMessage("List [1, 2, 3] should not be sorted")
+         }
+
+         "restrict items at the error message" {
+            val longList = (1..1000).toList()
+
+            shouldThrow<AssertionError> {
+               longList.shouldNotBeSorted()
+            }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...] and 980 more should not be sorted")
          }
       }
 

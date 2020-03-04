@@ -26,23 +26,20 @@ fun stringRepr(obj: Any?): String = when (obj) {
 }
 
 private fun List<*>.getCollectionSnippet(): String {
-   return buildString {
-      append(
-         joinToString(
-            separator = ", ",
-            prefix = "[",
-            postfix = "]",
-            limit = StringConstructionConstants.maxSnippetSize
-         ) {
-            recursiveRepr(this, it)
-         }
-      )
+   val remainingItems = size - StringConstructionConstants.maxSnippetSize
 
-      val itemsLeft = length - StringConstructionConstants.maxSnippetSize
+   val suffix = when {
+      remainingItems <= 0 -> "]"
+      else -> "] and $remainingItems more"
+   }
 
-      if(itemsLeft > 0) {
-         append(" and $itemsLeft more")
-      }
+   return joinToString(
+      separator = ", ",
+      prefix = "[",
+      postfix = suffix,
+      limit = StringConstructionConstants.maxSnippetSize
+   ) {
+      recursiveRepr(this, it)
    }
 }
 
