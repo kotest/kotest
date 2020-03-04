@@ -4,16 +4,16 @@ import io.kotest.core.StringTag
 import io.kotest.core.annotation.Tags
 import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
+import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 
 /**
  * Allows include / exclude [Spec] with [Tags] annotation.
  */
-object TagFilteredDiscoveryExtension: DiscoveryExtension {
+object TagFilteredDiscoveryExtension : DiscoveryExtension {
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
       return classes.filter { cls ->
-         val annotation = cls.annotations.firstOrNull { it is Tags } as Tags?
-         annotation?.let { annotation ->
+         cls.annotation<Tags>()?.let { annotation ->
             val tags = annotation.values.map { value -> StringTag(value) }.toSet()
             Project.tags().isActive(tags)
          } ?: true
