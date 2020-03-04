@@ -3,8 +3,6 @@ package io.kotest.property.arbitrary
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
-fun <A, T> Arb.Companion.bind(arbA: Arb<A>, createFn: (A) -> T): Arb<T> = arbA.map(createFn)
-
 fun <A, B, T> Arb.Companion.bind(arbA: Arb<A>, arbB: Arb<B>, createFn: (A, B) -> T): Arb<T> = object : Arb<T> {
    override fun edgecases(): List<T> = emptyList()
 
