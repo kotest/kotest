@@ -4,7 +4,6 @@ import com.mifmif.common.regex.Generex
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import kotlin.random.asJavaRandom
-import kotlin.random.nextInt
 
 /**
  * Generate strings that match the given pattern.
