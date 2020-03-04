@@ -4,7 +4,7 @@ import io.kotest.assertions.Failures
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.MonoClock
+import kotlin.time.TimeSource
 import kotlin.time.seconds
 
 interface UntilListener<in T> {
@@ -69,7 +69,7 @@ suspend fun <T> until(
    listener: UntilListener<T>,
    f: () -> T
 ): T {
-   val end = MonoClock.markNow().plus(duration)
+   val end = TimeSource.Monotonic.markNow().plus(duration)
    var count = 0
    while (end.hasNotPassedNow()) {
       val result = f()
