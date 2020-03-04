@@ -9,8 +9,8 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
     MatcherResult(
       value.size == size,
-      { "Collection should have size $size but has size ${value.size}. Values: ${value.getCollectionSnippet()}" },
-      { "Collection should not have size $size. Values: ${value.getCollectionSnippet()}" }
+      { "Collection should have size $size but has size ${value.size}. Values: ${stringRepr(value)}" },
+      { "Collection should not have size $size. Values: ${stringRepr(value)}" }
     )
 }
 
@@ -28,9 +28,9 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     ts.all { value.contains(it) },
-    { "Collection should contain all of ${ts.getCollectionSnippet()} " +
-      "but missing ${ts.filter { !value.contains(it) }.getCollectionSnippet()}" },
-    { "Collection should not contain all of ${ts.getCollectionSnippet()}" }
+    { "Collection should contain all of ${stringRepr(ts)} " +
+      "but missing ${stringRepr(ts.filter { !value.contains(it) })}" },
+    { "Collection should not contain all of ${stringRepr(ts)}" }
   )
 }
 
@@ -58,7 +58,7 @@ fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size == 1 && value.first() == t,
-    { "Collection should be a single element of $t but has ${value.size} elements: ${value.getCollectionSnippet()}" },
+    { "Collection should be a single element of $t but has ${value.size} elements: ${stringRepr(value)}" },
     { "Collection should not be a single element of $t" }
   )
 }
@@ -68,7 +68,7 @@ fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matc
       val filteredValue: List<T> = value.filter(p)
       return MatcherResult(
          filteredValue.size == 1,
-         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${value.getCollectionSnippet()}" },
+         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${stringRepr(value)}" },
          { "Collection should not have a single element by a given predicate" }
       )
    }
@@ -78,15 +78,15 @@ fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
   override fun test(value: List<T>): MatcherResult {
     val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && it > value[i + 1] }
-    val snippet = value.getCollectionSnippet()
+    val snippet = stringRepr(value)
     val elementMessage = when (failure) {
       null -> ""
       else -> ". Element ${failure.value} at index ${failure.index} was greater than element ${value[failure.index + 1]}"
     }
     return MatcherResult(
       failure == null,
-      { "List [$snippet] should be sorted$elementMessage" },
-      { "List [$snippet] should not be sorted" }
+      { "List $snippet should be sorted$elementMessage" },
+      { "List $snippet should not be sorted" }
     )
   }
 }
@@ -108,7 +108,7 @@ fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 private fun<T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
-  val snippet = value.getCollectionSnippet()
+  val snippet = stringRepr(value)
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
@@ -137,7 +137,7 @@ fun <T> monotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 private fun <T> testMonotonicallyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) < 0 }
-  val snippet = value.getCollectionSnippet()
+  val snippet = stringRepr(value)
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically decreased from previous element."
@@ -165,7 +165,7 @@ fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
-  val snippet = value.getCollectionSnippet()
+  val snippet = stringRepr(value)
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly increased from previous element."
@@ -193,7 +193,7 @@ fun <T> strictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 private fun <T> testStrictlyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) <= 0 }
-  val snippet = value.getCollectionSnippet()
+  val snippet = stringRepr(value)
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly decreased from previous element."

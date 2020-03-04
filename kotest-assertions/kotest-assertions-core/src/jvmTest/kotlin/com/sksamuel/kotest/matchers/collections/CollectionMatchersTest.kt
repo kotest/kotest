@@ -191,17 +191,17 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(2, 1) shouldBe sorted<Int>()
-            }.shouldHaveMessage("List [2,1] should be sorted. Element 2 at index 0 was greater than element 1")
+            }.shouldHaveMessage("List [2, 1] should be sorted. Element 2 at index 0 was greater than element 1")
 
             listOf(1, 2, 6, 9).shouldBeSorted()
 
             shouldThrow<AssertionError> {
                listOf(2, 1).shouldBeSorted()
-            }.shouldHaveMessage("List [2,1] should be sorted. Element 2 at index 0 was greater than element 1")
+            }.shouldHaveMessage("List [2, 1] should be sorted. Element 2 at index 0 was greater than element 1")
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotBeSorted()
-            }.shouldHaveMessage("List [1,2,3] should not be sorted")
+            }.shouldHaveMessage("List [1, 2, 3] should not be sorted")
          }
       }
 
@@ -287,11 +287,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1) shouldBe singleElement(2)
-            }.shouldHaveMessage("Collection should be a single element of 2 but has 1 elements: 1")
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 1 elements: [1]")
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
-            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: 1,2")
+            }.shouldHaveMessage("Collection should be a single element of 2 but has 2 elements: [1, 2]")
          }
       }
 
@@ -302,11 +302,11 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 0 elements: 1")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 0 elements: [1]")
 
             shouldThrow<AssertionError> {
                listOf(2, 2) shouldHave singleElement { e -> e == 2 }
-            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 2 elements: 2,2")
+            }.shouldHaveMessage("Collection should have a single element by a given predicate but has 2 elements: [2, 2]")
          }
       }
 
@@ -388,7 +388,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3).shouldNotHaveSize(3)
-            }.shouldHaveMessage("Collection should not have size 3. Values: 1,2,3")
+            }.shouldHaveMessage("Collection should not have size 3. Values: [1, 2, 3]")
          }
       }
 
@@ -400,17 +400,17 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: ")
+            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
          }
 
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: 1,2")
+            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: 1,2,3,4")
+            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
          }
       }
 
@@ -422,7 +422,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: ")
+            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
          }
 
          "fail for collection with a single incorrect elements" {
@@ -434,11 +434,11 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: 1,2")
+            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: 1,2,3,4")
+            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
          }
       }
 
@@ -455,7 +455,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with a single element" {
             shouldThrow<AssertionError> {
                listOf(1).shouldNotBeSingleton()
-            }.shouldHaveMessage("Collection should not have size 1. Values: 1")
+            }.shouldHaveMessage("Collection should not have size 1. Values: [1]")
          }
       }
 
@@ -752,7 +752,7 @@ class CollectionMatchersTest : WordSpec() {
          "print errors unambiguously" {
             shouldThrow<AssertionError> {
                listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
-            }.shouldHaveMessage("Collection should contain all of 1L,2L but missing 1L,2L")
+            }.shouldHaveMessage("Collection should contain all of [1L, 2L] but missing [1L, 2L]")
          }
       }
 
@@ -924,7 +924,7 @@ class CollectionMatchersTest : WordSpec() {
             val list = listOf(foo1)
             shouldThrow<AssertionError> {
                foo2.shouldBeIn(list)
-            }.shouldHaveMessage("Collection should contain Foo(bar=Booz), but doesn't. Possible values: Foo(bar=Bar)")
+            }.shouldHaveMessage("Collection should contain Foo(bar=Booz), but doesn't. Possible values: [Foo(bar=Bar)]")
          }
 
          "Pass when there's an equal element, but not the same instance in the list" {
@@ -960,7 +960,7 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                foo shouldNotBeIn list
-            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Possible values: Foo(bar=Bar)")
+            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Forbidden values: [Foo(bar=Bar)]")
          }
 
          "Pass when the element is not in the list" {
@@ -980,7 +980,7 @@ class CollectionMatchersTest : WordSpec() {
             val list = listOf(foo1)
             shouldThrow<AssertionError> {
                foo2 shouldNotBeIn list
-            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Possible values: Foo(bar=Bar)")
+            }.shouldHaveMessage("Collection should not contain Foo(bar=Bar), but does. Forbidden values: [Foo(bar=Bar)]")
          }
 
          "Fail when the list is empty" {

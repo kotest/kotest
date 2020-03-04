@@ -621,8 +621,8 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
     val match = value in collection
 
     return MatcherResult(match,
-      "Collection should contain ${stringRepr(value)}, but doesn't. Possible values: ${collection.getCollectionSnippet()}",
-      "Collection should not contain ${stringRepr(value)}, but does. Possible values: ${collection.getCollectionSnippet()}")
+      "Collection should contain ${stringRepr(value)}, but doesn't. Possible values: ${stringRepr(collection)}",
+      "Collection should not contain ${stringRepr(value)}, but does. Forbidden values: ${stringRepr(collection)}")
   }
 }
 

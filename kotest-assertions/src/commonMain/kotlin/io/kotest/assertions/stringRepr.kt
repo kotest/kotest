@@ -19,19 +19,30 @@ fun stringRepr(obj: Any?): String = when (obj) {
    is LongArray -> stringRepr(obj.toList())
    is ByteArray -> stringRepr(obj.toList())
    is CharArray -> stringRepr(obj.toList())
-   is Iterable<*> -> obj.getCollectionSnippet()
+   is List<*> -> obj.getCollectionSnippet()
+   is Iterable<*> -> stringRepr(obj.toList())
    is Map<*, *> -> stringRepr(obj.map { (k, v) -> recursiveRepr(obj, k) to recursiveRepr(obj, v) })
    else -> obj.toString()
 }
 
-private fun Iterable<*>.getCollectionSnippet(): String {
-   return joinToString(
-      separator = ", ",
-      prefix = "[",
-      postfix = "]",
-      limit = StringConstructionConstants.maxSnippetSize
-   ) {
-      recursiveRepr(this, it)
+private fun List<*>.getCollectionSnippet(): String {
+   return buildString {
+      append(
+         joinToString(
+            separator = ", ",
+            prefix = "[",
+            postfix = "]",
+            limit = StringConstructionConstants.maxSnippetSize
+         ) {
+            recursiveRepr(this, it)
+         }
+      )
+
+      val itemsLeft = length - StringConstructionConstants.maxSnippetSize
+
+      if(itemsLeft > 0) {
+         append(" and $itemsLeft more")
+      }
    }
 }
 
