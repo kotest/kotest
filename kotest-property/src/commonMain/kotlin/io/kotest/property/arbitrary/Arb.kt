@@ -146,4 +146,4 @@ fun <A> Arb<A>.distinct() = object : Arb<A> {
    }
 }
 
-fun <A> Arb.Companion.constant(a: A) = arb { a }
+fun <A> Arb.Companion.constant(a: A) = element(a)
