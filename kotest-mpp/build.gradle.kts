@@ -66,18 +66,6 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.core)
-            implementation(Libs.Coroutines.jdk8)
-            implementation("com.github.wumpz:diffutils:2.2")
-            implementation("com.univocity:univocity-parsers:2.8.3")
-            implementation("com.github.mifmif:generex:1.0.2")
-         }
-      }
-
-      val jvmTest by getting {
-         dependsOn(jvmMain)
-         dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
          }
       }
 
@@ -87,22 +75,6 @@ kotlin {
             implementation(Libs.Coroutines.coreNative)
          }
       }
-   }
-}
-
-tasks.named<Test>("jvmTest") {
-   useJUnitPlatform()
-   filter {
-      isFailOnNoMatchingTests = false
-   }
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(
-         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-      )
-      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

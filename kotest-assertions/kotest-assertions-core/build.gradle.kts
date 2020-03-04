@@ -68,7 +68,7 @@ kotlin {
             implementation(Libs.Coroutines.core)
             implementation(Libs.Coroutines.jdk8)
             implementation("com.github.wumpz:diffutils:2.2")
-            implementation("com.univocity:univocity-parsers:2.8.3")
+            implementation("com.univocity:univocity-parsers:2.8.4")
             implementation("com.github.mifmif:generex:1.0.2")
          }
       }
