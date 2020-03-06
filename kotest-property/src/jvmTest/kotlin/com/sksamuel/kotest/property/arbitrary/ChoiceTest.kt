@@ -5,9 +5,9 @@ import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.Arb
-import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.forAll
@@ -33,9 +33,9 @@ class ChoiceTest : WordSpec({
       }
       "support covariance" {
          Arb.choice(
-            Arb.bind(Arb.int(), X::A),
-            Arb.bind(Arb.int(), X::B),
-            Arb.bind(Arb.int(), X::C)
+            Arb.int().map { X.A(it) },
+            Arb.int().map { X.A(it) },
+            Arb.int().map { X.A(it) }
          )
       }
    }
