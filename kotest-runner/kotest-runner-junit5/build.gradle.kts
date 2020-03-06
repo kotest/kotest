@@ -58,8 +58,6 @@ kotlin {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(Libs.JUnitPlatform.testkit)
-            implementation(Libs.Slf4j.api)
-            implementation(Libs.Logback.classic)
          }
       }
    }
