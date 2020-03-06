@@ -10,6 +10,7 @@ import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.arbitrary.string
@@ -25,7 +26,7 @@ class BindTest : StringSpec({
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
 
    "Gen.bindA" {
-      val gen = Arb.bind(Arb.string(), ::FooA)
+      val gen = Arb.string().map { FooA(it) }
       checkAll(gen) {
          it.a shouldNotBe null
       }
