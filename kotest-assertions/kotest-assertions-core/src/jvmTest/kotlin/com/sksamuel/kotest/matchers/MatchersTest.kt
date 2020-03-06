@@ -5,15 +5,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.beInstanceOf
+import io.kotest.matchers.*
 import io.kotest.matchers.collections.haveSize
-import io.kotest.matchers.haveSameHashCodeAs
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.haveLength
 import io.kotest.matchers.string.shouldContain
 import java.util.ArrayList
@@ -111,7 +104,7 @@ class MatchersTest : FreeSpec({
   }
 
   "support 'or' function on matcher" {
-    "hello" should haveLength(5).or(haveLength(6))
+    "hello" should (haveLength(5) or haveLength(6))
   }
 
   "Matchers.shouldBe" - {

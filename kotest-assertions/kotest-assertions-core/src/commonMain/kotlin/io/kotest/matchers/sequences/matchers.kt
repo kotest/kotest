@@ -199,8 +199,8 @@ fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequen
       }
       return MatcherResult(
          failure == null,
-         { "Sequence [$snippet] should be sorted$elementMessage" },
-         { "Sequence [$snippet] should not be sorted" }
+         { "Sequence $snippet should be sorted$elementMessage" },
+         { "Sequence $snippet should not be sorted" }
       )
    }
 }
@@ -227,8 +227,8 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<
       }
       return MatcherResult(
          failure == null,
-         { "Sequence [$snippet] should be sorted$elementMessage" },
-         { "Sequence [$snippet] should not be sorted" }
+         { "Sequence $snippet should be sorted$elementMessage" },
+         { "Sequence $snippet should not be sorted" }
       )
    }
 }
