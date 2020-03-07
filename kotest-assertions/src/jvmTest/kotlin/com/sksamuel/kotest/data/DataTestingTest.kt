@@ -1,9 +1,7 @@
 package com.sksamuel.kotest.data
 
 import io.kotest.assertions.MultiAssertionError
-import io.kotest.assertions.fail
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.matchers.shouldBe
@@ -16,10 +14,6 @@ import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.starProjectedType
-import kotlin.reflect.jvm.kotlinFunction
 
 class DataTestingTest : StringSpec() {
   init {
