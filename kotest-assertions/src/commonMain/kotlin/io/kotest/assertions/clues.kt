@@ -7,7 +7,7 @@ package io.kotest.assertions
  * @param thunk the code with assertions to be executed
  * @return the return value of the supplied [thunk]
  */
-fun <R> withClue(clue: Any, thunk: () -> R): R {
+inline fun <R> withClue(clue: Any, thunk: () -> R): R {
    return clue.asClue { thunk() }
 }
 
@@ -18,7 +18,7 @@ fun <R> withClue(clue: Any, thunk: () -> R): R {
  * @param block the code with assertions to be executed
  * @return the return value of the supplied [block]
  */
-fun <T : Any, R> T.asClue(block: (T) -> R): R {
+inline fun <T : Any, R> T.asClue(block: (T) -> R): R {
    try {
       ErrorCollector.pushClue(this)
       return block(this)
@@ -27,7 +27,7 @@ fun <T : Any, R> T.asClue(block: (T) -> R): R {
    }
 }
 
-fun <T : Any> Iterable<T>.forEachAsClue(action: (T) -> Unit) = forEach { element ->
+inline fun <T : Any> Iterable<T>.forEachAsClue(action: (T) -> Unit) = forEach { element ->
    element.asClue {
       action(it)
    }
