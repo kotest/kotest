@@ -19,6 +19,8 @@ jobs:
       steps:
          -  name: Checkout the repo
             uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
 
          -  name: Run ubuntu tests
             if: matrix.os == 'ubuntu-latest'

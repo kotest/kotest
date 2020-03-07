@@ -1,6 +1,5 @@
 package io.kotest.assertions.arrow.validation
 
-
 import arrow.core.Validated
 import arrow.core.Validated.Invalid
 import arrow.core.Validated.Valid

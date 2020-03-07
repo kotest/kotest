@@ -1,5 +1,3 @@
-import Ci.isGithub
-
 buildscript {
 
    repositories {
@@ -50,10 +48,7 @@ allprojects {
    }
 
    group = "io.kotest"
-
-   if (isGithub) {
-      version = "4.0.0." + Ci.githubBuildNumber + "-SNAPSHOT"
-   }
+   version = Ci.publishVersion.value
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
