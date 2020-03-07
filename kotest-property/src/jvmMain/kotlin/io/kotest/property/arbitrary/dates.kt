@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -10,6 +11,7 @@ import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
+import kotlin.random.Random
 
 /**
  * Arberates a random [Period]s.
@@ -109,3 +111,34 @@ fun Arb.Companion.localDateTime(
       return Sample(date.atTime(time))
    }
 }
+
+typealias InstantRange = ClosedRange<Instant>
+
+fun InstantRange.random(random: Random): Instant {
+   try {
+      val seconds = (start.epochSecond..endInclusive.epochSecond).random(random)
+
+      val nanos = when {
+         seconds == start.epochSecond && seconds == endInclusive.epochSecond -> start.nano..endInclusive.nano
+         seconds == start.epochSecond -> endInclusive.nano..999_999_999
+         seconds == start.epochSecond -> 0..endInclusive.nano
+         else -> 0..999_999_999
+      }.random(random)
+
+      return Instant.ofEpochSecond(seconds, nanos.toLong())
+   } catch(e: IllegalArgumentException) {
+      throw NoSuchElementException(e.message)
+   }
+}
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+fun Arb.Companion.instant(range: InstantRange): Arb<Instant> = arb(listOf(range.start, range.endInclusive)) {
+   range.random(it.random)
+}
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+fun Arb.Companion.instant(minValue: Instant = Instant.MIN, maxValue: Instant = Instant.MAX) = instant(minValue..maxValue)
