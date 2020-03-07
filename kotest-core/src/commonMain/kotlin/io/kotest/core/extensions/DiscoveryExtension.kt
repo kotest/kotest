@@ -16,21 +16,21 @@ import kotlin.reflect.KClass
  */
 interface DiscoveryExtension : Extension {
 
-   /**
-    * Invoked as soon as the scan phase has completed. At this point,
-    * the [Spec] classes have been detected, but not yet
-    * instantiated or executed.
-    *
-    * Overriding this function gives implementations the possibility
-    * of filtering the specs seen by the test engine.
-    *
-    * For instance, a possible extension may filter tests by package
-    * name, class name, classes that only implement a certain
-    * interface, etc.
-    *
-    * @param classes the [KClass] for each discovered [Spec]
-    *
-    * @return  the list of filtered classes to use.
-    */
-   fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
+  /**
+   * Invoked as soon as the scan phase has completed. At this point,
+   * the [Spec] classes have been detected, but not yet
+   * instantiated or executed.
+   *
+   * Overriding this function gives implementations the possibility
+   * of filtering the specs seen by the test engine.
+   *
+   * For instance, a possible extension may filter tests by package
+   * name, class name, classes that only implement a certain
+   * interface, etc.
+   *
+   * @param classes the [KClass] for each discovered [Spec]
+   *
+   * @return  the list of filtered classes to use.
+   */
+  fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>>
 }

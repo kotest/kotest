@@ -1,8 +1,11 @@
 package io.kotest.data.blocking
 
-import io.kotest.data.*
+import io.kotest.data.Row7
+import io.kotest.data.forAll
+import io.kotest.data.forNone
+import io.kotest.data.headers
+import io.kotest.data.table
 import io.kotest.mpp.paramNames
-import kotlin.jvm.JvmName
 
 fun <A, B, C, D, E, F, G> forAll(
    vararg rows: Row7<A, B, C, D, E, F, G>,

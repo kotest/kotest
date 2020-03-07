@@ -24,6 +24,8 @@ expect fun KClass<*>.annotations(): List<Annotation>
  */
 inline fun <reified T> KClass<*>.annotation(): T? = annotations().filterIsInstance<T>().firstOrNull()
 
+inline fun <reified T> KClass<*>.hasAnnotation(): Boolean = annotations().filterIsInstance<T>().isNotEmpty()
+
 /**
  * Returns true if this KClass is a data class, false if it is not, or null if the functionality
  * is not supported on the platform.

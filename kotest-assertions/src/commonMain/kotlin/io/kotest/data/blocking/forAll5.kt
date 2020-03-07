@@ -1,8 +1,11 @@
 package io.kotest.data.blocking
 
-import io.kotest.data.*
+import io.kotest.data.Row5
+import io.kotest.data.forAll
+import io.kotest.data.forNone
+import io.kotest.data.headers
+import io.kotest.data.table
 import io.kotest.mpp.paramNames
-import kotlin.jvm.JvmName
 
 fun <A, B, C, D, E> forAll(vararg rows: Row5<A, B, C, D, E>, testfn: (A, B, C, D, E) -> Unit) {
    val params = testfn.paramNames
