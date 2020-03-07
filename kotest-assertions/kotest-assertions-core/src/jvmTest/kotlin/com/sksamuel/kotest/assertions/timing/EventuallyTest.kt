@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.timing.eventually
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 import kotlinx.coroutines.delay
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -100,7 +101,7 @@ class EventuallyTest : WordSpec() {
                      fail("last")
                   }
                }
-            }.message.shouldBe("Test failed after 100ms; attempted 1301 times; first cause was first; last cause was last")
+            }.message.shouldMatch("Test failed after 100ms; attempted \\d+ times; first cause was first; last cause was last".toRegex())
          }
          "allow suspendable functions" {
             eventually(2.seconds) {
