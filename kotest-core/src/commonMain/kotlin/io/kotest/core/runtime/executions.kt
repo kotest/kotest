@@ -7,7 +7,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun TestCase.executeWithTimeout(context: TestContext, timeout: Duration) {
    // we ensure the timeout is honoured
    withTimeout(timeout.toLongMilliseconds()) {

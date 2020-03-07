@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class DescribeSpecExample : DescribeSpec() {
    init {
       describe("some thing") {

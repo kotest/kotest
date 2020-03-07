@@ -16,7 +16,7 @@ import kotlin.time.hours
 import kotlin.time.minutes
 import kotlin.time.seconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class DurationTest : FunSpec({
    test("should have minutes") {
       2.hours.shouldHaveMinutes(120)

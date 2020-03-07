@@ -13,7 +13,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class UntilTest : FunSpec({
 
    test("until with boolean predicate") {

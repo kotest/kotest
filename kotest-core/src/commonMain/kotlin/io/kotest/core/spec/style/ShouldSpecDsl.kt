@@ -24,7 +24,7 @@ import kotlin.time.ExperimentalTime
  *    // test here
  *  }
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface ShouldSpecDsl : SpecDsl {
 
    operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =
@@ -56,7 +56,7 @@ interface ShouldSpecDsl : SpecDsl {
 }
 
 @KotestDsl
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class ShouldScope(val context: TestContext, private val dsl: SpecDsl) {
 
    suspend operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =

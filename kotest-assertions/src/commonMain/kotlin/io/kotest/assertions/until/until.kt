@@ -30,21 +30,21 @@ fun <T> untilListener(f: (T) -> Unit) = object : UntilListener<T> {
  * @param duration the maximum amount of time to continue trying for success
  * @param interval the delay between invocations
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun until(
    duration: Duration,
    interval: Interval = 1.seconds.fixed(),
    f: () -> Boolean
 ) = until(duration, interval, { it }, UntilListener.noop, f)
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun <T> until(
    duration: Duration,
    predicate: (T) -> Boolean,
    f: () -> T
 ): T = until(duration, 1.seconds.fixed(), predicate, UntilListener.noop, f)
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun <T> until(
    duration: Duration,
    interval: Interval,
@@ -61,7 +61,7 @@ suspend fun <T> until(
  * @param duration the maximum amount of time to continue trying for success
  * @param interval the delay between invocations
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 suspend fun <T> until(
    duration: Duration,
    interval: Interval,

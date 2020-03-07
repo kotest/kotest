@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class RetryTest : StringSpec() {
    init {
       "should call given assertion when until it pass in given number of times" {

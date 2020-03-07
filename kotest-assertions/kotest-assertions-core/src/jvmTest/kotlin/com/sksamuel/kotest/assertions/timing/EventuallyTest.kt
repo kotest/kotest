@@ -12,7 +12,7 @@ import kotlin.time.days
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class EventuallyTest : WordSpec() {
 
    init {

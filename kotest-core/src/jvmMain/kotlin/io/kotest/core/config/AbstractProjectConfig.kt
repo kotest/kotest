@@ -81,7 +81,7 @@ abstract class AbstractProjectConfig {
     * Tests which define their own timeout will override this.
     * The value here is in millis
     */
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    open val timeout: Duration? = null
 
    /**

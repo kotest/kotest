@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Defines the DSL for creating tests in the 'FunSpec' style
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface DescribeSpecDsl : SpecDsl {
 
    @KotestDsl

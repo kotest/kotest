@@ -25,7 +25,7 @@ interface TestExecutionListener {
    fun testFinished(testCase: TestCase, result: TestResult)
 }
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 data class TimeoutException constructor(val duration: Duration) :
    Exception("Test did not completed within ${duration.toLongMilliseconds()}ms")
 
@@ -41,7 +41,7 @@ data class TimeoutException constructor(val duration: Duration) :
  *
  * If the given test case is invalid, then this method should throw an exception.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class TestExecutor(
    private val listener: TestExecutionListener,
    private val executionContext: ExecutionContext,

@@ -24,7 +24,7 @@ import kotlin.contracts.contract
  *
  * ```
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun Any?.shouldBeNull() {
   contract {
     returns() implies (this@shouldBeNull == null)
@@ -65,7 +65,7 @@ fun Any?.shouldBeNull() {
  *
  * ```
  */
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun Any?.shouldNotBeNull() {
   contract {
     returns() implies (this@shouldNotBeNull != null)

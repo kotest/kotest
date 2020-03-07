@@ -15,7 +15,7 @@ import kotlin.time.ExperimentalTime
  *
  * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 internal suspend fun <A> doShrinking(
    initial: RTree<A>,
    mode: ShrinkingMode,

@@ -86,7 +86,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       runner.execute(spec)
    }.flatten()
 
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    private fun IsolationMode.runner(): SpecRunner = when (this) {
       IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
       IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)

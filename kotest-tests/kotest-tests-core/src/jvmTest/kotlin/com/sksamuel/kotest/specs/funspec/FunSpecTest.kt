@@ -12,7 +12,7 @@ import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class FunSpecTest : FunSpec() {
 
    var count = 0

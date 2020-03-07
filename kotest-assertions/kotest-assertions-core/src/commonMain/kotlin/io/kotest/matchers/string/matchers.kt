@@ -9,7 +9,7 @@ import kotlin.text.RegexOption.IGNORE_CASE
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
 fun String?.shouldNotContainOnlyDigits() = this shouldNot containOnlyDigits()
 
-@UseExperimental(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 fun containOnlyDigits() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toCharArray().all { it in '0'..'9' },
@@ -20,7 +20,7 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
 fun String?.shouldContainADigit() = this should containADigit()
 fun String?.shouldNotContainADigit() = this shouldNot containADigit()
 
-@UseExperimental(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 fun containADigit() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toCharArray().any { it in '0'..'9' },

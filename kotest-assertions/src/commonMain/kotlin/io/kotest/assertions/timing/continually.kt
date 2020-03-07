@@ -6,10 +6,10 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 inline fun <T> continually(durationMs: Long, f: () -> T): T? = continually(durationMs.milliseconds, f)
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 inline fun <T> continually(duration: Duration, f: () -> T): T? {
    val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(duration)

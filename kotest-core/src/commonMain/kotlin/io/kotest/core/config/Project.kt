@@ -25,7 +25,7 @@ import kotlin.time.seconds
  * Additionally config can be programatically added to this class by using the mutator methods such
  * as [registerExtension] or [setFailOnIgnoredTests].
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 object Project {
 
    private val userconf = detectConfig()
@@ -180,7 +180,7 @@ object Project {
 /**
  * Contains all the configuration details that can be set by a user supplied config object.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 data class ProjectConf constructor(
    val extensions: List<Extension> = emptyList(),
    val listeners: List<Listener> = emptyList(),

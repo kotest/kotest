@@ -14,7 +14,7 @@ import kotlin.time.milliseconds
  * @param offset   Added to the count, so if the offset is 4, then the first value will be the 4th fib number.
  * @param base The duration that is multiplied by the fibonacci value
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class FibonacciInterval(private val base: Duration, private val offset: Int) : Interval {
 
    init {
@@ -28,15 +28,15 @@ class FibonacciInterval(private val base: Duration, private val offset: Int) : I
    }
 }
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 @Deprecated("use duration.fibonacci()")
 fun fibonacciInterval(base: Duration) = FibonacciInterval(base, 0)
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 @Deprecated("use duration.fibonacci()")
 fun fibonacciInterval(offset: Int, base: Duration) = FibonacciInterval(base, offset)
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun Duration.fibonacci() = FibonacciInterval(this, 0)
 
 fun fibonacci(n: Int): Int {

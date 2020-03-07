@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.WordSpec
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class WordSpecExample : WordSpec() {
    init {
       "a stack" should {

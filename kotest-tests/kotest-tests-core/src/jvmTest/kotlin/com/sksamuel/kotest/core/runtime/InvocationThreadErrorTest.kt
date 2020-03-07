@@ -6,7 +6,7 @@ import io.kotest.core.test.TestStatus
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class InvocationThreadErrorTest : FunSpec({
 
    aroundTest { testCase, f ->

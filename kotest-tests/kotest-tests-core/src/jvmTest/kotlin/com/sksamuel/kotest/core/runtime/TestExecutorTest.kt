@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun testExecutorTests(context: ExecutionContext) = funSpec {
 
    fun context(testCase: TestCase) = object : TestContext() {
@@ -163,7 +163,7 @@ class TestExecutorTest : FunSpec({
    include("executor:", testExecutorTests(ExecutorExecutionContext()))
 })
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 internal class Tests : FunSpec({
    test("a") {}
    test("b").config(timeout = 100.milliseconds) { delay(1000000) }

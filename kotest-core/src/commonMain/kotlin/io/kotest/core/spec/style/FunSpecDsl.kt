@@ -13,7 +13,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Defines the DSL for creating tests in the 'FunSpec' style
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface FunSpecDsl : SpecDsl {
 
    class TestBuilder(
@@ -53,7 +53,7 @@ interface FunSpecDsl : SpecDsl {
       }
 
       inner class TestBuilder(val name: String) {
-         @UseExperimental(ExperimentalTime::class)
+         @OptIn(ExperimentalTime::class)
          suspend fun config(
             enabled: Boolean? = null,
             tags: Set<Tag>? = null,

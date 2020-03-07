@@ -5,7 +5,7 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class WordSpecTest : WordSpec() {
 
    init {

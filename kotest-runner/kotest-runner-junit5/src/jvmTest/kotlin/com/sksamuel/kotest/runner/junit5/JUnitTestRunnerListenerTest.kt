@@ -18,7 +18,7 @@ import org.junit.platform.engine.reporting.ReportEntry
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 val childFailsParentTest = funSpec {
 
     test("a bad test should fail parent and spec") {

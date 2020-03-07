@@ -21,7 +21,7 @@ import kotlin.time.ExperimentalTime
  *
  */
 @Suppress("FunctionName")
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface WordSpecDsl : SpecDsl {
 
    infix fun String.should(init: suspend WordScope.() -> Unit) =

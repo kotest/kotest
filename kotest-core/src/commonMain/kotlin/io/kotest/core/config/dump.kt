@@ -3,7 +3,7 @@ package io.kotest.core.config
 import io.kotest.mpp.bestName
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun Project.createConfigSummary(): String {
 
    val sb = StringBuilder()

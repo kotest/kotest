@@ -42,7 +42,7 @@ class ExecutorExecutionContext : ExecutionContext {
       }
    }
 
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    override suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T {
       log("Scheduler will interrupt this execution in ${timeout}ms")
       val hasResumed = AtomicBoolean(false)

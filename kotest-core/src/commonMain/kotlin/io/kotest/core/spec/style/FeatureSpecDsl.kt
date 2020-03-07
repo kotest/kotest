@@ -17,7 +17,7 @@ interface FeatureSpecDsl : SpecDsl {
       )
 }
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class ScenarioBuilder(val name: String, val context: TestContext, val dsl: SpecDsl) {
    suspend fun config(
       enabled: Boolean? = null,

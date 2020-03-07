@@ -20,7 +20,7 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface StringSpecDsl : SpecDsl {
 
    fun String.config(

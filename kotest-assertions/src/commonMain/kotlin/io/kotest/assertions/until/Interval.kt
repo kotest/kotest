@@ -16,6 +16,6 @@ interface Interval {
     *
     * @return The duration of the next poll interval
     */
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    fun next(count: Int): Duration
 }

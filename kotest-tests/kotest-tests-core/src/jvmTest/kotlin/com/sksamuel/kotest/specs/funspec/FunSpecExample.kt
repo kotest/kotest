@@ -16,7 +16,7 @@ import java.util.TimeZone
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 class FunSpecExample : FunSpec() {
 
    private val linuxTag = Tag("linux")

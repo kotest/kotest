@@ -6,7 +6,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 data class TestCaseConfig constructor(
    val enabled: Boolean = true,
    val invocations: Int = 1,
@@ -29,7 +29,7 @@ typealias EnabledIf = (TestCase) -> Boolean
  * Creates a [TestCaseConfig] from the given parameters, reverting to the
  * receiver for null parameters.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun TestCaseConfig.deriveTestConfig(
    enabled: Boolean? = null,
    tags: Set<Tag>? = null,
@@ -51,5 +51,5 @@ fun TestCaseConfig.deriveTestConfig(
 /**
  * Returns the timeout for a [TestCase] taking into account global settings.
  */
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 fun TestCaseConfig.resolvedTimeout(): Duration = this.timeout ?: Project.timeout()

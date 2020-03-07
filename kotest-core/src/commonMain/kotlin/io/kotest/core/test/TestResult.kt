@@ -4,7 +4,7 @@ import io.kotest.mpp.bestName
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 data class TestResult(
    val status: TestStatus,
    val error: Throwable?,

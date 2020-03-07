@@ -19,7 +19,7 @@ interface ExpectSpecDsl : SpecDsl {
 
    class TestBuilder(val context: TestContext, val name: String, private val dsl: SpecDsl) {
 
-      @UseExperimental(ExperimentalTime::class)
+      @OptIn(ExperimentalTime::class)
       suspend fun config(
          enabled: Boolean? = null,
          timeout: Duration? = null,

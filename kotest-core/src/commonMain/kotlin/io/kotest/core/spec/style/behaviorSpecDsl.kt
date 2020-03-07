@@ -13,7 +13,7 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @Suppress("FunctionName")
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 interface BehaviorSpecDsl : SpecDsl {
 
    fun Given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)

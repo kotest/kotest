@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.FreeSpec
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 class MultipleTestTimeoutTest : FreeSpec() {
 

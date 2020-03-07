@@ -27,7 +27,7 @@ class GlobalTimeoutTest : StringSpec() {
    }
 }
 
-@UseExperimental(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 val expectFailureExtension: TestCaseExtensionFn = { testCase, execute ->
    val result = execute(testCase)
    when (result.status) {

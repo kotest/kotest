@@ -17,7 +17,7 @@ interface FreeSpecDsl : SpecDsl {
    infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTest(this, test, defaultConfig(), TestType.Test)
 
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       timeout: Duration? = null,
@@ -38,7 +38,7 @@ class FreeSpecScope(val context: TestContext, private val dsl: FreeSpecDsl) {
    suspend infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       context.registerTestCase(this, test, dsl.defaultConfig(), TestType.Test)
 
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    suspend fun String.config(
       enabled: Boolean? = null,
       timeout: Duration? = null,

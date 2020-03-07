@@ -98,7 +98,7 @@ object TestDiscovery {
     * Returns a list of [Spec] classes detected using classgraph in the list of
     * locations specified by the uris param.
     */
-   @UseExperimental(ExperimentalTime::class)
+   @OptIn(ExperimentalTime::class)
    private fun scanUris(uris: List<URI>): List<KClass<out Spec>> {
       log("Starting test discovery scan...")
       val (scanResult, time) = measureTimedValue {
