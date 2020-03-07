@@ -13,40 +13,40 @@ import kotlin.time.seconds
 @OptIn(ExperimentalTime::class)
 class ContinuallyTest : WordSpec() {
 
-   init {
-      "continually" should {
-         "pass working tests" {
-            continually(500.milliseconds) {
-               (System.currentTimeMillis() > 0) shouldBe true
-            }
-         }
-         "fail broken tests immediately"  {
-            shouldThrowAny {
-               continually(12.hours) {
-                  (5 < 4) shouldBe true
-               }
-            }
-         }
-         "fail should throw the underlying error" {
-            shouldThrowExactly<AssertionError> {
-               continually(12.hours) {
-                  throw AssertionError("boom")
-               }
-            }.message shouldBe "boom"
-         }
-         "fail tests start off as passing then fail within the period" {
-            var n = 0
-            val e = shouldThrowExactly<AssertionError> {
-
-               continually(3.seconds) {
-                  Thread.sleep(10)
-                  (n++ < 100) shouldBe true
-               }
-            }
-            val r =
-               "Test failed after [\\d]+ms; expected to pass for 3000ms; attempted 100 times\nUnderlying failure was: 100 should be < 100".toRegex()
-            e.message?.matches(r) ?: false shouldBe true
-         }
+  init {
+    "continually" should {
+      "pass working tests" {
+        continually(500.milliseconds) {
+          (System.currentTimeMillis() > 0) shouldBe true
+        }
       }
-   }
+      "fail broken tests immediately"  {
+        shouldThrowAny {
+          continually(12.hours) {
+            false shouldBe true
+          }
+        }
+      }
+      "fail should throw the underlying error" {
+        shouldThrowExactly<AssertionError> {
+          continually(12.hours) {
+            throw AssertionError("boom")
+          }
+        }.message shouldBe "boom"
+      }
+      "fail tests start off as passing then fail within the period" {
+        var n = 0
+        val e = shouldThrowExactly<AssertionError> {
+
+          continually(3.seconds) {
+            Thread.sleep(10)
+            (n++ < 100) shouldBe true
+          }
+        }
+        val r =
+          "Test failed after [\\d]+ms; expected to pass for 3000ms; attempted 100 times\nUnderlying failure was: 100 should be < 100".toRegex()
+        e.message?.matches(r) ?: false shouldBe true
+      }
+    }
+  }
 }

@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
  * Returns the longest possible name available for this class.
  * That is, in order, the FQN, the simple name, or <none>.
  */
-fun KClass<*>.bestName(): String = fqn() ?: simpleName ?: "<none>"
+fun KClass<*>.bestName(): String = fqn() ?: simpleName ?: this.toString()
 
 /**
  * Returns the fully qualified name for this class, or null
