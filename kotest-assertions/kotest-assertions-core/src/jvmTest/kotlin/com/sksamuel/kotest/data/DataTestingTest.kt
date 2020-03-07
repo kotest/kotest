@@ -2,8 +2,6 @@ package com.sksamuel.kotest.data
 
 import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.string.contain
-import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
@@ -14,6 +12,8 @@ import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.string.contain
+import io.kotest.matchers.types.shouldNotBeInstanceOf
 
 class DataTestingTest : StringSpec() {
   init {
