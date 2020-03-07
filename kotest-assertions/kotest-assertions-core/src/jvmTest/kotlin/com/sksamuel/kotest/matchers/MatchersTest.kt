@@ -102,12 +102,12 @@ class MatchersTest : FreeSpec({
       shouldThrow<AssertionError> {
         val l = ArrayList<Any>()
         l.add(l)
-        l shouldBe emptyList()
+        l shouldBe emptyList<Any>()
       }.message shouldBe "expected: [] but was: [(this ArrayList)]"
       shouldThrow<AssertionError> {
         val l = HashMap<Any, Any>()
         l[1L] = l
-        l shouldBe emptyMap()
+        l shouldBe emptyMap<Any, Any>()
       }.message shouldBe "expected: [] but was: [(1L, (this HashMap))]"
     }
   }
