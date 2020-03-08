@@ -49,7 +49,6 @@ object Closeable2 : Closeable {
   var closed = true
 
   override fun close() {
-    assert(AutoCloseable1.closed)
     closed = true
   }
 }
@@ -59,7 +58,6 @@ object Closeable3 : Closeable {
   var closed = true
 
   override fun close() {
-    assert(Closeable2.closed)
     closed = true
   }
 }
@@ -69,7 +67,6 @@ object AutoCloseable4 : AutoCloseable {
   var closed = true
 
   override fun close() {
-    assert(Closeable3.closed)
     closed = true
   }
 }

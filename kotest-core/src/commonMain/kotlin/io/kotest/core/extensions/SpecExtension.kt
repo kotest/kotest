@@ -6,8 +6,7 @@ import kotlin.reflect.KClass
 
 /**
  * Reusable spec extension that allows intercepting specs before they are executed.
- * The callback is invoked for each [Spec] that has been
- * submitted for executed.
+ * The callback is invoked for each [Spec] that has been submitted for execution.
  */
 interface SpecExtension : Extension {
 

@@ -1,13 +1,9 @@
 package io.kotest.core.engine
 
-import io.kotest.mpp.log
-import io.kotest.core.config.Project
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.spec.resolvedExtensions
 import io.kotest.fp.Try
 import kotlin.reflect.KClass
 
@@ -27,26 +23,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     * or class initializer. Otherwise returns the results for the tests in that spec.
     */
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
-
-   suspend fun interceptSpec(spec: Spec, afterInterception: suspend () -> Unit) {
-      log("Intercepting spec $spec")
-      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
-      interceptSpec(spec, extensions, afterInterception)
-   }
-
-   private suspend fun interceptSpec(
-      spec: Spec,
-      remaining: List<SpecExtension>,
-      afterInterception: suspend () -> Unit
-   ) {
-      when {
-         remaining.isEmpty() -> afterInterception()
-         else -> {
-            val rest = remaining.drop(1)
-            remaining.first().intercept(spec::class) { interceptSpec(spec, rest, afterInterception) }
-         }
-      }
-   }
 
    /**
     * Creates an instance of the supplied [Spec] by delegating to the project constructors,

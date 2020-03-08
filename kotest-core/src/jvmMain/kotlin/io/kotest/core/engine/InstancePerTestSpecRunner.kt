@@ -91,12 +91,10 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
 
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
-      interceptSpec(spec) {
-         // we need to find the same root test but in the newly created spec
-         val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
-         log("Starting root test ${root.testCase.description} in search of ${test.description}")
-         run(root.testCase, test)
-      }
+      // we need to find the same root test but in the newly created spec
+      val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
+      log("Starting root test ${root.testCase.description} in search of ${test.description}")
+      run(root.testCase, test)
       spec
    }
 

@@ -2,13 +2,17 @@ package io.kotest.core.engine
 
 import io.kotest.mpp.log
 import io.kotest.core.config.Project
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedIsolationMode
+import io.kotest.core.spec.style.TestBuilders
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
+import io.kotest.fp.success
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 
@@ -27,14 +31,19 @@ class SpecExecutor(private val listener: TestEngineListener) {
    suspend fun execute(kclass: KClass<out Spec>) {
       log("Executing spec $kclass")
       notifySpecStarted(kclass)
-         .flatMap { notifyPrepareSpec(kclass) }
+         .flatMap { invokePrepareSpecListeners(kclass) }
          .flatMap { createInstance(kclass) }
          .flatMap { runTests(it) }
-         .flatMap { notifyFinalizeSpec(kclass, it) }
+         .flatMap { checkClosedTestCases(it) }
+         .flatMap { invokeFinalizeSpecListeners(kclass, it) }
          .fold(
             { notifySpecFinished(kclass, it, emptyMap()) },
             { notifySpecFinished(kclass, null, it) }
          )
+   }
+
+   private fun checkClosedTestCases(results: Map<TestCase, TestResult>): Try<Map<TestCase, TestResult>> {
+      return if (TestBuilders.state == null) results.success() else Try.Failure(AssertionError("Incorrect usage of DSL"))
    }
 
    /**
@@ -80,11 +89,40 @@ class SpecExecutor(private val listener: TestEngineListener) {
          .onFailure { notifySpecInstantiationError(kclass, it) }
          .onSuccess { notifySpecInstantiated(it) }
 
-   private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      val mode = spec.resolvedIsolationMode()
-      val runner = mode.runner()
-      runner.execute(spec)
-   }.flatten()
+   /**
+    * Runs the tests in this spec by delegation to a [SpecRunner].
+    * Before the tests are executed we invoke any spec extensions to intercept this spec.
+    */
+   private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {
+
+      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
+      var results: Try<Map<TestCase, TestResult>> = emptyMap<TestCase, TestResult>().success()
+
+      // the terminal case after all (if any) extensions have been invoked
+      val run: suspend () -> Unit = suspend {
+         val mode = spec.resolvedIsolationMode()
+         val runner = mode.runner()
+         results = runner.execute(spec)
+      }
+
+      return Try { interceptSpec(spec, extensions, run) }.map { results }.flatten()
+   }
+
+   private suspend fun interceptSpec(
+      spec: Spec,
+      remaining: List<SpecExtension>,
+      run: suspend () -> Unit
+   ) {
+      when {
+         remaining.isEmpty() -> run()
+         else -> {
+            val rest = remaining.drop(1)
+            remaining.first().intercept(spec::class) {
+               interceptSpec(spec, rest, run)
+            }
+         }
+      }
+   }
 
    @OptIn(ExperimentalTime::class)
    private fun IsolationMode.runner(): SpecRunner = when (this) {
@@ -98,7 +136,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * This is only invoked once per spec class, regardless of the number of invocations.
     * If this errors then no further callbacks or tests will be executed.
     */
-   private suspend fun notifyPrepareSpec(kclass: KClass<out Spec>): Try<Unit> = Try {
+   private suspend fun invokePrepareSpecListeners(kclass: KClass<out Spec>): Try<Unit> = Try {
       log("Executing notifyPrepareSpec")
       Project.testListeners().forEach {
          it.prepareSpec(kclass)
@@ -106,10 +144,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    /**
-    * Notifies the user listeners that a [Spec] has finished all instances.
-    * This is only invoked once per spec class, regardless of the number of invocations.
+    * Notifies the user listeners that a [Spec] has finished completed.
     */
-   private suspend fun notifyFinalizeSpec(
+   private suspend fun invokeFinalizeSpecListeners(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ): Try<Map<TestCase, TestResult>> = Try {

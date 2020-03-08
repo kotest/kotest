@@ -7,6 +7,10 @@ import io.kotest.core.test.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+object TestBuilders {
+   var state: String? = null
+}
+
 /**
  * Defines the DSL for creating tests in the 'FunSpec' style
  */
@@ -21,6 +25,12 @@ interface DescribeSpecDsl : SpecDsl {
       private val xdisabled: Boolean? = null
    ) {
 
+      init {
+         if (TestBuilders.state != null)
+            error("Cannot invoke 'it' here as a previous 'it' scope was not completed")
+         TestBuilders.state = name
+      }
+
       suspend fun config(
          enabled: Boolean? = null,
          timeout: Duration? = null,
@@ -28,6 +38,7 @@ interface DescribeSpecDsl : SpecDsl {
          extensions: List<TestCaseExtension>? = null,
          test: suspend TestContext.() -> Unit
       ) {
+         TestBuilders.state = null
          val active = if (xdisabled == true) false else enabled
          val config = dsl.defaultConfig().deriveTestConfig(active, tags, extensions, timeout)
          context.registerTestCase(name, test, config, TestType.Test)

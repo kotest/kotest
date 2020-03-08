@@ -67,13 +67,11 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         interceptSpec(spec) {
-            val roots = spec.materializeRootTests()
-            log("Materialized roots: $roots")
-            roots.forEach { rootTest ->
-               log("Executing test $rootTest")
-               runTest(rootTest.testCase, context)
-            }
+         val roots = spec.materializeRootTests()
+         log("Materialized roots: $roots")
+         roots.forEach { rootTest ->
+            log("Executing test $rootTest")
+            runTest(rootTest.testCase, context)
          }
       }
 

@@ -9,8 +9,8 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class InvocationThreadErrorTest : FunSpec({
 
-   aroundTest { testCase, f ->
-      val result = f(testCase)
+   aroundTest { (testCase, process) ->
+      val result = process(testCase)
       when (result.status) {
          TestStatus.Error -> TestResult.success(Duration.ZERO)
          else -> TestResult.throwable(RuntimeException("should fail"), Duration.ZERO)

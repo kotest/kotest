@@ -74,8 +74,7 @@ interface TestListener : Listener {
     *
     * Regardless of how many times the spec is instantiated,
     * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
-    * modes are used, this callback will only be invoked once,
-    * with the first instance of the Spec.
+    * modes are used, this callback will only be invoked once.
     *
     * The top level tests declared in the spec are supplied as a list of
     * instances of [RootTest] which includes a flag set to true if
@@ -88,7 +87,6 @@ interface TestListener : Listener {
     * order of execution.
     *
     * @param kclass the [Spec] class
-    * @param tests the list of top level tests
     */
    suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
 
@@ -97,17 +95,20 @@ interface TestListener : Listener {
     *
     * Regardless of how many times the spec is instantiated,
     * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
-    * modes are used, this callback will only be invoked once,
-    * with the first instance of the Spec.
+    * modes are used, this callback will only be invoked once.
     *
     * The results parameter contains every [TestCase], along with
     * the result of that test, including tests that were ignored (which
-    * will have a TestResult that has TestStatus.Ignored)
+    * will have a TestResult that has TestStatus.Ignored) and/or an error
+    * if there was a issue during the running of the spec.
     *
-    * @param spec the [Spec] instance
+    * @param kclass the [Spec] class
     * @param results a map of each test case mapped to its result.
     */
-   suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>): Unit = Unit
+   suspend fun finalizeSpec(
+      kclass: KClass<out Spec>,
+      results: Map<TestCase, TestResult>
+   ): Unit = Unit
 }
 
 data class RootTest(val testCase: TestCase, val order: Int)

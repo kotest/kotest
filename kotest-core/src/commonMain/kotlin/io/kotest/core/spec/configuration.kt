@@ -4,6 +4,8 @@ package io.kotest.core.spec
 
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
+import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.factory.DynamicTest
 import io.kotest.core.factory.TestFactory
@@ -13,7 +15,13 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.configureRuntime
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
-import io.kotest.core.test.*
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.kotest.fp.Tuple2
 import org.junit.platform.commons.annotation.Testable
 import kotlin.reflect.KClass
@@ -25,12 +33,9 @@ typealias AfterSpec = (Spec) -> Unit
 typealias AfterProject = () -> Unit
 typealias PrepareSpec = (KClass<out Spec>) -> Unit
 typealias FinalizeSpec = (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
-typealias TestCaseExtensionFn = suspend (
-   testCase: TestCase,
-   execute: suspend (TestCase) -> TestResult
-) -> TestResult
-
-typealias AroundTestFn = suspend (TestCase, suspend (TestCase) -> TestResult) -> TestResult
+typealias TestCaseExtensionFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
+typealias AroundTestFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
+typealias AroundSpecFn = suspend (Tuple2<KClass<out Spec>, suspend () -> Unit>) -> Unit
 
 expect interface AutoCloseable {
    fun close()
@@ -66,12 +71,13 @@ abstract class TestConfiguration {
    // test listeners
    // using underscore name to avoid clash in JS compiler with existing methods
    internal var _listeners = emptyList<TestListener>()
-   internal var _extensions = emptyList<TestCaseExtension>()
+
+   internal var _extensions = emptyList<Extension>()
 
    fun extension(f: TestCaseExtensionFn) {
       _extensions = _extensions + object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-            return f(testCase, execute)
+            return f(Tuple2(testCase, execute))
          }
       }
    }
@@ -80,7 +86,15 @@ abstract class TestConfiguration {
       _extensions = _extensions + object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
             val f: suspend (TestCase) -> TestResult = { execute(it) }
-            return aroundTestFn(testCase, f)
+            return aroundTestFn(Tuple2(testCase, f))
+         }
+      }
+   }
+
+   fun aroundSpec(aroundSpecFn: AroundSpecFn) {
+      _extensions = _extensions + object : SpecExtension {
+         override suspend fun intercept(spec: KClass<out Spec>, process: suspend () -> Unit) {
+            aroundSpecFn(Tuple2(spec, process))
          }
       }
    }
