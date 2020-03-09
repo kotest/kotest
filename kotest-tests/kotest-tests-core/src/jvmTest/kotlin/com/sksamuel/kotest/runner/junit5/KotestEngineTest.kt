@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.runner.junit5
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.runner.junit5.KotestJunitPlatformTestEngine
+import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.StringSpec
 import org.junit.platform.engine.FilterResult
@@ -25,7 +25,8 @@ class KotestEngineTest : StringSpec({
                else -> FilterResult.included("")
             }
          }).build()
-      val descriptor = KotestJunitPlatformTestEngine().discover(request, UniqueId.forEngine("test-engine"))
+      val descriptor = KotestJunitPlatformTestEngine()
+          .discover(request, UniqueId.forEngine("test-engine"))
       descriptor.classes.first().jvmName shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
       descriptor.classes.size shouldBe 1
    }

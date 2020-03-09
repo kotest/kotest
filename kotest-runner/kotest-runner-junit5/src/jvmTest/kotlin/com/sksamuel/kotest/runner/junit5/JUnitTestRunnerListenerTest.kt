@@ -7,8 +7,8 @@ import io.kotest.core.spec.style.funSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.runner.junit5.JUnitTestEngineListener
-import io.kotest.runner.junit5.KotestEngineDescriptor
+import io.kotest.runner.junit.platform.JUnitTestEngineListener
+import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.matchers.shouldBe
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
@@ -23,7 +23,10 @@ val childFailsParentTest = funSpec {
 
     test("a bad test should fail parent and spec") {
 
-        val root = KotestEngineDescriptor(UniqueId.forEngine("kotest"), emptyList())
+        val root = KotestEngineDescriptor(
+            UniqueId.forEngine("kotest"),
+            emptyList()
+        )
 
         val finished = mutableMapOf<String, TestExecutionResult.Status>()
 

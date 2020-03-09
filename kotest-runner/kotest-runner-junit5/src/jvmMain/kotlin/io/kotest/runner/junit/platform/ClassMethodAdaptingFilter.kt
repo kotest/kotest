@@ -1,4 +1,4 @@
-package io.kotest.runner.junit5
+package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
@@ -18,7 +18,8 @@ import kotlin.reflect.KClass
 // This is liable to be buggy, and should be stripped out as soon as gradle
 // fix their bugs around junit 5 support, if ever.
 class ClassMethodAdaptingFilter(private val filter: PostDiscoveryFilter,
-                                private val uniqueId: UniqueId) : SpecFilter {
+                                private val uniqueId: UniqueId) :
+   SpecFilter {
    override fun invoke(klass: KClass<out Spec>): Boolean {
       val id = uniqueId.appendSpec(klass.description())
       val descriptor = object : AbstractTestDescriptor(id, klass.description().name) {
