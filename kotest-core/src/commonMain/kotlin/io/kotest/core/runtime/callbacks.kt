@@ -4,6 +4,8 @@ import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.Listener
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedTestListeners
@@ -12,17 +14,21 @@ import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 
 /**
- * Invokes the after project listeners.
+ * Invokes any afterAll functions from the given listeners.
  */
-fun afterAll() = Try { Project.projectListeners().forEach { it.afterProject() } }
+fun List<Listener>.afterAll(): Try<Unit> = Try {
+   log("invokeAfterAll")
+   filterIsInstance<ProjectListener>().forEach { it.afterProject() }
+}.mapFailure { AfterProjectListenerException(it) }
 
 /**
  * Invokes the before project listeners, and prints project config using [dumpProjectConfig].
  */
-fun beforeAll() = Try {
+fun List<Listener>.beforeAll() = Try {
+   log("invokeBeforeAll")
    Project.dumpProjectConfig()
-   Project.projectListeners().forEach { it.beforeProject() }
-}
+   filterIsInstance<ProjectListener>().forEach { it.beforeProject() }
+}.mapFailure { BeforeBeforeListenerException(it) }
 
 suspend fun TestCase.invokeBeforeTest() {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()

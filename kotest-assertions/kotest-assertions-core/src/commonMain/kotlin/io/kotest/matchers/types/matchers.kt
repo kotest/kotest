@@ -92,7 +92,7 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
-inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }):T {
+inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    val matcher = beOfType<T>()
    this shouldBe matcher
    block(this as T)

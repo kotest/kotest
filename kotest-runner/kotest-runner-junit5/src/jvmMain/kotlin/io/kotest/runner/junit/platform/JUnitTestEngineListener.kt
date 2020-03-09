@@ -7,6 +7,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
 import io.kotest.core.test.*
 import io.kotest.core.engine.TestEngineListener
+import io.kotest.core.runtime.AfterProjectListenerException
+import io.kotest.core.runtime.BeforeBeforeListenerException
 import org.junit.platform.engine.*
 import org.junit.platform.engine.support.descriptor.*
 import kotlin.reflect.KClass
@@ -58,187 +60,206 @@ import kotlin.reflect.KClass
  * Sibling containers can start and finish in parallel.
  */
 class JUnitTestEngineListener(
-  private val listener: EngineExecutionListener,
-  val root: EngineDescriptor
+   private val listener: EngineExecutionListener,
+   val root: EngineDescriptor
 ) : TestEngineListener {
 
-  // contains a mapping of a Description to a junit TestDescription, so we can look up the parent
-  // when we need to register a new test
-  private val descriptors = mutableMapOf<Description, TestDescriptor>()
+   // contains a mapping of a Description to a junit TestDescription, so we can look up the parent
+   // when we need to register a new test
+   private val descriptors = mutableMapOf<Description, TestDescriptor>()
 
-  // contains all the results so we can fail a parent when a child has failed
-  private val results = mutableListOf<Pair<Description, TestResult>>()
+   // contains all the results so we can fail a parent when a child has failed
+   private val results = mutableListOf<Pair<Description, TestResult>>()
 
-  // contains any spec that failed so we can write out the failed specs file
-  private val failedSpecs = mutableSetOf<KClass<out Spec>>()
+   // contains any spec that failed so we can write out the failed specs file
+   private val failedSpecs = mutableSetOf<KClass<out Spec>>()
 
-  private var specException: Throwable? = null
+   private var specException: Throwable? = null
 
-  override fun engineStarted(classes: List<KClass<out Spec>>) {
-    log("Engine started; classes=[$classes]")
-    listener.executionStarted(root)
-  }
+   override fun engineStarted(classes: List<KClass<out Spec>>) {
+      log("Engine started; classes=[$classes]")
+      listener.executionStarted(root)
+   }
 
-  /**
-   * Returns true if any test result has status of [TestStatus.Ignored].
-   */
-  private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
+   /**
+    * Returns true if any test result has status of [TestStatus.Ignored].
+    */
+   private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
 
-  override fun engineFinished(t: Throwable?) {
-    log("Engine finished; throwable=[$t]")
+   override fun engineFinished(t: Throwable?) {
+      log("Engine finished; throwable=[$t]")
 
-    if (Project.writeSpecFailureFile())
-      writeSpecFailures(failedSpecs, Project.specFailureFilePath())
+      if (Project.writeSpecFailureFile())
+         writeSpecFailures(failedSpecs, Project.specFailureFilePath())
 
-    val result = when {
-      t != null -> TestExecutionResult.failed(t)
-      Project.failOnIgnoredTests() && hasIgnored() ->
-        TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
-      else -> TestExecutionResult.successful()
-    }
+      val result = when {
+         t is AfterProjectListenerException -> {
+            val container = createAndRegisterTest("AfterAllCallback")
+            listener.executionStarted(container)
+            listener.executionFinished(container, TestExecutionResult.failed(t))
+            TestExecutionResult.successful()
+         }
+         t is BeforeBeforeListenerException -> {
+            val container = createAndRegisterTest("BeforeAllCallback")
+            listener.executionStarted(container)
+            listener.executionFinished(container, TestExecutionResult.failed(t))
+            TestExecutionResult.successful()
+         }
+         t != null -> TestExecutionResult.failed(t)
+         Project.failOnIgnoredTests() && hasIgnored() ->
+            TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+         else -> TestExecutionResult.successful()
+      }
 
-    log("Notifying junit that root descriptor completed $root")
-    listener.executionFinished(root, result)
-  }
+      log("Notifying junit that root descriptor completed $root")
+      listener.executionFinished(root, result)
+   }
 
-  override fun specStarted(kclass: KClass<out Spec>) {
-    log("specStarted [${kclass.qualifiedName}]")
-    try {
-      val descriptor = kclass.descriptor(root)
-      descriptors[kclass.description()] = descriptor
+   override fun specStarted(kclass: KClass<out Spec>) {
+      log("specStarted [${kclass.qualifiedName}]")
+      try {
+         val descriptor = kclass.descriptor(root)
+         descriptors[kclass.description()] = descriptor
 
-      log("Registering junit dynamic test and notifiying start: $descriptor")
-      listener.dynamicTestRegistered(descriptor)
-      listener.executionStarted(descriptor)
-    } catch (t: Throwable) {
-      log("Error in JUnit Platform listener", t)
+         log("Registering junit dynamic test and notifiying start: $descriptor")
+         listener.dynamicTestRegistered(descriptor)
+         listener.executionStarted(descriptor)
+      } catch (t: Throwable) {
+         log("Error in JUnit Platform listener", t)
+         specException = t
+      }
+   }
+
+   override fun specFinished(
+      kclass: KClass<out Spec>,
+      t: Throwable?,
+      results: Map<TestCase, TestResult>
+   ) {
+      log("specFinished [$kclass]")
+
+      val descriptor = descriptors[kclass.description()]
+         ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
+
+      // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
+      // this is because in gradle and intellij nested errors are not very obvious
+      val nestedFailure = findChildFailure(kclass.description())
+
+      (specException ?: t ?: nestedFailure?.error)?.apply {
+         checkSpecVisiblity(kclass, this)
+      }
+
+      val result = when {
+         t != null -> TestExecutionResult.failed(t)
+         specException != null -> TestExecutionResult.failed(specException)
+         nestedFailure != null -> nestedFailure.testExecutionResult()
+         else -> TestExecutionResult.successful()
+      }
+
+      log("Notifying junit that execution has finished: $descriptor, $result")
+      listener.executionFinished(descriptor, result)
+   }
+
+   /**
+    * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
+    * failed test so that the spec shows up.
+    */
+   override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
       specException = t
-    }
-  }
+   }
 
-  override fun specFinished(
-    kclass: KClass<out Spec>,
-    t: Throwable?,
-    results: Map<TestCase, TestResult>
-  ) {
-    log("specFinished [$kclass]")
+   /**
+    * Checks that the spec has at least one test attached in case of failure.
+    */
+   private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
+      val description = kclass.description()
+      if (!isVisible(description)) {
+         val spec = descriptors[description]!!
+         val test = spec.append(
+            description.append("Spec execution failed"), TestDescriptor.Type.TEST, null,
+            Segment.Test
+         )
+         listener.dynamicTestRegistered(test)
+         listener.executionStarted(test)
+         listener.executionFinished(test, TestExecutionResult.aborted(t))
+      }
+   }
 
-    val descriptor = descriptors[kclass.description()]
-      ?: throw RuntimeException("Error retrieving description for spec: ${kclass.qualifiedName}")
+   /**
+    * Returns true if the given description is visible.
+    * That means it must have at least one non container test attached to it.
+    */
+   private fun isVisible(description: Description) =
+      results.any { description.isAncestorOf(it.first) }
 
-    // we are ignoring junit guidelines here and failing the spec if any of it's tests failed
-    // this is because in gradle and intellij nested errors are not very obvious
-    val nestedFailure = findChildFailure(kclass.description())
+   override fun testStarted(testCase: TestCase) {
+      val descriptor = createTestDescriptor(testCase)
+      log("Registering junit dynamic test: $descriptor")
+      listener.dynamicTestRegistered(descriptor)
+      log("Notifying junit that execution has started: $descriptor")
+      listener.executionStarted(descriptor)
+   }
 
-    (specException ?: t ?: nestedFailure?.error)?.apply {
-      checkSpecVisiblity(kclass, this)
-    }
+   override fun testFinished(testCase: TestCase, result: TestResult) {
+      val descriptor = descriptors[testCase.description]
+         ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
+      results.add(Pair(testCase.description, result))
 
-    val result = when {
-      t != null -> TestExecutionResult.failed(t)
-      specException != null -> TestExecutionResult.failed(specException)
-      nestedFailure != null -> nestedFailure.testExecutionResult()
-      else -> TestExecutionResult.successful()
-    }
+      // if we have a success we override with a child error if one exists
+      val resultp = when (result.status) {
+         TestStatus.Success -> findChildFailure(testCase.description) ?: result
+         else -> result
+      }
 
-    log("Notifying junit that execution has finished: $descriptor, $result")
-    listener.executionFinished(descriptor, result)
-  }
+      log("Notifying junit that execution has finished: $descriptor")
+      listener.executionFinished(descriptor, resultp.testExecutionResult())
+   }
 
-  /**
-   * If the spec fails to be created, then there will be no tests, so we should insert an instantiation
-   * failed test so that the spec shows up.
-   */
-  override fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) {
-    specException = t
-  }
+   override fun testIgnored(testCase: TestCase, reason: String?) {
+      val descriptor = createTestDescriptor(testCase)
+      listener.dynamicTestRegistered(descriptor)
+      listener.executionSkipped(descriptor, reason)
+   }
 
-  /**
-   * Checks that the spec has at least one test attached in case of failure.
-   */
-  private fun checkSpecVisiblity(kclass: KClass<out Spec>, t: Throwable) {
-    val description = kclass.description()
-    if (!isVisible(description)) {
-      val spec = descriptors[description]!!
-      val test = spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null,
-          Segments.test
-      )
-      listener.dynamicTestRegistered(test)
-      listener.executionStarted(test)
-      listener.executionFinished(test, TestExecutionResult.aborted(t))
-    }
-  }
+   private fun createAndRegisterTest(name: String): TestDescriptor {
+      val descriptor = root.append(name, TestDescriptor.Type.TEST, null, Segment.Spec)
+      listener.dynamicTestRegistered(descriptor)
+      return descriptor
+   }
 
-  /**
-   * Returns true if the given description is visible.
-   * That means it must have at least one non container test attached to it.
-   */
-  private fun isVisible(description: Description) =
-    results.any { description.isAncestorOf(it.first) }
+   private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
+      val parent = descriptors[testCase.description.parent()]
+      if (parent == null) {
+         val msg = "Cannot find parent description for: ${testCase.description}"
+         log(msg)
+         error(msg)
+      }
+      val descriptor = parent.descriptor(testCase)
+      descriptors[testCase.description] = descriptor
+      return descriptor
+   }
 
-  override fun testStarted(testCase: TestCase) {
-    val descriptor = createTestDescriptor(testCase)
-    log("Registering junit dynamic test: $descriptor")
-    listener.dynamicTestRegistered(descriptor)
-    log("Notifying junit that execution has started: $descriptor")
-    listener.executionStarted(descriptor)
-  }
+   /**
+    * Returns a JUnit [TestExecutionResult] populated from the values of the Kotest [TestResult].
+    */
+   private fun TestResult.testExecutionResult(): TestExecutionResult = when (this.status) {
+      TestStatus.Ignored -> error("An ignored test cannot reach this state")
+      TestStatus.Success -> TestExecutionResult.successful()
+      TestStatus.Error -> TestExecutionResult.failed(this.error)
+      TestStatus.Failure -> TestExecutionResult.failed(this.error)
+   }
 
-  override fun testFinished(testCase: TestCase, result: TestResult) {
-    val descriptor = descriptors[testCase.description]
-      ?: throw RuntimeException("Error retrieving description for: ${testCase.description}")
-    results.add(Pair(testCase.description, result))
-
-    // if we have a success we override with a child error if one exists
-    val resultp = when (result.status) {
-      TestStatus.Success -> findChildFailure(testCase.description) ?: result
-      else -> result
-    }
-
-    log("Notifying junit that execution has finished: $descriptor")
-    listener.executionFinished(descriptor, resultp.testExecutionResult())
-  }
-
-  override fun testIgnored(testCase: TestCase, reason: String?) {
-    val descriptor = createTestDescriptor(testCase)
-    listener.dynamicTestRegistered(descriptor)
-    listener.executionSkipped(descriptor, reason)
-  }
-
-  private fun createTestDescriptor(testCase: TestCase): TestDescriptor {
-    val parent = descriptors[testCase.description.parent()]
-    if (parent == null) {
-      val msg = "Cannot find parent description for: ${testCase.description}"
-      log(msg)
-      error(msg)
-    }
-    val descriptor = parent.descriptor(testCase)
-    descriptors[testCase.description] = descriptor
-    return descriptor
-  }
-
-  /**
-   * Returns a JUnit [TestExecutionResult] populated from the values of the Kotest [TestResult].
-   */
-  private fun TestResult.testExecutionResult(): TestExecutionResult = when (this.status) {
-    TestStatus.Ignored -> error("An ignored test cannot reach this state")
-    TestStatus.Success -> TestExecutionResult.successful()
-    TestStatus.Error -> TestExecutionResult.failed(this.error)
-    TestStatus.Failure -> TestExecutionResult.failed(this.error)
-  }
-
-  /**
-   * Returns a failed or errored [TestResult] for a given description's children by searching
-   * the results list.
-   */
-  private fun findChildFailure(description: Description): TestResult? {
-    return results
-      .filter { description.isAncestorOf(it.first) }
-      .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
-      // the lowest level test should be what we pick
-      .sortedBy { it.first.depth() }
-      .reversed()
-      .map { it.second }
-      .firstOrNull()
-  }
+   /**
+    * Returns a failed or errored [TestResult] for a given description's children by searching
+    * the results list.
+    */
+   private fun findChildFailure(description: Description): TestResult? {
+      return results
+         .filter { description.isAncestorOf(it.first) }
+         .filter { it.second.status == TestStatus.Error || it.second.status == TestStatus.Failure }
+         // the lowest level test should be what we pick
+         .sortedBy { it.first.depth() }
+         .reversed()
+         .map { it.second }
+         .firstOrNull()
+   }
 }

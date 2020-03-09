@@ -15,27 +15,32 @@ import org.junit.platform.engine.support.descriptor.FileSource
 import java.io.File
 import kotlin.reflect.KClass
 
-fun UniqueId.appendSpec(description: Description) = this.append(Segments.spec, description.name)!!
+fun UniqueId.appendSpec(description: Description) = this.append(Segment.Spec.value, description.name)!!
 
-object Segments {
-   const val spec = "spec"
-   const val test = "test"
+sealed class Segment {
+   abstract val value: String
+
+   object Spec : Segment() {
+      override val value: String = "spec"
+   }
+
+   object Test : Segment() {
+      override val value: String = "test"
+   }
 }
 
 /**
  * Creates a new spec-level [TestDescriptor] from the given class, appending it to the
- * parent [TestDescriptor]. The created descriptor will have segment type [Segments.spec].
+ * parent [TestDescriptor]. The created descriptor will have segment type [Segment.Spec].
  */
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
-   return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source,
-       Segments.spec
-   )
+   return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source, Segment.Spec)
 }
 
 /**
  * Creates a [TestDescriptor] for the given [TestCase] and attaches it to the receiver as a child.
- * The created descriptor will have segment type [Segments.test].
+ * The created descriptor will have segment type [Segment.Test].
  */
 fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
 
@@ -49,7 +54,7 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
       TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
       TestType.Test -> TestDescriptor.Type.TEST
    }
-   return append(testCase.description, type, source, Segments.test)
+   return append(testCase.description, type, source, Segment.Test)
 }
 
 /**
@@ -59,10 +64,20 @@ fun TestDescriptor.append(
    description: Description,
    type: TestDescriptor.Type,
    source: TestSource?,
-   segment: String
+   segment: Segment
+): TestDescriptor = append(description.name, type, source, segment)
+
+/**
+ * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.
+ */
+fun TestDescriptor.append(
+   name: String,
+   type: TestDescriptor.Type,
+   source: TestSource?,
+   segment: Segment
 ): TestDescriptor {
    val descriptor =
-      object : AbstractTestDescriptor(this.uniqueId.append(segment, description.name), description.name, source) {
+      object : AbstractTestDescriptor(this.uniqueId.append(segment.value, name), name, source) {
          override fun getType(): TestDescriptor.Type = type
          override fun mayRegisterTests(): Boolean = type != TestDescriptor.Type.TEST
       }

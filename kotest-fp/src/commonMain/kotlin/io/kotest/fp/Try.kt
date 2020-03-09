@@ -59,6 +59,8 @@ sealed class Try<out T> {
       )
    })
 
+   inline fun mapFailure(f: (Throwable) -> Throwable) = fold({ f(it).failure() }, { it.success() })
+
    fun getOrNull(): T? = fold({ null }, { it })
 }
 
@@ -83,5 +85,6 @@ fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): Try<U> = when (this) {
 }
 
 fun <T> T.success(): Try<T> = Try.Success(this)
+fun Throwable.failure(): Try<Nothing> = Try.Failure(this)
 
 expect fun nonFatal(t: Throwable): Boolean

@@ -1,5 +1,6 @@
 package io.kotest.plugin.pitest
 
+import io.kotest.core.config.Project
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.description
