@@ -41,7 +41,7 @@ publishing {
          val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
          val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
          name = "deploy"
-         url = if (Ci.isGithub) snapshotsRepoUrl else releasesRepoUrl
+         url = if (Ci.isReleaseVersion) releasesRepoUrl else snapshotsRepoUrl
          credentials {
             username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
             password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword

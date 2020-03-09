@@ -39,6 +39,14 @@ object Libs {
       const val mockk = "io.mockk:mockk:1.9.3"
    }
 
+   object Mifmif {
+      const val generex = "com.github.mifmif:generex:1.0.2"
+   }
+
+   object Wumpz {
+      const val diffutils = "com.github.wumpz:diffutils:2.2"
+   }
+
    object Coroutines {
       private const val version = "1.3.4"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"

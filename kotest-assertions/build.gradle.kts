@@ -47,7 +47,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
-            implementation(project(":kotest-mpp"))
+            implementation(project(Projects.Mpp))
          }
       }
 
@@ -66,16 +66,16 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
             implementation(Libs.Coroutines.jdk8)
-            implementation("com.github.wumpz:diffutils:2.2")
+            implementation(Libs.Wumpz.diffutils)
             implementation("com.univocity:univocity-parsers:2.8.4")
-            implementation("com.github.mifmif:generex:1.0.2")
+            implementation(Libs.Mifmif.generex)
          }
       }
 
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
 
