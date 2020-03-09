@@ -1,4 +1,4 @@
-package io.kotest.runner.junit5
+package io.kotest.runner.junit.platform
 
 import io.kotest.mpp.log
 import io.kotest.core.config.Project
@@ -160,7 +160,9 @@ class JUnitTestEngineListener(
     val description = kclass.description()
     if (!isVisible(description)) {
       val spec = descriptors[description]!!
-      val test = spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null, Segments.test)
+      val test = spec.append(description.append("Spec execution failed"), TestDescriptor.Type.TEST, null,
+          Segments.test
+      )
       listener.dynamicTestRegistered(test)
       listener.executionStarted(test)
       listener.executionFinished(test, TestExecutionResult.aborted(t))

@@ -3,6 +3,9 @@ package io.kotest.core.runtime
 import io.kotest.core.spec.Spec
 import kotlin.test.FrameworkAdapter
 
+/**
+ * Kotest adapter for kotlin js test support.
+ */
 object KotestAdapter : FrameworkAdapter {
 
    override fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit) {

@@ -1,4 +1,4 @@
-package io.kotest.runner.junit5
+package io.kotest.runner.junit.platform
 
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.discovery.ClassNameFilter

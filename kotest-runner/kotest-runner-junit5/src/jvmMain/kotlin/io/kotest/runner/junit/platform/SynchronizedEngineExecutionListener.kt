@@ -1,4 +1,4 @@
-package io.kotest.runner.junit5
+package io.kotest.runner.junit.platform
 
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor

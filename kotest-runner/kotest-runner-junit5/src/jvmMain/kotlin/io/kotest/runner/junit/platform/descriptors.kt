@@ -1,4 +1,4 @@
-package io.kotest.runner.junit5
+package io.kotest.runner.junit.platform
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
@@ -28,7 +28,9 @@ object Segments {
  */
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
-   return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source, Segments.spec)
+   return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source,
+       Segments.spec
+   )
 }
 
 /**
