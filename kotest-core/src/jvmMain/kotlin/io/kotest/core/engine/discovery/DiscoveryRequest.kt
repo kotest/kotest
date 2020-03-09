@@ -41,7 +41,7 @@ sealed class DiscoveryFilter {
     */
    data class PackageNameDiscoveryFilter(val f: (PackageName) -> Boolean) : DiscoveryFilter() {
       override fun test(kclass: KClass<out Spec>): Boolean {
-         return f(PackageName(kclass.java.packageName))
+         return f(PackageName(kclass.java.`package`.name))
       }
    }
 
@@ -77,6 +77,6 @@ sealed class DiscoverySelector {
    }
 
    data class PackageDiscoverySelector(val packageName: String) : DiscoverySelector() {
-      override fun test(kclass: KClass<out Spec>): Boolean = packageName == kclass.java.packageName
+      override fun test(kclass: KClass<out Spec>): Boolean = packageName == kclass.java.`package`.name
    }
 }
