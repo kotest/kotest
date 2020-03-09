@@ -19,6 +19,7 @@ import java.util.Collections.emptyList
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
+import kotlin.system.exitProcess
 
 class KotestEngine(
    val classes: List<KClass<out Spec>>,
@@ -100,17 +101,22 @@ class KotestEngine(
          t.printStackTrace()
       }
       listener.engineFinished(t)
+      // explicitly exit because we spin up test threads that the user may have put into deadlock
+      // exitProcess(if (t == null) 0 else -1)
    }
 
    fun execute() {
       notifyTestEngineListener()
          .flatMap { (listeners + Project.listeners()).beforeAll() }
-         .flatMap { submitAll() }.fold(
+         .flatMap { submitAll() }
+         .fold(
             {
+               // any exception here is swallowed, as we already have an exception to report
                (listeners + Project.listeners()).afterAll()
                end(it)
             },
             {
+               // any exception here is used to notify the listener
                (listeners + Project.listeners()).afterAll().fold(
                   { t -> end(t) },
                   { end(null) }

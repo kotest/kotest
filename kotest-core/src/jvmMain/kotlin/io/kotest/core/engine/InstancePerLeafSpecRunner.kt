@@ -37,6 +37,8 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
 
    private val counter = AtomicInteger(0)
 
+   private val ec = ExecutorExecutionContext()
+
    // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
    private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
       val o1s = o1.testCase.description.names().size
@@ -67,6 +69,10 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
          executeInCleanSpec(testCase)
       }
       results
+   }
+
+   override fun close() {
+      ec.close()
    }
 
    private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
@@ -145,7 +151,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
                   listener.testFinished(testCase, result)
                }
             }
-         }, ExecutorExecutionContext())
+         }, ec)
          val result = testExecutor.execute(test, context)
          results[test] = result
       }

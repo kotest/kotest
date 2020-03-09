@@ -12,6 +12,7 @@ import kotlin.time.ExperimentalTime
 interface ExecutionContext {
    suspend fun <T> execute(f: suspend () -> T): Try<T>
    suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T
+   fun close()
 }
 
 /**
@@ -24,4 +25,5 @@ interface ExecutionContext {
 object CallingThreadExecutionContext : ExecutionContext {
    override suspend fun <T> execute(f: suspend () -> T): Try<T> = Try { f() }
    override suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T = f()
+   override fun close() {}
 }

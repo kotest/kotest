@@ -1,5 +1,6 @@
 package io.kotest.core.runtime
 
+import io.kotest.core.internal.NamedThreadFactory
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -19,7 +20,7 @@ actual suspend fun replay(
          after(it)
       }
    } else {
-      val executor = Executors.newFixedThreadPool(threads)
+      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("replay-%d"))
       val error = AtomicReference<Throwable>(null)
       for (k in 0 until times) {
          executor.submit {
