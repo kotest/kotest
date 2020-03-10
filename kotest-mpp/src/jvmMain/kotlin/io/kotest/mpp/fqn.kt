@@ -4,10 +4,15 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.reflect
 
 actual fun KClass<*>.fqn(): String? = this.qualifiedName
+
 /**
  * Returns the annotations on this class or empty list if not supported
  */
-actual fun KClass<*>.annotations(): List<Annotation> = this.annotations
+actual fun KClass<*>.annotations(): List<Annotation> = try {
+   this.annotations
+} catch (e: Exception) {
+   emptyList()
+}
 
 /**
  * Returns true if this KClass is a data class.
