@@ -122,3 +122,73 @@ suspend fun <A, B, C, D> proptest(
    context.checkMaxSuccess(config, random.seed)
    return context
 }
+
+suspend fun <A, B, C, D, E> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations(), genE.minIterations()).max()!!
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random)).zip(genE.generate(random))
+      .take(iterations)
+      .forEach { (abcd, e) ->
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a,b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value)
+         }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B, C, D, E, F> proptest(
+   iterations: Int,
+   genA: Gen<A>,
+   genB: Gen<B>,
+   genC: Gen<C>,
+   genD: Gen<D>,
+   genE: Gen<E>,
+   genF: Gen<F>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
+): PropertyContext {
+
+   // we must have enough iterations to cover the max(minsize).
+
+   val minSize = listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations(), genE.minIterations(), genF.minIterations()).max()!!
+   require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random)).zip(genE.generate(random)).zip(genF.generate(random))
+      .take(iterations)
+      .forEach { (abcde, f) ->
+         val (abcd, e) = abcde
+         val (abc, d) = abcd
+         val (ab, c) = abc
+         val (a,b) = ab
+         val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode)
+         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value), random.seed) {
+            context.property(a.value, b.value, c.value, d.value, e.value, f.value)
+         }
+      }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
