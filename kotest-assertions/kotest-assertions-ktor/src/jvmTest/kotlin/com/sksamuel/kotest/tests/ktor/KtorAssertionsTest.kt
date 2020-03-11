@@ -78,7 +78,6 @@ class KtorAssertionsTest : StringSpec({
           response shouldHaveContent "fail"
         }
       }
-
     }
   }
 })
