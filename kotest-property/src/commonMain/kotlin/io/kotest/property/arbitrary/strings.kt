@@ -2,7 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.properties.nextPrintableString
 import io.kotest.property.Shrinker
-import io.kotest.property.azstring
+import io.kotest.property.internal.azstring
 
 /**
  * Returns an [Arb] where each random value is a String of length between minSize and maxSize.

@@ -12,7 +12,7 @@ import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.char
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
-import io.kotest.property.random
+import io.kotest.property.internal.random
 
 class CharTest : FunSpec({
 
