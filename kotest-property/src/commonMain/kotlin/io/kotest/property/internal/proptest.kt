@@ -123,7 +123,6 @@ suspend fun <A, B, C, D> proptest(
    return context
 }
 
-
 suspend fun <A, B, C, D, E> proptest(
    iterations: Int,
    genA: Gen<A>,

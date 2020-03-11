@@ -84,7 +84,6 @@ fun <A, B, C, D> shrinkfn(
       listOf(smallestA, smallestB, smallestC, smallestD)
    }
 }
-
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
