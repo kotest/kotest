@@ -4,13 +4,13 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.choose
-import io.kotest.data.row
 import io.kotest.property.arbitrary.single
-import io.kotest.property.random
+import io.kotest.property.internal.random
 
 class ChooseTest : FunSpec({
 

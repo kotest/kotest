@@ -34,7 +34,7 @@ internal fun throwPropertyTestAssertionError(
 /**
  * Maps a failed property test arg to its shrunk value if any.
  */
-data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
+internal data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
 /**
  * Generates an [AssertionError] for a failed property test.

@@ -4,13 +4,13 @@ import io.kotest.property.PropertyContext
 import io.kotest.property.Sample
 import io.kotest.property.ShrinkingMode
 
-typealias ShrinkFn = suspend () -> List<Any?>
+internal typealias ShrinkFn = suspend () -> List<Any?>
 
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A> shrinkfn(
+internal fun <A> shrinkfn(
    a: Sample<A>,
    property: suspend PropertyContext.(A) -> Unit,
    shrinkingMode: ShrinkingMode
@@ -27,7 +27,7 @@ fun <A> shrinkfn(
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A, B> shrinkfn(
+internal fun <A, B> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    property: suspend PropertyContext.(A, B) -> Unit,
@@ -45,7 +45,7 @@ fun <A, B> shrinkfn(
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A, B, C> shrinkfn(
+internal fun <A, B, C> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    c: Sample<C>,
@@ -66,7 +66,7 @@ fun <A, B, C> shrinkfn(
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A, B, C, D> shrinkfn(
+internal fun <A, B, C, D> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    c: Sample<C>,
@@ -88,7 +88,7 @@ fun <A, B, C, D> shrinkfn(
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A, B, C, D, E> shrinkfn(
+internal fun <A, B, C, D, E> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    c: Sample<C>,
@@ -113,7 +113,7 @@ fun <A, B, C, D, E> shrinkfn(
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
  */
-fun <A, B, C, D, E, F> shrinkfn(
+internal fun <A, B, C, D, E, F> shrinkfn(
    a: Sample<A>,
    b: Sample<B>,
    c: Sample<C>,
