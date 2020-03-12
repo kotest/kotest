@@ -33,13 +33,15 @@ internal val regexComparator = object : ValueComparator<Regex?>() {
    override fun compare(actual: Regex?, expected: Regex?): Throwable? {
       return when {
          actual == null && expected != null -> generateError(actual, expected)
-         patternOrOptionsAreNotEqual(actual, expected) -> generateError(actual, expected)
+         patternOrOptionsAreNotEqual(actual, expected) -> {
+            generateError(actual, expected)
+         }
          else -> null
       }
    }
 
    private fun patternOrOptionsAreNotEqual(actual: Regex?, expected: Regex?) =
-      actual?.pattern == expected?.pattern || actual?.options == expected?.options
+      actual?.pattern != expected?.pattern || actual?.options != expected?.options
 }
 
 internal val mapComparator = object : ValueComparator<Map<*, *>?>() {
