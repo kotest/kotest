@@ -1,14 +1,6 @@
 package io.kotest.matchers
 
-import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.ErrorCollector
-import io.kotest.assertions.Failures
-import io.kotest.assertions.clueContextAsString
-import io.kotest.assertions.collectOrThrow
-import io.kotest.assertions.compare
-import io.kotest.assertions.diffLargeString
-import io.kotest.assertions.stringRepr
-import io.kotest.mpp.sysprop
+import io.kotest.assertions.*
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T, U : T> T.shouldBe(any: U?) {
@@ -61,12 +53,6 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
    }
 }
 
-internal fun equalsError(expected: Any?, actual: Any?): Throwable {
-   val largeStringDiffMinSize = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
-   val (expectedRepr, actualRepr) = diffLargeString(stringRepr(expected), stringRepr(actual), largeStringDiffMinSize)
-   val message = clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr)
-   return Failures.failure(message, expectedRepr, actualRepr)
-}
 
 private val linebreaks = Regex("\r?\n|\r")
 
