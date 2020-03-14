@@ -6,11 +6,19 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
+import kotlin.jvm.JvmName
+
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.checkAll(property: suspend PropertyContext.(A) -> Unit) = checkAll(this, property)
 
 suspend fun <A> checkAll(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, PropTestConfig(), property)
+
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.checkAll(iterations: Int, property: suspend PropertyContext.(A) -> Unit) =
+   checkAll(iterations, this, property)
 
 suspend fun <A> checkAll(
    iterations: Int,
@@ -18,11 +26,22 @@ suspend fun <A> checkAll(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(iterations, genA, PropTestConfig(), property)
 
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.checkAll(config: PropTestConfig, property: suspend PropertyContext.(A) -> Unit) =
+   checkAll(config, this, property)
+
 suspend fun <A> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, config, property)
+
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.checkAll(
+   iterations: Int,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A) -> Unit
+) = checkAll(iterations, config, this, property)
 
 suspend fun <A> checkAll(
    iterations: Int,
@@ -67,10 +86,19 @@ suspend inline fun <reified A> checkAll(
    property
 )
 
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.forAll(property: PropertyContext.(A) -> Boolean) =
+   forAll(this, property)
+
 suspend fun <A> forAll(
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
 ) = forAll(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, property)
+
+
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.forAll(iterations: Int, property: PropertyContext.(A) -> Boolean) =
+   forAll(iterations, this, property)
 
 suspend fun <A> forAll(
    iterations: Int,
@@ -78,11 +106,19 @@ suspend fun <A> forAll(
    property: PropertyContext.(A) -> Boolean
 ) = forAll(iterations, PropTestConfig(), genA, property)
 
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.forAll(config: PropTestConfig, property: PropertyContext.(A) -> Boolean) =
+   forAll(config, this, property)
+
 suspend fun <A> forAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
 ) = forAll(PropertyTesting.defaultIterationCount, config, genA, property)
+
+@JvmName("checkAllExt")
+suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, property: PropertyContext.(A) -> Boolean) =
+   forAll(iterations, config, this, property)
 
 suspend fun <A> forAll(
    iterations: Int,
