@@ -129,9 +129,11 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
 
 fun String?.shouldContainInOrder(vararg substrings: String) = this should containInOrder(*substrings)
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-  val indexes = substrings.map { value.indexOf(it) }
+  fun orderTest(test:String, subs:List<String>): Boolean =
+    subs.isEmpty() || test.indexOf(subs.first()).let { it > -1 && orderTest(test.substring(it + 1), subs.drop(1)) }
+
   MatcherResult(
-    indexes == indexes.sorted(),
+    orderTest(value, substrings.filter { it.isNotEmpty() }),
     { "${value.show()} should include substrings ${substrings.show()} in order" },
     { "$value should not include substrings ${substrings.show()} in order" })
 }
