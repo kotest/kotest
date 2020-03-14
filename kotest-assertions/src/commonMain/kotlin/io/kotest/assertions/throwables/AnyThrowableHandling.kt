@@ -99,6 +99,51 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
       e
    }
 
-   throw Failures.failure("No exception expected, but a ${thrownException::class.simpleName} was thrown.",
-      thrownException)
+   throw Failures.failure(
+      "No exception expected, but a ${thrownException::class.simpleName} was thrown.",
+      thrownException
+   )
+}
+
+inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
+   AssertionCounter.inc()
+
+   val thrownException = try {
+      block()
+      null
+   } catch (e: Throwable) {
+      e
+   }
+
+   thrownException ?: throw Failures.failure(
+      """Expected a throwable with message: $message,
+                                                |but nothing was thrown""".trimMargin()
+   )
+
+   if (thrownException.message != message) {
+      throw Failures.failure(
+         """Expected a throwable with message: $message,
+                                |but got a throwable with message: ${thrownException.message}""".trimMargin(),
+         thrownException
+      )
+   }
+}
+
+inline fun <T> shouldNotThrowMessage(message: String, block: () -> T) {
+   AssertionCounter.inc()
+
+   val thrownException = try {
+      block()
+      null
+   } catch (e: Throwable) {
+      e
+   }
+
+   if (thrownException != null && thrownException.message == message)
+      throw Failures.failure(
+         """Expected no exception with message: "$message"
+                          |but a ${thrownException::class.simpleName} was thrown with given message""".trimMargin(),
+         thrownException
+      )
+
 }
