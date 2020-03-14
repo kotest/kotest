@@ -14,6 +14,7 @@ import io.kotest.matchers.string.beTruthy
 import io.kotest.matchers.string.beUpperCase
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.containADigit
+import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.containIgnoringCase
 import io.kotest.matchers.string.containOnlyDigits
 import io.kotest.matchers.string.containOnlyOnce
@@ -187,6 +188,36 @@ class StringMatchersTest : FreeSpec() {
       shouldThrow<AssertionError> {
         null shouldContain "^.*?tour$".toRegex()
       }.message shouldBe "Expecting actual not to be null"
+    }
+
+    "containInOrder(vararg string)" {
+      "a" should containInOrder("a")
+      "aba" should containInOrder("a", "b", "a")
+
+      "zazb" should containInOrder("a", "b")
+      "azbz" should containInOrder("a", "b")
+
+      "ababa" should containInOrder("aba", "aba")
+
+      "" should containInOrder("")
+      "" should containInOrder("", "")
+      "a" should containInOrder("", "a", "")
+
+      shouldThrow<AssertionError> {
+        "a" should containInOrder("a", "a")
+      }
+
+      shouldThrow<AssertionError> {
+        "z" should containInOrder("b")
+      }
+
+      shouldThrow<AssertionError> {
+        "" should containInOrder("b")
+      }
+
+      shouldThrow<AssertionError> {
+        "ac" should containInOrder("a", "b", "c")
+      }
     }
 
     "string should contain" - {
