@@ -32,7 +32,7 @@ data class TimeoutException constructor(val duration: Duration) :
 /**
  * Executes a single [TestCase]. Uses a [TestExecutionListener] to notify callers of events in the test.
  *
- * The [ExecutionContext] is used to provide a way of executing functions on the underlying platform
+ * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
  *
  * The [validateTestCase] function is invoked before a test is executed to ensure that the
@@ -44,7 +44,7 @@ data class TimeoutException constructor(val duration: Duration) :
 @OptIn(ExperimentalTime::class)
 class TestExecutor(
    private val listener: TestExecutionListener,
-   private val executionContext: ExecutionContext,
+   private val executionContext: TimeoutExecutionContext,
    private val validateTestCase: (TestCase) -> Unit = {}
 ) {
 
@@ -88,7 +88,7 @@ class TestExecutor(
    }
 
    /**
-    * Executes the given test handling user level listeners.
+    * Executes a test taking care of invoking user level listeners.
     * The test is always marked as started at this stage.
     *
     * If the before-test listeners fail, then the test is not executed, but the after-test listeners
@@ -112,16 +112,16 @@ class TestExecutor(
       log("Executing active test $testCase")
       listener.testStarted(testCase)
 
-      return executionContext.beforeTestListeners(testCase)
-         .flatMap { executionContext.invokeTestCase(testCase, context, mark) }
+      return testCase.invokeBeforeTest()
+         .flatMap { invokeTestCase(executionContext, it, context, mark) }
          .fold(
             {
                TestResult.throwable(it, mark.elapsedNow()).apply {
-                  executionContext.afterTestListeners(testCase, this)
+                  testCase.invokeAfterTest(this)
                }
             },
             { result ->
-               executionContext.afterTestListeners(testCase, result)
+               testCase.invokeAfterTest(result)
                   .fold(
                      { TestResult.throwable(it, mark.elapsedNow()) },
                      { result }
@@ -131,71 +131,63 @@ class TestExecutor(
    }
 
    /**
-    * Notifies test case listeners that a test is starting.
-    * The listeners will not be invoked if the test case is disabled.
-    *
-    * @return success if the listeners completed or failure if there was an error.
+    * Invokes the given [TestCase] on the given executor.
     */
-   private suspend fun ExecutionContext.beforeTestListeners(testCase: TestCase): Try<Unit> {
-      return execute {
-         testCase.invokeBeforeTest()
-      }
-   }
-
-   private suspend fun ExecutionContext.afterTestListeners(testCase: TestCase, result: TestResult): Try<Unit> {
-      return execute {
-         testCase.invokeAfterTest(result)
-      }
-   }
-
-   /**
-    * Invokes the given [TestCase] and handles timeouts.
-    */
-   private suspend fun ExecutionContext.invokeTestCase(
+   private suspend fun invokeTestCase(
+      ec: TimeoutExecutionContext,
       testCase: TestCase,
       context: TestContext,
       mark: TimeMark
    ): Try<TestResult> = Try {
       log("invokeTestCase $testCase")
 
+      if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
+         error("Cannot execute multiple invocations in parent tests")
+
       // we calculate the timeout which will fail the test with a timed out message
       val timeout = testCase.config.resolvedTimeout()
-
-      // we create a scope here so that this coroutine waits for any child coroutines created by user code
-      val t = coroutineScope {
-         try {
-            // not all environments will support interrupting an execution with a timeout as it requires threading
-            executeWithTimeoutInterruption(timeout) {
-               val contextp = object : TestContext() {
-                  override val testCase: TestCase = context.testCase
-                  override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
-                  // must use the outer coroutine that will wait for child coroutines
-                  override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-               }
-
-               if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
-                  error("Cannot execute multiple invocations in leaf tests")
-
-               replay(
-                  testCase.config.invocations,
-                  testCase.config.threads,
-                  { testCase.invokeBeforeInvocation(it) },
-                  { testCase.invokeAfterInvocation(it) }) {
-                  testCase.executeWithTimeout(contextp, timeout)
-               }
-            }
-            null
-         } catch (e: TimeoutCancellationException) {
-            TimeoutException(timeout)
-         } catch (t: Throwable) {
-            t
-         } catch (e: AssertionError) {
-            e
-         }
-      }
+      val t = executeAndWait(ec, testCase, context, timeout)
 
       val result = TestResult.throwable(t, mark.elapsedNow())
       log("Test completed with result $result")
       result
+   }
+
+   /**
+    * Invokes the given [TestCase] handling timeouts.
+    * We create a scope here so that our coroutine waits for any child coroutines created by user code.
+    */
+   private suspend fun executeAndWait(
+      ec: TimeoutExecutionContext,
+      testCase: TestCase,
+      context: TestContext,
+      timeout: Duration
+   ): Throwable? = coroutineScope {
+      try {
+         // not all environments will support interrupting an execution with a timeout
+         ec.executeWithTimeoutInterruption(timeout) {
+            val contextp = object : TestContext() {
+               override val testCase: TestCase = context.testCase
+               override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
+
+               // must use the outer coroutine that will wait for child coroutines
+               override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+            }
+            replay(
+               testCase.config.invocations,
+               testCase.config.threads,
+               { testCase.invokeBeforeInvocation(it) },
+               { testCase.invokeAfterInvocation(it) }) {
+               testCase.executeWithTimeout(contextp, timeout)
+            }
+         }
+         null
+      } catch (e: TimeoutCancellationException) {
+         TimeoutException(timeout)
+      } catch (t: Throwable) {
+         t
+      } catch (e: AssertionError) {
+         e
+      }
    }
 }

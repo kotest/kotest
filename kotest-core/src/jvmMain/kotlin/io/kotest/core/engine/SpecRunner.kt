@@ -24,8 +24,6 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     */
    abstract suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>>
 
-   abstract fun close()
-
    /**
     * Creates an instance of the supplied [Spec] by delegating to the project constructors,
     * and notifies the [TestEngineListener] of the instantiation event.

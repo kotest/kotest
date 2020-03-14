@@ -103,7 +103,6 @@ class SpecExecutor(private val listener: TestEngineListener) {
          val mode = spec.resolvedIsolationMode()
          val runner = mode.runner()
          results = runner.execute(spec)
-         runner.close()
       }
 
       return Try { interceptSpec(spec, extensions, run) }.map { results }.flatten()

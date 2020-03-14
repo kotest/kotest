@@ -30,18 +30,24 @@ fun List<Listener>.beforeAll() = Try {
    filterIsInstance<ProjectListener>().forEach { it.beforeProject() }
 }.mapFailure { BeforeBeforeListenerException(it) }
 
-suspend fun TestCase.invokeBeforeTest() {
+/**
+ * Invokes the beforeTest callbacks for this test, taking the listeners from
+ * those present at the spec level and the project level.
+ */
+suspend fun TestCase.invokeBeforeTest(): Try<TestCase> = Try {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.beforeTest(this)
    }
+   this
 }
 
-suspend fun TestCase.invokeAfterTest(result: TestResult) {
+suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> = Try {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterTest(this, result)
    }
+   this
 }
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {

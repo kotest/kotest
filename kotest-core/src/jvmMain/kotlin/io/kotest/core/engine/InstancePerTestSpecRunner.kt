@@ -49,7 +49,6 @@ import kotlin.time.ExperimentalTime
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
-   private val ec = ExecutorExecutionContext()
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
@@ -69,10 +68,6 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             .getOrThrow()
       }
       results
-   }
-
-   override fun close() {
-      ec.close()
    }
 
    /**
@@ -140,7 +135,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             override fun testFinished(testCase: TestCase, result: TestResult) {
                if (isTarget) listener.testFinished(testCase, result)
             }
-         }, ec)
+         }, ExecutorExecutionContext)
          val result = testExecutor.execute(test, context)
          results[test] = result
       }

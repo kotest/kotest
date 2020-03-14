@@ -23,7 +23,6 @@ import kotlin.time.ExperimentalTime
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = mutableMapOf<TestCase, TestResult>()
-   private val ec = ExecutorExecutionContext()
 
    inner class Context(
       override val testCase: TestCase,
@@ -43,10 +42,6 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
       }
    }
 
-   override fun close() {
-      ec.close()
-   }
-
    private suspend fun runTest(
       testCase: TestCase,
       coroutineContext: CoroutineContext
@@ -63,7 +58,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
          override fun testFinished(testCase: TestCase, result: TestResult) {
             listener.testFinished(testCase, result)
          }
-      }, ec)
+      }, ExecutorExecutionContext)
 
       val result = testExecutor.execute(testCase, Context(testCase, coroutineContext))
       results[testCase] = result

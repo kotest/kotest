@@ -2,7 +2,7 @@ package com.sksamuel.kotest.core.runtime
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.runtime.CallingThreadExecutionContext
-import io.kotest.core.runtime.ExecutionContext
+import io.kotest.core.runtime.TimeoutExecutionContext
 import io.kotest.core.runtime.ExecutorExecutionContext
 import io.kotest.core.runtime.TestExecutionListener
 import io.kotest.core.runtime.TestExecutor
@@ -25,7 +25,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 @OptIn(ExperimentalTime::class)
-fun testExecutorTests(context: ExecutionContext) = funSpec {
+fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
 
    fun context(testCase: TestCase) = object : TestContext() {
       override val testCase: TestCase = testCase
@@ -160,7 +160,7 @@ fun testExecutorTests(context: ExecutionContext) = funSpec {
 
 class TestExecutorTest : FunSpec({
    include("calling thread:", testExecutorTests(CallingThreadExecutionContext))
-   include("executor:", testExecutorTests(ExecutorExecutionContext()))
+   include("executor:", testExecutorTests(ExecutorExecutionContext))
 })
 
 @OptIn(ExperimentalTime::class)

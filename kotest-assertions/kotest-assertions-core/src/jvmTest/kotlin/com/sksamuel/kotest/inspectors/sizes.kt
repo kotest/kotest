@@ -12,7 +12,7 @@ import io.kotest.matchers.shouldBe
 val tests = funSpec {
    test("should error with large failure count #938") {
       shouldFail {
-         List(100_000) { it }.forAll {
+         List(10_000) { it }.forAll {
             it shouldBe -1
          }
       }
