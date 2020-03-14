@@ -105,6 +105,12 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
    )
 }
 
+
+/**
+ * Verifies that a block of code throws any [Throwable] with given [message].
+ *
+ * @see [shouldNotThrowMessage]
+ * */
 inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
    AssertionCounter.inc()
 
@@ -129,6 +135,9 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
    }
 }
 
+/**
+ * Verifies that a block of code does not throws any [Throwable] with given [message].
+* */
 inline fun <T> shouldNotThrowMessage(message: String, block: () -> T) {
    AssertionCounter.inc()
 
