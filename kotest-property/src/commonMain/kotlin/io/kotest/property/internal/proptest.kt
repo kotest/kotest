@@ -4,9 +4,10 @@ import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
+import io.kotest.property.random
 import kotlin.math.max
 
-internal suspend fun <A> proptest(
+suspend fun <A> proptest(
    iterations: Int,
    genA: Gen<A>,
    config: PropTestConfig,
@@ -31,7 +32,7 @@ internal suspend fun <A> proptest(
 }
 
 
-internal suspend fun <A, B> proptest(
+suspend fun <A, B> proptest(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -59,7 +60,7 @@ internal suspend fun <A, B> proptest(
    return context
 }
 
-internal suspend fun <A, B, C> proptest(
+suspend fun <A, B, C> proptest(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -89,7 +90,7 @@ internal suspend fun <A, B, C> proptest(
    return context
 }
 
-internal suspend fun <A, B, C, D> proptest(
+suspend fun <A, B, C, D> proptest(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -122,7 +123,7 @@ internal suspend fun <A, B, C, D> proptest(
    return context
 }
 
-internal suspend fun <A, B, C, D, E> proptest(
+suspend fun <A, B, C, D, E> proptest(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,
@@ -156,7 +157,7 @@ internal suspend fun <A, B, C, D, E> proptest(
    return context
 }
 
-internal suspend fun <A, B, C, D, E, F> proptest(
+suspend fun <A, B, C, D, E, F> proptest(
    iterations: Int,
    genA: Gen<A>,
    genB: Gen<B>,

@@ -6,10 +6,15 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.PropTestConfig
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.Arb
+import io.kotest.property.arbitrary.bool
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.long
+import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
-import io.kotest.property.internal.random
+import io.kotest.property.random
 
 class SeedTest : FunSpec({
 

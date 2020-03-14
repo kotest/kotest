@@ -1,7 +1,7 @@
 package io.kotest.property
 
 /**
- * A [PropertyContext] is used when executing a property test.
+ * A [PropertyContext] is used when executing a propery test.
  * It allows feedback and tracking of the state of the property test.
  */
 class PropertyContext {
