@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property.exhaustive
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.property.exhaustive.Exhaustive
+import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.lines
 import java.io.File
 

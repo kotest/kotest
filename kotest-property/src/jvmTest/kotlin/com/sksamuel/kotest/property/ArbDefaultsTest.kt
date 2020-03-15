@@ -3,7 +3,7 @@ package com.sksamuel.kotest.property
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.default
 import io.kotest.property.checkAll
 

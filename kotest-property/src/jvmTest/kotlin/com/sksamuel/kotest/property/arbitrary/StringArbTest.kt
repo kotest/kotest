@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.kotest.property.forAll
 

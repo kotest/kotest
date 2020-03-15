@@ -1,7 +1,7 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.Gen
-import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
 /**
@@ -18,23 +18,22 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
    val weights = allPairs.map { it.first }
    require(weights.all { it >= 0 }) { "Negative weights not allowed" }
    require(weights.any { it > 0 }) { "At least one weight must be greater than zero" }
-   return object : BasicArb<A> {
-      // The algorithm for pick is a migration of
-      // the algorithm from Haskell QuickCheck
-      // http://hackage.haskell.org/package/QuickCheck
-      // See function frequency in the package Test.QuickCheck
-      private tailrec fun pick(n: Int, l: Sequence<Pair<Int, A>>): A {
-         val (w, e) = l.first()
-         return if (n <= w) e
-         else pick(n - w, l.drop(1))
-      }
 
-      override fun edgecases(): List<A> = emptyList()
-      override fun sample(rs: RandomSource): Sample<A> {
+   // The algorithm for pick is a migration of
+   // the algorithm from Haskell QuickCheck
+   // http://hackage.haskell.org/package/QuickCheck
+   // See function frequency in the package Test.QuickCheck
+   tailrec fun pick(n: Int, l: Sequence<Pair<Int, A>>): A {
+      val (w, e) = l.first()
+      return if (n <= w) e
+      else pick(n - w, l.drop(1))
+   }
+
+   return arb {
+      generateSequence {
          val total = weights.sum()
-         val n = rs.random.nextInt(1, total + 1)
-         val value = pick(n, allPairs.asSequence())
-         return Sample(value)
+         val n = it.random.nextInt(1, total + 1)
+         pick(n, allPairs.asSequence())
       }
    }
 }
@@ -42,19 +41,40 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
 /**
  * Generates random permutations of a list.
  */
-fun <A> Arb.Companion.shuffle(list: List<A>) = arb { list.shuffled(it.random) }
-
-/**
- * Generates a random subsequence, including the empty list.
- */
-fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
-   list.take(it.random.nextInt(0, list.size + 1))
+fun <A> Arb.Companion.shuffle(list: List<A>) = arb {
+   generateSequence {
+      list.shuffled(it.random)
+   }
 }
 
 /**
- * Randomly selects one of the given generators to generate the next element.
- * The input must be non-empty.
+ * Generates a random subsequence of the input list, including the empty list.
+ * The returned list has the same order as the input list.
  */
-fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Arb<A> = arb {
-   gens.asList().shuffled(it.random).first().generate(it).first().value
+fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
+   generateSequence {
+      val size = it.random.nextInt(0, list.size + 1)
+      list.take(size)
+   }
+}
+
+/**
+ * Randomly selects one of the given gens to generate the next element.
+ * The input must be non-empty.
+ * The input gens must be infinite.
+ */
+fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Arb<A> = arb { rs ->
+   val iters = gens.map { it.generate(rs).iterator() }
+   fun next(): Sample<A>? {
+      val iter = iters.shuffled(rs.random).first()
+      return if (iter.hasNext()) iter.next() else null
+   }
+   sequence {
+      while (true) {
+         var next: Sample<A>? = null
+         while (next == null)
+            next = next()
+         yield(next.value)
+      }
+   }
 }

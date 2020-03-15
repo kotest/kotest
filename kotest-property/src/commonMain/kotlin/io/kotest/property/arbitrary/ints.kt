@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextInt
+import io.kotest.property.Arb
 
 fun Arb.Companion.int(min: Int, max: Int) = int(min..max)
 

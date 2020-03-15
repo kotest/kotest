@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextLong

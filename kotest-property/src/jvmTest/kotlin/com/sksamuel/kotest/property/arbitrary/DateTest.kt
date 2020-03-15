@@ -4,8 +4,8 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
 import io.kotest.property.RandomSource
-import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime

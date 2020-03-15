@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import kotlin.random.nextInt
 
 /**
@@ -17,6 +18,7 @@ fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), UShort.MIN
    it.random.nextInt().toUInt().shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort()
 }
 
-
 val ShortShrinker = IntShrinker.bimap({ it.toInt() }, { it.toShort() })
+
+@OptIn(ExperimentalUnsignedTypes::class)
 val UShortShrinker = IntShrinker.bimap({ it.toInt() }, { it.toUShort() })

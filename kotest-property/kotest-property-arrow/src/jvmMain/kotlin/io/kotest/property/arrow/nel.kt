@@ -1,15 +1,15 @@
 package io.kotest.property.arrow
 
 import arrow.core.NonEmptyList
+import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.arbitrary.Arb
 import kotlin.random.nextInt
 
 inline fun <reified A> Arb.Companion.nel(
    arbA: Arb<A>,
    range: IntRange = 1..100
-): Arb<NonEmptyList<A>> = object : Arb<NonEmptyList<A>> {
+): Arb<NonEmptyList<A>> = object : Arb<NonEmptyList<A>>() {
    override fun edgecases(): List<NonEmptyList<A>> {
       val edges = arbA.edgecases().toList()
       return if (edges.isEmpty()) emptyList() else {
@@ -19,9 +19,9 @@ inline fun <reified A> Arb.Companion.nel(
       }
    }
 
-   override fun samples(rs: RandomSource): Sequence<Sample<NonEmptyList<A>>> = generateSequence {
+   override fun values(rs: RandomSource): Sequence<Sample<NonEmptyList<A>>> = generateSequence {
       val size = rs.random.nextInt(range)
-      val `as` = arbA.samples(rs).take(size).map { it.value }
+      val `as` = arbA.values(rs).take(size).map { it.value }
       val head = `as`.first()
       val tail = `as`.drop(1)
       Sample(NonEmptyList.of(head, *tail.toList().toTypedArray()))

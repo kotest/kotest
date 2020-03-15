@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
@@ -28,8 +28,8 @@ class ChoiceTest : WordSpec({
             it shouldNotBe 0
             true
          }
-         positiveNumbers shouldBe beGreaterThan(1)
          negativeNumbers shouldBe beGreaterThan(1)
+         positiveNumbers shouldBe beGreaterThan(1)
       }
       "support covariance" {
          Arb.choice(

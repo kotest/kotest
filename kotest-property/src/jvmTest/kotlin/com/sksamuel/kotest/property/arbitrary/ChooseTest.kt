@@ -6,17 +6,17 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.data.forAll
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.Arb
 import io.kotest.property.arbitrary.choose
 import io.kotest.data.row
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.single
 import io.kotest.property.random
 
 class ChooseTest : FunSpec({
 
   test("weighted should honour seed") {
-    val seedListA = Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList().map { it.value }
-    val seedListB = Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').samples(684658365846L.random()).take(500).toList().map { it.value }
+    val seedListA = Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').values(684658365846L.random()).take(500).toList().map { it.value }
+    val seedListB = Arb.choose(1 to 'A', 3 to 'B', 4 to 'C', 5 to 'D').values(684658365846L.random()).take(500).toList().map { it.value }
     seedListA shouldBe seedListB
   }
 

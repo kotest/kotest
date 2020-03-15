@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 

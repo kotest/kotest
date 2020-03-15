@@ -5,7 +5,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.ints.shouldBeGreaterThan
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.shuffle
 import io.kotest.property.arbitrary.subsequence
 import io.kotest.property.arbitrary.take
