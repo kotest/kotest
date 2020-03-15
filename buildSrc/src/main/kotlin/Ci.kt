@@ -8,7 +8,9 @@ object Ci {
 
    private val snapshotBuildNumber = lazy {
       Runtime.getRuntime().exec("git rev-list --count master")
-      System.`in`.bufferedReader().read()
+      val number = System.`in`.bufferedReader().read()
+      println("Snapshot build number: $number")
+      number
    }
 
    private const val releaseVersion = "4.0.0-BETA2"
