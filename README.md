@@ -165,7 +165,8 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>'
+  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
+  testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest assertions
 }
 ```
 
@@ -183,7 +184,9 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5:<version>'
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-assertions-core:<version>' // for kotest core assertions
+    testImplementation 'io.kotest:kotest-assertions-jvm:<version>' // for kotest jvm assertions
 }
 ```
 
@@ -200,7 +203,9 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
+  testImplementation("io.kotest:kotest-assertions-core:<version>") // for kotest core assertions
+  testImplementation("io.kotest:kotest-assertions-jvm:<version>") // for kotest jvm assertions
 }
 ```
 
@@ -230,6 +235,27 @@ And then add the Kotest JUnit5 runner to your build.
 </dependency>
 ```
 
+And for using kotest core assertions add following configurations
+
+```xml
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-core</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For using kotest jvm assertions add following configurations
+
+```xml
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-jvm</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+```
 #### Snapshots
 
 If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
