@@ -1,40 +1,40 @@
-//package com.sksamuel.kotest.timeout
-//
-//import io.kotest.core.test.TestCase
-//import io.kotest.core.test.TestResult
-//import io.kotest.core.test.TestStatus
-//import io.kotest.core.extensions.SpecLevelExtension
-//import io.kotest.core.extensions.TestCaseExtension
-//import io.kotest.core.spec.style.StringSpec
-//import kotlinx.coroutines.delay
-//import kotlin.time.ExperimentalTime
-//import kotlin.time.milliseconds
-//
-//@ExperimentalTime
-//class TimeoutTest : StringSpec() {
-//
-//  init {
-//
-//    "a blocked thread should timeout a test".config(timeout = 250.milliseconds) {
-//      Thread.sleep(1000)
-//    }
-//
-//    "a suspended coroutine should timeout a test".config(timeout = 250.milliseconds) {
-//      delay(1000)
-//    }
-//  }
-//
-//  override fun extensions(): List<SpecLevelExtension> = listOf(object : TestCaseExtension {
-//    override suspend fun intercept(testCase: TestCase,
-//                                   execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
-//                                   complete: suspend (TestResult) -> Unit) {
-//      execute(testCase) {
-//        when (it.status) {
-//          TestStatus.Failure, TestStatus.Error -> complete(
-//              TestResult.success(1000.milliseconds))
-//          else -> throw RuntimeException("${testCase.description} should fail")
-//        }
-//      }
-//    }
-//  })
-//}
+package com.sksamuel.kotest.timeout
+
+import io.kotest.core.spec.style.StringSpec
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
+
+@ExperimentalTime
+class TimeoutTest : StringSpec() {
+
+   init {
+
+      extension(expectFailureExtension)
+
+      "a testcase timeout should interrupt a blocked thread".config(timeout = 250.milliseconds) {
+         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         Thread.sleep(1000000)
+      }
+
+      "a testcase timeout should interrupt a suspended coroutine".config(timeout = 250.milliseconds) {
+         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         delay(1000000)
+      }
+
+      "a testcase timeout should interrupt suspended nested coroutines".config(timeout = 250.milliseconds) {
+         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         someCoroutine()
+      }
+   }
+}
+
+suspend fun someCoroutine() {
+   coroutineScope {
+      launch {
+         delay(10000000)
+      }
+   }
+}

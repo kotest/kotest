@@ -43,7 +43,7 @@ suspend fun TestCase.invokeBeforeTest(): Try<TestCase> = Try {
 }
 
 suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> = Try {
-   val listeners = spec.resolvedTestListeners() + Project.testListeners()
+   val listeners = this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
    listeners.forEach {
       it.afterTest(this, result)
    }

@@ -20,9 +20,9 @@ import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 interface TestExecutionListener {
-   fun testStarted(testCase: TestCase)
-   fun testIgnored(testCase: TestCase)
-   fun testFinished(testCase: TestCase, result: TestResult)
+   fun testStarted(testCase: TestCase) {}
+   fun testIgnored(testCase: TestCase) {}
+   fun testFinished(testCase: TestCase, result: TestResult) {}
 }
 
 @OptIn(ExperimentalTime::class)
