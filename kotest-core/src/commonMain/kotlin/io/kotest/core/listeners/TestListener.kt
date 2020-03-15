@@ -29,8 +29,30 @@ interface TestListener : Listener {
     */
    suspend fun afterTest(testCase: TestCase, result: TestResult): Unit = Unit
 
+   /**
+    * Invoked before each 'run' of a test, with a flag indicating the iteration number.
+    * This callback is useful if you have set a test to have multiple invocations via config and want to do
+    * some setup / teardown between runs.
+    *
+    * If you are running a test with the default single invocation then this callback is effectively the
+    * same as [beforeTest].
+    *
+    * Note: If you have set multiple invocations _and_ multiple threads, then these callbacks could be
+    * invoked concurrently.
+    */
    suspend fun beforeInvocation(testCase: TestCase, iteration: Int): Unit = Unit
 
+   /**
+    * Invoked after each 'run' of a test, with a flag indicating the iteration number.
+    * This callback is useful if you have set a test to have multiple invocations via config and want to do
+    * some setup / teardown between runs.
+    *
+    * If you are running a test with the default single invocation then this callback is effectively the
+    * same as [afterTest].
+    *
+    * Note: If you have set multiple invocations _and_ multiple threads, then these callbacks could be
+    * invoked concurrently.
+    */
    suspend fun afterInvocation(testCase: TestCase, iteration: Int): Unit = Unit
 
    /**
@@ -76,16 +98,6 @@ interface TestListener : Listener {
     * for example, if [InstancePerTest] or [InstancePerLeaf] isolation
     * modes are used, this callback will only be invoked once.
     *
-    * The top level tests declared in the spec are supplied as a list of
-    * instances of [RootTest] which includes a flag set to true if
-    * the test is active or false if inactive.
-    *
-    * If there are no active tests in a spec, then this callback will
-    * still be invoked.
-    *
-    * The order of the list of tests is the same as the
-    * order of execution.
-    *
     * @param kclass the [Spec] class
     */
    suspend fun prepareSpec(kclass: KClass<out Spec>): Unit = Unit
@@ -99,8 +111,7 @@ interface TestListener : Listener {
     *
     * The results parameter contains every [TestCase], along with
     * the result of that test, including tests that were ignored (which
-    * will have a TestResult that has TestStatus.Ignored) and/or an error
-    * if there was a issue during the running of the spec.
+    * will have a TestResult that has TestStatus.Ignored).
     *
     * @param kclass the [Spec] class
     * @param results a map of each test case mapped to its result.
