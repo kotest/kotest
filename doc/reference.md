@@ -603,6 +603,35 @@ Kotest has many options for disabling/enable tests at runtime. See this [page](c
 
 
 
+Test Filtering via Gradle
+-------------------------
+
+When running Kotest via the JUnit Platform runner through gradle, Kotest supports the standard gradle syntax for
+test filtering. You can enable filtering either in the build script or via the --tests command-line option.
+
+For example, in the build script:
+
+```groovy
+tasks.test {
+    filter {
+        //include all tests from package
+        includeTestsMatching("com.sksamuel.somepackage.*")
+    }
+}
+```
+
+Or via the command line:
+
+```gradle test --tests 'com.sksamuel.somepackage*'```
+
+```gradle test --tests '*IntegrationTest'```
+
+See full Gradle documentation [here](https://docs.gradle.org/6.2.2/userguide/java_testing.html#test_filtering).
+
+
+
+
+
 
 Grouping Tests with Tags
 ------------------------
