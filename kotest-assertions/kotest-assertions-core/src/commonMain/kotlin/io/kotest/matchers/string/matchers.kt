@@ -1,6 +1,7 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.show.show
+import io.kotest.assertions.stringRepr
 import io.kotest.matchers.*
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.string.UUIDVersion.ANY
@@ -135,8 +136,8 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
 
   MatcherResult(
      recTest(value, substrings.filter{ it.isNotEmpty() }),
-    { "${value.show()} should include substrings ${substrings.show()} in order" },
-    { "$value should not include substrings ${substrings.show()} in order" })
+    { "${value.show()} should include substrings ${stringRepr(substrings)} in order" },
+    { "$value should not include substrings ${stringRepr(substrings)} in order" })
 }
 
 infix fun String?.shouldContain(substr: String) = this should contain(substr)

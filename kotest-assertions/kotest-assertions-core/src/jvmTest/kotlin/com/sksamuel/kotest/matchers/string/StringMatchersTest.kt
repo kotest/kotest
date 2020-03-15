@@ -335,6 +335,16 @@ class StringMatchersTest : FreeSpec() {
         "ab" should containInOrder("", "a", "", "b", "")
       }
 
+      "should print the substrings in matcher messages" {
+        shouldThrow<AssertionError> {
+          "zhelzloz" should containInOrder("hel", "no", "lo")
+        }.message shouldBe "zhelzloz should include substrings [\"hel\", \"no\", \"lo\"] in order"
+
+        shouldThrow<AssertionError> {
+          "zhelznozloz" shouldNot containInOrder("hel", "no", "lo")
+        }.message shouldBe "zhelznozloz should not include substrings [\"hel\", \"no\", \"lo\"] in order"
+      }
+
       "should fail if value is null" {
         shouldThrow<AssertionError> {
           null shouldNot containInOrder("")
