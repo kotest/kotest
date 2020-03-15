@@ -128,10 +128,13 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
 }
 
 fun String?.shouldContainInOrder(vararg substrings: String) = this should containInOrder(*substrings)
+fun String?.shouldNotContainInOrder(vararg substrings: String) = this shouldNot containInOrder(*substrings)
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-  val indexes = substrings.map { value.indexOf(it) }
+  fun recTest(str:String, subs:List<String>):Boolean =
+    subs.isEmpty() || str.indexOf(subs.first()).let{ it > -1 && recTest(str.substring(it + 1), subs.drop(1)) }
+
   MatcherResult(
-    indexes == indexes.sorted(),
+     recTest(value, substrings.filter{ it.isNotEmpty() }),
     { "${value.show()} should include substrings ${substrings.show()} in order" },
     { "$value should not include substrings ${substrings.show()} in order" })
 }

@@ -14,6 +14,7 @@ import io.kotest.matchers.string.beTruthy
 import io.kotest.matchers.string.beUpperCase
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.string.containADigit
+import io.kotest.matchers.string.containInOrder
 import io.kotest.matchers.string.containIgnoringCase
 import io.kotest.matchers.string.containOnlyDigits
 import io.kotest.matchers.string.containOnlyOnce
@@ -38,6 +39,7 @@ import io.kotest.matchers.string.shouldBeUUID
 import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainADigit
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldContainIgnoringCase
 import io.kotest.matchers.string.shouldContainOnlyDigits
 import io.kotest.matchers.string.shouldContainOnlyOnce
@@ -60,6 +62,7 @@ import io.kotest.matchers.string.shouldNotBeUUID
 import io.kotest.matchers.string.shouldNotBeUpperCase
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldNotContainADigit
+import io.kotest.matchers.string.shouldNotContainInOrder
 import io.kotest.matchers.string.shouldNotContainIgnoringCase
 import io.kotest.matchers.string.shouldNotContainOnlyDigits
 import io.kotest.matchers.string.shouldNotContainOnlyOnce
@@ -306,6 +309,47 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           null.shouldContainADigit()
+        }.message shouldBe "Expecting actual not to be null"
+      }
+    }
+
+
+    "string should containInOrder()" - {
+      "should test that a string contains the requested strings" {
+        "a" should containInOrder()
+        "a" shouldNot containInOrder("d")
+        "ab" should containInOrder("a", "b")
+        "ab" shouldNot containInOrder("b", "a")
+        "azc" should containInOrder("a", "c")
+        "zabzc" should containInOrder("ab", "c")
+        "a" shouldNot containInOrder("a", "a")
+        "aa" should containInOrder("a", "a")
+        "azbzbzc" should containInOrder("a", "b", "b", "c")
+        "abab" should containInOrder("a", "b", "a", "b")
+        "ababa" should containInOrder("aba", "aba")
+        "aaa" should containInOrder("aa", "aa")
+        "" should containInOrder()
+        "" shouldNot containInOrder("a")
+        "" should containInOrder("")
+        "" should containInOrder("", "")
+        "ab" should containInOrder("", "a", "", "b", "")
+      }
+
+      "should fail if value is null" {
+        shouldThrow<AssertionError> {
+          null shouldNot containInOrder("")
+        }.message shouldBe "Expecting actual not to be null"
+
+        shouldThrow<AssertionError> {
+          null.shouldNotContainInOrder("")
+        }.message shouldBe "Expecting actual not to be null"
+
+        shouldThrow<AssertionError> {
+          null should containInOrder("")
+        }.message shouldBe "Expecting actual not to be null"
+
+        shouldThrow<AssertionError> {
+          null.shouldContainInOrder("")
         }.message shouldBe "Expecting actual not to be null"
       }
     }
