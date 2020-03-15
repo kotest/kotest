@@ -1,31 +1,40 @@
-//package com.sksamuel.kotest.property
-//
-//import io.kotest.assertions.throwables.shouldThrowAny
-//import io.kotest.core.spec.style.FunSpec
-//import io.kotest.property.arbitrary.Arb
-//import io.kotest.property.arbitrary.int
-//import io.kotest.property.checkCoverage
-//import io.kotest.property.forAll
-//
-//class CheckCoverageTest : FunSpec({
-//   test("should throw if coverage did not meet expectations") {
-//
-//      checkCoverage(25.0, "even") {
-//         checkCoverage(25.0, "odd") {
-//            forAll(Arb.int()) { a ->
-//               classify(a % 2 == 0, "even", "odd")
-//               a + a == 2 * a
-//            }
-//         }
-//      }
-//
-//      shouldThrowAny {
-//         checkCoverage(50.0, "zero") {
-//            forAll<Int> { a ->
-//               classify(a == 0, "zero", ">zero")
-//               a + a == 2 * a
-//            }
-//         }
-//      }
-//   }
-//})
+package com.sksamuel.kotest.property
+
+import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.property.arbitrary.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.checkCoverage
+import io.kotest.property.forAll
+
+class CheckCoverageTest : FunSpec({
+
+   test("should pass if coverage met expectations") {
+
+      checkCoverage("even", 25.0) {
+         forAll(Arb.int()) { a ->
+            classify(a % 2 == 0, "even", "odd")
+            a + a == 2 * a
+         }
+      }
+
+      checkCoverage("even" to 25.0, "odd" to 25.0) {
+         forAll(Arb.int()) { a ->
+            classify(a % 2 == 0, "even", "odd")
+            a + a == 2 * a
+         }
+      }
+   }
+
+   test("should throw if coverage did not meet expectations") {
+
+      shouldThrowAny {
+         checkCoverage("zero" to 50.0) {
+            forAll<Int> { a ->
+               classify(a == 0, "zero", ">zero")
+               a + a == 2 * a
+            }
+         }
+      }
+   }
+})
