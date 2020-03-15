@@ -3,7 +3,7 @@ package com.sksamuel.kotest.specs.funspec
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.file.shouldNotExist
+import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldNotBeBlank
@@ -25,8 +25,8 @@ class FunSpecTest : FunSpec() {
 
       test("test with config").config(enabled = true) {
          assertSoftly {
-            val file = Paths.get(".password")
-            file.shouldNotExist()
+            val path = Paths.get(".password")
+            path.shouldNotExist()
          }
       }
 
