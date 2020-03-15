@@ -13,12 +13,12 @@ class GlobalTimeoutTest : StringSpec() {
 
    init {
 
-      "a blocked thread should timeout if global timeout is applied" {
+      "a global timeout should interrupt a blocked thread" {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)
       }
 
-      "a suspended coroutine should timeout if a global timeout is applied" {
+      "a global timeout should interrupt a suspended coroutine" {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          delay(1000000)
       }
@@ -27,6 +27,9 @@ class GlobalTimeoutTest : StringSpec() {
    }
 }
 
+/**
+ * A Test Case extension that expects each test to fail, and will invert the test result.
+ */
 @OptIn(ExperimentalTime::class)
 val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)

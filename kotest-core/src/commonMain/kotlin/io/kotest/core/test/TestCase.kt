@@ -58,6 +58,9 @@ data class TestCase(
 
    companion object {
 
+      /**
+       * Creates a [TestCase] of type [TestType.Test], with default config, and derived source ref.
+       */
       fun test(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,
@@ -70,6 +73,9 @@ data class TestCase(
             null
          )
 
+      /**
+       * Creates a [TestCase] of type [TestType.Container], with default config, and derived source ref.
+       */
       fun container(description: Description, spec: Spec, test: suspend TestContext.() -> Unit): TestCase =
          TestCase(
             description,

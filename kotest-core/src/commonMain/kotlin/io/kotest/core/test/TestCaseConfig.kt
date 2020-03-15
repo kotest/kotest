@@ -3,6 +3,7 @@ package io.kotest.core.test
 import io.kotest.core.Tag
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.TestListener
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -13,6 +14,7 @@ data class TestCaseConfig constructor(
    val threads: Int = 1,
    val timeout: Duration? = null,
    val tags: Set<Tag> = emptySet(),
+   val listeners: List<TestListener> = emptyList(),
    val extensions: List<TestCaseExtension> = emptyList(),
    val enabledIf: EnabledIf = { true }
 ) {
@@ -37,11 +39,13 @@ fun TestCaseConfig.deriveTestConfig(
    timeout: Duration? = null,
    enabledIf: EnabledIf? = null,
    invocations: Int? = null,
-   threads: Int? = null
+   threads: Int? = null,
+   listeners: List<TestListener>? = null
 ) = TestCaseConfig(
    enabled = enabled ?: this.enabled,
    tags = tags ?: this.tags,
    extensions = extensions ?: this.extensions,
+   listeners = listeners ?: this.listeners,
    timeout = timeout ?: this.timeout,
    enabledIf = enabledIf ?: this.enabledIf,
    invocations = invocations ?: this.invocations,
