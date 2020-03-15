@@ -9,7 +9,7 @@ import kotlin.text.RegexOption.*
 class RegexMatchersTest : FreeSpec() {
    init {
       "regex of same pattern without any option should be same" {
-         "a*.js".toRegex() shouldBeRegex "a*.js".toRegex()
+         "a*.js".toRegex() shouldBe "a*.js".toRegex()
       }
 
       "regex of different pattern should be different" {
