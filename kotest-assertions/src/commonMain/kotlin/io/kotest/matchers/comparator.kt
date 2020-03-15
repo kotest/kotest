@@ -8,14 +8,15 @@ import io.kotest.mpp.sysprop
 
 abstract class ValueComparator<T> {
    internal open fun compare(actual: T?, expected: T?): Throwable? {
-      return when {
-         actual == null && expected != null -> generateError(actual, expected)
-         actual != expected -> generateError(actual, expected)
-         else -> null
+      return compareWhenBothNotNull(actual, expected) {
+         when {
+            actual != expected -> generateError(actual, expected)
+            else -> null
+         }
       }
    }
 
-   private fun largeStringDiffMinSize() = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
+
    internal open fun generateError(actual: T?, expected: T?): Throwable {
       val (expectedRepr, actualRepr) = diffLargeString(
          stringRepr(expected),
@@ -25,18 +26,26 @@ abstract class ValueComparator<T> {
       return getThrowableWith(expectedRepr, actualRepr)
    }
 
+   internal fun compareWhenBothNotNull(actual: T?, expected: T?, f: () -> Throwable?): Throwable? {
+      return when {
+         actual == null && expected != null -> generateError(actual, expected)
+         else -> f()
+      }
+   }
+
+   private fun largeStringDiffMinSize() = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
+
    private fun getThrowableWith(expectedRepr: String, actualRepr: String) =
       Failures.failure(clueContextAsString() + equalsErrorMessage(expectedRepr, actualRepr), expectedRepr, actualRepr)
 }
 
 internal val regexComparator = object : ValueComparator<Regex?>() {
    override fun compare(actual: Regex?, expected: Regex?): Throwable? {
-      return when {
-         actual == null && expected != null -> generateError(actual, expected)
-         patternOrOptionsAreNotEqual(actual, expected) -> {
-            generateError(actual, expected)
+      return compareWhenBothNotNull(actual, expected) {
+         when {
+            patternOrOptionsAreNotEqual(actual, expected) -> generateError(actual, expected)
+            else -> null
          }
-         else -> null
       }
    }
 
