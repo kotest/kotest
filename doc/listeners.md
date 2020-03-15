@@ -90,14 +90,30 @@ _Note: If you have set multiple invocations _and_ multiple threads, then these c
 
 
 
-How to use a TestListener
+
+ProjectListener
 ------------
 
-There are several ways to use the methods in a test listener.
+
+The other listener interface is `ProjectListener` which defines two callbacks.
+
+#### beforeProject
+
+This callback is invoked once before any spec discovery and execution takes place.
+
+#### afterProject
+
+This callback is invoked once after all specs have completed. This callback is executed even if there are errors in specs / test cases.
+
+
+How to use a Listener
+------------
+
+There are several ways to use the methods in a listener.
 
 #### DSL Methods
 
-The first and simplest, is to use the DSL methods available inside a Spec which create and register a test listener for you. For example, we can invoke `beforeTest` alongside our tests.
+The first and simplest, is to use the DSL methods available inside a Spec which create and register a `TestListener` for you. For example, we can invoke `beforeTest` alongside our tests.
 
 ```kotlin
 class TestSpec : WordSpec({
@@ -116,6 +132,8 @@ class TestSpec : WordSpec({
 ```
 
 Behind the scenes, these DSL methods will create an instance of `TestListener`, overriding the appropriate functions, and ensuring that this test listener is registered to run.
+
+You can use `afterProject` as a DSL method which will create an instance of `ProjectListener`, but there is no `beforeProject` because by the time the framework is at this stage of detecting a spec, the project has already started!
 
 Since these DSL methods accept functions, we can pull out logic to a function and re-use it in several places. The `BeforeTest` type used on the function definition is an alias
 to `suspend (TestCase) -> Unit` to keep things simple. There are aliases for the types of each of the callbacks.
@@ -171,10 +189,11 @@ class TestSpec : WordSpec() {
 }
 ```
 
-#### Standalone TestListener instances
+#### Standalone Listener instances
 
-The next method is to create a standalone implementation of the TestListener interface and register it. This is useful if you want to reuse a listener
-that has several dependant functions (such as starting and stopping a resource).
+The next method is to create a standalone implementation of the `TestListener` or `ProjectListener` interface and register it.
+
+This is useful for `TestListener`s if you want to reuse a listener that has several dependant functions (such as starting and stopping a resource).
 
 ```kotlin
 class MyTestListener : TestListener {
@@ -195,8 +214,10 @@ class TestSpec : WordSpec({
 
 Any listeners registered on a `Spec` will be used for all tests in that spec (including factory tests and nested tests).
 
-Maybe you want a listener to run for every spec in the entire project. To do that, you would register the listener via project config.
+Maybe you want a `TestListener` to run for every spec in the entire project. To do that, you would register the listener via project config.
 For more information on this see [ProjectConfig](#project-config).
+
+Instances of `ProjectListener` are registered at the project config level as well, since the `beforeProject` callback needs to be registered and executed before spec discovery begins.
 
 Real Examples
 ------------
