@@ -1,6 +1,7 @@
 object Ci {
 
    private val isGithub = System.getenv("GITHUB_ACTIONS") == "true"
+   private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
    val isReleaseVersion = !isGithub
 
    val ideaActive = System.getProperty("idea.active") == "true"
@@ -14,6 +15,6 @@ object Ci {
    }
 
    private const val releaseVersion = "4.0.0-BETA2"
-   private val snapshotVersion = lazy { "4.0.0.${snapshotBuildNumber.value}-SNAPSHOT" }
+   private val snapshotVersion = lazy { "4.0.0.${githubBuildNumber}-SNAPSHOT" }
    val publishVersion = lazy { if (isReleaseVersion) releaseVersion else snapshotVersion.value }
 }
