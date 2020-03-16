@@ -47,7 +47,7 @@ jobs:
 
    deploy-linux-and-common:
       needs: build
-      runs-on: macOS-latest
+      runs-on: ubuntu-latest
 
       steps:
          -  name: Checkout the repo
