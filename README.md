@@ -128,7 +128,7 @@ class MySpec : StringSpec({
   "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
     // test here
   }
-}
+})
 ```
 
 And More ...
@@ -165,7 +165,8 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>'
+  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
+  testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
 }
 ```
 
@@ -183,7 +184,8 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5:<version>'
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
 }
 ```
 
@@ -200,7 +202,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
+  testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
 }
 ```
 
@@ -225,6 +228,17 @@ And then add the Kotest JUnit5 runner to your build.
 <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+And for using kotest core jvm assertions add following configurations
+
+```xml
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-core-jvm</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>
