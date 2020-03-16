@@ -136,7 +136,7 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
   MatcherResult(
      recTest(value, substrings.filter{ it.isNotEmpty() }),
     { "${value.show().value} should include substrings ${substrings.show().value} in order" },
-    { "$value should not include substrings ${substrings.show().value} in order" })
+    { "${value.show().value} should not include substrings ${substrings.show().value} in order" })
 }
 
 infix fun String?.shouldContain(substr: String) = this should contain(substr)
@@ -149,7 +149,7 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.contains(substr),
     "${value.show().value} should include substring ${substr.show().value}",
-    "$value should not include substring ${substr.show().value}")
+    "${value.show().value} should not include substring ${substr.show().value}")
 }
 
 infix fun String?.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
