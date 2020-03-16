@@ -132,6 +132,6 @@ fun <A, B, C, D, E, F> shrinkfn(
       val smallestD = doShrinking(d.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, it, e.value, f.value) }
       val smallestE = doShrinking(e.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, it, f.value) }
       val smallestF = doShrinking(f.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, smallestE, it) }
-      listOf(smallestA, smallestB, smallestC, smallestD, smallestE)
+      listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF)
    }
 }

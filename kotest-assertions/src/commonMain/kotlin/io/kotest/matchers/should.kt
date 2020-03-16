@@ -1,21 +1,39 @@
 package io.kotest.matchers
 
-import io.kotest.assertions.*
+import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.ErrorCollector
+import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.eq.eq
+import io.kotest.assertions.failure
+import io.kotest.assertions.intellijFormatError
+import io.kotest.assertions.show.show
 
 @Suppress("UNCHECKED_CAST")
-infix fun <T, U : T> T.shouldBe(any: U?) {
-   when (any) {
-      is Matcher<*> -> should(any as Matcher<T>)
+infix fun <T, U : T> T.shouldBe(expected: U?) {
+   when (expected) {
+      is Matcher<*> -> should(expected as Matcher<T>)
       else -> {
+         val actual = this
          AssertionCounter.inc()
-         val throwable = when (this) {
-            is Map<*, *>? -> mapComparator.compare(this, any as? Map<*, *>)
-            is Regex -> regexComparator.compare(this, any as? Regex)
-            else -> defaultComparator.compare(this, any)
+         if (actual == null && expected != null && actual != expected) {
+            ErrorCollector.collectOrThrow(actualIsNull(expected))
+         } else if (actual != null && expected == null && actual != expected) {
+            ErrorCollector.collectOrThrow(expectedIsNull(actual))
+         } else if (actual != null && expected != null) {
+            val t = eq(actual, expected)
+            if (t != null)
+               ErrorCollector.collectOrThrow(t)
          }
-         if(throwable != null) ErrorCollector.collectOrThrow(throwable)
       }
    }
+}
+
+private fun actualIsNull(expected: Any): AssertionError {
+   return AssertionError("Expected ${expected.show().value} but actual was null")
+}
+
+private fun expectedIsNull(actual: Any): AssertionError {
+   return AssertionError("Expected null but actual was ${actual.show().value}")
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -31,7 +49,7 @@ infix fun <T> T.should(matcher: Matcher<T>) {
    AssertionCounter.inc()
    val result = matcher.test(this)
    if (!result.passed()) {
-      ErrorCollector.collectOrThrow(Failures.failure(clueContextAsString() + result.failureMessage()))
+      ErrorCollector.collectOrThrow(failure(result.failureMessage()))
    }
 }
 
@@ -43,27 +61,22 @@ infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 fun <T> be(expected: T) = equalityMatcher(expected)
 fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val expectedRepr = stringRepr(expected)
-      val valueRepr = stringRepr(value)
+      val t = if (value == null && expected == null) {
+         null
+      } else if (value == null && expected != null) {
+         actualIsNull(expected)
+      } else if (value != null && expected == null) {
+         expectedIsNull(value)
+      } else {
+         eq(value, expected)
+      }
       return MatcherResult(
-         compare(expected, value),
-         { equalsErrorMessage(expectedRepr, valueRepr) },
-         { "$expectedRepr should not equal $valueRepr" }
+         t == null,
+         { failure(expected.show(), value.show()).message ?: intellijFormatError(expected.show(), value.show()) },
+         { "${expected.show().value} should not equal ${value.show().value}" }
       )
    }
 }
 
 
-private val linebreaks = Regex("\r?\n|\r")
-
-// This is the format intellij requires to do the diff: https://github.com/JetBrains/intellij-community/blob/3f7e93e20b7e79ba389adf593b3b59e46a3e01d1/plugins/testng/src/com/theoryinpractice/testng/model/TestProxy.java#L50
-internal fun equalsErrorMessage(expected: Any?, actual: Any?): String {
-   return when {
-       expected is String && actual is String &&
-          linebreaks.replace(expected, "\n") == linebreaks.replace(actual, "\n") -> {
-          "line contents match, but line-break characters differ"
-       }
-       else -> "expected: $expected but was: $actual"
-   }
-}
 

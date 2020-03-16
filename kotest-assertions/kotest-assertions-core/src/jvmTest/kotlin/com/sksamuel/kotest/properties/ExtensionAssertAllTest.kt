@@ -24,10 +24,10 @@ class ExtensionAssertAllTest : StringSpec({
       ::reverse.assertAll { input, _ ->
         input.shouldHaveSameLengthAs("qwqew")
       }
-    }.message shouldBe "Property failed for\n" +
-        "Arg 0: <empty string>\n" +
-        "after 1 attempts\n" +
-        "Caused by: <empty string> should have the same length as qwqew"
+    }.message shouldBe """Property failed for
+Arg 0: <empty string>
+after 1 attempts
+Caused by: <empty string> should have the same length as "qwqew""""
   }
 
   "concat should have consistent lengths" {
@@ -35,18 +35,18 @@ class ExtensionAssertAllTest : StringSpec({
       output.shouldHaveLength(a.length + b.length)
     }
   }
-  "KFunction2 should report errors" {
+  "!KFunction2 should report errors" {
     shouldThrow<AssertionError> {
       ::concat.assertAll { _, _, output ->
         output.length shouldBe lt(5)
       }
-    }.message shouldBe "Property failed for\n" +
-        "Arg 0: <empty string>\n" +
-        "Arg 1: aaaaa (shrunk from \n" +
-        "abc\n" +
-        "123\n" +
-        ")\n" +
-        "after 3 attempts\n" +
-        "Caused by: 9 should be < 5"
+    }.message shouldBe """Property failed for
+Arg 0: <empty string>
+Arg 1: "aaaaa" (shrunk from
+abc
+123
+)
+after 3 attempts
+Caused by: 9 should be < 5"""
   }
 })

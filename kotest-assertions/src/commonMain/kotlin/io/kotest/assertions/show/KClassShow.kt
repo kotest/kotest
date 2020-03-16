@@ -4,5 +4,5 @@ import io.kotest.mpp.bestName
 import kotlin.reflect.KClass
 
 object KClassShow: Show<KClass<*>> {
-   override fun show(a: KClass<*>): String = a.bestName()
+   override fun show(a: KClass<*>): Printed = a.bestName().printed()
 }

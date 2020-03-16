@@ -1,7 +1,7 @@
 package io.kotest.assertions.throwables
 
 import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import io.kotest.mpp.bestName
 
 /**
@@ -91,16 +91,16 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
    val expectedExceptionClass = T::class
    val thrownThrowable = try {
       block()
-      null  // Can't throw Failures.failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
+      null  // Can't throw failure here directly, as it would be caught by the catch clause, and it's an AssertionError, which is a special case
    } catch (thrown: Throwable) {
       thrown
    }
 
    return when (thrownThrowable) {
-      null -> throw Failures.failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown.")
+      null -> throw failure("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown.")
       is T -> thrownThrowable               // This should be before `is AssertionError`. If the user is purposefully trying to verify `shouldThrow<AssertionError>{}` this will take priority
       is AssertionError -> throw thrownThrowable
-      else -> throw Failures.failure("Expected exception ${expectedExceptionClass.bestName()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
+      else -> throw failure("Expected exception ${expectedExceptionClass.bestName()} but a ${thrownThrowable::class.simpleName} was thrown instead.",
          thrownThrowable)
    }
 }
@@ -143,6 +143,6 @@ inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
    }
 
    if (thrown is T)
-      throw Failures.failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
+      throw failure("No exception expected, but a ${thrown::class.simpleName} was thrown.", thrown)
    throw thrown
 }

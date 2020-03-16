@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.stringRepr
+import io.kotest.assertions.show.show
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -9,8 +9,8 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) =
     MatcherResult(
       value.size == size,
-      { "Collection should have size $size but has size ${value.size}. Values: ${stringRepr(value)}" },
-      { "Collection should not have size $size. Values: ${stringRepr(value)}" }
+      { "Collection should have size $size but has size ${value.size}. Values: ${value.show().value}" },
+      { "Collection should not have size $size. Values: ${value.show().value}" }
     )
 }
 
@@ -18,7 +18,7 @@ fun <T> haveSizeMatcher(size: Int) = object : Matcher<Collection<T>> {
 fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>): MatcherResult = MatcherResult(
     value.isEmpty(),
-    { "Collection should be empty but contained ${stringRepr(value)}" },
+    { "Collection should be empty but contained ${value.show().value}" },
     { "Collection should not be empty" }
   )
 }
@@ -28,9 +28,9 @@ fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     ts.all { value.contains(it) },
-    { "Collection should contain all of ${stringRepr(ts)} " +
-      "but missing ${stringRepr(ts.filter { !value.contains(it) })}" },
-    { "Collection should not contain all of ${stringRepr(ts)}" }
+    { "Collection should contain all of ${ts.show().value} " +
+      "but missing ${ts.filter { !value.contains(it) }.show().value}" },
+    { "Collection should not contain all of ${ts.show().value}" }
   )
 }
 
@@ -48,8 +48,8 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
 
   MatcherResult(
     subsequenceIndex == subsequence.size,
-    { "${stringRepr(actual)} did not contain the elements ${stringRepr(subsequence)} in order" },
-    { "${stringRepr(actual)} should not contain the elements ${stringRepr(subsequence)} in order" }
+    { "${actual.show().value} did not contain the elements ${subsequence.show().value} in order" },
+    { "${actual.show().value} should not contain the elements ${subsequence.show().value} in order" }
   )
 }
 
@@ -58,7 +58,7 @@ fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   override fun test(value: Collection<T>) = MatcherResult(
     value.size == 1 && value.first() == t,
-    { "Collection should be a single element of $t but has ${value.size} elements: ${stringRepr(value)}" },
+    { "Collection should be a single element of $t but has ${value.size} elements: ${value.show().value}" },
     { "Collection should not be a single element of $t" }
   )
 }
@@ -68,7 +68,7 @@ fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matc
       val filteredValue: List<T> = value.filter(p)
       return MatcherResult(
          filteredValue.size == 1,
-         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${stringRepr(value)}" },
+         { "Collection should have a single element by a given predicate but has ${filteredValue.size} elements: ${value.show().value}" },
          { "Collection should not have a single element by a given predicate" }
       )
    }
@@ -84,8 +84,8 @@ fun <T : Comparable<T>> sorted(): Matcher<List<T>> = object : Matcher<List<T>> {
     }
     return MatcherResult(
       failure == null,
-      { "List ${stringRepr(value)} should be sorted$elementMessage" },
-      { "List ${stringRepr(value)} should not be sorted" }
+      { "List ${value.show().value} should be sorted$elementMessage" },
+      { "List ${value.show().value} should not be sorted" }
     )
   }
 }
@@ -107,7 +107,7 @@ fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 private fun<T> testMonotonicallyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) > 0 }
-  val snippet = stringRepr(value)
+  val snippet = value.show().value
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically increased from previous element."
@@ -136,7 +136,7 @@ fun <T> monotonicallyDecreasingWith(comparator: Comparator<in T>): Matcher<List<
 }
 private fun <T> testMonotonicallyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) < 0 }
-  val snippet = stringRepr(value)
+  val snippet = value.show().value
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not monotonically decreased from previous element."
@@ -164,7 +164,7 @@ fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) >= 0 }
-  val snippet = stringRepr(value)
+  val snippet = value.show().value
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly increased from previous element."
@@ -192,7 +192,7 @@ fun <T> strictlyDecreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
 }
 private fun <T> testStrictlyDecreasingWith(value: List<T>, comparator: Comparator<in T>): MatcherResult {
   val failure = value.zipWithNext().withIndex().find { (_, pair) -> comparator.compare(pair.first, pair.second) <= 0 }
-  val snippet = stringRepr(value)
+  val snippet = value.show().value
   val elementMessage = when (failure) {
     null -> ""
     else -> ". Element ${failure.value.second} at index ${failure.index + 1} was not strictly decreased from previous element."

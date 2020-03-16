@@ -8,7 +8,7 @@ class ShouldBeNumericTests : WordSpec({
     "support combinations of numerics" {
 
       val v1: Int = Foo.JavaLong.toInt()
-      val v2 = java.lang.Integer.valueOf(42)
+      val v2 = Integer.valueOf(42)
       val v3 = Foo.JavaLong
       val v4 = java.lang.Long.valueOf(42)
       val v5 = Foo.JavaLong
@@ -17,9 +17,9 @@ class ShouldBeNumericTests : WordSpec({
 
       v1 shouldBe 42
       v2 shouldBe 42
-      v3 shouldBe 42
-      v4 shouldBe 42
-      v5 shouldBe 42
+      v3 shouldBe 42L
+      v4 shouldBe 42L
+      v5 shouldBe 42L
       42 shouldBe v1
       42 shouldBe v2
       42 shouldBe v3

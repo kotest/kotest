@@ -1,6 +1,6 @@
 package io.kotest.property.internal
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
 /**
@@ -48,8 +48,8 @@ internal fun propertyAssertionError(
    attempt: Int,
    seed: Long,
    inputs: List<PropertyFailureInput<out Any?>>
-): AssertionError {
-   return Failures.failure(propertyTestFailureMessage(attempt, inputs, seed, e), e)
+): Throwable {
+   return failure(propertyTestFailureMessage(attempt, inputs, seed, e), e)
 }
 
 /**
@@ -68,9 +68,9 @@ internal fun propertyTestFailureMessage(
       sb.append("\n")
       inputs.withIndex().forEach {
          val input = if (it.value.shrunk == it.value.original) {
-            "\tArg ${it.index}: ${it.value.shrunk.show()}"
+            "\tArg ${it.index}: ${it.value.shrunk.show().value}"
          } else {
-            "\tArg ${it.index}: ${it.value.shrunk.show()} (shrunk from ${it.value.original})"
+            "\tArg ${it.index}: ${it.value.shrunk.show().value} (shrunk from ${it.value.original})"
          }
          sb.append(input)
          sb.append("\n")

@@ -1,6 +1,6 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -30,7 +30,7 @@ inline fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KCl
       times++
    }
    val underlyingCause = if (lastError == null) "" else "; first cause was ${firstError?.message}; last cause was ${lastError.message}"
-   throw Failures.failure(
+   throw failure(
       "Test failed after ${duration.toLongMilliseconds()}ms; attempted $times times$underlyingCause",
       lastError
    )

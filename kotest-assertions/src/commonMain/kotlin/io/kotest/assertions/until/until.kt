@@ -1,6 +1,6 @@
 package io.kotest.assertions.until
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -81,5 +81,5 @@ suspend fun <T> until(
       }
       delay(interval.next(count).toLongMilliseconds())
    }
-   throw Failures.failure("Test failed after ${duration.toLongMilliseconds()}ms; attempted $count times")
+   throw failure("Test failed after ${duration.toLongMilliseconds()}ms; attempted $count times")
 }

@@ -22,4 +22,4 @@ import io.kotest.assertions.throwables.shouldThrow
  */
 fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
 
-fun fail(msg: String): Nothing = throw Failures.failure(msg)
+fun fail(msg: String): Nothing = throw failure(msg)

@@ -1,9 +1,8 @@
 package io.kotest.matchers.result
 
 import io.kotest.assertions.ErrorCollector
-import io.kotest.assertions.Failures
-import io.kotest.assertions.clueContextAsString
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.failure
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KClass
@@ -84,7 +83,7 @@ internal fun test(inverse: Boolean = false, block: () -> MatcherResult) {
   val result = block()
   if ((inverse && result.passed()) || (!inverse && !result.passed())) {
     ErrorCollector.collectOrThrow(
-      Failures.failure(clueContextAsString() + if (inverse) result.negatedFailureMessage() else result.failureMessage())
+      failure(if (inverse) result.negatedFailureMessage() else result.failureMessage())
     )
   }
 }

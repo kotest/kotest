@@ -1,6 +1,6 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.stringRepr
+import io.kotest.assertions.show.show
 import kotlin.jvm.JvmName
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -45,8 +45,8 @@ fun <T> startWith(slice: Collection<T>) = object : Matcher<List<T>> {
   override fun test(value: List<T>) =
     MatcherResult(
       value.subList(0, slice.size) == slice,
-      { "List should start with ${stringRepr(slice)}" },
-      { "List should not start with ${stringRepr(slice)}" }
+      { "List should start with ${slice.show().value}" },
+      { "List should not start with ${slice.show().value}" }
     )
 }
 
@@ -60,8 +60,8 @@ fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
   override fun test(value: List<T>) =
     MatcherResult(
       value.subList(value.size - slice.size, value.size) == slice,
-      { "List should end with ${stringRepr(slice)}" },
-      { "List should not end with ${stringRepr(slice)}" }
+      { "List should end with ${slice.show().value}" },
+      { "List should not end with ${slice.show().value}" }
     )
 }
 
@@ -76,8 +76,8 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
   override fun test(value: L) =
     MatcherResult(
       value[index] == element,
-      { "Collection should contain ${stringRepr(element)} at index $index" },
-      { "Collection should not contain ${stringRepr(element)} at index $index" }
+      { "Collection should contain ${element.show().value} at index $index" },
+      { "Collection should not contain ${element.show().value} at index $index" }
     )
 }
 
@@ -101,8 +101,8 @@ infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot conta
 fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
       value.contains(t),
-      { "Collection should contain element ${stringRepr(t)}; listing some elements ${value.take(5)}" },
-      { "Collection should not contain element ${stringRepr(t)}" }
+      { "Collection should contain element ${t.show().value}; listing some elements ${value.take(5)}" },
+      { "Collection should not contain element ${t.show().value}" }
    )
 }
 
@@ -122,8 +122,8 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
   val passed = value.size == expected.size && value.zip(expected) { a, b -> a == b }.all { it }
   MatcherResult(
     passed,
-    { "Collection should be exactly ${stringRepr(expected)} but was ${stringRepr(value)}" },
-    { "Collection should not be exactly ${stringRepr(expected)}" }
+    { "Collection should be exactly ${expected.show().value} but was ${value.show().value}" },
+    { "Collection should not be exactly ${expected.show().value}" }
   )
 }
 
@@ -157,8 +157,8 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = 
 
   MatcherResult(
     passed,
-    "Collection should contain ${stringRepr(expected)} in any order, but was ${stringRepr(value)}",
-    "Collection should not contain exactly ${stringRepr(expected)} in any order"
+    "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}",
+    "Collection should not contain exactly ${expected.show().value} in any order"
   )
 }
 
@@ -437,8 +437,8 @@ fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
     if (ts.isEmpty()) throwEmptyCollectionError()
     return MatcherResult(
             ts.any { it in value },
-            { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { stringRepr(it) }}" },
-            { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { stringRepr(it) }}" }
+            { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" },
+            { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" }
     )
   }
 }
@@ -621,8 +621,8 @@ fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
     val match = value in collection
 
     return MatcherResult(match,
-      "Collection should contain ${stringRepr(value)}, but doesn't. Possible values: ${stringRepr(collection)}",
-      "Collection should not contain ${stringRepr(value)}, but does. Forbidden values: ${stringRepr(collection)}")
+      "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}",
+      "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}")
   }
 }
 

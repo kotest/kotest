@@ -1,6 +1,6 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.show.convertValueToString
+import io.kotest.assertions.show.show
 import io.kotest.matchers.*
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -14,6 +14,6 @@ fun haveDigest(algo: String, digest: String) : Matcher<String?> = neverNullMatch
   val output = bigInt.toString(16)
   MatcherResult(
     output == digest,
-    "${convertValueToString(value)} should have $algo digest $digest but was $output",
-    "${convertValueToString(value)} should not have $algo digest $digest")
+    "${value.show().value} should have $algo digest ${digest.show().value} but was ${output.show().value}",
+    "${value.show().value} should not have $algo digest ${digest.show().value}")
 }

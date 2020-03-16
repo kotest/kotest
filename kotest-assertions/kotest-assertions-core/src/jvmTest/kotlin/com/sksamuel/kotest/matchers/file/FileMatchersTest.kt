@@ -165,7 +165,7 @@ class FileMatchersTest : FunSpec() {
       dir.resolve("a").shouldBeSmaller(dir.resolve("b"))
       shouldThrow<AssertionError> {
         dir.resolve("b").shouldBeSmaller(dir.resolve("a"))
-      }.message shouldBe "File ${dir.resolve("b")} (3 bytes) should be smaller than ${dir.resolve("a")} (2 bytes)"
+      }.message shouldBe "Path ${dir.resolve("b")} (3 bytes) should be smaller than ${dir.resolve("a")} (2 bytes)"
     }
 
     test("beLarger should compare file sizes") {
@@ -194,11 +194,11 @@ class FileMatchersTest : FunSpec() {
 
       shouldThrow<AssertionError> {
         rootDir.shouldContainFileDeep(nonExistentFileName)
-      }.message shouldBe "File $nonExistentFileName should exist in $rootDir"
+      }.message shouldBe "Path $nonExistentFileName should exist in $rootDir"
 
       shouldThrow<AssertionError> {
         rootDir.shouldNotContainFileDeep(rootFileName)
-      }.message shouldBe "File $rootFileName should not exist in $rootDir"
+      }.message shouldBe "Path $rootFileName should not exist in $rootDir"
     }
 
     test("shouldContainFiles should check if files exists") {

@@ -7,51 +7,51 @@ import java.util.concurrent.CompletableFuture
 import kotlin.concurrent.thread
 
 class WhenReadyTest : WordSpec() {
-  init {
+   init {
 
-    "Futures" should {
-      "support CompletableFuture<T>" {
+      "Futures" should {
+         "support CompletableFuture<T>" {
 
-        val completableFuture = CompletableFuture<String>()
-        thread {
-          Thread.sleep(6000)
-          completableFuture.complete("wibble")
-        }
-
-         whenReady(completableFuture) {
-            it shouldBe "wibble"
-         }
-      }
-      "support nested threads" {
-        val completableFuture1 = CompletableFuture<String>()
-        val completableFuture2 = CompletableFuture<String>()
-        val completableFuture3 = CompletableFuture<String>()
-
-        thread {
-          Thread.sleep(2000)
-          completableFuture1.complete("wibble")
-          thread {
-            Thread.sleep(2000)
-            completableFuture2.complete("wobble")
+            val completableFuture = CompletableFuture<String>()
             thread {
-              Thread.sleep(2000)
-              completableFuture3.complete("wubble")
+               Thread.sleep(1000)
+               completableFuture.complete("wibble")
             }
-          }
-        }
 
-         whenReady(completableFuture1) {
-            it shouldBe "wibble"
+            completableFuture.whenReady {
+               it shouldBe "wibble"
+            }
          }
+         "support nested threads" {
+            val completableFuture1 = CompletableFuture<String>()
+            val completableFuture2 = CompletableFuture<String>()
+            val completableFuture3 = CompletableFuture<String>()
 
-         whenReady(completableFuture2) {
-            it shouldBe "wobble"
-         }
+            thread {
+               Thread.sleep(500)
+               completableFuture1.complete("wibble")
+               thread {
+                  Thread.sleep(500)
+                  completableFuture2.complete("wobble")
+                  thread {
+                     Thread.sleep(500)
+                     completableFuture3.complete("wubble")
+                  }
+               }
+            }
 
-         whenReady(completableFuture3) {
-            it shouldBe "wubble"
+            completableFuture1.whenReady {
+               it shouldBe "wibble"
+            }
+
+            completableFuture2.whenReady {
+               it shouldBe "wobble"
+            }
+
+            completableFuture3.whenReady {
+               it shouldBe "wubble"
+            }
          }
       }
-    }
-  }
+   }
 }

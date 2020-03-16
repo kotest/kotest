@@ -24,11 +24,11 @@ class DigestMatchersTest : FunSpec({
 
       shouldThrow<AssertionError> {
         "cool for cats".shouldHaveDigest("md5", "qwerty")
-      }.message shouldBe "cool for cats should have md5 digest qwerty but was cf6b4f4973077da736b50855f699d005"
+      }.message shouldBe "\"cool for cats\" should have md5 digest \"qwerty\" but was \"cf6b4f4973077da736b50855f699d005\""
 
       shouldThrow<AssertionError> {
         "cool for cats".shouldNotHaveDigest("md5", "cf6b4f4973077da736b50855f699d005")
-      }.message shouldBe "cool for cats should not have md5 digest cf6b4f4973077da736b50855f699d005"
+      }.message shouldBe "\"cool for cats\" should not have md5 digest \"cf6b4f4973077da736b50855f699d005\""
     }
   }
 

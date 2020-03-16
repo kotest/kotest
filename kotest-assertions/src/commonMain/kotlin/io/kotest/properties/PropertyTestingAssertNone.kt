@@ -1,6 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> assertNone(noinline fn: PropertyContext.(a: A) -> Unit) = assertNone(1000, fn)
@@ -38,7 +38,7 @@ fun <A> assertNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> 
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\nafter ${context.attempts()} attempts")
   }
   for (a in gena.constants()) {
     test(a)
@@ -78,7 +78,7 @@ fun <A, B> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyC
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\n$b\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\nafter ${context.attempts()} attempts")
   }
   for (a in gena.constants()) {
     for (b in genb.constants()) {
@@ -124,7 +124,7 @@ fun <A, B, C> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
   }
   for (a in gena.constants()) {
     for (b in genb.constants()) {
@@ -173,7 +173,7 @@ fun <A, B, C, D> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: G
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\nafter ${context.attempts()} attempts")
   }
   for (a in gena.constants()) {
     for (b in genb.constants()) {
@@ -222,7 +222,7 @@ fun <A, B, C, D, E> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter ${context.attempts()} attempts")
   }
   for (a in gena.constants()) {
     for (b in genb.constants()) {
@@ -280,7 +280,7 @@ fun <A, B, C, D, E, F> assertNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, g
       throw e
     }
     if (passed)
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter ${context.attempts()} attempts")
   }
 
   for (a in gena.constants()) {

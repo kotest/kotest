@@ -1,6 +1,6 @@
 package io.kotest.matchers.throwable
 
-import io.kotest.assertions.stringRepr
+import io.kotest.assertions.show.show
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -12,8 +12,8 @@ infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveM
 fun haveMessage(message: String) = object : Matcher<Throwable> {
   override fun test(value: Throwable) = MatcherResult(
     value.message == message,
-    "Throwable should have message ${stringRepr(message)}, but instead got ${stringRepr(value.message)}",
-    "Throwable should not have message ${stringRepr(message)}"
+    "Throwable should have message ${message.show().value}, but instead got ${value.message.show().value}",
+    "Throwable should not have message ${message.show().value}"
   )
 }
 

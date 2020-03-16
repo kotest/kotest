@@ -13,8 +13,8 @@ fun String?.shouldNotContainOnlyDigits() = this shouldNot containOnlyDigits()
 fun containOnlyDigits() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toCharArray().all { it in '0'..'9' },
-    "${value.show()} should contain only digits",
-    "${value.show()} should not contain only digits")
+    "${value.show().value} should contain only digits",
+    "${value.show().value} should not contain only digits")
 }
 
 fun String?.shouldContainADigit() = this should containADigit()
@@ -24,8 +24,8 @@ fun String?.shouldNotContainADigit() = this shouldNot containADigit()
 fun containADigit() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toCharArray().any { it in '0'..'9' },
-    "${value.show()} should contain at least one digit",
-    "${value.show()} should not contain any digits")
+    "${value.show().value} should contain at least one digit",
+    "${value.show().value} should not contain any digits")
 }
 
 infix fun String?.shouldContainOnlyOnce(substr: String) = this should containOnlyOnce(substr)
@@ -33,8 +33,8 @@ infix fun String?.shouldNotContainOnlyOnce(substr: String) = this shouldNot cont
 fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.indexOf(substring) >= 0 && value.indexOf(substring) == value.lastIndexOf(substring),
-    "${value.show()} should contain the substring ${substring.show()} exactly once",
-    "${value.show()} should not contain the substring ${substring.show()} exactly once"
+    "${value.show().value} should contain the substring ${substring.show().value} exactly once",
+    "${value.show().value} should not contain the substring ${substring.show().value} exactly once"
   )
 }
 
@@ -43,8 +43,8 @@ fun String?.shouldNotBeLowerCase() = this shouldNot beLowerCase()
 fun beLowerCase() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toLowerCase() == value,
-    "${value.show()} should be lower case",
-    "${value.show()} should not should be lower case")
+    "${value.show().value} should be lower case",
+    "${value.show().value} should not should be lower case")
 }
 
 fun String?.shouldBeUpperCase() = this should beUpperCase()
@@ -52,8 +52,8 @@ fun String?.shouldNotBeUpperCase() = this shouldNot beUpperCase()
 fun beUpperCase() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toUpperCase() == value,
-    "${value.show()} should be upper case",
-    "${value.show()} should not should be upper case")
+    "${value.show().value} should be upper case",
+    "${value.show().value} should not should be upper case")
 }
 
 fun String?.shouldBeEmpty() = this should beEmpty()
@@ -61,8 +61,8 @@ fun String?.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun beEmpty() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.isEmpty(),
-    "${value.show()} should be empty",
-    "${value.show()} should not be empty")
+    "${value.show().value} should be empty",
+    "${value.show().value} should not be empty")
 }
 
 infix fun String?.shouldHaveSameLengthAs(other: String) = this should haveSameLengthAs(other)
@@ -70,8 +70,8 @@ infix fun String?.shouldNotHaveSameLengthAs(other: String) = this shouldNot have
 fun haveSameLengthAs(other: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.length == other.length,
-    "${value.show()} should have the same length as ${other.show()}",
-    "${value.show()} should not have the same length as ${other.show()}")
+    "${value.show().value} should have the same length as ${other.show().value}",
+    "${value.show().value} should not have the same length as ${other.show().value}")
 }
 
 fun String?.shouldBeSingleLine() = this should haveLineCount(1)
@@ -89,8 +89,8 @@ fun haveLineCount(count: Int) = neverNullMatcher<String> { value ->
   val lines = if (value.isEmpty()) 0 else value.count { it == '\n' } + 1
   MatcherResult(
     lines == count,
-    { "${value.show()} should have $count lines but had $lines" },
-    { "${value.show()} should not have $count lines" }
+    { "${value.show().value} should have $count lines but had $lines" },
+    { "${value.show().value} should not have $count lines" }
   )
 }
 
@@ -100,8 +100,8 @@ fun containOnlyWhitespace() = beBlank()
 fun beBlank() = neverNullMatcher<String> { value ->
   MatcherResult(
     value.isBlank(),
-    { "${value.show()} should contain only whitespace" },
-    { "${value.show()} should not contain only whitespace" }
+    { "${value.show().value} should contain only whitespace" },
+    { "${value.show().value} should not contain only whitespace" }
   )
 }
 
@@ -113,8 +113,8 @@ infix fun String?.shouldNotContainIgnoringCase(substr: String) = this shouldNot 
 fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.toLowerCase().indexOf(substr.toLowerCase()) >= 0,
-    { "${value.show()} should contain the substring ${substr.show()} (case insensitive)" },
-    { "${value.show()} should not contain the substring ${substr.show()} (case insensitive)" }
+    { "${value.show().value} should contain the substring ${substr.show().value} (case insensitive)" },
+    { "${value.show().value} should not contain the substring ${substr.show().value} (case insensitive)" }
   )
 }
 
@@ -123,8 +123,8 @@ infix fun String?.shouldNotContain(regex: Regex) = this shouldNot contain(regex)
 fun contain(regex: Regex) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.contains(regex),
-    { "${value.show()} should contain regex $regex" },
-    { "${value.show()} should not contain regex $regex" })
+    { "${value.show().value} should contain regex $regex" },
+    { "${value.show().value} should not contain regex $regex" })
 }
 
 fun String?.shouldContainInOrder(vararg substrings: String) = this should containInOrder(*substrings)
@@ -135,8 +135,8 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
 
   MatcherResult(
      recTest(value, substrings.filter{ it.isNotEmpty() }),
-    { "${value.show()} should include substrings ${substrings.show()} in order" },
-    { "$value should not include substrings ${substrings.show()} in order" })
+    { "${value.show().value} should include substrings ${substrings.show().value} in order" },
+    { "$value should not include substrings ${substrings.show().value} in order" })
 }
 
 infix fun String?.shouldContain(substr: String) = this should contain(substr)
@@ -148,8 +148,8 @@ infix fun String?.shouldNotInclude(substr: String) = this shouldNot include(subs
 fun include(substr: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.contains(substr),
-    "${value.show()} should include substring ${substr.show()}",
-    "$value should not include substring ${substr.show()}")
+    "${value.show().value} should include substring ${substr.show().value}",
+    "$value should not include substring ${substr.show().value}")
 }
 
 infix fun String?.shouldHaveMaxLength(length: Int) = this should haveMaxLength(length)
@@ -159,8 +159,8 @@ infix fun String?.shouldNotHaveMaxLength(length: Int) = this shouldNot haveMaxLe
 fun haveMaxLength(length: Int) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.length <= length,
-    "${value.show()} should have maximum length of $length",
-    "${value.show()} should have minimum length of ${length - 1}")
+    "${value.show().value} should have maximum length of $length",
+    "${value.show().value} should have minimum length of ${length - 1}")
 }
 
 infix fun String?.shouldHaveMinLength(length: Int) = this should haveMinLength(length)
@@ -169,8 +169,8 @@ infix fun String?.shouldNotHaveMinLength(length: Int) = this shouldNot haveMinLe
 fun haveMinLength(length: Int) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.length >= length,
-    "${value.show()} should have minimum length of $length",
-    "${value.show()} should have maximum length of ${length - 1}")
+    "${value.show().value} should have minimum length of $length",
+    "${value.show().value} should have maximum length of ${length - 1}")
 }
 
 
@@ -182,8 +182,8 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<String?> {
   return neverNullMatcher { value ->
     MatcherResult(
       value.length in min..max,
-      "${value.show()} should have length in $min..$max but was ${value.length}",
-      "${value.show()} should not have length between $min and $max")
+      "${value.show().value} should have length in $min..$max but was ${value.length}",
+      "${value.show().value} should not have length between $min and $max")
   }
 }
 
@@ -195,8 +195,8 @@ fun haveLengthIn(range: IntRange): Matcher<String?> {
   return neverNullMatcher { value ->
     MatcherResult(
       value.length in range,
-      "${value.show()} should have length in $range but was ${value.length}",
-      "${value.show()} should not have length between $range")
+      "${value.show().value} should have length in $range but was ${value.length}",
+      "${value.show().value} should not have length between $range")
   }
 }
 
@@ -265,8 +265,8 @@ infix fun String?.shouldNotBeEqualIgnoringCase(other: String) = this shouldNot b
 fun beEqualIgnoringCase(other: String) = neverNullMatcher<String> { value ->
   MatcherResult(
     value.equals(other, ignoreCase = true),
-    "${value.show()} should be equal ignoring case ${other.show()}",
-    "${value.show()} should not be equal ignoring case ${other.show()}"
+    "${value.show().value} should be equal ignoring case ${other.show().value}",
+    "${value.show().value} should not be equal ignoring case ${other.show().value}"
   )
 }
 
@@ -329,8 +329,8 @@ private val falsyValues = listOf("false", "no", "n", "0")
 fun beTruthy() = object : Matcher<String?> {
    override fun test(value: String?) = MatcherResult(
        truthyValues.any { it.equals(value, ignoreCase = true) },
-      { """${value.show()} should be equal ignoring case one of values: $truthyValues""" },
-      { """${value.show()} should not be equal ignoring case one of values: $truthyValues""" }
+      { """${value.show().value} should be equal (ignoring case) to one of: $truthyValues""" },
+      { """${value.show().value} should not be equal (ignoring case) to one of: $truthyValues""" }
    )
 }
 
@@ -355,8 +355,8 @@ fun beFalsy(): Matcher<String?> = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
      return MatcherResult(
          falsyValues.any { it.equals(value, ignoreCase = true) },
-         { """${value.show()} should be equal ignoring case one of values: $falsyValues""" },
-         { """${value.show()} should not be equal ignoring case one of values: $falsyValues""" }
+         { """${value.show().value} should be equal (ignoring case) to one of: $falsyValues""" },
+         { """${value.show().value} should not be equal (ignoring case) to one of: $falsyValues""" }
      )
    }
 }

@@ -1,7 +1,7 @@
 package io.kotest.data
 
-import io.kotest.assertions.Failures
 import io.kotest.assertions.MultiAssertionError
+import io.kotest.assertions.failure
 
 @PublishedApi
 internal class ErrorCollector {
@@ -21,7 +21,7 @@ internal class ErrorCollector {
 }
 
 @PublishedApi
-internal fun error(e: Throwable, headers: List<String>, values: List<*>): AssertionError {
+internal fun error(e: Throwable, headers: List<String>, values: List<*>): Throwable {
    val params = headers.zip(values).joinToString(", ")
    // Include class name for non-assertion errors, since the class is often meaningful and there might not
    // be a message (e.g. NullPointerException)
@@ -30,11 +30,11 @@ internal fun error(e: Throwable, headers: List<String>, values: List<*>): Assert
       else -> e.toString()
    }
 
-   return Failures.failure("Test failed for $params with error $message")
+   return failure("Test failed for $params with error $message")
 }
 
 @PublishedApi
-internal fun forNoneError(headers: List<String>, values: List<*>): AssertionError {
+internal fun forNoneError(headers: List<String>, values: List<*>): Throwable {
    val params = headers.zip(values).joinToString(", ")
-   return Failures.failure("Test passed for $params but expected failure")
+   return failure("Test passed for $params but expected failure")
 }

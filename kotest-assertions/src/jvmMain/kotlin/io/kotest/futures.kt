@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture
  * Allows callers to queue up futures with a callback that will be executed
  * when the future has completed.
  */
-@Deprecated("use the extension function variant: future.whenReady { } which uses coroutines rather than blocking")
+@Deprecated("use the extension function variant: future.whenReady { } which uses coroutines rather than blocking. This will be removed in 4.1")
 fun <A> whenReady(f: CompletableFuture<A>, test: (A) -> Unit) {
    val a = f.get()
    test(a)

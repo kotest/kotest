@@ -105,32 +105,27 @@ class StringMatchersTest : FreeSpec() {
         }
       }
 
-      "should report when only line endings differ" {
-        forAll(
-          row("a\nb", "a\r\nb"),
-          row("a\nb\nc", "a\nb\r\nc"),
-          row("a\r\nb", "a\nb"),
-          row("a\nb", "a\rb"),
-          row("a\rb", "a\r\nb")
-        ) { expected, actual  ->
-          shouldThrow<AssertionFailedError> {
-            actual shouldBe expected
-          }.let {
-            it.actual.value shouldBe "\"$actual\""
-            it.expected.value shouldBe "\"$expected\""
-            it.message shouldBe "line contents match, but line-break characters differ"
+       "should report when only line endings differ" {
+          forAll(
+             row("a\nb", "a\r\nb"),
+             row("a\nb\nc", "a\nb\r\nc"),
+             row("a\r\nb", "a\nb"),
+             row("a\nb", "a\rb"),
+             row("a\rb", "a\r\nb")
+          ) { expected, actual ->
+             shouldThrow<AssertionFailedError> {
+                actual shouldBe expected
+             }.let {
+                it.message shouldContain "contents match, but line-breaks differ"
+             }
           }
-        }
-      }
+       }
 
       "should show diff when newline count differs" {
         shouldThrow<AssertionFailedError> {
           "a\nb" shouldBe "a\n\nb"
-        }.let {
-          it.actual.value shouldBe "\"a\nb\""
-          it.expected.value shouldBe "\"a\n\nb\""
-          it.message should startWith("expected: \"a")
-        }
+        }.message shouldBe """expected: a\n\nb but was: a\nb
+(contents match, but line-breaks differ; output has been escaped to show line-breaks)"""
       }
     }
 
@@ -141,7 +136,7 @@ class StringMatchersTest : FreeSpec() {
 
       shouldThrow<AssertionError> {
         "la" should containOnlyOnce("tour")
-      }.message shouldBe "la should contain the substring tour exactly once"
+      }.message shouldBe """"la" should contain the substring "tour" exactly once"""
 
       shouldThrow<AssertionError> {
         null shouldNot containOnlyOnce("tour")
@@ -169,11 +164,11 @@ class StringMatchersTest : FreeSpec() {
 
       shouldThrow<AssertionError> {
         "la tour" shouldContain ".*?abc.*?".toRegex()
-      }.message shouldBe "la tour should contain regex .*?abc.*?"
+      }.message shouldBe "\"la tour\" should contain regex .*?abc.*?"
 
       shouldThrow<AssertionError> {
         "la tour" shouldNotContain "^.*?tour$".toRegex()
-      }.message shouldBe "la tour should not contain regex ^.*?tour\$"
+      }.message shouldBe "\"la tour\" should not contain regex ^.*?tour\$"
 
       shouldThrow<AssertionError> {
         null shouldNot contain("^.*?tour$".toRegex())
@@ -203,15 +198,15 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "la tour" shouldContain "wibble"
-        }.message shouldBe "la tour should include substring wibble"
+        }.message shouldBe "\"la tour\" should include substring \"wibble\""
 
         shouldThrow<AssertionError> {
           "hello" should include("allo")
-        }.message shouldBe "hello should include substring allo"
+        }.message shouldBe "\"hello\" should include substring \"allo\""
 
         shouldThrow<AssertionError> {
           "hello" shouldInclude "qwe"
-        }.message shouldBe "hello should include substring qwe"
+        }.message shouldBe "\"hello\" should include substring \"qwe\""
       }
 
       "should fail if value is null" {
@@ -254,7 +249,7 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "hello".shouldBeEmpty()
-        }.message shouldBe "hello should be empty"
+        }.message shouldBe "\"hello\" should be empty"
 
         shouldThrow<AssertionError> {
           "".shouldNotBeEmpty()
@@ -291,7 +286,7 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "hello" should containADigit()
-        }.message shouldBe "hello should contain at least one digit"
+        }.message shouldBe "\"hello\" should contain at least one digit"
       }
 
       "should fail if value is null" {
@@ -578,7 +573,7 @@ class StringMatchersTest : FreeSpec() {
       "should show divergence in error message" {
         shouldThrow<AssertionError> {
           "la tour eiffel" should startWith("la tour tower london")
-        }.message shouldBe "la tour eiffel should start with la tour tower london (diverged at index 8)"
+        }.message shouldBe "\"la tour eiffel\" should start with \"la tour tower london\" (diverged at index 8)"
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -614,10 +609,10 @@ class StringMatchersTest : FreeSpec() {
         }.message shouldBe "<empty string> should have length 3, but instead was 0"
         shouldThrow<AssertionError> {
           "hello" shouldHaveLength 3
-        }.message shouldBe "hello should have length 3, but instead was 5"
+        }.message shouldBe "\"hello\" should have length 3, but instead was 5"
         shouldThrow<AssertionError> {
           "hello" shouldNotHaveLength 5
-        }.message shouldBe "hello should not have length 5"
+        }.message shouldBe "\"hello\" should not have length 5"
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -761,7 +756,7 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "1" should haveMinLength(2)
-        }.message shouldBe "1 should have minimum length of 2"
+        }.message shouldBe "\"1\" should have minimum length of 2"
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -790,7 +785,7 @@ class StringMatchersTest : FreeSpec() {
 
         shouldThrow<AssertionError> {
           "12" should haveMaxLength(1)
-        }.message shouldBe "12 should have maximum length of 1"
+        }.message shouldBe "\"12\" should have maximum length of 1"
       }
       "should fail if value is null" {
         shouldThrow<AssertionError> {
@@ -938,9 +933,9 @@ class StringMatchersTest : FreeSpec() {
 
       "should provide error message" {
         shouldThrow<AssertionError> { "false".shouldBeTruthy() }
-            .message.shouldBe("false should be equal ignoring case one of values: [true, yes, y, 1]")
+            .message.shouldBe("\"false\" should be equal (ignoring case) to one of: [true, yes, y, 1]")
         shouldThrow<AssertionError> { "YES" shouldNot beTruthy() }
-            .message.shouldBe("YES should not be equal ignoring case one of values: [true, yes, y, 1]")
+            .message.shouldBe("\"YES\" should not be equal (ignoring case) to one of: [true, yes, y, 1]")
       }
     }
 
@@ -975,9 +970,9 @@ class StringMatchersTest : FreeSpec() {
 
       "should provide error message" {
         shouldThrow<AssertionError> { "yes".shouldBeFalsy() }
-            .message.shouldBe("yes should be equal ignoring case one of values: [false, no, n, 0]")
+            .message.shouldBe("\"yes\" should be equal (ignoring case) to one of: [false, no, n, 0]")
         shouldThrow<AssertionError> { "FALSE" shouldNot beFalsy() }
-            .message.shouldBe("FALSE should not be equal ignoring case one of values: [false, no, n, 0]")
+            .message.shouldBe("\"FALSE\" should not be equal (ignoring case) to one of: [false, no, n, 0]")
       }
     }
 

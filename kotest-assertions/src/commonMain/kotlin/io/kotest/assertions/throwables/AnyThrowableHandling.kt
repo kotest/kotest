@@ -1,7 +1,7 @@
 package io.kotest.assertions.throwables
 
 import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 
 /**
  * Verifies that a block of code throws any [Throwable]
@@ -67,7 +67,7 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
       e
    }
 
-   return thrownException ?: throw Failures.failure("Expected a throwable, but nothing was thrown.")
+   return thrownException ?: throw failure("Expected a throwable, but nothing was thrown.")
 }
 
 
@@ -99,7 +99,7 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
       e
    }
 
-   throw Failures.failure(
+   throw failure(
       "No exception expected, but a ${thrownException::class.simpleName} was thrown.",
       thrownException
    )
@@ -121,13 +121,13 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
       e
    }
 
-   thrownException ?: throw Failures.failure(
+   thrownException ?: throw failure(
       """Expected a throwable with message: $message,
                                                 |but nothing was thrown""".trimMargin()
    )
 
    if (thrownException.message != message) {
-      throw Failures.failure(
+      throw failure(
          """Expected a throwable with message: $message,
                                 |but got a throwable with message: ${thrownException.message}""".trimMargin(),
          thrownException
@@ -149,7 +149,7 @@ inline fun <T> shouldNotThrowMessage(message: String, block: () -> T) {
    }
 
    if (thrownException != null && thrownException.message == message)
-      throw Failures.failure(
+      throw failure(
          """Expected no exception with message: "$message"
                           |but a ${thrownException::class.simpleName} was thrown with given message""".trimMargin(),
          thrownException

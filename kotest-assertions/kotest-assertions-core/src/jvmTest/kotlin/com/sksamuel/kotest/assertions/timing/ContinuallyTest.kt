@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.assertions.timing
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.timing.continually
@@ -36,10 +37,10 @@ class ContinuallyTest : WordSpec() {
       }
       "fail tests start off as passing then fail within the period" {
         var n = 0
-        val e = shouldThrowExactly<AssertionError> {
+        val e = shouldThrow<Throwable> {
 
           continually(3.seconds) {
-            Thread.sleep(10)
+            Thread.sleep(5)
             (n++ < 100) shouldBe true
           }
         }

@@ -18,14 +18,14 @@ fun <T> shrink2(t: T, shrinker: Shrinker<T>?, test: (T) -> Unit): T {
 
 fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
   val sb = StringBuilder()
-  sb.append("Attempting to shrink failed arg ${t.show()}\n")
+  sb.append("Attempting to shrink failed arg ${t.show().value}\n")
   var candidate = t
   val tested = HashSet<T>()
   var count = 0
   while (true) {
     val candidates = shrinker.shrink(candidate).filterNot { tested.contains(it) }
     if (candidates.isEmpty()) {
-      sb.append("Shrink result => ${candidate.show()}\n")
+      sb.append("Shrink result => ${candidate.show().value}\n")
       if (PropertyTesting.shouldPrintShrinkSteps) {
         println(sb)
       }
@@ -36,15 +36,15 @@ fun <T> shrink(t: T, shrinker: Shrinker<T>, test: (T) -> Unit): T {
         count++
         try {
           test(it)
-          sb.append("Shrink #$count: ${it.show()} pass\n")
+          sb.append("Shrink #$count: ${it.show().value} pass\n")
           false
         } catch (t: Throwable) {
-          sb.append("Shrink #$count: ${it.show()} fail\n")
+          sb.append("Shrink #$count: ${it.show().value} fail\n")
           true
         }
       }
       if (next == null) {
-        sb.append("Shrink result => ${candidate.show()}\n")
+        sb.append("Shrink result => ${candidate.show().value}\n")
         if (PropertyTesting.shouldPrintShrinkSteps) {
           println(sb)
         }

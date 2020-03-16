@@ -1,17 +1,21 @@
 package io.kotest.assertions.show
 
 object StringShow : Show<String> {
-   override fun show(a: String): String = when {
-      a == "" -> "<empty string>"
-      a.isBlank() -> a.replace(" ", "\\s")
+
+   private fun String.wrap() = """"$this""""
+
+   override fun show(a: String): Printed = when {
+      a == "" -> "<empty string>".printed()
+      a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
       else -> a
          .replace("\\", "\\\\")
-         .replace("\"", "\\\"")
          .replace("\'", "\\\'")
          .replace("\t", "\\\t")
+         .replace("\"", "\\\"")
          .replace("\b", "\\\b")
-         .replace("\n", "\\\n")
          .replace("\r", "\\\r")
          .replace("\$", "\\\$")
+         .wrap()
+         .printed()
    }
 }

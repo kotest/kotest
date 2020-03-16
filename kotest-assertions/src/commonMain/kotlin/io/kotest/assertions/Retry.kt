@@ -59,7 +59,7 @@ suspend fun <T, E : Throwable> retry(
       nextAwaitDuration *= multiplier
    }
    val underlyingCause = if (lastError == null) "" else "; underlying cause was ${lastError.message}"
-   throw Failures.failure(
+   throw failure(
       "Test failed after ${delay.toLong(DurationUnit.SECONDS)} seconds; attempted $retrySoFar times$underlyingCause",
       lastError
    )

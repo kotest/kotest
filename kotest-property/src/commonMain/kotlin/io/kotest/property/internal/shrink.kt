@@ -25,11 +25,10 @@ internal suspend fun <A> doShrinking(
    val counter = Counter()
    val tested = mutableSetOf<A>()
    val sb = StringBuilder()
-   sb.append("Attempting to shrink failed arg ${initial.value.show()}\n")
+   sb.append("Attempting to shrink failed arg ${initial.value.show().value}\n")
 
    val candidate = doStep(initial, mode, tested, counter, test, sb) ?: initial.value
-   result(sb, candidate, counter.count)
-   println(sb)
+   result(sb, candidate as Any, counter.count)
    return candidate
 }
 
@@ -41,7 +40,7 @@ class Counter {
 /**
  * Performs shrinking on the given RTree. Recurses into the tree for failing cases.
  */
-internal suspend fun <A> doStep(
+suspend fun <A> doStep(
    tree: RTree<A>,
    mode: ShrinkingMode,
    tested: MutableSet<A>,
@@ -60,10 +59,10 @@ internal suspend fun <A> doStep(
          try {
             test(a.value)
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${a.show()} pass\n")
+               sb.append("Shrink #${counter.count}: ${a.show().value} pass\n")
          } catch (t: Throwable) {
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${a.show()} fail\n")
+               sb.append("Shrink #${counter.count}: ${a.show().value} fail\n")
             // this result failed, so we'll recurse in to find further failures otherwise return this
             return doStep(a, mode, tested, counter, test, sb) ?: a.value
          }
@@ -81,13 +80,12 @@ private fun ShrinkingMode.isShrinking(count: Int): Boolean = when (this) {
    is ShrinkingMode.Bounded -> count < bound
 }
 
-private fun <A> result(sb: StringBuilder, candidate: A, count: Int): A {
+private fun result(sb: StringBuilder, candidate: Any, count: Int) {
    when (count) {
-      0 -> sb.append("Shrink result => ${candidate.show()}\n")
-      else -> sb.append("Shrink result (after $count shrinks) => ${candidate.show()}\n")
+      0 -> sb.append("Shrink result => ${candidate.show().value}\n")
+      else -> sb.append("Shrink result (after $count shrinks) => ${candidate.show().value}\n")
    }
    if (PropertyTesting.shouldPrintShrinkSteps) {
       println(sb)
    }
-   return candidate
 }

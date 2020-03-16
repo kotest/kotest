@@ -8,8 +8,8 @@ import kotlin.math.min
 
 fun startWith(prefix: String) = neverNullMatcher<String> { value ->
   val ok = value.startsWith(prefix)
-  var msg = "${value.show()} should start with $prefix"
-  val notmsg = "${value.show()} should not start with $prefix"
+  var msg = "${value.show().value} should start with ${prefix.show().value}"
+  val notmsg = "${value.show().value} should not start with ${prefix.show().value}"
   if (!ok) {
     for (k in 0 until min(value.length, prefix.length)) {
       if (value[k] != prefix[k]) {
@@ -26,15 +26,15 @@ fun haveSubstring(substr: String) = include(substr)
 fun endWith(suffix: String) = neverNullMatcher<String> { value ->
   MatcherResult(
       value.endsWith(suffix),
-      "${value.show()} should end with $suffix",
-      "${value.show()} should not end with $suffix")
+      "${value.show().value} should end with ${suffix.show().value}",
+      "${value.show().value} should not end with ${suffix.show().value}")
 }
 
 fun match(regex: Regex) = neverNullMatcher<String> { value ->
   MatcherResult(
       value.matches(regex),
-      "${value.show()} should match regex $regex",
-      "${value.show()} should not match regex $regex")
+      "${value.show().value} should match regex $regex",
+      "${value.show().value} should not match regex $regex")
 }
 
 fun match(regex: String): Matcher<String?> = match(regex.toRegex())
@@ -44,6 +44,6 @@ fun strlen(length: Int): Matcher<String?> = haveLength(length)
 fun haveLength(length: Int) = neverNullMatcher<String> { value ->
   MatcherResult(
       value.length == length,
-      "${value.show()} should have length $length, but instead was ${value.length}",
-      "${value.show()} should not have length $length")
+      "${value.show().value} should have length $length, but instead was ${value.length}",
+      "${value.show().value} should not have length $length")
 }

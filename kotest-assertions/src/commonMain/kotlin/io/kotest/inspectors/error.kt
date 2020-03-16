@@ -1,7 +1,7 @@
 package io.kotest.inspectors
 
-import io.kotest.assertions.Failures
 import io.kotest.assertions.exceptionToMessage
+import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 import io.kotest.mpp.sysprop
 
@@ -38,11 +38,11 @@ fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Strin
    if (failed.isEmpty()) {
       builder.append("--none--")
    } else {
-      builder.append(failed.take(maxResults).joinToString("\n") { it.t.show() + " => " + exceptionToMessage(it.throwable) })
+      builder.append(failed.take(maxResults).joinToString("\n") { it.t.show().value + " => " + exceptionToMessage(it.throwable) })
       if (failed.size > maxResults) {
          builder.append("\n... and ${failed.size - maxResults} more failed elements")
       }
    }
-   throw Failures.failure(builder.toString())
+   throw failure(builder.toString())
 }
 

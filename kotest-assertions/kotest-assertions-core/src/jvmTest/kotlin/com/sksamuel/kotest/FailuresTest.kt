@@ -1,7 +1,7 @@
 package com.sksamuel.kotest
 
 import com.sksamuel.kotest.throwablehandling.catchThrowable
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FreeSpec
@@ -12,7 +12,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 class FailuresTest : FreeSpec() {
 
   init {
-    "Failures.shouldFail" - {
+    "shouldFail" - {
       "Should throw an exception when code succeeds" {
         val thrown = catchThrowable { shouldFail { /* Code succeeds */ } }
         thrown.shouldBeFailureWithNoAssertionErrorThrown()
@@ -29,11 +29,11 @@ class FailuresTest : FreeSpec() {
       }
     }
 
-    "Failures.failure" - {
+    "failure" - {
 
       "filters stacktrace" {
         val cause = RuntimeException()
-        val failure = Failures.failure("msg", cause)
+        val failure = failure("msg", cause)
         failure.message shouldBe "msg"
         failure.cause shouldBe cause
         failure.stackTrace[0].className.shouldStartWith("com.sksamuel.kotest.FailuresTest")

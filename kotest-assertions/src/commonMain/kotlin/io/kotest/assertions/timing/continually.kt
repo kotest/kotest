@@ -1,6 +1,6 @@
 package io.kotest.assertions.timing
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
@@ -23,7 +23,7 @@ inline fun <T> continually(duration: Duration, f: () -> T): T? {
          if (times == 0)
             throw e
          // if not the first attempt then include how many times/for how long the test passed
-         throw Failures.failure(
+         throw failure(
             "Test failed after ${mark.elapsedNow().toLongMilliseconds()}ms; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
             e
          )

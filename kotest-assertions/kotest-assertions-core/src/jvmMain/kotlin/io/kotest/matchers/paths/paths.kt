@@ -26,67 +26,96 @@ infix fun Path.shouldNotStartWithPath(path: Path) = this shouldNot startWithPath
 fun startWithPath(path: Path) = startWithPath(path.toString())
 fun startWithPath(file: File) = startWithPath(file.toPath())
 fun startWithPath(prefix: String) = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(value.toString().startsWith(prefix), "Path $value should start with $prefix", "Path $value should not start with $prefix")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      value.toString().startsWith(prefix),
+      "Path $value should start with $prefix",
+      "Path $value should not start with $prefix"
+   )
 }
 
 fun Path.shouldExist() = this should exist()
 fun Path.shouldNotExist() = this shouldNot exist()
 fun exist() = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(Files.exists(value), "Path $value should exist", "Path $value should not exist")
+   override fun test(value: Path) =
+      MatcherResult(Files.exists(value), "Path $value should exist", "Path $value should not exist")
 }
 
 infix fun Path.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
 infix fun Path.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
 fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.size(value) == size, "Path $value should have size $size", "Path $value should not have size $size")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      Files.size(value) == size,
+      "Path $value should have size $size",
+      "Path $value should not have size $size"
+   )
 }
 
 fun Path.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
 fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
 fun haveExtension(vararg exts: String) = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(exts.any { value.fileName.toString().endsWith(it) }, "Path $value should end with one of ${exts.joinToString(",")}", "Path $value should not end with one of ${exts.joinToString(",")}")
+   override fun test(value: Path) = MatcherResult(
+      exts.any { value.fileName.toString().endsWith(it) },
+      "Path $value should end with one of ${exts.joinToString(",")}",
+      "Path $value should not end with one of ${exts.joinToString(",")}"
+   )
 }
 
 fun Path.shouldBeADirectory() = this should aDirectory()
 fun Path.shouldNotBeADirectory() = this shouldNot aDirectory()
 fun aDirectory(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.isDirectory(value), "File $value should be a directory", "File $value should not be a directory")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      Files.isDirectory(value),
+      "File $value should be a directory",
+      "File $value should not be a directory"
+   )
 }
 
 fun Path.shouldBeAFile() = this should aFile()
 fun Path.shouldNotBeAFile() = this shouldNot aFile()
 fun aFile(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(!Files.isDirectory(value), "File $value should be a directory", "File $value should not be a directory")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      !Files.isDirectory(value),
+      "File $value should be a directory",
+      "File $value should not be a directory"
+   )
 }
 
 fun Path.shouldBeAbsolute() = this should beAbsolute()
 fun Path.shouldNotBeAbsolute() = this shouldNot beAbsolute()
 fun beAbsolute(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(value.isAbsolute, "Path $value should be absolute", "Path $value should not be absolute")
+   override fun test(value: Path): MatcherResult =
+      MatcherResult(value.isAbsolute, "Path $value should be absolute", "Path $value should not be absolute")
 }
 
 fun Path.shouldBeRelative() = this should beRelative()
 fun Path.shouldNotBeRelative() = this shouldNot beRelative()
 fun beRelative(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(!value.isAbsolute, "Path $value should be relative", "Path $value should not be relative")
+   override fun test(value: Path): MatcherResult =
+      MatcherResult(!value.isAbsolute, "Path $value should be relative", "Path $value should not be relative")
 }
 
 fun Path.shouldBeReadable() = this should beReadable()
 fun Path.shouldNotBeReadable() = this shouldNot beReadable()
 fun beReadable(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.isReadable(value), "Path $value should be readable", "Path $value should not be readable")
+   override fun test(value: Path): MatcherResult =
+      MatcherResult(Files.isReadable(value), "Path $value should be readable", "Path $value should not be readable")
 }
 
 fun Path.shouldBeWriteable() = this should beWriteable()
 fun Path.shouldNotBeWriteable() = this shouldNot beWriteable()
 fun beWriteable(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.isWritable(value), "Path $value should be writeable", "Path $value should not be writeable")
+   override fun test(value: Path): MatcherResult =
+      MatcherResult(Files.isWritable(value), "Path $value should be writeable", "Path $value should not be writeable")
 }
 
 fun Path.shouldBeExecutable() = this should beExecutable()
 fun Path.shouldNotBeExecutable() = this shouldNot beExecutable()
 fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.isExecutable(value), "Path $value should be executable", "Path $value should not be executable")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      Files.isExecutable(value),
+      "Path $value should be executable",
+      "Path $value should not be executable"
+   )
 }
 
 infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
@@ -98,13 +127,18 @@ fun Path.shouldNotBeNonEmptyDirectory() = this.toFile() shouldNot beNonEmptyDire
 fun Path.shouldBeHidden() = this should beHidden()
 fun Path.shouldNotBeHidden() = this shouldNot beHidden()
 fun beHidden(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(Files.isHidden(value), "Path $value should be hidden", "Path $value should not be hidden")
+   override fun test(value: Path): MatcherResult =
+      MatcherResult(Files.isHidden(value), "Path $value should be hidden", "Path $value should not be hidden")
 }
 
 fun Path.shouldBeCanonical() = this should beCanonicalPath()
 fun Path.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
 fun beCanonicalPath(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(value.toFile().canonicalPath == value.toFile().path, "File $value should be canonical", "File $value should not be canonical")
+   override fun test(value: Path): MatcherResult = MatcherResult(
+      value.toFile().canonicalPath == value.toFile().path,
+      "File $value should be canonical",
+      "File $value should not be canonical"
+   )
 }
 
 infix fun Path.shouldContainFile(name: String) = this should containFile(name)
@@ -113,7 +147,8 @@ fun containFile(name: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
       val contents = Files.list(value).map { it.fileName.toString() }.toList()
       val passed = Files.isDirectory(value) && contents.contains(name)
-      return MatcherResult(passed,
+      return MatcherResult(
+         passed,
          "Directory $value should contain a file with filename $name (detected ${contents.size} other files)",
          "Directory $value should not contain a file with filename $name"
       )
@@ -128,7 +163,11 @@ fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
       val sizea = Files.size(value)
       val sizeb = Files.size(other)
-      return MatcherResult(sizea > sizeb, "Path $value ($sizea bytes) should be larger than $other ($sizeb bytes)", "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)")
+      return MatcherResult(
+         sizea > sizeb,
+         "Path $value ($sizea bytes) should be larger than $other ($sizeb bytes)",
+         "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)"
+      )
    }
 }
 
@@ -140,7 +179,11 @@ fun beSmaller(other: Path): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
       val sizea = Files.size(value)
       val sizeb = Files.size(other)
-      return MatcherResult(sizea < sizeb, "Path $value ($sizea bytes) should be smaller than $other ($sizeb bytes)", "Path $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)")
+      return MatcherResult(
+         sizea < sizeb,
+         "Path $value ($sizea bytes) should be smaller than $other ($sizeb bytes)",
+         "Path $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)"
+      )
    }
 }
 
@@ -150,7 +193,7 @@ fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
 
    private fun fileExists(dir: Path): Boolean {
       val contents = Files.list(dir).toList()
-      val (dirs,files) = contents.partition{ Files.isDirectory(it) }
+      val (dirs, files) = contents.partition { Files.isDirectory(it) }
       return files.map { it.fileName.toString() }.contains(name) || dirs.any(::fileExists)
    }
 
@@ -200,8 +243,10 @@ infix fun Path.shouldHaveParent(name: String) = this should haveParent(name)
 infix fun Path.shouldNotHaveParent(name: String) = this shouldNot haveParent(name)
 fun haveParent(name: String) = object : Matcher<Path> {
 
-   private fun isParentEqualExpected(parent: Path?): Boolean =
-      parent != null && (parent.fileName.toString() == name || isParentEqualExpected(parent.parent))
+   private fun isParentEqualExpected(parent: Path?): Boolean {
+      if (parent == null) return false
+      return parent.fileName?.toString() == name || isParentEqualExpected(parent.parent)
+   }
 
    override fun test(value: Path) = MatcherResult(
       isParentEqualExpected(value.parent),

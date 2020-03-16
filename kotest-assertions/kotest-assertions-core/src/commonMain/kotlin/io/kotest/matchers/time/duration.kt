@@ -19,8 +19,8 @@ infix fun Duration.shouldNotHaveSeconds(seconds: Long) = this shouldNot haveSeco
 fun haveSeconds(seconds: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.SECONDS) == seconds,
-      "${value.show()} should have $seconds seconds",
-      "${value.show()} should not have $seconds seconds"
+      "${value.show().value} should have $seconds seconds",
+      "${value.show().value} should not have $seconds seconds"
    )
 }
 
@@ -36,8 +36,8 @@ infix fun Duration.shouldNotHaveMillis(millis: Long) = this shouldNot haveMillis
 fun haveMillis(millis: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MILLISECONDS) == millis,
-      "${value.show()} should have $millis millis",
-      "${value.show()} should not have $millis millis"
+      "${value.show().value} should have $millis millis",
+      "${value.show().value} should not have $millis millis"
    )
 }
 
@@ -51,8 +51,8 @@ infix fun Duration.shouldNotHaveMinutes(minutes: Long) = this shouldNot haveMinu
 fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.MINUTES) == minutes,
-      "${value.show()} should have $minutes minutes",
-      "${value.show()} should not have $minutes minutes"
+      "${value.show().value} should have $minutes minutes",
+      "${value.show().value} should not have $minutes minutes"
    )
 }
 
@@ -68,8 +68,8 @@ infix fun Duration.shouldNotHaveHours(hours: Long) = this shouldNot haveHours(ho
 fun haveHours(hours: Long) = neverNullMatcher<Duration> { value ->
    MatcherResult(
       value.toLong(DurationUnit.HOURS) == hours,
-      "${value.show()} should have $hours hours",
-      "${value.show()} should not have $hours hours"
+      "${value.show().value} should have $hours hours",
+      "${value.show().value} should not have $hours hours"
    )
 }
 

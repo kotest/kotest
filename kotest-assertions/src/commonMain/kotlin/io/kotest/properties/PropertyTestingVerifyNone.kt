@@ -1,6 +1,6 @@
 package io.kotest.properties
 
-import io.kotest.assertions.Failures
+import io.kotest.assertions.failure
 
 @Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
 inline fun <reified A> verifyNone(noinline fn: PropertyContext.(a: A) -> Boolean) = verifyNone(1000, fn)
@@ -39,7 +39,7 @@ fun <A> verifyNone(iterations: Int, gena: Gen<A>, fn: PropertyContext.(a: A) -> 
     context.inc()
     val passed = context.fn(a)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\nafter ${context.attempts()} attempts")
     }
   }
   for (a in gena.constants()) {
@@ -73,7 +73,7 @@ fun <A, B> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, fn: PropertyC
     context.inc()
     val passed = context.fn(a, b)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\n$b\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\nafter ${context.attempts()} attempts")
     }
   }
   for (a in gena.constants()) {
@@ -115,7 +115,7 @@ fun <A, B, C> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
         context.inc()
         val passed = context.fn(a, b, c)
         if (passed) {
-          throw Failures.failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
+          throw failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
         }
       }
     }
@@ -130,7 +130,7 @@ fun <A, B, C> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: Gen<
     context.inc()
     val passed = context.fn(a, b, c)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\nafter ${context.attempts()} attempts")
     }
   }
   outputClassifications(context)
@@ -157,7 +157,7 @@ fun <A, B, C, D> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc: G
     context.inc()
     val passed = context.fn(a, b, c, d)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\nafter ${context.attempts()} attempts")
     }
   }
   for (a in gena.constants()) {
@@ -200,7 +200,7 @@ fun <A, B, C, D, E> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, genc
     context.inc()
     val passed = context.fn(a, b, c, d, e)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\n$e\nafter ${context.attempts()} attempts")
     }
   }
   for (a in gena.constants()) {
@@ -254,7 +254,7 @@ fun <A, B, C, D, E, F> verifyNone(iterations: Int, gena: Gen<A>, genb: Gen<B>, g
     context.inc()
     val passed = context.fn(a, b, c, d, e, f)
     if (passed) {
-      throw Failures.failure("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter ${context.attempts()} attempts")
+      throw failure("Property passed for\n$a\n$b\n$c\n$d\n$e\n$f\nafter ${context.attempts()} attempts")
     }
   }
 

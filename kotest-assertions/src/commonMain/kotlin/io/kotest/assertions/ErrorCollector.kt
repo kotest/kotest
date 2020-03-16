@@ -1,43 +1,43 @@
 package io.kotest.assertions
 
 enum class ErrorCollectionMode {
-  Soft, Hard
+   Soft, Hard
 }
 
 expect object ErrorCollector {
 
-  fun getCollectionMode(): ErrorCollectionMode
+   fun getCollectionMode(): ErrorCollectionMode
 
-  fun setCollectionMode(mode: ErrorCollectionMode)
+   fun setCollectionMode(mode: ErrorCollectionMode)
 
-  /**
-   * Returns the errors accumulated in the current context.
-   */
-  fun errors(): List<Throwable>
+   /**
+    * Returns the errors accumulated in the current context.
+    */
+   fun errors(): List<Throwable>
 
-  /**
-   * Adds the given error to the current context.
-   */
-  fun pushError(t: Throwable)
+   /**
+    * Adds the given error to the current context.
+    */
+   fun pushError(t: Throwable)
 
-  /**
-   * Clears all errors from the current context.
-   */
-  fun clear()
+   /**
+    * Clears all errors from the current context.
+    */
+   fun clear()
 
-  fun pushClue(clue: Any)
+   fun pushClue(clue: Any)
 
-  fun popClue()
+   fun popClue()
 
-  /**
-   * Returns the current clue context.
-   * That is all the clues nested to this point.
-   */
-  fun clueContext(): List<Any>
+   /**
+    * Returns the current clue context.
+    * That is all the clues nested to this point.
+    */
+   fun clueContext(): List<Any>
 }
 
 fun clueContextAsString() = ErrorCollector.clueContext().let {
-  if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n")
+   if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n")
 }
 
 /**
@@ -46,10 +46,10 @@ fun clueContextAsString() = ErrorCollector.clueContext().let {
  * throw immediately.
  */
 fun ErrorCollector.collectOrThrow(error: Throwable) {
-  when (getCollectionMode()) {
-    ErrorCollectionMode.Soft -> pushError(error)
-    ErrorCollectionMode.Hard -> throw error
-  }
+   when (getCollectionMode()) {
+      ErrorCollectionMode.Soft -> pushError(error)
+      ErrorCollectionMode.Hard -> throw error
+   }
 }
 
 /**
@@ -57,13 +57,13 @@ fun ErrorCollector.collectOrThrow(error: Throwable) {
  * throwable.
  */
 fun ErrorCollector.throwCollectedErrors() {
-  // set the collection mode back to the default
-  setCollectionMode(ErrorCollectionMode.Hard)
-  val failures = errors()
-  clear()
-  if (failures.isNotEmpty()) {
-    val t = if (failures.size == 1) failures[0] else MultiAssertionError(failures)
-    Failures.clean(t)
-    throw t
-  }
+   // set the collection mode back to the default
+   setCollectionMode(ErrorCollectionMode.Hard)
+   val failures = errors()
+   clear()
+   if (failures.isNotEmpty()) {
+      val t = if (failures.size == 1) failures[0] else MultiAssertionError(failures)
+      cleanStackTrace(t)
+      throw t
+   }
 }
