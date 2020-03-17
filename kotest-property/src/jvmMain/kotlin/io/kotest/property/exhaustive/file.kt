@@ -1,5 +1,6 @@
 package io.kotest.property.exhaustive
 
+import io.kotest.property.Exhaustive
 import java.io.File
 import java.nio.charset.Charset
 

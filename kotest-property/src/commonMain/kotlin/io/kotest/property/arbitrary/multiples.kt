@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 
 /**
@@ -22,7 +23,9 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
    }
 }
 
-fun Arb.Companion.factors(k: Int): Arb<Int> = arb(listOf(1)) {
-   generateSequence { it.random.nextInt(k) }.filter { it > 0 }
-      .filter { k % it == 0 }.first()
+fun Arb.Companion.factors(k: Int): Arb<Int> {
+   return Arb.create(listOf(1)) {
+      generateSequence { it.random.nextInt(k) }.filter { it > 0 }
+         .filter { k % it == 0 }.first()
+   }
 }

@@ -8,7 +8,7 @@ import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.char
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.take
@@ -17,13 +17,13 @@ import io.kotest.property.random
 class CharTest : FunSpec({
 
    test("should honour seed") {
-      val seedListA = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
-      val seedListB = Arb.char().samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListA = Arb.char().values(1234909L.random()).take(120).toList().map { it.value }
+      val seedListB = Arb.char().values(1234909L.random()).take(120).toList().map { it.value }
       seedListA shouldBe seedListB
 
       val ranges = listOf('A'..'L', 'P'..'Z')
-      val seedListC = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
-      val seedListD = Arb.char(ranges).samples(1234909L.random()).take(120).toList().map { it.value }
+      val seedListC = Arb.char(ranges).values(1234909L.random()).take(120).toList().map { it.value }
+      val seedListD = Arb.char(ranges).values(1234909L.random()).take(120).toList().map { it.value }
       seedListC shouldBe seedListD
    }
 

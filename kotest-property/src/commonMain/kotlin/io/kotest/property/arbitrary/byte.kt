@@ -1,5 +1,7 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
+
 /**
  * The edge cases are [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */

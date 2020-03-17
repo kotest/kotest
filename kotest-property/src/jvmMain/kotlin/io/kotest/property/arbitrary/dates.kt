@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.time.Instant
@@ -23,15 +24,12 @@ import kotlin.random.Random
  * Months will always be in range [0..11]
  * Days will always be in range [0..31]
  */
-fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : BasicArb<Period> {
-   override fun edgecases() = listOf(Period.ZERO)
-   override fun sample(rs: RandomSource): Sample<Period> {
-      return Sample(
-         Period.of(
-            (0..maxYear).random(rs.random),
-            (0..11).random(rs.random),
-            (0..31).random(rs.random)
-         )
+fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZERO)) {
+   generateSequence {
+      Period.of(
+         (0..maxYear).random(it.random),
+         (0..11).random(it.random),
+         (0..31).random(it.random)
       )
    }
 }
@@ -47,7 +45,7 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = object : BasicArb<Per
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : BasicArb<LocalDate> {
+fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : Arb<LocalDate>() {
 
    override fun edgecases(): List<LocalDate> {
       val yearRange = (minYear..maxYear)
@@ -59,11 +57,11 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
       return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
    }
 
-   override fun sample(rs: RandomSource): Sample<LocalDate> {
+   override fun values(rs: RandomSource): Sequence<Sample<LocalDate>> = generateSequence {
       val minDate = LocalDate.of(minYear, 1, 1)
       val maxDate = LocalDate.of(maxYear, 12, 31)
       val days = ChronoUnit.DAYS.between(minDate, maxDate)
-      return Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
+      Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
    }
 }
 
@@ -75,11 +73,9 @@ fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<Local
  * @see [localDateTime]
  * @see [localDate]
  */
-fun Arb.Companion.localTime(): Arb<LocalTime> = object : BasicArb<LocalTime> {
-
-   override fun edgecases(): List<LocalTime> = listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))
-   override fun sample(rs: RandomSource): Sample<LocalTime> {
-      return Sample(LocalTime.of(rs.random.nextInt(24), rs.random.nextInt(60), rs.random.nextInt(60)))
+fun Arb.Companion.localTime(): Arb<LocalTime> = arb(listOf(LocalTime.of(23, 59, 59), LocalTime.of(0, 0, 0))) {
+   generateSequence {
+      LocalTime.of(it.random.nextInt(24), it.random.nextInt(60), it.random.nextInt(60))
    }
 }
 
@@ -97,7 +93,7 @@ fun Arb.Companion.localTime(): Arb<LocalTime> = object : BasicArb<LocalTime> {
 fun Arb.Companion.localDateTime(
    minYear: Int = 1970,
    maxYear: Int = 2030
-): Arb<LocalDateTime> = object : BasicArb<LocalDateTime> {
+): Arb<LocalDateTime> = object : Arb<LocalDateTime>() {
 
    override fun edgecases(): List<LocalDateTime> {
       val localDates = localDate(minYear, maxYear).edgecases()
@@ -105,10 +101,10 @@ fun Arb.Companion.localDateTime(
       return localDates.flatMap { date -> times.map { date.atTime(it) } }
    }
 
-   override fun sample(rs: RandomSource): Sample<LocalDateTime> {
+   override fun values(rs: RandomSource): Sequence<Sample<LocalDateTime>> = generateSequence {
       val date = localDate(minYear, maxYear).single(rs)
       val time = localTime().single(rs)
-      return Sample(date.atTime(time))
+      Sample(date.atTime(time))
    }
 }
 
@@ -126,7 +122,7 @@ fun InstantRange.random(random: Random): Instant {
       }.random(random)
 
       return Instant.ofEpochSecond(seconds, nanos.toLong())
-   } catch(e: IllegalArgumentException) {
+   } catch (e: IllegalArgumentException) {
       throw NoSuchElementException(e.message)
    }
 }
@@ -135,10 +131,13 @@ fun InstantRange.random(random: Random): Instant {
  * Arberates a stream of random [Instant]
  */
 fun Arb.Companion.instant(range: InstantRange): Arb<Instant> = arb(listOf(range.start, range.endInclusive)) {
-   range.random(it.random)
+   sequence {
+      range.random(it.random)
+   }
 }
 
 /**
  * Arberates a stream of random [Instant]
  */
-fun Arb.Companion.instant(minValue: Instant = Instant.MIN, maxValue: Instant = Instant.MAX) = instant(minValue..maxValue)
+fun Arb.Companion.instant(minValue: Instant = Instant.MIN, maxValue: Instant = Instant.MAX) =
+   instant(minValue..maxValue)

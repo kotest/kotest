@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
-import io.kotest.property.exhaustive.Exhaustive
+import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.andNull
 import io.kotest.property.exhaustive.ints
 

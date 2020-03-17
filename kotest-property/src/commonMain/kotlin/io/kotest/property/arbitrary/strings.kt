@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.properties.nextPrintableString
 import io.kotest.property.Shrinker
 import io.kotest.property.azstring
@@ -33,7 +34,7 @@ fun Arb.Companion.string(
 
 fun Arb.Companion.string(range: IntRange): Arb<String> = Arb.string(range.first, range.last)
 
-fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange = 3..10) = arb {
+fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange = 3..10) = Arb.create {
    val username = it.random.azstring(usernameSize)
    val domain = it.random.azstring(domainSize)
    val tld = listOf("com", "net", "gov", "co.uk", "jp", "nl", "ru", "de", "com.br", "it", "pl", "io")

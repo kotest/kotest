@@ -5,7 +5,7 @@ import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNotBe
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.double
@@ -25,14 +25,14 @@ class BindTest : StringSpec({
    data class FooD(val a: String, val b: Int, val c: Double, val d: Int)
    data class FooE(val a: String, val b: Int, val c: Double, val d: Int, val e: Boolean)
 
-   "Gen.bindA" {
+   "Arb.bindA" {
       val gen = Arb.string().map { FooA(it) }
       checkAll(gen) {
          it.a shouldNotBe null
       }
    }
 
-   "Gen.bindB" {
+   "Arb.bindB" {
       val gen = Arb.bind(Arb.string(), Arb.positiveInts(), ::User)
       checkAll(gen) {
          it.email shouldNotBe null
@@ -40,7 +40,7 @@ class BindTest : StringSpec({
       }
    }
 
-   "Gen.bindC" {
+   "Arb.bindC" {
       val gen = Arb.bind(Arb.string(), Arb.positiveInts(), Arb.double().filter { it > 0 }, ::FooC)
       checkAll(gen) {
          it.a shouldNotBe null
@@ -49,7 +49,7 @@ class BindTest : StringSpec({
       }
    }
 
-   "Gen.bindD" {
+   "Arb.bindD" {
       val gen =
          Arb.bind(Arb.string(), Arb.positiveInts(), Arb.double().filter { it > 0 }, Arb.negativeInts(), ::FooD)
       checkAll(gen) {
@@ -60,7 +60,7 @@ class BindTest : StringSpec({
       }
    }
 
-   "Gen.bindE" {
+   "Arb.bindE" {
       val gen = Arb.bind(
          Arb.string(),
          Arb.positiveInts(),

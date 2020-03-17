@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 
 /**
@@ -68,6 +69,13 @@ class MapShrinker<K, V> : Shrinker<Map<K, V>> {
    }
 }
 
-fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arb {
-   k.single(it) to v.single(it)
+/**
+ * Returns an [Arb] that produces Pairs of K,V using the supplied arbs for K and V.
+ */
+fun <K, V> Arb.Companion.pair(k: Arb<K>, v: Arb<V>) = arb { rs ->
+   val ks = k.values(rs)
+   val vs = v.values(rs)
+   ks.zip(vs).map {
+      Pair(it.first.value, it.second.value)
+   }
 }

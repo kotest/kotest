@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 
@@ -9,8 +10,8 @@ import io.kotest.property.Sample
  * a particular subtype.
  */
 @Suppress("UNCHECKED_CAST")
-inline fun <A, reified B : A> Arb<A>.filterIsInstance(): Arb<B> = object : Arb<B> {
+inline fun <A, reified B : A> Arb<A>.filterIsInstance(): Arb<B> = object : Arb<B>() {
    override fun edgecases(): List<B> = this@filterIsInstance.edgecases().filterIsInstance<B>()
-   override fun samples(rs: RandomSource): Sequence<Sample<B>> =
-      this@filterIsInstance.samples(rs).filterIsInstance<Sample<B>>()
+   override fun values(rs: RandomSource): Sequence<Sample<B>> =
+      this@filterIsInstance.values(rs).filterIsInstance<Sample<B>>()
 }

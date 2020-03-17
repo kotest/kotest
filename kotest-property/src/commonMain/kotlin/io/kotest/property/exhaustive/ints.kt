@@ -1,10 +1,6 @@
 package io.kotest.property.exhaustive
 
-fun Exhaustive.Companion.ints(range: IntRange) = object : Exhaustive<Int> {
-   override val values = range.toList()
-}
+import io.kotest.property.Exhaustive
 
-fun Exhaustive.Companion.longs(range: LongRange) = object : Exhaustive<Long> {
-   override val values = range.toList()
-}
-
+fun Exhaustive.Companion.ints(range: IntRange): Exhaustive<Int> = range.toList().exhaustive()
+fun Exhaustive.Companion.longs(range: LongRange): Exhaustive<Long> = range.toList().exhaustive()

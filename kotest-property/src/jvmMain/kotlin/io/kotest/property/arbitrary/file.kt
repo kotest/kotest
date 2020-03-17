@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.io.File
@@ -18,11 +19,11 @@ fun Arb.Companion.file(): Arb<File> = Arb.string(1..100).map { File(it) }
  *
  * If recursive is true(default value is false) it gives files from inner directories as well recursively.
  */
-fun Arb.Companion.file(directoryName: String, recursive: Boolean = false): Arb<File> = object : Arb<File> {
+fun Arb.Companion.file(directoryName: String, recursive: Boolean = false): Arb<File> = object : Arb<File>() {
 
    override fun edgecases(): List<File> = emptyList()
 
-   override fun samples(rs: RandomSource): Sequence<Sample<File>> {
+   override fun values(rs: RandomSource): Sequence<Sample<File>> {
       val fileTreeWalk = File(directoryName).walk()
       return when (recursive) {
          true -> randomiseFiles(fileTreeWalk.maxDepth(Int.MAX_VALUE), rs.random)
@@ -40,6 +41,6 @@ fun Arb.Companion.file(directoryName: String, recursive: Boolean = false): Arb<F
 fun Arb.Companion.lines(file: File, charset: Charset = Charsets.UTF_8): Arb<String> {
    val contents = file.readLines(charset)
    return arb {
-      contents.shuffled(it.random).first()
+      contents.shuffled(it.random).asSequence()
    }
 }

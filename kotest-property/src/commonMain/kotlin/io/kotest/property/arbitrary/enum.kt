@@ -1,6 +1,12 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
+
+/**
+ * Returns an [Arb] that produces values randomly from the constants of the supplied enum type.
+ * Eg, val arb: Arb<Season> = Arb.enum<Season>()
+ */
 inline fun <reified T : Enum<T>> Arb.Companion.enum(): Arb<T> {
    val constants = enumValues<T>().asList()
-   return arb { constants.shuffled(it.random).first() }
+   return Arb.create { constants.shuffled(it.random).first() }
 }

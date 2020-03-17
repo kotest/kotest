@@ -4,25 +4,25 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.shouldBe
-import io.kotest.property.arbitrary.Arb
-import io.kotest.property.arbitrary.create
+import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.set
 import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.Exhaustive
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.forAll
 
 class CollectionsTest : FunSpec({
 
    test("Arb.list should not include empty edgecases as first sample") {
-      val numGen = Arb.list(Arb.create { it.random.nextInt() }, 1..100)
+      val numGen = Arb.list(Arb.int(), 1..10)
       forAll(1, numGen) { it.isNotEmpty() }
    }
 
    test("Arb.set should not include empty edgecases as first sample") {
-      val numGen = Arb.set(Arb.create { it.random.nextInt() }, 1..100)
+      val numGen = Arb.set(Arb.int(), 1..10)
       forAll(1, numGen) { it.isNotEmpty() }
    }
 
