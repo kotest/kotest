@@ -151,6 +151,11 @@ See [full documentation](doc/reference.md).
 Use
 ---
 
+Kotest is split into two main dependencies. Firstly, the framework which provides the ability to layout tests in one of the spec styles and execute them in JUnit or in Mocha. Secondly, the assertion packages.
+These are provided separately so you can pick and choose which parts you want to use if you don't want to go all in on Kotest.
+
+The following instructions give you the batteries included setup in gradle or maven.
+
 #### Gradle
 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
