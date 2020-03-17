@@ -2,7 +2,7 @@ package com.sksamuel.kotest.property
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.property.arbitrary.Arb
+import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.checkCoverage
 import io.kotest.property.forAll

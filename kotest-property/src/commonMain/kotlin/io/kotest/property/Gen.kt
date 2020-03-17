@@ -120,30 +120,3 @@ data class RandomSource(val random: Random, val seed: Long) {
 data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree(value))
 
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
-
-/**
- * Returns a new [Gen] which will merge the values from this gen and the values of
- * the supplied gen together, taking one from each in turn.
- *
- * If both gens are exhaustives, then this will return an exhaustive.
- * Otherwise this will return an arb.
- *
- * In other words, if genA provides 1,2,3 and genB provides 7,8,9 then the merged
- * gen would output 1,7,2,8,3,9.
- *
- * The supplied gen must be a subtype of the type of this gen.
- *
- * @param other the arg to merge with this one
- * @return the merged arg.
- */
-
-fun <A, B : A> Gen<A>.merge(other: Gen<B>): Gen<A> = TODO()
-
-//object : Gen<A>() {
-//   override fun minIterations(): Int = this@merge.minIterations() + other.minIterations()
-//   override fun generate(rs: RandomSource): Sequence<Sample<A>> {
-//      return this@merge.generate(rs).zip(other.generate(rs)).flatMap {
-//         sequenceOf(it.first, it.second)
-//      }
-//   }
-//}

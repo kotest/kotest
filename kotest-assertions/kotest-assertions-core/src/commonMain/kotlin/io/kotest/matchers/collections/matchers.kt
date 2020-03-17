@@ -14,12 +14,12 @@ fun <T> Collection<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Array<T>.shouldNotContainOnlyNulls() = asList().shouldNotContainOnlyNulls()
 fun <T> Collection<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) =
-    MatcherResult(
-      value.all { it == null },
-      "Collection should contain only nulls",
-      "Collection should not contain only nulls"
-    )
+   override fun test(value: Collection<T>) =
+      MatcherResult(
+         value.all { it == null },
+         "Collection should contain only nulls",
+         "Collection should not contain only nulls"
+      )
 }
 
 fun <T> Array<T>.shouldContainNull() = asList().shouldContainNull()
@@ -27,42 +27,59 @@ fun <T> Collection<T>.shouldContainNull() = this should containNull()
 fun <T> Array<T>.shouldNotContainNull() = asList().shouldNotContainNull()
 fun <T> Collection<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) =
-    MatcherResult(
-      value.any { it == null },
-      "Collection should contain at least one null",
-      "Collection should not contain any nulls"
-    )
+   override fun test(value: Collection<T>) =
+      MatcherResult(
+         value.any { it == null },
+         "Collection should contain at least one null",
+         "Collection should not contain any nulls"
+      )
 }
 
+infix fun <T> Array<T>.shouldStartWith(element: T) = asList().shouldStartWith(listOf(element))
 infix fun <T> Array<T>.shouldStartWith(slice: Collection<T>) = asList().shouldStartWith(slice)
 infix fun <T> Array<T>.shouldStartWith(slice: Array<T>) = asList().shouldStartWith(slice.asList())
+
+infix fun <T> List<T>.shouldStartWith(element: T) = this should startWith(listOf(element))
 infix fun <T> List<T>.shouldStartWith(slice: Collection<T>) = this should startWith(slice)
+
+infix fun <T> Array<T>.shouldNotStartWith(element: T) = asList().shouldNotStartWith(listOf(element))
 infix fun <T> Array<T>.shouldNotStartWith(slice: Collection<T>) = asList().shouldNotStartWith(slice)
 infix fun <T> Array<T>.shouldNotStartWith(slice: Array<T>) = asList().shouldNotStartWith(slice.asList())
+
+infix fun <T> List<T>.shouldNotStartWith(element: T) = this shouldNot startWith(listOf(element))
 infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(slice)
+
 fun <T> startWith(slice: Collection<T>) = object : Matcher<List<T>> {
-  override fun test(value: List<T>) =
-    MatcherResult(
-      value.subList(0, slice.size) == slice,
-      { "List should start with ${slice.show().value}" },
-      { "List should not start with ${slice.show().value}" }
-    )
+   override fun test(value: List<T>) =
+      MatcherResult(
+         value.subList(0, slice.size) == slice,
+         { "List should start with ${slice.show().value}" },
+         { "List should not start with ${slice.show().value}" }
+      )
 }
 
+infix fun <T> Array<T>.shouldEndWith(element: T) = asList().shouldEndWith(listOf(element))
 infix fun <T> Array<T>.shouldEndWith(slice: Collection<T>) = asList().shouldEndWith(slice)
 infix fun <T> Array<T>.shouldEndWith(slice: Array<T>) = asList().shouldEndWith(slice.asList())
+
+infix fun <T> List<T>.shouldEndWith(element: T) = this.shouldEndWith(listOf(element))
 infix fun <T> List<T>.shouldEndWith(slice: Collection<T>) = this should endWith(slice)
+infix fun <T> List<T>.shouldEndWith(slice: Array<T>) = this.shouldEndWith(slice.toList())
+
+infix fun <T> Array<T>.shouldNotEndWith(element: T) = asList().shouldNotEndWith(listOf(element))
 infix fun <T> Array<T>.shouldNotEndWith(slice: Collection<T>) = asList().shouldNotEndWith(slice)
 infix fun <T> Array<T>.shouldNotEndWith(slice: Array<T>) = asList().shouldNotEndWith(slice.asList())
+
+infix fun <T> List<T>.shouldNotEndWith(element: T) = this shouldNot endWith(listOf(element))
 infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(slice)
+
 fun <T> endWith(slice: Collection<T>) = object : Matcher<List<T>> {
-  override fun test(value: List<T>) =
-    MatcherResult(
-      value.subList(value.size - slice.size, value.size) == slice,
-      { "List should end with ${slice.show().value}" },
-      { "List should not end with ${slice.show().value}" }
-    )
+   override fun test(value: List<T>) =
+      MatcherResult(
+         value.subList(value.size - slice.size, value.size) == slice,
+         { "List should end with ${slice.show().value}" },
+         { "List should not end with ${slice.show().value}" }
+      )
 }
 
 fun <T> Array<T>.shouldHaveElementAt(index: Int, element: T) = asList().shouldHaveElementAt(index, element)
@@ -73,12 +90,12 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
-  override fun test(value: L) =
-    MatcherResult(
-      value[index] == element,
-      { "Collection should contain ${element.show().value} at index $index" },
-      { "Collection should not contain ${element.show().value} at index $index" }
-    )
+   override fun test(value: L) =
+      MatcherResult(
+         value[index] == element,
+         { "Collection should contain ${element.show().value} at index $index" },
+         { "Collection should not contain ${element.show().value} at index $index" }
+      )
 }
 
 fun <T> Array<T>.shouldContainNoNulls() = asList().shouldContainNoNulls()
@@ -86,12 +103,12 @@ fun <T> Collection<T>.shouldContainNoNulls() = this should containNoNulls()
 fun <T> Array<T>.shouldNotContainNoNulls() = asList().shouldNotContainNoNulls()
 fun <T> Collection<T>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) =
-    MatcherResult(
-      value.all { it != null },
-      { "Collection should not contain nulls" },
-      { "Collection should have at least one null" }
-    )
+   override fun test(value: Collection<T>) =
+      MatcherResult(
+         value.all { it != null },
+         { "Collection should not contain nulls" },
+         { "Collection should have at least one null" }
+      )
 }
 
 infix fun <T> Array<T>.shouldContain(t: T) = asList().shouldContain(t)
@@ -116,15 +133,17 @@ infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this sho
 fun <T, C : Collection<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
 fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(
-  expected.asList())
+   expected.asList()
+)
+
 /** Assert that a collection contains exactly the given values and nothing else, in order. */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
-  val passed = value.size == expected.size && value.zip(expected) { a, b -> a == b }.all { it }
-  MatcherResult(
-    passed,
-    { "Collection should be exactly ${expected.show().value} but was ${value.show().value}" },
-    { "Collection should not be exactly ${expected.show().value}" }
-  )
+   val passed = value.size == expected.size && value.zip(expected) { a, b -> a == b }.all { it }
+   MatcherResult(
+      passed,
+      { "Collection should be exactly ${expected.show().value} but was ${value.show().value}" },
+      { "Collection should not be exactly ${expected.show().value}" }
+   )
 }
 
 infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>) =
@@ -150,16 +169,16 @@ fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
 
 /** Assert that a collection contains exactly the given values and nothing else, in any order. */
 fun <T, C : Collection<T>> containExactlyInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-  val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
-  val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
-  val passed = expectedGroupedCounts.size == valueGroupedCounts.size
-    && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
+   val valueGroupedCounts: Map<T, Int> = value.groupBy { it }.mapValues { it.value.size }
+   val expectedGroupedCounts: Map<T, Int> = expected.groupBy { it }.mapValues { it.value.size }
+   val passed = expectedGroupedCounts.size == valueGroupedCounts.size
+      && expectedGroupedCounts.all { valueGroupedCounts[it.key] == it.value }
 
-  MatcherResult(
-    passed,
-    "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}",
-    "Collection should not contain exactly ${expected.show().value} in any order"
-  )
+   MatcherResult(
+      passed,
+      "Collection should contain ${expected.show().value} in any order, but was ${value.show().value}",
+      "Collection should not contain exactly ${expected.show().value} in any order"
+   )
 }
 
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(t: T) = asList().shouldHaveUpperBound(t)
@@ -176,11 +195,11 @@ fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(t: T) = object : Match
 infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(t: T) = asList().shouldHaveLowerBound(t)
 infix fun <T : Comparable<T>, C : Collection<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 fun <T : Comparable<T>, C : Collection<T>> haveLowerBound(t: T) = object : Matcher<C> {
-  override fun test(value: C) = MatcherResult(
-    value.all { t <= it },
-    "Collection should have lower bound $t",
-    "Collection should not have lower bound $t"
-  )
+   override fun test(value: C) = MatcherResult(
+      value.all { t <= it },
+      "Collection should have lower bound $t",
+      "Collection should not have lower bound $t"
+   )
 }
 
 fun <T> Array<T>.shouldBeUnique() = asList().shouldBeUnique()
@@ -188,11 +207,11 @@ fun <T> Collection<T>.shouldBeUnique() = this should beUnique()
 fun <T> Array<T>.shouldNotBeUnique() = asList().shouldNotBeUnique()
 fun <T> Collection<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.toSet().size == value.size,
-    "Collection should be Unique",
-    "Collection should contain at least one duplicate element"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.toSet().size == value.size,
+      "Collection should be Unique",
+      "Collection should contain at least one duplicate element"
+   )
 }
 
 fun <T> Array<T>.shouldContainDuplicates() = asList().shouldContainDuplicates()
@@ -200,33 +219,34 @@ fun <T> Collection<T>.shouldContainDuplicates() = this should containDuplicates(
 fun <T> Array<T>.shouldNotContainDuplicates() = asList().shouldNotContainDuplicates()
 fun <T> Collection<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.toSet().size < value.size,
-    "Collection should contain duplicates",
-    "Collection should not contain duplicates"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.toSet().size < value.size,
+      "Collection should contain duplicates",
+      "Collection should not contain duplicates"
+   )
 }
 
 
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)
 fun <T> beSortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = sortedWith(cmp)
 fun <T> sortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith { a, b ->
-  comparator.compare(a, b)
+   comparator.compare(a, b)
 }
+
 fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = object : Matcher<List<T>> {
-  override fun test(value: List<T>): MatcherResult {
-    val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && cmp(it, value[i + 1]) > 0 }
-    val snippet = value.joinToString(",", limit = 10)
-    val elementMessage = when (failure) {
-      null -> ""
-      else -> ". Element ${failure.value} at index ${failure.index} shouldn't precede element ${value[failure.index + 1]}"
-    }
-    return MatcherResult(
-      failure == null,
-      "List [$snippet] should be sorted$elementMessage",
-      "List [$snippet] should not be sorted"
-    )
-  }
+   override fun test(value: List<T>): MatcherResult {
+      val failure = value.withIndex().firstOrNull { (i, it) -> i != value.lastIndex && cmp(it, value[i + 1]) > 0 }
+      val snippet = value.joinToString(",", limit = 10)
+      val elementMessage = when (failure) {
+         null -> ""
+         else -> ". Element ${failure.value} at index ${failure.index} shouldn't precede element ${value[failure.index + 1]}"
+      }
+      return MatcherResult(
+         failure == null,
+         "List [$snippet] should be sorted$elementMessage",
+         "List [$snippet] should not be sorted"
+      )
+   }
 }
 
 fun <T : Comparable<T>> List<T>.shouldBeSorted() = this should beSorted<T>()
@@ -246,38 +266,66 @@ fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyIncreasing() = this should 
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing() = asList().shouldBeMonotonicallyIncreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing() = this shouldNot beMonotonicallyIncreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyIncreasing() = asList().shouldNotBeMonotonicallyIncreasing()
-fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) = this should beMonotonicallyIncreasingWith(comparator)
-fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) = asList().shouldBeMonotonicallyIncreasingWith(comparator)
-fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) = this shouldNot beMonotonicallyIncreasingWith(comparator)
-fun <T> Array<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeMonotonicallyIncreasingWith(comparator)
+fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) =
+   this should beMonotonicallyIncreasingWith(comparator)
+
+fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) =
+   asList().shouldBeMonotonicallyIncreasingWith(comparator)
+
+fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) =
+   this shouldNot beMonotonicallyIncreasingWith(comparator)
+
+fun <T> Array<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>) =
+   asList().shouldNotBeMonotonicallyIncreasingWith(comparator)
 
 
 fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyDecreasing() = this should beMonotonicallyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyDecreasing() = asList().shouldBeMonotonicallyDecreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyDecreasing() = this shouldNot beMonotonicallyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyDecreasing() = asList().shouldNotBeMonotonicallyDecreasing()
-fun <T> List<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = this should beMonotonicallyDecreasingWith(comparator)
-fun <T> Array<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = asList().shouldBeMonotonicallyDecreasingWith(comparator)
-fun <T> List<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = this shouldNot beMonotonicallyDecreasingWith(comparator)
-fun <T> Array<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeMonotonicallyDecreasingWith(comparator)
+fun <T> List<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) =
+   this should beMonotonicallyDecreasingWith(comparator)
+
+fun <T> Array<T>.shouldBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) =
+   asList().shouldBeMonotonicallyDecreasingWith(comparator)
+
+fun <T> List<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) =
+   this shouldNot beMonotonicallyDecreasingWith(comparator)
+
+fun <T> Array<T>.shouldNotBeMonotonicallyDecreasingWith(comparator: Comparator<in T>) =
+   asList().shouldNotBeMonotonicallyDecreasingWith(comparator)
 
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing() = this should beStrictlyIncreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing() = asList().shouldBeStrictlyIncreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyIncreasing() = this shouldNot beStrictlyIncreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyIncreasing() = asList().shouldNotBeStrictlyIncreasing()
-fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) = this should beStrictlyIncreasingWith(comparator)
-fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) = asList().shouldBeStrictlyIncreasingWith(comparator)
-fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) = this shouldNot beStrictlyIncreasingWith(comparator)
-fun <T> Array<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeStrictlyIncreasingWith(comparator)
+fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+   this should beStrictlyIncreasingWith(comparator)
+
+fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+   asList().shouldBeStrictlyIncreasingWith(comparator)
+
+fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+   this shouldNot beStrictlyIncreasingWith(comparator)
+
+fun <T> Array<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>) =
+   asList().shouldNotBeStrictlyIncreasingWith(comparator)
 
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyDecreasing() = this should beStrictlyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyDecreasing() = asList().shouldBeStrictlyDecreasing()
 fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyDecreasing() = this shouldNot beStrictlyDecreasing<T>()
 fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyDecreasing() = asList().shouldNotBeStrictlyDecreasing()
-fun <T> List<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) = this should beStrictlyDecreasingWith(comparator)
-fun <T> Array<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) = asList().shouldBeStrictlyDecreasingWith(comparator)
-fun <T> List<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) = this shouldNot beStrictlyDecreasingWith(comparator)
-fun <T> Array<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) = asList().shouldNotBeStrictlyDecreasingWith(comparator)
+fun <T> List<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+   this should beStrictlyDecreasingWith(comparator)
+
+fun <T> Array<T>.shouldBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+   asList().shouldBeStrictlyDecreasingWith(comparator)
+
+fun <T> List<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+   this shouldNot beStrictlyDecreasingWith(comparator)
+
+fun <T> Array<T>.shouldNotBeStrictlyDecreasingWith(comparator: Comparator<in T>) =
+   asList().shouldNotBeStrictlyDecreasingWith(comparator)
 
 infix fun <T> Array<T>.shouldHaveSingleElement(t: T) = asList().shouldHaveSingleElement(t)
 infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean) = asList().shouldHaveSingleElement(p)
@@ -342,63 +390,63 @@ infix fun <T, U> Array<T>.shouldBeLargerThan(other: Collection<U>) = asList().sh
 infix fun <T, U> Array<T>.shouldBeLargerThan(other: Array<U>) = asList().shouldBeLargerThan(other.asList())
 infix fun <T, U> Collection<T>.shouldBeLargerThan(other: Collection<U>) = this should beLargerThan(other)
 fun <T, U> beLargerThan(other: Collection<U>) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.size > other.size,
-    "Collection of size ${value.size} should be larger than collection of size ${other.size}",
-    "Collection of size ${value.size} should not be larger than collection of size ${other.size}"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size > other.size,
+      "Collection of size ${value.size} should be larger than collection of size ${other.size}",
+      "Collection of size ${value.size} should not be larger than collection of size ${other.size}"
+   )
 }
 
 infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Collection<U>) = asList().shouldBeSmallerThan(other)
 infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>) = asList().shouldBeSmallerThan(other.asList())
 infix fun <T, U> Collection<T>.shouldBeSmallerThan(other: Collection<U>) = this should beSmallerThan(other)
 fun <T, U> beSmallerThan(other: Collection<U>) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.size < other.size,
-    "Collection of size ${value.size} should be smaller than collection of size ${other.size}",
-    "Collection of size ${value.size} should not be smaller than collection of size ${other.size}"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size < other.size,
+      "Collection of size ${value.size} should be smaller than collection of size ${other.size}",
+      "Collection of size ${value.size} should not be smaller than collection of size ${other.size}"
+   )
 }
 
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Collection<U>) = asList().shouldBeSameSizeAs(other)
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Array<U>) = asList().shouldBeSameSizeAs(other.asList())
 infix fun <T, U> Collection<T>.shouldBeSameSizeAs(other: Collection<U>) = this should beSameSizeAs(other)
 fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.size == other.size,
-    "Collection of size ${value.size} should be the same size as collection of size ${other.size}",
-    "Collection of size ${value.size} should not be the same size as collection of size ${other.size}"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size == other.size,
+      "Collection of size ${value.size} should be the same size as collection of size ${other.size}",
+      "Collection of size ${value.size} should not be the same size as collection of size ${other.size}"
+   )
 }
 
 infix fun <T> Array<T>.shouldHaveAtLeastSize(n: Int) = asList().shouldHaveAtLeastSize(n)
 infix fun <T> Collection<T>.shouldHaveAtLeastSize(n: Int) = this shouldHave atLeastSize(n)
 fun <T> atLeastSize(n: Int) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.size >= n,
-    "Collection should contain at least $n elements",
-    "Collection should contain less than $n elements"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size >= n,
+      "Collection should contain at least $n elements",
+      "Collection should contain less than $n elements"
+   )
 }
 
 infix fun <T> Array<T>.shouldHaveAtMostSize(n: Int) = asList().shouldHaveAtMostSize(n)
 infix fun <T> Collection<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostSize(n)
 fun <T> atMostSize(n: Int) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.size <= n,
-    "Collection should contain at most $n elements",
-    "Collection should contain more than $n elements"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.size <= n,
+      "Collection should contain at most $n elements",
+      "Collection should contain more than $n elements"
+   )
 }
 
 infix fun <T> Array<T>.shouldExist(p: (T) -> Boolean) = asList().shouldExist(p)
 infix fun <T> Collection<T>.shouldExist(p: (T) -> Boolean) = this should exist(p)
 fun <T> exist(p: (T) -> Boolean) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    value.any { p(it) },
-    "Collection should contain an element that matches the predicate $p",
-    "Collection should not contain an element that matches the predicate $p"
-  )
+   override fun test(value: Collection<T>) = MatcherResult(
+      value.any { p(it) },
+      "Collection should contain an element that matches the predicate $p",
+      "Collection should not contain an element that matches the predicate $p"
+   )
 }
 
 fun <T> Array<T>.shouldContainInOrder(vararg ts: T) = asList().shouldContainInOrder(ts)
@@ -433,14 +481,14 @@ infix fun <T> Array<T>.shouldNotContainAnyOf(ts: Collection<T>) = asList().shoul
 infix fun <T> Collection<T>.shouldNotContainAnyOf(ts: Collection<T>) = this shouldNot containAnyOf(ts)
 
 fun <T> containAnyOf(ts: Collection<T>) = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>): MatcherResult {
-    if (ts.isEmpty()) throwEmptyCollectionError()
-    return MatcherResult(
-            ts.any { it in value },
-            { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" },
-            { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" }
-    )
-  }
+   override fun test(value: Collection<T>): MatcherResult {
+      if (ts.isEmpty()) throwEmptyCollectionError()
+      return MatcherResult(
+         ts.any { it in value },
+         { "Collection should contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" },
+         { "Collection should not contain any of ${ts.joinToString(separator = ", ", limit = 10) { it.show().value }}" }
+      )
+   }
 }
 
 
@@ -508,14 +556,16 @@ fun <T> T.shouldNotBeOneOf(vararg any: T) = this shouldNot beOneOf(any.toList())
  * @see [shouldNotBeOneOf]
  */
 fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
-    if (collection.isEmpty()) throwEmptyCollectionError()
+   override fun test(value: T): MatcherResult {
+      if (collection.isEmpty()) throwEmptyCollectionError()
 
-    val match = collection.any { it === value }
-    return MatcherResult(match,
-      "Collection should contain the instance of value, but doesn't.",
-      "Collection should not contain the instance of value, but does.")
-  }
+      val match = collection.any { it === value }
+      return MatcherResult(
+         match,
+         "Collection should contain the instance of value, but doesn't.",
+         "Collection should not contain the instance of value, but does."
+      )
+   }
 }
 
 /**
@@ -615,18 +665,20 @@ infix fun <T> T.shouldNotBeIn(array: Array<T>) = this shouldNot beIn(array.toLis
  * @see [shouldNotBeOneOf]
  */
 fun <T> beIn(collection: Collection<T>) = object : Matcher<T> {
-  override fun test(value: T): MatcherResult {
-    if (collection.isEmpty()) throwEmptyCollectionError()
+   override fun test(value: T): MatcherResult {
+      if (collection.isEmpty()) throwEmptyCollectionError()
 
-    val match = value in collection
+      val match = value in collection
 
-    return MatcherResult(match,
-      "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}",
-      "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}")
-  }
+      return MatcherResult(
+         match,
+         "Collection should contain ${value.show().value}, but doesn't. Possible values: ${collection.show().value}",
+         "Collection should not contain ${value.show().value}, but does. Forbidden values: ${collection.show().value}"
+      )
+   }
 }
 
 private fun throwEmptyCollectionError(): Nothing {
-  throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
+   throw AssertionError("Asserting content on empty collection. Use Collection.shouldBeEmpty() instead.")
 }
 

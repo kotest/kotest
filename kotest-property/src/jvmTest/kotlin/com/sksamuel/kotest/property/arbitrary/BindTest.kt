@@ -14,8 +14,10 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.arbitrary.positiveInts
 import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
+import io.kotest.matchers.shouldBe
 
 class BindTest : StringSpec({
 
@@ -76,4 +78,11 @@ class BindTest : StringSpec({
          it.d should beLessThan(0)
       }
    }
+
+   "Arb.reflectiveBind" {
+      val arb = Arb.bind<Wobble>()
+      arb.take(10).toList().size shouldBe 10
+   }
 })
+
+data class Wobble(val a: String, val b: Boolean, val c: Int, val d: Double, val e: Float)

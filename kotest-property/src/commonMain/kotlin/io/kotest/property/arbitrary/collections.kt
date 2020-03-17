@@ -30,15 +30,17 @@ fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
    return arb {
+      val genIter = gen.generate(it).iterator()
       sequence {
-         val genIter = gen.generate(it).iterator()
-         val targetSize = it.random.nextInt(range)
-         val set = mutableSetOf<A>()
-         while (set.size < targetSize && genIter.hasNext()) {
-            set.add(genIter.next().value)
+         while (true) {
+            val targetSize = it.random.nextInt(range)
+            val set = mutableSetOf<A>()
+            while (set.size < targetSize && genIter.hasNext()) {
+               set.add(genIter.next().value)
+            }
+            check(set.size == targetSize)
+            yield(set)
          }
-         check(set.size == targetSize)
-         yield(set)
       }
    }
 }

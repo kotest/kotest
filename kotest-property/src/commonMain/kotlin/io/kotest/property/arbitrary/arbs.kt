@@ -1,6 +1,8 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.Exhaustive
+import io.kotest.property.Gen
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.Shrinker
@@ -112,3 +114,31 @@ fun <A, B> Arb<A>.distinctBy(selector: (A) -> B) = object : Arb<A>() {
 }
 
 fun <A> Arb.Companion.constant(a: A) = element(a)
+
+/**
+ * Returns a new [Arb] which will merge the values from this Arb and the values of
+ * the supplied gen together, taking one from each in turn.
+ *
+ * In other words, if genA provides 1,2,3 and genB provides 7,8,9 then the merged
+ * gen would output 1,7,2,8,3,9.
+ *
+ * The supplied gen must be a subtype of the type of this gen.
+ *
+ * @param other the arg to merge with this one
+ * @return the merged arg.
+ */
+
+fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = object : Arb<A>() {
+   override fun edgecases(): List<A> = when (other) {
+      is Arb -> this@merge.edgecases().zip(other.edgecases()).flatMap { listOf(it.first, it.second) }
+      else -> this@merge.edgecases()
+   }
+
+   override fun values(rs: RandomSource): Sequence<Sample<A>> {
+      val merged = when (other) {
+         is Arb -> this@merge.values(rs).zip(other.values(rs))
+         is Exhaustive -> this@merge.values(rs).zip(other.values.asSequence().map { Sample(it) })
+      }
+      return merged.flatMap { sequenceOf(it.first, it.second) }
+   }
+}
