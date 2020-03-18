@@ -19,6 +19,13 @@ kotlin {
             }
          }
       }
+      js {
+         val main by compilations.getting {
+            kotlinOptions {
+               moduleKind = "commonjs"
+            }
+         }
+      }
    }
 
    targets.all {
@@ -31,12 +38,28 @@ kotlin {
 
    sourceSets {
 
-      val jvmMain by getting {
+      val commonMain by getting {
          dependencies {
-            implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("stdlib-common"))
+            implementation(Libs.Konform.Konform)
             implementation(project(":kotest-assertions"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
-            implementation("io.konform:konform:0.1.0")
+         }
+      }
+
+      val jvmMain by getting {
+         dependsOn(commonMain)
+         dependencies {
+            implementation(kotlin("stdlib-jdk8"))
+            implementation(Libs.Konform.KonformJvm)
+         }
+      }
+
+      val jsMain by getting {
+         dependsOn(commonMain)
+         dependencies {
+            implementation(kotlin("stdlib-js"))
+            implementation(Libs.Konform.KonformJs)
          }
       }
 
