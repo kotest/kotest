@@ -16,6 +16,8 @@ sealed class Option<out T> {
       is None -> this
       is Some -> f(this.value).some()
    }
+
+   fun orNull(): T? = fold({ null }, { it })
 }
 
 fun <T> Option<T>.getOrElse(t: T): T = fold({ t }, { it })
@@ -36,6 +38,4 @@ fun <T> T.some(): Option<T> = Option.Some(this)
 
 fun <T> Collection<T>.firstOption(): Option<T> = if (this.isEmpty()) Option.None else Option.Some(first())
 
-fun <T> T?.toOption(): Option<T> = if (this == null) Option.None else Option.Some(
-   this
-)
+fun <T> T?.toOption(): Option<T> = if (this == null) Option.None else Option.Some(this)
