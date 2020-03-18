@@ -1,9 +1,9 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import io.kotest.properties.nextPrintableString
 import io.kotest.property.Shrinker
 import io.kotest.property.azstring
+import kotlin.random.nextInt
 
 /**
  * Returns an [Arb] where each random value is a String of length between minSize and maxSize.
@@ -17,22 +17,40 @@ import io.kotest.property.azstring
  */
 fun Arb.Companion.string(
    minSize: Int = 0,
-   maxSize: Int = 100
+   maxSize: Int = 100,
+   codepoints: Arb<Codepoint> = Arb.asciiCodepoints()
 ): Arb<String> {
 
    val range = minSize..maxSize
+   val shortest = "".padEnd(minSize, 'a')
+   val longest = "".padEnd(maxSize, 'a')
+
    val edgecases = listOf(
-      "",
       "\n",
-      "\nabc\n123\n",
-      "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070"
+      "\u006c\u0069b/\u0062\u002f\u006d\u0069nd/m\u0061x\u002e\u0070h\u0070",
+      shortest,
+      longest
    ).filter { it.length in range }
-   return arb(StringShrinker, edgecases) {
-      it.random.nextPrintableString(range.first + it.random.nextInt(range.last - range.first + 1))
+
+   return arb(StringShrinker, edgecases) { rs ->
+      val codepointsIterator = codepoints.values(rs).iterator()
+      val size = rs.random.nextInt(minSize..maxSize)
+      val chars = List(size) { codepointsIterator.next().value }.flatMap {
+         if (it.isBmpCodePoint()) {
+            listOf(it.value.toChar())
+         } else {
+            listOf(
+               it.highSurrogate(),
+               it.lowSurrogate()
+            )
+         }
+      }
+      String(chars.toTypedArray().toCharArray())
    }
 }
 
-fun Arb.Companion.string(range: IntRange): Arb<String> = Arb.string(range.first, range.last)
+fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.asciiCodepoints()): Arb<String> =
+   Arb.string(range.first, range.last, codepoints)
 
 fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange = 3..10) = Arb.create {
    val username = it.random.azstring(usernameSize)

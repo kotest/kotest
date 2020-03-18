@@ -2,7 +2,9 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.codepoints
 import io.kotest.property.arbitrary.string
+import io.kotest.property.checkAll
 import io.kotest.property.forAll
 
 class StringArbTest : FunSpec() {
@@ -33,6 +35,12 @@ class StringArbTest : FunSpec() {
          forAll(Arb.string(1..3)) {
             it.isNotEmpty()
             it.length <= 3
+         }
+      }
+
+      test("all strings generated should be valid code codepoints") {
+         checkAll(Arb.string(10..20, Arb.codepoints())) {
+           println(it)
          }
       }
    }
