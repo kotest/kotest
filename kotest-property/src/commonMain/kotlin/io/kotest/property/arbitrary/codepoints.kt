@@ -24,7 +24,7 @@ fun Arb.Companion.codepoints(): Arb<Codepoint> = arb { rs ->
 }
 
 fun Arb.Companion.ascii(): Arb<Codepoint> = arb(listOf(Codepoint('a'.toInt()))) { rs ->
-   val ints = Arb.int('!'.toInt()..'z'.toInt())
+   val ints = Arb.int(' '.toInt()..'z'.toInt())
    ints.values(rs).map { Codepoint(it.value) }
 }
 
