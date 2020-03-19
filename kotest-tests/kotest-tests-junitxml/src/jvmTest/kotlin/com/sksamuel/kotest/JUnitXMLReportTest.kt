@@ -1,12 +1,14 @@
 package com.sksamuel.kotest
 
 import io.kotest.core.Tag
+import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.jdom2.Element
 import org.jdom2.input.SAXBuilder
 import java.io.File
 
+@Ignored
 class JUnitXMLReportTest : WordSpec() {
 
    override fun tags(): Set<Tag> = setOf(GithubActionsTag)

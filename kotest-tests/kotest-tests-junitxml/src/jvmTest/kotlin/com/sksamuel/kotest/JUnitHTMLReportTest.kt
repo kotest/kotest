@@ -1,11 +1,13 @@
 package com.sksamuel.kotest
 
 import io.kotest.Tag
+import io.kotest.core.annotation.Ignored
 import io.kotest.matchers.string.shouldContain
 import io.kotest.specs.WordSpec
 import java.io.File
 import java.nio.file.Files
 
+@Ignored
 class JUnitHTMLReportTest : WordSpec() {
 
   override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag, GithubActionsTag)
