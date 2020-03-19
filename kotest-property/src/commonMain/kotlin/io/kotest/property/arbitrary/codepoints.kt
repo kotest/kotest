@@ -7,16 +7,16 @@ import io.kotest.property.Arb
  * <a href="http://www.unicode.org/glossary/#code_point">
  * Unicode code point</a>, constant {@code U+0000}.
  */
-const val MIN_CODE_POINT = 0x000000
+internal const val MIN_CODE_POINT = 0x000000
 
 /**
  * The maximum value of a
  * <a href="http://www.unicode.org/glossary/#code_point">
  * Unicode code point</a>, constant {@code U+10FFFF}.
  */
-const val MAX_CODE_POINT = 0X10FFFF
+internal const val MAX_CODE_POINT = 0X10FFFF
 
-const val MIN_SUPPLEMENTARY_CODE_POINT = 0x010000
+internal const val MIN_SUPPLEMENTARY_CODE_POINT = 0x010000
 
 fun Arb.Companion.codepoints(): Arb<Codepoint> = arb { rs ->
    val ints = Arb.int(MIN_CODE_POINT..MAX_CODE_POINT)
@@ -73,6 +73,13 @@ fun Arb.Companion.hiragana() = arb(listOf(Codepoint(0x3041))) { rs ->
    val ints = Arb.int(0x3041..0x309F).filterNot { it in empty }
    ints.values(rs).map { Codepoint(it.value) }
 }
+
+fun Arb.Companion.egyptianHieroglyphs() = arb(listOf(Codepoint(0x13000))) { rs ->
+   val ints = Arb.int(0x13000..0x1342E)
+   ints.values(rs).map { Codepoint(it.value) }
+}
+
+
 
 data class Codepoint(val value: Int)
 
