@@ -61,37 +61,37 @@ jobs:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
-#   deploy-mac:
-#      needs: build
-#      runs-on: macOS-latest
-#
-#      steps:
-#         -  name: Checkout the repo
-#            uses: actions/checkout@v2
-#            with:
-#               fetch-depth: 0
-#
-#         -  name: deploy to sonatype snapshots
-#            run: ./gradlew publishNativePublicationToDeployRepository
-#            env:
-#               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-#
-#   deploy-windows:
-#      needs: build
-#      runs-on: windows-latest
-#
-#      steps:
-#         -  name: Checkout the repo
-#            uses: actions/checkout@v2
-#            with:
-#               fetch-depth: 0
-#
-#         -  name: deploy to sonatype snapshots
-#            run: ./gradlew publishNativePublicationToDeployRepository
-#            env:
-#               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+   deploy-mac:
+      needs: build
+      runs-on: macOS-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publishNativePublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+
+   deploy-windows:
+      needs: build
+      runs-on: windows-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: deploy to sonatype snapshots
+            run: ./gradlew publishNativePublicationToDeployRepository
+            env:
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
