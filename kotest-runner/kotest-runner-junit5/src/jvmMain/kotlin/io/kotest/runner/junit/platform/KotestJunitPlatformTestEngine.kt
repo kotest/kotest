@@ -14,6 +14,7 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.launcher.LauncherDiscoveryRequest
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -27,6 +28,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    override fun getId(): String =
       EngineId
+
+   override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
    override fun execute(request: ExecutionRequest) {
       log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")

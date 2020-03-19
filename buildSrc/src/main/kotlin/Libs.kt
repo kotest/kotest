@@ -25,6 +25,10 @@ object Libs {
       const val testkit = "org.junit.platform:junit-platform-testkit:$version"
    }
 
+   object Jdom {
+      const val jdom2 = "org.jdom:jdom2:2.0.6"
+   }
+
    object JUnitJupiter {
       private const val version = "5.6.0"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
