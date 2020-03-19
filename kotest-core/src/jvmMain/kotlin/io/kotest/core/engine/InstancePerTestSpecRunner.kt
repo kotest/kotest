@@ -7,7 +7,6 @@ import io.kotest.core.runtime.TestExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
@@ -63,7 +62,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.materializeRootTests().forEach { test ->
+      spec.rootTests().forEach { test ->
          executeInCleanSpec(test.testCase)
             .getOrThrow()
       }
@@ -92,7 +91,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
       // we need to find the same root test but in the newly created spec
-      val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
+      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
       log("Starting root test ${root.testCase.description} in search of ${test.description}")
       run(root.testCase, test)
       spec

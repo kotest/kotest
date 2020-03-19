@@ -1,7 +1,6 @@
 package io.kotest.core.runtime
 
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
@@ -14,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 actual fun executeSpec(spec: Spec) {
-   spec.materializeRootTests().forEach { root ->
+   spec.rootTests().forEach { root ->
       // we have to always start the test so that the framework doesn't exit before we return
       // also it gives us a handle to the done callback
       it(root.testCase.name) { done ->

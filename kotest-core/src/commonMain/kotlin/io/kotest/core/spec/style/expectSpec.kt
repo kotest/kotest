@@ -4,7 +4,6 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -24,7 +23,7 @@ class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpe
    override val addTest = ::addDynamicTest
 }
 
-abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : Spec(), ExpectSpecDsl {
+abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 

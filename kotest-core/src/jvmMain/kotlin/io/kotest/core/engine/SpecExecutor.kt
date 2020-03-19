@@ -26,7 +26,7 @@ import kotlin.time.ExperimentalTime
 class SpecExecutor(private val listener: TestEngineListener) {
 
    /**
-    * Executes the given [Spec] and returns true if the spec returned normally.
+    * Executes the given [Spec].
     */
    suspend fun execute(kclass: KClass<out Spec>) {
       log("Executing spec $kclass")

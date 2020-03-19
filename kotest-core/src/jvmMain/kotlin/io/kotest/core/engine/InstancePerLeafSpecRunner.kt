@@ -7,7 +7,6 @@ import io.kotest.core.runtime.TestExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -59,7 +58,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.materializeRootTests().forEach { root ->
+      spec.rootTests().forEach { root ->
          enqueue(root.testCase)
       }
       while (queue.isNotEmpty()) {
@@ -79,7 +78,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    // we need to find the same root test but in the newly created spec
    private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
       log("Created new spec instance $spec")
-      val root = spec.materializeRootTests().first { it.testCase.description.isOnPath(test.description) }
+      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
       log("Starting root test ${root.testCase.description} in search of ${test.description}")
       run(root.testCase, test)
       spec

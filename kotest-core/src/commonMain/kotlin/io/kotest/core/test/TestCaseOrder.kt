@@ -1,5 +1,7 @@
 package io.kotest.core.test
 
+val DefaultTestCaseOrder = TestCaseOrder.Sequential
+
 /**
  * This enum is used to configure the order of root test execution in a [Spec].
  *

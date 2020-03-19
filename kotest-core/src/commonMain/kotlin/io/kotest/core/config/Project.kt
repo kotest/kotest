@@ -41,7 +41,7 @@ object Project {
    private var globalAssertSoftly = userconf.globalAssertSoftly ?: false
    private var parallelism = userconf.parallelism ?: 1
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
-   private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: TestCaseOrder.Sequential
+   private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: DefaultTestCaseOrder
    private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()

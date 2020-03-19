@@ -4,6 +4,7 @@ import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
 import io.kotest.core.internal.unwrapIfReflectionCall
+import io.kotest.core.spec.createTestCase
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
@@ -39,20 +40,30 @@ abstract class AnnotationSpec : Spec() {
 
    private fun executeAfterSpecFunctions() = this::class.findAfterSpecFunctions().forEach { it.call(this) }
 
-   private fun KFunction<*>.toIgnoredTestCase() {
-      createTestCase(defaultConfig().copy(enabled = false))
+   private fun KFunction<*>.toIgnoredTestCase(): TestCase {
+      return deriveTestCase(defaultConfig().copy(enabled = false))
    }
 
-   private fun KFunction<*>.toEnabledTestCase() {
-      createTestCase(defaultConfig())
+   private fun KFunction<*>.toEnabledTestCase(): TestCase {
+      return deriveTestCase(defaultConfig())
    }
 
-   private fun KFunction<*>.createTestCase(config: TestCaseConfig) {
-      if (this.isExpectingException()) {
+   private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
+      return if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         addRootTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
+         createTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
       } else {
-         addRootTestCase(name, { callSuspend(this@AnnotationSpec) }, config, TestType.Test)
+         createTestCase(name, { callSuspend(this@AnnotationSpec) }, config, TestType.Test)
+      }
+   }
+
+   override fun materializeRootTests(): List<TestCase> {
+      return this::class.findTestFunctions().map {
+         if (it.isIgnoredTest()) {
+            it.toIgnoredTestCase()
+         } else {
+            it.toEnabledTestCase()
+         }
       }
    }
 
@@ -209,7 +220,7 @@ fun KClass<out AnnotationSpec>.findAfterSpecFunctions() =
 fun KClass<out AnnotationSpec>.findAfterTestFunctions() =
    findFunctionAnnotatedWithAnyOf(AnnotationSpec.AfterEach::class, AnnotationSpec.After::class)
 
-fun KClass<out AnnotationSpec>.findTestFunctions() =
+fun KClass<out AnnotationSpec>.findTestFunctions(): List<KFunction<*>> =
    findFunctionAnnotatedWithAnyOf(AnnotationSpec.Test::class)
 
 fun KFunction<*>.isIgnoredTest() = isFunctionAnnotatedWithAnyOf(AnnotationSpec.Ignore::class)

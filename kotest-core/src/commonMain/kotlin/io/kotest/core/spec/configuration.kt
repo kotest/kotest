@@ -13,17 +13,11 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.configureRuntime
-import io.kotest.core.runtime.executeSpec
-import io.kotest.core.sourceRef
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
 import io.kotest.fp.Tuple2
-import org.junit.platform.commons.annotation.Testable
 import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
@@ -198,93 +192,9 @@ abstract class TestConfiguration {
 @Suppress("unused")
 val initializeRuntime = configureRuntime()
 
-@Testable
-abstract class Spec : TestConfiguration(), SpecCallbackMethods {
-
-   /**
-    * Contains the root [TestCase]s used in this spec.
-    */
-   var rootTestCases = emptyList<TestCase>()
-
-   /**
-    * Sets the [IsolationMode] used by the test engine when running tests in this spec.
-    * If left null, then the project default is applied.
-    */
-   var isolation: IsolationMode? = null
-
-   /**
-    * Sets the [TestCaseOrder] to control the order of execution of root level tests in this spec.
-    * If left null, then the project default is applied.
-    */
-   var testOrder: TestCaseOrder? = null
-
-   override fun beforeTest(f: BeforeTest) {
-      listener(object : TestListener {
-         override suspend fun beforeTest(testCase: TestCase) {
-            f(testCase)
-         }
-      })
-   }
-
-   override fun afterTest(f: AfterTest) {
-      listener(object : TestListener {
-         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-            f(Tuple2(testCase, result))
-         }
-      })
-   }
-
-   /**
-    * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
-    * javascript code. We need to hook into this function to invoke our execution code which will
-    * run tests defined by kotest.
-    *
-    * Kotest automatically installs a Javascript test-adapter to intercept calls to all tests so we can
-    * avoid passing this generating function to the underyling test framework so it doesn't appear
-    * in the test report.
-    */
-   @JsTest
-   fun javascriptTestInterceptor() {
-      executeSpec(this)
-   }
-
-   private fun createTestCase(
-      name: String,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ): TestCase {
-      return TestCase(
-         this::class.description().append(name),
-         this,
-         test,
-         sourceRef(),
-         type,
-         config,
-         null,
-         null
-      )
-   }
-
-   /**
-    * Adds a new root-level [TestCase] to this [Spec].
-    */
-   protected fun addRootTestCase(
-      name: String,
-      test: suspend TestContext.() -> Unit,
-      config: TestCaseConfig,
-      type: TestType
-   ) {
-      require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
-      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
-      //require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
-      rootTestCases = rootTestCases + createTestCase(name, test, config, type)
-   }
-}
-
 /**
- * Register an [AutoCloseable] so that it's close methods is automatically invoked
- * when the tests are completed.
+ * Closes an [AutoCloseable] when the spec is completed by registering an afterSpec listener
+ * which invokes the [AutoCloseable.close] method.
  */
 fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
    afterSpec {
@@ -293,6 +203,10 @@ fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
    return closeable
 }
 
+/**
+ * Closes a lazy [AutoCloseable] when the spec is completed by registering an afterSpec listener
+ * which invokes the [AutoCloseable.close] method.
+ */
 fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: Lazy<T>): Lazy<T> {
    afterSpec {
       closeable.value.close()

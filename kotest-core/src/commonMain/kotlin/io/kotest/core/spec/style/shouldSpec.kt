@@ -40,7 +40,7 @@ class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpe
    override val addTest = ::addDynamicTest
 }
 
-abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : Spec(), ShouldSpecDsl {
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecDsl {
    override fun defaultConfig(): TestCaseConfig =
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 

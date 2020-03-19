@@ -7,7 +7,6 @@ import io.kotest.core.runtime.TestExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.materializeRootTests
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
@@ -67,7 +66,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         val roots = spec.materializeRootTests()
+         val roots = spec.rootTests()
          log("Materialized roots: $roots")
          roots.forEach { rootTest ->
             log("Executing test $rootTest")

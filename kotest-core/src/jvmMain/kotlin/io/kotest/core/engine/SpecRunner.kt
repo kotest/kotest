@@ -11,7 +11,6 @@ import kotlin.reflect.KClass
  * The base class for executing all the tests inside a [Spec].
  *
  * Each spec can define how tests are isolated from each other, via an [IsolationMode].
- * The implementation for each mode is handled by an instance of [SpecRunner].
  *
  * @param listener provides callbacks on tests as they are executed. These callbacks are used
  * to ultimately feed back into the test engine implementation.

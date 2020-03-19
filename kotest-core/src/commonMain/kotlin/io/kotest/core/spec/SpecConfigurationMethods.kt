@@ -10,7 +10,7 @@ import io.kotest.core.listeners.TestListener
  * The preferred style is to call the DSL functions from within the tests but these methods are still
  * supported and will not be deprecated.
  */
-interface SpecCallbackMethods {
+interface SpecConfigurationMethods {
 
    fun defaultTestCaseConfig(): TestCaseConfig? = null
 

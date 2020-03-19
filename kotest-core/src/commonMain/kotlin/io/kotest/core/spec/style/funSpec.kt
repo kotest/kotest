@@ -4,7 +4,6 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -24,7 +23,8 @@ class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
    override val addTest = ::addDynamicTest
 }
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : Spec(), FunSpecDsl {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecDsl {
+
    override fun defaultConfig(): TestCaseConfig =
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
