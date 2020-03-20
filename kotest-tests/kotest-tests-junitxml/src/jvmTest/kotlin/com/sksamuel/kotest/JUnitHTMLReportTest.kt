@@ -1,25 +1,21 @@
 package com.sksamuel.kotest
 
-import io.kotest.Tag
+import io.kotest.core.Tag
 import io.kotest.core.annotation.Ignored
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.string.shouldContain
-import io.kotest.specs.WordSpec
 import java.io.File
 import java.nio.file.Files
 
 @Ignored
 class JUnitHTMLReportTest : WordSpec() {
 
-  override fun tags(): Set<Tag> = setOf(AppveyorTag, TravisTag, GithubActionsTag)
+  override fun tags(): Set<Tag> = setOf(GithubActionsTag)
 
   fun indexHtml(): String {
     val ReportPath = "kotest-tests/kotest-tests-core/build/reports/tests/test/index.html"
     val file = when {
-      isTravis() -> {
-        println("HTML: " + File(System.getenv("TRAVIS_BUILD_DIR") + "/kotest-tests/kotest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
-        File(System.getenv("TRAVIS_BUILD_DIR") + "/$ReportPath")
-      }
-      isAppveyor() -> {
+      isGitHubActions() -> {
         println("HTML: " + File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/kotest-tests/kotest-tests-core/build/reports/tests/test").listFiles().joinToString("\n"))
         File(System.getenv("APPVEYOR_BUILD_FOLDER") + "/$ReportPath")
       }
