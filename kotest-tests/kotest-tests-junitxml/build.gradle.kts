@@ -35,6 +35,7 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.Jdom.jdom2)
          }
       }
    }
