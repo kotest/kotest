@@ -83,25 +83,25 @@ fun Arb.Companion.egyptianHieroglyphs() = arb(listOf(Codepoint(0x13000))) { rs -
 
 data class Codepoint(val value: Int)
 
-fun Codepoint.isBmpCodePoint() = value ushr 16 == 0
+val Codepoint.isBmpCodePoint: Boolean
+   get() = value ushr 16 == 0
 
-fun Codepoint.highSurrogate(): Char {
-   return (value ushr 10).toChar() + (Char.MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10)).toInt()
-}
+val Codepoint.highSurrogate: Char
+   get() = (value ushr 10).toChar() + (Char.MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10)).toInt()
 
-fun Codepoint.lowSurrogate(): Char {
-   return (value ushr 0x3ff).toChar() + Char.MIN_LOW_SURROGATE.toInt()
-}
+val Codepoint.lowSurrogate: Char
+   get() = (value ushr 0x3ff).toChar() + Char.MIN_LOW_SURROGATE.toInt()
+
 
 fun Codepoint.asString(): String {
-   return if (isBmpCodePoint()) {
+   return if (isBmpCodePoint) {
       value.toChar().toString()
    } else {
       String(
-         listOf(
-            highSurrogate(),
-            lowSurrogate()
-         ).toCharArray()
+         charArrayOf(
+            highSurrogate,
+            lowSurrogate
+         )
       )
    }
 }
