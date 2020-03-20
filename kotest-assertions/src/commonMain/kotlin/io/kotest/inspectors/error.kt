@@ -17,7 +17,7 @@ import io.kotest.mpp.sysprop
  *     -Dkotlintest.assertions.output.max=20
  * ```
  */
-fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): String {
+fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
 
    val maxResults = sysprop("kotlintest.assertions.output.max")?.toInt() ?: 10
 
