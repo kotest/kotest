@@ -22,11 +22,16 @@ How to use
 
 Kotest is published to Maven Central so you can get the latest version from the little badge at the top of the readme.
 
+
+Kotest is split into two main dependencies. Firstly, the framework which provides the ability to layout tests in one of the spec styles and execute them in JUnit or in Mocha. Secondly, the assertion packages.
+These are provided separately so you can pick and choose which parts you want to use if you don't want to go all in on Kotest.
+
+The following instructions give you the batteries included setup in gradle or maven.
+
 #### Gradle
 
 To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
- as simple as adding `useJUnitPlatform()` inside the `test` block and then adding the Kotest dependency.
-
+ as simple as adding `useJUnitPlatform()` inside the tasks with type `Test` and then adding the Kotest dependency.
 
 <details open>
 <summary>Groovy (build.gradle)</summary>
@@ -37,7 +42,8 @@ test {
 }
 
 dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5:<version>'
+  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
+  testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
 }
 ```
 
@@ -55,7 +61,8 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5:<version>'
+    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
 }
 ```
 
@@ -72,7 +79,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5:<version>")
+  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
+  testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
 }
 ```
 
@@ -87,7 +95,7 @@ For maven you must configure the surefire plugin for junit tests.
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.22.1</version>
+    <version>2.22.2</version>
 </plugin>
 ```
 
@@ -96,13 +104,32 @@ And then add the Kotest JUnit5 runner to your build.
 ```xml
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5</artifactId>
-    <version><version></version>
+    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <version>{version}</version>
     <scope>test</scope>
 </dependency>
 ```
 
+And for using kotest core jvm assertions add following configurations
 
+```xml
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-core-jvm</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+#### Snapshots
+
+If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
+
+```kotlin
+repositories {
+    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
+}
+```
 
 
 
