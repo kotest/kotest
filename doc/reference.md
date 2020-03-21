@@ -339,7 +339,7 @@ Listeners
 
 It is a common requirement to run setup / teardown code before and after a test, or before and after all tests in a Spec class. For this Kotest provides the `TestListener` and `ProjectListener` interfaces.
 
-These interfaces contains several functions, such as `beforeTest`, `afterTest`, `beforeSpec` and so on, which are used to hook into the lifecycle of the test engine.
+These interfaces contains several functions, such as `beforeTest`, `afterTest`, `beforeSpec`, `beforeProject`, and so on, which are used to hook into the lifecycle of the test engine.
 
 For full details on how to use these features see [Listener Documentation](listeners.md).
 
@@ -353,69 +353,16 @@ For full details on how to use these features see [Listener Documentation](liste
 Project Config
 --------------
 
-Kotest is flexible and has many ways to configure tests.
- Project-wide configuration is used by creating a special singleton object
- which is loaded at runtime by Kotest.
-
-To do this, create an object that is derived from `AbstractProjectConfig`, name this object `ProjectConfig`
-and place it in a package called `io.kotest.provided`. Kotest will detect it's presence and use any configuration
-defined there when executing tests.
-
-Some of the configuration available in `ProjectConfig` includes parallelism of tests, executing code before and after
- all tests, and re-usable listeners or extensions.
-
-###  Executing Code Before and After a Whole Project
-
-To execute some logic before the very first test case and/or after the very last test case of your project, you can
- override `beforeAll` and `afterAll` in the `ProjectConfig` singleton.
-
-Example:
-
-```kotlin
-package io.kotest.provided
-
-object ProjectConfig : AbstractProjectConfig() {
-
-  private var started: Long = 0
-
-  override fun beforeAll() {
-    started = System.currentTimeMillis()
-  }
-
-  override fun afterAll() {
-    val time = System.currentTimeMillis() - started
-    println("overall time [ms]: " + time)
-  }
-}
-```
+Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, setting the parallelism level, and failing builds if ignored tests are used.
+Sometimes you may want to set these values at a global level and for that you need to use [project-level-config](project_config.md).
 
 
 
 
 
 
-### Parallelism
-
-Kotest supports running specs in parallel to take advantage of modern cpus with several cores. To do this, override
- the `parallelism` function inside the project config.
-
-```kotlin
-object ProjectConfig : AbstractProjectConfig() {
-   override fun parallelism(): Int = 2
-}
-```
-
-By default the value is 1, which will run each spec serially.
 
 
-
-
-
-
-### Discovery Extensions
-
-Kotest allows developers to configure how test classes are discovered. By default classes are scanned from the classpath
-but this extension allows developers to inject classes from any source. For full details see [here](discovery_extension.md)
 
 
 
@@ -470,6 +417,11 @@ class PersonGenerator : Gen<Person> {
 
 
 
+
+### Discovery Extensions
+
+Kotest allows developers to configure how test classes are discovered. By default classes are scanned from the classpath
+but this extension allows developers to inject classes from any source. For full details see [here](discovery_extension.md)
 
 
 
