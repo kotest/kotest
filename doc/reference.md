@@ -409,36 +409,6 @@ Kotest has a comprehesive and powerful property support out of the box which is 
 
 
 
-### Custom Generators
-
-To write your own generator for a type T, you just implement the interface `Gen<T>`.
-
-```kotlin
-interface Gen<T> {
-  fun constants(): Iterable<T>
-  fun random(): Sequence<T>
-}
-```
-
-The first function, `constants` returns values that should _always_ be included
- in the test inputs. This is typically used for common edge case values. For example, the `Int` generator implements
- `constants` to return 0, Int.MIN_VALUE and Int.MAX_VALUE as these are values that are often overlooked.
-
-The second function is `random` which returns a lazy list of random values, which is the bread and butter of a generator.
-
-For example you could write a `Gen` that supports a custom class called `Person`.
- In this case there are no real edge case values for a `Person` instance so we can leave `constants` as an empty list.
-
-```kotlin
-data class Person(val name: String, val age: Int)
-class PersonGenerator : Gen<Person> {
-    override fun constants() = emptyList<Person>()
-    override fun random() = generateSequence {
-        Person(Gen.string().random().first(), Gen.int().random().first())
-    }
-}
-```
-
 
 
 
@@ -483,6 +453,8 @@ For more details see the [data driven testing page](data_driven_testing.md).
 
 
 
+
+
 Isolation Modes
 ---------------
 
@@ -507,7 +479,8 @@ Each test can be configured with various parameters. After the test name, invoke
 * `invocations` - The number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times to see if it eventually fails. A test will only succeed if all invocations succeed. Defaults to 1.
 * `threads` - Allows the invocation of this test to be parallelized by setting the number of threads. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
 * `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
-* `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
+* `enabledIf` - A function which provides the same ability as `enabled` but is lazily evaluated when the test case is due for execution.
+* `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `kotlin.Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
 * `tags` - a set of tags that can be used to group tests (see detailed description below).
 
 Examples of setting config:
