@@ -15,7 +15,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run ubuntu tests
-        if: matrix.os == 'ubuntu-latest'
         run: ./gradlew check
 
       - name: Bundle the build report
