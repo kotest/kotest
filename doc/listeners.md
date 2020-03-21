@@ -113,7 +113,7 @@ There are several ways to use the methods in a listener.
 
 #### DSL Methods
 
-The first and simplest, is to use the DSL methods available inside a Spec which create and register a `TestListener` for you. For example, we can invoke `beforeTest` alongside our tests.
+The first and simplest, is to use the DSL methods available inside a Spec which create and register a `TestListener` for you. For example, we can invoke `beforeTest` or `afterTest` (and others) directly alongside our tests.
 
 ```kotlin
 class TestSpec : WordSpec({
@@ -212,12 +212,26 @@ class TestSpec : WordSpec({
 })
 ```
 
-Any listeners registered on a `Spec` will be used for all tests in that spec (including factory tests and nested tests).
+Any listeners registered directly inside a `Spec` will be used for all tests in that spec (including factory tests and nested tests).
 
-Maybe you want a `TestListener` to run for every spec in the entire project. To do that, you would register the listener via project config.
+Maybe you want a `TestListener` to run for every spec in the entire project. To do that, you can either mark the listener with `@AutoScan`, or you can register the listener via project config.
 For more information on this see [ProjectConfig](#project-config).
 
-Instances of `ProjectListener` are registered at the project config level as well, since the `beforeProject` callback needs to be registered and executed before spec discovery begins.
+Instances of `ProjectListener` must be registered using `@AutoScan` or using project config level, since the `beforeProject` callback needs to be registered and executed any spec discovery begins.
+
+An example of `@Autoscan` on a project listener:
+
+```kotlin
+@AutoScan
+object MyProjectListener : ProjectListener {
+  override fun beforeProject() {
+    println("Project starting")
+  }
+  override fun afterProject() {
+    println("Project complete")
+  }
+}
+```
 
 Real Examples
 ------------
