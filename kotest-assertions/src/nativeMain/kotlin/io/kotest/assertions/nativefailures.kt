@@ -8,5 +8,5 @@ actual fun cleanStackTrace(throwable: Throwable): Throwable = throwable
  * lines.
  */
 actual fun createAssertionError(message: String, cause: Throwable?): AssertionError {
-   return AssertionError(message)
+   return AssertionError(message, cause)
 }

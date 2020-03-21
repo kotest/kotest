@@ -66,56 +66,55 @@ class MatchersTest : FreeSpec({
 
          shouldThrow<AssertionError> {
             1f shouldBe 2f
-         }.message shouldBe "expected: 2.0f but was: 1.0f"
+         }.message shouldBe "expected:<2.0f> but was:<1.0f>"
 
          shouldThrow<AssertionError> {
             1L shouldBe 2L
-         }.message shouldBe "expected: 2L but was: 1L"
+         }.message shouldBe "expected:<2L> but was:<1L>"
 
          shouldThrow<AssertionError> {
             'a' shouldBe 'b'
-         }.message shouldBe "expected: 'b' but was: 'a'"
+         }.message shouldBe "expected:<'b'> but was:<'a'>"
 
          shouldThrow<AssertionError> {
             "a" shouldBe "b"
-         }.message shouldBe "expected: \"b\" but was: \"a\""
+         }.message shouldBe """expected:<"b"> but was:<"a">"""
       }
 
       "format array errors" {
          shouldThrow<AssertionError> {
             arrayOf("a") shouldBe arrayOf("b")
-         }.message shouldBe "expected: [\"b\"] but was: [\"a\"]"
+         }.message shouldBe "expected:<[\"b\"]> but was:<[\"a\"]>"
       }
 
       "format float array errors" {
          shouldThrow<AssertionError> {
             floatArrayOf(1f) shouldBe floatArrayOf(2f)
-         }.message shouldBe "expected: [2.0f] but was: [1.0f]"
-
+         }.message shouldBe "expected:<[2.0f]> but was:<[1.0f]>"
       }
 
       "format long array error" {
          shouldThrow<AssertionError> {
             longArrayOf(1L) shouldBe longArrayOf(2L)
-         }.message shouldBe "expected: [2L] but was: [1L]"
+         }.message shouldBe "expected:<[2L]> but was:<[1L]>"
       }
 
       "format int array error" {
          shouldThrow<AssertionError> {
             intArrayOf(1) shouldBe intArrayOf(2)
-         }.message shouldBe "expected: [2] but was: [1]"
+         }.message shouldBe "expected:<[2]> but was:<[1]>"
       }
 
       "format char array error" {
          shouldThrow<AssertionError> {
             charArrayOf('a') shouldBe charArrayOf('b')
-         }.message shouldBe "expected: ['b'] but was: ['a']"
+         }.message shouldBe "expected:<['b']> but was:<['a']>"
       }
 
       "format byte array error" {
          shouldThrow<AssertionError> {
             byteArrayOf(1.toByte(), 35.toByte()) shouldBe byteArrayOf(12.toByte(), 13.toByte())
-         }.message shouldBe "expected: [12, 13] but was: [1, 35]"
+         }.message shouldBe "expected:<[12, 13]> but was:<[1, 35]>"
       }
 
       "format map error" {
@@ -148,13 +147,13 @@ class MatchersTest : FreeSpec({
 
          shouldThrow<AssertionError> {
             listOf('a') shouldBe listOf('b')
-         }.message shouldBe "expected: ['b'] but was: ['a']"
+         }.message shouldBe "expected:<['b']> but was:<['a']>"
 
          shouldThrow<AssertionError> {
             val l = ArrayList<Any>()
             l.add(l)
             l shouldBe emptyList<Any>()
-         }.message shouldBe "expected: [] but was: [(this ArrayList)]"
+         }.message shouldBe "expected:<[]> but was:<[(this ArrayList)]>"
       }
    }
 

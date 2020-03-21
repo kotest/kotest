@@ -37,20 +37,20 @@ class ClueTest : FreeSpec({
          }
          ex.message.apply {
             shouldContain("outer clue:\nShould have the details of '1' and the details!")
-            shouldContain("inner clue:\nexpected: \"1\" but was: \"2\"")
+            shouldContain("inner clue:\nexpected:<\"1\"> but was:<\"2\">")
          }
       }
 
       "should show all available nested clue contexts" {
          withClue("clue outer:") {
-            shouldThrow<AssertionError> {"1" shouldBe "2" }.message shouldBe "clue outer:\nexpected: \"2\" but was: \"1\""
+            shouldThrow<AssertionError> {"1" shouldBe "2" }.message shouldBe "clue outer:\nexpected:<\"2\"> but was:<\"1\">"
             withClue("clue inner:") {
-               shouldThrow<AssertionError> {"3" shouldBe "4" }.message shouldBe "clue outer:\nclue inner:\nexpected: \"4\" but was: \"3\""
+               shouldThrow<AssertionError> {"3" shouldBe "4" }.message shouldBe "clue outer:\nclue inner:\nexpected:<\"4\"> but was:<\"3\">"
             }
-            shouldThrow<AssertionError> {"5" shouldBe "6" }.message shouldBe "clue outer:\nexpected: \"6\" but was: \"5\""
+            shouldThrow<AssertionError> {"5" shouldBe "6" }.message shouldBe "clue outer:\nexpected:<\"6\"> but was:<\"5\">"
          }
          //And resets completely when leaving final clue block
-         shouldThrow<AssertionError> {"7" shouldBe "8" }.message shouldBe "expected: \"8\" but was: \"7\""
+         shouldThrow<AssertionError> {"7" shouldBe "8" }.message shouldBe "expected:<\"8\"> but was:<\"7\">"
       }
 
    }
@@ -59,7 +59,7 @@ class ClueTest : FreeSpec({
          val ex = shouldThrow<AssertionError> {
             "a clue:".asClue { "1" shouldBe "2" }
          }
-         ex.message shouldBe "a clue:\nexpected: \"2\" but was: \"1\""
+         ex.message shouldBe "a clue:\nexpected:<\"2\"> but was:<\"1\">"
       }
 
       "should add clues correctly with multiple/softAssert" {
@@ -72,27 +72,28 @@ class ClueTest : FreeSpec({
             }
          }
          ex.message.apply {
-            shouldContain("outer clue:\nexpected: \"the details\" but was: \"1\"")
-            shouldContain("outer clue:\ninner clue:\nexpected: \"1\" but was: \"2\"")
+            shouldContain("outer clue:\nexpected:<\"the details\"> but was:<\"1\">")
+            shouldContain("outer clue:\ninner clue:\nexpected:<\"1\"> but was:<\"2\">")
          }
       }
 
       "should show all available nested clue contexts" {
          data class MyData(val a: Int, val b: String)
          MyData(10, "clue object").asClue {
-            shouldThrow<AssertionError> {it.b shouldBe "2" }.message shouldBe "MyData(a=10, b=clue object)\nexpected: \"2\" but was: \"clue object\""
+            shouldThrow<AssertionError> {it.b shouldBe "2" }.message shouldBe """MyData(a=10, b=clue object)
+|expected:<"2"> but was:<"clue object">""".trimMargin()
          }
 
          data class HttpResponse(val status: Int, val body: String)
          val response = HttpResponse(404, "not found")
          response.asClue {
-            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected: 200 but was: 404"
+            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
             MyData(20, "nest it").asClue { inner ->
-               shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected: 200 but was: 404"
-               shouldThrow<AssertionError> {inner.a shouldBe 10}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected: 10 but was: 20"
+               shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<200> but was:<404>"
+               shouldThrow<AssertionError> {inner.a shouldBe 10}.message shouldBe "HttpResponse(status=404, body=not found)\nMyData(a=20, b=nest it)\nexpected:<10> but was:<20>"
             }
             //after nesting, everything looks as before
-            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected: 200 but was: 404"
+            shouldThrow<AssertionError> {it.status shouldBe 200}.message shouldBe "HttpResponse(status=404, body=not found)\nexpected:<200> but was:<404>"
          }
       }
    }

@@ -8,10 +8,10 @@ object StringShow : Show<String> {
       a == "" -> "<empty string>".printed()
       a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
       else -> a
-         .replace("\\", "\\\\")
-         .replace("\'", "\\\'")
+         //.replace("\\", "\\\\")
+         // .replace("\'", "\\\'")
          .replace("\t", "\\\t")
-         .replace("\"", "\\\"")
+         //.replace("\"", "\\\"")
          .replace("\b", "\\\b")
          .replace("\r", "\\\r")
          .replace("\$", "\\\$")

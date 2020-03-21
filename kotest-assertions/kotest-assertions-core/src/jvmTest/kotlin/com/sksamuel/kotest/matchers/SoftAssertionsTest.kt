@@ -36,7 +36,7 @@ class SoftAssertionsTest : FreeSpec({
         assertSoftly {
           1 shouldBe 2
         }
-      }.message shouldBe "expected: 2 but was: 1"
+      }.message shouldBe "expected:<2> but was:<1>"
     }
 
     "groups multiple failures" {
@@ -47,7 +47,7 @@ class SoftAssertionsTest : FreeSpec({
           "foo" shouldNotBe "foo"
         }
       }.let {
-        it.message should contain("1) expected: 2 but was: 1")
+        it.message should contain("1) expected:<2> but was:<1>")
         it.message should contain("2) \"foo\" should not equal \"foo\"")
       }
     }
@@ -66,7 +66,7 @@ class SoftAssertionsTest : FreeSpec({
           arrayOf("foo") shouldBe arrayOf("bar")
         }
       }.let {
-        it.message should contain("9) expected: [\"bar\"] but was: [\"foo\"]")
+        it.message should contain("9) expected:<[\"bar\"]> but was:<[\"foo\"]>")
         it.message shouldNot contain("10) ")
       }
     }
@@ -111,8 +111,8 @@ class SoftAssertionsTest : FreeSpec({
           }
         }
       }.let {
-        it.message should contain("1) expected: 2 but was: 1")
-        it.message should contain("2) expected: 3 but was: 2")
+        it.message should contain("1) expected:<2> but was:<1>")
+        it.message should contain("2) expected:<3> but was:<2>")
       }
     }
   }

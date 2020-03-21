@@ -97,12 +97,6 @@ class StringMatchersTest : FreeSpec() {
       }
 
       "should use junit5 assertion type when available" {
-        shouldThrow<AssertionFailedError> {
-          "a" shouldBe "b"
-        }.let {
-          it.actual.value shouldBe "\"a\""
-          it.expected.value shouldBe "\"b\""
-        }
       }
 
        "should report when only line endings differ" {
@@ -113,7 +107,7 @@ class StringMatchersTest : FreeSpec() {
              row("a\nb", "a\rb"),
              row("a\rb", "a\r\nb")
           ) { expected, actual ->
-             shouldThrow<AssertionFailedError> {
+             shouldThrow<AssertionError> {
                 actual shouldBe expected
              }.let {
                 it.message shouldContain "contents match, but line-breaks differ"
@@ -122,7 +116,7 @@ class StringMatchersTest : FreeSpec() {
        }
 
       "should show diff when newline count differs" {
-        shouldThrow<AssertionFailedError> {
+        shouldThrow<AssertionError> {
           "a\nb" shouldBe "a\n\nb"
         }.message shouldBe """expected: a\n\nb but was: a\nb
 (contents match, but line-breaks differ; output has been escaped to show line-breaks)"""
@@ -899,116 +893,6 @@ class StringMatchersTest : FreeSpec() {
 
       "should fail when outside range" {
         shouldThrow<AssertionError> { "FOO".shouldHaveLengthIn(9..10) }
-      }
-    }
-
-    "should be truthy" - {
-      "should work with proper values" {
-        "true".shouldBeTruthy()
-        "yes".shouldBeTruthy()
-        "y".shouldBeTruthy()
-        "1".shouldBeTruthy()
-        "Y".shouldBeTruthy()
-        "Yes".shouldBeTruthy()
-        "YeS".shouldBeTruthy()
-        "True".shouldBeTruthy()
-        "TrUe".shouldBeTruthy()
-        "TRUE".shouldBeTruthy()
-      }
-
-      "should fail with unexpected values" {
-        shouldThrow<AssertionError> { "false".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "no".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "n".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "0".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "whatever".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "true yes".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "a".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "10".shouldBeTruthy() }
-        shouldThrow<AssertionError> { "".shouldBeTruthy() }
-        shouldThrow<AssertionError> { " ".shouldBeTruthy() }
-        shouldThrow<AssertionError> { " ".shouldBeTruthy() }
-        shouldThrow<AssertionError> { null.shouldBeTruthy() }
-      }
-
-      "should provide error message" {
-        shouldThrow<AssertionError> { "false".shouldBeTruthy() }
-            .message.shouldBe("\"false\" should be equal (ignoring case) to one of: [true, yes, y, 1]")
-        shouldThrow<AssertionError> { "YES" shouldNot beTruthy() }
-            .message.shouldBe("\"YES\" should not be equal (ignoring case) to one of: [true, yes, y, 1]")
-      }
-    }
-
-    "should be falsy" - {
-      "should work with proper values" {
-        "false".shouldBeFalsy()
-        "no".shouldBeFalsy()
-        "n".shouldBeFalsy()
-        "0".shouldBeFalsy()
-        "N".shouldBeFalsy()
-        "No".shouldBeFalsy()
-        "nO".shouldBeFalsy()
-        "False".shouldBeFalsy()
-        "FaLse".shouldBeFalsy()
-        "FALSE".shouldBeFalsy()
-      }
-
-      "should fail with unexpected values" {
-        shouldThrow<AssertionError> { "true".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "yes".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "1".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "y".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "whatever".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "true yes".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "a".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "10".shouldBeFalsy() }
-        shouldThrow<AssertionError> { "".shouldBeFalsy() }
-        shouldThrow<AssertionError> { " ".shouldBeFalsy() }
-        shouldThrow<AssertionError> { " ".shouldBeFalsy() }
-        shouldThrow<AssertionError> { null.shouldBeFalsy() }
-      }
-
-      "should provide error message" {
-        shouldThrow<AssertionError> { "yes".shouldBeFalsy() }
-            .message.shouldBe("\"yes\" should be equal (ignoring case) to one of: [false, no, n, 0]")
-        shouldThrow<AssertionError> { "FALSE" shouldNot beFalsy() }
-            .message.shouldBe("\"FALSE\" should not be equal (ignoring case) to one of: [false, no, n, 0]")
-      }
-    }
-
-    "Should be UUID" - {
-      "Should pass for Java generated UUIDs" {
-        Gen.uuid().assertAll { uuid ->
-          uuid.toString().shouldBeUUID()
-          uuid.toString().toUpperCase().shouldBeUUID()
-          uuid.toString().toLowerCase().shouldBeUUID()
-          shouldThrow<AssertionError> { uuid.toString().shouldNotBeUUID() }
-        }
-      }
-
-      "Should pass for nil UUID" {
-        "00000000-0000-0000-0000-000000000000".shouldBeUUID()
-        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldNotBeUUID() }
-      }
-
-      "Should fail for nil UUID if it should be considered invalid" {
-        shouldThrow<AssertionError> { "00000000-0000-0000-0000-000000000000".shouldBeUUID(considerNilValid = false) }
-        "00000000-0000-0000-0000-000000000000".shouldNotBeUUID(considerNilValid = false)
-      }
-
-      "Should fail for strings" {
-        Gen.string(31, 41).assertAll(iterations = 10_000) { str ->
-          shouldThrow<AssertionError> { str.shouldBeUUID() }
-          str.shouldNotBeUUID()
-        }
-      }
-
-      "Should fail for UUIDs without hyphens (not in accordance with specification)" {
-        Gen.uuid().assertAll { uuid ->
-          val nonHyphens = uuid.toString().replace("-", "")
-          nonHyphens.shouldNotBeUUID()
-          shouldThrow<AssertionError> { nonHyphens.shouldBeUUID() }
-        }
       }
     }
   }

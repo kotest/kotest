@@ -15,11 +15,13 @@ infix fun <T, U : T> T.shouldBe(expected: U?) {
       else -> {
          val actual = this
          AssertionCounter.inc()
+         // if we have null and non null, usually that's a failure, but people can override equals to allow it
          if (actual == null && expected != null && actual != expected) {
             ErrorCollector.collectOrThrow(actualIsNull(expected))
          } else if (actual != null && expected == null && actual != expected) {
             ErrorCollector.collectOrThrow(expectedIsNull(actual))
          } else if (actual != null && expected != null) {
+            // for two non-null values, we use the [eq] typeclass.
             val t = eq(actual, expected)
             if (t != null)
                ErrorCollector.collectOrThrow(t)

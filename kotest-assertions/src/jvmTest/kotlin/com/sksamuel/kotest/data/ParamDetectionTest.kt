@@ -15,7 +15,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo ->
             foo shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1) with error expected: 0 but was: 1"
+      }.message shouldBe "Test failed for (foo, 1) with error expected:<0> but was:<1>"
    }
 
 
@@ -26,7 +26,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar ->
             foo * bar shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2) with error expected: 0 but was: 2"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2) with error expected:<0> but was:<2>"
    }
 
    "row3 should detect header names from params" {
@@ -36,7 +36,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo ->
             foo * bar * woo shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3) with error expected: 0 but was: 6"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3) with error expected:<0> but was:<6>"
    }
 
    "row4 should detect header names from params" {
@@ -46,7 +46,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo, boo ->
             foo * bar * woo * boo shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (woo, 4) with error expected: 0 but was: 24"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (woo, 4) with error expected:<0> but was:<24>"
    }
 
    "row5 should detect header names from params" {
@@ -56,7 +56,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo, boo, war ->
             foo * bar * woo * boo * war shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5) with error expected: 0 but was: 120"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5) with error expected:<0> but was:<120>"
    }
 
    "row6 should detect header names from params" {
@@ -66,7 +66,7 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo, boo, war, tar ->
             foo * bar * woo * boo * war * tar shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5), (tar, 6) with error expected: 0 but was: 720"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5), (tar, 6) with error expected:<0> but was:<720>"
    }
 
    "row7 should detect header names from params" {
@@ -76,6 +76,6 @@ class ParamDetectionTest : StringSpec({
          ) { foo, bar, woo, boo, war, tar, baz ->
             foo * bar * woo * boo * war * tar * baz shouldBe 0
          }
-      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5), (tar, 6), (baz, 7) with error expected: 0 but was: 5040"
+      }.message shouldBe "Test failed for (foo, 1), (bar, 2), (woo, 3), (boo, 4), (war, 5), (tar, 6), (baz, 7) with error expected:<0> but was:<5040>"
    }
 })

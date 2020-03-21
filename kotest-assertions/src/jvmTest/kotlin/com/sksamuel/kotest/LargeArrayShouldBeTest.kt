@@ -718,5 +718,5 @@ class LargeArrayShouldBeTest : FunSpec({
 
    shouldThrowAny {
       a shouldBe b
-   }.message shouldBe """expected: [0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, ...] and 324 more but was: [-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, ...] and 340 more"""
+   }.message shouldBe """expected:<[0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, ...] and 324 more> but was:<[-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, ...] and 340 more>"""
 })

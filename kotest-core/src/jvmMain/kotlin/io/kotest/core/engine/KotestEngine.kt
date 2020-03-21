@@ -7,8 +7,8 @@ import io.kotest.core.extensions.SpecifiedTagsTagExtension
 import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.internal.NamedThreadFactory
 import io.kotest.core.listeners.Listener
-import io.kotest.core.runtime.afterAll
-import io.kotest.core.runtime.beforeAll
+import io.kotest.core.runtime.afterProject
+import io.kotest.core.runtime.beforeProject
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
@@ -19,7 +19,6 @@ import java.util.Collections.emptyList
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
-import kotlin.system.exitProcess
 
 class KotestEngine(
    val classes: List<KClass<out Spec>>,
@@ -107,17 +106,17 @@ class KotestEngine(
 
    fun execute() {
       notifyTestEngineListener()
-         .flatMap { (listeners + Project.listeners()).beforeAll() }
+         .flatMap { (listeners + Project.listeners()).beforeProject() }
          .flatMap { submitAll() }
          .fold(
             {
                // any exception here is swallowed, as we already have an exception to report
-               (listeners + Project.listeners()).afterAll()
+               (listeners + Project.listeners()).afterProject()
                end(it)
             },
             {
                // any exception here is used to notify the listener
-               (listeners + Project.listeners()).afterAll().fold(
+               (listeners + Project.listeners()).afterProject().fold(
                   { t -> end(t) },
                   { end(null) }
                )

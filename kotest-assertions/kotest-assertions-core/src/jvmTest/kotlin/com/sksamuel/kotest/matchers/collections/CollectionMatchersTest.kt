@@ -436,7 +436,7 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with a single incorrect elements" {
             shouldThrow<AssertionError> {
                listOf(2).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("expected: 1 but was: 2")
+            }.shouldHaveMessage("expected:<1> but was:<2>")
          }
 
          "fail for collection with 2+ elements" {

@@ -51,9 +51,9 @@ abstract class AnnotationSpec : Spec() {
    private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
       return if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         createTestCase(name, callWhileExpectingException(expected), config, TestType.Test)
+         createTestCase(name, callExpectingException(expected), config, TestType.Test)
       } else {
-         createTestCase(name, { callSuspend(this@AnnotationSpec) }, config, TestType.Test)
+         createTestCase(name, callNotExpectingException(), config, TestType.Test)
       }
    }
 
@@ -75,7 +75,7 @@ abstract class AnnotationSpec : Spec() {
       return annotations.filterIsInstance<Test>().first().expected
    }
 
-   private fun KFunction<*>.callWhileExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
+   private fun KFunction<*>.callExpectingException(expected: KClass<out Throwable>): suspend TestContext.() -> Unit {
       return {
          val thrown = try {
             callSuspend(this@AnnotationSpec)
@@ -85,6 +85,16 @@ abstract class AnnotationSpec : Spec() {
          } ?: failNoExceptionThrown(expected)
 
          if (thrown::class != expected) failWrongExceptionThrown(expected, thrown)
+      }
+   }
+
+   private fun KFunction<*>.callNotExpectingException(): suspend TestContext.() -> Unit {
+      return {
+         try {
+            callSuspend(this@AnnotationSpec)
+         } catch (t: Throwable) {
+            throw t.unwrapIfReflectionCall()
+         }
       }
    }
 

@@ -14,17 +14,17 @@ import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 
 /**
- * Invokes any afterAll functions from the given listeners.
+ * Invokes any afterProject functions from the given listeners.
  */
-fun List<Listener>.afterAll(): Try<Unit> = Try {
+fun List<Listener>.afterProject(): Try<Unit> = Try {
    log("invokeAfterAll")
    filterIsInstance<ProjectListener>().forEach { it.afterProject() }
 }.mapFailure { AfterProjectListenerException(it) }
 
 /**
- * Invokes the before project listeners, and prints project config using [dumpProjectConfig].
+ * Invokes the beforeProject listeners, and prints project config using [dumpProjectConfig].
  */
-fun List<Listener>.beforeAll() = Try {
+fun List<Listener>.beforeProject() = Try {
    log("invokeBeforeAll")
    Project.dumpProjectConfig()
    filterIsInstance<ProjectListener>().forEach { it.beforeProject() }

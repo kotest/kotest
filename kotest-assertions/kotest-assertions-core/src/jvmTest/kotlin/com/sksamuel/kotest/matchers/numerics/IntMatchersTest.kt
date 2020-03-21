@@ -54,7 +54,7 @@ class IntMatchersTest : StringSpec() {
       "should return expected/actual in intellij format" {
          shouldThrow<AssertionError> {
             1 shouldBe 444
-         }.message shouldBe "expected: 444 but was: 1"
+         }.message shouldBe "expected:<444> but was:<1>"
       }
 
       "shouldBe should support ints" {

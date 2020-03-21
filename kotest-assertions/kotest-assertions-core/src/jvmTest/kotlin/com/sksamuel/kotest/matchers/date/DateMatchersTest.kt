@@ -213,7 +213,7 @@ class DateMatchersTest : StringSpec() {
       shouldThrow<AssertionError> {
         ZonedDateTime.of(2019, 12, 10, 10, 0, 0, 0, ZoneOffset.UTC) shouldBe
           ZonedDateTime.of(2019, 12, 10, 4, 1, 0, 0, ZoneId.of("America/Chicago")).atSameZone()
-      }.message shouldBe "expected: 2019-12-10T10:01Z but was: 2019-12-10T10:00Z"
+      }.message shouldBe "expected:<2019-12-10T10:01Z> but was:<2019-12-10T10:00Z>"
     }
 
     "OffsetDateTime shouldBe before" {

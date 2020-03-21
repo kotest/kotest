@@ -41,10 +41,10 @@ The following elements passed:
 4
 
 The following elements failed:
-1 => expected: 4 but was: 1
-2 => expected: 4 but was: 2
-3 => expected: 4 but was: 3
-5 => expected: 4 but was: 5"""
+1 => expected:<4> but was:<1>
+2 => expected:<4> but was:<2>
+3 => expected:<4> but was:<3>
+5 => expected:<4> but was:<5>"""
       }
       "fail if all elements pass fn test" {
         shouldThrow<AssertionError> {
@@ -145,11 +145,11 @@ The following elements passed:
 --none--
 
 The following elements failed:
-1 => expected: 22 but was: 1
-2 => expected: 22 but was: 2
-3 => expected: 22 but was: 3
-4 => expected: 22 but was: 4
-5 => expected: 22 but was: 5"""
+1 => expected:<22> but was:<1>
+2 => expected:<22> but was:<2>
+3 => expected:<22> but was:<3>
+4 => expected:<22> but was:<4>
+5 => expected:<22> but was:<5>"""
       }
     }
 
@@ -175,11 +175,11 @@ The following elements passed:
 --none--
 
 The following elements failed:
-1 => expected: 6 but was: 1
-2 => expected: 6 but was: 2
-3 => expected: 6 but was: 3
-4 => expected: 6 but was: 4
-5 => expected: 6 but was: 5"""
+1 => expected:<6> but was:<1>
+2 => expected:<6> but was:<2>
+3 => expected:<6> but was:<3>
+4 => expected:<6> but was:<4>
+5 => expected:<6> but was:<5>"""
       }
     }
 
@@ -232,11 +232,11 @@ The following elements passed:
 --none--
 
 The following elements failed:
-1 => expected: 33 but was: 1
-2 => expected: 33 but was: 2
-3 => expected: 33 but was: 3
-4 => expected: 33 but was: 4
-5 => expected: 33 but was: 5"""
+1 => expected:<33> but was:<1>
+2 => expected:<33> but was:<2>
+3 => expected:<33> but was:<3>
+4 => expected:<33> but was:<4>
+5 => expected:<33> but was:<5>"""
       }
     }
   }
