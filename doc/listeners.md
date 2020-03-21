@@ -12,81 +12,20 @@ The main interface is _TestListener_. The following sections describe the callba
 
 
 
-#### beforeTest
-
-`beforeTest` is invoked directly before each test is executed with the `TestCase` instance as a parameter. If the test is marked as ignored / disabled / inactive, then this callback won't be invoked.
-
-
-
-#### afterTest
-
-The `afterTest` callback is invoked immediately after a `TestCase` has finished with the `TestResult` of that test. If a test case was skipped (ignored / disabled / inactive) then this callback will not be invoked for that particular test case. The callback will execute even if the test fails.
-
-
-
-#### beforeSpec
-
-The `beforeSpec` callback is invoked after the Engine instantiates a spec to be used as part of a test execution.
-The callback is provided with the `Spec` instance that the test will be executed under.
-
-If a spec is instantiated multiple times - for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, then this callback will be invoked for each instance created, just before the first test (or only test) is executed for that spec.
-
-This callback should be used if you need to perform setup each time a new spec instance is created.
-If you simply need to perform setup once per class file, then use prepareSpec. This callback runs before any `beforeTest` functions are invoked.
-
-When running in the default `SingleInstance` isolation mode, then this callback and `prepareSpec` are functionally the same since all tests will run in the same spec instance.
+|Callback|Description|
+|--------|-----------|
+|beforeTest|Invoked directly before each test is executed with the `TestCase` instance as a parameter. If the test is marked as ignored / disabled / inactive, then this callback won't be invoked.|
+|afterTest|Invoked immediately after a `TestCase` has finished with the `TestResult` of that test. If a test case was skipped (ignored / disabled / inactive) then this callback will not be invoked for that particular test case.<br/><br/>The callback will execute even if the test fails.
+|beforeSpec|Invoked after the Engine instantiates a spec to be used as part of a test execution.<br/><br/>The callback is provided with the `Spec` instance that the test will be executed under.<br/><br/>If a spec is instantiated multiple times - for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, then this callback will be invoked for each instance created, just before the first test (or only test) is executed for that spec.<br/><br/>This callback should be used if you need to perform setup each time a new spec instance is created.<br/><br/>If you simply need to perform setup once per class file, then use prepareSpec. This callback runs before any `beforeTest` functions are invoked.<br/><br/> When running in the default `SingleInstance` isolation mode, then this callback and `prepareSpec` are functionally the same since all tests will run in the same spec instance.|
+|afterSpec|Is invoked after the `TestCase`s that are part of a particular spec instance have completed.<br/><br/>If a spec is instantiated multiple times - for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, then this callback will be invoked for each instantiated spec, after the tests that are applicable to that spec instance have returned.<br/><br/>This callback should be used if you need to perform cleanup after each individual spec instance. If you need to perform cleanup once per class file, then use `finalizeSpec.`<br/><br/>This callback runs after any `afterTest` callbacks have been invoked.<br/><br/>When running in the default `SingleInstance` isolation mode, then this callback and `finalizeSpec` are functionally the same since all tests will run in the same spec instance.|
+|prepareSpec|Called once per spec, when the engine is preparing to execute the tests for that spec. The `KClass` instance of the spec is provided as a parameter.<br/><br/>Regardless of how many times the spec is instantiated, for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, this callback will only be invoked once. If there are no active tests in a spec, then this callback will still be invoked.<br/><br/>When running in the default `SingleInstance` isolation mode, then this callback and `beforeSpec` are functionally the same since all tests will run in the same spec instance.|
+|finalizeSpec|Called once per `Spec`, after all tests have completed for that spec.<br/><br/>Regardless of how many times the spec is instantiated, for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, this callback will only be invoked once.<br/><br/>The results parameter contains every `TestCase`, along with the result of that test, including tests that were ignored (which will have a `TestResult` that has `TestStatus.Ignored`).<br/><br/>When running in the default `SingleInstance` isolation mode, then this callback and `afterSpec` are functionally the same since all tests will run in the same spec instance.|
+|beforeInvocation|Invoked before each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.<br/><br/>If you are running a test with the default single invocation then this callback is effectively the same as `beforeTest`.<br/><br/>_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._|
+|afterInvocation|Invoked after each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.<br/><br/>If you are running a test with the default single invocation then this callback is effectively the same as `afterTest`.<br/><br/>_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._|
 
 
 
-#### afterSpec
 
-Is invoked after the `TestCase`s that are part of a particular spec instance have completed.
-
-If a spec is instantiated multiple times - for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, then this callback will be invoked for each instantiated spec, after the tests that are applicable to that spec instance have returned.
-
-This callback should be used if you need to perform cleanup after each individual spec instance. If you need to perform cleanup once per class file, then use `finalizeSpec.`
-
-This callback runs after any `afterTest` callbacks have been invoked.
-
-When running in the default `SingleInstance` isolation mode, then this callback and `finalizeSpec` are functionally the same since all tests will run in the same spec instance.
-
-
-
-#### prepareSpec
-
-Called once per spec, when the engine is preparing to execute the tests for that spec. The `KClass` instance of the spec is provided as a parameter.
-
-Regardless of how many times the spec is instantiated, for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, this callback will only be invoked once. If there are no active tests in a spec, then this callback will still be invoked.
-
-When running in the default `SingleInstance` isolation mode, then this callback and `beforeSpec` are functionally the same since all tests will run in the same spec instance.
-
-
-
-#### finalizeSpec
-
-Called once per `Spec`, after all tests have completed for that spec.
-
-Regardless of how many times the spec is instantiated, for example, if `InstancePerTest` or `InstancePerLeaf` isolation modes are used, this callback will only be invoked once.
-
-The results parameter contains every `TestCase`, along with the result of that test, including tests that were ignored (which will have a `TestResult` that has `TestStatus.Ignored`).
-
-When running in the default `SingleInstance` isolation mode, then this callback and `afterSpec` are functionally the same since all tests will run in the same spec instance.
-
-
-
-#### beforeInvocation
-
-`beforeInvocation` is invoked before each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.
-If you are running a test with the default single invocation then this callback is effectively the same as `beforeTest`.
-
-_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._
-
-#### afterInvocation
-
-`afterInvocation` is invoked after each 'run' of a test, with a flag indicating the iteration number. This callback is useful if you have set a test to have multiple invocations via config and want to do some setup / teardown between runs.
-If you are running a test with the default single invocation then this callback is effectively the same as `afterTest`.
-
-_Note: If you have set multiple invocations _and_ multiple threads, then these callbacks will be invoked concurrently._
 
 
 
@@ -94,16 +33,14 @@ _Note: If you have set multiple invocations _and_ multiple threads, then these c
 ProjectListener
 ------------
 
-
 The other listener interface is `ProjectListener` which defines two callbacks.
 
-#### beforeProject
 
-This callback is invoked once before any spec discovery and execution takes place.
+|Callback|Description|
+|--------|-----------|
+|beforeProject|This callback is invoked once before any spec discovery and execution takes place.|
+|afterProject|This callback is invoked once after all specs have completed. This callback is executed even if there are errors in specs / test cases.
 
-#### afterProject
-
-This callback is invoked once after all specs have completed. This callback is executed even if there are errors in specs / test cases.
 
 
 How to use a Listener
