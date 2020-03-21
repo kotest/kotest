@@ -390,14 +390,6 @@ Kotest has a comprehesive and powerful property support out of the box which is 
 
 
 
-### Discovery Extensions
-
-Kotest allows developers to configure how test classes are discovered. By default classes are scanned from the classpath
-but this extension allows developers to inject classes from any source. For full details see [here](discovery_extension.md)
-
-
-
-
 
 Data-driven Testing
 --------------------
@@ -450,17 +442,11 @@ All specs allow you to control the isolation mode. Full instructions can be foun
 Test Case Config
 ------------------------------
 
+
 Each test can be configured with various parameters. After the test name, invoke the config function
- passing in the parameters you wish to set. The available parameters are:
+ passing in the parameters you wish to set. The available parameters include `enabled`, `timeout`, `threads`, `invocations`, `tags` and more.
 
-* `invocations` - The number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times to see if it eventually fails. A test will only succeed if all invocations succeed. Defaults to 1.
-* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
-* `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
-* `enabledIf` - A function which provides the same ability as `enabled` but is lazily evaluated when the test case is due for execution.
-* `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `kotlin.Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
-* `tags` - a set of tags that can be used to group tests (see detailed description below).
-
-Examples of setting config:
+An example of using config to run a test 10 times, over 2 threads, is like this:
 
 ```kotlin
 class MyTests : ShouldSpec() {
@@ -473,43 +459,7 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-```kotlin
-class MyTests : WordSpec() {
-  init {
-    "String.length" should {
-      "return the length of the string".config(timeout = 2.seconds) {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
-      }
-    }
-  }
-}
-```
-
-```kotlin
-class FunSpecTest : FunSpec() {
-  init {
-    test("FunSpec should support config syntax").config(tags = setOf(Database, Linux)) {
-      // ...
-    }
-  }
-}
-```
-
-You can also specify a default TestCaseConfig for all test cases of a Spec:
-
-```kotlin
-class MySpec : StringSpec() {
-
-  override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
-
-  init {
-    // your test cases ...
-  }
-}
-```
-
-
+All the test config settings are enumerated on this [page](test_case_config.md).
 
 
 
