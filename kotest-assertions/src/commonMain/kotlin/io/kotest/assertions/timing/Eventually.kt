@@ -1,16 +1,35 @@
 package io.kotest.assertions.timing
 
 import io.kotest.assertions.failure
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
+import kotlin.time.milliseconds
 
 @OptIn(ExperimentalTime::class)
-inline fun <T> eventually(duration: Duration, f: () -> T): T = eventually(duration, Exception::class, f)
+suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
+   eventually(duration, 10.milliseconds, Exception::class, f)
 
 @OptIn(ExperimentalTime::class)
-inline fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KClass<E>, f: () -> T): T {
+suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
+   eventually(duration, poll, Exception::class, f)
+
+@OptIn(ExperimentalTime::class)
+suspend fun <T, E : Throwable> eventually(
+   duration: Duration,
+   exceptionClass: KClass<E>,
+   f: suspend () -> T
+): T = eventually(duration, 10.milliseconds, exceptionClass, f)
+
+@OptIn(ExperimentalTime::class)
+suspend fun <T, E : Throwable> eventually(
+   duration: Duration,
+   poll: Duration,
+   exceptionClass: KClass<E>,
+   f: suspend () -> T
+): T {
    val end = TimeSource.Monotonic.markNow().plus(duration)
    var times = 0
    var firstError: Throwable? = null
@@ -28,8 +47,10 @@ inline fun <T, E : Throwable> eventually(duration: Duration, exceptionClass: KCl
          lastError = e
       }
       times++
+      delay(poll.toLongMilliseconds())
    }
-   val underlyingCause = if (lastError == null) "" else "; first cause was ${firstError?.message}; last cause was ${lastError.message}"
+   val underlyingCause =
+      if (lastError == null) "" else "; first cause was ${firstError?.message}; last cause was ${lastError.message}"
    throw failure(
       "Test failed after ${duration.toLongMilliseconds()}ms; attempted $times times$underlyingCause",
       lastError

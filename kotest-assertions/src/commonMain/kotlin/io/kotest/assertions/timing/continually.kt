@@ -1,16 +1,17 @@
 package io.kotest.assertions.timing
 
 import io.kotest.assertions.failure
+import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 import kotlin.time.milliseconds
 
 @OptIn(ExperimentalTime::class)
-inline fun <T> continually(durationMs: Long, f: () -> T): T? = continually(durationMs.milliseconds, f)
+suspend fun <T> continually(duration: Duration, f: suspend () -> T): T? = continually(duration, 10.milliseconds, f)
 
 @OptIn(ExperimentalTime::class)
-inline fun <T> continually(duration: Duration, f: () -> T): T? {
+suspend fun <T> continually(duration: Duration, poll: Duration, f: suspend () -> T): T? {
    val mark = TimeSource.Monotonic.markNow()
    val end = mark.plus(duration)
    var times = 0
@@ -24,11 +25,13 @@ inline fun <T> continually(duration: Duration, f: () -> T): T? {
             throw e
          // if not the first attempt then include how many times/for how long the test passed
          throw failure(
-            "Test failed after ${mark.elapsedNow().toLongMilliseconds()}ms; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
+            "Test failed after ${mark.elapsedNow()
+               .toLongMilliseconds()}ms; expected to pass for ${duration.toLongMilliseconds()}ms; attempted $times times\nUnderlying failure was: ${e.message}",
             e
          )
       }
       times++
+      delay(poll.toLongMilliseconds())
    }
    return result
 }
