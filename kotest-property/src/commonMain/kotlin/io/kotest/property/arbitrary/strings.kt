@@ -3,7 +3,6 @@ package io.kotest.property.arbitrary
 import io.kotest.fp.firstOption
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
-import io.kotest.property.azstring
 import kotlin.random.nextInt
 
 /**
@@ -36,12 +35,7 @@ fun Arb.Companion.string(
 fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
-fun Arb.Companion.email(usernameSize: IntRange = 3..10, domainSize: IntRange = 3..10) = Arb.create {
-   val username = it.random.azstring(usernameSize)
-   val domain = it.random.azstring(domainSize)
-   val tld = listOf("com", "net", "gov", "co.uk", "jp", "nl", "ru", "de", "com.br", "it", "pl", "io")
-   "$username@$domain.$tld"
-}
+
 
 object StringShrinker : Shrinker<String> {
 

@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 inline fun <reified A> Arb.Companion.default(): Arb<A> = forClass(A::class)
 
+@Suppress("UNCHECKED_CAST")
 fun <A> defaultForClass(kClass: KClass<*>): Arb<A>? {
    return when (kClass.bestName()) {
       "java.lang.String", "kotlin.String", "String" -> Arb.string() as Arb<A>

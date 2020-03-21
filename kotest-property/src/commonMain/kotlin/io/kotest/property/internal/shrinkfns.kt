@@ -4,8 +4,6 @@ import io.kotest.property.PropertyContext
 import io.kotest.property.Sample
 import io.kotest.property.ShrinkingMode
 
-typealias ShrinkFn = suspend () -> List<Any?>
-
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
@@ -14,7 +12,7 @@ fun <A> shrinkfn(
    a: Sample<A>,
    property: suspend PropertyContext.(A) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    with(context) {
@@ -32,7 +30,7 @@ fun <A, B> shrinkfn(
    b: Sample<B>,
    property: suspend PropertyContext.(A, B) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    val context = PropertyContext()
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value) }
@@ -51,7 +49,7 @@ fun <A, B, C> shrinkfn(
    c: Sample<C>,
    property: suspend PropertyContext.(A, B, C) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    with(context) {
@@ -73,7 +71,7 @@ fun <A, B, C, D> shrinkfn(
    d: Sample<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    with(context) {
@@ -84,6 +82,7 @@ fun <A, B, C, D> shrinkfn(
       listOf(smallestA, smallestB, smallestC, smallestD)
    }
 }
+
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
  * the smallest failing case.
@@ -96,7 +95,7 @@ fun <A, B, C, D, E> shrinkfn(
    e: Sample<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    with(context) {
@@ -122,16 +121,22 @@ fun <A, B, C, D, E, F> shrinkfn(
    f: Sample<F>,
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit,
    shrinkingMode: ShrinkingMode
-): ShrinkFn = {
+): suspend () -> List<Any?> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    with(context) {
-      val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value) }
-      val smallestB = doShrinking(b.shrinks, shrinkingMode) { property(smallestA, it, c.value, d.value, e.value, f.value) }
-      val smallestC = doShrinking(c.shrinks, shrinkingMode) { property(smallestA, smallestB, it, d.value, e.value, f.value) }
-      val smallestD = doShrinking(d.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, it, e.value, f.value) }
-      val smallestE = doShrinking(e.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, it, f.value) }
-      val smallestF = doShrinking(f.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, smallestE, it) }
+      val smallestA =
+         doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value, f.value) }
+      val smallestB =
+         doShrinking(b.shrinks, shrinkingMode) { property(smallestA, it, c.value, d.value, e.value, f.value) }
+      val smallestC =
+         doShrinking(c.shrinks, shrinkingMode) { property(smallestA, smallestB, it, d.value, e.value, f.value) }
+      val smallestD =
+         doShrinking(d.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, it, e.value, f.value) }
+      val smallestE =
+         doShrinking(e.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, it, f.value) }
+      val smallestF =
+         doShrinking(f.shrinks, shrinkingMode) { property(smallestA, smallestB, smallestC, smallestD, smallestE, it) }
       listOf(smallestA, smallestB, smallestC, smallestD, smallestE, smallestF)
    }
 }

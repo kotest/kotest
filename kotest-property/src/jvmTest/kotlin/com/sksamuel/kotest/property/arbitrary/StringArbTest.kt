@@ -2,6 +2,7 @@ package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
+import io.kotest.property.PropTestConfig
 import io.kotest.property.arbitrary.arabic
 import io.kotest.property.arbitrary.armenian
 import io.kotest.property.arbitrary.ascii

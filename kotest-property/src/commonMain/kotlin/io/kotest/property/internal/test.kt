@@ -10,7 +10,7 @@ import io.kotest.property.PropertyContext
 internal suspend fun test(
    context: PropertyContext,
    config: PropTestConfig,
-   shrinkfn: ShrinkFn,
+   shrinkfn: suspend () -> List<Any?>,
    inputs: List<Any?>,
    seed: Long,
    fn: suspend () -> Any
@@ -35,7 +35,7 @@ internal suspend fun test(
 
 internal suspend fun handleException(
    context: PropertyContext,
-   shrinkfn: ShrinkFn,
+   shrinkfn: suspend () -> List<Any?>,
    inputs: List<Any?>,
    seed: Long,
    e: Throwable,

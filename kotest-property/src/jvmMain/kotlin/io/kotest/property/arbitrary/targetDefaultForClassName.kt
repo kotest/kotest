@@ -11,6 +11,7 @@ import java.time.LocalTime
 import java.time.Period
 import kotlin.reflect.full.isSubclassOf
 
+@Suppress("UNCHECKED_CAST")
 actual inline fun <reified A> targetDefaultForClass(): Arb<A>? {
    return when {
       A::class.isSubclassOf(List::class) -> {

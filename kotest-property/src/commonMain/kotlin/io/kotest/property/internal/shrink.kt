@@ -4,6 +4,7 @@ import io.kotest.assertions.show.show
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
+import io.kotest.property.isEmpty
 import kotlin.time.ExperimentalTime
 
 /**
@@ -21,6 +22,9 @@ internal suspend fun <A> doShrinking(
    mode: ShrinkingMode,
    test: suspend (A) -> Unit
 ): A {
+
+   if (initial.isEmpty())
+      return initial.value
 
    val counter = Counter()
    val tested = mutableSetOf<A>()

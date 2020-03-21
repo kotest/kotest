@@ -3,16 +3,12 @@ buildscript {
    repositories {
       mavenCentral()
       mavenLocal()
+      google()
    }
 
    dependencies {
-      classpath("com.android.tools.build:gradle:3.5.3")
+     classpath("com.android.tools.build:gradle:3.6.0")
       // classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
-   }
-
-   repositories {
-      mavenCentral()
-      google()
    }
 }
 

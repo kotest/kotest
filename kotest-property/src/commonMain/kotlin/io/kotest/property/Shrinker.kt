@@ -39,3 +39,5 @@ fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
    val c = lazy { children.value.map { it.map(f) } }
    return RTree(b, c)
 }
+
+fun <A> RTree<A>.isEmpty() = this.children.value.isEmpty()
