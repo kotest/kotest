@@ -1,4 +1,4 @@
-package io.kotlintest.samples.gradle
+package io.kotest.samples.gradle
 
 import io.kotlintest.matchers.string.shouldBeLowerCase
 import io.kotlintest.matchers.string.shouldBeUpperCase

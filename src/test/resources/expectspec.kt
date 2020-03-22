@@ -1,6 +1,6 @@
-package com.sksamuel.kotlintest.specs.expect
+package com.sksamuel.kotest.specs.expect
 
-import io.kotlintest.specs.ExpectSpec
+import io.kotest.core.spec.style.ExpectSpec
 
 class ExpectSpecExample : ExpectSpec() {
   init {

@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.specs.stringspec
+package com.sksamuel.kotest.specs.stringspec
 
 import io.kotlintest.specs.StringSpec
 

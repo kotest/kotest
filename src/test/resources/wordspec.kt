@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.specs.wordspec
+package com.sksamuel.kotest.specs.wordspec
 
 import io.kotlintest.specs.WordSpec
 

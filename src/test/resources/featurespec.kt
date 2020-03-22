@@ -1,7 +1,7 @@
-package com.sksamuel.kotlintest.specs.feature
+package com.sksamuel.kotest.specs.feature
 
-import io.kotlintest.matchers.numerics.shouldBeLessThan
-import io.kotlintest.specs.FeatureSpec
+import io.kotest.matchers.numerics.shouldBeLessThan
+import io.kotest.specs.FeatureSpec
 
 class FeatureSpecExample : FeatureSpec() {
   init {

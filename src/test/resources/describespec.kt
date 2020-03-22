@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.specs.describe
+package com.sksamuel.kotest.specs.describe
 
 import io.kotlintest.specs.DescribeSpec
 

@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.specs.behavior
+package com.sksamuel.kotest.specs.behavior
 
 import io.kotlintest.matchers.string.shouldStartWith
 import io.kotlintest.shouldBe

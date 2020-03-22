@@ -1,4 +1,4 @@
-package com.sksamuel.kotlintest.specs.shouldspec
+package com.sksamuel.kotest.specs.shouldspec
 
 import io.kotlintest.specs.ShouldSpec
 

@@ -1,6 +1,6 @@
-package com.sksamuel.kotlintest.specs.freespec
+package com.sksamuel.kotest.specs.freespec
 
-import io.kotlintest.specs.FreeSpec
+import io.kotest.core.spec.style.FreeSpec
 
 class FreeSpecExample : FreeSpec() {
   init {
