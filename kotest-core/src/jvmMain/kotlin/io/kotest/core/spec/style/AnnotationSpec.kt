@@ -9,6 +9,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 typealias Test = AnnotationSpec.Test
 
@@ -59,6 +60,7 @@ abstract class AnnotationSpec : Spec() {
 
    override fun materializeRootTests(): List<TestCase> {
       return this::class.findTestFunctions().map {
+         it.isAccessible = true
          if (it.isIgnoredTest()) {
             it.toIgnoredTestCase()
          } else {

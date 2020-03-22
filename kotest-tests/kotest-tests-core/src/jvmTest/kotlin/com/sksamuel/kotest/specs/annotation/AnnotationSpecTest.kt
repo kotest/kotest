@@ -24,8 +24,8 @@ class AnnotationSpecTest : AnnotationSpec() {
       count += 1
    }
 
-   @Test
-   fun test2() {
+   @Test // should find private tests too
+   private fun test2() {
       count += 1
    }
 
