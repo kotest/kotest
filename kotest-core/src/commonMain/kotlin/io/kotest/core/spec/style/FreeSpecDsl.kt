@@ -3,6 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
+import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
@@ -11,21 +12,27 @@ import kotlin.time.ExperimentalTime
 
 interface FreeSpecDsl : SpecDsl {
 
+   // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecScope.() -> Unit) =
       addTest(this, { FreeSpecScope(this, this@FreeSpecDsl).test() }, defaultConfig(), TestType.Container)
 
+   // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend TestContext.() -> Unit) =
       addTest(this, test, defaultConfig(), TestType.Test)
 
+   // adds a leaf test with config
    @OptIn(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
-      timeout: Duration? = null,
+      invocations: Int? = null,
+      threads: Int? = null,
       tags: Set<Tag>? = null,
+      timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
+      enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
       addTest(this, test, config, TestType.Test)
    }
 }

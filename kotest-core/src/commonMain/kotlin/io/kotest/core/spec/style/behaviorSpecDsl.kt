@@ -9,6 +9,7 @@ import io.kotest.core.test.createTestName
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.EnabledIf
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -32,12 +33,15 @@ interface BehaviorSpecDsl : SpecDsl {
    class TestScope(val name: String, val context: TestContext, val dsl: BehaviorSpecDsl) {
       suspend fun config(
          enabled: Boolean? = null,
-         timeout: Duration? = null,
+         invocations: Int? = null,
+         threads: Int? = null,
          tags: Set<Tag>? = null,
+         timeout: Duration? = null,
          extensions: List<TestCaseExtension>? = null,
-         test: TestContext.() -> Unit
+         enabledIf: EnabledIf? = null,
+         test: suspend TestContext.() -> Unit
       ) {
-         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
          context.registerTestCase(name, { test.invoke(this) }, config, TestType.Test)
       }
    }

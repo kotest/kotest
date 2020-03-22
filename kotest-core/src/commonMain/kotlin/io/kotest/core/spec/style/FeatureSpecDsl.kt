@@ -21,13 +21,15 @@ interface FeatureSpecDsl : SpecDsl {
 class ScenarioBuilder(val name: String, val context: TestContext, val dsl: SpecDsl) {
    suspend fun config(
       enabled: Boolean? = null,
-      timeout: Duration? = null,
+      invocations: Int? = null,
+      threads: Int? = null,
       tags: Set<Tag>? = null,
+      timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf)
+      val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
       context.registerTestCase(name, test, config, TestType.Test)
    }
 }

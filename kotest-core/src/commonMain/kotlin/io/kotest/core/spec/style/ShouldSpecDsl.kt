@@ -43,12 +43,15 @@ interface ShouldSpecDsl : SpecDsl {
    ) {
       fun config(
          enabled: Boolean? = null,
-         timeout: Duration? = null,
+         invocations: Int? = null,
+         threads: Int? = null,
          tags: Set<Tag>? = null,
+         timeout: Duration? = null,
          extensions: List<TestCaseExtension>? = null,
+         enabledIf: EnabledIf? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = specDsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = specDsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
          register(test, config)
       }
    }
@@ -73,12 +76,15 @@ class ShouldScope(val context: TestContext, private val dsl: SpecDsl) {
    inner class Testbuilder(val register: suspend (suspend TestContext.() -> Unit, TestCaseConfig) -> Unit) {
       suspend fun config(
          enabled: Boolean? = null,
-         timeout: Duration? = null,
+         invocations: Int? = null,
+         threads: Int? = null,
          tags: Set<Tag>? = null,
+         timeout: Duration? = null,
          extensions: List<TestCaseExtension>? = null,
+         enabledIf: EnabledIf? = null,
          test: suspend TestContext.() -> Unit
       ) {
-         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout)
+         val config = dsl.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
          register(test, config)
       }
    }

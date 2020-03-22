@@ -31,7 +31,8 @@ interface FunSpecDsl : SpecDsl {
          test: suspend TestContext.() -> Unit
       ) {
          val config =
-            spec.defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
+            spec.defaultConfig()
+               .deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
          spec.addTest(name, test, config, TestType.Test)
       }
    }
@@ -59,7 +60,7 @@ interface FunSpecDsl : SpecDsl {
             tags: Set<Tag>? = null,
             timeout: Duration? = null,
             extensions: List<TestCaseExtension>? = null,
-            enabledIf: EnabledIf?,
+            enabledIf: EnabledIf? = null,
             test: suspend TestContext.() -> Unit
          ) {
             val config = spec.defaultConfig()
