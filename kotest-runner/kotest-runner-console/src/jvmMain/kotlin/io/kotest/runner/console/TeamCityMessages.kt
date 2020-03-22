@@ -2,7 +2,6 @@ package io.kotest.runner.console
 
 class TeamCityMessages(command: String) {
 
-
   private val myText = StringBuilder("##teamcity[$command")
 
   fun addAttribute(name: String, value: String): TeamCityMessages {

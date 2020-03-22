@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -12,13 +15,9 @@ kotlin {
 
    targets {
       jvm {
-         targets {
-            jvm {
-               compilations.all {
-                  kotlinOptions {
-                     jvmTarget = "1.8"
-                  }
-               }
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
             }
          }
       }
@@ -39,8 +38,8 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
             api(project(":kotest-core"))
-            api("net.sourceforge.argparse4j:argparse4j:0.8.1")
-            api("com.github.ajalt:mordant:1.2.1")
+            implementation(Libs.Ajalt.clikt)
+            implementation(Libs.Ajalt.mordant)
          }
       }
 
@@ -48,24 +47,23 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-assertions:kotest-assertions-core"))
             api(project(":kotest-extensions"))
          }
       }
    }
 }
 
-tasks {
-   test {
-      useJUnitPlatform()
-      testLogging {
-         showExceptions = true
-         showStandardStreams = true
-         events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
-         )
-         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-      }
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(TestLogEvent.FAILED, TestLogEvent.PASSED)
+      exceptionFormat = TestExceptionFormat.FULL
    }
 }
 

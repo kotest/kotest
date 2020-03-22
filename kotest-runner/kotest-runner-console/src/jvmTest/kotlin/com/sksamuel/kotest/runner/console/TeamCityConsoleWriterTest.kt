@@ -1,22 +1,21 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.core.Description
-import io.kotest.SpecClass
-import io.kotest.core.TestCase
-import io.kotest.core.TestResult
-import io.kotest.core.TestType
 import io.kotest.assertions.shouldFail
-import io.kotest.core.TestCaseConfig
-import io.kotest.core.fromSpecClass
 import io.kotest.core.sourceRef
-import io.kotest.data.forall
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.description
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.extensions.system.captureStandardErr
 import io.kotest.extensions.system.captureStandardOut
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.runner.console.TeamCityConsoleWriter
-import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
-import io.kotest.tables.row
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -24,10 +23,10 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class TeamCityConsoleWriterTest : FunSpec() {
 
-   private val klass: KClass<out SpecClass> = TeamCityConsoleWriterTest::class
+   private val kclass: KClass<out Spec> = TeamCityConsoleWriterTest::class
 
    private val testCaseContainer = TestCase(
-      Description.fromSpecClass(klass).append("my context").append("my test container"),
+      kclass.description().append("my context").append("my test container"),
       this@TeamCityConsoleWriterTest,
       { },
       sourceRef(),
@@ -46,32 +45,32 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
       test("before spec class should write testSuiteStarted started") {
          captureStandardOut {
-            TeamCityConsoleWriter().beforeSpecClass(klass)
+            TeamCityConsoleWriter().specStarted(kclass)
          } shouldBe "\n##teamcity[testSuiteStarted name='com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest']\n"
       }
 
       test("before test should write testSuiteStarted for TestType.Container") {
          captureStandardOut {
-            TeamCityConsoleWriter().beforeTestCaseExecution(testCaseContainer)
-         } shouldBe "\n##teamcity[testSuiteStarted name='my test container' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:29']\n"
+            TeamCityConsoleWriter().testStarted(testCaseContainer)
+         } shouldBe "\n##teamcity[testSuiteStarted name='my test container' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:32']\n"
       }
 
       test("before test should write testStarted for TestType.Test") {
          captureStandardOut {
-            TeamCityConsoleWriter().beforeTestCaseExecution(testCaseTest)
-         } shouldBe "\n##teamcity[testStarted name='my test case' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:29']\n"
+            TeamCityConsoleWriter().testStarted(testCaseTest)
+         } shouldBe "\n##teamcity[testStarted name='my test case' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:32']\n"
       }
 
       test("after spec class should write testSuiteFinished") {
          captureStandardOut {
-            TeamCityConsoleWriter().afterSpecClass(klass, null)
+            TeamCityConsoleWriter().specFinished(kclass, null, emptyMap())
          } shouldBe "\n##teamcity[testSuiteFinished name='com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest']\n"
       }
 
       test("afterSpecClass should insert dummy test and write testSuiteFinished for spec error") {
          val err = captureStandardErr {
             captureStandardOut {
-               TeamCityConsoleWriter().afterSpecClass(klass, AssertionError("boom"))
+               TeamCityConsoleWriter().specFinished(kclass, AssertionError("boom"), emptyMap())
             } shouldBe "\n" +
                "##teamcity[testStarted name='com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest <init>']\n" +
                "##teamcity[testFailed name='com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest <init>' message='boom']\n" +
@@ -83,16 +82,16 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
       test("after test should write testSuiteFinished for container success") {
          captureStandardOut {
-            TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.success(Duration.ZERO))
+            TeamCityConsoleWriter().testFinished(testCaseContainer, TestResult.success(Duration.ZERO))
          } shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
       }
 
       test("after test should insert dummy test and write testSuiteFinished for container error") {
          captureStandardErr {
             captureStandardOut {
-               TeamCityConsoleWriter().afterTestCaseExecution(
+               TeamCityConsoleWriter().testFinished(
                   testCaseContainer,
-                  TestResult.error(AssertionError("wibble"), Duration.ZERO)
+                  TestResult.throwable(AssertionError("wibble"), Duration.ZERO)
                )
             } shouldBe "\n" +
                "##teamcity[testStarted name='my test container <init>']\n" +
@@ -104,22 +103,22 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
       test("after test should write testSuiteFinished for container ignored") {
          captureStandardOut {
-            TeamCityConsoleWriter().afterTestCaseExecution(testCaseContainer, TestResult.ignored("ignore me?"))
+            TeamCityConsoleWriter().testFinished(testCaseContainer, TestResult.ignored("ignore me?"))
          } shouldBe "\n##teamcity[testSuiteFinished name='my test container']\n"
       }
 
       test("after test should write testFinished for test success") {
          captureStandardOut {
-            TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.success(Duration.ZERO))
+            TeamCityConsoleWriter().testFinished(testCaseTest, TestResult.success(Duration.ZERO))
          } shouldBe "\n##teamcity[testFinished name='my test case']\n"
       }
 
       test("afterTestCaseExecution for errored test should write stack trace for error to std err, and write testFailed to std out") {
          captureStandardOut {
             captureStandardErr {
-               TeamCityConsoleWriter().afterTestCaseExecution(
+               TeamCityConsoleWriter().testFinished(
                   testCaseTest,
-                  TestResult.error(AssertionError("wibble"), Duration.ZERO)
+                  TestResult.throwable(AssertionError("wibble"), Duration.ZERO)
                )
             } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
                "\tat com.sksamuel.kotest.runner.console.TeamCityConsoleWriter"
@@ -129,9 +128,9 @@ class TeamCityConsoleWriterTest : FunSpec() {
       test("afterTestCaseExecution for failed test should write stack trace for error to std err, and write testFailed to std out") {
          captureStandardOut {
             captureStandardErr {
-               TeamCityConsoleWriter().afterTestCaseExecution(
+               TeamCityConsoleWriter().testFinished(
                   testCaseTest,
-                  TestResult.failure(AssertionError("wibble"), Duration.ZERO)
+                  TestResult.throwable(AssertionError("wibble"), Duration.ZERO)
                )
             } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
                "\tat com.sksamuel.kotest.runner.console.TeamCityConsoleWriter"
@@ -140,14 +139,14 @@ class TeamCityConsoleWriterTest : FunSpec() {
 
       test("after test should write testIgnored for test with ignored") {
          captureStandardOut {
-            TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.ignored("ignore me?"))
+            TeamCityConsoleWriter().testFinished(testCaseTest, TestResult.ignored("ignore me?"))
          } shouldBe "\n##teamcity[testIgnored name='my test case' ignoreComment='ignore me?']\n"
       }
 
       test("after test with error should handle multiline messages") {
 
          val error = shouldFail {
-            forall(
+            forAll(
                row(2, 3, 1),
                row(0, 2, 0)
             ) { a, b, max ->
@@ -156,7 +155,7 @@ class TeamCityConsoleWriterTest : FunSpec() {
          }
 
          captureStandardOut {
-            TeamCityConsoleWriter().afterTestCaseExecution(testCaseTest, TestResult.failure(error, Duration.ZERO))
+            TeamCityConsoleWriter().testFinished(testCaseTest, TestResult.throwable(error, Duration.ZERO))
          } shouldBe "\n##teamcity[testFailed name='my test case' message='Test failed']\n"
       }
    }

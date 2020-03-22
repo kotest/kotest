@@ -17,6 +17,11 @@ object Libs {
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
+   object Ajalt {
+      val clikt = "com.github.ajalt:clikt:2.6.0"
+      val mordant = "com.github.ajalt:mordant:1.2.1"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.0"
       const val engine = "org.junit.platform:junit-platform-engine:$version"

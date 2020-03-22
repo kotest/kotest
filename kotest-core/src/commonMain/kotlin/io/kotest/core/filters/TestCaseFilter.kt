@@ -7,6 +7,7 @@ import io.kotest.core.test.TestResult
 
 /**
  * A [TestCaseFilter] can be used to filter tests before they are executed.
+ * They are passed to [KotestEngine] at runtime.
  *
  * In this way it is similar to a [TestCaseExtension] but with a specialized purpose
  * and therefore simpler to use.

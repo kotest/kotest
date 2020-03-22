@@ -25,9 +25,9 @@ interface TagExtension : Extension {
    fun tags(): Tags
 }
 
-class SpecifiedTagsTagExtension(private val included: Set<Tag>, private val excluded: Set<Tag>) :
-   TagExtension {
-   override fun tags(): Tags {
-      return Tags(included, excluded)
-   }
+class SpecifiedTagsTagExtension(private val tags: Tags) : TagExtension {
+
+   constructor(included: Set<Tag>, excluded: Set<Tag>) : this(Tags(included, excluded))
+
+   override fun tags(): Tags = tags
 }

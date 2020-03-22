@@ -1,6 +1,6 @@
 package io.kotest.core.engine
 
-import io.kotest.core.Tag
+import io.kotest.core.Tags
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
@@ -24,8 +24,7 @@ class KotestEngine(
    val classes: List<KClass<out Spec>>,
    filters: List<TestCaseFilter>,
    val parallelism: Int,
-   includedTags: Set<Tag>,
-   excludedTags: Set<Tag>,
+   tags: Tags?,
    val listener: TestEngineListener,
    // added to listeners statically added via Project.add
    val listeners: List<Listener> = emptyList()
@@ -35,13 +34,8 @@ class KotestEngine(
 
    init {
       Project.registerFilters(filters)
-      if (includedTags.isNotEmpty() || excludedTags.isNotEmpty())
-         Project.registerExtension(
-            SpecifiedTagsTagExtension(
-               includedTags,
-               excludedTags
-            )
-         )
+      if (tags != null)
+         Project.registerExtension(SpecifiedTagsTagExtension(tags))
    }
 
    private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }

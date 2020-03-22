@@ -15,6 +15,7 @@ import kotlin.math.max
  */
 actual fun detectConfig(): ProjectConf {
 
+   @Suppress("UNCHECKED_CAST")
    fun <T> instantiate(klass: Class<T>): T =
       when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
          // if the static field for an object cannot be found, then instantiate

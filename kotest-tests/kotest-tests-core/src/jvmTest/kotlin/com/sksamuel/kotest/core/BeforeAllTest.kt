@@ -20,7 +20,7 @@ class BeforeAllTest : FunSpec({
             error("boom")
          }
       })
-      val engine = KotestEngine(listOf(DummySpec::class), emptyList(), 1, emptySet(), emptySet(), listener, listeners)
+      val engine = KotestEngine(listOf(DummySpec::class), emptyList(), 1, null, listener, listeners)
       engine.execute()
       throwable.shouldBeInstanceOf<BeforeBeforeListenerException>()
    }

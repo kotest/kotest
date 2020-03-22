@@ -46,8 +46,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          root.classes,
          emptyList(),
          Project.parallelism(),
-         emptySet(),
-         emptySet(),
+         null,
          listener
       )
       runner.execute()

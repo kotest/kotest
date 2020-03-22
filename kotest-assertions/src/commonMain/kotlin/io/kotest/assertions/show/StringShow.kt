@@ -7,15 +7,6 @@ object StringShow : Show<String> {
    override fun show(a: String): Printed = when {
       a == "" -> "<empty string>".printed()
       a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
-      else -> a
-         //.replace("\\", "\\\\")
-         // .replace("\'", "\\\'")
-         .replace("\t", "\\\t")
-         //.replace("\"", "\\\"")
-         .replace("\b", "\\\b")
-         .replace("\r", "\\\r")
-         .replace("\$", "\\\$")
-         .wrap()
-         .printed()
+      else -> a.wrap().printed()
    }
 }

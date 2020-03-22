@@ -43,8 +43,7 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
          listOf(klass),
          emptyList(),
          1,
-         emptySet(),
-         emptySet(),
+         null,
          listener
       )
       engine.execute()

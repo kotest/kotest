@@ -1,9 +1,9 @@
 package com.sksamuel.kotest.runner.console
 
-import io.kotest.core.Description
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.Description
+import io.kotest.matchers.shouldBe
 import io.kotest.runner.console.DelimitedTestPathParser
-import io.kotest.shouldBe
-import io.kotest.specs.FunSpec
 
 class FunSpecStyleParserTest : FunSpec() {
 
