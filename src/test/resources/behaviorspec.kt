@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.specs.behavior
 
-import io.kotlintest.matchers.string.shouldStartWith
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.string.shouldStartWith
+import io.kotest.matchers.shouldBe
 
 class BehaviorSpecExample : BehaviorSpec() {
 

@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.intentions
 
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.idea.core.moveCaret
 import org.jetbrains.kotlin.idea.util.application.runWriteAction
 import java.nio.file.Paths
@@ -17,8 +17,8 @@ class AssertSoftlyIntentionTest : LightCodeInsightFixtureTestCase() {
   fun testIntentionForPartialLine() {
 
     myFixture.configureByFile("/funspec.kt")
-    editor.moveCaret(895)
-    editor.selectionModel.setSelection(879, 922)
+    editor.moveCaret(885)
+    editor.selectionModel.setSelection(869, 912)
 
     val intention = myFixture.findSingleIntention("Surround statements with soft assert")
     intention.familyName shouldBe "Surround statements with soft assert"
@@ -29,13 +29,13 @@ class AssertSoftlyIntentionTest : LightCodeInsightFixtureTestCase() {
       }
     }
 
-    file.text shouldBe """package io.kotlintest.samples.gradle
+    file.text shouldBe """package io.kotest.samples.gradle
 
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeUpperCase
 import io.kotest.matchers.string.shouldNotBeBlank
-import io.kotest.specs.FunSpec
-import io.kotest.assertSoftly
+import io.kotest.assertions.assert.assertSoftly
 
 class FunSpecExampleTest : FunSpec({
 
@@ -78,8 +78,8 @@ class FunSpecExampleTest : FunSpec({
   fun testIntentionForFullLine() {
 
     myFixture.configureByFile("/funspec.kt")
-    editor.moveCaret(521)
-    editor.selectionModel.setSelection(521, 554)
+    editor.moveCaret(511)
+    editor.selectionModel.setSelection(511, 544)
 
     val intention = myFixture.findSingleIntention("Surround statements with soft assert")
     intention.familyName shouldBe "Surround statements with soft assert"
@@ -90,13 +90,13 @@ class FunSpecExampleTest : FunSpec({
       }
     }
 
-    file.text shouldBe """package io.kotlintest.samples.gradle
+    file.text shouldBe """package io.kotest.samples.gradle
 
-import io.kotlintest.matchers.string.shouldBeLowerCase
-import io.kotlintest.matchers.string.shouldBeUpperCase
-import io.kotlintest.matchers.string.shouldNotBeBlank
-import io.kotlintest.specs.FunSpec
-import io.kotlintest.assertSoftly
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldBeLowerCase
+import io.kotest.matchers.string.shouldBeUpperCase
+import io.kotest.matchers.string.shouldNotBeBlank
+import io.kotest.assertions.assert.assertSoftly
 
 class FunSpecExampleTest : FunSpec({
 

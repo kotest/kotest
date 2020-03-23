@@ -1,9 +1,9 @@
 package io.kotest.samples.gradle
 
-import io.kotlintest.matchers.string.shouldBeLowerCase
-import io.kotlintest.matchers.string.shouldBeUpperCase
-import io.kotlintest.matchers.string.shouldNotBeBlank
-import io.kotlintest.specs.FunSpec
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldBeLowerCase
+import io.kotest.matchers.string.shouldBeUpperCase
+import io.kotest.matchers.string.shouldNotBeBlank
 
 class FunSpecExampleTest : FunSpec({
 
