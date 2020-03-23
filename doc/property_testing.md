@@ -205,11 +205,11 @@ class PropertyExample: StringSpec({
 ```
 
 
-### Custom Generators
+## Custom Generators
 
 To write your own generator for a type T, you just create an instance of `Arb<T>` or `Exhaustive<T>`.
 
-#### Arb
+### Arb
 
 When writing a custom arb we can use the `arb` builder which accepts a lambda that must return a sequence of the type we are generating for.
 The parameter to this lambda is a `RandomSource` parameter which contains the seed and the `Random` instance. We should typically
@@ -240,10 +240,21 @@ val personArb = arb { rs ->
 
 Although in reality this Arb could have been easier written using bind, it demonstrates the principal.
 
-#### Exhaustive
+### Exhaustive
 
 When writing a custom exhaustive we can use the .exhaustive() extension function on a List. Nothing more to it than that really!.
 
 ```kotlin
 val singleDigitPrimes = listOf(2,3,5,7).exhaustive()
+```
+
+```kotlin
+class PropertyExample: StringSpec({
+    "testing single digit primes" {
+        checkAll(singleDigitPrimes) { prime ->
+           isPrime(prime) shouldBe true
+           isPrime(prime * prime) shouldBe false
+        }
+    }
+})
 ```
