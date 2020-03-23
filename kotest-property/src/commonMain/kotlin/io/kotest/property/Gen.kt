@@ -1,6 +1,8 @@
 package io.kotest.property
 
 import io.kotest.property.arbitrary.arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.string
 import kotlin.random.Random
 
 /**
