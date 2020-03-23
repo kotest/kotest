@@ -2,8 +2,8 @@ package io.kotest.plugin.intellij.intentions
 
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.shouldBe
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.idea.core.moveCaret
 import org.jetbrains.kotlin.idea.util.application.runWriteAction
 import java.nio.file.Paths

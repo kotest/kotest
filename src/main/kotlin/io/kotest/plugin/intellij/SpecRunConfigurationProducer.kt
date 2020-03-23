@@ -24,7 +24,7 @@ class SpecRunConfigurationProducer :
         configuration.setModule(context.module)
         configuration.setGeneratedName()
 
-        context.project.getComponent(_root_ide_package_.io.kotest.plugin.intellij.ElementLocationCache::class.java).add(ktclass)
+        context.project.getComponent(io.kotest.plugin.intellij.ElementLocationCache::class.java).add(ktclass)
         removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
         return true
       }

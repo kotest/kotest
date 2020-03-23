@@ -32,6 +32,7 @@ dependencies {
     compile 'javax.xml.bind:jaxb-api:2.2.12'
     compile 'javax.activation:activation:1.1.1'
     testImplementation 'io.kotest:kotest-runner-junit5:4.0.0-BETA3'
+    testImplementation 'io.kotest:kotest-assertions-core-jvm:4.0.0-BETA3'
 }
 
 intellij {

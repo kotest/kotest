@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij
 
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.idea.refactoring.getLineStartOffset
+import org.jetbrains.kotlin.idea.core.util.getLineStartOffset
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFile
 import java.util.concurrent.ConcurrentHashMap
