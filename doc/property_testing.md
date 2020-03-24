@@ -258,3 +258,36 @@ class PropertyExample: StringSpec({
     }
 })
 ```
+
+
+### Generator Operations
+
+#### Merging
+
+Two generates can be merged together, so that elements 0, 2, 4, ... are taken from the first generator, and elements 1, 3, 5, ... are taken from the second generator.
+
+```kotlin
+val merged = arbA.merge(arbB)
+```
+
+#### Next
+
+If you want to use an Arb to just return a value (even outside of a property test), then you can call next on it.
+
+```kotlin
+val arbA: Arb<A> = ...
+val a = arbA.next() // use Random.Default
+val a2 = arbA.next(rs) // pass in Random
+```
+
+#### Filter
+
+If you have an arb and you want to create a new arb that provides a subset of values, you can call filter on the source arb.
+For example, one way of generating even numbers is to take the integer arb, and filter out odd values. Viz:
+
+```kotlin
+val evens = Arb.int().filter { it.value % 2 == 0 }
+val odds = Arb.int().filter { it.value % 2 == 1 }
+```
+
+
