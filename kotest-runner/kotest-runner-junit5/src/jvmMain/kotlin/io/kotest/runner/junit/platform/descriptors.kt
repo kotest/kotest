@@ -35,7 +35,7 @@ sealed class Segment {
  */
 fun KClass<out Spec>.descriptor(parent: TestDescriptor): TestDescriptor {
    val source = ClassSource.from(java)
-   return parent.append(description(), TestDescriptor.Type.CONTAINER_AND_TEST, source, Segment.Spec)
+   return parent.append(description(), TestDescriptor.Type.CONTAINER, source, Segment.Spec)
 }
 
 /**
@@ -49,9 +49,9 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
    // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting, as it is not handled
    // see https://github.com/gradle/gradle/issues/4912
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
-   // update jan 2020: Seems we can use CONTAINER_AND_TEST now in intellij, and CONTAINER is invisible in output
+   // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    val type = when (testCase.type) {
-      TestType.Container -> TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Container -> TestDescriptor.Type.CONTAINER
       TestType.Test -> TestDescriptor.Type.TEST
    }
    return append(testCase.description, type, source, Segment.Test)
