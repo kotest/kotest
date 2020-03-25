@@ -7,7 +7,6 @@ buildscript {
    }
 
    dependencies {
-     classpath("com.android.tools.build:gradle:3.6.0")
       // classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
    }
 }
