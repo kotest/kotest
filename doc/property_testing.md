@@ -204,6 +204,8 @@ class PropertyExample: StringSpec({
 })
 ```
 
+See [here](generators.md) for a list of the built in generators.
+
 
 ## Custom Generators
 

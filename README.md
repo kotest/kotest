@@ -79,7 +79,7 @@ Use [property based testing](doc/property_testing.md) to test your code with aut
 class PropertyExample: StringSpec({
   "String size" {
     checkAll<String, String> { a, b ->
-      (a + b) should haveLength(a.length + b.length)
+      (a + b) shouldHaveLength a.length + b.length
     }
   }
 })
