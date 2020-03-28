@@ -166,7 +166,7 @@ class MyTests : StringSpec() {
 
 Using the lambda expression avoids another level of indentation but it is purely a matter of preference.
 
-All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](#listeners)
+All tests styles have a way to `setup` or `tear down` the tests in a similar way. You can execute a function before each test or after the whole class has completed, for example. Take a look at [Test Listeners](listeners.md)
 
 [See an example](styles.md) of each testing style.
 
