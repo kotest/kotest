@@ -6,6 +6,8 @@ Quick Start
 
 To use Kotest's property-based testing you need to add the module `io.kotest:kotest-property-jvm:<version>` to your build. If you are using a multiplatform project, then you can add `io.kotest:kotest-property:<version>` to your `commonTest` dependencies.
 
+_Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+. It replaces the previous property test classes which are now deprecated.
+
 Note: Some generators are only available on the JVM. See the full list [here](generators.md).
 
 Introduction To Property Testing
