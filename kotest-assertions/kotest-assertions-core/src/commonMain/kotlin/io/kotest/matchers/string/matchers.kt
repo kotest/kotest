@@ -1,5 +1,6 @@
 package io.kotest.matchers.string
 
+import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 import io.kotest.matchers.*
 import io.kotest.matchers.neverNullMatcher
@@ -444,4 +445,14 @@ fun beUUID(
   )
 
   private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
+}
+
+fun String?.shouldBeInteger(radix: Int = 10) = when (this) {
+  null -> throw failure("String is null, but it should be integer.")
+
+  else -> when (val integer = this.toIntOrNull(radix)) {
+    null -> throw failure("String '$this' is not integer, but it should be.")
+
+    else -> integer
+  }
 }

@@ -70,6 +70,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `str.shouldContainADigit()` | Asserts that the string contains at least one digit. |
 | `str.shouldContainIgnoringCase(substring)` | Asserts that the string contains the substring ignoring case. |
 | `str.shouldContainOnlyDigits()` | Asserts that the string contains only digits, or is empty. |
+| `str.shouldBeInteger([radix])` | Asserts that the string contains an integer and returns it. |
 | `str.shouldContainOnlyOnce(substring)` | Asserts that the string contains the substring exactly once. |
 | `str.shouldEndWith("suffix")` | Asserts that the string ends with the given suffix. The suffix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldHaveLength(length)` | Asserts that the string has the given length. |
