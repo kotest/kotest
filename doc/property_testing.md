@@ -1,7 +1,14 @@
 Property-based Testing <a name="property-based"></a>
 ===========
 
-Introduction
+Quick Start
+--------------
+
+To use Kotest's property-based testing you need to add the module `io.kotest:kotest-property-jvm:<version>` to your build. If you are using a multiplatform project, then you can add `io.kotest:kotest-property:<version>` to your `commonTest` dependencies.
+
+Note: Some generators are only available on the JVM. See the full list [here](generators.md).
+
+Introduction To Property Testing
 ----------------------
 
 Developers typically write example-based tests. These are your garden variety unit tests you know and love.
