@@ -13,7 +13,7 @@ object Icons {
   val Kotest32 = IconLoader.getIcon("/icon32.png")
 }
 
-class KotestConfigurationType : ConfigurationType, DumbAware {
+object KotestConfigurationType : ConfigurationType, DumbAware {
 
   private val factory = KotestConfigurationFactory(this)
 
