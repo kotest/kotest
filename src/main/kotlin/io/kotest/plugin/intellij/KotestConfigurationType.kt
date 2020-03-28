@@ -21,7 +21,7 @@ class KotestConfigurationType : ConfigurationType, DumbAware {
 
   override fun getConfigurationTypeDescription(): String = "Run tests with Kotest"
 
-  override fun getId(): String = "io.kotest.jvm"
+  override fun getId(): String = "io.kotest"
 
   override fun getDisplayName(): String = "Kotest"
 

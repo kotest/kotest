@@ -1,97 +1,97 @@
 <idea-plugin>
 
-    <id>kotest-plugin-intellij</id>
-    <name>kotest</name>
+   <id>kotest-plugin-intellij</id>
+   <name>kotest</name>
 
-    <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
-    <idea-version since-build="162.0"/>
+   <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
+   <idea-version since-build="162.0"/>
 
-    <description><![CDATA[
+   <description><![CDATA[
       Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.
     ]]></description>
 
-    <version>3.3.0.8</version>
+   <version>3.3.0.8</version>
 
-    <depends>org.jetbrains.kotlin</depends>
-    <depends>com.intellij.modules.java</depends>
-    <depends>JUnit</depends>
+   <depends>org.jetbrains.kotlin</depends>
+   <depends>com.intellij.modules.java</depends>
+   <depends>JUnit</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
+   <extensions defaultExtensionNs="com.intellij">
 
-        <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
+      <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
 
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.FunSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.ShouldSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.StringSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.WordSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.FeatureSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.DescribeSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.ExpectSpecRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="kotlin"
-                                  implementationClass="io.kotest.plugin.intellij.FreeSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.FunSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.ShouldSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.StringSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.WordSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.FeatureSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.DescribeSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.ExpectSpecRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.FreeSpecRunLineMarkerContributor"/>
 
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.SpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.FunSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.ShouldSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.StringSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.WordSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.FeatureSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.DescribeSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="io.kotest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
-        <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.SpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FunSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.ShouldSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.StringSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.WordSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FeatureSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.DescribeSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
 
-        <testFramework implementation="io.kotest.plugin.intellij.KotestTestFramework" id="kotest"/>
+      <testFramework implementation="io.kotest.plugin.intellij.KotestTestFramework" id="kotest"/>
 
-        <!--<testCreator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotlinTestTestCreator"/>-->
-        <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
-        <stacktrace.fold substring="at io.kotest."/>
+      <!--<testCreator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotlinTestTestCreator"/>-->
+      <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
+      <stacktrace.fold substring="at io.kotest."/>
 
-        <intentionAction>
-            <className>io.kotest.plugin.intellij.intentions.SoftAssertIntention</className>
-            <category>Kotlin/Test</category>
-            <descriptionDirectoryName>SoftAssertIntention</descriptionDirectoryName>
-        </intentionAction>
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.SoftAssertIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>SoftAssertIntention</descriptionDirectoryName>
+      </intentionAction>
 
-        <intentionAction>
-            <className>io.kotest.plugin.intellij.intentions.BangIntention</className>
-            <category>Kotlin/Test</category>
-            <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
-        </intentionAction>
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.BangIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
+      </intentionAction>
 
-        <intentionAction>
-            <className>io.kotest.plugin.intellij.intentions.ShouldThrowIntention</className>
-            <category>Kotlin/Test</category>
-            <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
-        </intentionAction>
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
+      </intentionAction>
 
-        <intentionAction>
-            <className>io.kotest.plugin.intellij.intentions.ShouldThrowAnyIntention</className>
-            <category>Kotlin/Test</category>
-            <descriptionDirectoryName>ShouldThrowAnyIntention</descriptionDirectoryName>
-        </intentionAction>
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowAnyIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowAnyIntention</descriptionDirectoryName>
+      </intentionAction>
 
-        <intentionAction>
-            <className>io.kotest.plugin.intellij.intentions.ShouldThrowExactlyIntention</className>
-            <category>Kotlin/Test</category>
-            <descriptionDirectoryName>ShouldThrowExactlyIntention</descriptionDirectoryName>
-        </intentionAction>
-    </extensions>
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowExactlyIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowExactlyIntention</descriptionDirectoryName>
+      </intentionAction>
+   </extensions>
 
-    <project-components>
-        <component>
-            <implementation-class>io.kotest.plugin.intellij.ElementLocationCache</implementation-class>
-        </component>
-    </project-components>
+   <project-components>
+      <component>
+         <implementation-class>io.kotest.plugin.intellij.ElementLocationCache</implementation-class>
+      </component>
+   </project-components>
 
 </idea-plugin>

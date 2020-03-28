@@ -10,6 +10,10 @@ import io.kotest.plugin.intellij.styles.enclosingClassOrObjectForClassOrObjectTo
 import io.kotest.plugin.intellij.styles.isAnySpecSubclass
 import removeJUnitRunConfigs
 
+/**
+ * A run configuration contains the details of a particular run (in the drop down run box).
+ * A Run producer is called to configure a [KotestRunConfiguration] after it has been created.
+ */
 class SpecRunConfigurationProducer :
     RunConfigurationProducer<KotestRunConfiguration>(KotestConfigurationType()) {
 
@@ -24,7 +28,7 @@ class SpecRunConfigurationProducer :
         configuration.setModule(context.module)
         configuration.setGeneratedName()
 
-        context.project.getComponent(io.kotest.plugin.intellij.ElementLocationCache::class.java).add(ktclass)
+        context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
         removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
         return true
       }
