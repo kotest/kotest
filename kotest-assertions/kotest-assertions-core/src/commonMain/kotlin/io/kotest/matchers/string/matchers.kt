@@ -5,6 +5,8 @@ import io.kotest.assertions.show.show
 import io.kotest.matchers.*
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.string.UUIDVersion.ANY
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
 fun String?.shouldContainOnlyDigits() = this should containOnlyDigits()
@@ -447,12 +449,19 @@ fun beUUID(
   private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }
 
-fun String?.shouldBeInteger(radix: Int = 10) = when (this) {
-  null -> throw failure("String is null, but it should be integer.")
+@OptIn(ExperimentalContracts::class)
+fun String?.shouldBeInteger(radix: Int = 10): Int {
+  contract {
+    returns() implies (this@shouldBeInteger != null)
+  }
 
-  else -> when (val integer = this.toIntOrNull(radix)) {
-    null -> throw failure("String '$this' is not integer, but it should be.")
+  return when (this) {
+    null -> throw failure("String is null, but it should be integer.")
 
-    else -> integer
+    else -> when (val integer = this.toIntOrNull(radix)) {
+      null -> throw failure("String '$this' is not integer, but it should be.")
+
+      else -> integer
+    }
   }
 }

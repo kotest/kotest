@@ -937,6 +937,14 @@ class StringMatchersTest : FreeSpec() {
         shouldThrow<IllegalArgumentException> { "1".shouldBeInteger(1) }
         shouldThrow<IllegalArgumentException> { "11".shouldBeInteger(100) }
       }
+
+      "should make smart cast of receiver to non-null string" {
+        fun use(string: String) {}
+
+        val value: String? = "456"
+        value.shouldBeInteger()
+        use(value)  // if this is compiled, then smart cast works
+      }
     }
   }
 }
