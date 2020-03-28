@@ -20,6 +20,12 @@
 
       <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
 
+      <toolWindow id="Kotest" anchor="right" icon="/icon16.png"
+                  factoryClass="io.kotest.plugin.intellij.toolwindow.KotestToolWindowFactory"
+                  conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition">
+
+      </toolWindow>
+
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
       <runLineMarkerContributor language="kotlin"
