@@ -6,6 +6,7 @@ import io.kotest.assertions.show.printed
 import io.kotest.assertions.show.show
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.nio.file.Path
 
 class ShowTest : FunSpec() {
    init {
@@ -83,6 +84,11 @@ class ShowTest : FunSpec() {
 
       test("collection show should limit items") {
          List(1000) { it }.show().value shouldBe "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...] and 980 more"
+      }
+
+      test("path show should use toString") {
+         val path = Path.of("a/b/c")
+         path.show().value shouldBe "\"$path\""
       }
    }
 }

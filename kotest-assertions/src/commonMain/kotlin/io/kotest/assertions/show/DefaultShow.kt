@@ -1,5 +1,7 @@
 package io.kotest.assertions.show
 
+import kotlin.reflect.KClass
+
 /**
  * A default implementation of [Show] that handles arrays, collections and primitives as well as nullable values.
  */
@@ -24,7 +26,7 @@ object DefaultShow : Show<Any?> {
       is ByteArray -> show(a.toList())
       is CharArray -> show(a.toList())
       is List<*> -> a.getCollectionSnippet()
-      is Iterable<*> -> show(a.toList())
+      is Iterable<*> -> show(handleRecursiveIterable(a, a::class))
       else -> a.toString().printed()
    }
 }
@@ -54,4 +56,8 @@ private fun Collection<*>.getCollectionSnippet(): Printed {
 
 internal fun recursiveRepr(root: Any, node: Any?): Printed {
    return if (root == node) "(this ${root::class.simpleName})".printed() else node.show()
+}
+
+private fun handleRecursiveIterable(i: Iterable<*>, kClass: KClass<out Any>) : Any {
+   return if (i.iterator().hasNext() && kClass.isInstance(i.iterator().next())) i.toString() else i.toList()
 }
