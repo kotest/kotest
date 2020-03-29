@@ -2,6 +2,7 @@ plugins {
    id("java")
    kotlin("multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -54,7 +55,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
    kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.named<Test>("test") {
+tasks.named<Test>("jvmTest") {
    useJUnitPlatform()
    filter {
       isFailOnNoMatchingTests = false
