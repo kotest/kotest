@@ -32,6 +32,7 @@ import io.kotest.matchers.string.shouldBeBlank
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.string.shouldBeEqualIgnoringCase
 import io.kotest.matchers.string.shouldBeFalsy
+import io.kotest.matchers.string.shouldBeInteger
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.string.shouldBeSingleLine
 import io.kotest.matchers.string.shouldBeTruthy
@@ -893,6 +894,56 @@ class StringMatchersTest : FreeSpec() {
 
       "should fail when outside range" {
         shouldThrow<AssertionError> { "FOO".shouldHaveLengthIn(9..10) }
+      }
+    }
+
+    "should be integer" - {
+      "should return integer for integer string" {
+        "123123".shouldBeInteger() shouldBe 123123
+        "0".shouldBeInteger() shouldBe 0
+        "1".shouldBeInteger() shouldBe 1
+        "-9876".shouldBeInteger() shouldBe -9876
+
+        "BABE".shouldBeInteger(16) shouldBe 0xBABE
+        "-babe".shouldBeInteger(16) shouldBe -0xBABE
+
+        "100".shouldBeInteger(2) shouldBe 0b100
+        "-100".shouldBeInteger(2) shouldBe -0b100
+
+        "0124".shouldBeInteger() shouldBe 124
+      }
+
+      "should fail for null" {
+        shouldThrow<AssertionError> { null.shouldBeInteger() }
+      }
+
+      "should fail for non-integer string" {
+        shouldThrow<AssertionError> { " 123123".shouldBeInteger() }
+        shouldThrow<AssertionError> { "0 ".shouldBeInteger() }
+        shouldThrow<AssertionError> { "1-".shouldBeInteger() }
+        shouldThrow<AssertionError> { "-9876.0".shouldBeInteger() }
+        shouldThrow<AssertionError> { "fail".shouldBeInteger() }
+
+        shouldThrow<AssertionError> { "BABEg".shouldBeInteger(16) }
+        shouldThrow<AssertionError> { "-baGbe".shouldBeInteger(16) }
+      }
+
+      "should fail for overflowing integer strings" {
+        shouldThrow<AssertionError> { Int.MAX_VALUE.toLong().plus(1).toString().shouldBeInteger() }
+        shouldThrow<AssertionError> { Int.MIN_VALUE.toLong().minus(1).toString().shouldBeInteger() }
+      }
+
+      "should fail with a proper exception for bad radix" {
+        shouldThrow<IllegalArgumentException> { "1".shouldBeInteger(1) }
+        shouldThrow<IllegalArgumentException> { "11".shouldBeInteger(100) }
+      }
+
+      "should make smart cast of receiver to non-null string" {
+        fun use(string: String) {}
+
+        val value: String? = "456"
+        value.shouldBeInteger()
+        use(value)  // if this is compiled, then smart cast works
       }
     }
   }
