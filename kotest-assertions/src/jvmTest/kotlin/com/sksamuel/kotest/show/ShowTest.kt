@@ -6,7 +6,6 @@ import io.kotest.assertions.show.printed
 import io.kotest.assertions.show.show
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.nio.file.Path
 
 class ShowTest : FunSpec() {
    init {
@@ -86,9 +85,9 @@ class ShowTest : FunSpec() {
          List(1000) { it }.show().value shouldBe "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...] and 980 more"
       }
 
-      test("path show should use toString") {
-         val path = Path.of("a/b/c")
-         path.show().value shouldBe "\"$path\""
+      test("recursive iterable show should use toString") {
+         val wobble = WobbleWibble("wibble")
+         wobble.show().value shouldBe "\"wibble\""
       }
    }
 }
@@ -97,4 +96,9 @@ data class WibbleWobble(val a: String, val b: Int)
 
 class WibbleWobbleShow : Show<WibbleWobble> {
    override fun show(a: WibbleWobble): Printed = "wibble ${a.a} wobble ${a.b}".printed()
+}
+
+class WobbleWibble(val value: String) : Iterable<WobbleWibble> {
+   override fun iterator(): Iterator<WobbleWibble> = listOf(this).iterator()
+   override fun toString(): String = value
 }
