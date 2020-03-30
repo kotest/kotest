@@ -28,6 +28,11 @@ object Discovery {
    private val isSpecSubclass: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
+   private val fromClassPaths: List<KClass<out Spec>> by lazy {
+      scanUris().apply {
+         log("Scan discovered $size classes in the classpaths...")
+      }
+   }
 
    /**
     * Returns a function that applies all the [DiscoveryFilter]s to a given class.
@@ -46,10 +51,6 @@ object Discovery {
    }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
-
-      val fromClassPaths = scanUris()
-      log("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
-
       val filtered = fromClassPaths
          .asSequence()
          .filter(selectorFn(request.selectors))
@@ -84,7 +85,7 @@ object Discovery {
             .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
             .scan()
       }
-      log("Test discovery competed in $time")
+      log("Test discovery completed in $time")
 
       return scanResult.use { result ->
          result.getSubclasses(Spec::class.java.name)
