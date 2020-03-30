@@ -1,7 +1,9 @@
+@file:JvmName("AssertionAliases")
 package io.kotlintest
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlin.jvm.JvmName
 
 @Deprecated(
    "All packages are now io.kotest",

@@ -13,7 +13,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.fp.Tuple2
-import org.junit.platform.commons.annotation.Testable
+
 
 @Testable
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {

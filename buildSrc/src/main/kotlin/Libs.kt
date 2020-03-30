@@ -24,6 +24,7 @@ object Libs {
 
    object JUnitPlatform {
       private const val version = "1.6.0"
+      const val commons = "org.junit.platform:junit-platform-commons:$version"
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
       const val api = "org.junit.platform:junit-platform-suite-api:$version"
