@@ -1,3 +1,4 @@
-package org.junit.platform.commons.annotation
+package io.kotest.core.spec
 
-annotation class Testable
+@Target(AnnotationTarget.CLASS)
+expect annotation class Testable()

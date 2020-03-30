@@ -63,6 +63,7 @@ kotlin {
             api(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
+            implementation(Libs.JUnitPlatform.commons)
             api(Libs.JUnitJupiter.api)
             implementation(Libs.Classgraph.classgraph)
          }
