@@ -67,10 +67,10 @@ class JsonAssertionsTest : StringSpec({
 
     shouldThrow<AssertionError> {
       json.shouldContainJsonKey("$.store.table")
-    }.message shouldBe """{
+    }.message shouldBe """"{
     "store": {
         "book": [
-            {... should contain the path ${'$'}.store.table"""
+            {..." should contain the path ${'$'}.store.table"""
   }
 
   "test json key value" {
@@ -83,10 +83,10 @@ class JsonAssertionsTest : StringSpec({
 
     shouldThrow<AssertionError> {
       json.shouldContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
-    }.message shouldBe """{
+    }.message shouldBe """"{
     "store": {
         "book": [
-            {... should contain the element ${'$'}.store.book[1].author = JK Rowling"""
+            {..." should contain the element ${'$'}.store.book[1].author = JK Rowling"""
   }
 
   "test json match by resource" {
