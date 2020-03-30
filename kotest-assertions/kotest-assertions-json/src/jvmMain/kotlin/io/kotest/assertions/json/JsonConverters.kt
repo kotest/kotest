@@ -1,6 +1,5 @@
 package io.kotest.assertions.json
 
-import com.jayway.jsonpath.JsonPath
 import io.kotest.assertions.failure
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -22,17 +21,20 @@ val Json?.representation
 internal fun Json.limitLength() = if (this.length < 50) this.trim() else this.substring(0, 50).trim() + "..."
 
 @OptIn(ExperimentalContracts::class, ExperimentalStdlibApi::class)
-inline fun <reified T> Json?.shouldBeOfType(): T {
+inline fun <reified T : Any?> Json?.shouldBeJsonValueOfType(): T {
     contract {
-        returns() implies (this@shouldBeOfType != null)
+        returns() implies (this@shouldBeJsonValueOfType != null)
     }
 
-    return when (val decoded: Any? = JsonPath.read(this, "")) {
-        is T -> decoded
+    try {
+        if (this != null && typeOf<T>() == typeOf<String>()) {
+            check(this.length >= 2 && this.first() == '"' && this.last() == '"') {
+                "JSON string value should contain opening and closing double quotes"
+            }
+        }
 
-        else -> throw failure(
-            "bad type of ${this.representation} - " +
-                    "expected: ${typeOf<T>()} but was: ${decoded?.javaClass?.name ?: "Nothing?"}"
-        )
+        return mapper.readValue(this, T::class.java)
+    } catch (thrown: Throwable) {
+        throw failure("bad type of ${this.representation} - expected: ${typeOf<T>()}", cause = thrown)
     }
 }
