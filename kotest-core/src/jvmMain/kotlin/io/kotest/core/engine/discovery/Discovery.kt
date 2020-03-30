@@ -86,9 +86,10 @@ object Discovery {
       }
       log("Test discovery competed in $time")
 
-      return scanResult
-         .getSubclasses(Spec::class.java.name)
-         .map { Class.forName(it.name).kotlin }
-         .filterIsInstance<KClass<out Spec>>()
+      return scanResult.use { result ->
+         result.getSubclasses(Spec::class.java.name)
+            .map { Class.forName(it.name).kotlin }
+            .filterIsInstance<KClass<out Spec>>()
+      }
    }
 }
