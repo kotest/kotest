@@ -10,6 +10,7 @@ import io.kotest.property.arbitrary.localDate
 import io.kotest.property.arbitrary.localDateTime
 import io.kotest.property.arbitrary.localTime
 import io.kotest.property.arbitrary.period
+import io.kotest.property.arbitrary.instant
 import io.kotest.property.checkAll
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -57,8 +58,9 @@ class DateTest : WordSpec({
    }
 
    "Arb.localTime()" should {
-      "generate valid LocalTimes(no exceptions)" {
+      "generate N valid LocalTimes(no exceptions)" {
          Arb.localTime().generate(RandomSource.Default).take(10_000).toList()
+            .size shouldBe 10_000
       }
 
       "Be the default generator for LocalTime" {
@@ -67,8 +69,9 @@ class DateTest : WordSpec({
    }
 
    "Arb.localDateTime(minYear, maxYear)" should {
-      "generate valid LocalDateTimes(no exceptions)" {
+      "generate N valid LocalDateTimes(no exceptions)" {
          Arb.localDateTime().generate(RandomSource.Default).take(10_000).toList()
+            .size shouldBe 10_000
       }
 
       "generate LocalDateTimes between minYear and maxYear" {
@@ -98,6 +101,13 @@ class DateTest : WordSpec({
 
       "Be the default generator for LocalDateTime" {
          checkAll(10) { _: LocalDateTime -> /* No use. Won't reach here if unsupported */ }
+      }
+   }
+
+   "Arb.instant()" should {
+      "generate N valid Instants(no exceptions)" {
+         Arb.instant().generate(RandomSource.Default).take(10_000).toList()
+            .size shouldBe 10_000
       }
    }
 

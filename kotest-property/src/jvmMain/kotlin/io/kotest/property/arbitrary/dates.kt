@@ -131,7 +131,7 @@ fun InstantRange.random(random: Random): Instant {
  * Arberates a stream of random [Instant]
  */
 fun Arb.Companion.instant(range: InstantRange): Arb<Instant> = arb(listOf(range.start, range.endInclusive)) {
-   sequence {
+   generateSequence {
       range.random(it.random)
    }
 }
