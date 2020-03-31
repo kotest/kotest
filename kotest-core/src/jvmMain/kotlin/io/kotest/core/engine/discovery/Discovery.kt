@@ -51,11 +51,13 @@ object Discovery {
    }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
-      val filtered = fromClassPaths
+      val specClasses =
+         if(request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
+
+      val filtered = specClasses
          .asSequence()
          .filter(selectorFn(request.selectors))
          .filter(filterFn(request.filters))
-         .filter(isSpecSubclass)
          .filter(isClass)
          .filterNot(isAbstract)
          .toList()
@@ -69,6 +71,31 @@ object Discovery {
 
       log("Discovery is returning ${afterExtensions.size} specs")
       DiscoveryResult(afterExtensions)
+   }
+
+   /**
+    * Returns whether or not this is a requests that selects single classes
+    * only. Used to avoid full classpath scans when not necessary.
+    */
+   private fun  DiscoveryRequest.onlySelectsSingleClasses() : Boolean =
+         selectors.isNotEmpty() &&
+            selectors.all { it is DiscoverySelector.ClassDiscoverySelector }
+
+   /**
+    * Returns a list of [Spec] classes from discovery requests that only have
+    * selectors of type [DiscoverySelector.ClassDiscoverySelector].
+    */
+   @OptIn(ExperimentalTime::class)
+   private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
+      log("Starting loading of selected tests...")
+      val (loadedClasses, time) = measureTimedValue {
+         request
+            .selectors
+            .map { Class.forName((it as DiscoverySelector.ClassDiscoverySelector).className).kotlin }
+            .filter(isSpecSubclass)
+            .filterIsInstance<KClass<out Spec>>()      }
+      log("Loading of selected tests completed in $time")
+      return loadedClasses
    }
 
    /**
