@@ -22,9 +22,9 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `obj.shouldBe(other)` | General purpose assertion that the given obj and other are both equal |
 | `expr.shouldBeTrue()` | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)` |
 | `expr.shouldBeFalse()` | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)` |
-| `shouldThrow<E> { block }` | General purpose construct that asserts that the block throws an exception of E or a subtype of E |
-| `shouldThrowExactly<E> { block }` | General purpose construct that asserts that the block throws an exception of exactly E |
-| `shouldThrowAny<E> { block }` | General purpose construct that asserts that the block throws an exception of any type (including Throwable) |
+| `shouldThrow<T> { block }` | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T`|
+| `shouldThrowExactly<T> { block }` | General purpose construct that asserts that the block throws exactly `T` |
+| `shouldThrowAny { block }` | General purpose construct that asserts that the block throws a Throwable of any type |
 
 | Types ||
 | ------- | ---- |
