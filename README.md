@@ -41,7 +41,7 @@ Kotest comes with several [testing styles](doc/reference.md#testing-styles) so y
 Multitude of Matchers
 ---------------------
 
-Use over 120 provided matchers to test assertions on many different types:
+Use over 300 provided matchers to test assertions on many different types:
 
 ```kotlin
 "substring".shouldContain("str")
