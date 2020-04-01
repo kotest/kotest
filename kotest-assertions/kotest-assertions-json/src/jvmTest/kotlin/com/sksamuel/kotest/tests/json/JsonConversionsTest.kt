@@ -3,68 +3,102 @@ package com.sksamuel.kotest.tests.json
 import io.kotest.assertions.json.Json
 import io.kotest.assertions.json.representation
 import io.kotest.assertions.json.shouldBeJsonValueOfType
-import io.kotest.assertions.json.shouldContainJsonKey
-import io.kotest.assertions.json.shouldContainJsonKeyValue
-import io.kotest.assertions.json.shouldMatchJson
-import io.kotest.assertions.json.shouldMatchJsonResource
-import io.kotest.assertions.json.shouldNotContainJsonKey
-import io.kotest.assertions.json.shouldNotContainJsonKeyValue
-import io.kotest.assertions.json.shouldNotMatchJson
-import io.kotest.assertions.json.shouldNotMatchJsonResource
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.assertions.withClue
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 
-class JsonConversionsTest : StringSpec({
+class JsonConversionsTest : FreeSpec({
 
-  "test json representation" {
-    null.representation shouldBe """null"""
-    """null""".representation shouldBe """"null""""
-    """{"a": "b"}""".representation shouldBe """"{"a": "b"}""""
-  }
+    "test json representation" - {
+        "test for null" {
+            null.representation shouldBe """
+        |null
+      """.trimMargin()
+        }
 
-  "test json value conversion" {
-    withClue("JSON string value should be quoted") {
-      "\"str\"".shouldBeJsonValueOfType<String>() shouldBe "str"
+        "test for string" {
+            """
+        |null
+      """.trimMargin().representation shouldBe """
+        |"null"
+      """.trimMargin()
+        }
 
-      shouldThrow<AssertionError> {
-        @Suppress("RemoveExplicitTypeArguments")
-        "".shouldBeJsonValueOfType<Any?>()
-      }
-
-      shouldThrow<AssertionError> { "str".shouldBeJsonValueOfType<String>() }
-
-      withClue("quotes in JSON string value should be escaped") {
-        """"\"str\""""".shouldBeJsonValueOfType<String>() shouldBe "\"str\""
-      }
+        "test for object" {
+            """
+        |{"a": "b"}
+      """.trimMargin().representation shouldBe """
+        |"{"a": "b"}"
+      """.trimMargin()
+        }
     }
 
-    "10".shouldBeJsonValueOfType<Int>() shouldBe 10
-    "10.0".shouldBeJsonValueOfType<Number>() shouldBe 10.0
-    "10.0".shouldBeJsonValueOfType<Any>() shouldBe 10.0
+    "test json value conversion" - {
+        "JSON string value should be outer quoted" - {
+            "correct string" - {
+                "test for string" {
+                    """
+            |"str"
+          """.trimMargin().shouldBeJsonValueOfType<String>() shouldBe "str"
+                }
 
-    "[]".shouldBeJsonValueOfType<Array<*>>() shouldBe emptyArray<Int>()
+                "test for string with inner quotes" - {
+                    """
+            |"\"str\""
+          """.trimMargin().shouldBeJsonValueOfType<String>() shouldBe "\"str\""
+                }
+            }
 
-    "null".shouldBeJsonValueOfType<Any?>() shouldBe null
-    "null".shouldBeJsonValueOfType<String?>() shouldBe null
-    "null".shouldBeJsonValueOfType<Int?>() shouldBe null
+            "incorrect string" - {
+                "test for empty string" {
+                    shouldThrow<AssertionError> {
+                        @Suppress("RemoveExplicitTypeArguments")
+                        "".shouldBeJsonValueOfType<Any?>()
+                    }
+                }
 
-    shouldThrow<AssertionError> { "\"str\"".shouldBeJsonValueOfType<Int?>() }
-    shouldThrow<AssertionError> { "\"str\"".shouldBeJsonValueOfType<Int>() }
+                "test for string without outer quotes" {
+                    shouldThrow<AssertionError> { "str".shouldBeJsonValueOfType<String>() }
+                }
+            }
+        }
 
-    shouldThrow<AssertionError> { "10".shouldBeJsonValueOfType<String>() }
+        "test for correct numbers" {
+            "10".shouldBeJsonValueOfType<Int>() shouldBe 10
+            "-10".shouldBeJsonValueOfType<Int>() shouldBe -10
+            "10.0".shouldBeJsonValueOfType<Number>() shouldBe 10.0
+            "10.0".shouldBeJsonValueOfType<Any>() shouldBe 10.0
+        }
 
-    withClue("null should always throw") {
-      shouldThrow<AssertionError> { null.shouldBeJsonValueOfType<Int?>() }
-    }
+        "test for empty array" {
+            "[]".shouldBeJsonValueOfType<Array<*>>() shouldBe emptyArray<Int>()
+        }
 
-    withClue("smart cast should work") {
-      fun use(json: Json) {}
+        "test for nulls" {
+            "null".shouldBeJsonValueOfType<Any?>() shouldBe null
+            "null".shouldBeJsonValueOfType<String?>() shouldBe null
+            "null".shouldBeJsonValueOfType<Int?>() shouldBe null
+        }
 
-      val nullableJson: Json? = "10"
-      nullableJson.shouldBeJsonValueOfType<Int>()
-      use(nullableJson)
-    }
+        "test for type mismatch" {
+            shouldThrow<AssertionError> { "\"str\"".shouldBeJsonValueOfType<Int?>() }
+            shouldThrow<AssertionError> { "\"str\"".shouldBeJsonValueOfType<Int>() }
+
+            shouldThrow<AssertionError> { "10".shouldBeJsonValueOfType<String>() }
+        }
+
+        "test for null" {
+            shouldThrow<AssertionError> { null.shouldBeJsonValueOfType<Int?>() }
+            shouldThrow<AssertionError> { null.shouldBeJsonValueOfType<Int>() }
+            shouldThrow<AssertionError> { null.shouldBeJsonValueOfType<String>() }
+        }
+
+        "test for smart cast" {
+            fun use(json: Json) {}
+
+            val nullableJson: Json? = "10"
+            nullableJson.shouldBeJsonValueOfType<Int>()
+            use(nullableJson)
+        }
   }
 })
