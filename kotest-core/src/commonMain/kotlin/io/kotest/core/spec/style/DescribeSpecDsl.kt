@@ -44,7 +44,7 @@ interface DescribeSpecDsl : SpecDsl {
          TestBuilders.state = null
          val active = if (xdisabled == true) false else enabled
          val config = dsl.defaultConfig()
-            .deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
+            .deriveTestConfig(active, tags, extensions, timeout, enabledIf, invocations, threads)
          context.registerTestCase(name, test, config, TestType.Test)
       }
    }
