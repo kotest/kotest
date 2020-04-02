@@ -14,7 +14,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FeatureSpecHappyPathSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -77,7 +77,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FeatureSpecSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(

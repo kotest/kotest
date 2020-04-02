@@ -56,8 +56,8 @@ internal fun createDiscoveryRequest(request: EngineDiscoveryRequest): DiscoveryR
       DiscoveryFilter.PackageNameDiscoveryFilter { filter.toPredicate().test(it.value) }
    }
 
-   val internal = if (request.configurationParameters.get("allow_internal").isPresent) Modifier.Internal else null
-   val modifiers = listOfNotNull(Modifier.Public, internal)
+   val private = if (request.configurationParameters.get("allow_private").isPresent) Modifier.Private else null
+   val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
    val modifiersFilter = DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet())
 
    val filters = packageFilters + classFilters + modifiersFilter

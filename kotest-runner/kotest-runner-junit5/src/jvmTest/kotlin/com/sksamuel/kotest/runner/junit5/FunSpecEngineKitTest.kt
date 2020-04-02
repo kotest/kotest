@@ -11,7 +11,7 @@ class FunSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FunSpecSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(

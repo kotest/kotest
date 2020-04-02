@@ -13,7 +13,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
          EngineTestKit
             .engine("kotest")
             .selectors(DiscoverySelectors.selectClass(AfterProjectListenerExceptionSample::class.java))
-            .configurationParameter("allow_internal", "true")
+            .configurationParameter("allow_private", "true")
             .execute()
             .allEvents().apply {
                started().shouldHaveNames(

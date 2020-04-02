@@ -163,13 +163,13 @@ class TestExecutorTest : FunSpec({
 })
 
 @OptIn(ExperimentalTime::class)
-internal class Tests : FunSpec({
+private class Tests : FunSpec({
    test("a") {}
    test("b").config(timeout = 100.milliseconds) { delay(1000000) }
 })
 
 
-internal class BeforeTest : FunSpec() {
+private class BeforeTest : FunSpec() {
    var before = false
 
    init {
@@ -180,14 +180,14 @@ internal class BeforeTest : FunSpec() {
    }
 }
 
-internal class BeforeTestWithException : FunSpec({
+private class BeforeTestWithException : FunSpec({
    beforeTest {
       error("boom")
    }
    test("a") {}
 })
 
-internal class AfterTest : FunSpec() {
+private class AfterTest : FunSpec() {
    var after = false
 
    init {
@@ -198,7 +198,7 @@ internal class AfterTest : FunSpec() {
    }
 }
 
-internal class AfterTestWithException : FunSpec({
+private class AfterTestWithException : FunSpec({
    afterTest {
       error("boom")
    }
