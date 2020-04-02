@@ -35,8 +35,7 @@ fun <A, B : A> Exhaustive<A>.merge(other: Exhaustive<B>): Exhaustive<A> = object
 
 /**
  * Returns a new [Exhaustive] which takes its elements from the receiver and filters them using the supplied
- * predicate. This gen will continue to request elements from the underlying gen until one satisfies
- * the predicate.
+   predicate. In other words this exhaustive is a subset of the elements as determined by the filter.
  */
 fun <A> Exhaustive<A>.filter(predicate: (A) -> Boolean) = object : Exhaustive<A>() {
    override val values: List<A> =
