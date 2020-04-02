@@ -13,7 +13,7 @@ types in the test function.
 
 ```kotlin
 "square roots" {
-  forall(
+  forAll(
       row(2, 4),
       row(3, 9),
       row(4, 16),
@@ -39,7 +39,7 @@ Table testing can be used within any spec. Here is an example using `StringSpec`
 ```kotlin
 class StringSpecExample : StringSpec({
   "string concat" {
-    forall(
+    forAll(
       row("a", "b", "c", "abc"),
       row("hel", "lo wo", "rld", "hello world"),
       row("", "z", "", "z")
