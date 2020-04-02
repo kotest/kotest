@@ -16,8 +16,8 @@ class IntsTest : FunSpec({
          .values shouldBe listOf(0, 4, 8, 12, 16, 20)
    }
    test("flatMap works too") {
-      Exhaustive.ints(0..4)
-         .flatMap { Exhaustive.ints(it..it + 1) }
-         .values shouldBe listOf(0, 1, 1, 2, 2, 3, 3, 4, 4, 5)
+      Exhaustive.ints(0..3)
+         .flatMap { Exhaustive.ints(0..it) }
+         .values shouldBe listOf(0, 0, 1, 0, 1, 2, 0, 1, 2, 3)
    }
 })
