@@ -31,3 +31,35 @@ fun <A> List<A>.exhaustive(): Exhaustive<A> = object : Exhaustive<A>() {
 fun <A, B : A> Exhaustive<A>.merge(other: Exhaustive<B>): Exhaustive<A> = object : Exhaustive<A>() {
    override val values: List<A> = this@merge.values.zip(other.values).flatMap { listOf(it.first, it.second) }
 }
+
+
+/**
+ * Returns a new [Exhaustive] which takes its elements from the receiver and filters them using the supplied
+ * predicate. This gen will continue to request elements from the underlying gen until one satisfies
+ * the predicate.
+ */
+fun <A> Exhaustive<A>.filter(predicate: (A) -> Boolean) = object : Exhaustive<A>() {
+   override val values: List<A> =
+      this@filter.values.filter { predicate(it) }
+}
+
+/**
+ * @return a new [Exhaustive] by filtering this Exhaustives output by the negated function [f]
+ */
+fun <A> Exhaustive<A>.filterNot(f: (A) -> Boolean): Exhaustive<A> = filter { !f(it) }
+
+/**
+ * Returns a new [Exhaustive] which takes its elements from the receiver and maps them using the supplied function.
+ */
+fun <A, B> Exhaustive<A>.map(f: (A) -> B): Exhaustive<B> = object : Exhaustive<B>() {
+   override val values: List<B> =
+      this@map.values.map { f(it) }
+}
+
+/**
+ * Returns a new [Exhaustive] which takes its elements from the receiver and maps them using the supplied function.
+ */
+fun <A, B> Exhaustive<A>.flatMap(f: (A) -> Exhaustive<B>): Exhaustive<B> = object : Exhaustive<B>() {
+   override val values: List<B> =
+      this@flatMap.values.flatMap { f(it).values }
+}
