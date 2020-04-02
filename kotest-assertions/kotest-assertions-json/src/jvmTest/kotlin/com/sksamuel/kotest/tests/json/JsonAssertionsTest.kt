@@ -44,6 +44,10 @@ class JsonAssertionsTest : StringSpec({
   "test json equality" {
     json1.shouldMatchJson(json2)
     json1.shouldNotMatchJson(json3)
+
+    null.shouldMatchJson(null)
+    null.shouldNotMatchJson(json1)
+    json1.shouldNotMatchJson(null)
   }
 
   "should return correct error message on failure" {
