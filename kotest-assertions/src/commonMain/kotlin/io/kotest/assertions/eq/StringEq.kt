@@ -1,5 +1,7 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
 import io.kotest.assertions.diffLargeString
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.Printed
@@ -19,7 +21,7 @@ object StringEq : Eq<String> {
          equalIgnoringWhitespace(actual, expected) ->
             failure("expected: ${escapeLineBreaks(expected)} but was: ${escapeLineBreaks(actual)}\n(contents match, but line-breaks differ; output has been escaped to show line-breaks)")
          supportsStringDiff() && useDiff(expected, actual) -> diff(expected, actual)
-         else -> failure(expected.show(), actual.show())
+         else -> failure(Expected(expected.show()), Actual(actual.show()))
       }
    }
 
@@ -34,7 +36,7 @@ object StringEq : Eq<String> {
          expected,
          actual
       )
-      return failure(Printed(expectedRepr), Printed(actualRepr))
+      return failure(Expected(Printed(expectedRepr)), Actual(Printed(actualRepr)))
    }
 
    private fun useDiff(expected: String, actual: String): Boolean {

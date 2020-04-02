@@ -1,7 +1,9 @@
 package io.kotest.matchers
 
+import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionCounter
 import io.kotest.assertions.ErrorCollector
+import io.kotest.assertions.Expected
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.eq.eq
 import io.kotest.assertions.failure
@@ -74,7 +76,11 @@ fun <T> equalityMatcher(expected: T) = object : Matcher<T> {
       }
       return MatcherResult(
          t == null,
-         { failure(expected.show(), value.show()).message ?: intellijFormatError(expected.show(), value.show()) },
+         {
+            val e = Expected(expected.show())
+            val a = Actual(value.show())
+            failure(e, a).message ?: intellijFormatError(e, a)
+         },
          { "${expected.show().value} should not equal ${value.show().value}" }
       )
    }

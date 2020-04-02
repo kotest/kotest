@@ -48,6 +48,7 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Mpp))
+            implementation(project(Projects.Fp))
          }
       }
 

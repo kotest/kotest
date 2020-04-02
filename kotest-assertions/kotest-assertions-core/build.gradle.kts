@@ -57,6 +57,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-js"))
             implementation(Libs.Coroutines.coreJs)
+            implementation(Libs.JUnitPlatform.commons)
          }
       }
 
@@ -78,6 +79,7 @@ kotlin {
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-property"))
+            implementation(Libs.OpenTest4j.core)
          }
       }
 

@@ -1,5 +1,7 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
@@ -12,7 +14,7 @@ import io.kotest.assertions.show.show
 internal object DefaultEq : Eq<Any> {
    override fun equals(actual: Any, expected: Any): Throwable? {
       return if (test(actual, expected)) null else {
-         failure(expected.show(), actual.show())
+         failure(Expected(expected.show()), Actual(actual.show()))
       }
    }
 

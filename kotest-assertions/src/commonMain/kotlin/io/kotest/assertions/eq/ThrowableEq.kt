@@ -1,5 +1,7 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
@@ -8,6 +10,6 @@ object ThrowableEq : Eq<Throwable> {
       return if (actual.message == expected.message && expected::class == actual::class)
          null
       else
-         failure(expected.show(), actual.show())
+         failure(Expected(expected.show()), Actual(actual.show()))
    }
 }

@@ -59,6 +59,11 @@ object Libs {
       const val generex = "com.github.mifmif:generex:1.0.2"
    }
 
+   object OpenTest4j {
+      private const val version = "1.2.0"
+      const val core = "org.opentest4j:opentest4j:$version"
+   }
+
    object Wumpz {
       const val diffutils = "com.github.wumpz:diffutils:2.2"
    }
