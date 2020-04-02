@@ -4,6 +4,7 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -37,6 +38,7 @@ fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactor
 class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
+   override val addListener = ::listener
 }
 
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecDsl {
@@ -44,6 +46,7 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), S
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
+   override val addListener = ::listener
 
    init {
       body()

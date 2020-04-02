@@ -24,6 +24,7 @@ fun stringSpec(block: StringSpecTestFactoryConfiguration.() -> Unit): TestFactor
 class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
+   override val addListener = ::listener
 }
 
 abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecDsl {
@@ -31,6 +32,7 @@ abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), S
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
+   override val addListener = ::listener
 
    init {
       body()
