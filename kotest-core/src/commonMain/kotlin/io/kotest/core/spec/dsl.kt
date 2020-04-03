@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
@@ -14,4 +15,6 @@ interface SpecDsl {
       config: TestCaseConfig,
       type: TestType
    ) -> Unit
+
+   val addListener: (TestListener) -> Unit
 }

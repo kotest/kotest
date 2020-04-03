@@ -28,6 +28,11 @@ object Discovery {
    private val isSpecSubclass: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
    private val isClass: (KClass<*>) -> Boolean = { it.objectInstance == null }
+   private val fromClassPaths: List<KClass<out Spec>> by lazy {
+      scanUris().apply {
+         log("Scan discovered $size classes in the classpaths...")
+      }
+   }
 
    /**
     * Returns a function that applies all the [DiscoveryFilter]s to a given class.
@@ -46,15 +51,14 @@ object Discovery {
    }
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
+      val specClasses =
+         if(request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
 
-      val fromClassPaths = scanUris()
-      log("Scan discovered ${fromClassPaths.size} classes in the classpaths...")
-
-      val filtered = fromClassPaths
+      val filtered = specClasses
          .asSequence()
          .filter(selectorFn(request.selectors))
          .filter(filterFn(request.filters))
-         //.filter(isSpecSubclass)
+         .filter(isSpecSubclass)
          .filter(isClass)
          .filterNot(isAbstract)
          .toList()
@@ -68,6 +72,31 @@ object Discovery {
 
       log("Discovery is returning ${afterExtensions.size} specs")
       DiscoveryResult(afterExtensions)
+   }
+
+   /**
+    * Returns whether or not this is a requests that selects single classes
+    * only. Used to avoid full classpath scans when not necessary.
+    */
+   private fun  DiscoveryRequest.onlySelectsSingleClasses() : Boolean =
+         selectors.isNotEmpty() &&
+            selectors.all { it is DiscoverySelector.ClassDiscoverySelector }
+
+   /**
+    * Returns a list of [Spec] classes from discovery requests that only have
+    * selectors of type [DiscoverySelector.ClassDiscoverySelector].
+    */
+   @OptIn(ExperimentalTime::class)
+   private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
+      log("Starting loading of selected tests...")
+      val (loadedClasses, time) = measureTimedValue {
+         request
+            .selectors
+            .map { Class.forName((it as DiscoverySelector.ClassDiscoverySelector).className).kotlin }
+            .filter(isSpecSubclass)
+            .filterIsInstance<KClass<out Spec>>()      }
+      log("Loading of selected tests completed in $time")
+      return loadedClasses
    }
 
    /**
@@ -85,7 +114,7 @@ object Discovery {
             .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
             .scan()
       }
-      log("Test discovery competed in $time")
+      log("Test discovery completed in $time")
 
       return scanResult.use { result ->
          result.getSubclasses(Spec::class.java.name)

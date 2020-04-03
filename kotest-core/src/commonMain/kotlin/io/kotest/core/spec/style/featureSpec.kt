@@ -21,6 +21,7 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
 class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
+   override val addListener = ::listener
 }
 
 abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecDsl {
@@ -28,6 +29,7 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(),
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
+   override val addListener = ::listener
 
    init {
       body()

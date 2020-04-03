@@ -2,11 +2,18 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AfterTest
+import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.SpecDsl
+import io.kotest.core.test.Description
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.deriveTestConfig
+import io.kotest.fp.Tuple2
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -37,17 +44,53 @@ interface FunSpecDsl : SpecDsl {
       }
    }
 
+   /**
+    * Adds a top level context scope to the spec.
+    */
    fun context(name: String, init: suspend ContextScope.() -> Unit) {
-      addTest(name, { ContextScope(this, this@FunSpecDsl).init() }, defaultConfig(), TestType.Container)
+      addTest(
+         name,
+         { ContextScope(Description.specUnsafe(this@FunSpecDsl).append(name), this, this@FunSpecDsl).init() },
+         defaultConfig(),
+         TestType.Container
+      )
    }
 
    @KotestDsl
-   class ContextScope(private val context: TestContext, private val spec: FunSpecDsl) {
+   class ContextScope(
+      private val description: Description,
+      private val context: TestContext,
+      private val spec: FunSpecDsl
+   ) {
 
+      fun beforeTest(f: BeforeTest) {
+         spec.addListener(object : TestListener {
+            override suspend fun beforeTest(testCase: TestCase) {
+               if (description.isAncestorOf(testCase.description)) {
+                  f(testCase)
+               }
+            }
+         })
+      }
+
+      fun afterTest(f: AfterTest) {
+         spec.addListener(object : TestListener {
+            override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+               if (description.isAncestorOf(testCase.description)) {
+                  f(Tuple2(testCase, result))
+               }
+            }
+         })
+      }
+
+
+      /**
+       * Adds a nested context scope to the spec.
+       */
       suspend fun context(name: String, init: suspend ContextScope.() -> Unit) {
          context.registerTestCase(
             name,
-            { ContextScope(this, this@ContextScope.spec).init() },
+            { ContextScope(this@ContextScope.description.append(name), this, this@ContextScope.spec).init() },
             spec.defaultConfig(),
             TestType.Container
          )
