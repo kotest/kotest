@@ -1,7 +1,5 @@
 package io.kotest.core
 
-import io.kotest.mpp.bestName
-
 /**
  * Base class for all tags. The simple name (without packages) of the singleton derived from this
  * class will be used as name. Two tag object with the same simple name (same object names in
@@ -18,7 +16,7 @@ abstract class Tag {
    /**
     * Simple name of the singleton/class derived from this class.
     */
-   open val name: String = this::class.bestName()
+   open val name: String = this::class.simpleName ?: "unknown"
 
    /**
     * Same as [name].
