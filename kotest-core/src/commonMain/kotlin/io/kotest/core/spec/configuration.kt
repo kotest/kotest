@@ -22,11 +22,11 @@ import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
-typealias BeforeSpec = (Spec) -> Unit
-typealias AfterSpec = (Spec) -> Unit
+typealias BeforeSpec = suspend (Spec) -> Unit
+typealias AfterSpec = suspend (Spec) -> Unit
 typealias AfterProject = () -> Unit
-typealias PrepareSpec = (KClass<out Spec>) -> Unit
-typealias FinalizeSpec = (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
+typealias PrepareSpec = suspend (KClass<out Spec>) -> Unit
+typealias FinalizeSpec = suspend (Tuple2<KClass<out Spec>, Map<TestCase, TestResult>>) -> Unit
 typealias TestCaseExtensionFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
 typealias AroundTestFn = suspend (Tuple2<TestCase, suspend (TestCase) -> TestResult>) -> TestResult
 typealias AroundSpecFn = suspend (Tuple2<KClass<out Spec>, suspend () -> Unit>) -> Unit
