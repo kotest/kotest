@@ -6,7 +6,7 @@ object Libs {
    const val gradleVersionsPluginVersion = "0.28.0"
 
    object Arrow {
-      private const val version = "0.10.4"
+      private const val version = "0.10.5"
       const val fx = "io.arrow-kt:arrow-fx:$version"
       const val syntax = "io.arrow-kt:arrow-syntax:$version"
       const val validation = "io.arrow-kt:arrow-validation:$version"
@@ -28,7 +28,7 @@ object Libs {
    }
 
    object JUnitPlatform {
-      private const val version = "1.6.0"
+      private const val version = "1.6.1"
       const val commons = "org.junit.platform:junit-platform-commons:$version"
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
@@ -41,7 +41,7 @@ object Libs {
    }
 
    object JUnitJupiter {
-      private const val version = "5.6.0"
+      private const val version = "5.6.1"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
@@ -53,7 +53,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.65"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.67"
    }
 
    object Mocking {
