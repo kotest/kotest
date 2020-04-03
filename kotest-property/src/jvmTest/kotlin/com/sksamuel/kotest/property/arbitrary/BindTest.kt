@@ -76,7 +76,7 @@ class BindTest : StringSpec({
       }
    }
 
-   "Arb.bind(a,b,c) should generate distinct values" {
+   "Arb.bind(a,b,c,d) should generate distinct values" {
       val arbA = Arb.string()
       val arbB = Arb.string()
       val arbC = Arb.string()
@@ -101,7 +101,7 @@ class BindTest : StringSpec({
       }
    }
 
-   "Arb.bind(a,b,c) should generate distinct values" {
+   "Arb.bind(a,b,c,d,e) should generate distinct values" {
       val arbA = Arb.string()
       val arbB = Arb.string()
       val arbC = Arb.string()
