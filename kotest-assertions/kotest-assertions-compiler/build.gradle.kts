@@ -33,7 +33,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(project(":kotest-assertions"))
-            implementation("com.github.tschuchortdev:kotlin-compile-testing:1.2.6")
+            implementation(Libs.tschuchortdev.kotlinCompileTesting)
          }
       }
       val jvmTest by getting {

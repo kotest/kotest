@@ -22,6 +22,11 @@ object Libs {
       val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
+   object tschuchortdev {
+      const val version = "1.2.7"
+      val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.0"
       const val commons = "org.junit.platform:junit-platform-commons:$version"
