@@ -51,7 +51,7 @@ fun TestDescriptor.descriptor(testCase: TestCase): TestDescriptor {
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    val type = when (testCase.type) {
-      TestType.Container -> if (System.getProperty("kotest.gradle5") == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
+      TestType.Container -> if (System.getProperty("kotest.gradle5.compatibility") == "true") TestDescriptor.Type.CONTAINER else TestDescriptor.Type.CONTAINER_AND_TEST
       TestType.Test -> TestDescriptor.Type.TEST
    }
    return append(testCase.description, type, source, Segment.Test)
