@@ -53,11 +53,18 @@ fun junit5AssertionFailedError(
    actual: Actual,
    cause: Throwable?
 ): Option<Throwable> {
-   return callPublicConstructor<Throwable>(
-      "org.opentest4j.AssertionFailedError",
-      arrayOf(String::class.java, Object::class.java, Object::class.java),
-      arrayOf(message, expected.value.value, actual.value.value)
-   )
+   return when (cause) {
+      null -> callPublicConstructor<Throwable>(
+         "org.opentest4j.AssertionFailedError",
+         arrayOf(String::class.java, Object::class.java, Object::class.java),
+         arrayOf(message, expected.value.value, actual.value.value)
+      )
+      else -> callPublicConstructor<Throwable>(
+         "org.opentest4j.AssertionFailedError",
+         arrayOf(String::class.java, Object::class.java, Object::class.java, Throwable::class.java),
+         arrayOf(message, expected.value.value, actual.value.value, cause)
+      )
+   }
 }
 
 /**
