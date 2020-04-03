@@ -48,7 +48,6 @@ actual fun createAssertionError(message: String, cause: Throwable?): AssertionEr
  * https://ota4j-team.github.io/opentest4j/docs/1.0.0/api/org/opentest4j/AssertionFailedError.html
  */
 fun junit5AssertionFailedError(
-   message: String,
    expected: Expected,
    actual: Actual,
    cause: Throwable?
@@ -56,7 +55,7 @@ fun junit5AssertionFailedError(
    return callPublicConstructor<Throwable>(
       "org.opentest4j.AssertionFailedError",
       arrayOf(String::class.java, Object::class.java, Object::class.java),
-      arrayOf(message, expected.value.value, actual.value.value)
+      arrayOf(null, expected.value.value, actual.value.value)
    )
 }
 
@@ -66,11 +65,11 @@ fun junit5AssertionFailedError(
  *
  * https://junit.org/junit4/javadoc/latest/org/junit/ComparisonFailure.html
  */
-fun junit4ComparisonFailure(message: String, expected: Expected, actual: Actual): Option<Throwable> {
+fun junit4ComparisonFailure(expected: Expected, actual: Actual): Option<Throwable> {
    return callPublicConstructor<Throwable>(
       "org.junit.ComparisonFailure",
       arrayOf(String::class.java, String::class.java, String::class.java),
-      arrayOf(message, expected.value.value, actual.value.value)
+      arrayOf(null, expected.value.value, actual.value.value)
    )
 }
 
@@ -109,7 +108,7 @@ actual fun createAssertionError(
    expected: Expected,
    actual: Actual
 ): Throwable {
-   return junit5AssertionFailedError(message, expected, actual, cause)
-      .orElse(junit4ComparisonFailure(message, expected, actual))
+   return junit5AssertionFailedError(expected, actual, cause)
+      .orElse(junit4ComparisonFailure(expected, actual))
       .getOrElse(createAssertionError(message, cause))
 }
