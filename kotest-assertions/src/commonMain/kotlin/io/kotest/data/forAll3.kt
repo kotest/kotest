@@ -20,7 +20,7 @@ inline fun <A, B, C> Table3<A, B, C>.forAll(fn: (A, B, C) -> Unit) {
       try {
          fn(row.a, row.b, row.c)
       } catch (e: Throwable) {
-         collector += error(e, headers.values(), row.values())
+         collector.append(error(e, headers.values(), row.values()))
       }
    }
    collector.assertAll()

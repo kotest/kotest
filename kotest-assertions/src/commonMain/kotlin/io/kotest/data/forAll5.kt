@@ -22,7 +22,7 @@ inline fun <A, B, C, D, E> Table5<A, B, C, D, E>.forAll(fn: (A, B, C, D, E) -> U
       try {
          fn(row.a, row.b, row.c, row.d, row.e)
       } catch (e: Throwable) {
-         collector += error(e, headers.values(), row.values())
+         collector.append(error(e, headers.values(), row.values()))
       }
    }
    collector.assertAll()

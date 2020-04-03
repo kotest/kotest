@@ -18,7 +18,7 @@ inline fun <A> Table1<A>.forAll(fn: (A) -> Unit) {
     try {
       fn(row.a)
     } catch (e: Throwable) {
-      collector += error(e, headers.values(), row.values())
+       collector.append(error(e, headers.values(), row.values()))
     }
   }
   collector.assertAll()

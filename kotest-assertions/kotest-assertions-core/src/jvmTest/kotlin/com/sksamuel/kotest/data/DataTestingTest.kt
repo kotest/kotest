@@ -2,16 +2,17 @@ package com.sksamuel.kotest.data
 
 import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
 import io.kotest.data.table
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 
@@ -155,19 +156,17 @@ class DataTestingTest : StringSpec() {
       }
 
       "assertions should be grouped in order" {
-         shouldThrow<MultiAssertionError> {
+         shouldThrowAny {
             val table1 = table(
                headers("name"),
                row("sam"),
                row("billy"),
                row("christian")
             )
-
             forAll(table1) {
                it shouldBe "christian"
             }
          }.let {
-            println(it.message)
             it.message shouldNotBe null
             it.message should contain("1) Test failed for (name, sam) with error expected:<\"christian\"> but was:<\"sam\">")
             it.message should contain("2) Test failed for (name, billy) with error expected:<\"christian\"> but was:<\"billy\">")
@@ -206,13 +205,12 @@ class DataTestingTest : StringSpec() {
                it!! shouldNotBe "christian"
             }
          }.message
-         println(msg)
          msg shouldBe """
 The following 2 assertions failed:
 1) Test failed for (name, null) with error kotlin.KotlinNullPointerException
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:233)
+	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
 2) Test failed for (name, christian) with error "christian" should not equal "christian"
-	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:233)
+	at com.sksamuel.kotest.data.DataTestingTest${'$'}12.invokeSuspend(DataTestingTest.kt:205)
 """
       }
    }

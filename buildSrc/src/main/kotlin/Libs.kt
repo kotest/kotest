@@ -18,13 +18,13 @@ object Libs {
    }
 
    object Ajalt {
-      val clikt = "com.github.ajalt:clikt:2.6.0"
-      val mordant = "com.github.ajalt:mordant:1.2.1"
+      const val clikt = "com.github.ajalt:clikt:2.6.0"
+      const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
-   object tschuchortdev {
-      const val version = "1.2.7"
-      val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
+   object Tschuchortdev {
+      private const val version = "1.2.7"
+      const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
    object JUnitPlatform {

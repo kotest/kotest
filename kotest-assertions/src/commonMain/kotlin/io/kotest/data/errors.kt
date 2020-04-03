@@ -1,13 +1,13 @@
 package io.kotest.data
 
-import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.failure
+import io.kotest.assertions.multiAssertionError
 
 @PublishedApi
 internal class ErrorCollector {
    private val errors = mutableListOf<Throwable>()
 
-   operator fun plusAssign(t: Throwable) {
+   fun append(t: Throwable) {
       errors += t
    }
 
@@ -15,7 +15,7 @@ internal class ErrorCollector {
       if (errors.size == 1) {
          throw errors[0]
       } else if (errors.size > 1) {
-         throw MultiAssertionError(errors)
+         throw multiAssertionError(errors)
       }
    }
 }
@@ -30,7 +30,7 @@ internal fun error(e: Throwable, headers: List<String>, values: List<*>): Throwa
       else -> e.toString()
    }
 
-   return failure("Test failed for $params with error $message")
+   return failure("Test failed for $params with error $message", e)
 }
 
 @PublishedApi
