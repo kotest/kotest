@@ -115,7 +115,7 @@ class FeatureSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class FeatureSpecHappyPathSample : FeatureSpec() {
+private class FeatureSpecHappyPathSample : FeatureSpec() {
    init {
       feature("1") {
          scenario("1.1") {
@@ -146,7 +146,7 @@ internal class FeatureSpecHappyPathSample : FeatureSpec() {
 }
 
 
-internal class FeatureSpecSample : FeatureSpec() {
+private class FeatureSpecSample : FeatureSpec() {
    init {
 
       val count = AtomicInteger(0)

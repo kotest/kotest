@@ -113,7 +113,7 @@ class FreeSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class FreeSpecSample : FreeSpec({
+private class FreeSpecSample : FreeSpec({
 
    "a simple failing test" {
       1 shouldBe 2

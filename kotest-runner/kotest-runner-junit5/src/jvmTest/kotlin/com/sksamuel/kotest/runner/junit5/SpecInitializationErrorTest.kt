@@ -72,7 +72,7 @@ class SpecInitializationErrorTest : FunSpec({
    }
 })
 
-internal class SpecWithFieldError : FunSpec() {
+private class SpecWithFieldError : FunSpec() {
    private val err = "failme".apply { error("foo") }
 
    init {
@@ -81,7 +81,7 @@ internal class SpecWithFieldError : FunSpec() {
    }
 }
 
-internal class SpecWithInitError : FunSpec() {
+private class SpecWithInitError : FunSpec() {
    init {
       error("foo")
       test("foo") {

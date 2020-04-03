@@ -53,9 +53,9 @@ sealed class DiscoveryFilter {
       override fun test(kclass: KClass<out Spec>): Boolean {
          if (kclass.visibility == KVisibility.INTERNAL)
             return modifiers.contains(Modifier.Internal)
-         if (java.lang.reflect.Modifier.isPublic(kclass.java.modifiers))
+         if (kclass.visibility == KVisibility.PUBLIC || java.lang.reflect.Modifier.isPublic(kclass.java.modifiers))
             return modifiers.contains(Modifier.Public)
-         if (java.lang.reflect.Modifier.isPrivate(kclass.java.modifiers))
+         if (kclass.visibility == KVisibility.PRIVATE || java.lang.reflect.Modifier.isPrivate(kclass.java.modifiers))
             return modifiers.contains(Modifier.Private)
          return false
       }

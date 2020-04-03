@@ -10,7 +10,6 @@ sealed class Try<out T> {
       inline operator fun <T> invoke(f: () -> T): Try<T> = try {
          Success(f())
       } catch (e: Throwable) {
-         println(e)
          if (nonFatal(e)) Failure(e) else throw e
       }
    }

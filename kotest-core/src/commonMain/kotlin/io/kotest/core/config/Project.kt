@@ -3,7 +3,18 @@
 package io.kotest.core.config
 
 import io.kotest.core.Tags
-import io.kotest.core.extensions.*
+import io.kotest.core.config.Project.registerExtension
+import io.kotest.core.config.Project.setFailOnIgnoredTests
+import io.kotest.core.extensions.ConstructorExtension
+import io.kotest.core.extensions.DiscoveryExtension
+import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+import io.kotest.core.extensions.RuntimeTagExtension
+import io.kotest.core.extensions.SpecExtension
+import io.kotest.core.extensions.SystemPropertyTagExtension
+import io.kotest.core.extensions.TagExtension
+import io.kotest.core.extensions.TagFilteredDiscoveryExtension
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filters.Filter
 import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.listeners.Listener
@@ -12,7 +23,10 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.LexicographicSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.core.test.*
+import io.kotest.core.test.AssertionMode
+import io.kotest.core.test.DefaultTestCaseOrder
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestCaseOrder
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -30,7 +44,14 @@ object Project {
 
    private val userconf = detectConfig()
    private val defaultTimeout = 600.seconds
-   private var extensions = userconf.extensions + listOf(SystemPropertyTagExtension, RuntimeTagExtension, TagFilteredDiscoveryExtension)
+
+   private var extensions = userconf.extensions + listOf(
+      SystemPropertyTagExtension,
+      RuntimeTagExtension,
+      IgnoredSpecDiscoveryExtension,
+      TagFilteredDiscoveryExtension
+   )
+
    private var listeners = userconf.listeners
    private var filters = userconf.filters
    private var timeout = userconf.timeout ?: defaultTimeout

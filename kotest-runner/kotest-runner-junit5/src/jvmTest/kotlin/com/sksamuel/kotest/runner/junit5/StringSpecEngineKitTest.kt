@@ -517,3 +517,7 @@ private class StringSpecTestCase : StringSpec({
    }
 
 })
+
+private class StringSpecExceptionInInit : StringSpec({
+   throw RuntimeException("kapow")
+})

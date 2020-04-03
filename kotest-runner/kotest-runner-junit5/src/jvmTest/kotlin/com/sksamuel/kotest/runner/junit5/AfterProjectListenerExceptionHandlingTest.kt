@@ -44,7 +44,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    }
 })
 
-internal class AfterProjectListenerExceptionSample : FunSpec({
+private class AfterProjectListenerExceptionSample : FunSpec({
    afterProject { if (System.getenv("foo") == "true") error("foo") }
    test("foo") {}
 })

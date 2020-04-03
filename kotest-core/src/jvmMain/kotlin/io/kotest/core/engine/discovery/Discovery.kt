@@ -54,7 +54,7 @@ object Discovery {
          .asSequence()
          .filter(selectorFn(request.selectors))
          .filter(filterFn(request.filters))
-         .filter(isSpecSubclass)
+         //.filter(isSpecSubclass)
          .filter(isClass)
          .filterNot(isAbstract)
          .toList()
@@ -81,6 +81,7 @@ object Discovery {
          ClassGraph()
             .enableClassInfo()
             .enableExternalClasses()
+            .ignoreClassVisibility()
             .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
             .scan()
       }

@@ -47,7 +47,7 @@ class FunSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class FunSpecSample : FunSpec({
+private class FunSpecSample : FunSpec({
 
    test("a failing test") {
       1 shouldBe 2
