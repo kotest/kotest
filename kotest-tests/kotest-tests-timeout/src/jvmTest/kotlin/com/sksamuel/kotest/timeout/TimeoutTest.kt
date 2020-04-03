@@ -16,24 +16,24 @@ class TimeoutTest : StringSpec() {
 
       extension(expectFailureExtension)
 
-      "a testcase timeout should interrupt a blocked thread".config(timeout = 250.milliseconds) {
+      "a testcase timeout should interrupt a blocked thread".config(timeout = 50.milliseconds) {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          Thread.sleep(1000000)
       }
 
-      "a testcase timeout should interrupt a suspend function".config(timeout = 250.milliseconds) {
+      "a testcase timeout should interrupt a suspend function".config(timeout = 50.milliseconds) {
          // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
          delay(1000000)
       }
 
-      "a testcase timeout should interupt a nested coroutine".config(timeout = 250.milliseconds) {
+      "a testcase timeout should interupt a nested coroutine".config(timeout = 50.milliseconds) {
          launch {
-            delay(10.toDuration(TimeUnit.MINUTES))
+            // a  high value to ensure its interrupted, we'd notice a test that runs for ever
+            delay(10.toDuration(TimeUnit.HOURS))
          }
       }
 
-      "a testcase timeout should interrupt suspended coroutine scope".config(timeout = 250.milliseconds) {
-         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+      "a testcase timeout should interrupt suspended coroutine scope".config(timeout = 50.milliseconds) {
          someCoroutine()
       }
    }

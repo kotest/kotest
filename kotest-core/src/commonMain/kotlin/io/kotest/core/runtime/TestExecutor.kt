@@ -1,6 +1,5 @@
 package io.kotest.core.runtime
 
-import io.kotest.mpp.log
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -11,8 +10,10 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.isActive
 import io.kotest.core.test.resolvedTimeout
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -162,32 +163,35 @@ class TestExecutor(
       testCase: TestCase,
       context: TestContext,
       timeout: Duration
-   ): Throwable? = coroutineScope {
-      try {
-         // not all environments will support interrupting an execution with a timeout
+   ): Throwable? = try {
+      // all platforms support coroutine based interruption
+      withTimeout(timeout.toLongMilliseconds()) {
+         // not all platforms support executing with a timeout because it uses background threads to interrupt
          ec.executeWithTimeoutInterruption(timeout) {
-            val contextp = object : TestContext() {
-               override val testCase: TestCase = context.testCase
-               override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
-
-               // must use the outer coroutine that will wait for child coroutines
-               override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
-            }
             replay(
                testCase.config.invocations,
                testCase.config.threads,
                { testCase.invokeBeforeInvocation(it) },
                { testCase.invokeAfterInvocation(it) }) {
-               testCase.executeWithTimeout(contextp, timeout)
+               coroutineScope {
+                  val contextp = object : TestContext() {
+                     override val testCase: TestCase = context.testCase
+                     override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
+                     override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+                  }
+                  testCase.executeWithBehaviours(contextp)
+               }
             }
          }
-         null
-      } catch (e: TimeoutCancellationException) {
-         TimeoutException(timeout)
-      } catch (t: Throwable) {
-         t
-      } catch (e: AssertionError) {
-         e
       }
+      null
+   } catch (e: TimeoutCancellationException) {
+      println("timeout caught!")
+      println(e)
+      TimeoutException(timeout)
+   } catch (t: Throwable) {
+      t
+   } catch (e: AssertionError) {
+      e
    }
 }
