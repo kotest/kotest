@@ -1,6 +1,10 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -19,7 +23,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecTestCase::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -58,7 +62,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInInit::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 8
@@ -88,7 +92,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeSpecOverride::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 8
@@ -117,7 +121,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeSpecFunction::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 8
@@ -146,7 +150,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterSpec::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -181,7 +185,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterSpecFunction::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -216,7 +220,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeTest::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -250,7 +254,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInBeforeTestFunction::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -286,7 +290,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterTest::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -322,7 +326,7 @@ class StringSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(StringSpecExceptionInAfterTestFunction::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             count() shouldBe 11
@@ -354,4 +358,166 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
+})
+
+private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+   }
+
+   override fun beforeSpec(spec: Spec) {
+      throw RuntimeException("zopp!!")
+   }
+
+}
+
+private class StringSpecExceptionInBeforeSpecFunction : StringSpec() {
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      beforeSpec {
+         throw RuntimeException("zopp!!")
+      }
+   }
+}
+
+private class StringSpecExceptionInAfterTest : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+   }
+
+   override fun afterTest(testCase: TestCase, result: TestResult) {
+      throw RuntimeException("craack!!")
+   }
+}
+
+private class StringSpecExceptionInAfterTestFunction : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      afterTest {
+         throw RuntimeException("craack!!")
+      }
+   }
+}
+
+
+private class StringSpecExceptionInAfterSpec : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+   }
+
+   override fun afterSpec(spec: Spec) {
+      throw RuntimeException("splatt!!")
+   }
+
+}
+
+private class StringSpecExceptionInAfterSpecFunction : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      afterSpec {
+         throw RuntimeException("splatt!!")
+      }
+   }
+}
+
+private class StringSpecExceptionInBeforeTest : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+   }
+
+   override fun beforeTest(testCase: TestCase) {
+      throw RuntimeException("oooff!!")
+   }
+}
+
+private class StringSpecExceptionInBeforeTestFunction : StringSpec() {
+
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      beforeTest {
+         throw RuntimeException("oooff!!")
+      }
+   }
+}
+
+private class StringSpecTestCase : StringSpec({
+
+   "a failing test" {
+      1 shouldBe 2
+   }
+
+   "a passing test" {
+      1 shouldBe 1
+   }
+
+   "an erroring test" {
+      throw RuntimeException()
+   }
+
+   "a skipped test".config(enabled = false) {
+   }
+
+})
+
+private class StringSpecExceptionInInit : StringSpec({
+   throw RuntimeException("kapow")
 })

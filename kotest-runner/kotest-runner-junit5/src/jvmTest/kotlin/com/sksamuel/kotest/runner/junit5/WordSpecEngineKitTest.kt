@@ -12,7 +12,7 @@ class WordSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(WordSpecSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -104,7 +104,7 @@ class WordSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class WordSpecSample : WordSpec({
+private class WordSpecSample : WordSpec({
 
    "a container" should {
       "skip a test".config(enabled = false) {}

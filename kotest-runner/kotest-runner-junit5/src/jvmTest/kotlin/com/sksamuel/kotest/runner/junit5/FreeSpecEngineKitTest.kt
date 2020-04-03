@@ -12,7 +12,7 @@ class FreeSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FreeSpecSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -113,7 +113,7 @@ class FreeSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class FreeSpecSample : FreeSpec({
+private class FreeSpecSample : FreeSpec({
 
    "a simple failing test" {
       1 shouldBe 2

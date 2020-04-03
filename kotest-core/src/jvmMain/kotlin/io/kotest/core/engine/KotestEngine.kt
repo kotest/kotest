@@ -1,7 +1,6 @@
 package io.kotest.core.engine
 
 import io.kotest.core.Tags
-import io.kotest.core.annotation.Ignored
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecifiedTagsTagExtension
 import io.kotest.core.filters.TestCaseFilter
@@ -12,7 +11,6 @@ import io.kotest.core.runtime.beforeProject
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.isDoNotParallelize
 import io.kotest.fp.Try
-import io.kotest.mpp.hasAnnotation
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
@@ -43,11 +41,8 @@ class KotestEngine(
    private fun submitAll() = Try {
       log("Submitting ${classes.size} specs")
 
-      // any spec that is annotated with @Ignored is filtered out at this stage
-      val filtered = classes.filterNot { it.hasAnnotation<Ignored>() }
-
       // the classes are ordered using an instance of SpecExecutionOrder
-      val ordered = Project.specExecutionOrder().sort(filtered)
+      val ordered = Project.specExecutionOrder().sort(classes)
 
       // if parallelize is enabled, then we must order the specs into two sets, depending on if they
       // are thread safe or not.

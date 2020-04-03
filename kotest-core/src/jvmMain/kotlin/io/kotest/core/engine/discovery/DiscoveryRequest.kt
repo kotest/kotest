@@ -53,8 +53,10 @@ sealed class DiscoveryFilter {
       override fun test(kclass: KClass<out Spec>): Boolean {
          if (kclass.visibility == KVisibility.INTERNAL)
             return modifiers.contains(Modifier.Internal)
-         if (java.lang.reflect.Modifier.isPublic(kclass.java.modifiers))
+         if (kclass.visibility == KVisibility.PUBLIC || java.lang.reflect.Modifier.isPublic(kclass.java.modifiers))
             return modifiers.contains(Modifier.Public)
+         if (kclass.visibility == KVisibility.PRIVATE || java.lang.reflect.Modifier.isPrivate(kclass.java.modifiers))
+            return modifiers.contains(Modifier.Private)
          return false
       }
    }
@@ -64,7 +66,7 @@ data class FullyQualifiedClassName(val value: String)
 data class PackageName(val value: String)
 
 enum class Modifier {
-   Public, Internal
+   Public, Internal, Private
 }
 
 sealed class DiscoverySelector {

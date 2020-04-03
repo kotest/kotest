@@ -27,15 +27,14 @@ class FreeSpecInstancePerTestTest : FreeSpec({
 
    val count = AtomicInteger(0)
 
-
    "a" - {
       count.incrementAndGet().shouldBe(1)
       "b" - {
          count.incrementAndGet().shouldBe(2)
-         "c".config() {
+         "c".config {
             count.incrementAndGet().shouldBe(3)
          }
-         "d".config() {
+         "d".config {
             count.incrementAndGet().shouldBe(3)
          }
       }

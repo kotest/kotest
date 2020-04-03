@@ -10,7 +10,7 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.engine.SpecExecutor
 
-internal class BehaviorSpecWithBeforeTestError : BehaviorSpec({
+private class BehaviorSpecWithBeforeTestError : BehaviorSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -23,7 +23,7 @@ internal class BehaviorSpecWithBeforeTestError : BehaviorSpec({
    }
 })
 
-internal class FunSpecWithBeforeTestError : FunSpec({
+private class FunSpecWithBeforeTestError : FunSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -31,7 +31,7 @@ internal class FunSpecWithBeforeTestError : FunSpec({
    test("fun spec") {}
 })
 
-internal class StringSpecWithBeforeTestError : StringSpec({
+private class StringSpecWithBeforeTestError : StringSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -39,7 +39,7 @@ internal class StringSpecWithBeforeTestError : StringSpec({
    "string test"{}
 })
 
-internal class ShouldSpecWithBeforeTestError : ShouldSpec({
+private class ShouldSpecWithBeforeTestError : ShouldSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -47,14 +47,14 @@ internal class ShouldSpecWithBeforeTestError : ShouldSpec({
    should("foo") {}
 })
 
-internal class DescribeSpecWithBeforeTestError : DescribeSpec({
+private class DescribeSpecWithBeforeTestError : DescribeSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
    }
 })
 
-internal class FeatureSpecWithBeforeTestError : FeatureSpec({
+private class FeatureSpecWithBeforeTestError : FeatureSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -64,14 +64,14 @@ internal class FeatureSpecWithBeforeTestError : FeatureSpec({
    }
 })
 
-internal class ExpectSpecWithBeforeTestError : ExpectSpec({
+private class ExpectSpecWithBeforeTestError : ExpectSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
    }
 })
 
-internal class FreeSpecWithBeforeTestError : FreeSpec({
+private class FreeSpecWithBeforeTestError : FreeSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")
@@ -79,7 +79,7 @@ internal class FreeSpecWithBeforeTestError : FreeSpec({
    "test" {}
 })
 
-internal class WordSpecWithBeforeTestError : WordSpec({
+private class WordSpecWithBeforeTestError : WordSpec({
    isolation = IsolationMode.InstancePerTest
    beforeTest {
       error("boom")

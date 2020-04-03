@@ -14,7 +14,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FeatureSpecHappyPathSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -77,7 +77,7 @@ class FeatureSpecEngineKitTest : FunSpec({
       EngineTestKit
          .engine("kotest")
          .selectors(selectClass(FeatureSpecSample::class.java))
-         .configurationParameter("allow_internal", "true")
+         .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
             started().shouldHaveNames(
@@ -115,7 +115,7 @@ class FeatureSpecEngineKitTest : FunSpec({
    }
 })
 
-internal class FeatureSpecHappyPathSample : FeatureSpec() {
+private class FeatureSpecHappyPathSample : FeatureSpec() {
    init {
       feature("1") {
          scenario("1.1") {
@@ -146,7 +146,7 @@ internal class FeatureSpecHappyPathSample : FeatureSpec() {
 }
 
 
-internal class FeatureSpecSample : FeatureSpec() {
+private class FeatureSpecSample : FeatureSpec() {
    init {
 
       val count = AtomicInteger(0)

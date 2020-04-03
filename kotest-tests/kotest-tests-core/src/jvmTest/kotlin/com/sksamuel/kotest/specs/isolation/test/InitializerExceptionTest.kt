@@ -11,7 +11,7 @@ import io.kotest.core.engine.SpecExecutor
 import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 
-internal class BehaviorSpecWithInitError : BehaviorSpec() {
+private class BehaviorSpecWithInitError : BehaviorSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -19,7 +19,7 @@ internal class BehaviorSpecWithInitError : BehaviorSpec() {
    }
 }
 
-internal class FunSpecWithInitError : FunSpec() {
+private class FunSpecWithInitError : FunSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -27,7 +27,7 @@ internal class FunSpecWithInitError : FunSpec() {
    }
 }
 
-internal class StringSpecWithInitError : StringSpec() {
+private class StringSpecWithInitError : StringSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -35,7 +35,7 @@ internal class StringSpecWithInitError : StringSpec() {
    }
 }
 
-internal class ShouldSpecWithInitError : ShouldSpec() {
+private class ShouldSpecWithInitError : ShouldSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -43,7 +43,7 @@ internal class ShouldSpecWithInitError : ShouldSpec() {
    }
 }
 
-internal class DescribeSpecWithInitError : DescribeSpec() {
+private class DescribeSpecWithInitError : DescribeSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -51,7 +51,7 @@ internal class DescribeSpecWithInitError : DescribeSpec() {
    }
 }
 
-internal class FeatureSpecWithInitError : FeatureSpec() {
+private class FeatureSpecWithInitError : FeatureSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -59,7 +59,7 @@ internal class FeatureSpecWithInitError : FeatureSpec() {
    }
 }
 
-internal class ExpectSpecWithInitError : ExpectSpec() {
+private class ExpectSpecWithInitError : ExpectSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -67,7 +67,7 @@ internal class ExpectSpecWithInitError : ExpectSpec() {
    }
 }
 
-internal class FreeSpecWithInitError : FreeSpec() {
+private class FreeSpecWithInitError : FreeSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
@@ -75,7 +75,7 @@ internal class FreeSpecWithInitError : FreeSpec() {
    }
 }
 
-internal class WordSpecWithInitError : WordSpec() {
+private class WordSpecWithInitError : WordSpec() {
    override fun isolationMode() = IsolationMode.InstancePerTest
 
    init {
