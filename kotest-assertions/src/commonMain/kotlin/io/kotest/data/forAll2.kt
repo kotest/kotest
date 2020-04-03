@@ -19,7 +19,7 @@ inline fun <A, B> Table2<A, B>.forAll(fn: (A, B) -> Unit) {
       try {
          fn(row.a, row.b)
       } catch (e: Throwable) {
-         collector += error(e, headers.values(), row.values())
+         collector.append(error(e, headers.values(), row.values()))
       }
    }
    collector.assertAll()

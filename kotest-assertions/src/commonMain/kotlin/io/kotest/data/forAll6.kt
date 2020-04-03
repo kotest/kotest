@@ -26,7 +26,7 @@ inline fun <A, B, C, D, E, F> Table6<A, B, C, D, E, F>.forAll(fn: (A, B, C, D, E
       try {
          fn(row.a, row.b, row.c, row.d, row.e, row.f)
       } catch (e: Throwable) {
-         collector += error(e, headers.values(), row.values())
+         collector.append(error(e, headers.values(), row.values()))
       }
    }
    collector.assertAll()

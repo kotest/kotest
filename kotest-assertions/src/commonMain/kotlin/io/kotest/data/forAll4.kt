@@ -21,7 +21,7 @@ inline fun <A, B, C, D> Table4<A, B, C, D>.forAll(fn: (A, B, C, D) -> Unit) {
       try {
          fn(row.a, row.b, row.c, row.d)
       } catch (e: Throwable) {
-         collector += error(e, headers.values(), row.values())
+         collector.append(error(e, headers.values(), row.values()))
       }
    }
    collector.assertAll()
