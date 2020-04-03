@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
@@ -17,7 +19,6 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
 import io.kotest.property.checkAll
 import io.kotest.matchers.doubles.beGreaterThan as gtd
-import io.kotest.matchers.shouldBe
 
 class BindTest : StringSpec({
 
@@ -32,6 +33,12 @@ class BindTest : StringSpec({
       checkAll(gen) {
          it.a shouldNotBe null
       }
+   }
+
+   "Arb.bind(a,b) should generate distinct values" {
+      val arbA = Arb.string()
+      val arbB = Arb.string()
+      Arb.bind(arbA, arbB) { a, b -> a + b }.take(1000).toSet().shouldHaveAtLeastSize(100)
    }
 
    "Arb.bindB" {
@@ -51,6 +58,13 @@ class BindTest : StringSpec({
       }
    }
 
+   "Arb.bind(a,b,c) should generate distinct values" {
+      val arbA = Arb.string()
+      val arbB = Arb.string()
+      val arbC = Arb.string()
+      Arb.bind(arbA, arbB, arbC) { a, b, c -> "$a$b$c" }.take(1000).toSet().shouldHaveAtLeastSize(100)
+   }
+
    "Arb.bindD" {
       val gen =
          Arb.bind(Arb.string(), Arb.positiveInts(), Arb.double().filter { it > 0 }, Arb.negativeInts(), ::FooD)
@@ -60,6 +74,14 @@ class BindTest : StringSpec({
          it.c should gtd(0.0)
          it.d should beLessThan(0)
       }
+   }
+
+   "Arb.bind(a,b,c) should generate distinct values" {
+      val arbA = Arb.string()
+      val arbB = Arb.string()
+      val arbC = Arb.string()
+      val arbD = Arb.string()
+      Arb.bind(arbA, arbB, arbC, arbD) { a, b, c, d -> "$a$b$c$d" }.take(1000).toSet().shouldHaveAtLeastSize(100)
    }
 
    "Arb.bindE" {
@@ -77,6 +99,16 @@ class BindTest : StringSpec({
          it.c should gtd(0.0)
          it.d should beLessThan(0)
       }
+   }
+
+   "Arb.bind(a,b,c) should generate distinct values" {
+      val arbA = Arb.string()
+      val arbB = Arb.string()
+      val arbC = Arb.string()
+      val arbD = Arb.string()
+      val arbE = Arb.string()
+      Arb.bind(arbA, arbB, arbC, arbD, arbE) { a, b, c, d, e -> "$a$b$c$d$e" }.take(1000).toSet()
+         .shouldHaveAtLeastSize(100)
    }
 
    "Arb.reflectiveBind" {
