@@ -1,7 +1,5 @@
 package io.kotest.assertions.eq
 
-import kotlin.math.exp
-
 /**
  * A [Eq] typeclass compares two values for equality, returning an [AssertionError] if they are
  * not equal, or null if they are equal.

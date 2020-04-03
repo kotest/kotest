@@ -1,12 +1,14 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.Actual
+import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
 
 object NumberEq : Eq<Number> {
 
    override fun equals(actual: Number, expected: Number): Throwable? {
-      return if (compare(actual, expected)) null else failure(expected.show(), actual.show())
+      return if (compare(actual, expected)) null else failure(Expected(expected.show()), Actual(actual.show()))
    }
 
    private fun compare(a: Number, b: Number): Boolean {

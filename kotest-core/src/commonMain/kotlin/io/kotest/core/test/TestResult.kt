@@ -24,7 +24,8 @@ data class TestResult(
             null -> success(duration)
             is AssertionError -> failure(e, duration)
             else -> when (e::class.bestName()) {
-               "org.opentest4j.AssertionFailedError" -> failure(e, duration)
+               "org.opentest4j.AssertionFailedError", "AssertionFailedError" -> failure(e, duration)
+               "org.junit.ComparisonFailure", "ComparisonFailure" -> failure(e, duration)
                else -> error(e, duration)
             }
          }
