@@ -4,12 +4,19 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.TestListener
+import io.kotest.core.spec.AfterTest
+import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.SpecDsl
-import io.kotest.core.test.createTestName
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestConfig
+import io.kotest.core.test.Description
 import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createTestName
+import io.kotest.core.test.deriveTestConfig
+import io.kotest.fp.Tuple2
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -21,9 +28,10 @@ interface BehaviorSpecDsl : SpecDsl {
    fun given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
 
    private fun addGivenContext(name: String, test: suspend GivenContext.() -> Unit) {
+      val testName = createTestName("Given: ", name)
       addTest(
-         createTestName("Given: ", name),
-         { GivenContext(this, this@BehaviorSpecDsl).test() },
+         testName,
+         { GivenContext(Description.specUnsafe(this@BehaviorSpecDsl).append(testName), this, this@BehaviorSpecDsl).test() },
          defaultConfig(),
          TestType.Container
       )
@@ -52,16 +60,37 @@ interface BehaviorSpecDsl : SpecDsl {
 class ThenContext(val context: TestContext)
 
 @KotestDsl
-class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
+class GivenContext(
+   private val description: Description,
+   private val context: TestContext,
+   private val spec: BehaviorSpecDsl
+) {
+
+   fun beforeTest(f: BeforeTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            if (description.isParentOf(testCase.description)) f(testCase)
+         }
+      })
+   }
+
+   fun afterTest(f: AfterTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            if (description.isParentOf(testCase.description)) f(Tuple2(testCase, result))
+         }
+      })
+   }
 
    suspend fun And(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
    suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
 
    private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
+      val testName = createTestName("And: ", name)
       context.registerTestCase(
-         createTestName("And: ", name),
-         { GivenAndContext(this, this@GivenContext.dsl).test() },
-         dsl.defaultConfig(),
+         testName,
+         { GivenAndContext(this@GivenContext.description, this, this@GivenContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
@@ -70,10 +99,11 @@ class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
 
    private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+      val testName = createTestName("When: ", name)
       context.registerTestCase(
-         createTestName("When: ", name),
-         { WhenContext(this, this@GivenContext.dsl).test() },
-         dsl.defaultConfig(),
+         testName,
+         { WhenContext(this@GivenContext.description.append(testName), this, this@GivenContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
@@ -85,24 +115,46 @@ class GivenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultConfig(),
+         spec.defaultConfig(),
          TestType.Container
       )
    }
 
-   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, dsl)
+   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
 
 @KotestDsl
-class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
+class GivenAndContext(
+   private val description: Description,
+   private val context: TestContext,
+   private val spec: BehaviorSpecDsl
+) {
+
+   fun beforeTest(f: BeforeTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            if (description.isParentOf(testCase.description)) f(testCase)
+         }
+      })
+   }
+
+   fun afterTest(f: AfterTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            if (description.isParentOf(testCase.description)) f(Tuple2(testCase, result))
+         }
+      })
+   }
+
    suspend fun And(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
    suspend fun and(name: String, test: suspend GivenAndContext.() -> Unit) = addAndContext(name, test)
 
    private suspend fun addAndContext(name: String, test: suspend GivenAndContext.() -> Unit) {
+      val testName = createTestName("And: ", name)
       context.registerTestCase(
-         createTestName("And: ", name),
-         { GivenAndContext(this, this@GivenAndContext.dsl).test() },
-         dsl.defaultConfig(),
+         testName,
+         { GivenAndContext(this@GivenAndContext.description.append(testName), this, this@GivenAndContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
@@ -111,10 +163,11 @@ class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl
    suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
 
    private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+      val testName = createTestName("When: ", name)
       context.registerTestCase(
-         createTestName("When: ", name),
-         { WhenContext(this, this@GivenAndContext.dsl).test() },
-         dsl.defaultConfig(),
+         testName,
+         { WhenContext(this@GivenAndContext.description.append(testName), this, this@GivenAndContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
@@ -126,25 +179,46 @@ class GivenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultConfig(),
+         spec.defaultConfig(),
          TestType.Container
       )
    }
 
-   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, dsl)
+   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
 
 
 @KotestDsl
-class WhenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
+class WhenContext(
+   private val description: Description,
+   private val context: TestContext,
+   private val spec: BehaviorSpecDsl
+) {
+
+   fun beforeTest(f: BeforeTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun beforeTest(testCase: TestCase) {
+            if (description.isParentOf(testCase.description)) f(testCase)
+         }
+      })
+   }
+
+   fun afterTest(f: AfterTest) {
+      spec.addListener(object : TestListener {
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            if (description.isParentOf(testCase.description)) f(Tuple2(testCase, result))
+         }
+      })
+   }
+
    suspend fun And(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
    suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
    private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
       context.registerTestCase(
          createTestName("And: ", name),
-         { WhenAndContext(this, this@WhenContext.dsl).test() },
-         dsl.defaultConfig(),
+         { WhenAndContext(this, this@WhenContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
@@ -156,12 +230,12 @@ class WhenContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultConfig(),
+         spec.defaultConfig(),
          TestType.Test
       )
    }
 
-   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, dsl)
+   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
 
 

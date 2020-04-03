@@ -21,6 +21,7 @@ fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFa
 class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
+   override val addListener = ::listener
 }
 
 abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecDsl {
@@ -28,6 +29,7 @@ abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
+   override val addListener = ::listener
 
    init {
       body()

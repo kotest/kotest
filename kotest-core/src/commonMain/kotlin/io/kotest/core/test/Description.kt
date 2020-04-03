@@ -1,5 +1,8 @@
 package io.kotest.core.test
 
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.description
+
 /**
  * The description gives the full path to a [TestCase].
  *
@@ -20,6 +23,9 @@ data class Description(val parents: List<String>, val name: String) {
        * Creates a Spec level description object for the given name.
        */
       fun spec(name: String) = Description(emptyList(), name)
+      fun spec(spec: Spec) = spec::class.description()
+      fun specUnsafe(spec: Any) = spec::class.description()
+      fun test(name: String) = Description(emptyList(), name)
    }
 
    fun append(name: String) =
@@ -82,6 +88,9 @@ data class Description(val parents: List<String>, val name: String) {
     */
    fun isOnPath(description: Description): Boolean = this == description || this.isAncestorOf(description)
 
+   /**
+    * Returns true if this description is the same as or a child, grandchild, etc of the given description.
+    */
    fun isDescendentOf(description: Description): Boolean = description.isOnPath(this)
 
    /**

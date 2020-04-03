@@ -21,6 +21,7 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
 class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecDsl {
    override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
    override val addTest = ::addDynamicTest
+   override val addListener = ::listener
 }
 
 abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecDsl {
@@ -29,6 +30,7 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpec
       defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 
    override val addTest = ::addRootTestCase
+   override val addListener = ::listener
 
    init {
       body()
