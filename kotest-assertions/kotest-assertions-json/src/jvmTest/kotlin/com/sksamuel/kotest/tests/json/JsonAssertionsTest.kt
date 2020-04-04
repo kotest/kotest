@@ -61,13 +61,37 @@ class JsonAssertionsTest : StringSpec({
   }
 
   "test json path" {
-    json.shouldContainJsonKey("$.store.bicycle")
-    json.shouldContainJsonKey("$.store.book")
-    json.shouldContainJsonKey("$.store.book[0]")
-    json.shouldContainJsonKey("$.store.book[0].category")
-    json.shouldContainJsonKey("$.store.book[1].price")
+    json.shouldContainJsonKey("$.store.bicycle") shouldMatchJson """{"color": "red", "price": 19.95}"""
+    json.shouldContainJsonKey("$.store.book") shouldMatchJson """
+      [
+          {
+              "category": "reference",
+              "author": "Nigel Rees",
+              "title": "Sayings of the Century",
+              "price": 8.95
+          },
+          {
+              "category": "fiction",
+              "author": "Evelyn Waugh",
+              "title": "Sword of Honour",
+              "price": 12.99
+          }
+      ]
+    """
+    json.shouldContainJsonKey("$.store.book[0]") shouldMatchJson """
+      {
+          "category": "reference",
+          "author": "Nigel Rees",
+          "title": "Sayings of the Century",
+          "price": 8.95
+      }
+    """
+    json.shouldContainJsonKey("$.store.book[0].category") shouldBe "\"reference\""
+    json.shouldContainJsonKey("$.store.book[1].price") shouldBe "12.99"
 
     json.shouldNotContainJsonKey("$.store.table")
+
+    shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
 
     shouldThrow<AssertionError> {
       json.shouldContainJsonKey("$.store.table")
@@ -75,6 +99,7 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {..." should contain the path ${'$'}.store.table"""
+
   }
 
   "test json key value" {
