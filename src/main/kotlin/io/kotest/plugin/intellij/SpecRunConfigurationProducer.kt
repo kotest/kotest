@@ -7,8 +7,8 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.styles.buildSuggestedName
-import io.kotest.plugin.intellij.styles.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.styles.isAnySpecSubclass
+import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.styles.psi.isAnySpecSubclass
 import removeJUnitRunConfigs
 
 /**

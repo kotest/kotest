@@ -38,7 +38,7 @@ class KotestTestGenerator : TestGenerator {
   }
 
   private fun styleForSuperClass(fqn: FqName): SpecStyle =
-      SpecStyle.specs.find { it.fqn() == fqn } ?: StringSpecStyle
+      SpecStyle.styles.find { it.fqn() == fqn } ?: StringSpecStyle
 
   private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 

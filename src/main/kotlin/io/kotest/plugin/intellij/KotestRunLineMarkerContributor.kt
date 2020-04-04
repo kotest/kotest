@@ -16,8 +16,8 @@ import io.kotest.plugin.intellij.styles.ShouldSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
-import io.kotest.plugin.intellij.styles.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.styles.isSpecSubclass
+import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.styles.psi.isSpecSubclass
 import org.jetbrains.kotlin.lexer.KtToken
 
 abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {

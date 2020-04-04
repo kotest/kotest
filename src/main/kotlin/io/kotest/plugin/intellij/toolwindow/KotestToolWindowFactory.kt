@@ -1,57 +1,65 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.IdeFocusManager
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
+import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.content.ContentFactory
-import io.kotest.plugin.intellij.styles.specs
+import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
-import org.jetbrains.kotlin.psi.KtClassOrObject
+import java.awt.GridLayout
 import javax.swing.JPanel
-import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.DefaultTreeModel
-import javax.swing.tree.TreeModel
 
 class KotestToolWindowFactory : ToolWindowFactory {
 
    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-      val explorer = KotestToolWindow(toolWindow, project)
+      val explorer = KotestStructureWindow(project)
       val contentFactory = ContentFactory.SERVICE.getInstance()
-      val content = contentFactory.createContent(explorer.getContent(), "", false)
+      val content = contentFactory.createContent(ScrollPaneFactory.createScrollPane(explorer.getContent()), "", false)
       toolWindow.contentManager.addContent(content)
    }
 }
 
-class KotestToolWindow(window: ToolWindow, private val project: Project) {
+class KotestStructureWindow(private val project: Project) {
 
-   private val content: JPanel = JPanel()
-
-   init {
-      IdeFocusManager.getGlobalInstance().apply {
-         this.doWhenFocusSettlesDown {
-            println("Refreshing content")
-            refreshContent()
-         }
-      }
-      refreshContent()
+   private val content: JPanel = JPanel().apply {
+      layout = GridLayout(0, 1)
    }
 
-   private fun refreshContent() {
+   init {
+      project.messageBus.connect().subscribe(
+         FileEditorManagerListener.FILE_EDITOR_MANAGER,
+         object : FileEditorManagerListener {
+            override fun selectionChanged(event: FileEditorManagerEvent) {
+              refreshContent(event.newFile)
+            }
+         }
+      )
+      setupContent()
+   }
+
+   private fun setupContent() {
       try {
          val editor = FileEditorManager.getInstance(project).selectedEditor
-         val psi = editor?.file?.toPsiFile(project)
-         val specs = psi?.specs() ?: emptyList()
-         val model = treeModel(specs)
-         val tree = com.intellij.ui.treeStructure.Tree(model)
-         content.removeAll()
-         content.add(tree)
+         val file = editor?.file
+         refreshContent(file)
       } catch (e: IndexNotReadyException) {
-
       }
+   }
+
+   private fun refreshContent(file: VirtualFile?) {
+      val psi = file?.toPsiFile(project)
+      val specs = psi?.specs() ?: emptyList()
+      val model = treeModel(specs)
+      val tree = com.intellij.ui.treeStructure.Tree(model)
+      tree.expandAllNodes()
+      content.removeAll()
+      content.add(tree)
    }
 
    fun getContent(): JPanel {
@@ -59,11 +67,3 @@ class KotestToolWindow(window: ToolWindow, private val project: Project) {
    }
 }
 
-fun treeModel(specs: List<KtClassOrObject>): TreeModel {
-   val root = DefaultMutableTreeNode("Kotest")
-   specs.forEach { spec ->
-      val node = DefaultMutableTreeNode(spec.getKotlinFqName()?.asString() ?: "Unknown")
-      root.add(node)
-   }
-   return DefaultTreeModel(root)
-}

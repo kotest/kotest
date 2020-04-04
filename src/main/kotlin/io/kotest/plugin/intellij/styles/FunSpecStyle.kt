@@ -23,16 +23,26 @@ object FunSpecStyle : SpecStyle {
    }
 
    /**
-    * Returns all tests located in the given [PsiElement].
+    * Returns all child tests located in the given [PsiElement].
     */
-   fun tests(element: PsiElement): List<String> {
-      return emptyList();
+   fun tests(element: PsiElement): List<TestElement> {
+      return element.children.flatMap { child ->
+         val childTests = tests(child)
+         val testPath = testPath(child)
+         if (testPath != null) {
+            childTests + TestElement(child, testPath, emptyList())
+         } else childTests
+      }
    }
 
-   private fun PsiElement.tryContext() = this.matchFunction2WithStringAndLambda(listOf("context"))
-   private fun PsiElement.tryTestWithoutConfig() = this.matchFunction2WithStringAndLambda(listOf("test"))
-   private fun PsiElement.tryTestWithConfig() = this.extractStringArgForFunctionBeforeDotExpr(listOf("test"),
-      listOf("config"))
+   private fun PsiElement.tryContext() =
+      this.matchFunction2WithStringAndLambda(listOf("context"))
+
+   private fun PsiElement.tryTestWithoutConfig() =
+      this.matchFunction2WithStringAndLambda(listOf("test"))
+
+   private fun PsiElement.tryTestWithConfig() =
+      this.extractStringArgForFunctionBeforeDotExpr(listOf("test"), listOf("config"))
 
    /**
     * Returns the test path for a given [PsiElement], or if this element is not a test, then returns null.
@@ -46,3 +56,5 @@ object FunSpecStyle : SpecStyle {
       }
    }
 }
+
+data class TestElement(val psi: PsiElement, val name: String, val tests: List<TestElement>)

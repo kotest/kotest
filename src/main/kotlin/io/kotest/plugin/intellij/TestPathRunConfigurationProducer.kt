@@ -17,7 +17,7 @@ import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
 import io.kotest.plugin.intellij.styles.buildSuggestedName
-import io.kotest.plugin.intellij.styles.enclosingClass
+import io.kotest.plugin.intellij.styles.psi.enclosingClass
 import removeJUnitRunConfigs
 
 /**
