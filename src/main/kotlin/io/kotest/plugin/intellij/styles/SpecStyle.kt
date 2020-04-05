@@ -23,8 +23,17 @@ interface SpecStyle {
 
    fun PsiElement.isContainedInSpec(): Boolean = this.isContainedInSpec(fqn())
 
+   /**
+    * Returns the path to a test if this [PsiElement] is the container of a test AST.
+    */
    fun testPath(element: PsiElement): String? = null
-   fun testPath2(element: LeafPsiElement): String? = null
+
+   /**
+    * Returns the path to a test if this [LeafPsiElement] is the canonical leaf of a test AST.
+    * This method will first try to determine if this leaf element is inside a test, and then
+    * will invoke testPath with the container element.
+    */
+   fun testPath(element: LeafPsiElement): String? = null
 
    fun specStyleName(): String
 
@@ -33,7 +42,15 @@ interface SpecStyle {
    /**
     * Returns all child tests located in the given [PsiElement].
     */
-   fun tests(element: PsiElement): List<TestElement> = emptyList()
+   fun tests(element: PsiElement): List<TestElement> {
+      return element.children.flatMap { child ->
+         val childTests = tests(child)
+         val testPath = testPath(child)
+         if (testPath != null) {
+            listOf(TestElement(child, Test(testPath, testPath), childTests))
+         } else childTests
+      }
+   }
 
    /**
     * Returns the fully qualified name of the spec parent class, eg io.kotest.core.specs.style.FunSpec.

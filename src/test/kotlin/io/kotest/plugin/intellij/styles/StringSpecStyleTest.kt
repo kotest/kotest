@@ -8,33 +8,34 @@ import java.nio.file.Paths
 
 class StringSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
-  override fun getTestDataPath(): String {
-    val path = Paths.get("./src/test/resources/").toAbsolutePath()
-    return path.toString()
-  }
+   override fun getTestDataPath(): String {
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
+      return path.toString()
+   }
 
-  fun testGutterIcons() {
+   fun testGutterIcons() {
 
-    myFixture.configureByFile("/stringspec.kt")
+      myFixture.configureByFile("/stringspec.kt")
 
-    val gutters = myFixture.findAllGutters()
-    gutters.size shouldBe 3
+      val gutters = myFixture.findAllGutters()
+      println(gutters.map { it.tooltipText }.joinToString("\n"))
+      gutters.size shouldBe 3
 
-    gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
-    gutters[0].tooltipText shouldBe "[Kotest] StringSpecExample"
-    (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 85
+      gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
+      gutters[0].tooltipText shouldBe "[Kotest] StringSpecExample"
+      (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
 
-    gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[1].tooltipText shouldBe "[Kotest] this is a test"
-    (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 140
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[1].tooltipText shouldBe "[Kotest] this is a test"
+      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 161
 
-    gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-    gutters[2].tooltipText shouldBe "[Kotest] this test has config"
-    (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 188
+      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[2].tooltipText shouldBe "[Kotest] this test has config"
+      (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 215
 
-  }
+   }
 
-  fun testMethodGeneration() {
-    StringSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" { }"
-  }
+   fun testMethodGeneration() {
+      StringSpecStyle.generateTest("myspec", "testName") shouldBe "\"testName\" { }"
+   }
 }

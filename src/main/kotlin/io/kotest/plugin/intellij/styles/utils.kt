@@ -68,6 +68,7 @@ fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rig
    return null
 }
 
+@Deprecated("")
 fun PsiElement.extractLiteralForStringExtensionFunction(funcnames: List<String>): String? {
    if (parent is KtLiteralStringTemplateEntry) {
       val maybeTemplateExpr = parent.parent
@@ -79,6 +80,22 @@ fun PsiElement.extractLiteralForStringExtensionFunction(funcnames: List<String>)
                return parent.text
             }
          }
+      }
+   }
+   return null
+}
+
+/**
+ * Extracts the string literal from things like:
+ *
+ *   "my test" {}
+ */
+fun KtCallExpression.extractStringFromStringInvokeWithLambda(): String? {
+   if (children.size == 2) {
+      val maybeStringTemplate = children[0]
+      val maybeLambdaArgument = children[1]
+      if (maybeStringTemplate is KtStringTemplateExpression && maybeLambdaArgument is KtLambdaArgument) {
+         return maybeStringTemplate.asString()
       }
    }
    return null
@@ -240,7 +257,19 @@ fun LeafPsiElement.ifCallExpressionName(): KtCallExpression? {
 }
 
 /**
- * For invocations of the form a("foo").b() { } returns the single string arg passed to the first function.
+ * If this [LeafPsiElement] is the whitespace between a string and the lambda of a function,
+ * then returns that function.
+ */
+fun LeafPsiElement.ifCallExpressionWhitespace(): KtCallExpression? {
+   val maybeCallExpression = parent
+   if (maybeCallExpression is KtCallExpression) {
+      return maybeCallExpression
+   }
+   return null
+}
+
+/**
+ * For invocations of the form a("foo").b(...) { } returns the single string arg passed to the first function.
  */
 fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: String,
                                                                                    rhs: String): String? {
@@ -255,6 +284,25 @@ fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLamb
          val testName = a.getSingleStringArgOrNull()
          if (testName != null && b.hasFinalLambdaArg())
             return testName
+      }
+   }
+
+   return null;
+}
+
+/**
+ * For invocations of the form "foo".b(...) { } returns the string literal on the LHS
+ */
+fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalLambda(rhs: String): String? {
+   if (children.size != 2)
+      return null
+
+   val a = children[0]
+   val b = children[1]
+
+   if (a is KtStringTemplateExpression && b is KtCallExpression) {
+      if (b.hasName(rhs) && b.hasFinalLambdaArg()) {
+         return a.asString()
       }
    }
 

@@ -32,19 +32,6 @@ object FunSpecStyle : SpecStyle {
       return locateParentContexts(parent) + result
    }
 
-   /**
-    * Returns all child tests located in the given [PsiElement].
-    */
-   override fun tests(element: PsiElement): List<TestElement> {
-      return element.children.flatMap { child ->
-         val childTests = tests(child)
-         val testPath = testPath(child)
-         if (testPath != null) {
-            listOf(TestElement(child, Test(testPath, testPath), childTests))
-         } else childTests
-      }
-   }
-
    private fun KtCallExpression.tryContext() =
       extractStringArgForFunction2WithStringAndLambda(listOf("context"))
 
@@ -67,51 +54,44 @@ object FunSpecStyle : SpecStyle {
       this.extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config")
 
    /**
-    * Finds tests of the form:
-    *
-    *   test("test name") { }
-    */
-   private fun extractTestWithoutConfig(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryTestWithoutConfig()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   test("test name").config(...) { }
-    */
-   private fun extractTestWithConfig(element: LeafPsiElement): String? {
-      return element.ifDotExpressionSeparator()?.tryTestWithConfig()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   context("test name") {}
-    */
-   private fun extractContext(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryContext()
-   }
-
-   /**
-    * Returns the test path for a given [LeafPsiElement],
-    * or if this element is not a test, then returns null.
-    *
     * For a FunSpec we consider the following scenarios:
     *
     * test("test name") { }
     * test("test name").config(...) {}
+    * context("test name").config(...) {}
     */
-   override fun testPath2(element: LeafPsiElement): String? {
+   override fun testPath(element: PsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val test = extractTestWithoutConfig(element)
-         ?: extractTestWithConfig(element)
-         ?: extractContext(element)
-         ?: return null
+      val test = when (element) {
+         is KtCallExpression -> element.tryContext() ?: element.tryTestWithoutConfig()
+         is KtDotQualifiedExpression -> element.tryTestWithConfig()
+         else -> null
+      }
 
-      val paths = locateParentContexts(element) + test
-      return paths.distinct().joinToString(" -- ")
+      return if (test == null) null else {
+         val paths = locateParentContexts(element) + test
+         return paths.distinct().joinToString(" -- ")
+      }
+   }
+
+   /**
+    * For a FunSpec we consider the following scenarios:
+    *
+    * test("test name") { }
+    * test("test name").config(...) {}
+    * context("test name").config(...) {}
+    */
+   override fun testPath(element: LeafPsiElement): String? {
+      if (!element.isContainedInSpec()) return null
+
+      val ktcall = element.ifCallExpressionName()
+      if (ktcall != null) return testPath(ktcall)
+
+      val ktdot = element.ifDotExpressionSeparator()
+      if (ktdot != null) return testPath(ktdot)
+
+      return null
    }
 }
 

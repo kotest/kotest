@@ -111,83 +111,6 @@ object DescribeSpecStyle : SpecStyle {
       return if (test == null) null else "It: $test"
    }
 
-   /**
-    * Finds tests of the form:
-    *
-    *   it("test name") { }
-    */
-   private fun extractIt(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryIt()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   xit("test name") { }
-    */
-   private fun extractXIt(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryXIt()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   it("test name").config(...) { }
-    */
-   private fun extractItWithConfig(element: LeafPsiElement): String? {
-      return element.ifDotExpressionSeparator()?.tryItWithConfig()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   it("test name").config(...) { }
-    */
-   private fun extractXItWithConfig(element: LeafPsiElement): String? {
-      return element.ifDotExpressionSeparator()?.tryXItWithConfig()
-   }
-
-
-   /**
-    * Finds tests of the form:
-    *
-    *   describe("test name") { }
-    */
-   private fun extractDescribe(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryDescribe()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   xdescribe("test name") { }
-    */
-   private fun extractXDescribe(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryXDescribe()
-   }
-
-   /**
-    * Finds tests of the form:
-    *
-    *   context("test name") { }
-    */
-   private fun extractContext(element: LeafPsiElement): String? {
-      return element.ifCallExpressionName()?.tryContext()
-   }
-
-   /**
-    * Returns all child tests located in the given [PsiElement].
-    */
-   override fun tests(element: PsiElement): List<TestElement> {
-      return element.children.flatMap { child ->
-         val childTests = tests(child)
-         val test = test(child)
-         if (test != null) {
-            listOf(TestElement(child, test, childTests))
-         } else childTests
-      }
-   }
-
    fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
@@ -203,20 +126,17 @@ object DescribeSpecStyle : SpecStyle {
       }
    }
 
-   override fun testPath2(element: LeafPsiElement): String? {
+   override fun testPath(element: PsiElement): String? = test(element)?.path
+
+   override fun testPath(element: LeafPsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val test = extractIt(element)
-         ?: extractItWithConfig(element)
-         ?: extractXIt(element)
-         ?: extractXItWithConfig(element)
-         ?: extractDescribe(element)
-         ?: extractXDescribe(element)
-         ?: extractContext(element)
-         ?: return null
+      val call = element.ifCallExpressionName()
+      if (call != null) return testPath(call)
 
-      val paths = locateParentContexts(element) + test
-      return paths.distinct().joinToString(" ")
+      val dot = element.ifDotExpressionSeparator()
+      if (dot != null) return testPath(dot)
+
+      return null
    }
-
 }
