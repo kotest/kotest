@@ -152,6 +152,31 @@ fun KtValueArgumentList.firstArgAsString(): String? {
    }
 }
 
+/** Matches code in the form:
+ *
+ *   function("some string") { }
+ *
+ * The structure in PSI for this is:
+ *
+ *  KtCallExpression (the function invocation)
+ *    - KtNameReferenceExpression (the name of the function)
+ *    - KtValueArgumentList
+ *      - KtValueArgument (container wrapper for an argument, in this case the string name)
+ *        - KtStringTemplateExpression (the expression for the string arg)
+ *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
+ *    - KtLambdaArgumnt (the test closure)
+ */
+fun PsiElement.extractNameForFunction2WithStringAndLambda(name: String): String? {
+   return if (children.size == 3) {
+      val a = children[0]
+      val b = children[1]
+      val c = children[2]
+      if (a.isNameReference(listOf(name))
+         && b is KtValueArgumentList
+         && c is KtLambdaArgument) b.firstArgAsString() else null
+   } else null
+}
+
 fun KtCallExpression.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
    if (children.size == 3
       && children[0].isNameReference(names)

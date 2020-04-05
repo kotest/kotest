@@ -2,9 +2,6 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtLambdaArgument
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtValueArgumentList
 
 object DescribeSpecStyle : SpecStyle {
 
@@ -27,31 +24,12 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    /**
-    * A test of the form:
+    * Finds tests in the form:
     *
     *   describe("test name") { }
     *
-    * The structure in PSI for this is:
-    *
-    *  KtCallExpression (the function invocation)
-    *    - KtNameReferenceExpression (the name of the test, in this case should be "describe")
-    *    - KtValueArgumentList
-    *      - KtValueArgument (container wrapper for an argument, in this case the string name)
-    *        - KtStringTemplateExpression (the string value of the name of the test)
-    *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text)
-    *    - KtLambdaArgumnt (the test closure)
-    *
     */
-   private fun PsiElement.tryDescribe(): String? {
-      return if (children.size == 3) {
-         val a = children[0]
-         val b = children[1]
-         val c = children[2]
-         if (a is KtNameReferenceExpression && a.text == "describe"
-            && b is KtValueArgumentList
-            && c is KtLambdaArgument) b.firstArgAsString() else null
-      } else null
-   }
+   private fun PsiElement.tryDescribe(): String? = this.extractNameForFunction2WithStringAndLambda("describe")
 
    private fun PsiElement.tryContext(): String? {
       val test = matchFunction2WithStringAndLambda(listOf("context"))
@@ -59,31 +37,28 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    /**
-    * A test of the form:
+    * Finds tests in the form:
     *
     *   it("test name") { }
     *
-    * The structure in PSI for this is:
+    */
+   private fun PsiElement.tryIt(): String?= this.extractNameForFunction2WithStringAndLambda("it")
+
+   /**
+    * Finds tests in the form:
     *
-    *  KtCallExpression (the function invocation)
-    *    - KtNameReferenceExpression (the name of the test, in this case should be "it")
-    *    - KtValueArgumentList
-    *      - KtValueArgument (container wrapper for an argument, in this case the string name)
-    *        - KtStringTemplateExpression (the string value of the name of the test)
-    *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text)
-    *    - KtLambdaArgumnt (the test closure)
+    *   xit("test name") { }
     *
     */
-   private fun PsiElement.tryIt(): String? {
-      return if (children.size == 3) {
-         val a = children[0]
-         val b = children[1]
-         val c = children[2]
-         if (a is KtNameReferenceExpression && a.text == "it"
-            && b is KtValueArgumentList
-            && c is KtLambdaArgument) b.firstArgAsString() else null
-      } else null
-   }
+   private fun PsiElement.tryXit(): String? = this.extractNameForFunction2WithStringAndLambda("xit")
+
+   /**
+    * Finds tests in the form:
+    *
+    *   xdescribe("test name") { }
+    *
+    */
+   private fun PsiElement.tryXdescribe(): String? = this.extractNameForFunction2WithStringAndLambda("xdescribe")
 
    private fun PsiElement.tryItWithConfig(): String? {
       val test = extractStringArgForFunctionBeforeDotExpr(listOf("it"), listOf("config"))
@@ -105,9 +80,17 @@ object DescribeSpecStyle : SpecStyle {
 
    fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
-      val name = element.tryIt() ?: element.tryDescribe() ?: return null
-      val path = (element.locateParentTests() + name).distinct().joinToString(" ")
-      return Test(name, path)
+      val name = element.tryIt() ?: element.tryDescribe()
+      if (name != null) {
+         val path = (element.locateParentTests() + name).distinct().joinToString(" ")
+         return Test(name, path)
+      }
+      val xname = element.tryXit() ?: element.tryXdescribe()
+      if (xname != null) {
+         val path = (element.locateParentTests() + xname).distinct().joinToString(" ")
+         return Test(xname, path, false)
+      }
+      return null
    }
 
    override fun testPath(element: PsiElement): String? {
