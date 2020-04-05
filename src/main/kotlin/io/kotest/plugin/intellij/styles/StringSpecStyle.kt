@@ -59,7 +59,7 @@ object StringSpecStyle : SpecStyle {
    override fun testPath(element: LeafPsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val ktcall = element.ifCallExpressionWhitespace()
+      val ktcall = element.ifCallExpressionLhsStringOpenQuote()
       if (ktcall != null) return testPath(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()

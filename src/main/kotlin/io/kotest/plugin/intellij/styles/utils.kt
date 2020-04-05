@@ -257,13 +257,32 @@ fun LeafPsiElement.ifCallExpressionName(): KtCallExpression? {
 }
 
 /**
- * If this [LeafPsiElement] is the whitespace between a string and the lambda of a function,
- * then returns that function.
+ * If this [LeafPsiElement] is the identifer used by the operation on a binary expression,
+ * then returns that expression.
  */
-fun LeafPsiElement.ifCallExpressionWhitespace(): KtCallExpression? {
-   val maybeCallExpression = parent
-   if (maybeCallExpression is KtCallExpression) {
-      return maybeCallExpression
+fun LeafPsiElement.ifBinaryExpressionOperationIdent(): KtBinaryExpression? {
+   val maybeOperationReferenceExpression = parent
+   if (maybeOperationReferenceExpression is KtOperationReferenceExpression) {
+      val maybeBinaryExpression = maybeOperationReferenceExpression.parent
+      if (maybeBinaryExpression is KtBinaryExpression) {
+         return maybeBinaryExpression
+      }
+   }
+   return null
+}
+
+/**
+ * If this [LeafPsiElement] is the opening quote of a string literal used on the left hand side
+ * of a call expression, returns that call expression.
+ */
+fun LeafPsiElement.ifCallExpressionLhsStringOpenQuote(): KtCallExpression? {
+   if (this.elementType.toString() != "OPEN_QUOTE") return null
+   val maybeStringTemplateExpression = parent
+   if (maybeStringTemplateExpression is KtStringTemplateExpression) {
+      val maybeCallExpression = maybeStringTemplateExpression.parent
+      if (maybeCallExpression is KtCallExpression) {
+         return maybeCallExpression
+      }
    }
    return null
 }
@@ -318,6 +337,25 @@ fun PsiElement.isSingleStringTemplateArg(): Boolean =
 
 
 /**
+ * Returns the string literal used by an infix function, when the function is of the
+ * form <string literal> <operation> <lambda-expression>, eg, "some test" should { }
+ */
+fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<String>): String? {
+   if (children.size == 3) {
+      val a = children[0]
+      val b = children[1]
+      val c = children[2]
+      if (a is KtStringTemplateExpression
+         && b is KtOperationReferenceExpression
+         && c is KtLambdaExpression
+         && names.contains(b.text)) {
+         return a.asString()
+      }
+   }
+   return null
+}
+
+/**
  * Matches blocks of the form:
  *
  * "string" infixFunctionName { }
@@ -328,6 +366,7 @@ fun PsiElement.isSingleStringTemplateArg(): Boolean =
  *
  * @param names one or more function names to search for
  */
+@Deprecated("")
 fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? =
    when (val p = parent) {
       is KtStringTemplateEntry -> p.extractLhsForInfixFunction(names)
@@ -369,6 +408,7 @@ fun KtBinaryExpression.extractLhsForInfixFunction(names: List<String>): String? 
  *
  * @return the LHS operand
  */
+@Deprecated("")
 fun PsiElement.matchStringInvoke(): String? =
    when (val p = parent) {
       is KtStringTemplateEntry -> p.extractLhsForStringInvoke()
