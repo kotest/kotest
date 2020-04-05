@@ -105,7 +105,10 @@ fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationRe
 fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
    return when (val p = parent) {
       is KtStringTemplateEntry -> p.extractStringForFunction2WithStringAndLambda(names)
-      is KtCallExpression -> p.extractStringForFunction2WithStringAndLambda(names)
+      is KtCallExpression -> {
+         val call = p
+         p.extractStringForFunction2WithStringAndLambda(names)
+      }
       else -> null
    }
 }
@@ -128,6 +131,25 @@ fun KtStringTemplateEntry.extractStringForFunction2WithStringAndLambda(names: Li
       }
    }
    return null
+}
+
+fun KtStringTemplateExpression.value(): String? {
+   return when (val entry = children[0]) {
+      is KtStringTemplateEntry -> entry.text
+      else -> null
+   }
+}
+
+fun KtValueArgumentList.firstArgAsString(): String? {
+   if (children.isEmpty())
+      return null
+   return when (val arg = children[0]) {
+      is KtValueArgument -> when (val expr = arg.children[0]) {
+         is KtStringTemplateExpression -> expr.value()
+         else -> null
+      }
+      else -> null
+   }
 }
 
 fun KtCallExpression.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {

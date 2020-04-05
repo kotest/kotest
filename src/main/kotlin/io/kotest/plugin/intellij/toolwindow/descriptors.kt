@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.toolwindow
 
+import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
@@ -7,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
 import io.kotest.plugin.intellij.styles.SpecStyle
+import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -32,6 +34,7 @@ class SpecNodeDescriptor(project: Project,
 
    init {
       templatePresentation.presentableText = fqn.asString()
+      templatePresentation.setIcon(AllIcons.Nodes.TestGroup)
    }
 
    override fun update(presentation: PresentationData) {
@@ -44,10 +47,14 @@ class SpecNodeDescriptor(project: Project,
 class TestNodeDescriptor(project: Project,
                          val parent: NodeDescriptor<Any>,
                          val psi: PsiElement,
-                         val testName: String) : PresentableNodeDescriptor<Any>(project, parent) {
+                         val test: TestElement) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
-      templatePresentation.presentableText = testName
+      templatePresentation.presentableText = test.name
+      when (test.disabled) {
+         true -> templatePresentation.setIcon(AllIcons.Nodes.TestIgnored)
+         false -> templatePresentation.setIcon(AllIcons.Nodes.Test)
+      }
    }
 
    override fun update(presentation: PresentationData) {

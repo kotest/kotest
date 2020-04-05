@@ -20,7 +20,7 @@
 
       <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
 
-      <toolWindow id="Kotest" anchor="right" icon="/icon16.png"
+      <toolWindow id="Kotest Explorer" anchor="right" icon="/icon16.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.KotestToolWindowFactory"
                   conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition">
 

@@ -20,7 +20,7 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>): TreeModel {
          root.add(specNode)
          val tests = FunSpecStyle.tests(spec)
          tests.forEach { testElement ->
-            val testObj = TestNodeDescriptor(project, specDescriptor, testElement.psi, testElement.name)
+            val testObj = TestNodeDescriptor(project, specDescriptor, testElement.psi, testElement)
             val testNode = DefaultMutableTreeNode(testObj)
             specNode.add(testNode)
          }
