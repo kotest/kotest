@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.name.FqName
 
 object DescribeSpecStyle : SpecStyle {

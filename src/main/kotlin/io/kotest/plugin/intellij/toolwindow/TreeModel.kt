@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeDescriptor
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.styles.TestElement
 import io.kotest.plugin.intellij.styles.psi.specStyle
@@ -10,15 +11,24 @@ import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
+import javax.swing.tree.TreePath
 
-fun treeModel(project: Project, specs: List<KtClassOrObject>): TreeModel {
+fun emptyTreeModel(): TreeModel {
+   val root = DefaultMutableTreeNode("<no specs detected>")
+   return DefaultTreeModel(root)
+}
 
-   fun addTests(node: DefaultMutableTreeNode, parent: NodeDescriptor<Any>, tests: List<TestElement>) {
+fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): TreeModel {
+
+   fun addTests(node: DefaultMutableTreeNode,
+                parent: NodeDescriptor<Any>,
+                specDescriptor: SpecNodeDescriptor,
+                tests: List<TestElement>) {
       tests.forEach { test ->
-         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test)
+         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, module)
          val testNode = DefaultMutableTreeNode(testDescriptor)
          node.add(testNode)
-         addTests(testNode, testDescriptor, test.tests)
+         addTests(testNode, testDescriptor, specDescriptor, test.tests)
       }
    }
 
@@ -28,11 +38,11 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>): TreeModel {
       val fqn = spec.getKotlinFqName()
       val style = spec.specStyle()
       if (fqn != null && style != null) {
-         val specDescriptor = SpecNodeDescriptor(project, kotest, spec, fqn, style)
+         val specDescriptor = SpecNodeDescriptor(project, kotest, spec, fqn, style, module)
          val specNode = DefaultMutableTreeNode(specDescriptor)
          root.add(specNode)
          val tests = style.tests(spec)
-         addTests(specNode, specDescriptor, tests)
+         addTests(specNode, specDescriptor, specDescriptor, tests)
 
       }
    }
@@ -47,5 +57,16 @@ fun JTree.expandAllNodes(startingIndex: Int, rowCount: Int) {
    }
    if (getRowCount() != rowCount) {
       expandAllNodes(rowCount, getRowCount())
+   }
+}
+
+fun TreePath.node(): NodeDescriptor<Any>? {
+   return when (val last = lastPathComponent) {
+      is DefaultMutableTreeNode -> when (val obj = last.userObject) {
+         is SpecNodeDescriptor -> obj
+         is TestNodeDescriptor -> obj
+         else -> null
+      }
+      else -> null
    }
 }

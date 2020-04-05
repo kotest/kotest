@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
@@ -30,7 +31,8 @@ class SpecNodeDescriptor(project: Project,
                          val parent: NodeDescriptor<Any>,
                          val psi: KtClassOrObject,
                          val fqn: FqName,
-                         val style: SpecStyle) : PresentableNodeDescriptor<Any>(project, parent) {
+                         val style: SpecStyle,
+                         val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = fqn.asString()
@@ -47,7 +49,9 @@ class SpecNodeDescriptor(project: Project,
 class TestNodeDescriptor(project: Project,
                          val parent: NodeDescriptor<Any>,
                          val psi: PsiElement,
-                         val test: TestElement) : PresentableNodeDescriptor<Any>(project, parent) {
+                         val test: TestElement,
+                         val spec: SpecNodeDescriptor,
+                         val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = test.test.name
