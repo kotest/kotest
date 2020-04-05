@@ -41,7 +41,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryDescribe(): String? {
-      val name = extractStringArgForFunction2WithStringAndLambda("describe")
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe")
       return if (name == null) null else "Describe: $name"
    }
 
@@ -52,7 +52,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryContext(): String? {
-      val name = extractStringArgForFunction2WithStringAndLambda("context")
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("context")
       return if (name == null) null else "Context: $name"
    }
 
@@ -63,7 +63,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryIt(): String? {
-      val name = extractStringArgForFunction2WithStringAndLambda("it")
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("it")
       return if (name == null) null else "It: $name"
    }
 
@@ -74,7 +74,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun PsiElement.tryXIt(): String? = ifType<KtCallExpression, String> {
-      val name = it.extractStringArgForFunction2WithStringAndLambda("xit")
+      val name = it.extractStringArgForFunctionWithStringAndLambdaArgs("xit")
       if (name == null) null else "xIt: $name"
    }
 
@@ -85,7 +85,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryXDescribe(): String? {
-      val name = extractStringArgForFunction2WithStringAndLambda("xdescribe")
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe")
       return if (name == null) null else "xDescribe: $name"
    }
 
@@ -131,7 +131,7 @@ object DescribeSpecStyle : SpecStyle {
    override fun testPath(element: LeafPsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val call = element.ifCallExpressionName()
+      val call = element.ifCallExpressionNameIdent()
       if (call != null) return testPath(call)
 
       val dot = element.ifDotExpressionSeparator()

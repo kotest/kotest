@@ -33,7 +33,7 @@ object FunSpecStyle : SpecStyle {
    }
 
    private fun KtCallExpression.tryContext() =
-      extractStringArgForFunction2WithStringAndLambda(listOf("context"))
+      extractStringArgForFunctionWithStringAndLambdaArgs(listOf("context"))
 
    /**
     * A test of the form:
@@ -42,7 +42,7 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTestWithoutConfig() =
-      extractStringArgForFunction2WithStringAndLambda(listOf("test"))
+      extractStringArgForFunctionWithStringAndLambdaArgs(listOf("test"))
 
    /**
     * A test of the form:
@@ -85,7 +85,7 @@ object FunSpecStyle : SpecStyle {
    override fun testPath(element: LeafPsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val ktcall = element.ifCallExpressionName()
+      val ktcall = element.ifCallExpressionNameIdent()
       if (ktcall != null) return testPath(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()

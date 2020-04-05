@@ -27,7 +27,7 @@ class StringSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
       gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[1].tooltipText shouldBe "[Kotest] this is a test"
-      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 161
+      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 145
 
       gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[2].tooltipText shouldBe "[Kotest] this test has config"

@@ -12,7 +12,7 @@ class UtilsKtTest : StringSpec() {
       buildSuggestedName("myspec", "") shouldBe "myspec"
     }
 
-    "buildSuggestedName should return null if spec is nul or blank" {
+    "buildSuggestedName should return null if spec is null or blank" {
       buildSuggestedName(null, "this is a test") shouldBe null
       buildSuggestedName(null, "this is a test") shouldBe null
       buildSuggestedName("", null) shouldBe null
