@@ -7,12 +7,10 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.editor.event.DocumentEvent
-import com.intellij.openapi.editor.event.DocumentListener
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -27,7 +25,7 @@ import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
 
-class TestExplorerWindow(private val toolWindow: ToolWindow,
+class TestExplorerWindow(toolWindow: ToolWindow,
                          private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val tree = createTree()
@@ -36,10 +34,9 @@ class TestExplorerWindow(private val toolWindow: ToolWindow,
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
-      loadContent()
       listenForSelectedFileChanges()
-      toolWindow.activate {
-         loadContent()
+      DumbService.getInstance(project).runWhenSmart {
+         refreshContent()
       }
    }
 
@@ -86,25 +83,23 @@ class TestExplorerWindow(private val toolWindow: ToolWindow,
       project.messageBus.connect().subscribe(
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
+            override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+               println("file opened")
+               refreshContent(file)
+            }
+
             override fun selectionChanged(event: FileEditorManagerEvent) {
+               println("selectionChanged")
                refreshContent(event.newFile)
-               val file = event.newFile
-               if (file != null) {
-                  FileDocumentManager.getInstance().getDocument(file)?.addDocumentListener(object :
-                     DocumentListener {
-                     override fun documentChanged(event: DocumentEvent) {
-                        refreshContent(file)
-                     }
-                  })
-               }
             }
          }
       )
    }
 
-   private fun loadContent() {
+   private fun refreshContent() {
       try {
-         val editor = FileEditorManager.getInstance(project).selectedEditor
+         val manager = FileEditorManager.getInstance(project)
+         val editor = manager.selectedEditor
          val file = editor?.file
          refreshContent(file)
       } catch (e: IndexNotReadyException) {
@@ -116,19 +111,20 @@ class TestExplorerWindow(private val toolWindow: ToolWindow,
          tree.model = emptyTreeModel()
          tree.isRootVisible = true
       } else {
-         try {
-            val module = file.getModule(project)
-            if (module == null) {
-               tree.model = emptyTreeModel()
-               tree.isRootVisible = true
-            } else {
+         val module = file.getModule(project)
+         if (module == null) {
+            tree.model = emptyTreeModel()
+            tree.isRootVisible = true
+         } else {
+            try {
                val specs = file.toPsiFile(project)?.specs() ?: emptyList()
                val model = treeModel(project, specs, module)
                tree.model = model
                tree.isRootVisible = false
                tree.expandAllNodes()
+            } catch (e:Exception) {
+               e.printStackTrace()
             }
-         } catch (e: IndexNotReadyException) {
          }
       }
    }
