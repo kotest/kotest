@@ -1,0 +1,45 @@
+package io.kotest.plugin.intellij.toolwindow
+
+import com.intellij.execution.ExecutorRegistry
+import com.intellij.execution.RunManager
+import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.openapi.project.Project
+import io.kotest.plugin.intellij.KotestConfigurationFactory
+import io.kotest.plugin.intellij.KotestConfigurationType
+import io.kotest.plugin.intellij.KotestRunConfiguration
+
+fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
+
+   val manager = RunManager.getInstance(project)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+
+   val name = node.test.test.name + " [run test]"
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
+   val run = config.configuration as KotestRunConfiguration
+
+   run.setTestName(node.test.test.name)
+   run.setSpecName(node.spec.fqn.asString())
+   run.setModule(node.module)
+   run.setGeneratedName()
+
+   manager.addConfiguration(config)
+   ExecutionUtil.runConfiguration(config, executor)
+}
+
+fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
+
+   val manager = RunManager.getInstance(project)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+
+   val name = node.fqn.shortName().asString() + " [run spec]"
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
+   val run = config.configuration as KotestRunConfiguration
+
+   run.setTestName("")
+   run.setSpecName(node.fqn.asString())
+   run.setModule(node.module)
+   run.setGeneratedName()
+
+   manager.addConfiguration(config)
+   ExecutionUtil.runConfiguration(config, executor)
+}

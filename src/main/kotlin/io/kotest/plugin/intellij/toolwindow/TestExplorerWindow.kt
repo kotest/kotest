@@ -1,8 +1,5 @@
 package io.kotest.plugin.intellij.toolwindow
 
-import com.intellij.execution.ExecutorRegistry
-import com.intellij.execution.RunManager
-import com.intellij.execution.runners.ExecutionUtil
 import com.intellij.icons.AllIcons
 import com.intellij.ide.util.treeView.NodeRenderer
 import com.intellij.openapi.actionSystem.ActionManager
@@ -21,9 +18,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.ScrollPaneFactory
-import io.kotest.plugin.intellij.KotestConfigurationFactory
-import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.idea.util.projectStructure.getModule
@@ -56,41 +50,13 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
 
       val result = DefaultActionGroup()
 
-      result.add(object : AnAction(AllIcons.RunConfigurations.TestState.Run_run) {
+      result.add(object : AnAction(AllIcons.Actions.Execute) {
          override fun actionPerformed(e: AnActionEvent) {
-         }
-      })
-
-      result.add(object : AnAction(AllIcons.RunConfigurations.TestState.Run) {
-         override fun actionPerformed(e: AnActionEvent) {
-            val manager = RunManager.getInstance(project)
-            val executor = ExecutorRegistry.getInstance().getExecutorById("Run")
             val path = tree.selectionPath
             if (path != null) {
-               val node = path.node()
-               println("path.node()=$node")
-               when (node) {
-                  is SpecNodeDescriptor -> {
-                     val name = node.fqn.shortName().asString() + " [run all]"
-                     val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-                     val run = config.configuration as KotestRunConfiguration
-                     run.setSpecName(node.fqn.asString())
-                     run.setModule(node.module)
-                     run.setGeneratedName()
-                     manager.addConfiguration(config)
-                     ExecutionUtil.runConfiguration(config, executor)
-                  }
-                  is TestNodeDescriptor -> {
-                     val name = node.test.test.name + " [run test]"
-                     val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-                     val run = config.configuration as KotestRunConfiguration
-                     run.setTestName(node.test.test.name)
-                     run.setSpecName(node.spec.fqn.asString())
-                     run.setModule(node.module)
-                     run.setGeneratedName()
-                     manager.addConfiguration(config)
-                     ExecutionUtil.runConfiguration(config, executor)
-                  }
+               when (val node = path.node()) {
+                  is SpecNodeDescriptor -> runSpec(node, project, "Run")
+                  is TestNodeDescriptor -> runTest(node, project, "Run")
                }
             }
          }
@@ -98,25 +64,11 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
 
       result.add(object : AnAction(AllIcons.Actions.StartDebugger) {
          override fun actionPerformed(e: AnActionEvent) {
-            val manager = RunManager.getInstance(project)
-            val executor = ExecutorRegistry.getInstance().getExecutorById("Debug")
             val path = tree.selectionPath
             if (path != null) {
                when (val node = path.node()) {
-                  is SpecNodeDescriptor -> {
-                     val name = node.name + " [debug all]"
-                     println(name)
-                     val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-                     manager.addConfiguration(config)
-                     ExecutionUtil.runConfiguration(config, executor)
-                  }
-                  is TestNodeDescriptor -> {
-                     val name = node.name + " [debug test]"
-                     println(name)
-                     val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-                     manager.addConfiguration(config)
-                     ExecutionUtil.runConfiguration(config, executor)
-                  }
+                  is SpecNodeDescriptor -> runSpec(node, project, "Debug")
+                  is TestNodeDescriptor -> runTest(node, project, "Debug")
                }
             }
          }
@@ -157,15 +109,18 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    private fun refreshContent(file: VirtualFile?) {
       if (file == null) {
          tree.model = emptyTreeModel()
+         tree.isRootVisible = true
       } else {
          try {
             val module = file.getModule(project)
             if (module == null) {
                tree.model = emptyTreeModel()
+               tree.isRootVisible = true
             } else {
                val specs = file.toPsiFile(project)?.specs() ?: emptyList()
                val model = treeModel(project, specs, module)
                tree.model = model
+               tree.isRootVisible = false
                tree.expandAllNodes()
             }
          } catch (e: IndexNotReadyException) {
