@@ -56,7 +56,7 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
       // test can actually be left out if you want to run the entire spec
       val testName = configuration.getTestName()
       if (testName != null && testName.isNotBlank())
-         params.programParametersList.add("--test", testName)
+         params.programParametersList.add("--testpath", testName)
       return params
    }
 

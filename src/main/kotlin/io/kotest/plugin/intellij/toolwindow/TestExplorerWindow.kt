@@ -72,7 +72,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                when (node) {
                   is SpecNodeDescriptor -> {
                      val name = node.fqn.shortName().asString() + " [run all]"
-                     println(name)
                      val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
                      val run = config.configuration as KotestRunConfiguration
                      run.setSpecName(node.fqn.asString())
@@ -83,7 +82,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   }
                   is TestNodeDescriptor -> {
                      val name = node.test.test.name + " [run test]"
-                     println(name)
                      val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
                      val run = config.configuration as KotestRunConfiguration
                      run.setTestName(node.test.test.name)
