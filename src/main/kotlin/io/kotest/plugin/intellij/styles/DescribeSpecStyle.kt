@@ -1,7 +1,9 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.ifType
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtCallExpression
 
 object DescribeSpecStyle : SpecStyle {
 
@@ -29,11 +31,20 @@ object DescribeSpecStyle : SpecStyle {
     *   describe("test name") { }
     *
     */
-   private fun PsiElement.tryDescribe(): String? = this.extractNameForFunction2WithStringAndLambda("describe")
+   private fun PsiElement.tryDescribe(): String? = ifType<KtCallExpression, String> {
+      val name = it.extractStringArgForFunction2WithStringAndLambda("describe")
+      if (name == null) null else "Describe: $name"
+   }
 
-   private fun PsiElement.tryContext(): String? {
-      val test = matchFunction2WithStringAndLambda(listOf("context"))
-      return if (test == null) null else "Context: $test"
+   /**
+    * Finds tests in the form:
+    *
+    *   context("test name") { }
+    *
+    */
+   private fun PsiElement.tryContext(): String? = ifType<KtCallExpression, String> {
+      val name = it.extractStringArgForFunction2WithStringAndLambda("context")
+      if (name == null) null else "Context: $name"
    }
 
    /**
@@ -42,7 +53,10 @@ object DescribeSpecStyle : SpecStyle {
     *   it("test name") { }
     *
     */
-   private fun PsiElement.tryIt(): String?= this.extractNameForFunction2WithStringAndLambda("it")
+   private fun PsiElement.tryIt(): String? = ifType<KtCallExpression, String> {
+      val name = it.extractStringArgForFunction2WithStringAndLambda("it")
+      if (name == null) null else "It: $name"
+   }
 
    /**
     * Finds tests in the form:
@@ -50,7 +64,10 @@ object DescribeSpecStyle : SpecStyle {
     *   xit("test name") { }
     *
     */
-   private fun PsiElement.tryXit(): String? = this.extractNameForFunction2WithStringAndLambda("xit")
+   private fun PsiElement.tryXit(): String? = ifType<KtCallExpression, String> {
+      val name = it.extractStringArgForFunction2WithStringAndLambda("xit")
+      if (name == null) null else "xIt: $name"
+   }
 
    /**
     * Finds tests in the form:
@@ -58,7 +75,10 @@ object DescribeSpecStyle : SpecStyle {
     *   xdescribe("test name") { }
     *
     */
-   private fun PsiElement.tryXdescribe(): String? = this.extractNameForFunction2WithStringAndLambda("xdescribe")
+   private fun PsiElement.tryXdescribe(): String? = ifType<KtCallExpression, String> {
+      val name = it.extractStringArgForFunction2WithStringAndLambda("xdescribe")
+      return if (name == null) null else "xDescribe: $name"
+   }
 
    private fun PsiElement.tryItWithConfig(): String? {
       val test = extractStringArgForFunctionBeforeDotExpr(listOf("it"), listOf("config"))
@@ -82,12 +102,12 @@ object DescribeSpecStyle : SpecStyle {
       if (!element.isContainedInSpec()) return null
       val name = element.tryIt() ?: element.tryDescribe()
       if (name != null) {
-         val path = (element.locateParentTests() + name).distinct().joinToString(" -- ")
+         val path = (element.locateParentTests() + name).distinct().joinToString(" ")
          return Test(name, path)
       }
       val xname = element.tryXit() ?: element.tryXdescribe()
       if (xname != null) {
-         val path = (element.locateParentTests() + xname).distinct().joinToString(" -- ")
+         val path = (element.locateParentTests() + xname).distinct().joinToString(" ")
          return Test(xname, path, false)
       }
       return null
@@ -98,6 +118,7 @@ object DescribeSpecStyle : SpecStyle {
       val test = element.run {
          tryIt() ?: tryItWithConfig() ?: tryContext() ?: tryDescribe() ?: return null
       }
-      return (element.locateParentTests() + test).distinct().joinToString(" -- ")
+      return (element.locateParentTests() + test).distinct().joinToString(" ")
    }
+
 }

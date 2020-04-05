@@ -11,7 +11,7 @@ inline fun <reified T> PsiElement.matches(thunk: (T) -> Boolean): Boolean {
 }
 
 
-inline fun <reified T, U> PsiElement.map(thunk: (T) -> U): U? {
+inline fun <reified T, U> PsiElement.ifType(thunk: (T) -> U?): U? {
    return if (this is T) {
       thunk(this)
    } else {

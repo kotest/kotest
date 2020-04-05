@@ -18,42 +18,37 @@ import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
 import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
 import io.kotest.plugin.intellij.styles.psi.isSpecSubclass
-import org.jetbrains.kotlin.lexer.KtToken
 
 abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
 
   override fun getInfo(element: PsiElement): Info? {
 
-    // the docs say to only run a line marker for a leaf
-    if (element !is LeafPsiElement) {
-      return null
-    }
+     // the docs say to only run a line marker for a leaf
+     if (element !is LeafPsiElement) {
+        return null
+     }
 
-    if (element.elementType !is KtToken) {
-      return null
-    }
+     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
+     if (ktclass != null) {
+        if (ktclass.isSpecSubclass(style)) {
+           return Info(
+              AllIcons.RunConfigurations.TestState.Run_run,
+              Function<PsiElement, String> { "[Kotest] ${ktclass.fqName!!.shortName()}" },
+              *ExecutorAction.getActions(0)
+           )
+        }
+     }
 
-    val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
-    if (ktclass != null) {
-      if (ktclass.isSpecSubclass(style)) {
+     val testPath = style.testPath2(element)
+     if (testPath != null) {
         return Info(
-            AllIcons.RunConfigurations.TestState.Run_run,
-            Function<PsiElement, String> { "[Kotest] ${ktclass.fqName!!.shortName()}" },
-            *ExecutorAction.getActions(0)
+           AllIcons.RunConfigurations.TestState.Run,
+           Function<PsiElement, String> { "[Kotest] $testPath" },
+           *ExecutorAction.getActions(0)
         )
-      }
-    }
+     }
 
-    val testPath = style.testPath(element)
-    if (testPath != null) {
-      return Info(
-          AllIcons.RunConfigurations.TestState.Run,
-          Function<PsiElement, String> { "[Kotest] $testPath" },
-          *ExecutorAction.getActions(0)
-      )
-    }
-
-    return null
+     return null
   }
 }
 

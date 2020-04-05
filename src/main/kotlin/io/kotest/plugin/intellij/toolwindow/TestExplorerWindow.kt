@@ -15,7 +15,6 @@ import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -25,8 +24,7 @@ import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
 
-class TestExplorerWindow(toolWindow: ToolWindow,
-                         private val project: Project) : SimpleToolWindowPanel(true, false) {
+class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val tree = createTree()
 

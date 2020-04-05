@@ -8,7 +8,7 @@ import com.intellij.ui.content.ContentFactory
 class KotestToolWindowFactory : ToolWindowFactory {
 
    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-      val explorer = TestExplorerWindow(toolWindow, project)
+      val explorer = TestExplorerWindow(project)
       val contentFactory = ContentFactory.SERVICE.getInstance()
       val content = contentFactory.createContent(explorer, "", false)
       toolWindow.contentManager.addContent(content)

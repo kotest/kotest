@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -87,6 +88,35 @@ fun PsiElement.isCallExprWithName(names: List<String>): Boolean =
       && children[0] is KtReferenceExpression
       && names.contains(children[0].text)
 
+fun KtCallExpression.hasName(name: String): Boolean {
+   val a = children[0]
+   return a is KtNameReferenceExpression && a.text == name
+}
+
+/**
+ * If this [KtCallExpression] has a single arg in it's value list,
+ * and that single arg is of type [KtStringTemplateExpression], then it
+ * returns the value of that arg, otherwise null
+ */
+fun KtCallExpression.getSingleStringArgOrNull(): String? {
+
+   if (children.size < 2)
+      return null
+
+   val argList = children[1]
+   if (argList is KtValueArgumentList && argList.children.size == 1) {
+      val value = argList.children[0]
+      if (value is KtValueArgument) {
+         val maybeStringTemplateExpression = value.children[0]
+         if (maybeStringTemplateExpression is KtStringTemplateExpression) {
+            return maybeStringTemplateExpression.asString()
+         }
+      }
+   }
+
+   return null
+}
+
 fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
 
 fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationReferenceExpression && names.contains(text)
@@ -105,10 +135,7 @@ fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationRe
 fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
    return when (val p = parent) {
       is KtStringTemplateEntry -> p.extractStringForFunction2WithStringAndLambda(names)
-      is KtCallExpression -> {
-         val call = p
-         p.extractStringForFunction2WithStringAndLambda(names)
-      }
+      is KtCallExpression -> p.extractStringArgForFunction2WithStringAndLambda(names)
       else -> null
    }
 }
@@ -133,26 +160,27 @@ fun KtStringTemplateEntry.extractStringForFunction2WithStringAndLambda(names: Li
    return null
 }
 
-fun KtStringTemplateExpression.value(): String? {
+/**
+ * Returns the value of this string expression.
+ */
+fun KtStringTemplateExpression.asString(): String? {
    return when (val entry = children[0]) {
       is KtStringTemplateEntry -> entry.text
       else -> null
    }
 }
 
-fun KtValueArgumentList.firstArgAsString(): String? {
-   if (children.isEmpty())
-      return null
-   return when (val arg = children[0]) {
-      is KtValueArgument -> when (val expr = arg.children[0]) {
-         is KtStringTemplateExpression -> expr.value()
-         else -> null
-      }
-      else -> null
-   }
+/**
+ * Returns true if the final argument to this call is a lambda arg
+ */
+fun KtCallExpression.hasFinalLambdaArg(): Boolean {
+   if (children.size < 2)
+      return false
+   return lastChild is KtLambdaArgument
 }
 
-/** Matches code in the form:
+/**
+ * Matches code in the form:
  *
  *   function("some string") { }
  *
@@ -166,18 +194,10 @@ fun KtValueArgumentList.firstArgAsString(): String? {
  *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
  *    - KtLambdaArgumnt (the test closure)
  */
-fun PsiElement.extractNameForFunction2WithStringAndLambda(name: String): String? {
-   return if (children.size == 3) {
-      val a = children[0]
-      val b = children[1]
-      val c = children[2]
-      if (a.isNameReference(listOf(name))
-         && b is KtValueArgumentList
-         && c is KtLambdaArgument) b.firstArgAsString() else null
-   } else null
-}
+fun KtCallExpression.extractStringArgForFunction2WithStringAndLambda(vararg names: String): String? =
+   extractStringArgForFunction2WithStringAndLambda(names.asList())
 
-fun KtCallExpression.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
+fun KtCallExpression.extractStringArgForFunction2WithStringAndLambda(names: List<String>): String? {
    if (children.size == 3
       && children[0].isNameReference(names)
       && children[1].isSingleStringTemplateArg()
@@ -189,6 +209,53 @@ fun KtCallExpression.extractStringForFunction2WithStringAndLambda(names: List<St
          .text
    }
    return null
+}
+
+/**
+ * If this [LeafPsiElement] is the dot between two calls in a dot expression, returns that dot expression.
+ */
+fun LeafPsiElement.ifDotExpressionSeparator(): KtDotQualifiedExpression? {
+   val maybeDotQualifiedExpression = parent
+   if (maybeDotQualifiedExpression is KtDotQualifiedExpression) {
+      return maybeDotQualifiedExpression
+   }
+   return null
+}
+
+/**
+ * If this [LeafPsiElement] is the name of a function call, then returns that function.
+ */
+fun LeafPsiElement.ifCallExpressionName(): KtCallExpression? {
+   val maybeNameReferenceExpression = parent
+   if (maybeNameReferenceExpression is KtNameReferenceExpression) {
+      val maybeCallExpression = maybeNameReferenceExpression.parent
+      if (maybeCallExpression is KtCallExpression) {
+         return maybeCallExpression
+      }
+   }
+   return null
+}
+
+/**
+ * For invocations of the form a("foo").b() { } returns the single string arg passed to the first function.
+ */
+fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: String,
+                                                                                   rhs: String): String? {
+   if (children.size != 2)
+      return null
+
+   val a = children[0]
+   val b = children[1]
+
+   if (a is KtCallExpression && b is KtCallExpression) {
+      if (a.hasName(lhs) && b.hasName(rhs)) {
+         val testName = a.getSingleStringArgOrNull()
+         if (testName != null && b.hasFinalLambdaArg())
+            return testName
+      }
+   }
+
+   return null;
 }
 
 fun PsiElement.isSingleStringTemplateArg(): Boolean =

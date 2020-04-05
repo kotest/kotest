@@ -1,12 +1,10 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.map
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtLambdaArgument
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtValueArgumentList
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FunSpecStyle : SpecStyle {
 
@@ -20,11 +18,18 @@ object FunSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-   private fun PsiElement.locateParentContexts(): List<String> {
-      val test = tryContext()
-      val result = if (test == null) emptyList() else listOf(test)
+   /**
+    * For a given PsiElement that we know to be a test, we iterate up the stack looking for parent tests.
+    */
+   private fun locateParentContexts(element: PsiElement): List<String> {
       // if parent is null then we have hit the end
-      return if (parent == null) result else parent.locateParentContexts() + result
+      val parent = element.parent ?: return emptyList()
+      val test = when (parent) {
+         is KtCallExpression -> parent.tryContext() ?: parent.tryTestWithoutConfig()
+         else -> null
+      }
+      val result = if (test == null) emptyList() else listOf(test)
+      return locateParentContexts(parent) + result
    }
 
    /**
@@ -40,49 +45,73 @@ object FunSpecStyle : SpecStyle {
       }
    }
 
-   private fun PsiElement.tryContext() =
-      this.matchFunction2WithStringAndLambda(listOf("context"))
+   private fun KtCallExpression.tryContext() =
+      extractStringArgForFunction2WithStringAndLambda(listOf("context"))
 
    /**
-    * A test is of the form:
+    * A test of the form:
     *
     *   test("test name") { }
     *
-    * The structure in PSI for this is:
-    *
-    *  KtCallExpression (the function invocation)
-    *    - KtNameReferenceExpression (the name of the test, in this case should be "test")
-    *    - KtValueArgumentList
-    *      - KtValueArgument (container wrapper for an argument, in this case the string name)
-    *        - KtStringTemplateExpression (the string value of the name of the test)
-    *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text)
-    *    - KtLambdaArgumnt (the test closure)
-    *
     */
-   private fun PsiElement.tryTestWithoutConfig() = map<KtCallExpression, String?> {
-      if (children.size == 3) {
-         val a = children[0]
-         val b = children[1]
-         val c = children[2]
-         if (a is KtNameReferenceExpression && a.text == "test"
-            && b is KtValueArgumentList
-            && c is KtLambdaArgument) b.firstArgAsString() else null
-      } else null
-   }
-
-   private fun PsiElement.tryTestWithConfig() =
-      this.extractStringArgForFunctionBeforeDotExpr(listOf("test"), listOf("config"))
+   private fun KtCallExpression.tryTestWithoutConfig() =
+      extractStringArgForFunction2WithStringAndLambda(listOf("test"))
 
    /**
-    * Returns the test path for a given [PsiElement], or if this element is not a test, then returns null.
+    * A test of the form:
+    *
+    *   test("test name").config(...) { }
+    *
     */
-   override fun testPath(element: PsiElement): String? {
+   private fun KtDotQualifiedExpression.tryTestWithConfig() =
+      this.extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config")
+
+   /**
+    * Finds tests of the form:
+    *
+    *   test("test name") { }
+    */
+   private fun extractTestWithoutConfig(element: LeafPsiElement): String? {
+      return element.ifCallExpressionName()?.tryTestWithoutConfig()
+   }
+
+   /**
+    * Finds tests of the form:
+    *
+    *   test("test name").config(...) { }
+    */
+   private fun extractTestWithConfig(element: LeafPsiElement): String? {
+      return element.ifDotExpressionSeparator()?.tryTestWithConfig()
+   }
+
+   /**
+    * Finds tests of the form:
+    *
+    *   context("test name") {}
+    */
+   private fun extractContext(element: LeafPsiElement): String? {
+      return element.ifCallExpressionName()?.tryContext()
+   }
+
+   /**
+    * Returns the test path for a given [LeafPsiElement],
+    * or if this element is not a test, then returns null.
+    *
+    * For a FunSpec we consider the following scenarios:
+    *
+    * test("test name") { }
+    * test("test name").config(...) {}
+    */
+   override fun testPath2(element: LeafPsiElement): String? {
       if (!element.isContainedInSpec()) return null
-      val test = element.tryTestWithoutConfig() ?: element.tryTestWithConfig() ?: element.tryContext()
-      return if (test == null) null else {
-         val paths = element.locateParentContexts() + test
-         paths.distinct().joinToString(" -- ")
-      }
+
+      val test = extractTestWithoutConfig(element)
+         ?: extractTestWithConfig(element)
+         ?: extractContext(element)
+         ?: return null
+
+      val paths = locateParentContexts(element) + test
+      return paths.distinct().joinToString(" -- ")
    }
 }
 

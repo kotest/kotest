@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.styles.psi.isContainedInSpec
 import org.jetbrains.kotlin.name.FqName
 
@@ -22,7 +23,8 @@ interface SpecStyle {
 
    fun PsiElement.isContainedInSpec(): Boolean = this.isContainedInSpec(fqn())
 
-   fun testPath(element: PsiElement): String?
+   fun testPath(element: PsiElement): String? = null
+   fun testPath2(element: LeafPsiElement): String? = null
 
    fun specStyleName(): String
 
