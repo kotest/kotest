@@ -1,7 +1,6 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.name.FqName
 
 object DescribeSpecStyle : SpecStyle {
@@ -83,12 +82,12 @@ object DescribeSpecStyle : SpecStyle {
       if (!element.isContainedInSpec()) return null
       val name = element.tryIt() ?: element.tryDescribe()
       if (name != null) {
-         val path = (element.locateParentTests() + name).distinct().joinToString(" ")
+         val path = (element.locateParentTests() + name).distinct().joinToString(" -- ")
          return Test(name, path)
       }
       val xname = element.tryXit() ?: element.tryXdescribe()
       if (xname != null) {
-         val path = (element.locateParentTests() + xname).distinct().joinToString(" ")
+         val path = (element.locateParentTests() + xname).distinct().joinToString(" -- ")
          return Test(xname, path, false)
       }
       return null
@@ -99,6 +98,6 @@ object DescribeSpecStyle : SpecStyle {
       val test = element.run {
          tryIt() ?: tryItWithConfig() ?: tryContext() ?: tryDescribe() ?: return null
       }
-      return (element.locateParentTests() + test).distinct().joinToString(" ")
+      return (element.locateParentTests() + test).distinct().joinToString(" -- ")
    }
 }

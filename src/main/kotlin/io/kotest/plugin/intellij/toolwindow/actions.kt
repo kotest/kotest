@@ -17,7 +17,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
    val run = config.configuration as KotestRunConfiguration
 
-   run.setTestName(node.test.test.name)
+   run.setTestName(node.test.test.path)
    run.setSpecName(node.spec.fqn.asString())
    run.setModule(node.module)
    run.setGeneratedName()

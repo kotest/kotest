@@ -17,6 +17,7 @@ import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.wm.ToolWindow
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -26,7 +27,8 @@ import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
 
-class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
+class TestExplorerWindow(private val toolWindow: ToolWindow,
+                         private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val tree = createTree()
 
@@ -34,8 +36,11 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
-      setInitialContent()
+      loadContent()
       listenForSelectedFileChanges()
+      toolWindow.activate {
+         loadContent()
+      }
    }
 
    private fun createToolbar(): JComponent {
@@ -97,7 +102,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       )
    }
 
-   private fun setInitialContent() {
+   private fun loadContent() {
       try {
          val editor = FileEditorManager.getInstance(project).selectedEditor
          val file = editor?.file
