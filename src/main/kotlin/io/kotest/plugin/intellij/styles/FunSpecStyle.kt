@@ -30,12 +30,12 @@ object FunSpecStyle : SpecStyle {
    /**
     * Returns all child tests located in the given [PsiElement].
     */
-   fun tests(element: PsiElement): List<TestElement> {
+   override fun tests(element: PsiElement): List<TestElement> {
       return element.children.flatMap { child ->
          val childTests = tests(child)
          val testPath = testPath(child)
          if (testPath != null) {
-            childTests + TestElement(child, testPath, emptyList())
+            listOf(TestElement(child, Test(testPath, testPath), childTests))
          } else childTests
       }
    }
@@ -86,8 +86,10 @@ object FunSpecStyle : SpecStyle {
    }
 }
 
-data class TestElement(val psi: PsiElement,
-                       val name: String,
-                       val tests: List<TestElement>) {
-   val disabled: Boolean = name.startsWith("!")
+data class Test(val name: String, val path: String, val enabled: Boolean) {
+   constructor(name: String, path: String) : this(name, path, !name.startsWith("!"))
 }
+
+data class TestElement(val psi: PsiElement,
+                       val test: Test,
+                       val tests: List<TestElement>)

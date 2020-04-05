@@ -1,7 +1,9 @@
 package io.kotest.plugin.intellij.toolwindow
 
+import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.project.Project
-import io.kotest.plugin.intellij.styles.FunSpecStyle
+import io.kotest.plugin.intellij.styles.TestElement
+import io.kotest.plugin.intellij.styles.psi.specStyle
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.JTree
@@ -10,20 +12,28 @@ import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
 
 fun treeModel(project: Project, specs: List<KtClassOrObject>): TreeModel {
+
+   fun addTests(node: DefaultMutableTreeNode, parent: NodeDescriptor<Any>, tests: List<TestElement>) {
+      tests.forEach { test ->
+         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test)
+         val testNode = DefaultMutableTreeNode(testDescriptor)
+         node.add(testNode)
+         addTests(testNode, testDescriptor, test.tests)
+      }
+   }
+
    val kotest = KotestNodeDescriptor(project)
    val root = DefaultMutableTreeNode(kotest)
    specs.forEach { spec ->
       val fqn = spec.getKotlinFqName()
-      if (fqn != null) {
-         val specDescriptor = SpecNodeDescriptor(project, kotest, spec, fqn, FunSpecStyle)
+      val style = spec.specStyle()
+      if (fqn != null && style != null) {
+         val specDescriptor = SpecNodeDescriptor(project, kotest, spec, fqn, style)
          val specNode = DefaultMutableTreeNode(specDescriptor)
          root.add(specNode)
-         val tests = FunSpecStyle.tests(spec)
-         tests.forEach { testElement ->
-            val testObj = TestNodeDescriptor(project, specDescriptor, testElement.psi, testElement)
-            val testNode = DefaultMutableTreeNode(testObj)
-            specNode.add(testNode)
-         }
+         val tests = style.tests(spec)
+         addTests(specNode, specDescriptor, tests)
+
       }
    }
    return DefaultTreeModel(root)

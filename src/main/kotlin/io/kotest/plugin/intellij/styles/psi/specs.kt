@@ -47,7 +47,10 @@ fun KtClassOrObject.isAnySpecSubclass(): Boolean {
  * This function will recursively check all superclasses.
  */
 fun KtClassOrObject.isSpecSubclass(style: SpecStyle) = isSpecSubclass(style.fqn())
+
 fun KtClassOrObject.isSpecSubclass(fqn: FqName): Boolean {
    val superClass = getSuperClass() ?: return getSuperClassSimpleName() == fqn.shortName().asString()
    return if (superClass.getKotlinFqName() == fqn) true else superClass.isSpecSubclass(fqn)
 }
+
+fun KtClassOrObject.specStyle(): SpecStyle? = SpecStyle.styles.find { this.isSpecSubclass(it) }

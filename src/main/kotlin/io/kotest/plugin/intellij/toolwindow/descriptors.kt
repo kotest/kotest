@@ -50,10 +50,10 @@ class TestNodeDescriptor(project: Project,
                          val test: TestElement) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
-      templatePresentation.presentableText = test.name
-      when (test.disabled) {
-         true -> templatePresentation.setIcon(AllIcons.Nodes.TestIgnored)
-         false -> templatePresentation.setIcon(AllIcons.Nodes.Test)
+      templatePresentation.presentableText = test.test.name
+      when (test.test.enabled) {
+         true -> templatePresentation.setIcon(AllIcons.Nodes.Test)
+         false -> templatePresentation.setIcon(AllIcons.Nodes.TestIgnored)
       }
    }
 

@@ -29,6 +29,11 @@ interface SpecStyle {
    fun isTestElement(element: PsiElement): Boolean
 
    /**
+    * Returns all child tests located in the given [PsiElement].
+    */
+   fun tests(element: PsiElement): List<TestElement> = emptyList()
+
+   /**
     * Returns the fully qualified name of the spec parent class, eg io.kotest.core.specs.style.FunSpec.
     */
    fun fqn(): FqName
