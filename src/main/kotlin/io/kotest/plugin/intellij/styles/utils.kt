@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.psi.KtValueArgumentList
  *
  * @param lefts one or more acceptable names for the left hand side reference
  */
+@Deprecated("")
 fun PsiElement.extractStringArgForFunctionWithConfig(lefts: List<String>): String? =
    extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
 
@@ -40,6 +41,7 @@ fun PsiElement.extractStringArgForFunctionWithConfig(lefts: List<String>): Strin
  * @param lefts one or more acceptable names for the left hand side reference
  * @param rights one or more acceptable names for the right hand side reference
  */
+@Deprecated("")
 fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rights: List<String>): String? {
    if (parent is KtLiteralStringTemplateEntry) {
       val maybeTemplateExpr = parent.parent
@@ -140,6 +142,7 @@ fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
    }
 }
 
+@Deprecated("")
 fun KtStringTemplateEntry.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
    if (parent is KtStringTemplateExpression) {
       val maybeValueArg = parent.parent
