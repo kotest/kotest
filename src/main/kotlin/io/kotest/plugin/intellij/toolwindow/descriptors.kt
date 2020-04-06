@@ -72,7 +72,8 @@ class TestNodeDescriptor(project: Project,
 
 class CallbackNodeDescriptor(project: Project,
                              parent: SpecNodeDescriptor,
-                             callback: Callback) : PresentableNodeDescriptor<Any>(project, parent) {
+                             val psi: PsiElement,
+                             val callback: Callback) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = callback.type.text

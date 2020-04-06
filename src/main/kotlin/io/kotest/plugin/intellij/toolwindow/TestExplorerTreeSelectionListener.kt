@@ -6,11 +6,14 @@ import javax.swing.event.TreeSelectionListener
 
 object TestExplorerTreeSelectionListener : TreeSelectionListener {
    override fun valueChanged(e: TreeSelectionEvent) {
-      when (val node = e.path.node()) {
-         is SpecNodeDescriptor -> node.psi.navigate(false)
-         is TestNodeDescriptor -> when (node.psi) {
-            is NavigatablePsiElement -> node.psi.navigate(false)
-         }
+      val psi = when (val node = e.path.node()) {
+         is SpecNodeDescriptor -> node.psi
+         is CallbackNodeDescriptor -> node.psi
+         is TestNodeDescriptor -> node.psi
+         else -> null
+      }
+      when (psi) {
+         is NavigatablePsiElement -> psi.navigate(false)
       }
    }
 }

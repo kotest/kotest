@@ -47,7 +47,7 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): T
 
          val callbacks = spec.callbacks()
          callbacks.forEach {
-            val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it)
+            val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it.psi, it)
             val callbackNode = DefaultMutableTreeNode(callbackDescriptor)
             specNode.add(callbackNode)
          }
@@ -75,6 +75,7 @@ fun TreePath.node(): NodeDescriptor<Any>? {
       is DefaultMutableTreeNode -> when (val obj = last.userObject) {
          is SpecNodeDescriptor -> obj
          is TestNodeDescriptor -> obj
+         is CallbackNodeDescriptor -> obj
          else -> null
       }
       else -> null
