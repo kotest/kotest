@@ -276,6 +276,8 @@ fun LeafPsiElement.ifBinaryExpressionOperationIdent(): KtBinaryExpression? {
 /**
  * If this [LeafPsiElement] is the opening quote of a string literal used on the left hand side
  * of a call expression, returns that call expression.
+ *
+ * This should be used to detect expressions of the form "some test" {}
  */
 fun LeafPsiElement.ifCallExpressionLhsStringOpenQuote(): KtCallExpression? {
    if (this.elementType.toString() != "OPEN_QUOTE") return null

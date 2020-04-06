@@ -1,40 +1,70 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object ExpectSpecStyle : SpecStyle {
 
-  override fun fqn() = FqName("io.kotest.core.spec.style.ExpectSpec")
+   override fun fqn() = FqName("io.kotest.core.spec.style.ExpectSpec")
 
-  override fun specStyleName(): String = "ExpectSpec"
+   override fun specStyleName(): String = "ExpectSpec"
 
-  override fun generateTest(specName: String, name: String): String {
-    return "expect(\"$name\") { }"
-  }
+   override fun generateTest(specName: String, name: String): String {
+      return "expect(\"$name\") { }"
+   }
 
-  // todo this could be optimized to not check for the other parts of the tree until the name is needed
-  override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-  private fun PsiElement.locateParentTests(): List<String> {
-    val test = tryContext()
-    val result = if (test == null) emptyList() else listOf(test)
-    // if parent is null then we have hit the end
-    return if (parent == null) result else parent.locateParentTests() + result
-  }
+   private fun PsiElement.locateParentTests(): List<Test> {
+      // if parent is null then we have hit the end
+      val p = parent ?: return emptyList()
+      val context = if (p is KtCallExpression) listOfNotNull(p.tryContext()) else emptyList()
+      return parent.locateParentTests() + context
+   }
 
-  private fun PsiElement.tryExpect() =
-      matchFunction2WithStringAndLambda(listOf("expect"))
+   private fun KtCallExpression.tryContext(): Test? {
+      val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
+      return buildTest(context, this)
+   }
 
-  private fun PsiElement.tryExpectWithConfig() =
-      extractStringArgForFunctionBeforeDotExpr(listOf("expect"), listOf("config"))
+   private fun KtCallExpression.tryExpect(): Test? {
+      val expect = extractStringArgForFunctionWithStringAndLambdaArgs("expect") ?: return null
+      return buildTest(expect, this)
+   }
 
-  private fun PsiElement.tryContext() =
-      matchFunction2WithStringAndLambda(listOf("context"))
+   private fun KtDotQualifiedExpression.tryExpectWithConfig(): Test? {
+      val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("expect", "config") ?: return null
+      return buildTest(expect, this)
+   }
 
-  override fun testPath(element: PsiElement): String? {
-    if (!element.isContainedInSpec()) return null
-    val test = element.tryExpect() ?: element.tryExpectWithConfig() ?: element.tryContext() ?: return null
-    return (element.locateParentTests() + test).distinct().joinToString(" -- ")
-  }
+   private fun buildTest(testName: String, element: PsiElement): Test {
+      val contexts = element.locateParentTests()
+      val path = (contexts.map { it.name } + testName).joinToString(" -- ")
+      return Test(testName, path)
+   }
+
+   override fun testPath(element: PsiElement): String? {
+      if (!element.isContainedInSpec()) return null
+
+      return when (element) {
+         is KtCallExpression -> (element.tryExpect() ?: element.tryContext())?.path
+         is KtDotQualifiedExpression -> element.tryExpectWithConfig()?.path
+         else -> null
+      }
+   }
+
+   override fun testPath(element: LeafPsiElement): String? {
+      if (!element.isContainedInSpec()) return null
+
+      val ktcall = element.ifCallExpressionNameIdent()
+      if (ktcall != null) return testPath(ktcall)
+
+      val ktdot = element.ifDotExpressionSeparator()
+      if (ktdot != null) return testPath(ktdot)
+
+      return null
+   }
 }

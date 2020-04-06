@@ -1,7 +1,10 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FeatureSpecStyle : SpecStyle {
 
@@ -13,42 +16,58 @@ object FeatureSpecStyle : SpecStyle {
     return "feature(\"$name\") { }"
   }
 
-  // todo this could be optimized to not check for the other parts of the tree until the name is needed
   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-  private fun PsiElement.locateParentTests(): List<String> {
-    val test = tryAnd() ?: tryFeature()
-    val result = if (test == null) emptyList() else listOf(test)
-    // if parent is null then we have hit the end
-    return if (parent == null) result else parent.locateParentTests() + result
-  }
+   private fun PsiElement.locateParentTests(): List<Test> {
+      // if parent is null then we have hit the end
+      val p = parent ?: return emptyList()
+      val context = if (p is KtCallExpression) listOfNotNull(p.tryFeature()) else emptyList()
+      return parent.locateParentTests() + context
+   }
 
-  private fun PsiElement.tryFeature(): String? {
-    val feature = matchFunction2WithStringAndLambda(listOf("feature"))
-    return if (feature == null) null else "Feature: $feature"
-  }
+   private fun KtCallExpression.tryFeature(): Test? {
+      val feature = extractStringArgForFunctionWithStringAndLambdaArgs("feature") ?: return null
+      val name = "Feature: $feature"
+      return buildTest(name, this)
+   }
 
-  private fun PsiElement.tryAnd(): String? {
-    val and = matchFunction2WithStringAndLambda(listOf("and"))
-    return if (and == null) null else "And: $and"
-  }
+   private fun KtCallExpression.tryScenario(): Test? {
+      val scenario = extractStringArgForFunctionWithStringAndLambdaArgs("scenario") ?: return null
+      val name = "Scenario: $scenario"
+      return buildTest(name, this)
+   }
 
-  private fun PsiElement.tryScenario(): String? {
-    val scenario = matchFunction2WithStringAndLambda(listOf("scenario"))
-    return if (scenario == null) null else "Scenario: $scenario"
-  }
+   private fun KtDotQualifiedExpression.tryScenarioWithConfig(): Test? {
+      val feature = extractLhsStringArgForDotExpressionWithRhsFinalLambda("scenario", "config") ?: return null
+      val name = "Scenario: $feature"
+      return buildTest(name, this)
+   }
 
-  private fun PsiElement.tryScenarioWithConfig(): String? {
-    val scenario = extractStringArgForFunctionWithConfig(listOf("scenario"))
-    return if (scenario == null) null else "Scenario: $scenario"
-  }
+   private fun buildTest(testName: String, element: PsiElement): Test {
+      val features = element.locateParentTests()
+      val path = (features.map { it.name } + testName).joinToString(" ")
+      return Test(testName, path)
+   }
 
-  override fun testPath(element: PsiElement): String? {
-    if (!element.isContainedInSpec()) return null
-    val test = element.tryScenario() ?: element.tryScenarioWithConfig() ?: element.tryAnd() ?: element.tryFeature()
-    return if (test == null) null else {
-      val paths = element.locateParentTests() + test
-      paths.distinct().joinToString(" ")
-    }
-  }
+   override fun testPath(element: PsiElement): String? {
+      if (!element.isContainedInSpec()) return null
+
+      return when (element) {
+         is KtCallExpression -> (element.tryScenario() ?: element.tryFeature())?.path
+         is KtDotQualifiedExpression -> element.tryScenarioWithConfig()?.path
+         else -> null
+      }
+   }
+
+   override fun testPath(element: LeafPsiElement): String? {
+      if (!element.isContainedInSpec()) return null
+
+      val ktcall = element.ifCallExpressionNameIdent()
+      if (ktcall != null) return testPath(ktcall)
+
+      val ktdot = element.ifDotExpressionSeparator()
+      if (ktdot != null) return testPath(ktdot)
+
+      return null
+   }
 }
