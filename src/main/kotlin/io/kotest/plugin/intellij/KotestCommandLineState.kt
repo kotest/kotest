@@ -17,7 +17,10 @@ import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.ClassUtil
+import org.jetbrains.kotlin.idea.core.util.getLineCount
 
 class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestRunConfiguration) :
     BaseJavaApplicationCommandLineState<KotestRunConfiguration>(environment, configuration) {
@@ -81,12 +84,16 @@ object KotestSMTestLocator : SMTestLocator {
                             path: String,
                             project: Project,
                             scope: GlobalSearchScope): List<Location<PsiElement>> {
-      return if (protocol == "kotest") {
-         val cache = project.getComponent(ElementLocationCache::class.java)
+      val list = mutableListOf<Location<PsiElement>>()
+      if (protocol == "kotest") {
          val (fqn, line) = path.split(':')
-         val element = cache.element(fqn, line.toInt())
-         if (element == null) emptyList<Location<PsiElement>>() else listOf(PsiLocation(element.navigationElement))
-      } else emptyList()
+         val testClass = ClassUtil.findPsiClass(PsiManager.getInstance(project), fqn, null, true, scope)
+         if (testClass != null) {
+            val location: Location<PsiElement> = PsiLocation(testClass.project, testClass)
+            list.add(location)
+         }
+      }
+      return list
    }
 
    override fun getLocationCacheModificationTracker(project: Project): ModificationTracker = ModificationTracker.EVER_CHANGED
