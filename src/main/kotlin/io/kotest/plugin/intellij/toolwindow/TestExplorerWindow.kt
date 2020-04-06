@@ -121,7 +121,9 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   tree.isRootVisible = false
                   tree.expandAllNodes()
                } catch (e: Throwable) {
-                  e.printStackTrace()
+                  DumbService.getInstance(project).runWhenSmart {
+                     refreshContent(file)
+                  }
                }
             }
          }

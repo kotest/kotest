@@ -107,10 +107,12 @@ fun PsiElement.isCallExprWithName(names: List<String>): Boolean =
       && children[0] is KtReferenceExpression
       && names.contains(children[0].text)
 
-fun KtCallExpression.hasName(names: List<String>): Boolean {
+fun KtCallExpression.functionName(): String? {
    val a = children[0]
-   return a is KtNameReferenceExpression && names.contains(a.text)
+   return if (a is KtNameReferenceExpression) a.text else null
 }
+
+fun KtCallExpression.hasFunctionName(names: List<String>): Boolean = names.contains(functionName())
 
 /**
  * If this [KtCallExpression] has a single arg in it's value list,
@@ -308,7 +310,7 @@ fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLamb
    val b = children[1]
 
    if (a is KtCallExpression && b is KtCallExpression) {
-      if (a.hasName(lhs) && b.hasName(rhs)) {
+      if (a.hasFunctionName(lhs) && b.hasFunctionName(rhs)) {
          val testName = a.getSingleStringArgOrNull()
          if (testName != null && b.hasFinalLambdaArg())
             return testName
@@ -329,7 +331,7 @@ fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalL
    val b = children[1]
 
    if (a is KtStringTemplateExpression && b is KtCallExpression) {
-      if (b.hasName(listOf(rhs)) && b.hasFinalLambdaArg()) {
+      if (b.hasFunctionName(listOf(rhs)) && b.hasFinalLambdaArg()) {
          return a.asString()
       }
    }

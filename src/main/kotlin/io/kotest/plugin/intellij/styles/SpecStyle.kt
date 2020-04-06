@@ -24,16 +24,16 @@ interface SpecStyle {
    fun PsiElement.isContainedInSpec(): Boolean = this.isContainedInSpec(fqn())
 
    /**
-    * Returns the path to a test if this [PsiElement] is the container of a test AST.
+    * Returns a [Test] if this [PsiElement] is the container of a test AST.
     */
-   fun testPath(element: PsiElement): String? = null
+   fun test(element: PsiElement): Test? = null
 
    /**
-    * Returns the path to a test if this [LeafPsiElement] is the canonical leaf of a test AST.
+    * Returns a [Test] if this [LeafPsiElement] is the canonical leaf of a test AST.
     * This method will first try to determine if this leaf element is inside a test, and then
-    * will invoke testPath with the container element.
+    * will invoke [test] with the container [PsiElement].
     */
-   fun testPath(element: LeafPsiElement): String? = null
+   fun test(element: LeafPsiElement): Test? = null
 
    fun specStyleName(): String
 
@@ -45,9 +45,9 @@ interface SpecStyle {
    fun tests(element: PsiElement): List<TestElement> {
       return element.children.flatMap { child ->
          val childTests = tests(child)
-         val testPath = testPath(child)
-         if (testPath != null) {
-            listOf(TestElement(child, Test(testPath, testPath), childTests))
+         val test = test(child)
+         if (test != null) {
+            listOf(TestElement(child, test, childTests))
          } else childTests
       }
    }

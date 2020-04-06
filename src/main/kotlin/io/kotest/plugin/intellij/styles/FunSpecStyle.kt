@@ -16,7 +16,7 @@ object FunSpecStyle : SpecStyle {
       return "test(\"$name\") { }"
    }
 
-   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
@@ -65,12 +65,12 @@ object FunSpecStyle : SpecStyle {
     * test("test name").config(...) {}
     * context("test name").config(...) {}
     */
-   override fun testPath(element: PsiElement): String? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       return when (element) {
-         is KtCallExpression -> element.tryContext()?.path ?: element.tryTest()?.path
-         is KtDotQualifiedExpression -> element.tryTestWithConfig()?.path
+         is KtCallExpression -> element.tryContext() ?: element.tryTest()
+         is KtDotQualifiedExpression -> element.tryTestWithConfig()
          else -> null
       }
    }
@@ -82,14 +82,14 @@ object FunSpecStyle : SpecStyle {
     * test("test name").config(...) {}
     * context("test name").config(...) {}
     */
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val ktcall = element.ifCallExpressionNameIdent()
-      if (ktcall != null) return testPath(ktcall)
+      if (ktcall != null) return test(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return testPath(ktdot)
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

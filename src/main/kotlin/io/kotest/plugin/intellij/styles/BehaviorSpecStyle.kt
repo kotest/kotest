@@ -17,7 +17,7 @@ object BehaviorSpecStyle : SpecStyle {
   override fun specStyleName(): String = "BehaviorSpec"
 
   // todo this could be optimized to not check for the other parts of the tree until the name is needed
-  override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+  override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private val givens = listOf("given", "Given", "`given`", "`Given`")
    private val whens = listOf("when", "When", "`when`", "`When")
@@ -67,24 +67,24 @@ object BehaviorSpecStyle : SpecStyle {
       }
    }
 
-   override fun testPath(element: PsiElement): String? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       return when (element) {
-         is KtCallExpression -> (element.tryGiven() ?: element.tryWhen() ?: element.tryThen())?.path
-         is KtDotQualifiedExpression -> element.tryThenWithConfig()?.path
+         is KtCallExpression -> element.tryGiven() ?: element.tryWhen() ?: element.tryThen()
+         is KtDotQualifiedExpression -> element.tryThenWithConfig()
          else -> null
       }
    }
 
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val ktcall = element.ifCallExpressionNameIdent()
-      if (ktcall != null) return testPath(ktcall)
+      if (ktcall != null) return test(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return testPath(ktdot)
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

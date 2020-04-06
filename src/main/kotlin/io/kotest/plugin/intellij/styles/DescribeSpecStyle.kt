@@ -18,7 +18,7 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    // todo this could be optimized to not check for the other parts of the tree until the name is needed
-   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
     * For a given PsiElement that we know to be a test, we iterate up the stack looking for parent tests.
@@ -111,7 +111,7 @@ object DescribeSpecStyle : SpecStyle {
       return if (test == null) null else "It: $test"
    }
 
-   fun test(element: PsiElement): Test? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val name = when (element) {
@@ -126,16 +126,14 @@ object DescribeSpecStyle : SpecStyle {
       }
    }
 
-   override fun testPath(element: PsiElement): String? = test(element)?.path
-
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val call = element.ifCallExpressionNameIdent()
-      if (call != null) return testPath(call)
+      if (call != null) return test(call)
 
       val dot = element.ifDotExpressionSeparator()
-      if (dot != null) return testPath(dot)
+      if (dot != null) return test(dot)
 
       return null
    }

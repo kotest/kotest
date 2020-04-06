@@ -17,7 +17,7 @@ object WordSpecStyle : SpecStyle {
       return "\"$name\" should { }"
    }
 
-   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private fun PsiElement.locateParentWhen(): String? {
       val wen = this.matchInfixFunctionWithStringAndLambaArg(listOf("when", "When"))
@@ -72,28 +72,28 @@ object WordSpecStyle : SpecStyle {
       }
    }
 
-   override fun testPath(element: PsiElement): String? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       return when (element) {
-         is KtCallExpression -> element.trySubject()?.path
-         is KtBinaryExpression -> (element.tryShould() ?: element.tryWhen())?.path
-         is KtDotQualifiedExpression -> element.trySubjectWithConfig()?.path
+         is KtCallExpression -> element.trySubject()
+         is KtBinaryExpression -> (element.tryShould() ?: element.tryWhen())
+         is KtDotQualifiedExpression -> element.trySubjectWithConfig()
          else -> null
       }
    }
 
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
-      if (ktcall != null) return testPath(ktcall)
+      if (ktcall != null) return test(ktcall)
 
       val ktbinary = element.ifBinaryExpressionOperationIdent()
-      if (ktbinary != null) return testPath(ktbinary)
+      if (ktbinary != null) return test(ktbinary)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return testPath(ktdot)
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

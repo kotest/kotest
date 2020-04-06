@@ -16,23 +16,28 @@ object StringSpecStyle : SpecStyle {
       return "\"$name\" { }"
    }
 
-   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
-    * Matches tests of the form:
+    * A test of the form:
     *
-    *   "some test" {}
+    *   "test name"{ }
+    *
     */
-   private fun KtCallExpression.tryTest(): String? =
-      this.extractStringFromStringInvokeWithLambda()
+   private fun KtCallExpression.tryTest(): Test? {
+      val name = extractStringFromStringInvokeWithLambda() ?: return null
+      return Test(name, name)
+   }
 
    /**
     * Matches tests of the form:
     *
     *   "some test".config(...) {}
     */
-   private fun KtDotQualifiedExpression.tryTestWithConfig(): String? =
-      this.extractStringForStringExtensionFunctonWithRhsFinalLambda("config")
+   private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
+      return Test(name, name)
+   }
 
    /**
     * For a StringSpec we consider the following scenarios:
@@ -40,7 +45,7 @@ object StringSpecStyle : SpecStyle {
     * "test name" { }
     * "test name".config(...) {}
     */
-   override fun testPath(element: PsiElement): String? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       return when (element) {
@@ -56,14 +61,14 @@ object StringSpecStyle : SpecStyle {
     * "test name" { }
     * "test name".config(...) {}
     */
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
-      if (ktcall != null) return testPath(ktcall)
+      if (ktcall != null) return test(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return testPath(ktdot)
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

@@ -16,7 +16,7 @@ object ExpectSpecStyle : SpecStyle {
       return "expect(\"$name\") { }"
    }
 
-   override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
@@ -46,24 +46,24 @@ object ExpectSpecStyle : SpecStyle {
       return Test(testName, path)
    }
 
-   override fun testPath(element: PsiElement): String? {
+   override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       return when (element) {
-         is KtCallExpression -> (element.tryExpect() ?: element.tryContext())?.path
-         is KtDotQualifiedExpression -> element.tryExpectWithConfig()?.path
+         is KtCallExpression -> element.tryExpect() ?: element.tryContext()
+         is KtDotQualifiedExpression -> element.tryExpectWithConfig()
          else -> null
       }
    }
 
-   override fun testPath(element: LeafPsiElement): String? {
+   override fun test(element: LeafPsiElement): Test? {
       if (!element.isContainedInSpec()) return null
 
       val ktcall = element.ifCallExpressionNameIdent()
-      if (ktcall != null) return testPath(ktcall)
+      if (ktcall != null) return test(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()
-      if (ktdot != null) return testPath(ktdot)
+      if (ktdot != null) return test(ktdot)
 
       return null
    }

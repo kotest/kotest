@@ -21,7 +21,7 @@ import io.kotest.plugin.intellij.styles.psi.enclosingClass
 import removeJUnitRunConfigs
 
 /**
- * A [RunConfigurationProducer] that looks into the structure in the class and adds run gutter icons
+ * A [LazyRunConfigurationProducer] that looks into the structure in the class and adds run gutter icons
  * for tests for a particular [SpecStyle].
  */
 abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : LazyRunConfigurationProducer<KotestRunConfiguration>() {
@@ -33,13 +33,13 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
       if (element != null) {
-         val testPath = style.testPath(element)
-         if (testPath != null) {
+         val test = style.test(element)
+         if (test != null) {
 
             val ktclass = element.enclosingClass()
             if (ktclass != null) {
 
-               configuration.setTestName(testPath)
+               configuration.setTestName(test.path)
                configuration.setSpec(ktclass)
                configuration.setModule(context.module)
                configuration.setGeneratedName()
@@ -60,10 +60,10 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null) {
-         val testPath = style.testPath(element)
-         if (testPath != null) {
+         val test = style.test(element)
+         if (test != null) {
             val spec = element.enclosingClass()
-            val name = buildSuggestedName(spec?.fqName?.asString(), testPath)
+            val name = buildSuggestedName(spec?.fqName?.asString(), test.path)
             return configuration.name == name
          }
       }
