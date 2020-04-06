@@ -39,11 +39,11 @@ abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : Ru
         }
      }
 
-     val testPath = style.test(element)
-     if (testPath != null) {
+     val test = style.test(element)
+     if (test != null) {
         return Info(
            AllIcons.RunConfigurations.TestState.Run,
-           Function<PsiElement, String> { "[Kotest] $testPath" },
+           Function<PsiElement, String> { "[Kotest] ${test.path}" },
            *ExecutorAction.getActions(0)
         )
      }

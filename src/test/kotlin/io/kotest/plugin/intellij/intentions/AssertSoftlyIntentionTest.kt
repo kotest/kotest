@@ -72,7 +72,8 @@ class FunSpecExampleTest : FunSpec({
     }
   }
 
-})"""
+})
+"""
   }
 
   fun testIntentionForFullLine() {
@@ -133,6 +134,7 @@ class FunSpecExampleTest : FunSpec({
     }
   }
 
-})"""
+})
+"""
   }
 }

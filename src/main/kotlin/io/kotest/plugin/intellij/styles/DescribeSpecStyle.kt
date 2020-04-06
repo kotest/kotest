@@ -95,7 +95,7 @@ object DescribeSpecStyle : SpecStyle {
     *
     */
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
-      val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
       val fullname = "xIt: $name"
       return buildTest(fullname, true, this)
    }

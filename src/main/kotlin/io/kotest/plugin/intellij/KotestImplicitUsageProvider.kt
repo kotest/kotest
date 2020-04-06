@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.styles.psi.isAnySpecSubclass
+import io.kotest.plugin.intellij.styles.psi.isSubclassOfSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -24,6 +24,6 @@ class KotestImplicitUsageProvider : ImplicitUsageProvider {
          is KtLightClass -> element.kotlinOrigin
          else -> null
       }
-      return ktclass?.isAnySpecSubclass() ?: false
+      return ktclass?.isSubclassOfSpec() ?: false
    }
 }

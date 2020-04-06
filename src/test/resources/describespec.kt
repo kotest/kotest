@@ -11,14 +11,14 @@ class DescribeSpecExample : DescribeSpec() {
          xdescribe("ignored describe") {
 
          }
-         context("with some context") {
+         describe("with some context") {
             it("test name") {
                // test here
             }
             it("test name 2").config(invocations = 2) {
                // test here
             }
-            context("yet another context") {
+            describe("yet another context") {
                it("test name") {
                   // test here
                }

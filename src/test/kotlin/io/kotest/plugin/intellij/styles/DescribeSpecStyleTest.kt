@@ -9,10 +9,10 @@ import java.nio.file.Paths
 
 class DescribeSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
-  override fun getTestDataPath(): String {
-     val path = Paths.get("./src/test/resources/").toAbsolutePath()
-     return path.toString()
-  }
+   override fun getTestDataPath(): String {
+      val path = Paths.get("./src/test/resources/").toAbsolutePath()
+      return path.toString()
+   }
 
    fun testGutterIcons() {
 
@@ -21,6 +21,7 @@ class DescribeSpecStyleTest : LightCodeInsightFixtureTestCase() {
       assertSoftly {
 
          val gutters = myFixture.findAllGutters()
+         println(gutters.map { it.tooltipText }.joinToString("\n"))
          gutters.size shouldBe 12
 
          gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
@@ -40,41 +41,41 @@ class DescribeSpecStyleTest : LightCodeInsightFixtureTestCase() {
          (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 249
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[4].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context"
+         gutters[4].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context"
          (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 302
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[5].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context It: test name"
-         (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 345
+         gutters[5].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context It: test name"
+         (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 346
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[6].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context It: test name 2"
-         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 434
+         gutters[6].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context It: test name 2"
+         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 435
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[7].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context Context: yet another context"
-         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 515
+         gutters[7].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context Describe: yet another context"
+         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 516
 
          gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[8].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context Context: yet another context It: test name"
-         (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 563
+         gutters[8].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context Describe: yet another context It: test name"
+         (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 565
 
          gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[9].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context Context: yet another context xIt: ignored test"
-         (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 644
+         gutters[9].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context Describe: yet another context xIt: ignored test"
+         (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 646
 
          gutters[10].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[10].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context Context: yet another context It: test name 2"
-         (gutters[10] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 746
+         gutters[10].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context Describe: yet another context It: test name 2"
+         (gutters[10] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 748
 
          gutters[11].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[11].tooltipText shouldBe "[Kotest] Describe: some thing Context: with some context Context: yet another context It: ignored test with config"
-         (gutters[11] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 867
+         gutters[11].tooltipText shouldBe "[Kotest] Describe: some thing Describe: with some context Describe: yet another context xIt: ignored test with config"
+         (gutters[11] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 869
 
       }
    }
 
-  fun testMethodGeneration() {
-    DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "describe(\"testName\") { }"
-  }
+   fun testMethodGeneration() {
+      DescribeSpecStyle.generateTest("myspec", "testName") shouldBe "describe(\"testName\") { }"
+   }
 }

@@ -19,7 +19,6 @@ class WordSpecStyleTest : LightCodeInsightFixtureTestCase() {
       myFixture.configureByFile("/wordspec.kt")
 
       val gutters = myFixture.findAllGutters()
-      println(gutters.map { it.tooltipText }.joinToString("\n"))
       gutters.size shouldBe 8
 
       assertSoftly {

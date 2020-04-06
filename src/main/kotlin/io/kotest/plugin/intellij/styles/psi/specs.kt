@@ -32,7 +32,7 @@ fun PsiElement.classes(): List<KtClassOrObject> {
  * Returns any [KtClassOrObject] children of this [PsiElement] that are specs.
  */
 fun PsiElement.specs(): List<KtClassOrObject> {
-   return this.classes().filter { it.isAnySpecSubclass() }
+   return this.classes().filter { it.isSubclassOfSpec() }
 }
 
 /**
@@ -40,20 +40,26 @@ fun PsiElement.specs(): List<KtClassOrObject> {
  */
 fun PsiElement.isContainedInSpec(): Boolean {
    val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
-   return enclosingClass.isAnySpecSubclass()
+   return enclosingClass.isSubclassOfSpec()
 }
 
 /**
  * Returns true if this [KtClassOrObject] is a subclass of any Spec.
  * This function will recursively check all superclasses.
  */
-fun KtClassOrObject.isAnySpecSubclass(): Boolean {
-   val superClassFqn = getSuperClass()?.fqName ?: return false
-   //val superClass = getSuperClass()
-   //  ?: return SpecStyle.styles.any { it.fqn().shortName().asString() == getSuperClassSimpleName() }
-   return SpecStyle.styles.any { it.fqn() == superClassFqn }
-//   val fqn = superClass.getKotlinFqName()
-//   return if (SpecStyle.styles.any { it.fqn() == fqn }) true else superClass.isAnySpecSubclass()
+fun KtClassOrObject.isSubclassOfSpec(): Boolean {
+   // gets the [KtClassOrObject] instance for the superclass, can be null
+   val superClass = getSuperClass()
+   if (superClass != null) {
+      val fqn = superClass.getKotlinFqName() ?: return false
+      return SpecStyle.styles.any { it.fqn() == fqn } || superClass.isSubclassOfSpec()
+   }
+   // sometimes we don't have the full superclass type, but we can get the simple name
+   val superClassSimpleName = getSuperClassSimpleName()
+   if (superClassSimpleName != null) {
+      return SpecStyle.styles.any { it.fqn().shortName().asString() == superClassSimpleName }
+   }
+   return false
 }
 
 /**

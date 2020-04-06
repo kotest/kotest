@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.styles.buildSuggestedName
 import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.styles.psi.isAnySpecSubclass
+import io.kotest.plugin.intellij.styles.psi.isSubclassOfSpec
 import removeJUnitRunConfigs
 
 /**
@@ -25,7 +25,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
-         if (ktclass != null && ktclass.isAnySpecSubclass()) {
+         if (ktclass != null && ktclass.isSubclassOfSpec()) {
             configuration.setSpec(ktclass)
             configuration.setModule(context.module)
             configuration.setGeneratedName()

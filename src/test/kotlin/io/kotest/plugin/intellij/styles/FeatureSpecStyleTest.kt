@@ -21,7 +21,6 @@ class FeatureSpecStyleTest : LightCodeInsightFixtureTestCase() {
       myFixture.configureByFile("/featurespec.kt")
 
       val gutters = myFixture.findAllGutters()
-      println(gutters.map { it.tooltipText }.joinToString("\n"))
       gutters.size shouldBe 10
 
       assertSoftly {

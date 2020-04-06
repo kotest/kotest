@@ -14,24 +14,24 @@ import org.jetbrains.kotlin.resolve.ImportPath
 
 abstract class SurroundSelectionWithFunctionIntention : PsiElementBaseIntentionAction() {
 
-  override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
-    return try {
-      editor?.selectionModel?.hasSelection() == true && element.isContainedInSpec()
-    } catch (e: Exception) {
-      e.printStackTrace()
-      false
-    }
-  }
+   override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
+      return try {
+         editor?.selectionModel?.hasSelection() == true && element.isContainedInSpec()
+      } catch (e: Exception) {
+         e.printStackTrace()
+         false
+      }
+   }
 
-  abstract val importFQN: FqName
-  abstract val function: String
+   abstract val importFQN: FqName
+   abstract val function: String
 
-  override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
+   override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
 
-    val docManager = PsiDocumentManager.getInstance(project)
-    val ktfactory = KtPsiFactory(project)
+      val docManager = PsiDocumentManager.getInstance(project)
+      val ktfactory = KtPsiFactory(project)
 
-    try {
+      try {
 
       val selection = editor?.selectionModel
       if (selection?.hasSelection() == true) {
