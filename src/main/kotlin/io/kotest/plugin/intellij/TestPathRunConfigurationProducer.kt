@@ -44,7 +44,7 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
                configuration.setModule(context.module)
                configuration.setGeneratedName()
 
-               context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
+               //context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
                removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
                return true
             }
