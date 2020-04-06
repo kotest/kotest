@@ -6,13 +6,19 @@ import io.kotest.core.test.TestResult
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
+import org.koin.test.mock.MockProvider
+import org.koin.test.mock.Provider
 
-class KoinListener(private val modules: List<Module>) : TestListener {
+class KoinListener(
+   private val modules: List<Module>,
+   private val mockProvider: Provider<*>? = null
+) : TestListener {
 
-   constructor(module: Module) : this(listOf(module))
+   constructor(module: Module, mockProvider: Provider<*>? = null) : this(listOf(module), mockProvider)
 
    override suspend fun beforeTest(testCase: TestCase) {
       startKoin {
+         if(mockProvider != null) MockProvider.register(mockProvider)
          modules(modules)
       }
    }

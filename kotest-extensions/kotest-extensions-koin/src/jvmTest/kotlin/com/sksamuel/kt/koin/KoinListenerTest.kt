@@ -4,13 +4,14 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.koin.KoinListener
 import io.kotest.matchers.shouldBe
-import org.koin.core.context.GlobalContext
+import io.mockk.every
+import io.mockk.mockk
+import org.koin.core.context.KoinContextHandler
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.koin.test.mock.declareMock
-import org.mockito.BDDMockito
 
-class KotlinListenerTest : FunSpec(), KoinTest {
+class KoinListenerTest : FunSpec(), KoinTest {
 
    override fun listeners() = listOf(KoinListener(koinModule))
 
@@ -23,22 +24,28 @@ class KotlinListenerTest : FunSpec(), KoinTest {
    }
 
    override fun afterSpec(spec: Spec) {
-      GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
+      KoinContextHandler.getOrNull() shouldBe null // We should finish koin after test execution
    }
 }
 
 class KoinListenerMockTest : FunSpec(), KoinTest {
+   
    init {
       val genericService by inject<GenericService>()
-      listeners(KoinListener(koinModule))
+
+      listeners(KoinListener(koinModule) { mockk<GenericRepository>() })
+      
       test("Should allow mocking correctly") {
+         
          declareMock<GenericRepository> {
-            BDDMockito.given(foo()).willReturn("DootyDoot")
+            every { foo() } returns "DootyDoot"
          }
+         
          genericService.foo() shouldBe "DootyDoot"
       }
+      
       afterSpec {
-         GlobalContext.getOrNull() shouldBe null     // We should finish koin after test execution
+         KoinContextHandler.getOrNull() shouldBe null // We should finish koin after test execution
       }
    }
 }
