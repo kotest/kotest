@@ -18,11 +18,11 @@ object ExpectSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-   private fun PsiElement.locateParentTests(): List<Test> {
+   private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
-      val p = parent ?: return emptyList()
+      val p = element.parent ?: return emptyList()
       val context = if (p is KtCallExpression) listOfNotNull(p.tryContext()) else emptyList()
-      return parent.locateParentTests() + context
+      return locateParentTests(p) + context
    }
 
    private fun KtCallExpression.tryContext(): Test? {
@@ -41,7 +41,7 @@ object ExpectSpecStyle : SpecStyle {
    }
 
    private fun buildTest(testName: String, element: PsiElement): Test {
-      val contexts = element.locateParentTests()
+      val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
       return Test(testName, path)
    }

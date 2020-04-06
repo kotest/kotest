@@ -55,15 +55,15 @@ class FeatureSpecStyleTest : LightCodeInsightFixtureTestCase() {
          (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 564
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[7].tooltipText shouldBe "[Kotest] Feature: this feature And: has nested feature contexts"
+         gutters[7].tooltipText shouldBe "[Kotest] Feature: this feature Feature: has nested feature contexts"
          (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 599
 
          gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[8].tooltipText shouldBe "[Kotest] Feature: this feature And: has nested feature contexts Scenario: test without config"
+         gutters[8].tooltipText shouldBe "[Kotest] Feature: this feature Feature: has nested feature contexts Scenario: test without config"
          (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 652
 
          gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[9].tooltipText shouldBe "[Kotest] Feature: this feature And: has nested feature contexts Scenario: test with config"
+         gutters[9].tooltipText shouldBe "[Kotest] Feature: this feature Feature: has nested feature contexts Scenario: test with config"
          (gutters[9] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 777
       }
    }

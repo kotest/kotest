@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.specs.shouldspec
 
-import io.kotlintest.specs.ShouldSpec
+import io.kotest.core.spec.style.ShouldSpec
 
 class ShouldSpecExample : ShouldSpec() {
   init {
@@ -9,21 +9,6 @@ class ShouldSpecExample : ShouldSpec() {
     }
     should("top level test with config").config(enabled = true) {
       // test here
-    }
-    "a context" {
-      should("do a test") {
-        // test here
-      }
-      should("have config").config(enabled = true) {
-        // test here
-      }
-    }
-    "another context" {
-      "a nested context" {
-        should("do a test") {
-          // test here
-        }
-      }
     }
   }
 }

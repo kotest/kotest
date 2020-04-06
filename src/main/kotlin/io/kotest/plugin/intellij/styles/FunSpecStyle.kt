@@ -18,22 +18,17 @@ object FunSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = testPath(element) != null
 
-   /**
-    * For a given PsiElement that we know to be a test, we iterate up the stack looking for parent tests.
-    */
-   private fun locateParentContexts(element: PsiElement): List<String> {
+   private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
-      val parent = element.parent ?: return emptyList()
-      val test = when (parent) {
-         is KtCallExpression -> parent.tryContext() ?: parent.tryTestWithoutConfig()
-         else -> null
-      }
-      val result = if (test == null) emptyList() else listOf(test)
-      return locateParentContexts(parent) + result
+      val p = element.parent ?: return emptyList()
+      val context = if (p is KtCallExpression) listOfNotNull(p.tryContext()) else emptyList()
+      return locateParentTests(p) + context
    }
 
-   private fun KtCallExpression.tryContext() =
-      extractStringArgForFunctionWithStringAndLambdaArgs(listOf("context"))
+   private fun KtCallExpression.tryContext(): Test? {
+      val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
+      return buildTest(context, this)
+   }
 
    /**
     * A test of the form:
@@ -41,8 +36,10 @@ object FunSpecStyle : SpecStyle {
     *   test("test name") { }
     *
     */
-   private fun KtCallExpression.tryTestWithoutConfig() =
-      extractStringArgForFunctionWithStringAndLambdaArgs(listOf("test"))
+   private fun KtCallExpression.tryTest(): Test? {
+      val expect = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
+      return buildTest(expect, this)
+   }
 
    /**
     * A test of the form:
@@ -50,8 +47,16 @@ object FunSpecStyle : SpecStyle {
     *   test("test name").config(...) { }
     *
     */
-   private fun KtDotQualifiedExpression.tryTestWithConfig() =
-      this.extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config")
+   private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config") ?: return null
+      return buildTest(expect, this)
+   }
+
+   private fun buildTest(testName: String, element: PsiElement): Test {
+      val contexts = locateParentTests(element)
+      val path = (contexts.map { it.name } + testName).joinToString(" -- ")
+      return Test(testName, path)
+   }
 
    /**
     * For a FunSpec we consider the following scenarios:
@@ -63,15 +68,10 @@ object FunSpecStyle : SpecStyle {
    override fun testPath(element: PsiElement): String? {
       if (!element.isContainedInSpec()) return null
 
-      val test = when (element) {
-         is KtCallExpression -> element.tryContext() ?: element.tryTestWithoutConfig()
-         is KtDotQualifiedExpression -> element.tryTestWithConfig()
+      return when (element) {
+         is KtCallExpression -> element.tryContext()?.path ?: element.tryTest()?.path
+         is KtDotQualifiedExpression -> element.tryTestWithConfig()?.path
          else -> null
-      }
-
-      return if (test == null) null else {
-         val paths = locateParentContexts(element) + test
-         return paths.distinct().joinToString(" -- ")
       }
    }
 
