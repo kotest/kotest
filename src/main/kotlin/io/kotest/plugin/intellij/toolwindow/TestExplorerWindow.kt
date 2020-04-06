@@ -14,9 +14,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileEvent
-import com.intellij.openapi.vfs.VirtualFileListener
-import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -30,13 +28,14 @@ import javax.swing.tree.TreeSelectionModel
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val tree = createTree()
+   private var mod = 0L
 
    init {
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
-      listenForFileChanges()
+      listenForPsiChanges()
       refreshContent()
    }
 
@@ -73,23 +72,26 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       return result
    }
 
-   private fun listenForFileChanges() {
-      VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
-         override fun contentsChanged(event: VirtualFileEvent) {
-            refreshContent()
+   private fun listenForPsiChanges() {
+      project.messageBus.connect().subscribe(
+         PsiModificationTracker.TOPIC,
+         PsiModificationTracker.Listener {
+            val count = PsiModificationTracker.SERVICE.getInstance(project).modificationCount
+            PsiModificationTracker.SERVICE.getInstance(project)
+            if (count > mod) {
+               mod = count
+               refreshContent()
+            }
          }
-      })
+      )
    }
 
    private fun listenForSelectedEditorChanges() {
       project.messageBus.connect().subscribe(
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
-            override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-               refreshContent()
-            }
-
             override fun selectionChanged(event: FileEditorManagerEvent) {
+               mod = 0
                refreshContent()
             }
          }
@@ -108,12 +110,12 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          tree.model = emptyTreeModel()
          tree.isRootVisible = true
       } else {
-         DumbService.getInstance(project).runWhenSmart {
-            val module = file.getModule(project)
-            if (module == null) {
-               tree.model = emptyTreeModel()
-               tree.isRootVisible = true
-            } else {
+         val module = file.getModule(project)
+         if (module == null) {
+            tree.model = emptyTreeModel()
+            tree.isRootVisible = true
+         } else {
+            DumbService.getInstance(project).runWhenSmart {
                try {
                   val specs = file.toPsiFile(project)?.specs() ?: emptyList()
                   val model = treeModel(project, specs, module)
@@ -121,9 +123,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   tree.isRootVisible = false
                   tree.expandAllNodes()
                } catch (e: Throwable) {
-                  DumbService.getInstance(project).runWhenSmart {
-                     refreshContent(file)
-                  }
                }
             }
          }

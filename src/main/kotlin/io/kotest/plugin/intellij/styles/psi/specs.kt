@@ -10,8 +10,14 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtClassInitializer
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtLambdaArgument
+import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
+import org.jetbrains.kotlin.psi.KtSuperTypeList
+import org.jetbrains.kotlin.psi.KtValueArgument
+import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
@@ -42,12 +48,13 @@ fun PsiElement.isContainedInSpec(): Boolean {
  * This function will recursively check all superclasses.
  */
 fun KtClassOrObject.isAnySpecSubclass(): Boolean {
-   val superClass = getSuperClass()
-      ?: return SpecStyle.styles.any { it.fqn().shortName().asString() == getSuperClassSimpleName() }
-   val fqn = superClass.getKotlinFqName()
-   return if (SpecStyle.styles.any { it.fqn() == fqn }) true else superClass.isAnySpecSubclass()
+   val superClassFqn = getSuperClass()?.fqName ?: return false
+   //val superClass = getSuperClass()
+   //  ?: return SpecStyle.styles.any { it.fqn().shortName().asString() == getSuperClassSimpleName() }
+   return SpecStyle.styles.any { it.fqn() == superClassFqn }
+//   val fqn = superClass.getKotlinFqName()
+//   return if (SpecStyle.styles.any { it.fqn() == fqn }) true else superClass.isAnySpecSubclass()
 }
-
 
 /**
  * Returns true if this [KtClassOrObject] is a subclass of a specific Spec.
@@ -69,23 +76,59 @@ fun KtCallExpression.isDslInvocation(): Boolean {
 }
 
 fun KtClassOrObject.callbacks(): List<Callback> {
+
    val body = this.getChildrenOfType<KtClassBody>().firstOrNull()
-   if (body != null) {
-      val init = body.getChildrenOfType<KtClassInitializer>().firstOrNull()
-      if (init != null) {
-         val block = init.getChildrenOfType<KtBlockExpression>().firstOrNull()
-         if (block != null) {
-            val calls = block.getChildrenOfType<KtCallExpression>()
-            return calls
-               .filter { it.isDslInvocation() }
-               .mapNotNull { call ->
-                  val fname = call.functionName()
-                  CallbackType.values().find { it.text == fname }?.let { Callback(it, call) }
+   if (body != null) return body.callbacks()
+
+   val superlist = this.getChildrenOfType<KtSuperTypeList>().firstOrNull()
+   if (superlist != null) return superlist.callbacks()
+
+   return emptyList()
+}
+
+fun KtClassBody.callbacks(): List<Callback> {
+   val init = getChildrenOfType<KtClassInitializer>().firstOrNull()
+   if (init != null) {
+      val block = init.getChildrenOfType<KtBlockExpression>().firstOrNull()
+      if (block != null) {
+         return block.callbacks()
+      }
+   }
+   return emptyList()
+}
+
+fun KtSuperTypeList.callbacks(): List<Callback> {
+   val entry = getChildrenOfType<KtSuperTypeCallEntry>().firstOrNull()
+   if (entry != null) {
+      val argList = entry.getChildrenOfType<KtValueArgumentList>().firstOrNull()
+      if (argList != null) {
+         val valueArg = argList.getChildrenOfType<KtValueArgument>().firstOrNull()
+         if (valueArg != null) {
+            val lambda = valueArg.getChildrenOfType<KtLambdaExpression>().firstOrNull()
+            if (lambda != null) {
+               val fliteral = lambda.getChildrenOfType<KtFunctionLiteral>().firstOrNull()
+               if (fliteral != null) {
+                  val block = fliteral.getChildrenOfType<KtBlockExpression>().firstOrNull()
+                  if (block != null) {
+                     return block.callbacks()
+                  }
                }
+            }
+
          }
       }
    }
    return emptyList()
+}
+
+fun KtBlockExpression.callbacks(): List<Callback> {
+   val calls = getChildrenOfType<KtCallExpression>()
+   return calls
+      .filter { it.isDslInvocation() }
+      .mapNotNull { call ->
+         val fname = call.functionName()
+         CallbackType.values().find { it.text == fname }?.let { Callback(it, call) }
+      }
 }
 
 data class Callback(val type: CallbackType, val psi: PsiElement)

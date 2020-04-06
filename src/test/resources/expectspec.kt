@@ -4,11 +4,6 @@ import io.kotest.core.spec.style.ExpectSpec
 
 class ExpectSpecExample : ExpectSpec() {
   init {
-
-     beforeTest {
-
-     }
-
     context("some context") {
       expect("some test") {
         // test here
