@@ -4,8 +4,6 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.util.treeView.NodeRenderer
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
@@ -20,7 +18,6 @@ import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.idea.util.projectStructure.getModule
 import java.awt.Color
-import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
@@ -48,27 +45,10 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun createActionGroup(): DefaultActionGroup {
-
       val result = DefaultActionGroup()
-
-      fun addRunAction(icon: Icon, executorId: String) {
-         result.add(object : AnAction(icon) {
-            override fun actionPerformed(e: AnActionEvent) {
-               val path = tree.selectionPath
-               if (path != null) {
-                  when (val node = path.node()) {
-                     is SpecNodeDescriptor -> runSpec(node, project, executorId)
-                     is TestNodeDescriptor -> runTest(node, project, executorId)
-                  }
-               }
-            }
-         })
-      }
-
-      addRunAction(AllIcons.Actions.Execute, "Run")
-      addRunAction(AllIcons.Actions.StartDebugger, "Debug")
-      addRunAction(AllIcons.General.RunWithCoverage, "Coverage")
-
+      result.add(RunAction(AllIcons.Actions.Execute, tree, project, "Run"))
+      result.add(RunAction(AllIcons.Actions.StartDebugger, tree, project, "Debug"))
+      result.add(RunAction(AllIcons.General.RunWithCoverage, tree, project, "Coverage"))
       return result
    }
 

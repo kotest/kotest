@@ -58,26 +58,3 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): T
    }
    return DefaultTreeModel(root)
 }
-
-fun JTree.expandAllNodes() = expandAllNodes(0, rowCount)
-
-fun JTree.expandAllNodes(startingIndex: Int, rowCount: Int) {
-   for (i in startingIndex until rowCount) {
-      expandRow(i)
-   }
-   if (getRowCount() != rowCount) {
-      expandAllNodes(rowCount, getRowCount())
-   }
-}
-
-fun TreePath.node(): NodeDescriptor<Any>? {
-   return when (val last = lastPathComponent) {
-      is DefaultMutableTreeNode -> when (val obj = last.userObject) {
-         is SpecNodeDescriptor -> obj
-         is TestNodeDescriptor -> obj
-         is CallbackNodeDescriptor -> obj
-         else -> null
-      }
-      else -> null
-   }
-}
