@@ -2,7 +2,6 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.ifType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -17,21 +16,16 @@ object DescribeSpecStyle : SpecStyle {
       return "describe(\"$name\") { }"
    }
 
-   // todo this could be optimized to not check for the other parts of the tree until the name is needed
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
     * For a given PsiElement that we know to be a test, we iterate up the stack looking for parent tests.
     */
-   private fun locateParentContexts(element: PsiElement): List<String> {
+   private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
-      val parent = element.parent ?: return emptyList()
-      val test = when (parent) {
-         is KtCallExpression -> parent.tryDescribe() ?: parent.tryXDescribe() ?: parent.tryContext()
-         else -> null
-      }
-      val result = if (test == null) emptyList() else listOf(test)
-      return locateParentContexts(parent) + result
+      val p = element.parent ?: return emptyList()
+      val context = if (p is KtCallExpression) listOfNotNull(p.tryDescribe() ?: p.tryXDescribe()) else emptyList()
+      return locateParentTests(p) + context
    }
 
    /**
@@ -40,20 +34,10 @@ object DescribeSpecStyle : SpecStyle {
     *   describe("test name") { }
     *
     */
-   private fun KtCallExpression.tryDescribe(): String? {
-      val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe")
-      return if (name == null) null else "Describe: $name"
-   }
-
-   /**
-    * Finds tests in the form:
-    *
-    *   context("test name") { }
-    *
-    */
-   private fun KtCallExpression.tryContext(): String? {
-      val name = extractStringArgForFunctionWithStringAndLambdaArgs("context")
-      return if (name == null) null else "Context: $name"
+   private fun KtCallExpression.tryDescribe(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
+      val fullname = "Describe: $name"
+      return buildTest(fullname, name.startsWith("!"), this)
    }
 
    /**
@@ -62,9 +46,10 @@ object DescribeSpecStyle : SpecStyle {
     *   it("test name") { }
     *
     */
-   private fun KtCallExpression.tryIt(): String? {
-      val name = extractStringArgForFunctionWithStringAndLambdaArgs("it")
-      return if (name == null) null else "It: $name"
+   private fun KtCallExpression.tryIt(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("it") ?: return null
+      val fullname = "It: $name"
+      return buildTest(fullname, name.startsWith("!"), this)
    }
 
    /**
@@ -73,9 +58,10 @@ object DescribeSpecStyle : SpecStyle {
     *   xit("test name") { }
     *
     */
-   private fun PsiElement.tryXIt(): String? = ifType<KtCallExpression, String> {
-      val name = it.extractStringArgForFunctionWithStringAndLambdaArgs("xit")
-      if (name == null) null else "xIt: $name"
+   private fun KtCallExpression.tryXIt(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("xit") ?: return null
+      val fullname = "xIt: $name"
+      return buildTest(fullname, true, this)
    }
 
    /**
@@ -84,9 +70,10 @@ object DescribeSpecStyle : SpecStyle {
     *   xdescribe("test name") { }
     *
     */
-   private fun KtCallExpression.tryXDescribe(): String? {
-      val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe")
-      return if (name == null) null else "xDescribe: $name"
+   private fun KtCallExpression.tryXDescribe(): Test? {
+      val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe") ?: return null
+      val fullname = "xDescribe: $name"
+      return buildTest(fullname, true, this)
    }
 
    /**
@@ -95,9 +82,10 @@ object DescribeSpecStyle : SpecStyle {
     *   it("test name").config { }
     *
     */
-   private fun KtDotQualifiedExpression.tryItWithConfig(): String? {
-      val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config")
-      return if (test == null) null else "It: $test"
+   private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
+      val fullname = "It: $name"
+      return buildTest(fullname, name.startsWith("!"), this)
    }
 
    /**
@@ -106,23 +94,24 @@ object DescribeSpecStyle : SpecStyle {
     *   xit("test name").config(...) { }
     *
     */
-   private fun KtDotQualifiedExpression.tryXItWithConfig(): String? {
-      val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config")
-      return if (test == null) null else "It: $test"
+   private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
+      val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
+      val fullname = "xIt: $name"
+      return buildTest(fullname, true, this)
+   }
+
+   private fun buildTest(testName: String, disabled: Boolean, element: PsiElement): Test {
+      val contexts = locateParentTests(element)
+      val path = (contexts.map { it.name } + testName).joinToString(" ")
+      return Test(testName, path, !disabled)
    }
 
    override fun test(element: PsiElement): Test? {
       if (!element.isContainedInSpec()) return null
-
-      val name = when (element) {
-         is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe() ?: element.tryContext()
+      return when (element) {
+         is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe()
          is KtDotQualifiedExpression -> element.tryItWithConfig() ?: element.tryXItWithConfig()
          else -> null
-      }
-
-      return if (name == null) null else {
-         val path = (locateParentContexts(element) + name).distinct().joinToString(" ")
-         Test(name, path)
       }
    }
 
