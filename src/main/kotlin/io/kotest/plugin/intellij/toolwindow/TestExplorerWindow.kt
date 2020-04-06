@@ -15,6 +15,9 @@ import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileEvent
+import com.intellij.openapi.vfs.VirtualFileListener
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -23,6 +26,7 @@ import java.awt.Color
 import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
+import javax.swing.Icon
 
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
@@ -32,7 +36,8 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
-      listenForSelectedFileChanges()
+      listenForSelectedEditorChanges()
+      listenForFileChanges()
       DumbService.getInstance(project).runWhenSmart {
          refreshContent()
       }
@@ -50,45 +55,46 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
 
       val result = DefaultActionGroup()
 
-      result.add(object : AnAction(AllIcons.Actions.Execute) {
-         override fun actionPerformed(e: AnActionEvent) {
-            val path = tree.selectionPath
-            if (path != null) {
-               when (val node = path.node()) {
-                  is SpecNodeDescriptor -> runSpec(node, project, "Run")
-                  is TestNodeDescriptor -> runTest(node, project, "Run")
+      fun addRunAction(icon: Icon, executorId: String) {
+         result.add(object : AnAction(icon) {
+            override fun actionPerformed(e: AnActionEvent) {
+               val path = tree.selectionPath
+               if (path != null) {
+                  when (val node = path.node()) {
+                     is SpecNodeDescriptor -> runSpec(node, project, executorId)
+                     is TestNodeDescriptor -> runTest(node, project, executorId)
+                  }
                }
             }
-         }
-      })
+         })
+      }
 
-      result.add(object : AnAction(AllIcons.Actions.StartDebugger) {
-         override fun actionPerformed(e: AnActionEvent) {
-            val path = tree.selectionPath
-            if (path != null) {
-               when (val node = path.node()) {
-                  is SpecNodeDescriptor -> runSpec(node, project, "Debug")
-                  is TestNodeDescriptor -> runTest(node, project, "Debug")
-               }
-            }
-         }
-      })
+      addRunAction(AllIcons.Actions.Execute, "Run")
+      addRunAction(AllIcons.Actions.StartDebugger, "Debug")
+      addRunAction(AllIcons.General.RunWithCoverage, "Coverage")
 
       return result
    }
 
-   private fun listenForSelectedFileChanges() {
+   private fun listenForFileChanges() {
+      VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
+         override fun contentsChanged(event: VirtualFileEvent) {
+            DumbService.getInstance(project).runWhenSmart {
+               refreshContent()
+            }
+         }
+      })
+   }
+
+   private fun listenForSelectedEditorChanges() {
       project.messageBus.connect().subscribe(
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
             override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-               println("file opened")
-               refreshContent(file)
+               refreshContent()
             }
-
             override fun selectionChanged(event: FileEditorManagerEvent) {
-               println("selectionChanged")
-               refreshContent(event.newFile)
+               refreshContent()
             }
          }
       )
@@ -120,7 +126,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                tree.model = model
                tree.isRootVisible = false
                tree.expandAllNodes()
-            } catch (e:Exception) {
+            } catch (e: Exception) {
                e.printStackTrace()
             }
          }
