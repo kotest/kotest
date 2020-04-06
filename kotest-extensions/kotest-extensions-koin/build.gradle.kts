@@ -35,8 +35,8 @@ kotlin {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(kotlin("stdlib-jdk8"))
-            implementation("org.koin:koin-core:2.0.1")
-            implementation("org.koin:koin-test:2.0.1") {
+            implementation("org.koin:koin-core:2.1.5")
+            implementation("org.koin:koin-test:2.1.5") {
                exclude(group = "junit", module = "junit")
             }
 
@@ -47,6 +47,7 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Libs.Mocking.mockk)
          }
       }
    }

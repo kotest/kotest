@@ -2,11 +2,11 @@ package com.sksamuel.kt.koin
 
 import org.koin.dsl.module
 
-class GenericRepository {
+open class GenericRepository {
   fun foo() = "Bar"
 }
 
-class GenericService(
+open class GenericService(
         val repository: GenericRepository
 ) {
 
