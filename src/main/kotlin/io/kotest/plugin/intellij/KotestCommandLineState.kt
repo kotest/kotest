@@ -20,7 +20,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
-import org.jetbrains.kotlin.idea.core.util.getLineCount
 
 class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestRunConfiguration) :
     BaseJavaApplicationCommandLineState<KotestRunConfiguration>(environment, configuration) {
