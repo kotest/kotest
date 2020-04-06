@@ -11,7 +11,6 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.project.IndexNotReadyException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
@@ -23,10 +22,10 @@ import io.kotest.plugin.intellij.styles.psi.specs
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.idea.util.projectStructure.getModule
 import java.awt.Color
+import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
-import javax.swing.Icon
 
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
@@ -38,9 +37,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
       listenForFileChanges()
-      DumbService.getInstance(project).runWhenSmart {
-         refreshContent()
-      }
+      refreshContent()
    }
 
    private fun createToolbar(): JComponent {
@@ -79,9 +76,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    private fun listenForFileChanges() {
       VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
          override fun contentsChanged(event: VirtualFileEvent) {
-            DumbService.getInstance(project).runWhenSmart {
-               refreshContent()
-            }
+            refreshContent()
          }
       })
    }
@@ -93,6 +88,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
             override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
                refreshContent()
             }
+
             override fun selectionChanged(event: FileEditorManagerEvent) {
                refreshContent()
             }
@@ -101,13 +97,10 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun refreshContent() {
-      try {
-         val manager = FileEditorManager.getInstance(project)
-         val editor = manager.selectedEditor
-         val file = editor?.file
-         refreshContent(file)
-      } catch (e: IndexNotReadyException) {
-      }
+      val manager = FileEditorManager.getInstance(project)
+      val editor = manager.selectedEditor
+      val file = editor?.file
+      refreshContent(file)
    }
 
    private fun refreshContent(file: VirtualFile?) {
@@ -115,19 +108,21 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          tree.model = emptyTreeModel()
          tree.isRootVisible = true
       } else {
-         val module = file.getModule(project)
-         if (module == null) {
-            tree.model = emptyTreeModel()
-            tree.isRootVisible = true
-         } else {
-            try {
-               val specs = file.toPsiFile(project)?.specs() ?: emptyList()
-               val model = treeModel(project, specs, module)
-               tree.model = model
-               tree.isRootVisible = false
-               tree.expandAllNodes()
-            } catch (e: Exception) {
-               e.printStackTrace()
+         DumbService.getInstance(project).runWhenSmart {
+            val module = file.getModule(project)
+            if (module == null) {
+               tree.model = emptyTreeModel()
+               tree.isRootVisible = true
+            } else {
+               try {
+                  val specs = file.toPsiFile(project)?.specs() ?: emptyList()
+                  val model = treeModel(project, specs, module)
+                  tree.model = model
+                  tree.isRootVisible = false
+                  tree.expandAllNodes()
+               } catch (e: Throwable) {
+                  e.printStackTrace()
+               }
             }
          }
       }
