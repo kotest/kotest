@@ -7,7 +7,7 @@ object FreeSpecStyle : SpecStyle {
 
    override fun fqn() = FqName("io.kotest.core.spec.style.FreeSpec")
 
-   override fun specStyleName(): String = "FreeSpec"
+   override fun specStyleName(): String = "Free Spec"
 
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" { }"

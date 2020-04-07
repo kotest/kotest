@@ -10,7 +10,7 @@ object DescribeSpecStyle : SpecStyle {
 
    override fun fqn() = FqName("io.kotest.core.spec.style.DescribeSpec")
 
-   override fun specStyleName(): String = "DescribeSpec"
+   override fun specStyleName(): String = "Describe Spec"
 
    override fun generateTest(specName: String, name: String): String {
       return "describe(\"$name\") { }"

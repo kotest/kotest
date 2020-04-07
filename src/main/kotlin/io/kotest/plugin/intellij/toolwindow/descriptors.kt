@@ -38,6 +38,7 @@ class SpecNodeDescriptor(project: Project,
 
    init {
       templatePresentation.presentableText = fqn.asString()
+      templatePresentation.locationString = style.specStyleName()
       templatePresentation.setIcon(AllIcons.Nodes.TestGroup)
    }
 

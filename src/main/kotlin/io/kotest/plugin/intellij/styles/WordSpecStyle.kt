@@ -11,7 +11,7 @@ object WordSpecStyle : SpecStyle {
 
    override fun fqn() = FqName("io.kotest.core.spec.style.WordSpec")
 
-   override fun specStyleName(): String = "WordSpec"
+   override fun specStyleName(): String = "Word Spec"
 
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" should { }"

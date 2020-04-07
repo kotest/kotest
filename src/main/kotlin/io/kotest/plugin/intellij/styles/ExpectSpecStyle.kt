@@ -10,7 +10,7 @@ object ExpectSpecStyle : SpecStyle {
 
    override fun fqn() = FqName("io.kotest.core.spec.style.ExpectSpec")
 
-   override fun specStyleName(): String = "ExpectSpec"
+   override fun specStyleName(): String = "Expect Spec"
 
    override fun generateTest(specName: String, name: String): String {
       return "expect(\"$name\") { }"
