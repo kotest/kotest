@@ -8,15 +8,15 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.styles.psi.specs
-import org.jetbrains.kotlin.idea.core.util.toPsiFile
-import org.jetbrains.kotlin.idea.util.projectStructure.getModule
 import java.awt.Color
 import javax.swing.JComponent
 import javax.swing.JTree
@@ -86,18 +86,19 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun refreshContent(file: VirtualFile?) {
+
       if (file == null) {
          tree.model = emptyTreeModel()
          tree.isRootVisible = true
       } else {
-         val module = file.getModule(project)
+         val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module == null) {
             tree.model = emptyTreeModel()
             tree.isRootVisible = true
          } else {
             DumbService.getInstance(project).runWhenSmart {
                try {
-                  val specs = file.toPsiFile(project)?.specs() ?: emptyList()
+                  val specs = PsiManager.getInstance(project).findFile(file)?.specs() ?: emptyList()
                   val model = treeModel(project, specs, module)
                   tree.model = model
                   tree.isRootVisible = false
