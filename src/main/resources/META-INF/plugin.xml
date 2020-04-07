@@ -55,6 +55,7 @@
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.DescribeSpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
+
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
 
       <testFramework implementation="io.kotest.plugin.intellij.KotestTestFramework" id="kotest"/>

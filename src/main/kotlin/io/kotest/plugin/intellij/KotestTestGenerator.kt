@@ -20,6 +20,9 @@ import org.jetbrains.kotlin.idea.refactoring.memberInfo.toKotlinMemberInfo
 import org.jetbrains.kotlin.name.FqName
 import java.util.*
 
+/**
+ * Used to create "Template" test class files.
+ */
 class KotestTestGenerator : TestGenerator {
 
   override fun toString(): String = KotlinLanguage.INSTANCE.displayName
@@ -42,8 +45,7 @@ class KotestTestGenerator : TestGenerator {
 
   private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 
-    val framework = d.selectedTestFrameworkDescriptor
-    val result = when (framework) {
+     val result = when (val framework = d.selectedTestFrameworkDescriptor) {
       is KotestTestFramework -> {
         IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
