@@ -6,9 +6,9 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.styles.buildSuggestedName
-import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.styles.psi.isSubclassOfSpec
+import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.psi.buildSuggestedName
+import io.kotest.plugin.intellij.psi.isSubclassOfSpec
 import removeJUnitRunConfigs
 
 /**

@@ -15,7 +15,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMExternalizerUtil
-import io.kotest.plugin.intellij.styles.buildSuggestedName
+import io.kotest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
 import org.jetbrains.kotlin.psi.KtClassOrObject
 

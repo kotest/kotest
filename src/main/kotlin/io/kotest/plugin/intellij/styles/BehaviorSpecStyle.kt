@@ -2,6 +2,11 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
+import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
+import io.kotest.plugin.intellij.psi.ifCallExpressionNameIdent
+import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.matchFunction2WithStringAndLambda
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression

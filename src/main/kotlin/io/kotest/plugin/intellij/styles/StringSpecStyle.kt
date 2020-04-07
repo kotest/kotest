@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
+import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
+import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
+import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression

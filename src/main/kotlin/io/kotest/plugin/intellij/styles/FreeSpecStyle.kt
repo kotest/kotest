@@ -1,6 +1,9 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.psi.extractLiteralForStringExtensionFunction
+import io.kotest.plugin.intellij.psi.matchInfixFunctionWithStringAndLambaArg
+import io.kotest.plugin.intellij.psi.matchStringInvoke
 import org.jetbrains.kotlin.name.FqName
 
 object FreeSpecStyle : SpecStyle {

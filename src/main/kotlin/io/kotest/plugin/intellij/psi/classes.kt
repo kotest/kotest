@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.styles.psi
+package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement

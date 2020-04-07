@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.styles
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.plugin.intellij.psi.buildSuggestedName
 
 class UtilsKtTest : StringSpec() {
 

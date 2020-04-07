@@ -8,10 +8,10 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
+import io.kotest.plugin.intellij.psi.Callback
+import io.kotest.plugin.intellij.psi.CallbackType
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.TestElement
-import io.kotest.plugin.intellij.styles.psi.Callback
-import io.kotest.plugin.intellij.styles.psi.CallbackType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 

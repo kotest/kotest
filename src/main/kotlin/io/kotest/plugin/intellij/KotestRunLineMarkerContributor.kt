@@ -6,6 +6,8 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
+import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.psi.isSpecSubclass
 import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
 import io.kotest.plugin.intellij.styles.DescribeSpecStyle
 import io.kotest.plugin.intellij.styles.ExpectSpecStyle
@@ -16,8 +18,6 @@ import io.kotest.plugin.intellij.styles.ShouldSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
-import io.kotest.plugin.intellij.styles.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.styles.psi.isSpecSubclass
 
 abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
 

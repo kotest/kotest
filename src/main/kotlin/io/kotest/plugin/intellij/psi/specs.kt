@@ -1,8 +1,7 @@
-package io.kotest.plugin.intellij.styles.psi
+package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.functionName
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression

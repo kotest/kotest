@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.styles.psi.isContainedInSpec
+import io.kotest.plugin.intellij.psi.isContainedInSpec
 import org.jetbrains.kotlin.name.FqName
 
 interface SpecStyle {

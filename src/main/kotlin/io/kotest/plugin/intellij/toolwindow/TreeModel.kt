@@ -3,16 +3,14 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import io.kotest.plugin.intellij.psi.callbacks
+import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
-import io.kotest.plugin.intellij.styles.psi.callbacks
-import io.kotest.plugin.intellij.styles.psi.specStyle
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
-import javax.swing.tree.TreePath
 
 fun emptyTreeModel(): TreeModel {
    val root = DefaultMutableTreeNode("<no specs detected>")

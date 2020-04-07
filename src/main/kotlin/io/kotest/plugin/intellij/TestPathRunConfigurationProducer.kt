@@ -6,6 +6,8 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.psi.buildSuggestedName
+import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
 import io.kotest.plugin.intellij.styles.DescribeSpecStyle
 import io.kotest.plugin.intellij.styles.ExpectSpecStyle
@@ -16,8 +18,6 @@ import io.kotest.plugin.intellij.styles.ShouldSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
-import io.kotest.plugin.intellij.styles.buildSuggestedName
-import io.kotest.plugin.intellij.styles.psi.enclosingClass
 import removeJUnitRunConfigs
 
 /**

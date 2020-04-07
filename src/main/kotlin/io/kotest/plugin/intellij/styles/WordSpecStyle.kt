@@ -2,6 +2,13 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
+import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
+import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
+import io.kotest.plugin.intellij.psi.ifBinaryExpressionOperationIdent
+import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
+import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.matchInfixFunctionWithStringAndLambaArg
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression

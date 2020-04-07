@@ -16,7 +16,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.ui.ScrollPaneFactory
-import io.kotest.plugin.intellij.styles.psi.specs
+import io.kotest.plugin.intellij.psi.specs
 import java.awt.Color
 import javax.swing.JComponent
 import javax.swing.JTree
@@ -32,7 +32,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
-      listenForPsiChanges()
+      //listenForPsiChanges()
       refreshContent()
    }
 
