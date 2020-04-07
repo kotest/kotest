@@ -3,7 +3,7 @@
 import ${SUPERCLASS_FQ}
 import io.kotest.matchers.shouldBe
 
-class ${NAME} : ${SUPERCLASS}() {
+class ${NAME} : ${SUPERCLASS}({
 
 #if (${BEFORE_TEST} == "true")
   beforeTest {
@@ -15,8 +15,6 @@ class ${NAME} : ${SUPERCLASS}() {
   }
 
 #end
-  init {
-    #if (${TEST_METHODS}) ${TEST_METHODS} #end
-  }
+#if (${TEST_METHODS}) ${TEST_METHODS} #end
 
-}
+})
