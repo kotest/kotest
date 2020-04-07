@@ -107,6 +107,8 @@ class JsonAssertionsTest : StringSpec({
     json.shouldContainJsonKeyValue("$.store.book[0].price", 8.95)
     json.shouldContainJsonKeyValue("$.store.book[1].author", "Evelyn Waugh")
 
+    shouldThrow<AssertionError> { null.shouldContainJsonKeyValue("ab", "cd") }
+
     json.shouldNotContainJsonKeyValue("$.store.book[1].author", "JK Rowling")
 
     shouldThrow<AssertionError> {
