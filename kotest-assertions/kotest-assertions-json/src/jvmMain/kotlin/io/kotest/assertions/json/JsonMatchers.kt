@@ -107,7 +107,7 @@ fun containJsonKey(path: JsonKey) = object : Matcher<Json> {
 }
 
 fun <T> Json?.shouldContainJsonKeyValue(path: JsonKey, value: T) = this should containJsonKeyValue(path, value)
-fun <T> Json?.shouldNotContainJsonKeyValue(path: JsonKey, value: T) = this shouldNot containJsonKeyValue(path, value)
+fun <T> Json.shouldNotContainJsonKeyValue(path: JsonKey, value: T) = this shouldNot containJsonKeyValue(path, value)
 fun <T> containJsonKeyValue(path: JsonKey, t: T) = object : Matcher<Json?> {
     override fun test(value: Json?): MatcherResult {
         val sub = value?.limitLength()
