@@ -7,7 +7,7 @@ Each test can be configured with various parameters. After the test name, invoke
 
 
 * `invocations` - The number of times to run this test. Useful if you have a non-deterministic test and you want to run that particular test a set number of times to see if it eventually fails. A test will only succeed if all invocations succeed. Defaults to 1.
-* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads. If invocations is 1 (the default) then this parameter will have no effect. Similarly, if you set invocations to a value less than or equal to the number threads, then each invocation will have its own thread.
+* `threads` - Allows the invocation of this test to be parallelized by setting the number of threads. Value must be less or equal of invocations value. Similarly, if you set invocations to a value equal to the number threads, then each invocation will have its own thread.
 * `enabled` - If set to `false` then this test is disabled. Can be useful if a test needs to be temporarily ignored. You can also use this parameter with boolean expressions to run a test only under certain conditions.
 * `enabledIf` - A function which provides the same ability as `enabled` but is lazily evaluated when the test case is due for execution.
 * `timeout` - sets a timeout for this test. If the test has not finished in that time then the test fails. Useful for code that is non-deterministic and might not finish. Timeout is of type `kotlin.Duration` which can be instantiated like `2.seconds`, `3.minutes` and so on.
@@ -54,6 +54,8 @@ class FunSpecTest : FunSpec() {
 
 You can also specify a default TestCaseConfig for all test cases of a Spec:
 
+Old way for KotlinTest version 3.3+.
+
 ```kotlin
 class MySpec : StringSpec() {
 
@@ -63,4 +65,31 @@ class MySpec : StringSpec() {
     // your test cases ...
   }
 }
+```
+New way for Kotest version 4.+
+
+```kotlin
+class FunSpecTest : FunSpec() {
+  init {
+
+    defaultTestConfig = TestCaseConfig(enabled = true, invocations = 3)
+
+    test("FunSpec should support Spec config syntax in init{} block") {
+      // ...
+    }
+  }
+}
+```
+
+or
+
+```kotlin
+class FunSpecTest : FunSpec({
+
+    defaultTestConfig = TestCaseConfig(enabled = true, invocations = 3)
+
+    test("FunSpec should support Spec config syntax in FunSpec constructor block") {
+      // ...
+    }
+})
 ```
