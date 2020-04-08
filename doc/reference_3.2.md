@@ -736,7 +736,7 @@ You can also specify a default TestCaseConfig for all test cases of a Spec:
 ```kotlin
 class MySpec : StringSpec() {
 
-  override val defaultTestCaseConfig = TestCaseConfig(invocations = 3)
+  override fun defaultTestCaseConfig() = TestCaseConfig(invocations = 3)
 
   init {
     // your test cases ...
