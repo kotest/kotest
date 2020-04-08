@@ -123,18 +123,15 @@ fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
    )
 }
 
-infix fun <T> Array<T>.shouldNotContainExactly(expected: Array<T>) = asList().shouldNotContainExactly(expected.asList())
+fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() shouldNot containExactly(*expected)
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
+fun <T> Collection<T>?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
 
-fun <T, C : Collection<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
-infix fun <T> Array<T>.shouldContainExactly(expected: Array<T>) = asList().shouldContainExactly(expected)
+fun <T> Array<T>?.shouldContainExactly(vararg expected: T) = this?.asList() should containExactly(*expected)
 infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
+fun <T> Collection<T>?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
-fun <T, C : Collection<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
-
-fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(
-   expected.asList()
-)
+fun <T> containExactly(vararg expected: T): Matcher<Collection<T>?> = containExactly(expected.asList())
 
 /** Assert that a collection contains exactly the given values and nothing else, in order. */
 fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullMatcher { value ->
