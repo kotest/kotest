@@ -559,13 +559,21 @@ class CollectionMatchersTest : WordSpec() {
          "test that an array contains given elements exactly" {
             val actual = arrayOf(1, 2, 3)
             actual.shouldContainExactly(1, 2, 3)
+            actual shouldContainExactly arrayOf(1, 2, 3)
             actual.shouldNotContainExactly(3, 2, 1)
+            actual shouldNotContainExactly arrayOf(3, 2, 1)
 
             shouldThrow<AssertionError> {
                actual.shouldContainExactly(3, 2, 1)
             }
             shouldThrow<AssertionError> {
+               actual shouldContainExactly arrayOf(3, 2, 1)
+            }
+            shouldThrow<AssertionError> {
                actual.shouldNotContainExactly(1, 2, 3)
+            }
+            shouldThrow<AssertionError> {
+               actual shouldNotContainExactly arrayOf(1, 2, 3)
             }
 
             val actualNull: Array<Int>? = null
