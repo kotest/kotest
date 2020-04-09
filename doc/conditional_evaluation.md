@@ -29,7 +29,7 @@ You can use the same mechanism to run tests only under certain conditions.
 
 ### Focus
 
-Kotest supports isolating a single top level test by preceding the test name with `f:`.
+Kotest supports isolating a single **top level** test by preceding the test name with `f:`.
 Then only that test (and any subtests defined inside that scope) will be executed, with the rest being skipped.
 
 For example, in the following snippet only the middle test will be executed.
@@ -50,6 +50,7 @@ class FocusExample : StringSpec({
 })
 ```
 
+Note again that this **does not** work for nested tests.
 
 ### Bang
 
