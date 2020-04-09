@@ -20,7 +20,7 @@ The number set is the number of concurrently executing specs. For example.
 
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object ProjectConfig : AbstractProjectConfig() {
     override val parallelism = 3
 }
 ```
