@@ -13,8 +13,10 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.psi.specs
 import java.awt.Color
@@ -25,19 +27,20 @@ import javax.swing.tree.TreeSelectionModel
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val tree = createTree()
-   private var mod = 0L
+   private val fileEditorManager = FileEditorManager.getInstance(project)
+   private val actionManager = ActionManager.getInstance()
 
    init {
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
-      //listenForPsiChanges()
+      listenForFileChanges()
       refreshContent()
    }
 
    private fun createToolbar(): JComponent {
-      return ActionManager.getInstance().createActionToolbar(
+      return actionManager.createActionToolbar(
          ActionPlaces.STRUCTURE_VIEW_TOOLBAR,
          createActionGroup(),
          true
@@ -52,15 +55,18 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       return result
    }
 
-   private fun listenForPsiChanges() {
+   private fun listenForFileChanges() {
       project.messageBus.connect().subscribe(
-         PsiModificationTracker.TOPIC,
-         PsiModificationTracker.Listener {
-            val count = PsiModificationTracker.SERVICE.getInstance(project).modificationCount
-            PsiModificationTracker.SERVICE.getInstance(project)
-            if (count > mod) {
-               mod = count
-               refreshContent()
+         VirtualFileManager.VFS_CHANGES,
+         object : BulkFileListener {
+            override fun after(events: MutableList<out VFileEvent>) {
+               val file = fileEditorManager.selectedEditor?.file
+               if (file != null) {
+                  val files = events.mapNotNull { it.file }
+                  val modified = files.firstOrNull { it.name == file.name }
+                  if (modified != null)
+                     refreshContent(modified)
+               }
             }
          }
       )
@@ -71,7 +77,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
             override fun selectionChanged(event: FileEditorManagerEvent) {
-               mod = 0
                refreshContent()
             }
          }
@@ -79,9 +84,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    }
 
    private fun refreshContent() {
-      val manager = FileEditorManager.getInstance(project)
-      val editor = manager.selectedEditor
-      val file = editor?.file
+      val file = fileEditorManager.selectedEditor?.file
       refreshContent(file)
    }
 
