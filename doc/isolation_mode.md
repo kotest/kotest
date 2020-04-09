@@ -143,7 +143,7 @@ Another example will show how the variables are reset.
 ```kotlin
 class InstancePerTestExample : WordSpec() {
 
-  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
+  override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
   val counter = AtomicInteger(0)
 
