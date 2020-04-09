@@ -94,12 +94,12 @@ import io.kotest.matchers.collections.strictlyDecreasingWith
 import io.kotest.matchers.collections.strictlyIncreasing
 import io.kotest.matchers.collections.strictlyIncreasingWith
 import io.kotest.matchers.should
-import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.shouldNotHave
+import io.kotest.matchers.throwable.shouldHaveMessage
 import java.util.ArrayList
 import java.util.Comparator
 
@@ -556,6 +556,35 @@ class CollectionMatchersTest : WordSpec() {
       }
 
       "containExactly" should {
+         "test that an array contains given elements exactly" {
+            val actual = arrayOf(1, 2, 3)
+            actual.shouldContainExactly(1, 2, 3)
+            actual shouldContainExactly arrayOf(1, 2, 3)
+            actual.shouldNotContainExactly(3, 2, 1)
+            actual shouldNotContainExactly arrayOf(3, 2, 1)
+
+            shouldThrow<AssertionError> {
+               actual.shouldContainExactly(3, 2, 1)
+            }
+            shouldThrow<AssertionError> {
+               actual shouldContainExactly arrayOf(3, 2, 1)
+            }
+            shouldThrow<AssertionError> {
+               actual.shouldNotContainExactly(1, 2, 3)
+            }
+            shouldThrow<AssertionError> {
+               actual shouldNotContainExactly arrayOf(1, 2, 3)
+            }
+
+            val actualNull: Array<Int>? = null
+            shouldThrow<AssertionError> {
+               actualNull.shouldContainExactly(1, 2, 3)
+            }.shouldHaveMessage("Expecting actual not to be null")
+            shouldThrow<AssertionError> {
+               actualNull.shouldNotContainExactly()
+            }.shouldHaveMessage("Expecting actual not to be null")
+         }
+
          "test that a collection contains given elements exactly"  {
             val actual = listOf(1, 2, 3)
             emptyList<Int>() should containExactly()
