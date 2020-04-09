@@ -108,7 +108,7 @@ In other words, inner contexts are only executed as part of the "path" to an out
 An example should make this clear.
 
 ```kotlin
-class InstancePerTestExample : WordSpec() {
+class InstancePerLeafExample : WordSpec() {
 
   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
@@ -141,7 +141,7 @@ Then a new spec will be created, and test "a" again executed, followed by test "
 Another example will show how the variables are reset.
 
 ```kotlin
-class InstancePerTestExample : WordSpec() {
+class InstancePerLeafExample : WordSpec() {
 
   override fun isolationMode(): IsolationMode = IsolationMode.InstancePerLeaf
 
