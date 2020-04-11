@@ -4,7 +4,6 @@ import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCaseConfig
 
 /**

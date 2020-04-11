@@ -40,7 +40,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation("org.springframework:spring-test:5.2.4.RELEASE")
             implementation("org.springframework:spring-context:5.2.4.RELEASE")
-            implementation("net.bytebuddy:byte-buddy:1.10.7")
+            implementation("net.bytebuddy:byte-buddy:1.10.9")
          }
       }
 

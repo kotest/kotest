@@ -28,7 +28,7 @@ object Libs {
    }
 
    object JUnitPlatform {
-      private const val version = "1.6.1"
+      private const val version = "1.6.2"
       const val commons = "org.junit.platform:junit-platform-commons:$version"
       const val engine = "org.junit.platform:junit-platform-engine:$version"
       const val launcher = "org.junit.platform:junit-platform-launcher:$version"
@@ -41,7 +41,7 @@ object Libs {
    }
 
    object JUnitJupiter {
-      private const val version = "5.6.1"
+      private const val version = "5.6.2"
       const val api = "org.junit.jupiter:junit-jupiter-api:$version"
       const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
    }
@@ -53,7 +53,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.67"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.68"
    }
 
    object Mocking {
