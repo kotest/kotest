@@ -18,7 +18,6 @@ class RunAction(icon: Icon,
                 private val project: Project,
                 private val executorId: String) : AnAction(icon) {
    override fun actionPerformed(e: AnActionEvent) {
-      println(e)
       runTest(tree, project, executorId, true)
    }
 }

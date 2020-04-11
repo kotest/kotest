@@ -24,6 +24,7 @@ class TestExplorerTreeSelectionListener(private val runActions: List<RunAction>)
          is TestNodeDescriptor -> node.psi
          else -> null
       }
+
       when (psi) {
          is NavigatablePsiElement -> psi.navigate(false)
       }
