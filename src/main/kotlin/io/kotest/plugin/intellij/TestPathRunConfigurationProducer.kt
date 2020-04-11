@@ -21,13 +21,20 @@ import io.kotest.plugin.intellij.styles.WordSpecStyle
 import removeJUnitRunConfigs
 
 /**
- * A [LazyRunConfigurationProducer] that looks into the structure in the class and adds run gutter icons
- * for tests for a particular [SpecStyle].
+ * A run configuration contains the details of a particular run (in the drop down run box).
+ * A Run producer is called to configure a [KotestRunConfiguration] after it has been created.
  */
 abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
+   /**
+    * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
+    */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
+   /**
+    * Returns true if the given context is applicable to this run producer.
+    * This implementation will return true if the source element is a test in the producers defined [style].
+    */
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
@@ -70,11 +77,19 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
       return false
    }
 
+   /**
+    * When two configurations are created from the same context by two different producers, checks if the configuration created by
+    * this producer should be discarded in favor of the other one.
+    *
+    * We always return true because no one else should be creating Kotest configurations.
+    */
    override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
+      println("isPreferredConfiguration self=$self other=$other")
       return true
    }
 
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+      println("shouldReplace self=$self other=$other")
       return false
    }
 }

@@ -3,7 +3,6 @@ package io.kotest.plugin.intellij
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.IconLoader
 import javax.swing.Icon
@@ -14,7 +13,7 @@ object Icons {
   val Kotest32 = IconLoader.getIcon("/icon32.png")
 }
 
-object KotestConfigurationType : ConfigurationType, DumbAware {
+object KotestConfigurationType : ConfigurationType {
 
   private val factory = KotestConfigurationFactory(this)
 

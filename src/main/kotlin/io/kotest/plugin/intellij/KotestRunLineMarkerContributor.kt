@@ -6,8 +6,6 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
-import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.psi.isSpecSubclass
 import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
 import io.kotest.plugin.intellij.styles.DescribeSpecStyle
 import io.kotest.plugin.intellij.styles.ExpectSpecStyle
@@ -28,22 +26,22 @@ abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : Ru
         return null
      }
 
-     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
-     if (ktclass != null) {
-        if (ktclass.isSpecSubclass(style)) {
-           return Info(
-              AllIcons.RunConfigurations.TestState.Run_run,
-              Function<PsiElement, String> { "[Kotest] ${ktclass.fqName!!.shortName()}" },
-              *ExecutorAction.getActions(0)
-           )
-        }
-     }
+//     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
+//     if (ktclass != null) {
+//        if (ktclass.isSpecSubclass(style)) {
+//           return Info(
+//              AllIcons.RunConfigurations.TestState.Run_run,
+//              Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
+//              *ExecutorAction.getActions(0)
+//           )
+//        }
+//     }
 
      val test = style.test(element)
      if (test != null) {
         return Info(
            AllIcons.RunConfigurations.TestState.Run,
-           Function<PsiElement, String> { "[Kotest] ${test.path}" },
+           Function<PsiElement, String> { "Run ${test.path}" },
            *ExecutorAction.getActions(0)
         )
      }

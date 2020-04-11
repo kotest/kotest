@@ -3,8 +3,6 @@ package io.kotest.plugin.intellij
 import com.intellij.execution.DefaultExecutionResult
 import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
-import com.intellij.execution.Location
-import com.intellij.execution.PsiLocation
 import com.intellij.execution.application.BaseJavaApplicationCommandLineState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -14,15 +12,6 @@ import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.util.JavaParametersUtil
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.ModificationTracker
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.ClassUtil
-import com.intellij.psi.util.parentOfType
 
 class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestRunConfiguration) :
     BaseJavaApplicationCommandLineState<KotestRunConfiguration>(environment, configuration) {
@@ -78,39 +67,10 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
 
 class KotestSMTConsoleProperties(config: KotestRunConfiguration,
                                  executor: Executor) : SMTRunnerConsoleProperties(config, "kotest", executor) {
+   init {
+      isPrintTestingStartedTime = true
+   }
+
    override fun getTestLocator(): SMTestLocator = KotestSMTestLocator
 }
 
-object KotestSMTestLocator : SMTestLocator {
-   override fun getLocation(protocol: String,
-                            path: String,
-                            project: Project,
-                            scope: GlobalSearchScope): List<Location<PsiElement>> {
-      val list = mutableListOf<Location<PsiElement>>()
-      if (protocol == "kotest") {
-         val (fqn, line) = path.split(':')
-         val psiClass = ClassUtil.findPsiClass(PsiManager.getInstance(project), fqn, null, true, scope)
-         if (psiClass != null) {
-            val psiFile = psiClass.parentOfType<PsiFile>()
-            if (psiFile != null) {
-               val doc = PsiDocumentManager.getInstance(project).getDocument(psiFile)
-               if (doc != null) {
-                  val start = doc.getLineStartOffset(line.toInt())
-                  val element = psiFile.findElementAt(start)
-                  if (element != null) {
-                     val location: Location<PsiElement> = PsiLocation(psiClass.project, element)
-                     list.add(location)
-                  }
-               }
-            }
-            if (list.isEmpty()) {
-               val location: Location<PsiElement> = PsiLocation(psiClass.project, psiClass)
-               list.add(location)
-            }
-         }
-      }
-      return list
-   }
-
-   override fun getLocationCacheModificationTracker(project: Project): ModificationTracker = ModificationTracker.EVER_CHANGED
-}
