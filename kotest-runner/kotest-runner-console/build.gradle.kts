@@ -38,6 +38,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
             api(project(":kotest-core"))
+            api(project(":kotest-mpp"))
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
          }
