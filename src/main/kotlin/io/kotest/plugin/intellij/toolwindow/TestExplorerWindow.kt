@@ -20,6 +20,8 @@ import com.intellij.psi.PsiManager
 import com.intellij.ui.ScrollPaneFactory
 import io.kotest.plugin.intellij.psi.specs
 import java.awt.Color
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
@@ -31,6 +33,15 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    private val actionManager = ActionManager.getInstance()
 
    init {
+
+      tree.addMouseListener(object : MouseAdapter() {
+         override fun mouseClicked(e: MouseEvent) {
+            if (e.clickCount == 2) {
+               runTest(tree, project, "Run")
+            }
+         }
+      })
+
       background = Color.WHITE
       toolbar = createToolbar()
       setContent(ScrollPaneFactory.createScrollPane(tree))

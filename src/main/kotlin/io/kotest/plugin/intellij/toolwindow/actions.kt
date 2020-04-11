@@ -12,17 +12,19 @@ import io.kotest.plugin.intellij.KotestRunConfiguration
 import javax.swing.Icon
 import javax.swing.JTree
 
-class RunAction(private val icon: Icon,
+class RunAction(icon: Icon,
                 private val tree: JTree,
                 private val project: Project,
                 private val executorId: String) : AnAction(icon) {
-   override fun actionPerformed(e: AnActionEvent) {
-      val path = tree.selectionPath
-      if (path != null) {
-         when (val node = path.node()) {
-            is SpecNodeDescriptor -> runSpec(node, project, executorId)
-            is TestNodeDescriptor -> runTest(node, project, executorId)
-         }
+   override fun actionPerformed(e: AnActionEvent) = runTest(tree, project, executorId)
+}
+
+fun runTest(tree: JTree, project: Project, executorId: String) {
+   val path = tree.selectionPath
+   if (path != null) {
+      when (val node = path.node()) {
+         is SpecNodeDescriptor -> runSpec(node, project, executorId)
+         is TestNodeDescriptor -> runTest(node, project, executorId)
       }
    }
 }
