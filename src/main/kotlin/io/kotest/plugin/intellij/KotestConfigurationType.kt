@@ -10,6 +10,7 @@ import javax.swing.Icon
 
 object Icons {
   val Kotest16 = IconLoader.getIcon("/icon16.png")
+  val Kotest16Grey = IconLoader.getIcon("/icon16_greyscale.png")
   val Kotest32 = IconLoader.getIcon("/icon32.png")
 }
 

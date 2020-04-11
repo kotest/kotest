@@ -1,6 +1,5 @@
 package io.kotest.plugin.intellij.toolwindow
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.util.treeView.NodeRenderer
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -28,9 +27,10 @@ import javax.swing.tree.TreeSelectionModel
 
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
-   private val tree = createTree()
    private val fileEditorManager = FileEditorManager.getInstance(project)
    private val actionManager = ActionManager.getInstance()
+   private val tree = createTree()
+   private val runActions = createRunActions(tree, project)
 
    init {
 
@@ -41,6 +41,8 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
             }
          }
       })
+
+      tree.addTreeSelectionListener(TestExplorerTreeSelectionListener(runActions))
 
       background = Color.WHITE
       toolbar = createToolbar()
@@ -53,16 +55,14 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
    private fun createToolbar(): JComponent {
       return actionManager.createActionToolbar(
          ActionPlaces.STRUCTURE_VIEW_TOOLBAR,
-         createActionGroup(),
+         createActionGroup(runActions),
          true
       ).component
    }
 
-   private fun createActionGroup(): DefaultActionGroup {
+   private fun createActionGroup(actions: List<RunAction>): DefaultActionGroup {
       val result = DefaultActionGroup()
-      result.add(RunAction(AllIcons.Actions.Execute, tree, project, "Run"))
-      result.add(RunAction(AllIcons.Actions.StartDebugger, tree, project, "Debug"))
-      result.add(RunAction(AllIcons.General.RunWithCoverage, tree, project, "Coverage"))
+      actions.forEach { result.add(it) }
       return result
    }
 
@@ -127,7 +127,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       tree.showsRootHandles = true
       tree.isRootVisible = true
       tree.cellRenderer = NodeRenderer()
-      tree.addTreeSelectionListener(TestExplorerTreeSelectionListener)
       return tree
    }
 }

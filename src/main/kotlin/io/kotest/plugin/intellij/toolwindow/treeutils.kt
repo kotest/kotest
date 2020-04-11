@@ -1,9 +1,6 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeDescriptor
-import io.kotest.plugin.intellij.toolwindow.CallbackNodeDescriptor
-import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
-import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath

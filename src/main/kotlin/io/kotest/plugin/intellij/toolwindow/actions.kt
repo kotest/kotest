@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.execution.ExecutorRegistry
 import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
@@ -16,7 +17,18 @@ class RunAction(icon: Icon,
                 private val tree: JTree,
                 private val project: Project,
                 private val executorId: String) : AnAction(icon) {
-   override fun actionPerformed(e: AnActionEvent) = runTest(tree, project, executorId, true)
+   override fun actionPerformed(e: AnActionEvent) {
+      println(e)
+      runTest(tree, project, executorId, true)
+   }
+}
+
+fun createRunActions(tree: JTree, project: Project): List<RunAction> {
+   return listOf(
+      RunAction(AllIcons.Actions.Execute, tree, project, "Run"),
+      RunAction(AllIcons.Actions.StartDebugger, tree, project, "Debug"),
+      RunAction(AllIcons.General.RunWithCoverage, tree, project, "Coverage")
+   )
 }
 
 fun runTest(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {

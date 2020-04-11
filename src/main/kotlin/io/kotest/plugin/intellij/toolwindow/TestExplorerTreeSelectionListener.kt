@@ -4,8 +4,20 @@ import com.intellij.psi.NavigatablePsiElement
 import javax.swing.event.TreeSelectionEvent
 import javax.swing.event.TreeSelectionListener
 
-object TestExplorerTreeSelectionListener : TreeSelectionListener {
+class TestExplorerTreeSelectionListener(private val runActions: List<RunAction>) : TreeSelectionListener {
+
    override fun valueChanged(e: TreeSelectionEvent) {
+
+      val runEnabled = when (e.path.node()) {
+         is SpecNodeDescriptor -> true
+         is TestNodeDescriptor -> true
+         else -> false
+      }
+
+      runActions.forEach {
+         it.templatePresentation.isEnabled = runEnabled
+      }
+
       val psi = when (val node = e.path.node()) {
          is SpecNodeDescriptor -> node.psi
          is CallbackNodeDescriptor -> node.psi
