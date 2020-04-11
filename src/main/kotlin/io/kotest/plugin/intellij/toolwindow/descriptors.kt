@@ -54,12 +54,21 @@ class TestNodeDescriptor(project: Project,
                          val psi: PsiElement,
                          val test: TestElement,
                          val spec: SpecNodeDescriptor,
+                         private val root: Boolean,
+                         private val isUnique: Boolean, // if false then this test name is a duplicate
                          val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
+      templatePresentation.locationString = null
       templatePresentation.presentableText = test.test.name
       when (test.test.enabled) {
-         true -> templatePresentation.setIcon(AllIcons.Nodes.Test)
+         true -> when (isUnique) {
+            true -> templatePresentation.setIcon(AllIcons.Nodes.Test)
+            false -> {
+               templatePresentation.setIcon(AllIcons.Nodes.ErrorIntroduction)
+               templatePresentation.locationString = "duplicate test name"
+            }
+         }
          false -> templatePresentation.setIcon(AllIcons.Nodes.TestIgnored)
       }
    }

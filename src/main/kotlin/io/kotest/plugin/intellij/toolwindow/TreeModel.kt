@@ -22,12 +22,17 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): T
    fun addTests(node: DefaultMutableTreeNode,
                 parent: NodeDescriptor<Any>,
                 specDescriptor: SpecNodeDescriptor,
-                tests: List<TestElement>) {
+                tests: List<TestElement>,
+                root: Boolean) {
+
+      val groups = tests.groupBy { it.test.name }
+
       tests.forEach { test ->
-         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, module)
+         val isUnique = groups[test.test.name]?.size ?: 0 < 2
+         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, root, isUnique, module)
          val testNode = DefaultMutableTreeNode(testDescriptor)
          node.add(testNode)
-         addTests(testNode, testDescriptor, specDescriptor, test.tests)
+         addTests(testNode, testDescriptor, specDescriptor, test.tests, false)
       }
    }
 
@@ -51,7 +56,7 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): T
          }
 
          val tests = style.tests(spec)
-         addTests(specNode, specDescriptor, specDescriptor, tests)
+         addTests(specNode, specDescriptor, specDescriptor, tests, true)
       }
    }
    return DefaultTreeModel(root)
