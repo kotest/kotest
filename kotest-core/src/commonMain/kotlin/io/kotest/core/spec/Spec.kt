@@ -14,8 +14,6 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.fp.Tuple2
 
-
-@Testable
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
    /**
