@@ -99,6 +99,8 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {..." should contain the path ${'$'}.store.table"""
+
+    """{"data": null}""" shouldContainJsonKey "data" shouldBe "null"
   }
 
   "test json key value" {

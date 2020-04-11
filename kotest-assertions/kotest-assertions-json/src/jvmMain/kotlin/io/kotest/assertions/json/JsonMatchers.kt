@@ -65,7 +65,7 @@ fun matchJsonResource(resource: String) = object : Matcher<Json> {
 }
 
 @OptIn(ExperimentalContracts::class)
-infix fun Json?.shouldContainJsonKey(path: JsonKey): Json? {
+infix fun Json?.shouldContainJsonKey(path: JsonKey): Json {
     contract {
         returns() implies (this@shouldContainJsonKey != null)
     }
@@ -82,7 +82,7 @@ infix fun Json?.shouldContainJsonKey(path: JsonKey): Json? {
             cause = result
         )
 
-        else -> result?.let { mapper.writeValueAsString(it) }
+        else -> mapper.writeValueAsString(result)
     }
 }
 
@@ -173,13 +173,13 @@ inline infix fun <reified T> Json?.shouldContainJsonKeyAndValueOfSpecificType(pa
 
         else -> throw failure(
             "${this.representation} should contain an element with type ${typeOf<T>()} with the path $path " +
-                    "but it contains ${result?.let { mapper.writeValueAsString(it) }.representation}."
+                    "but it contains ${mapper.writeValueAsString(result)}.representation}."
         )
     }
 }
 
 @OptIn(ExperimentalContracts::class)
-infix fun Json?.shouldContainOnlyJsonKey(path: JsonKey): Json? {
+infix fun Json?.shouldContainOnlyJsonKey(path: JsonKey): Json {
     contract {
         returns() implies (this@shouldContainOnlyJsonKey != null)
     }
