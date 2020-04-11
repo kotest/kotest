@@ -16,15 +16,15 @@ class RunAction(icon: Icon,
                 private val tree: JTree,
                 private val project: Project,
                 private val executorId: String) : AnAction(icon) {
-   override fun actionPerformed(e: AnActionEvent) = runTest(tree, project, executorId)
+   override fun actionPerformed(e: AnActionEvent) = runTest(tree, project, executorId, true)
 }
 
-fun runTest(tree: JTree, project: Project, executorId: String) {
+fun runTest(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {
    val path = tree.selectionPath
    if (path != null) {
       when (val node = path.node()) {
-         is SpecNodeDescriptor -> runSpec(node, project, executorId)
-         is TestNodeDescriptor -> runTest(node, project, executorId)
+         is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
+         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
       }
    }
 }

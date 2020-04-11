@@ -16,10 +16,13 @@ import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.util.JavaParametersUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
+import com.intellij.psi.util.parentOfType
 
 class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestRunConfiguration) :
     BaseJavaApplicationCommandLineState<KotestRunConfiguration>(environment, configuration) {
@@ -86,10 +89,24 @@ object KotestSMTestLocator : SMTestLocator {
       val list = mutableListOf<Location<PsiElement>>()
       if (protocol == "kotest") {
          val (fqn, line) = path.split(':')
-         val testClass = ClassUtil.findPsiClass(PsiManager.getInstance(project), fqn, null, true, scope)
-         if (testClass != null) {
-            val location: Location<PsiElement> = PsiLocation(testClass.project, testClass)
-            list.add(location)
+         val psiClass = ClassUtil.findPsiClass(PsiManager.getInstance(project), fqn, null, true, scope)
+         if (psiClass != null) {
+            val psiFile = psiClass.parentOfType<PsiFile>()
+            if (psiFile != null) {
+               val doc = PsiDocumentManager.getInstance(project).getDocument(psiFile)
+               if (doc != null) {
+                  val start = doc.getLineStartOffset(line.toInt())
+                  val element = psiFile.findElementAt(start)
+                  if (element != null) {
+                     val location: Location<PsiElement> = PsiLocation(psiClass.project, element)
+                     list.add(location)
+                  }
+               }
+            }
+            if (list.isEmpty()) {
+               val location: Location<PsiElement> = PsiLocation(psiClass.project, psiClass)
+               list.add(location)
+            }
          }
       }
       return list

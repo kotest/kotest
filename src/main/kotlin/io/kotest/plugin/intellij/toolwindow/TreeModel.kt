@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
@@ -17,7 +18,8 @@ fun emptyTreeModel(): TreeModel {
    return DefaultTreeModel(root)
 }
 
-fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): TreeModel {
+fun treeModel(file: VirtualFile,
+              project: Project, specs: List<KtClassOrObject>, module: Module): TreeModel {
 
    fun addTests(node: DefaultMutableTreeNode,
                 parent: NodeDescriptor<Any>,
@@ -36,7 +38,7 @@ fun treeModel(project: Project, specs: List<KtClassOrObject>, module: Module): T
       }
    }
 
-   val kotest = KotestNodeDescriptor(project)
+   val kotest = KotestFileNodeDescriptor(file, project)
    val root = DefaultMutableTreeNode(kotest)
    specs.forEach { spec ->
 

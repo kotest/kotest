@@ -37,7 +37,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       tree.addMouseListener(object : MouseAdapter() {
          override fun mouseClicked(e: MouseEvent) {
             if (e.clickCount == 2) {
-               runTest(tree, project, "Run")
+               runTest(tree, project, "Run", false)
             }
          }
       })
@@ -103,19 +103,16 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
 
       if (file == null) {
          tree.model = emptyTreeModel()
-         tree.isRootVisible = true
       } else {
          val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module == null) {
             tree.model = emptyTreeModel()
-            tree.isRootVisible = true
          } else {
             DumbService.getInstance(project).runWhenSmart {
                try {
                   val specs = PsiManager.getInstance(project).findFile(file)?.specs() ?: emptyList()
-                  val model = treeModel(project, specs, module)
+                  val model = treeModel(file, project, specs, module)
                   tree.model = model
-                  tree.isRootVisible = false
                   tree.expandAllNodes()
                } catch (e: Throwable) {
                }
@@ -128,6 +125,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       val tree = com.intellij.ui.treeStructure.Tree()
       tree.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
       tree.showsRootHandles = true
+      tree.isRootVisible = true
       tree.cellRenderer = NodeRenderer()
       tree.addTreeSelectionListener(TestExplorerTreeSelectionListener)
       return tree

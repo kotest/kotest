@@ -6,6 +6,7 @@ import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
 import io.kotest.plugin.intellij.psi.Callback
@@ -15,10 +16,11 @@ import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+class KotestFileNodeDescriptor(file: VirtualFile,
+                               project: Project) : PresentableNodeDescriptor<Any>(project, null) {
 
    init {
-      templatePresentation.presentableText = "Kotest"
+      templatePresentation.presentableText = file.name
       templatePresentation.setIcon(Icons.Kotest16)
    }
 
@@ -55,7 +57,7 @@ class TestNodeDescriptor(project: Project,
                          val test: TestElement,
                          val spec: SpecNodeDescriptor,
                          private val root: Boolean,
-                         private val isUnique: Boolean, // if false then this test name is a duplicate
+                         isUnique: Boolean, // if false then this test name is a duplicate
                          val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
@@ -83,7 +85,7 @@ class TestNodeDescriptor(project: Project,
 class CallbackNodeDescriptor(project: Project,
                              parent: SpecNodeDescriptor,
                              val psi: PsiElement,
-                             val callback: Callback) : PresentableNodeDescriptor<Any>(project, parent) {
+                             callback: Callback) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = callback.type.text
