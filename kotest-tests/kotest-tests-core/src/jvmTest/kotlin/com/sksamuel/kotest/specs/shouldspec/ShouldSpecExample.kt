@@ -18,8 +18,8 @@ class ShouldSpecExample : ShouldSpec() {
         // test here
       }
     }
-    "another context" {
-      "a nested context" {
+    context("another context") {
+       context("a nested context") {
         should("do a test") {
           // test here
         }
