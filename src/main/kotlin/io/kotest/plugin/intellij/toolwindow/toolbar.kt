@@ -29,6 +29,7 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
    result.add(CollapseAction(tree))
    result.addSeparator()
    result.add(FilterCallbacksAction(tree))
+   result.add(FilterModulesAction(tree))
    result.addSeparator()
    result.add(NavigateToNodeAction())
    return result
@@ -51,14 +52,27 @@ class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand all", n
 class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter callbacks", null, AllIcons.General.Filter) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.filterCallbacks
+      return TestExplorerState.filterOutCallbacks
    }
 
    override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.filterCallbacks = state
+      TestExplorerState.filterOutCallbacks = state
       tree.reloadModel()
    }
 }
+
+class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter modules", null, AllIcons.Toolbar.Filterdups) {
+
+   override fun isSelected(e: AnActionEvent): Boolean {
+      return TestExplorerState.filterOutModules
+   }
+
+   override fun setSelected(e: AnActionEvent, state: Boolean) {
+      TestExplorerState.filterOutModules = state
+      tree.reloadModel()
+   }
+}
+
 
 class NavigateToNodeAction : ToggleAction(
    "Autoscroll to source",

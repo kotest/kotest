@@ -33,6 +33,8 @@ fun TreePath.node(): NodeDescriptor<Any>? {
          is SpecNodeDescriptor -> obj
          is TestNodeDescriptor -> obj
          is CallbackNodeDescriptor -> obj
+         is ModulesNodeDescriptor -> obj
+         is ModuleNodeDescriptor -> obj
          else -> null
       }
       else -> null

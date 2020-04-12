@@ -3,9 +3,9 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.execution.ExecutorRegistry
 import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionUtil
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
@@ -28,6 +28,7 @@ class RunAction(text: String,
          e.presentation.isEnabled = when (tree.selectionPath?.node()) {
             is SpecNodeDescriptor -> true
             is TestNodeDescriptor -> true
+            is ModuleNodeDescriptor -> true
             else -> false
          }
       }
@@ -40,6 +41,7 @@ fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Bo
       when (val node = path.node()) {
          is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
          is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
+         is ModuleNodeDescriptor -> runModule(node.module, executorId)
       }
    }
 }
@@ -84,18 +86,21 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
    ExecutionUtil.runConfiguration(config, executor)
 }
 
-fun runAll(project: Project, executorId: String) {
-   if (!DependencyChecker.checkMissingDependencies(project)) return
+fun runModule(module: Module, executorId: String) {
+   if (!DependencyChecker.checkMissingDependencies(module)) return
 
-   val manager = RunManager.getInstance(project)
+   val name = "Run all in ${module.name}"
+
+   val manager = RunManager.getInstance(module.project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
 
-   val config = manager.createConfiguration("Run all", KotestConfigurationFactory(KotestConfigurationType))
+   val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
    val run = config.configuration as KotestRunConfiguration
 
    run.setTestName(null)
    run.setSpecName(null)
-   run.setGeneratedName()
+   run.setModule(module)
+   run.name = name
 
    manager.addConfiguration(config)
    manager.selectedConfiguration = config

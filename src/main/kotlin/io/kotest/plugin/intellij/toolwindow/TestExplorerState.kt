@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.toolwindow
 
 object TestExplorerState {
-   var filterCallbacks = false
+   var filterOutCallbacks = false
+   var filterOutModules = false
    var autoscrollToSource = true
 }

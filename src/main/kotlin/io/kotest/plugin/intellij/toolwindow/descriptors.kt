@@ -129,7 +129,7 @@ class CallbackNodeDescriptor(project: Project,
    override fun getElement(): Any = this
 }
 
-class ModuleNodeDescriptor(module: Module,
+class ModuleNodeDescriptor(val module: Module,
                            project: Project,
                            parent: NodeDescriptor<Any>) : PresentableNodeDescriptor<Any>(project, parent) {
 

@@ -42,17 +42,20 @@ fun createTreeModel(file: VirtualFile,
       }
    }
 
-   val allModulesDescriptor = ModulesNodeDescriptor(project)
-   val allModulesNode = DefaultMutableTreeNode(allModulesDescriptor)
-   root.add(allModulesNode)
+   if (!TestExplorerState.filterOutModules) {
 
-   project.allModules()
-      .filter { it.isTestModule }
-      .forEach {
-         val descriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
-         val moduleNode = DefaultMutableTreeNode(descriptor)
-         allModulesNode.add(moduleNode)
-      }
+      val allModulesDescriptor = ModulesNodeDescriptor(project)
+      val allModulesNode = DefaultMutableTreeNode(allModulesDescriptor)
+      root.add(allModulesNode)
+
+      project.allModules()
+         .filter { it.isTestModule }
+         .forEach {
+            val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
+            val moduleNode = DefaultMutableTreeNode(moduleDescriptor)
+            allModulesNode.add(moduleNode)
+         }
+   }
 
    val fileDescriptor = TestFileNodeDescriptor(file, project, kotest)
    val fileNode = DefaultMutableTreeNode(fileDescriptor)
@@ -68,7 +71,7 @@ fun createTreeModel(file: VirtualFile,
          val specNode = DefaultMutableTreeNode(specDescriptor)
          fileNode.add(specNode)
 
-         if (!TestExplorerState.filterCallbacks) {
+         if (!TestExplorerState.filterOutCallbacks) {
             val callbacks = spec.callbacks()
             callbacks.forEach {
                val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it.psi, it)
