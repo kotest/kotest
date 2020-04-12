@@ -7,7 +7,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
+import org.jetbrains.kotlin.idea.caches.project.isTestModule
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
+import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
@@ -20,6 +22,9 @@ fun createTreeModel(file: VirtualFile,
                     project: Project,
                     specs: List<KtClassOrObject>,
                     module: Module): TreeModel {
+
+   val kotest = KotestRootNodeDescriptor(project)
+   val root = DefaultMutableTreeNode(kotest)
 
    fun addTests(node: DefaultMutableTreeNode,
                 parent: NodeDescriptor<Any>,
@@ -37,17 +42,31 @@ fun createTreeModel(file: VirtualFile,
       }
    }
 
-   val kotest = TestFileNodeDescriptor(file, project)
-   val root = DefaultMutableTreeNode(kotest)
+   val allModulesDescriptor = ModulesNodeDescriptor(project)
+   val allModulesNode = DefaultMutableTreeNode(allModulesDescriptor)
+   root.add(allModulesNode)
+
+   project.allModules()
+      .filter { it.isTestModule }
+      .forEach {
+         val descriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
+         val moduleNode = DefaultMutableTreeNode(descriptor)
+         allModulesNode.add(moduleNode)
+      }
+
+   val fileDescriptor = TestFileNodeDescriptor(file, project, kotest)
+   val fileNode = DefaultMutableTreeNode(fileDescriptor)
+   root.add(fileNode)
+
    specs.forEach { spec ->
 
       val fqn = spec.getKotlinFqName()
       val style = spec.specStyle()
       if (fqn != null && style != null) {
 
-         val specDescriptor = SpecNodeDescriptor(project, kotest, spec, fqn, style, module)
+         val specDescriptor = SpecNodeDescriptor(project, fileDescriptor, spec, fqn, style, module)
          val specNode = DefaultMutableTreeNode(specDescriptor)
-         root.add(specNode)
+         fileNode.add(specNode)
 
          if (!TestExplorerState.filterCallbacks) {
             val callbacks = spec.callbacks()

@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.toolwindow
 import com.intellij.execution.ExecutorRegistry
 import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionUtil
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
@@ -13,10 +14,11 @@ import io.kotest.plugin.intellij.notifications.DependencyChecker
 import javax.swing.Icon
 import javax.swing.JTree
 
-class RunAction(icon: Icon,
+class RunAction(text: String,
+                icon: Icon,
                 private val tree: JTree,
                 private val project: Project,
-                private val executorId: String) : AnAction(icon) {
+                private val executorId: String) : AnAction(text, null, icon) {
    override fun actionPerformed(e: AnActionEvent) {
       runNode(tree, project, executorId, true)
    }
@@ -29,15 +31,6 @@ class RunAction(icon: Icon,
             else -> false
          }
       }
-   }
-}
-
-class RunAllAction(icon: Icon,
-                   private val project: Project,
-                   private val executorId: String) : AnAction(icon) {
-
-   override fun actionPerformed(e: AnActionEvent) {
-      runAll(project, executorId)
    }
 }
 

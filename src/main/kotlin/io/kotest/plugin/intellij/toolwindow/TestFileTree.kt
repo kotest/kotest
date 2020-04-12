@@ -19,7 +19,7 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    init {
       selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
       showsRootHandles = true
-      isRootVisible = true
+      isRootVisible = false
       cellRenderer = NodeRenderer()
       addTreeSelectionListener(TestExplorerTreeSelectionListener)
    }

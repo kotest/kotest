@@ -16,8 +16,34 @@ import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
+class KotestRootNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+   init {
+      templatePresentation.presentableText = "Kotest"
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
+class ModulesNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+   init {
+      templatePresentation.presentableText = "Modules"
+      templatePresentation.setIcon(AllIcons.Nodes.ModuleGroup)
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
 class TestFileNodeDescriptor(file: VirtualFile,
-                             project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+                             project: Project,
+                             parent: NodeDescriptor<Any>) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = file.name
@@ -94,6 +120,22 @@ class CallbackNodeDescriptor(project: Project,
          CallbackType.BeforeSpec -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
          CallbackType.AfterSpec -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
       }
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
+class ModuleNodeDescriptor(module: Module,
+                           project: Project,
+                           parent: NodeDescriptor<Any>) : PresentableNodeDescriptor<Any>(project, parent) {
+
+   init {
+      templatePresentation.presentableText = module.name
+      templatePresentation.setIcon(AllIcons.Nodes.Module)
    }
 
    override fun update(presentation: PresentationData) {

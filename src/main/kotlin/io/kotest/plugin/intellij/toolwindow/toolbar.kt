@@ -21,11 +21,9 @@ fun createToolbar(tree: TestFileTree, project: Project): JComponent {
 
 private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActionGroup {
    val result = DefaultActionGroup()
-   result.add(RunAllAction(AllIcons.Actions.Play_forward, project, "Run"))
-   result.addSeparator()
-   result.add(RunAction(AllIcons.Actions.Execute, tree, project, "Run"))
-   result.add(RunAction(AllIcons.Actions.StartDebugger, tree, project, "Debug"))
-   result.add(RunAction(AllIcons.General.RunWithCoverage, tree, project, "Coverage"))
+   result.add(RunAction("Run", AllIcons.Actions.Execute, tree, project, "Run"))
+   result.add(RunAction("Debug", AllIcons.Actions.StartDebugger, tree, project, "Debug"))
+   result.add(RunAction("Run with coverage", AllIcons.General.RunWithCoverage, tree, project, "Coverage"))
    result.addSeparator()
    result.add(ExpandAllAction(tree))
    result.add(CollapseAction(tree))
