@@ -13,28 +13,27 @@ import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
 
-fun emptyTreeModel(): TreeModel {
-   val root = DefaultMutableTreeNode("<no specs detected>")
-   return DefaultTreeModel(root)
-}
-
-fun treeModel(file: VirtualFile,
-              project: Project, specs: List<KtClassOrObject>, module: Module): TreeModel {
+/**
+ * Creates a [TreeModel] for the given [VirtualFile].
+ */
+fun createTreeModel(file: VirtualFile,
+                    project: Project,
+                    specs: List<KtClassOrObject>,
+                    module: Module): TreeModel {
 
    fun addTests(node: DefaultMutableTreeNode,
                 parent: NodeDescriptor<Any>,
                 specDescriptor: SpecNodeDescriptor,
-                tests: List<TestElement>,
-                root: Boolean) {
+                tests: List<TestElement>) {
 
       val groups = tests.groupBy { it.test.name }
 
       tests.forEach { test ->
          val isUnique = groups[test.test.name]?.size ?: 0 < 2
-         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, root, isUnique, module)
+         val testDescriptor = TestNodeDescriptor(project, parent, test.psi, test, specDescriptor, isUnique, module)
          val testNode = DefaultMutableTreeNode(testDescriptor)
          node.add(testNode)
-         addTests(testNode, testDescriptor, specDescriptor, test.tests, false)
+         addTests(testNode, testDescriptor, specDescriptor, test.tests)
       }
    }
 
@@ -50,16 +49,19 @@ fun treeModel(file: VirtualFile,
          val specNode = DefaultMutableTreeNode(specDescriptor)
          root.add(specNode)
 
-         val callbacks = spec.callbacks()
-         callbacks.forEach {
-            val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it.psi, it)
-            val callbackNode = DefaultMutableTreeNode(callbackDescriptor)
-            specNode.add(callbackNode)
+         if (!TestExplorerState.filterCallbacks) {
+            val callbacks = spec.callbacks()
+            callbacks.forEach {
+               val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it.psi, it)
+               val callbackNode = DefaultMutableTreeNode(callbackDescriptor)
+               specNode.add(callbackNode)
+            }
          }
 
          val tests = style.tests(spec)
-         addTests(specNode, specDescriptor, specDescriptor, tests, true)
+         addTests(specNode, specDescriptor, specDescriptor, tests)
       }
    }
+
    return DefaultTreeModel(root)
 }

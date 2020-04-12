@@ -56,7 +56,6 @@ class TestNodeDescriptor(project: Project,
                          val psi: PsiElement,
                          val test: TestElement,
                          val spec: SpecNodeDescriptor,
-                         private val root: Boolean,
                          isUnique: Boolean, // if false then this test name is a duplicate
                          val module: Module) : PresentableNodeDescriptor<Any>(project, parent) {
 
