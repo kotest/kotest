@@ -49,7 +49,7 @@ kotlin {
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(Projects.Mpp))
             // this is api because we want to expose `shouldBe` etc
-            api(project(Projects.Assertions))
+            api(project(Projects.Core))
          }
       }
 

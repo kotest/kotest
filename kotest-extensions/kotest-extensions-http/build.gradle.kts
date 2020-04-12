@@ -65,7 +65,8 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsCore))
             implementation(project(":kotest-extensions:kotest-extensions-mockserver"))
          }
       }

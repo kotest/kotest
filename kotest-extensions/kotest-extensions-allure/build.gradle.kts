@@ -32,10 +32,10 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-mpp"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
+            implementation(project(Projects.Framework))
+            implementation(project(Projects.Mpp))
             implementation(Libs.Allure.commons)
             implementation("javax.xml.bind:jaxb-api:2.3.1")
             implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
@@ -46,8 +46,8 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsCore))
          }
       }
    }

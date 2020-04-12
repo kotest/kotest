@@ -1,7 +1,8 @@
 plugins {
    id("java")
-   id("kotlin-multiplatform")
+   kotlin("multiplatform")
    id("java-library")
+   id("com.adarshr.test-logger")
 }
 
 repositories {
@@ -25,6 +26,11 @@ kotlin {
             }
          }
       }
+      when {
+         Ci.os.isMacOsX -> macosX64("native")
+         Ci.os.isWindows -> mingwX64("native")
+         else -> linuxX64("native")
+      }
    }
 
    targets.all {
@@ -41,9 +47,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(project(Projects.Mpp))
-            // tuples are used in the callback listeners so must be exposed as api
-            api(project(Projects.Fp))
-            implementation(project(Projects.Assertions))
+            implementation(project(Projects.Fp))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -52,8 +56,6 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-js"))
-            // this must be api as it's compiled into the final source
-            api(kotlin("test-js"))
             implementation(Libs.Coroutines.coreJs)
          }
       }
@@ -64,9 +66,42 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Classgraph.classgraph)
+            implementation(Libs.Coroutines.jdk8)
+            implementation(Libs.Wumpz.diffutils)
+            implementation("com.univocity:univocity-parsers:2.8.4")
+            implementation(Libs.Mifmif.generex)
          }
       }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(Projects.JunitRunner))
+         }
+      }
+
+      val nativeMain by getting {
+         dependsOn(commonMain)
+         dependencies {
+            implementation(Libs.Coroutines.coreNative)
+         }
+      }
+   }
+}
+
+tasks.named<Test>("jvmTest") {
+   useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
+   testLogging {
+      showExceptions = true
+      showStandardStreams = true
+      events = setOf(
+         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+      )
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
    }
 }
 

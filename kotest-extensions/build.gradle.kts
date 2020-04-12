@@ -31,7 +31,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-core"))
+            implementation(project(Projects.Framework))
             implementation(kotlin("stdlib-jdk8"))
             implementation("commons-io:commons-io:2.6")
             implementation(Libs.Mocking.mockk)
@@ -41,8 +41,8 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsCore))
             implementation(Libs.Coroutines.core)
             implementation("org.mockito:mockito-core:2.24.0")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")

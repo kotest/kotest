@@ -39,8 +39,10 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(Projects.Core))
             implementation(project(Projects.Mpp))
-            implementation(Libs.Ajalt.clikt)
-            implementation(Libs.Ajalt.mordant)
+            // needed at runtime by the intellij plugin
+            api(Libs.Ajalt.clikt)
+            api(Libs.Ajalt.mordant)
+            api(Libs.Classgraph.classgraph)
             implementation(Libs.Coroutines.core)
          }
       }
@@ -48,7 +50,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Assertions))
+            implementation(project(Projects.Core))
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.Extensions))
          }

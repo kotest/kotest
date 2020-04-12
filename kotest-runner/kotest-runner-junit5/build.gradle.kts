@@ -39,11 +39,9 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(":kotest-fp"))
-            implementation(project(":kotest-mpp"))
-            api(project(":kotest-core"))
-            api(project(":kotest-extensions"))
-            api(project(":kotest-assertions"))
+            api(project(Projects.Mpp))
+            api(project(Projects.Framework))
+            api(project(Projects.Extensions))
             api(Libs.Coroutines.core)
             api(Libs.JUnitPlatform.engine)
             api(Libs.JUnitPlatform.api)
@@ -55,8 +53,8 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.AssertionsCore))
             implementation(Libs.JUnitPlatform.testkit)
          }
       }
