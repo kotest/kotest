@@ -26,7 +26,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
          }
       }
    }
@@ -41,12 +41,14 @@ kotlin {
             implementation(project(Projects.Mpp))
             implementation(Libs.Ajalt.clikt)
             implementation(Libs.Ajalt.mordant)
+            implementation(Libs.Coroutines.core)
          }
       }
 
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
+            implementation(project(Projects.Assertions))
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.Extensions))
          }

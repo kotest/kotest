@@ -25,7 +25,7 @@ class BasicConsoleWriter : ConsoleWriter {
    private var n = 0
 
    private val tests = mutableListOf<TestCase>()
-   private val results = mutableMapOf<Description, TestResult>()
+   private val testResults = mutableMapOf<Description, TestResult>()
 
    private fun green(str: String) = println(term.green(str))
    private fun red(str: String) = println(term.red(str))
@@ -42,10 +42,10 @@ class BasicConsoleWriter : ConsoleWriter {
    }
 
    override fun testFinished(testCase: TestCase, result: TestResult) {
-      results[testCase.description] = result
+      testResults[testCase.description] = result
    }
 
-   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, ignored: Map<TestCase, TestResult>) {
+   override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
 
       n += 1
       val specDesc = kclass.description()
@@ -62,7 +62,7 @@ class BasicConsoleWriter : ConsoleWriter {
       tests
          .filter { it.spec::class.qualifiedName == kclass.qualifiedName }
          .forEach { testCase ->
-            val result = results[testCase.description]
+            val result = testResults[testCase.description]
             when (result?.status) {
                null -> red("${testCase.description.name} did not complete")
                TestStatus.Success -> green("   " + testCase.description.indented())
@@ -82,9 +82,9 @@ class BasicConsoleWriter : ConsoleWriter {
 
       val duration = Duration.ofMillis(System.currentTimeMillis() - start)
 
-      val ignored = results.filter { it.value.status == TestStatus.Ignored }
-      val failed = results.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
-      val passed = results.filter { it.value.status == TestStatus.Success }
+      val ignored = testResults.filter { it.value.status == TestStatus.Ignored }
+      val failed = testResults.filter { it.value.status == TestStatus.Failure || it.value.status == TestStatus.Error }
+      val passed = testResults.filter { it.value.status == TestStatus.Success }
 
       val specs = tests.map { it.spec::class.description() }.distinct()
       val specDistinctCount = specs.distinct().size
