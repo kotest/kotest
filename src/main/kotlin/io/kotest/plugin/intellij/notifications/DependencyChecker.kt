@@ -19,22 +19,39 @@ object DependencyChecker {
    private val ConsoleDep = Dependency("io.kotest", "kotest-runner-console-jvm")
    private val RequiredDeps = listOf(ConsoleDep)
 
-   private fun libraries(module: Module): List<Dependency> {
+   private fun OrderEnumerator.libraries(): List<Dependency> {
       val libraries = mutableListOf<Dependency>()
-      OrderEnumerator.orderEntries(module).librariesOnly().forEachLibrary { library ->
+      forEachLibrary { library ->
          val dep = library.name?.removePrefix("Gradle: ")?.removePrefix("Maven: ")
-         if (dep != null && dep.contains(':')) {
-            val group = dep.takeWhile { it != ':' }
-            val artifact = dep.dropWhile { it != ':' }.drop(1)
-            libraries.add(Dependency(group, artifact))
+         if (dep != null) {
+            val components = dep.split(':')
+            if (components.size == 3) {
+               val (group, artifact, _) = components
+               libraries.add(Dependency(group, artifact))
+            }
          }
          true
       }
       return libraries.toList()
    }
 
-   private fun hasDependency(dep: Dependency, module: Module): Boolean {
-      return libraries(module).any { it == dep }
+   private fun libraries(project: Project): List<Dependency> = OrderEnumerator.orderEntries(project).libraries()
+   private fun libraries(module: Module): List<Dependency> = OrderEnumerator.orderEntries(module).libraries()
+
+   private fun hasDependency(dep: Dependency, project: Project): Boolean = libraries(project).any { it == dep }
+   private fun hasDependency(dep: Dependency, module: Module): Boolean = libraries(module).any {
+      println(it)
+      it == dep
+   }
+
+   fun checkMissingDependencies(project: Project): Boolean {
+      RequiredDeps.forEach {
+         if (!hasDependency(it, project)) {
+            showDependencyNotification(it, project)
+            return false
+         }
+      }
+      return true
    }
 
    fun checkMissingDependencies(module: Module): Boolean {

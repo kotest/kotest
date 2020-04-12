@@ -38,11 +38,11 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    fun reloadModel() {
       val f = file
       if (f == null) {
-         model = emptyTreeModel()
+         model = noFileModel()
       } else {
          val module = ModuleUtilCore.findModuleForFile(f, project)
          if (module == null) {
-            model = emptyTreeModel()
+            model = noModuleModel()
          } else {
             DumbService.getInstance(project).runWhenSmart {
                try {
@@ -57,8 +57,13 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
       }
    }
 
-   private fun emptyTreeModel(): TreeModel {
-      val root = DefaultMutableTreeNode("<no specs detected>")
+   private fun noFileModel(): TreeModel {
+      val root = DefaultMutableTreeNode("<no file selected>")
+      return DefaultTreeModel(root)
+   }
+
+   private fun noModuleModel(): TreeModel {
+      val root = DefaultMutableTreeNode("<no module>")
       return DefaultTreeModel(root)
    }
 }

@@ -32,6 +32,15 @@ class RunAction(icon: Icon,
    }
 }
 
+class RunAllAction(icon: Icon,
+                   private val project: Project,
+                   private val executorId: String) : AnAction(icon) {
+
+   override fun actionPerformed(e: AnActionEvent) {
+      runAll(project, executorId)
+   }
+}
+
 fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {
    val path = tree.selectionPath
    if (path != null) {
@@ -72,9 +81,27 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
    val run = config.configuration as KotestRunConfiguration
 
-   run.setTestName("")
+   run.setTestName(null)
    run.setSpecName(node.fqn.asString())
    run.setModule(node.module)
+   run.setGeneratedName()
+
+   manager.addConfiguration(config)
+   manager.selectedConfiguration = config
+   ExecutionUtil.runConfiguration(config, executor)
+}
+
+fun runAll(project: Project, executorId: String) {
+   if (!DependencyChecker.checkMissingDependencies(project)) return
+
+   val manager = RunManager.getInstance(project)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+
+   val config = manager.createConfiguration("Run all", KotestConfigurationFactory(KotestConfigurationType))
+   val run = config.configuration as KotestRunConfiguration
+
+   run.setTestName(null)
+   run.setSpecName(null)
    run.setGeneratedName()
 
    manager.addConfiguration(config)

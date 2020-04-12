@@ -35,7 +35,8 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
 
-      if (!DependencyChecker.checkMissingDependencies(context.module)) return false
+      if (context.module != null)
+         if (!DependencyChecker.checkMissingDependencies(context.module)) return false
 
       val element = sourceElement.get()
       if (element != null) {

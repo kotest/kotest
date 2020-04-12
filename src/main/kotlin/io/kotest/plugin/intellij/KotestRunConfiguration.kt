@@ -83,11 +83,11 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       this.envs = envs
    }
 
-   fun setTestName(testName: String) {
+   fun setTestName(testName: String?) {
       this.testName = testName
    }
 
-   fun setSpecName(specName: String) {
+   fun setSpecName(specName: String?) {
       this.specName = specName
    }
 
