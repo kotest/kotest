@@ -6,14 +6,15 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
 import io.kotest.plugin.intellij.psi.buildSuggestedName
+import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isSubclassOfSpec
-import removeJUnitRunConfigs
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
  * A Run producer is called to configure a [KotestRunConfiguration] after it has been created.
+ *
+ * This producer creates run configurations for spec classes (run all).
  */
 class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
@@ -29,9 +30,6 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
             configuration.setSpec(ktclass)
             configuration.setModule(context.module)
             configuration.setGeneratedName()
-
-            //context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
-            removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
             return true
          }
       }

@@ -8,23 +8,18 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClass
-import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
-import io.kotest.plugin.intellij.styles.DescribeSpecStyle
-import io.kotest.plugin.intellij.styles.ExpectSpecStyle
-import io.kotest.plugin.intellij.styles.FeatureSpecStyle
-import io.kotest.plugin.intellij.styles.FreeSpecStyle
-import io.kotest.plugin.intellij.styles.FunSpecStyle
-import io.kotest.plugin.intellij.styles.ShouldSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.StringSpecStyle
-import io.kotest.plugin.intellij.styles.WordSpecStyle
-import removeJUnitRunConfigs
+import io.kotest.plugin.intellij.styles.Test
 
 /**
- * A run configuration contains the details of a particular run (in the drop down run box).
- * A Run producer is called to configure a [KotestRunConfiguration] after it has been created.
+ * A run configuration creates the details of a particular run (in the drop down run box).
+ *
+ * A Run producer is called to create a [KotestRunConfiguration] from the [KotestConfigurationFactory]
+ * and then again to configure it with a context.
+ *
+ * This producer creates run configurations for individual tests.
  */
-abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
@@ -33,14 +28,14 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
 
    /**
     * Returns true if the given context is applicable to this run producer.
-    * This implementation will return true if the source element is a test in the producers defined [style].
+    * This implementation will return true if the source element is a test in any of the [SpecStyle]s.
     */
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
       if (element != null) {
-         val test = style.test(element)
+         val test = findTest(element)
          if (test != null) {
 
             val ktclass = element.enclosingClass()
@@ -52,7 +47,7 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
                configuration.setGeneratedName()
 
                //context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
-               removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
+               //removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
                return true
             }
          }
@@ -67,14 +62,22 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null) {
-         val test = style.test(element)
+         val test = findTest(element)
          if (test != null) {
             val spec = element.enclosingClass()
             val name = buildSuggestedName(spec?.fqName?.asString(), test.path)
+            println("${configuration.name} == $name")
             return configuration.name == name
          }
       }
       return false
+   }
+
+   private fun findTest(element: PsiElement): Test? {
+      return SpecStyle.styles.asSequence()
+         .filter { it.isContainedInSpec(element) }
+         .mapNotNull { it.findAssociatedTest(element) }
+         .firstOrNull()
    }
 
    /**
@@ -84,22 +87,10 @@ abstract class TestPathRunConfigurationProducer(private val style: SpecStyle) : 
     * We always return true because no one else should be creating Kotest configurations.
     */
    override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
-      println("isPreferredConfiguration self=$self other=$other")
       return true
    }
 
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
-      println("shouldReplace self=$self other=$other")
       return false
    }
 }
-
-class FunSpecRunConfigurationProducer : TestPathRunConfigurationProducer(FunSpecStyle)
-class BehaviorSpecRunConfigurationProducer : TestPathRunConfigurationProducer(BehaviorSpecStyle)
-class ShouldSpecRunConfigurationProducer : TestPathRunConfigurationProducer(ShouldSpecStyle)
-class StringSpecRunConfigurationProducer : TestPathRunConfigurationProducer(StringSpecStyle)
-class WordSpecRunConfigurationProducer : TestPathRunConfigurationProducer(WordSpecStyle)
-class FeatureSpecRunConfigurationProducer : TestPathRunConfigurationProducer(FeatureSpecStyle)
-class ExpectSpecRunConfigurationProducer : TestPathRunConfigurationProducer(ExpectSpecStyle)
-class FreeSpecRunConfigurationProducer : TestPathRunConfigurationProducer(FreeSpecStyle)
-class DescribeSpecRunConfigurationProducer : TestPathRunConfigurationProducer(DescribeSpecStyle)

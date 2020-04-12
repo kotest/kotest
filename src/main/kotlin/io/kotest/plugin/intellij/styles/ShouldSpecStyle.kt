@@ -53,7 +53,6 @@ object ShouldSpecStyle : SpecStyle {
    }
 
    override fun test(element: PsiElement): Test? {
-      if (!element.isContainedInSpec()) return null
       return when (element) {
          is KtCallExpression -> element.tryShould() ?: element.tryContext()
          is KtDotQualifiedExpression -> element.tryShouldWithConfig()
@@ -62,8 +61,6 @@ object ShouldSpecStyle : SpecStyle {
    }
 
    override fun test(element: LeafPsiElement): Test? {
-      if (!element.isContainedInSpec()) return null
-
       val ktcall = element.ifCallExpressionNameIdent()
       if (ktcall != null) return test(ktcall)
 

@@ -7,7 +7,7 @@ import io.kotest.matchers.string.shouldNotBeBlank
 
 class FunSpecExampleTest : FunSpec({
 
-  test("a string cannot be blank") {
+  test("a string cannot be blank"){
     "wibble".shouldNotBeBlank()
   }
 

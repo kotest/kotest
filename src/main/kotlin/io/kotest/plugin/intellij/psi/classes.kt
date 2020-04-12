@@ -12,7 +12,8 @@ import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 /**
- * Returns true if this element is contained within a class that is a Spec class.
+ * Returns true if this [PsiElement] is contained within a class that is a subclass
+ * of the given spec FQN
  */
 fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
    val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false

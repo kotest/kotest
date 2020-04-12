@@ -21,12 +21,28 @@ interface SpecStyle {
       )
    }
 
-   fun PsiElement.isContainedInSpec(): Boolean = this.isContainedInSpec(fqn())
+   /**
+    * Returns true if the given [PsiElement] is located within a class which extends
+    * the spec class associated with this style instance.
+    */
+   fun isContainedInSpec(element: PsiElement): Boolean = element.isContainedInSpec(fqn())
 
    /**
-    * Returns a [Test] if this [PsiElement] is the container of a test AST.
+    * Returns a [Test] if this [PsiElement] is the canonical root of a test AST.
     */
    fun test(element: PsiElement): Test? = null
+
+   /**
+    * If we know that a particular [PsiElement] is located within a test definition, then we can
+    * use this method to find the associated [Test] instance.
+    *
+    * This method should only be called when we have a single element and want to find the test
+    * associated with it. It should not be called when iterating over all elements looking
+    * speculatively for tests.
+    */
+   fun findAssociatedTest(element: PsiElement): Test? {
+      return generateSequence(element, { it.parent }).mapNotNull { test(it) }.firstOrNull()
+   }
 
    /**
     * Returns a [Test] if this [LeafPsiElement] is the canonical leaf of a test AST.

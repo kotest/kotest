@@ -111,7 +111,6 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    override fun test(element: PsiElement): Test? {
-      if (!element.isContainedInSpec()) return null
       return when (element) {
          is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe()
          is KtDotQualifiedExpression -> element.tryItWithConfig() ?: element.tryXItWithConfig()
@@ -120,8 +119,6 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    override fun test(element: LeafPsiElement): Test? {
-      if (!element.isContainedInSpec()) return null
-
       val call = element.ifCallExpressionNameIdent()
       if (call != null) return test(call)
 

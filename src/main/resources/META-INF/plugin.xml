@@ -22,45 +22,17 @@
 
       <toolWindow id="Kotest" anchor="left" icon="/icon16_greyscale.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.KotestToolWindowFactory"
-                  conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition">
-
-      </toolWindow>
+                  conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition"/>
 
       <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.BehaviorSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.FunSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.ShouldSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.StringSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.WordSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.FeatureSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.DescribeSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.ExpectSpecRunLineMarkerContributor"/>
-      <runLineMarkerContributor language="kotlin"
-                                implementationClass="io.kotest.plugin.intellij.FreeSpecRunLineMarkerContributor"/>
-
+                                implementationClass="io.kotest.plugin.intellij.KotestRunLineMarkerContributor"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.SpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.BehaviorSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FunSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.ShouldSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.StringSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.WordSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FeatureSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.DescribeSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.FreeSpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.ExpectSpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.TestPathRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
 
       <testFramework implementation="io.kotest.plugin.intellij.KotestTestFramework" id="kotest"/>
 
-      <!--<testCreator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotlinTestTestCreator"/>-->
       <testGenerator language="kotlin" implementationClass="io.kotest.plugin.intellij.KotestTestGenerator"/>
       <stacktrace.fold substring="at io.kotest."/>
 

@@ -6,56 +6,68 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
-import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
-import io.kotest.plugin.intellij.styles.DescribeSpecStyle
-import io.kotest.plugin.intellij.styles.ExpectSpecStyle
-import io.kotest.plugin.intellij.styles.FeatureSpecStyle
-import io.kotest.plugin.intellij.styles.FreeSpecStyle
-import io.kotest.plugin.intellij.styles.FunSpecStyle
-import io.kotest.plugin.intellij.styles.ShouldSpecStyle
+import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.psi.isSpecSubclass
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.StringSpecStyle
-import io.kotest.plugin.intellij.styles.WordSpecStyle
+import io.kotest.plugin.intellij.styles.Test
+import org.jetbrains.kotlin.psi.KtClassOrObject
 
-abstract class KotestRunLineMarkerContributor(private val style: SpecStyle) : RunLineMarkerContributor() {
+/**
+ * Given an element, returns an [RunLineMarkerContributor.Info] if the elements line should have a gutter icon added.
+ */
+class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
 
-  override fun getInfo(element: PsiElement): Info? {
+   override fun getInfo(element: PsiElement): Info? {
+      // the docs say to only run a line marker for a leaf
+      return when (element) {
+         is LeafPsiElement -> markerForSpec(element) ?: markerForTest(element)
+         else -> null
+      }
+   }
 
-     // the docs say to only run a line marker for a leaf
-     if (element !is LeafPsiElement) {
-        return null
-     }
+   private fun markerForSpec(element: LeafPsiElement): Info? {
+      val ktclass = element.enclosingClassOrObjectForClassOrObjectToken() ?: return null
+      return SpecStyle.styles.asSequence()
+         .filter { ktclass.isSpecSubclass(it) }
+         .map { icon(ktclass) }
+         .firstOrNull()
+   }
 
-//     val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
-//     if (ktclass != null) {
-//        if (ktclass.isSpecSubclass(style)) {
-//           return Info(
-//              AllIcons.RunConfigurations.TestState.Run_run,
-//              Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
-//              *ExecutorAction.getActions(0)
-//           )
-//        }
-//     }
+   private fun markerForTest(element: LeafPsiElement): Info? {
+      // println("Creating run marker for $element ${element.hashCode()}")
+      return SpecStyle.styles.asSequence()
+         .filter { it.isContainedInSpec(element) }
+         .map { it.test(element) }
+         .filterNotNull()
+         .map { icon(it) }
+         .firstOrNull()
+   }
 
-     val test = style.test(element)
-     if (test != null) {
-        return Info(
-           AllIcons.RunConfigurations.TestState.Run,
-           Function<PsiElement, String> { "Run ${test.path}" },
-           *ExecutorAction.getActions(0)
-        )
-     }
+   private fun icon(ktclass: KtClassOrObject): Info {
+      // println("Creating run icon for $test")
+      return object : Info(
+         AllIcons.RunConfigurations.TestState.Run_run,
+         Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
+         *ExecutorAction.getActions(1)
+      ) {
+         override fun shouldReplace(other: Info): Boolean {
+            println("shouldReplace $this $other")
+            return false
+         }
+      }
+   }
 
-     return null
-  }
+   private fun icon(test: Test): Info {
+      // println("Creating run icon for $test")
+      return object : Info(
+         AllIcons.RunConfigurations.TestState.Run,
+         Function<PsiElement, String> { "Run ${test.path}" },
+         *ExecutorAction.getActions(1)
+      ) {
+         override fun shouldReplace(other: Info): Boolean {
+            println("shouldReplace $this $other")
+            return false
+         }
+      }
+   }
 }
-
-class BehaviorSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(BehaviorSpecStyle)
-class DescribeSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(DescribeSpecStyle)
-class ExpectSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(ExpectSpecStyle)
-class FeatureSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(FeatureSpecStyle)
-class FreeSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(FreeSpecStyle)
-class FunSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(FunSpecStyle)
-class ShouldSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(ShouldSpecStyle)
-class StringSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(StringSpecStyle)
-class WordSpecRunLineMarkerContributor : KotestRunLineMarkerContributor(WordSpecStyle)
