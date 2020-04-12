@@ -9,8 +9,8 @@ class DumpTest : FunSpec({
    test("dump should pick up auto scanned listeners") {
       Project.createConfigSummary() shouldBe """-> Parallelism: 1 thread(s)
 -> Default test timeout: 600000ms
--> Default test order: TestCaseOrder
--> Default isolation mode: IsolationMode
+-> Default test order: Sequential
+-> Default isolation mode: SingleInstance
 -> Global soft assertations: False
 -> Write spec failure file: False
 -> Fail on ignored tests: False
