@@ -5,12 +5,12 @@ import com.intellij.execution.PsiLocation
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
+import io.kotest.plugin.intellij.psi.elementAtLine
 
 /**
  * A parser for location URLs reported by test runners.
@@ -19,24 +19,6 @@ import com.intellij.psi.util.ClassUtil
 object KotestSMTestLocator : SMTestLocator {
 
    private const val Protocol = "kotest"
-
-   /**
-    * Returns the offsets for the given line in this file, or -1 if the document cannot be loaded for this file.
-    */
-   private fun PsiFile.offsetForLine(line: Int): IntRange? {
-      return PsiDocumentManager.getInstance(project).getDocument(this)?.let {
-         it.getLineStartOffset(line)..it.getLineEndOffset(line)
-      }
-   }
-
-   private fun PsiElement.findElementInRange(offsets: IntRange): PsiElement? {
-      return offsets.asSequence()
-         .mapNotNull { this.findElementAt(it) }
-         .firstOrNull()
-   }
-
-   private fun PsiFile.elementAtLine(line: Int): PsiElement? =
-      offsetForLine(line)?.let { findElementInRange(it) }
 
    /**
     * Fulls the load [PsiFile] for a given fqn name or returns null if the class cannot be found.
@@ -53,6 +35,7 @@ object KotestSMTestLocator : SMTestLocator {
                             project: Project,
                             scope: GlobalSearchScope): List<Location<PsiElement>> {
       val list = mutableListOf<Location<PsiElement>>()
+         println(path)
       if (protocol == Protocol) {
          val (fqn, line) = path.split(':')
          val psiFile = loadPsiFile(fqn, project, scope)
