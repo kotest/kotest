@@ -39,10 +39,7 @@ object DependencyChecker {
    private fun libraries(module: Module): List<Dependency> = OrderEnumerator.orderEntries(module).libraries()
 
    private fun hasDependency(dep: Dependency, project: Project): Boolean = libraries(project).any { it == dep }
-   private fun hasDependency(dep: Dependency, module: Module): Boolean = libraries(module).any {
-      println(it)
-      it == dep
-   }
+   private fun hasDependency(dep: Dependency, module: Module): Boolean = libraries(module).any { it == dep }
 
    fun checkMissingDependencies(project: Project): Boolean {
       RequiredDeps.forEach {

@@ -35,7 +35,6 @@ object KotestSMTestLocator : SMTestLocator {
                             project: Project,
                             scope: GlobalSearchScope): List<Location<PsiElement>> {
       val list = mutableListOf<Location<PsiElement>>()
-         println(path)
       if (protocol == Protocol) {
          val (fqn, line) = path.split(':')
          val psiFile = loadPsiFile(fqn, project, scope)
