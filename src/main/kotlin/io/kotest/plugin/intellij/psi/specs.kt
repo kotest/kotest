@@ -155,3 +155,12 @@ enum class CallbackType {
 
    abstract val text: String
 }
+
+/**
+ * Returns true if this [PsiElement] is contained within a class that is a subclass
+ * of the given spec FQN
+ */
+fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
+   val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
+   return enclosingClass.isSpecSubclass(fqn)
+}

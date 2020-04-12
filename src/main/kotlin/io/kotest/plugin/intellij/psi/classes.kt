@@ -4,21 +4,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.idea.references.mainReference
 import org.jetbrains.kotlin.lexer.KtKeywordToken
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
-
-/**
- * Returns true if this [PsiElement] is contained within a class that is a subclass
- * of the given spec FQN
- */
-fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
-   val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
-   return enclosingClass.isSpecSubclass(fqn)
-}
 
 /**
  * Returns the [KtClassOrObject] for a [LeafPsiElement] that is a [KtKeywordToken] with the
