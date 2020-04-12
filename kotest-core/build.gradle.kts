@@ -52,7 +52,8 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-js"))
-            implementation(kotlin("test-js"))
+            // this must be api as it's compiled into the final source
+            api(kotlin("test-js"))
             implementation(Libs.Coroutines.coreJs)
          }
       }
