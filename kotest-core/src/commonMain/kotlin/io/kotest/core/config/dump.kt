@@ -10,8 +10,8 @@ fun Project.createConfigSummary(): String {
 
    sb.buildOutput("Parallelism", parallelism().toString() + " thread(s)")
    sb.buildOutput("Default test timeout", timeout().toLongMilliseconds().toString() + "ms")
-   sb.buildOutput("Default test order", testCaseOrder()::class.simpleName)
-   sb.buildOutput("Default isolation mode", isolationMode()::class.simpleName)
+   sb.buildOutput("Default test order", testCaseOrder().name)
+   sb.buildOutput("Default isolation mode", isolationMode().name)
    sb.buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
    sb.buildOutput("Write spec failure file", writeSpecFailureFile().toString().capitalize())
    if (writeSpecFailureFile()) {
