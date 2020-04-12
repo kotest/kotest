@@ -45,9 +45,11 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
 //    )
 //    params.classPath.addAll(jars)
 
-      // these two parameters are required by the console runner so it knows what test to execute
-      params.programParametersList.add("--spec", configuration.getSpecName()!!)
-      // test can actually be left out if you want to run the entire spec
+      // spec can be omitted if you want to run all tests in a module
+      val specName = configuration.getSpecName()
+      if (specName != null && specName.isNotBlank())
+         params.programParametersList.add("--spec", specName)
+      // test can be omitted if you want to run the entire spec
       val testName = configuration.getTestName()
       if (testName != null && testName.isNotBlank())
          params.programParametersList.add("--testpath", testName)
