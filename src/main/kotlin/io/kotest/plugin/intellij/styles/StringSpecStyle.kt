@@ -20,8 +20,6 @@ object StringSpecStyle : SpecStyle {
       return "\"$name\" { }"
    }
 
-   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
-
    /**
     * A test of the form:
     *

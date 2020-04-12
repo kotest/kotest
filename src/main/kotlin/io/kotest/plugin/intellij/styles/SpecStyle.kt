@@ -53,7 +53,7 @@ interface SpecStyle {
 
    fun specStyleName(): String
 
-   fun isTestElement(element: PsiElement): Boolean
+   fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
     * Returns all child tests located in the given [PsiElement].

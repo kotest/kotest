@@ -1,10 +1,17 @@
 package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.psi.extractLiteralForStringExtensionFunction
-import io.kotest.plugin.intellij.psi.matchInfixFunctionWithStringAndLambaArg
-import io.kotest.plugin.intellij.psi.matchStringInvoke
+import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
+import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
+import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
+import io.kotest.plugin.intellij.psi.ifBinaryExpressionOperationIdent
+import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
+import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object FreeSpecStyle : SpecStyle {
 
@@ -18,24 +25,75 @@ object FreeSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
-   private fun PsiElement.locateParentTests(): List<String> {
-      val test = tryBranch()
-      val result = if (test == null) emptyList() else listOf(test)
+   private fun locateParentContainers(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
-      return if (parent == null) result else parent.locateParentTests() + result
+      val p = element.parent ?: return emptyList()
+      val context = if (p is KtBinaryExpression) listOfNotNull(p.tryContainer()) else emptyList()
+      return locateParentContainers(p) + context
    }
 
-   private fun PsiElement.tryBranch(): String? = matchInfixFunctionWithStringAndLambaArg(listOf("-"))
-   private fun PsiElement.tryLeaf(): String? = matchStringInvoke()
-   private fun PsiElement.tryLeafWithConfig(): String? = extractLiteralForStringExtensionFunction(listOf("config"))
+   /**
+    * A test of the form:
+    *
+    *   "test name"{ }
+    *
+    */
+   private fun KtCallExpression.tryTest(): Test? {
+      val name = extractStringFromStringInvokeWithLambda() ?: return null
+      return buildTest(name, this)
+   }
+
+   /**
+    * Matches tests of the form:
+    *
+    *   "some test".config(...) {}
+    */
+   private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
+      val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
+      return buildTest(name, this)
+   }
+
+   /**
+    * Matches tests of the form:
+    *
+    *   "some test" - {}
+    */
+   private fun KtBinaryExpression.tryContainer(): Test? {
+      val name = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
+      return buildTest(name, this)
+   }
+
+   private fun buildTest(testName: String, element: PsiElement): Test {
+      val contexts = locateParentContainers(element)
+      val path = (contexts.map { it.name } + testName).joinToString(" -- ")
+      return Test(testName, path)
+   }
 
    override fun test(element: PsiElement): Test? {
-//    if (!element.isContainedInSpec()) return null
-//    val test = element.tryLeaf() ?: element.tryLeafWithConfig() ?: element.tryBranch()
-//    return if (test == null) null else {
-//      val tests = element.locateParentTests() + test
-//      tests.distinct().joinToString(" -- ")
-//    }
+      return when (element) {
+         is KtCallExpression -> element.tryTest()
+         is KtDotQualifiedExpression -> element.tryTestWithConfig()
+         is KtBinaryExpression -> element.tryContainer()
+         else -> null
+      }
+   }
+
+   /**
+    * For a FreeSpec we consider the following scenarios:
+    *
+    * "test name" {} // a test
+    * "test name" - {} // a container
+    */
+   override fun test(element: LeafPsiElement): Test? {
+      val ktcall = element.ifCallExpressionLhsStringOpenQuote()
+      if (ktcall != null) return test(ktcall)
+
+      val ktdot = element.ifDotExpressionSeparator()
+      if (ktdot != null) return test(ktdot)
+
+      val ktbinary = element.ifBinaryExpressionOperationIdent()
+      if (ktbinary != null) return test(ktbinary)
+
       return null
    }
 }

@@ -297,7 +297,7 @@ fun PsiElement.isSingleStringTemplateArg(): Boolean =
 
 /**
  * Returns the string literal used by an infix function, when the function is of the
- * form <string literal> <operation> <lambda-expression>, eg, "some test" should { }
+ * form <string literal> <operation> <lambda-expression>, eg, "test" should { } or "test" - {}
  */
 fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<String>): String? {
    if (children.size == 3) {
