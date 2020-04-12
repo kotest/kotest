@@ -34,7 +34,6 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    }
 
    private fun markerForTest(element: LeafPsiElement): Info? {
-      // println("Creating run marker for $element ${element.hashCode()}")
       return SpecStyle.styles.asSequence()
          .filter { it.isContainedInSpec(element) }
          .map { it.test(element) }
@@ -44,30 +43,18 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    }
 
    private fun icon(ktclass: KtClassOrObject): Info {
-      // println("Creating run icon for $test")
-      return object : Info(
+      return Info(
          AllIcons.RunConfigurations.TestState.Run_run,
          Function<PsiElement, String> { "Run ${ktclass.fqName!!.shortName()}" },
          *ExecutorAction.getActions(1)
-      ) {
-         override fun shouldReplace(other: Info): Boolean {
-            println("shouldReplace $this $other")
-            return false
-         }
-      }
+      )
    }
 
    private fun icon(test: Test): Info {
-      // println("Creating run icon for $test")
-      return object : Info(
+      return Info(
          AllIcons.RunConfigurations.TestState.Run,
          Function<PsiElement, String> { "Run ${test.path}" },
          *ExecutorAction.getActions(1)
-      ) {
-         override fun shouldReplace(other: Info): Boolean {
-            println("shouldReplace $this $other")
-            return false
-         }
-      }
+      )
    }
 }

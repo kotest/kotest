@@ -66,7 +66,6 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
          if (test != null) {
             val spec = element.enclosingClass()
             val name = buildSuggestedName(spec?.fqName?.asString(), test.path)
-            println("${configuration.name} == $name")
             return configuration.name == name
          }
       }
