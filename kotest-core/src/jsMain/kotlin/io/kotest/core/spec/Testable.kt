@@ -1,3 +1,3 @@
 package io.kotest.core.spec
 
-actual annotation class Testable
+//actual annotation class Testable

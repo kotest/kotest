@@ -39,11 +39,11 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
+            implementation(kotlin("stdlib-common"))
             implementation(project(":kotest-mpp"))
             api(project(":kotest-assertions"))
             // this seems to need to be API otherwise it won't find it in projects that depend on core
-            api(project(":kotest-fp"))
-            api(kotlin("stdlib-common"))
+            implementation(project(":kotest-fp"))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -51,8 +51,8 @@ kotlin {
       val jsMain by getting {
          dependsOn(commonMain)
          dependencies {
-            api(kotlin("stdlib-js"))
-            api(kotlin("test-js"))
+            implementation(kotlin("stdlib-js"))
+            implementation(kotlin("test-js"))
             implementation(Libs.Coroutines.coreJs)
          }
       }
@@ -60,12 +60,10 @@ kotlin {
       val jvmMain by getting {
          dependsOn(commonMain)
          dependencies {
-            api(kotlin("stdlib-jdk8"))
+            implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.JUnitPlatform.commons)
-            api(Libs.JUnitJupiter.api)
-            api(Libs.Classgraph.classgraph)
+            implementation(Libs.Classgraph.classgraph)
          }
       }
    }

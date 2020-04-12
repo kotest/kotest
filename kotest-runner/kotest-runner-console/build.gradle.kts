@@ -36,11 +36,11 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
-            api(kotlin("reflect"))
-            api(project(":kotest-core"))
-            api(project(":kotest-mpp"))
-            api(Libs.Ajalt.clikt)
-            api(Libs.Ajalt.mordant)
+            implementation(kotlin("reflect"))
+            implementation(project(":kotest-core"))
+            implementation(project(":kotest-mpp"))
+            implementation(Libs.Ajalt.clikt)
+            implementation(Libs.Ajalt.mordant)
          }
       }
 
@@ -49,7 +49,7 @@ kotlin {
          dependencies {
             implementation(project(":kotest-runner:kotest-runner-junit5"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
-            api(project(":kotest-extensions"))
+            implementation(project(":kotest-extensions"))
          }
       }
    }
