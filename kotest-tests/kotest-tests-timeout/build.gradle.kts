@@ -35,6 +35,7 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions"))
             implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(":kotest-runner:kotest-runner-console"))
             implementation(Libs.Coroutines.core)
          }
       }

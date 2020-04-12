@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 
-class ExposeTest : WordSpec() {
+class ExtractTest : WordSpec() {
   init {
 
     data class Person(val name: String, val age: Int, val friends: List<Person>)
