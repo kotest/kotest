@@ -1,9 +1,6 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeRenderer
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -21,14 +18,12 @@ import io.kotest.plugin.intellij.psi.specs
 import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.tree.TreeSelectionModel
 
 class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(true, false) {
 
    private val fileEditorManager = FileEditorManager.getInstance(project)
-   private val actionManager = ActionManager.getInstance()
    private val tree = createTree()
    private val runActions = createRunActions(tree, project)
 
@@ -45,25 +40,11 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       tree.addTreeSelectionListener(TestExplorerTreeSelectionListener(runActions))
 
       background = Color.WHITE
-      toolbar = createToolbar()
+      toolbar = createToolbar(runActions, tree)
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
       listenForFileChanges()
       refreshContent()
-   }
-
-   private fun createToolbar(): JComponent {
-      return actionManager.createActionToolbar(
-         ActionPlaces.STRUCTURE_VIEW_TOOLBAR,
-         createActionGroup(runActions),
-         true
-      ).component
-   }
-
-   private fun createActionGroup(actions: List<RunAction>): DefaultActionGroup {
-      val result = DefaultActionGroup()
-      actions.forEach { result.add(it) }
-      return result
    }
 
    private fun listenForFileChanges() {

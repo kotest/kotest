@@ -21,7 +21,7 @@
       <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
 
       <toolWindow id="Kotest" anchor="left" icon="/icon16_greyscale.png"
-                  factoryClass="io.kotest.plugin.intellij.toolwindow.KotestToolWindowFactory"
+                  factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"
                   conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition"/>
 
       <runLineMarkerContributor language="kotlin"

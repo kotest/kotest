@@ -16,6 +16,17 @@ fun JTree.expandAllNodes(startingIndex: Int, rowCount: Int) {
    }
 }
 
+fun JTree.collapseAllNodes() {
+   fun collapseAllNodes(node: DefaultMutableTreeNode) {
+      node.children().asSequence().toList().forEach {
+         collapseAllNodes(it as DefaultMutableTreeNode)
+      }
+      val path = TreePath(node.path)
+      this.collapsePath(path)
+   }
+   collapseAllNodes(model.root as DefaultMutableTreeNode)
+}
+
 fun TreePath.node(): NodeDescriptor<Any>? {
    return when (val last = lastPathComponent) {
       is DefaultMutableTreeNode -> when (val obj = last.userObject) {

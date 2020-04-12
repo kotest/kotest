@@ -38,7 +38,7 @@ fun treeModel(file: VirtualFile,
       }
    }
 
-   val kotest = KotestFileNodeDescriptor(file, project)
+   val kotest = TestFileNodeDescriptor(file, project)
    val root = DefaultMutableTreeNode(kotest)
    specs.forEach { spec ->
 

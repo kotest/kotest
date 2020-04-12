@@ -16,8 +16,8 @@ import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestFileNodeDescriptor(file: VirtualFile,
-                               project: Project) : PresentableNodeDescriptor<Any>(project, null) {
+class TestFileNodeDescriptor(file: VirtualFile,
+                             project: Project) : PresentableNodeDescriptor<Any>(project, null) {
 
    init {
       templatePresentation.presentableText = file.name
