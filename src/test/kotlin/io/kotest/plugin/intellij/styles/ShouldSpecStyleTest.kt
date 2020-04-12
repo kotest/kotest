@@ -25,15 +25,15 @@ class ShouldSpecStyleTest : LightCodeInsightFixtureTestCase() {
       assertSoftly {
 
          gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
-         gutters[0].tooltipText shouldBe "[Kotest] ShouldSpecExample"
+         gutters[0].tooltipText shouldBe "Run ShouldSpecExample"
          (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[1].tooltipText shouldBe "[Kotest] should top level test"
+         gutters[1].tooltipText shouldBe "Run should top level test"
          (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 145
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[2].tooltipText shouldBe "[Kotest] should top level test with config"
+         gutters[2].tooltipText shouldBe "Run should top level test with config"
          (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 237
       }
    }

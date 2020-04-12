@@ -24,31 +24,31 @@ class ExpectSpecStyleTest : LightCodeInsightFixtureTestCase() {
       assertSoftly {
 
          gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
-         gutters[0].tooltipText shouldBe "[Kotest] ExpectSpecExample"
+         gutters[0].tooltipText shouldBe "Run ExpectSpecExample"
          (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 87
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[1].tooltipText shouldBe "[Kotest] some context"
+         gutters[1].tooltipText shouldBe "Run some context"
          (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 141
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[2].tooltipText shouldBe "[Kotest] some context -- some test"
+         gutters[2].tooltipText shouldBe "Run some context -- some test"
          (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 173
 
          gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[3].tooltipText shouldBe "[Kotest] some context -- some test with config"
+         gutters[3].tooltipText shouldBe "Run some context -- some test with config"
          (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 261
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[4].tooltipText shouldBe "[Kotest] some context -- another nested context"
+         gutters[4].tooltipText shouldBe "Run some context -- another nested context"
          (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 323
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[5].tooltipText shouldBe "[Kotest] some context -- another nested context -- some test"
+         gutters[5].tooltipText shouldBe "Run some context -- another nested context -- some test"
          (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 367
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[6].tooltipText shouldBe "[Kotest] some context -- another nested context -- some test with config"
+         gutters[6].tooltipText shouldBe "Run some context -- another nested context -- some test with config"
          (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 461
       }
    }

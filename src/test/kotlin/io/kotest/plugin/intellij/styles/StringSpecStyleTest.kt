@@ -22,15 +22,15 @@ class StringSpecStyleTest : LightCodeInsightFixtureTestCase() {
       gutters.size shouldBe 3
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
-      gutters[0].tooltipText shouldBe "[Kotest] StringSpecExample"
+      gutters[0].tooltipText shouldBe "Run StringSpecExample"
       (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 91
 
       gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[1].tooltipText shouldBe "[Kotest] this is a test"
+      gutters[1].tooltipText shouldBe "Run this is a test"
       (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 145
 
       gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[2].tooltipText shouldBe "[Kotest] this test has config"
+      gutters[2].tooltipText shouldBe "Run this test has config"
       (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 215
 
    }
