@@ -16,58 +16,6 @@ import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
-/**
- * Matches blocks of the form:
- *
- * functionName("some string").config(..)
- *
- * @return the string argument of the invoked function
- *
- * @param lefts one or more acceptable names for the left hand side reference
- */
-@Deprecated("")
-fun PsiElement.extractStringArgForFunctionWithConfig(lefts: List<String>): String? =
-   extractStringArgForFunctionBeforeDotExpr(lefts, listOf("config"))
-
-/**
- * Matches blocks of the form:
- *
- * functionName("some string").<ident>
- *
- * Eg, can be used to match: should("this is a test").config { }
- *
- * @return the string argument of the invoked function
- *
- * @param lefts one or more acceptable names for the left hand side reference
- * @param rights one or more acceptable names for the right hand side reference
- */
-@Deprecated("")
-fun PsiElement.extractStringArgForFunctionBeforeDotExpr(lefts: List<String>, rights: List<String>): String? {
-   if (parent is KtLiteralStringTemplateEntry) {
-      val maybeTemplateExpr = parent.parent
-      if (maybeTemplateExpr is KtStringTemplateExpression) {
-         val maybeValueArg = maybeTemplateExpr.parent
-         if (maybeValueArg is KtValueArgument) {
-            val maybeValueArgList = maybeValueArg.parent
-            if (maybeValueArgList is KtValueArgumentList) {
-               val maybeCallExpr = maybeValueArgList.parent
-               if (maybeCallExpr is KtCallExpression) {
-                  val maybeDotExpr = maybeCallExpr.parent
-                  if (maybeDotExpr is KtDotQualifiedExpression) {
-                     if (maybeDotExpr.children.size == 2
-                        && maybeDotExpr.children[0].isCallExprWithName(lefts)
-                        && maybeDotExpr.children[1].isCallExprWithName(rights)) {
-                        return parent.text
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-   return null
-}
-
 @Deprecated("")
 fun PsiElement.extractLiteralForStringExtensionFunction(funcnames: List<String>): String? {
    if (parent is KtLiteralStringTemplateEntry) {
