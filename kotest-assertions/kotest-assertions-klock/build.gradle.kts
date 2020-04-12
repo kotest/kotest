@@ -25,7 +25,7 @@ kotlin {
       targets.all {
          compilations.all {
             kotlinOptions {
-               freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+               freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
             }
          }
       }

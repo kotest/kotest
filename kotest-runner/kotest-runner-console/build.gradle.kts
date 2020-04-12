@@ -37,8 +37,8 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-mpp"))
+            implementation(Projects.Core)
+            implementation(Projects.Mpp)
             implementation(Libs.Ajalt.clikt)
             implementation(Libs.Ajalt.mordant)
          }
@@ -47,7 +47,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(Projects.JunitRunner)
             implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(project(":kotest-extensions"))
          }

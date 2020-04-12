@@ -40,10 +40,10 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(project(":kotest-mpp"))
-            api(project(":kotest-assertions"))
-            // this seems to need to be API otherwise it won't find it in projects that depend on core
-            implementation(project(":kotest-fp"))
+            implementation(project(Projects.Mpp))
+            // tuples are used in the callback listeners so must be exposed as api
+            api(project(Projects.Fp))
+            implementation(project(Projects.Assertions))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
