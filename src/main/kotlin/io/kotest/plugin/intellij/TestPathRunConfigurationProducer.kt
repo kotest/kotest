@@ -6,6 +6,7 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.styles.SpecStyle
@@ -33,6 +34,9 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
+
+      if (!DependencyChecker.checkMissingDependencies(context.module)) return false
+
       val element = sourceElement.get()
       if (element != null) {
          val test = findTest(element)
@@ -46,8 +50,6 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
                configuration.setModule(context.module)
                configuration.setGeneratedName()
 
-               //context.project.getComponent(ElementLocationCache::class.java).add(ktclass)
-               //removeJUnitRunConfigs(context.project, ktclass.fqName!!.shortName().asString())
                return true
             }
          }

@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.notifications.DependencyChecker
 import javax.swing.Icon
 import javax.swing.JTree
 
@@ -17,7 +18,7 @@ class RunAction(icon: Icon,
                 private val project: Project,
                 private val executorId: String) : AnAction(icon) {
    override fun actionPerformed(e: AnActionEvent) {
-      runTest(tree, project, executorId, true)
+      runNode(tree, project, executorId, true)
    }
 
    override fun update(e: AnActionEvent) {
@@ -31,7 +32,7 @@ class RunAction(icon: Icon,
    }
 }
 
-fun runTest(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {
+fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {
    val path = tree.selectionPath
    if (path != null) {
       when (val node = path.node()) {
@@ -42,6 +43,7 @@ fun runTest(tree: JTree, project: Project, executorId: String, executeBranch: Bo
 }
 
 fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
+   if (!DependencyChecker.checkMissingDependencies(node.module)) return
 
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
@@ -61,6 +63,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
 }
 
 fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
+   if (!DependencyChecker.checkMissingDependencies(node.module)) return
 
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)

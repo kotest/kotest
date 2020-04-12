@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isSubclassOfSpec
@@ -23,6 +24,9 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
+
+      if (!DependencyChecker.checkMissingDependencies(context.module)) return false
+
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()

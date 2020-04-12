@@ -25,7 +25,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       tree.addMouseListener(object : MouseAdapter() {
          override fun mouseClicked(e: MouseEvent) {
             if (e.clickCount == 2) {
-               runTest(tree, project, "Run", false)
+               runNode(tree, project, "Run", false)
             }
          }
       })
