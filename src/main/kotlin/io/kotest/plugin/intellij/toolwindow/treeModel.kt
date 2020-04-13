@@ -54,7 +54,6 @@ fun createTreeModel(file: VirtualFile,
          .filter { it.isTestModule }
          .filter { it.platform.isJvmOnly() }
          .forEach {
-            println(it.platform)
             val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
             val moduleNode = DefaultMutableTreeNode(moduleDescriptor)
             allModulesNode.add(moduleNode)

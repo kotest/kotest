@@ -12,6 +12,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderEnumerator
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.testFramework.PsiTestUtil
 
 object DependencyChecker {
 
@@ -66,7 +68,7 @@ object DependencyChecker {
       val notification = object : Notification(
          Group.displayId,
          "Kotest",
-         "Add <b>${dep.asString()}</b> to your build to execute tests using the kotest plugin. Required version is 4.1.0-224-SNAPSHOT or higher.",
+         "Add <b>${dep.asString()}</b> to your build to execute tests using the kotest plugin. Required version is 4.1.0 or higher.",
          NotificationType.ERROR
       ), NotificationFullContent {}
 

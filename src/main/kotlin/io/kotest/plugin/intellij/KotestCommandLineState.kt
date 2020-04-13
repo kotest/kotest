@@ -38,12 +38,12 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
 
       // the module assigned to a configuration contains the classpath deps defined in the users build
       // but we must also include any dependencies we need that the user won't explicitly depend on, such
-      // as the console runner, and args4j
-//    val jars = listOf(
-//        PathUtil.getJarPathForClass(KotestConsoleRunner::class.java),
-//        PathUtil.getJarPathForClass(ArgumentParser::class.java)
-//    )
-//    params.classPath.addAll(jars)
+      // as the console runner, clickt, mordant and classgraph.
+//      val jars = listOf(
+//         PathUtil.getJarPathForClass(KotestConsoleRunner::class.java),
+//         PathUtil.getJarPathForClass(ArgumentParser::class.java)
+//      )
+//      params.classPath.addAll(jars)
 
       // spec can be omitted if you want to run all tests in a module
       val specName = configuration.getSpecName()
@@ -59,9 +59,13 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
    override fun execute(executor: Executor, runner: ProgramRunner<*>): ExecutionResult {
       val processHandler = startProcess()
       val props = KotestSMTConsoleProperties(configuration, executor)
+      props.setIfUndefined(TestConsoleProperties.HIDE_IGNORED_TEST, false)
       props.setIfUndefined(TestConsoleProperties.HIDE_PASSED_TESTS, false)
+      props.setIfUndefined(TestConsoleProperties.SCROLL_TO_STACK_TRACE, true)
       props.setIfUndefined(TestConsoleProperties.SCROLL_TO_SOURCE, true)
       props.setIfUndefined(TestConsoleProperties.TRACK_RUNNING_TEST, true)
+      props.setIfUndefined(TestConsoleProperties.SHOW_STATISTICS, true)
+      props.setIfUndefined(TestConsoleProperties.INCLUDE_NON_STARTED_IN_RERUN_FAILED, true)
       val console = SMTestRunnerConnectionUtil.createAndAttachConsole("kotest", processHandler, props)
       return DefaultExecutionResult(console, processHandler, *createActions(console, processHandler, executor))
    }
