@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
    id("java")
    id("kotlin-multiplatform")
@@ -37,10 +34,9 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             // we use the internals of the JVM project in the tests
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
-            implementation(project(":kotest-assertions:kotest-assertions-arrow"))
+            implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.core)
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")

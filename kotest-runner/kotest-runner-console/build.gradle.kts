@@ -37,7 +37,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Core))
+            implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
@@ -50,7 +50,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.Core))
+            implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.AssertionsCore))
             implementation(project(Projects.Extensions))
          }

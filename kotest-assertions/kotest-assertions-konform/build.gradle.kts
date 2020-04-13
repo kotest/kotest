@@ -42,7 +42,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Konform.Konform)
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
@@ -66,7 +66,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

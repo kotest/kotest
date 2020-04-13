@@ -32,8 +32,8 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.AssertionsCore))
             implementation(Libs.Arrow.fx)
             implementation(Libs.Arrow.validation)
             implementation(Libs.Arrow.syntax)
@@ -42,7 +42,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

@@ -44,7 +44,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

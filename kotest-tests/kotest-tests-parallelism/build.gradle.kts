@@ -32,9 +32,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3")
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")

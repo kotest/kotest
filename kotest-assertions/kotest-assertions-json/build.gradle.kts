@@ -33,7 +33,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
@@ -44,7 +44,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

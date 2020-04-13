@@ -33,7 +33,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             implementation("io.ktor:ktor-server-core:1.2.6")
             implementation("io.ktor:ktor-server-test-host:1.2.6")
          }
@@ -42,7 +42,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

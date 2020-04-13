@@ -32,9 +32,9 @@ kotlin {
 
       jsTest {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.Core))
+            implementation(project(Projects.AssertionsCore))
          }
       }
    }

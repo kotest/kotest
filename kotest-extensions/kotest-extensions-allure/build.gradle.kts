@@ -34,7 +34,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Framework))
+            implementation(project(Projects.Core))
             implementation(project(Projects.Mpp))
             implementation(Libs.Allure.commons)
             implementation("javax.xml.bind:jaxb-api:2.3.1")

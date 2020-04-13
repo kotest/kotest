@@ -33,7 +33,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             implementation(Libs.Klock.klock)
          }
       }
@@ -48,7 +48,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
          }
       }
    }

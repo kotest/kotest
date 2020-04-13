@@ -40,7 +40,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             api(project(Projects.Mpp))
-            api(project(Projects.Framework))
+            api(project(Projects.Core))
             api(project(Projects.Extensions))
             api(Libs.Coroutines.core)
             api(Libs.JUnitPlatform.engine)

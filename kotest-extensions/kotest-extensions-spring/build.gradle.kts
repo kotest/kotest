@@ -35,7 +35,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
+            implementation(project(Projects.AssertionsShared))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation("org.springframework:spring-test:5.2.4.RELEASE")
@@ -47,7 +47,7 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
             implementation("org.springframework.boot:spring-boot-starter-test:2.2.5.RELEASE")
          }
       }

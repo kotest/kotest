@@ -34,7 +34,7 @@ kotlin {
          dependencies {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
-            implementation(project(":kotest-runner:kotest-runner-junit5"))
+            implementation(project(Projects.JunitRunner))
             implementation(Libs.Jdom.jdom2)
          }
       }

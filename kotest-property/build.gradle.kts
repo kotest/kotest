@@ -42,7 +42,8 @@ kotlin {
          dependencies {
             implementation(project(":kotest-mpp"))
             implementation(kotlin("stdlib-common"))
-            api(project(Projects.Core))
+            api(project(Projects.Fp))
+            api(project(Projects.AssertionsShared))
             implementation(Libs.Coroutines.coreCommon)
          }
       }

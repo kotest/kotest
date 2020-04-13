@@ -31,7 +31,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(Projects.Framework))
+            implementation(project(Projects.Core))
             implementation(kotlin("stdlib-jdk8"))
             implementation("commons-io:commons-io:2.6")
             implementation(Libs.Mocking.mockk)
