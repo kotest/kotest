@@ -17,6 +17,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMExternalizerUtil
+import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -60,8 +61,13 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
    override fun getValidModules(): MutableCollection<Module> =
       ModuleManager.getInstance(project).modules.toMutableList()
 
-   override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? =
-      KotestCommandLineState(environment, this)
+   override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
+      return when {
+         configurationModule.module == null -> null
+         !DependencyChecker.checkMissingDependencies(configurationModule.module!!) -> null
+         else -> KotestCommandLineState(environment, this)
+      }
+   }
 
    override fun setAlternativeJrePath(path: String?) {
       alternativeJrePath = path
