@@ -41,6 +41,7 @@ kotlin {
             implementation(kotlin("reflect"))
             api(project(Projects.Mpp))
             api(project(Projects.Core))
+            api(project(Projects.AssertionsCore))
             api(project(Projects.Extensions))
             api(Libs.Coroutines.core)
             api(Libs.JUnitPlatform.engine)

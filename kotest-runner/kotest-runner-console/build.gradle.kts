@@ -39,6 +39,8 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
+            // can stay as impl because will be provided in the users main build
+            implementation(project(Projects.Core))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
