@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.show
 
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.assertions.show.DefaultShow
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class DefaultShowTest : FunSpec({
@@ -15,4 +15,5 @@ class DefaultShowTest : FunSpec({
       DefaultShow.show('a').value shouldBe "'a'"
       DefaultShow.show('w').value shouldBe "'w'"
    }
+
 })

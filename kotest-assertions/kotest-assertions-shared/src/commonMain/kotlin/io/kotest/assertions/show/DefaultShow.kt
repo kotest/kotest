@@ -1,7 +1,7 @@
 package io.kotest.assertions.show
 
 /**
- * A default implementation of [Show] that handles arrays, collections and primitives as well as nullable values.
+ * A default implementation of [Show] that handles primitives as well as nullable values.
  */
 object DefaultShow : Show<Any?> {
    override fun show(a: Any?): Printed = when (a) {
@@ -14,44 +14,6 @@ object DefaultShow : Show<Any?> {
       is Short -> a.toString().printed()
       is Byte -> a.toString().printed()
       is String -> "\"$a\"".printed()
-      is Array<*> -> show(a.toList())
-      is BooleanArray -> show(a.toList())
-      is IntArray -> show(a.toList())
-      is ShortArray -> show(a.toList())
-      is FloatArray -> show(a.toList())
-      is DoubleArray -> show(a.toList())
-      is LongArray -> show(a.toList())
-      is ByteArray -> show(a.toList())
-      is CharArray -> show(a.toList())
-      is List<*> -> a.getCollectionSnippet()
-      is Iterable<*> -> show(a.toList())
       else -> a.toString().printed()
    }
-}
-
-private const val MaxCollectionSnippetSize = 20
-
-/**
- * Returns the values in a Collection, up to a max size
- */
-private fun Collection<*>.getCollectionSnippet(): Printed {
-   val remainingItems = size - MaxCollectionSnippetSize
-
-   val suffix = when {
-      remainingItems <= 0 -> "]"
-      else -> "] and $remainingItems more"
-   }
-
-   return joinToString(
-      separator = ", ",
-      prefix = "[",
-      postfix = suffix,
-      limit = MaxCollectionSnippetSize
-   ) {
-      recursiveRepr(this, it).value
-   }.printed()
-}
-
-internal fun recursiveRepr(root: Any, node: Any?): Printed {
-   return if (root == node) "(this ${root::class.simpleName})".printed() else node.show()
 }
