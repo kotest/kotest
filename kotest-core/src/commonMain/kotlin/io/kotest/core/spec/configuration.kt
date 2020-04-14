@@ -186,6 +186,8 @@ abstract class TestConfiguration {
       fun DynamicTest.addPrefix() = copy(name = prefix + name)
       factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
    }
+
+   internal var autoCloseables = emptyList<AutoCloseable>()
 }
 
 // we need to include setting the adapter as a top level val in here so that it runs before any suite/test in js
@@ -197,9 +199,7 @@ val initializeRuntime = configureRuntime()
  * which invokes the [AutoCloseable.close] method.
  */
 fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
-   afterSpec {
-      closeable.close()
-   }
+   autoCloseables = listOf(closeable) + autoCloseables
    return closeable
 }
 
@@ -208,8 +208,6 @@ fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: T): T {
  * which invokes the [AutoCloseable.close] method.
  */
 fun <T : AutoCloseable> TestConfiguration.autoClose(closeable: Lazy<T>): Lazy<T> {
-   afterSpec {
-      closeable.value.close()
-   }
+   autoClose(closeable.value)
    return closeable
 }

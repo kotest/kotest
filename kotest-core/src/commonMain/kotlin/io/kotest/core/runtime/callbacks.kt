@@ -1,6 +1,5 @@
 package io.kotest.core.runtime
 
-import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.config.dumpProjectConfig
 import io.kotest.core.extensions.TestCaseExtension
@@ -12,6 +11,7 @@ import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 
 /**
  * Invokes any afterProject functions from the given listeners.
@@ -83,10 +83,11 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
  */
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
    log("invokeAfterSpec $this")
+
+   autoCloseables.forEach { it.close() }
+
    val listeners = resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.afterSpec(this)
-   }
+   listeners.forEach { it.afterSpec(this) }
    this
 }
 
