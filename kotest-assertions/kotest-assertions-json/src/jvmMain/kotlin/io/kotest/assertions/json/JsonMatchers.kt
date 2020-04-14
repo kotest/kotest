@@ -126,27 +126,29 @@ fun <T> containJsonKeyValue(path: JsonKey, t: T) = object : Matcher<Json?> {
     }
 }
 
-infix fun Json?.shouldContainExactly(countableElement: JsonCountableElement) =
-    this should containExactly(countableElement)
+@OptIn(ExperimentalContracts::class)
+infix fun Json?.shouldContainExactly(countableElement: JsonCountableElement) {
+    contract {
+        returns() implies (this@shouldContainExactly != null)
+    }
 
-infix fun Json?.shouldNotContainExactly(countableElement: JsonCountableElement) =
-    this shouldNot containExactly(countableElement)
-
-fun containExactly(countableElement: JsonCountableElement) = object : Matcher<Json?> {
-
-    override fun test(value: Json?): MatcherResult = when (countableElement) {
+    when (countableElement) {
         is JsonCountableElement.JsonKeyValuePairs -> {
-            // todo: check if it's a JSON object and not an array
-
             val expected = countableElement.count
-            val actual: Int? = value?.let { JsonPath.read(it, "length()") }
 
-            MatcherResult(
-                expected == actual,
-                "bad quantity of key-value pairs in ${value.representation} - expected: $expected but was: $actual",
-                "quantity of key-value pairs in ${value.representation} - " +
-                        "expected not to match with: $expected but match: $actual"
-            )
+            if (this == null) {
+                throw failure("bad quantity of key-value pairs in ${this.representation} - expected: $expected but the receiver is null")
+            }
+
+            if (this.isBlank() || this.firstOrNull { !it.isWhitespace() } != '{') {
+                throw failure("bad quantity of key-value pairs in ${this.representation} - expected: $expected but the receiver is not a JSON object: ${this.representation}")
+            }
+
+            val actual: Int = JsonPath.read(this, "length()")
+
+            if (actual != expected) {
+                throw failure("bad quantity of key-value pairs in ${this.representation} - expected: $expected but was: $actual")
+            }
         }
     }
 }

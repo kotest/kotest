@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.json.jsonKeyValueEntries
+import io.kotest.assertions.json.shouldContainExactly
 import io.kotest.assertions.json.shouldContainJsonKey
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldMatchJson
@@ -132,5 +134,21 @@ class JsonAssertionsTest : StringSpec({
     shouldThrow<AssertionError> {
       testJson2.shouldMatchJsonResource("/json1.json")
     }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
+  }
+
+  "test json contains countable elements" {
+    """{}""" shouldContainExactly 0.jsonKeyValueEntries
+    """{"a": 1}""" shouldContainExactly 1.jsonKeyValueEntries
+    """{"a": 1, "b": 2}""" shouldContainExactly 2.jsonKeyValueEntries
+
+    shouldThrow<AssertionError> { """{}""" shouldContainExactly 1.jsonKeyValueEntries }
+    shouldThrow<AssertionError> { """{"a": 1}""" shouldContainExactly 2.jsonKeyValueEntries }
+    shouldThrow<AssertionError> { """{"a": 1, "b": 2}""" shouldContainExactly 1.jsonKeyValueEntries }
+
+    shouldThrow<AssertionError> { null shouldContainExactly 0.jsonKeyValueEntries }
+    shouldThrow<AssertionError> { null shouldContainExactly 20.jsonKeyValueEntries }
+
+    shouldThrow<AssertionError> { """"string"""" shouldContainExactly 6.jsonKeyValueEntries }
+    shouldThrow<AssertionError> { """["array elem"]""" shouldContainExactly 1.jsonKeyValueEntries }
   }
 })
