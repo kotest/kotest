@@ -189,7 +189,7 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
     testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
 }
 ```
