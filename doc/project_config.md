@@ -57,9 +57,11 @@ object ProjectConfig : AbstractProjectConfig {
 
 When running multiple tests from a Spec, there's a certain order on how to execute them.
 
-By default, a sequential order is used (order that tests are defined in the spec), but it's also possible to configure them to be executed in a random order.
+By default, a sequential order is used (the order that tests are defined in the spec), but it's also possible to configure them to be executed in a random or lexicographic order.
 
 ##### Sequential
+
+Runs top level tests in the order they are defined in code.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig() {
@@ -69,9 +71,21 @@ object ProjectConfig : AbstractProjectConfig() {
 
 ##### Random
 
+Runs top level tests in a random order every time.
+
 ```kotlin
 object ProjectConfig : AbstractProjectConfig() {
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
+}
+```
+
+##### Lexicographic
+
+Runs top level tests in in lexicographic (~alphabetical) order.
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig() {
+    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
 }
 ```
 
