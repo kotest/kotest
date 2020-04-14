@@ -1,72 +1,55 @@
 package com.sksamuel.kotest
 
-import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.autoClose
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.core.spec.style.StringSpec
-import java.io.Closeable
+import io.kotest.matchers.shouldBe
+import java.util.concurrent.atomic.AtomicInteger
 
-// this is here to test for github issue #294
-internal object Resources
 
 class AutoCloseTest : StringSpec() {
 
-  private val resourceA = autoClose(AutoCloseable4)
-  private val resourceB = autoClose(Closeable3)
-  private val resourceC = autoClose(Closeable2)
-  private val resourceD = autoClose(AutoCloseable1)
+  private val first = autoClose(FirstAutoclose)
+  private val second = autoClose(SecondAutoclose)
+  private val third = autoClose(ThirdAutoclose)
 
   init {
     "should close resources in reverse order" {
-      resourceA.closed = false
-      resourceB.closed = false
-      resourceC.closed = false
-      resourceD.closed = false
+       // Test will be verified in AfterSpec
     }
   }
+
+   override fun afterSpec(spec: Spec) {
+      first.closed shouldBe 3
+      second.closed shouldBe 2
+      third.closed shouldBe 1
+   }
+
 }
 
-object AutoCloseListener : ProjectListener {
-  override fun afterProject() {
-    AutoCloseable1.closed.shouldBeTrue()
-    Closeable2.closed.shouldBeTrue()
-    Closeable3.closed.shouldBeTrue()
-    AutoCloseable4.closed.shouldBeTrue()
-  }
+private val closedNumber = AtomicInteger(0)
+
+private object FirstAutoclose : AutoCloseable {
+
+   var closed = -1
+
+   override fun close() {
+      closed = closedNumber.incrementAndGet()
+   }
 }
 
-object AutoCloseable1 : AutoCloseable {
+private object SecondAutoclose : AutoCloseable {
+   var closed = -1
 
-  var closed = true
-
-  override fun close() {
-    closed = true
-  }
+   override fun close() {
+      closed = closedNumber.incrementAndGet()
+   }
 }
 
-object Closeable2 : Closeable {
+private object ThirdAutoclose : AutoCloseable {
+   var closed = -1
 
-  var closed = true
-
-  override fun close() {
-    closed = true
-  }
-}
-
-object Closeable3 : Closeable {
-
-  var closed = true
-
-  override fun close() {
-    closed = true
-  }
-}
-
-object AutoCloseable4 : AutoCloseable {
-
-  var closed = true
-
-  override fun close() {
-    closed = true
-  }
+   override fun close() {
+      closed = closedNumber.incrementAndGet()
+   }
 }
