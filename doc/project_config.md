@@ -20,7 +20,7 @@ The number set is the number of concurrently executing specs. For example.
 
 
 ```kotlin
-object ProjectConfig : AbstractProjectConfig {
+object ProjectConfig : AbstractProjectConfig() {
     override val parallelism = 3
 }
 ```
@@ -53,3 +53,26 @@ object ProjectConfig : AbstractProjectConfig {
 }
 ```
 
+#### Test Ordering
+
+When running multiple tests from a Spec, there's a certain order on how to execute them.
+
+By default, a sequential order is used (order that tests are defined in the spec), but it's also possible to configure them to be executed in a random order.
+
+##### Sequential
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig() {
+    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Sequential
+}
+```
+
+##### Random
+
+```kotlin
+object ProjectConfig : AbstractProjectConfig() {
+    override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
+}
+```
+
+_Note: Nested tests will always run in discovery order (sequential)_
