@@ -111,7 +111,16 @@ object Discovery {
             .enableClassInfo()
             .enableExternalClasses()
             .ignoreClassVisibility()
-            .blacklistPackages("java.*", "javax.*", "sun.*", "com.sun.*", "kotlin.*")
+            .blacklistPackages(
+               "java.*",
+               "javax.*",
+               "sun.*",
+               "com.sun.*",
+               "kotlin.*",
+               "androidx.*",
+               "org.jetbrains.kotlin.*",
+               "org.junit.*"
+            )
             .scan()
       }
       log("Test discovery completed in $time")
