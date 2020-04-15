@@ -1,3 +1,5 @@
+@file:JvmName("reflectionjvm")
+
 package io.kotest.mpp
 
 import kotlin.reflect.KClass

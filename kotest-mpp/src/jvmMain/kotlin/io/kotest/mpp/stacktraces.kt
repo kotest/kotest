@@ -1,3 +1,5 @@
+@file:JvmName("stacktracesjvm")
+
 package io.kotest.mpp
 
 /**
