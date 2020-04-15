@@ -4,14 +4,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.psi.isContainedInSpec
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
 import org.jetbrains.kotlin.psi.KtPackageDirective
+import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtParameterList
-import org.jetbrains.kotlin.psi.KtStringTemplateExpression
+import org.jetbrains.kotlin.psi.KtSuperTypeList
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.KtTypeParameterList
 import org.jetbrains.kotlin.psi.KtTypeReference
@@ -73,19 +72,15 @@ interface SpecStyle {
       return element.children.flatMap { child ->
          when (child) {
             // there are some element types we don't need to traverse to cycles and nested traversals
-            is KtImportList, is KtPackageDirective -> emptyList()
-            is KtConstructorCalleeExpression -> emptyList()
-            is KtStringTemplateExpression -> emptyList()
-            is KtOperationReferenceExpression -> emptyList()
-            is KtParameterList, is KtTypeArgumentList, is KtTypeParameterList, is KtDeclarationModifierList, is KtTypeReference, is KtNameReferenceExpression -> emptyList()
+            is KtParameterList, is KtSuperTypeList, is KtPackageDirective, is KtTypeArgumentList, is KtImportList, is KtTypeParameterList, is KtDeclarationModifierList, is KtTypeReference, is KtNameReferenceExpression -> emptyList()
             else ->
                when (val test = test(child)) {
                   null -> tests(child)
                   else ->
-                     // if the test is a Test type we don't need to inspect any further
+                     // if the test is a Container we don't need to inspect the children
                      when (test.testType) {
-                        TestType.Test -> listOf(TestElement(child, test, emptyList()))
                         TestType.Container -> listOf(TestElement(child, test, tests(child)))
+                        TestType.Test -> listOf(TestElement(child, test, emptyList()))
                      }
                }
          }
