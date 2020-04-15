@@ -1,45 +1,67 @@
 Changelog
 =========
 
-#### 4.0.0 - SNAPSHOTS
-* Feature: KotlinTest assertions to MPP
-* Feature: Generator for multiples and factors #942
-* Feature: Map beEmpty matcher #928
-* Feature: Implement failing a test if no assertions were called #852
-* Feature: Allow seeding of random values in Gen #815
-* Feature: Show missing elements shouldContainAll #945
-* Feature: Should contain any of - collection matcher #946
-* Feature: ShouldBeIn matcher #937
-* Feature: Add Gen.samples() #973
+#### 4.0.3
+
+* Feature: Koin support now works for koin 2.1 #1357
+* Deprecation: String context is deprecated in ShouldSpec in favour of a context block. #1356
+* Improvement: Line breaks added to Collection.containExactly matcher #1380
+* Improvement: Tolerance matcher emits better failure message (including plus/minus values) #1230
+* Bugfix: Project config output now writes the correct values of test ordering and isolation mode #1379
+* Bugfix: Order of autoclose is restored to work like 3.4.x (was undefined in 4.0.x) #1384
+* Bugfix: Fix shouldContainExactly for arrays #1364
+
+#### 4.0.2
+
+* Feature: Added filter and map to Exhaustives #1343
+* Bugfix: Fixed issue with xdescribe in describe spec always being active
+* Bugfix: Simple tags were using full class names rather than the simple name breaking backwards compatibility #1346
+* Improvement: Caching result of discovery for increased performance in maven #1325
+* Bugfix: Closing resources used in classgraph scan #1323
+* Bugfix: Fixed timeout for coroutine launched inside a test without its own scope #1345
+* Bugfix: Fix Arb.bind returning only the same value #1348
+* Bugfix: Restored usage of opentest4j assertions #1339
+* Bugfix: Fixed missing stacktrace in data driven testing #1336
+* Bugfix: Fixed Arb.instant always returning same value #1322
+* Bugfix: Added workaround for gradle 5 bugs.
+
+#### 4.0.1
+
+* Improvement: Bumped kotlin to 1.3.71
+* Feature: Aded latlong Arb #1304
+
+#### 4.0.0
+
+The 4.0.0 release is a large release. With the project rename, the packages have changed and module names have changed.
+
+Major changes:
+
+* The KotlinTest project is now multi-platform. This means most of the modules now require -jvm to be added if you are working server side JVM only. For example, `io.kotlintest:kotlintest-runner-junit5` is now `io.kotest:kotest-runner-junit5-jvm` taking into account package name changes and the platform suffix.
+* Many new assertions (matchers) have been added. This changelog won't list them all. It is simpler to view the [full list](doc/matchers.md).
+* The property test library has moved to a new module `kotest-property` and been reworked to include many new features. See new documentation [here](doc/property_testing.md). The old property test classes are deprecated and will be removed in a future release.
+* Many new property test generators have been added. The full list is [here](doc/generators.md).
+* Composable specs have been added in the form of _Test Factories_.
+* Project config no longer requires placing in a special package name, but can be placed anywhere in the [classpath](doc/project_config.md).
+* @Autoscan has been added for [listeners](doc/listeners.md) and extensions.
+* Added DSL version of test lifecycle [callbacks](doc/listeners.md).
+
+Minor changes.
+
+* Feature: A new JSoup assertions module has been added. #1028
 * Feature: Stats matchers #851
-* Feature: Add Gen.file() #947
-* Feature: Add Gen.concat() #975
-* Feature: Map shouldHaveSize #990
-* Feature: Gen.choose() weighted distribution
 * Feature: Experimental Robolectric Support #926
-* Feature: Truthy/Falsy matchers #943
-* Feature: Replace KotlinTest by Kotest
-* Feature: Infix modifier to JSON matchers
-* Feature: Channel matchers #885
-* Feature: Gen.char() #1005
-* Feature: JSoup assertions #1028
-* Feature: Unique generator values #971
-* Feature: Iterator matcher #1060
-* Feature: Regex Matchers #1074
-* Feature: Add matchers for java.time.Instant #1127
 * Bugfix: shouldNotThrowAny return T instead of Unit #981
-* Removed arrow try
-* Composable specs
-* Bugfix: Empty test name throws an error
-* whenReady(f) has been replaced with f.whenReady which is coroutine enabled
-* Alphabetic test case ordering
-* SkipTestException removed
-* Fixed file matchers to check for null
-* Test callbacks now coroutine enabled
-* Bugfix: Error in spec initialization is cryptic with recent intellij #1097
+* Internal: Removed dependency on Arrow to avoid version conflicts
 * Feature: Project wide default test case config
-* Feature: AutoScan
+* Feature: whenReady(f) has been replaced with f.whenReady which is coroutine enabled
+* Feature: Alphabetic test case ordering
+* Feature: All test callbacks are now coroutine enabled
 * Feature: forEachAsClue
+* Improvement: Support Koin 2.1.0
+* Improvement: Explicitly allow internal classes as specs
+* Feature: Klock matcher support #1214
+* Feature: JDBC matcher support #1221
+
 
 #### 3.4.2
 
