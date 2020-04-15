@@ -4,6 +4,7 @@ Changelog
 #### 4.0.3
 
 * Feature: Koin support now works for koin 2.1 #1357
+* Feature: shouldBeInteger matcher using contracts #1315
 * Deprecation: String context is deprecated in ShouldSpec in favour of a context block. #1356
 * Improvement: Line breaks added to Collection.containExactly matcher #1380
 * Improvement: Tolerance matcher emits better failure message (including plus/minus values) #1230
