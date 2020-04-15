@@ -31,7 +31,7 @@ object FunSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(context, this)
+      return buildTest(context, this, TestType.Container)
    }
 
    /**
@@ -42,7 +42,7 @@ object FunSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryTest(): Test? {
       val expect = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
-      return buildTest(expect, this)
+      return buildTest(expect, this, TestType.Test)
    }
 
    /**
@@ -53,13 +53,13 @@ object FunSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config") ?: return null
-      return buildTest(expect, this)
+      return buildTest(expect, this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, element: PsiElement): Test {
+   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
-      return Test(testName, path)
+      return Test(testName, path, type)
    }
 
    /**
@@ -95,8 +95,12 @@ object FunSpecStyle : SpecStyle {
    }
 }
 
-data class Test(val name: String, val path: String, val enabled: Boolean) {
-   constructor(name: String, path: String) : this(name, path, !name.startsWith("!"))
+enum class TestType {
+   Container, Test
+}
+
+data class Test(val name: String, val path: String, val enabled: Boolean, val testType: TestType) {
+   constructor(name: String, path: String, testType: TestType) : this(name, path, !name.startsWith("!"), testType)
 }
 
 data class TestElement(val psi: PsiElement,

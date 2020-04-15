@@ -40,7 +40,7 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryTest(): Test? {
       val name = extractStringFromStringInvokeWithLambda() ?: return null
-      return buildTest(name, this)
+      return buildTest(name, this, TestType.Test)
    }
 
    /**
@@ -50,7 +50,7 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
-      return buildTest(name, this)
+      return buildTest(name, this, TestType.Test)
    }
 
    /**
@@ -60,13 +60,13 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtBinaryExpression.tryContainer(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
-      return buildTest(name, this)
+      return buildTest(name, this, TestType.Container)
    }
 
-   private fun buildTest(testName: String, element: PsiElement): Test {
+   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentContainers(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
-      return Test(testName, path)
+      return Test(testName, path, type)
    }
 
    override fun test(element: PsiElement): Test? {

@@ -41,7 +41,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtCallExpression.tryDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
       val fullname = "Describe: $name"
-      return buildTest(fullname, name.startsWith("!"), this)
+      return buildTest(fullname, name.startsWith("!"), this, TestType.Container)
    }
 
    /**
@@ -53,7 +53,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtCallExpression.tryIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("it") ?: return null
       val fullname = "It: $name"
-      return buildTest(fullname, name.startsWith("!"), this)
+      return buildTest(fullname, name.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -65,7 +65,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtCallExpression.tryXIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xit") ?: return null
       val fullname = "xIt: $name"
-      return buildTest(fullname, true, this)
+      return buildTest(fullname, true, this, TestType.Test)
    }
 
    /**
@@ -77,7 +77,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtCallExpression.tryXDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe") ?: return null
       val fullname = "xDescribe: $name"
-      return buildTest(fullname, true, this)
+      return buildTest(fullname, true, this, TestType.Container)
    }
 
    /**
@@ -89,7 +89,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
       val fullname = "It: $name"
-      return buildTest(fullname, name.startsWith("!"), this)
+      return buildTest(fullname, name.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -101,13 +101,13 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
       val fullname = "xIt: $name"
-      return buildTest(fullname, true, this)
+      return buildTest(fullname, true, this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, disabled: Boolean, element: PsiElement): Test {
+   private fun buildTest(testName: String, disabled: Boolean, element: PsiElement, testType: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" ")
-      return Test(testName, path, !disabled)
+      return Test(testName, path, !disabled, testType)
    }
 
    override fun test(element: PsiElement): Test? {

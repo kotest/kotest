@@ -39,7 +39,7 @@ object BehaviorSpecStyle : SpecStyle {
          val `when` = locateParentTestName(whens)
          val given = locateParentTestName(givens)
          val name = "Given: $given When: $`when` Then: $then"
-         Test(then, name)
+         Test(then, name, TestType.Test)
       }
    }
 
@@ -48,7 +48,7 @@ object BehaviorSpecStyle : SpecStyle {
       return if (w == null) null else {
          val given = locateParentTestName(givens)
          val name = "Given: $given When: $w"
-         Test(w, name)
+         Test(w, name, TestType.Container)
       }
    }
 
@@ -56,7 +56,7 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = "Given: $given"
-         Test(given, name)
+         Test(given, name, TestType.Container)
       }
    }
 
@@ -68,7 +68,7 @@ object BehaviorSpecStyle : SpecStyle {
          // find the first parent test with a 'given' name
          val given = locateParentTestName(givens)
          val name = "Given: $given When: $`when` Then: $then"
-         Test(then, name)
+         Test(then, name, TestType.Test)
       }
    }
 

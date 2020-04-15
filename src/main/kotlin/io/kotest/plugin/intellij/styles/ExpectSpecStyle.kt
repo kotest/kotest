@@ -31,23 +31,23 @@ object ExpectSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(context, this)
+      return buildTest(context, this, TestType.Container)
    }
 
    private fun KtCallExpression.tryExpect(): Test? {
       val expect = extractStringArgForFunctionWithStringAndLambdaArgs("expect") ?: return null
-      return buildTest(expect, this)
+      return buildTest(expect, this, TestType.Test)
    }
 
    private fun KtDotQualifiedExpression.tryExpectWithConfig(): Test? {
       val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("expect", "config") ?: return null
-      return buildTest(expect, this)
+      return buildTest(expect, this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, element: PsiElement): Test {
+   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
-      return Test(testName, path)
+      return Test(testName, path, type)
    }
 
    override fun test(element: PsiElement): Test? {
