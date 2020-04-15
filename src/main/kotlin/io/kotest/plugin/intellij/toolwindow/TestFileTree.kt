@@ -33,6 +33,30 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    }
 
    /**
+    * Offers the given file. If the file is a test file then accepts it
+    * and refreshes the model. Otherwise the existing file (if any) is kept.
+    */
+   fun offerVirtualFile(file: VirtualFile?) {
+      val f = file
+      if (f != null) {
+         val module = ModuleUtilCore.findModuleForFile(f, project)
+         if (module != null) {
+            DumbService.getInstance(project).runWhenSmart {
+               try {
+                  val psi = PsiManager.getInstance(project).findFile(f)
+                  val specs = psi?.specs() ?: emptyList()
+                  if (specs.isNotEmpty()) {
+                     model = createTreeModel(f, project, specs, module)
+                     expandAllNodes()
+                  }
+               } catch (e: Throwable) {
+               }
+            }
+         }
+      }
+   }
+
+   /**
     * Reloads the model based on the currently set file.
     */
    fun reloadModel() {

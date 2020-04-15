@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
@@ -28,9 +29,9 @@ fun PsiElement.classes(): List<KtClassOrObject> {
 }
 
 /**
- * Returns any [KtClassOrObject] children of this [PsiElement] that are specs.
+ * Returns any [KtClassOrObject] children of this [PsiFile] that are specs.
  */
-fun PsiElement.specs(): List<KtClassOrObject> {
+fun PsiFile.specs(): List<KtClassOrObject> {
    return this.classes().filter { it.isSubclassOfSpec() }
 }
 

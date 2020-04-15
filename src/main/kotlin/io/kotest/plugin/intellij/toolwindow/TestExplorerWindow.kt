@@ -5,7 +5,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
@@ -48,7 +47,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
                   val files = events.mapNotNull { it.file }
                   val modified = files.firstOrNull { it.name == file.name }
                   if (modified != null)
-                     refreshContent(modified)
+                     tree.offerVirtualFile(modified)
                }
             }
          }
@@ -60,7 +59,10 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
             override fun selectionChanged(event: FileEditorManagerEvent) {
-               refreshContent()
+               val file = fileEditorManager.selectedEditor?.file
+               if (file != null) {
+                  tree.offerVirtualFile(file)
+               }
             }
          }
       )
@@ -68,10 +70,6 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
 
    private fun refreshContent() {
       val file = fileEditorManager.selectedEditor?.file
-      refreshContent(file)
-   }
-
-   private fun refreshContent(file: VirtualFile?) {
       tree.setVirtualFile(file)
    }
 }
