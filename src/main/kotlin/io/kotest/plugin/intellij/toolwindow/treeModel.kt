@@ -8,10 +8,8 @@ import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.idea.caches.project.isTestModule
-import org.jetbrains.kotlin.idea.project.platform
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
-import org.jetbrains.kotlin.platform.TargetPlatform
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
@@ -52,7 +50,7 @@ fun createTreeModel(file: VirtualFile,
 
       project.allModules()
          .filter { it.isTestModule }
-         .filter { it.platform.isJvmOnly() }
+         .filter { it.name.endsWith("jvmTest") }
          .forEach {
             val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
             val moduleNode = DefaultMutableTreeNode(moduleDescriptor)
@@ -91,7 +89,7 @@ fun createTreeModel(file: VirtualFile,
    return DefaultTreeModel(root)
 }
 
-fun TargetPlatform?.isJvmOnly() =
-   this != null &&
-      componentPlatforms.size == 1 &&
-      componentPlatforms.first().platformName.toLowerCase() == "jvm"
+//fun TargetPlatform?.isJvmOnly() =
+//   this != null &&
+//      componentPlatforms.size == 1 &&
+//      componentPlatforms.first().platformName.toLowerCase() == "jvm"
