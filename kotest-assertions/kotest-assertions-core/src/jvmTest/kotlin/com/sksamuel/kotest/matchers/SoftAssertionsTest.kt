@@ -97,7 +97,9 @@ class SoftAssertionsTest : FreeSpec({
           listOf(1).shouldNotContainExactly(1)
         }
       }.let {
-        it.message should contain("4) Collection should not be exactly [1]")
+        it.message should contain("""4) Collection should not be exactly [
+  1
+]""")
         it.message shouldNot contain("5) ")
       }
     }

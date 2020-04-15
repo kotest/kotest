@@ -47,8 +47,6 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainDuplicates
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
@@ -552,129 +550,6 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf<Any>(1, 2).shouldContain(listOf<Any>(1L, 2L))
             }.shouldHaveMessage("Collection should contain element [1L, 2L]; listing some elements [1, 2]")
-         }
-      }
-
-      "containExactly" should {
-         "test that an array contains given elements exactly" {
-            val actual = arrayOf(1, 2, 3)
-            actual.shouldContainExactly(1, 2, 3)
-            actual shouldContainExactly arrayOf(1, 2, 3)
-            actual.shouldNotContainExactly(3, 2, 1)
-            actual shouldNotContainExactly arrayOf(3, 2, 1)
-
-            shouldThrow<AssertionError> {
-               actual.shouldContainExactly(3, 2, 1)
-            }
-            shouldThrow<AssertionError> {
-               actual shouldContainExactly arrayOf(3, 2, 1)
-            }
-            shouldThrow<AssertionError> {
-               actual.shouldNotContainExactly(1, 2, 3)
-            }
-            shouldThrow<AssertionError> {
-               actual shouldNotContainExactly arrayOf(1, 2, 3)
-            }
-
-            val actualNull: Array<Int>? = null
-            shouldThrow<AssertionError> {
-               actualNull.shouldContainExactly(1, 2, 3)
-            }.shouldHaveMessage("Expecting actual not to be null")
-            shouldThrow<AssertionError> {
-               actualNull.shouldNotContainExactly()
-            }.shouldHaveMessage("Expecting actual not to be null")
-         }
-
-         "test that a collection contains given elements exactly"  {
-            val actual = listOf(1, 2, 3)
-            emptyList<Int>() should containExactly()
-            actual should containExactly(1, 2, 3)
-            actual.shouldContainExactly(1, 2, 3)
-            actual.shouldContainExactly(linkedSetOf(1, 2, 3))
-
-            actual shouldNot containExactly(1, 2)
-            actual.shouldNotContainExactly(3, 2, 1)
-            actual.shouldNotContainExactly(listOf(5, 6, 7))
-            shouldThrow<AssertionError> {
-               actual should containExactly(1, 2)
-            }
-            shouldThrow<AssertionError> {
-               actual should containExactly(1, 2, 3, 4)
-            }
-            shouldThrow<AssertionError> {
-               actual.shouldContainExactly(3, 2, 1)
-            }
-         }
-
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf<Any>(1L, 2L).shouldContainExactly(listOf<Any>(1, 2))
-            }.shouldHaveMessage("Collection should be exactly [1, 2] but was [1L, 2L]")
-         }
-      }
-
-      "containExactlyInAnyOrder" should {
-         "test that a collection contains given elements exactly in any order"  {
-            val actual = listOf(1, 2, 3)
-            actual should containExactlyInAnyOrder(1, 2, 3)
-            actual.shouldContainExactlyInAnyOrder(3, 2, 1)
-            actual.shouldContainExactlyInAnyOrder(linkedSetOf(2, 1, 3))
-
-            actual shouldNot containExactlyInAnyOrder(1, 2)
-            actual.shouldNotContainExactlyInAnyOrder(1, 2, 3, 4)
-            actual.shouldNotContainExactlyInAnyOrder(listOf(5, 6, 7))
-            actual.shouldNotContainExactlyInAnyOrder(1, 1, 1)
-            actual.shouldNotContainExactlyInAnyOrder(listOf(2, 2, 3))
-            actual.shouldNotContainExactlyInAnyOrder(listOf(1, 1, 2, 3))
-
-            val actualDuplicates = listOf(1, 1, 2)
-            actualDuplicates.shouldContainExactlyInAnyOrder(1, 2, 1)
-            actualDuplicates.shouldContainExactlyInAnyOrder(2, 1, 1)
-
-            actualDuplicates.shouldNotContainExactlyInAnyOrder(1, 2)
-            actualDuplicates.shouldNotContainExactlyInAnyOrder(1, 2, 2)
-            actualDuplicates.shouldNotContainExactlyInAnyOrder(1, 1, 2, 2)
-            actualDuplicates.shouldNotContainExactlyInAnyOrder(1, 2, 7)
-
-            shouldThrow<AssertionError> {
-               actual should containExactlyInAnyOrder(1, 2)
-            }
-            shouldThrow<AssertionError> {
-               actual should containExactlyInAnyOrder(1, 2, 3, 4)
-            }
-            shouldThrow<AssertionError> {
-               actual should containExactlyInAnyOrder(1, 1, 1)
-            }
-            shouldThrow<AssertionError> {
-               actual should containExactlyInAnyOrder(1, 1, 2, 3)
-            }
-            shouldThrow<AssertionError> {
-               actualDuplicates should containExactlyInAnyOrder(1, 2, 2)
-            }
-         }
-
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf<Any>(1L, 2L).shouldContainExactlyInAnyOrder(listOf<Any>(1, 2))
-            }.shouldHaveMessage("Collection should contain [1, 2] in any order, but was [1L, 2L]")
-         }
-      }
-
-      "empty" should {
-         "test that a collection contains an element"  {
-            val col = listOf(1, 2, 3)
-
-            shouldThrow<AssertionError> {
-               col should beEmpty()
-            }.message.shouldBe("Collection should be empty but contained [1, 2, 3]")
-
-            shouldThrow<AssertionError> {
-               col.shouldBeEmpty()
-            }.message.shouldBe("Collection should be empty but contained [1, 2, 3]")
-
-            listOf(1, 2, 3).shouldNotBeEmpty()
-
-            ArrayList<String>() should beEmpty()
          }
       }
 
