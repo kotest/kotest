@@ -44,7 +44,7 @@ Major changes:
 * Composable specs have been added in the form of _Test Factories_.
 * Project config no longer requires placing in a special package name, but can be placed anywhere in the [classpath](doc/project_config.md).
 * @Autoscan has been added for [listeners](doc/listeners.md) and extensions.
-* Added DSL version of test lifecycle [callbacks](doc/listeners.md).
+* Added DSL version of test lifecycle [callbacks](doc/listeners.md#dsl-methods).
 
 Minor changes.
 
