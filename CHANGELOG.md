@@ -38,7 +38,7 @@ The 4.0.0 release is a large release. With the project rename, the packages have
 Major changes:
 
 * The KotlinTest project is now multi-platform. This means most of the modules now require -jvm to be added if you are working server side JVM only. For example, `io.kotlintest:kotlintest-runner-junit5` is now `io.kotest:kotest-runner-junit5-jvm` taking into account package name changes and the platform suffix.
-* Many new assertions (matchers) have been added. This changelog won't list them all. It is simpler to view the [full list](doc/matchers.md).
+* The main assertions library is now `kotest-assertions-core` and many new assertions (matchers) have been added. This changelog won't list them all. It is simpler to view the [full list](doc/matchers.md).
 * The property test library has moved to a new module `kotest-property` and been reworked to include many new features. See new documentation [here](doc/property_testing.md). The old property test classes are deprecated and will be removed in a future release.
 * Many new property test generators have been added. The full list is [here](doc/generators.md).
 * Composable specs have been added in the form of _Test Factories_.
