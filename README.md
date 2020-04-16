@@ -148,5 +148,3 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Make use of custom plugins for integrations with tools such as [Pitest](doc/plugins.md#Pitest)
 
 See our [getting started](doc/reference.md#getting-started) section or [full documentation](doc/reference.md).
-
-```
