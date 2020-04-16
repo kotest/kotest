@@ -72,6 +72,8 @@ Behind the scenes, these DSL methods will create an instance of `TestListener`, 
 
 You can use `afterProject` as a DSL method which will create an instance of `ProjectListener`, but there is no `beforeProject` because by the time the framework is at this stage of detecting a spec, the project has already started!
 
+#### DSL methods with functions
+
 Since these DSL methods accept functions, we can pull out logic to a function and re-use it in several places. The `BeforeTest` type used on the function definition is an alias
 to `suspend (TestCase) -> Unit` to keep things simple. There are aliases for the types of each of the callbacks.
 
