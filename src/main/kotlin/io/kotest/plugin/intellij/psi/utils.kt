@@ -16,23 +16,6 @@ import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
-@Deprecated("")
-fun PsiElement.extractLiteralForStringExtensionFunction(funcnames: List<String>): String? {
-   if (parent is KtLiteralStringTemplateEntry) {
-      val maybeTemplateExpr = parent.parent
-      if (maybeTemplateExpr is KtStringTemplateExpression) {
-         val maybeDotExpr = maybeTemplateExpr.parent
-         if (maybeDotExpr is KtDotQualifiedExpression) {
-            if (maybeDotExpr.children.size == 2
-               && maybeDotExpr.children[1].isCallExprWithName(funcnames)) {
-               return parent.text
-            }
-         }
-      }
-   }
-   return null
-}
-
 /**
  * Extracts the string literal from things like:
  *
@@ -89,47 +72,6 @@ fun KtCallExpression.getSingleStringArgOrNull(): String? {
 fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
 
 fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationReferenceExpression && names.contains(text)
-
-/**
- * Matches blocks of the form:
- *
- * functionName("some string") { }
- *
- * Eg, can be used to match: given("this is a test") { }
- *
- * @return the string argument of the invoked function
- *
- * @param names one or more function names to search for
- */
-@Deprecated("")
-fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
-   return when (val p = parent) {
-      is KtStringTemplateEntry -> p.extractStringForFunction2WithStringAndLambda(names)
-      is KtCallExpression -> p.extractStringArgForFunctionWithStringAndLambdaArgs(names)
-      else -> null
-   }
-}
-
-@Deprecated("")
-fun KtStringTemplateEntry.extractStringForFunction2WithStringAndLambda(names: List<String>): String? {
-   if (parent is KtStringTemplateExpression) {
-      val maybeValueArg = parent.parent
-      if (maybeValueArg is KtValueArgument) {
-         val maybeValueArgList = maybeValueArg.parent
-         if (maybeValueArgList is KtValueArgumentList) {
-            val maybeCallExpr = maybeValueArgList.parent
-            if (maybeCallExpr is KtCallExpression) {
-               if (maybeCallExpr.children.size == 3
-                  && maybeCallExpr.children[0].isNameReference(names)
-                  && maybeCallExpr.children[2] is KtLambdaArgument) {
-                  return text
-               }
-            }
-         }
-      }
-   }
-   return null
-}
 
 /**
  * Returns the value of this string expression.
@@ -266,7 +208,7 @@ fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLamb
       }
    }
 
-   return null;
+   return null
 }
 
 /**
@@ -285,7 +227,7 @@ fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalL
       }
    }
 
-   return null;
+   return null
 }
 
 fun PsiElement.isSingleStringTemplateArg(): Boolean =
@@ -315,25 +257,6 @@ fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<St
    return null
 }
 
-/**
- * Matches blocks of the form:
- *
- * "string" infixFunctionName { }
- *
- * Eg, can be used to match: "this test" should { }
- *
- * @return the LHS operand
- *
- * @param names one or more function names to search for
- */
-@Deprecated("")
-fun PsiElement.matchInfixFunctionWithStringAndLambaArg(names: List<String>): String? =
-   when (val p = parent) {
-      is KtStringTemplateEntry -> p.extractLhsForInfixFunction(names)
-      is KtBinaryExpression -> p.extractLhsForInfixFunction(names)
-      else -> null
-   }
-
 fun KtStringTemplateEntry.extractLhsForInfixFunction(names: List<String>): String? {
    if (parent is KtStringTemplateExpression) {
       val maybeBinaryExpr = parent.parent
@@ -360,21 +283,6 @@ fun KtBinaryExpression.extractLhsForInfixFunction(names: List<String>): String? 
    }
    return null
 }
-
-/**
- * Matches blocks of the form:
- *
- * "string" { }
- *
- * @return the LHS operand
- */
-@Deprecated("")
-fun PsiElement.matchStringInvoke(): String? =
-   when (val p = parent) {
-      is KtStringTemplateEntry -> p.extractLhsForStringInvoke()
-      is KtCallExpression -> p.extractLhsForStringInvoke()
-      else -> null
-   }
 
 fun KtStringTemplateEntry.extractLhsForStringInvoke(): String? {
    if (parent is KtStringTemplateExpression) {

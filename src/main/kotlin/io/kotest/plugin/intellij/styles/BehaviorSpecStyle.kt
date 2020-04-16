@@ -6,7 +6,6 @@ import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsF
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionNameIdent
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
-import io.kotest.plugin.intellij.psi.matchFunction2WithStringAndLambda
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -28,27 +27,21 @@ object BehaviorSpecStyle : SpecStyle {
    private val whens = listOf("when", "When", "`when`", "`When")
    private val thens = listOf("then", "Then", "`then`", "`Then`")
 
-   private fun PsiElement.locateParentTestName(names: List<String>): String? {
-      val param = this.matchFunction2WithStringAndLambda(names)
-      return if (param == null && parent == null) null else param ?: parent.locateParentTestName(names)
-   }
-
-   private fun KtDotQualifiedExpression.tryThenWithConfig(): Test? {
-      val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
-      return if (then == null) null else {
-         val `when` = locateParentTestName(whens)
-         val given = locateParentTestName(givens)
-         val name = "Given: $given When: $`when` Then: $then"
-         Test(then, name, TestType.Test)
+   private fun PsiElement.locateParentTestName(): Test? {
+      return when (val p = parent) {
+         null -> null
+         is KtCallExpression -> p.tryWhen() ?: p.tryGiven()
+         else -> p.locateParentTestName()
       }
    }
 
    private fun KtCallExpression.tryWhen(): Test? {
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
       return if (w == null) null else {
-         val given = locateParentTestName(givens)
-         val name = "Given: $given When: $w"
-         Test(w, name, TestType.Container)
+         val name = "When: $w"
+         val parent = locateParentTestName()?.path
+         val path = "$parent $name"
+         Test(name, path, TestType.Container)
       }
    }
 
@@ -56,18 +49,24 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = "Given: $given"
-         Test(given, name, TestType.Container)
+         Test(name, name, TestType.Container)
+      }
+   }
+
+   private fun KtDotQualifiedExpression.tryThenWithConfig(): Test? {
+      val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
+      return if (then == null) null else {
+         val parent = locateParentTestName()?.path
+         val name = "$parent Then: $then"
+         Test(then, name, TestType.Test)
       }
    }
 
    private fun KtCallExpression.tryThen(): Test? {
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
-         // find the first parent test with a 'when' name
-         val `when` = locateParentTestName(whens)
-         // find the first parent test with a 'given' name
-         val given = locateParentTestName(givens)
-         val name = "Given: $given When: $`when` Then: $then"
+         val parent = locateParentTestName()?.path
+         val name = "$parent Then: $then"
          Test(then, name, TestType.Test)
       }
    }
