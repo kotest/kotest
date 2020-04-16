@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.toolwindow
 
+import com.intellij.facet.FacetManager
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -7,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
-import org.jetbrains.kotlin.idea.caches.project.isTestModule
+import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -49,7 +50,7 @@ fun createTreeModel(file: VirtualFile,
       root.add(allModulesNode)
 
       project.allModules()
-         .filter { it.isTestModule }
+         .filter { it.isTestModule() }
          .filter { it.name.endsWith("jvmTest") }
          .forEach {
             val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
@@ -87,6 +88,10 @@ fun createTreeModel(file: VirtualFile,
    }
 
    return DefaultTreeModel(root)
+}
+
+fun Module.isTestModule(): Boolean {
+   return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().any { it.configuration.settings.isTestModule }
 }
 
 //fun TargetPlatform?.isJvmOnly() =
