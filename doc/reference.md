@@ -30,7 +30,7 @@ These are provided separately so you can pick and choose which parts to use if y
 
 #### Which subproject(s) to use?
 
-* If you want to lay out tests in a more [structured way](styles.md); with built in coroutine support at every level; the ability to use functions directly as test lifecycle callbacks; with extensive extension points and more, then build your test classes using the Kotest Test Framework.
+* If you want to lay out tests in a more [structured way](styles.md); with built in coroutine support at every level; the ability to use [functions as test lifecycle callbacks](/doc/listeners.md#dsl-methods-with-functions); with extensive extension points and more, then build your test classes using the Kotest Test Framework.
 
 * If you want a Kotlin focused multi-platform enabled assertions library, with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md) and more, then opt to use the Kotest assertions library.
 
