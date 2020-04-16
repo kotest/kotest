@@ -51,7 +51,7 @@ fun createTreeModel(file: VirtualFile,
 
       project.allModules()
          .filter { it.isTestModule() }
-         .filter { it.name.endsWith("jvmTest") }
+         .filter { it.name.endsWith("jvmTest") || it.name.endsWith("test") }
          .forEach {
             val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
             val moduleNode = DefaultMutableTreeNode(moduleDescriptor)
