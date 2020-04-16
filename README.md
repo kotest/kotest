@@ -7,12 +7,13 @@
 [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
-[Full documentation](doc/reference.md)
+
 
 **Previously known as Kotlintest - From release 4.0 this project is now known as Kotest**
 
 
-For latest updates see [Changelog](CHANGELOG.md)
+For latest updates see [Changelog](CHANGELOG.md).<br/>
+Read [full documentation](doc/reference.md) or a [quick start](doc/reference.md#getting-started) guide.
 
 Community
 ---------
@@ -146,115 +147,6 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
 * Make use of custom plugins for integrations with tools such as [Pitest](doc/plugins.md#Pitest)
 
-See [full documentation](doc/reference.md).
+See our [getting started](doc/reference.md#getting-started) section or [full documentation](doc/reference.md).
 
-Use
----
-
-Kotest is split into two main dependencies. Firstly, the framework which provides the ability to layout tests in one of the spec styles and execute them in JUnit or in Mocha. Secondly, the assertion packages.
-These are provided separately so you can pick and choose which parts you want to use if you don't want to go all in on Kotest.
-
-The following instructions give you the batteries included setup in gradle or maven.
-
-#### Gradle
-
-To use in gradle, configure your build to use the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle). For Gradle 4.6 and higher this is
- as simple as adding `useJUnitPlatform()` inside the tasks with type `Test` and then adding the Kotest dependency.
-
-<details open>
-<summary>Groovy (build.gradle)</summary>
-
-```groovy
-test {
-  useJUnitPlatform()
-}
-
-dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-  testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-}
-```
-
-</details>
-
-
-<details open>
-<summary>Android Project (Groovy)</summary>
-
-```groovy
-android.testOptions {
-    unitTests.all {
-        useJUnitPlatform()
-    }
-}
-
-dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
-    testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
-}
-```
-
-</details>
-
-If you are using Gradle+Kotlin, this works for both Android and non-Android projects:
-
-<details open>
-<summary>Kotlin (build.gradle.kts)</summary>
-
-```kotlin
-tasks.withType<Test> {
-  useJUnitPlatform()
-}
-
-dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
-  testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
-}
-```
-
-</details>
-
-
-#### Maven
-
-For maven you must configure the surefire plugin for junit tests.
-
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.22.2</version>
-</plugin>
-```
-
-And then add the Kotest JUnit5 runner to your build.
-
-```xml
-<dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5-jvm</artifactId>
-    <version>{version}</version>
-    <scope>test</scope>
-</dependency>
-```
-
-And for using kotest core jvm assertions add following configurations
-
-```xml
-<dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-assertions-core-jvm</artifactId>
-    <version>{version}</version>
-    <scope>test</scope>
-</dependency>
-```
-
-#### Snapshots
-
-If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
-
-```kotlin
-repositories {
-    maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
-}
 ```

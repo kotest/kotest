@@ -15,16 +15,33 @@ Starting with release 4.0 **KotlinTest** was renamed to **Kotest** to avoid conf
 There is an upgrade cost. Please be prepared when you upgrade that you will need to do more work than updating the versions in your build file. Mostly this is updating imports across your project, but some function definitions have also changed to support multiplatform builds (for instance Kotlin Durations are now used instead of Java Durations).
 
 
-How to use
+Getting Started
 ----------
 
-Kotest is published to Maven Central so you can get the latest version from the little badge at the top of the readme.
+Kotest is split into 3 basic sub-projects.
+These are provided separately so you can pick and choose which parts to use if you don't want to go _all in_ on Kotest.
 
 
-Kotest is split into two main dependencies. Firstly, the framework which provides the ability to layout tests in one of the spec styles and execute them in JUnit or in Mocha. Secondly, the assertion packages.
-These are provided separately so you can pick and choose which parts you want to use if you don't want to go all in on Kotest.
+|   |   |   |
+|---|---|---|
+| **Kotest Test Framework**  | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>  |
+| **Kotest Assertions Library**  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  |
+| **Kotest Property Testing**  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  |
 
-The following instructions give you the batteries included setup in gradle or maven.
+#### Which subproject(s) to use?
+
+* If you want to lay out tests in a more [structured way](styles.md); with built in coroutine support at every level; the ability to use functions directly as test lifecycle callbacks; with extensive extension points and more, then build your test classes using the Kotest Test Framework.
+
+* If you want a Kotlin focused multi-platform enabled assertions library, with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md) and more, then opt to use the Kotest assertions library.
+
+* If you want a powerful [property test](property_testing.md) library, with over 50 built in generators; the ability to easily compose new generators; with failure shrinking; with exhaustive checks; with coverage metrics; then choose the Kotest property test module.
+
+
+The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
+
+_Note: Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you doing server side or android development then you want the modules that end with -JVM, such as `kotest-property-jvm`_
+
 
 #### Gradle
 
@@ -42,6 +59,7 @@ test {
 dependencies {
   testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
   testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
+  testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
 }
 ```
 
@@ -59,8 +77,9 @@ android.testOptions {
 }
 
 dependencies {
-    testImplementation 'io.kotest:kotest-runner-junit5:<version>' // for kotest framework
+    testImplementation 'io.kotest:kotest-runner-junit5-jvm:<version>' // for kotest framework
     testImplementation 'io.kotest:kotest-assertions-core-jvm:<version>' // for kotest core jvm assertions
+    testImplementation 'io.kotest:kotest-property-jvm:<version>' // for kotest property test
 }
 ```
 
@@ -79,6 +98,7 @@ tasks.withType<Test> {
 dependencies {
   testImplementation("io.kotest:kotest-runner-junit5-jvm:<version>") // for kotest framework
   testImplementation("io.kotest:kotest-assertions-core-jvm:<version>") // for kotest core jvm assertions
+  testImplementation("io.kotest:kotest-property-jvm:<version>") // for kotest property test
 }
 ```
 
@@ -97,7 +117,7 @@ For maven you must configure the surefire plugin for junit tests.
 </plugin>
 ```
 
-And then add the Kotest JUnit5 runner to your build.
+And then add the Kotest JUnit5 runner to your build to use the framework product.
 
 ```xml
 <dependency>
@@ -108,7 +128,7 @@ And then add the Kotest JUnit5 runner to your build.
 </dependency>
 ```
 
-And for using kotest core jvm assertions add following configurations
+For using kotest core jvm assertions add the following configuration.
 
 ```xml
 <dependency>
@@ -119,8 +139,20 @@ And for using kotest core jvm assertions add following configurations
 </dependency>
 ```
 
+And for using kotest property testing add the following configuration.
+
+```xml
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-property-jvm</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
 #### Snapshots
 
+Snapshot are automatically published on each commit to master.
 If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
 
 ```kotlin
