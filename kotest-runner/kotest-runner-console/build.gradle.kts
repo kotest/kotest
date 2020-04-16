@@ -36,16 +36,16 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
-            implementation(kotlin("reflect"))
+            api(kotlin("reflect"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
             // can stay as impl because will be provided in the users main build
-            implementation(project(Projects.Core))
+            api(project(Projects.Core))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
             api(Libs.Classgraph.classgraph)
-            implementation(Libs.Coroutines.core)
+            api(Libs.Coroutines.core)
          }
       }
 
