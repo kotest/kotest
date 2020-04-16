@@ -20,7 +20,11 @@ actual fun KClass<*>.annotations(): List<Annotation> = try {
  * Returns true if this KClass is a data class.
  */
 actual val <T : Any> KClass<T>.isDataClass: Boolean?
-   get() = this.isData
+   get() = try {
+      this.isData
+   } catch (e: Exception) {
+      false
+   }
 
 /**
  * Returns the names of the parameters if supported. Eg, for `fun foo(a: String, b: Boolean)` on the JVM

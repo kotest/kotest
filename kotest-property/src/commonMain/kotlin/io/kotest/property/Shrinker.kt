@@ -28,14 +28,26 @@ interface Shrinker<A> {
 }
 
 /**
- * Generates an [RTree] of all shrinks from an initial value.
+ * Generates an [RTree] of all shrinks from an initial strict value.
  */
-fun <A> Shrinker<A>.rtree(a: A): RTree<A> = RTree(a, lazy { shrink(a).distinct().filter { it != a }.map { rtree(it) } })
+fun <A> Shrinker<A>.rtree(value: A): RTree<A> {
+   val fn = { value }
+   return rtree(fn)
+}
 
-data class RTree<out A>(val value: A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
+/**
+ * Generates an [RTree] of all shrinks from an initial lazy value.
+ */
+fun <A> Shrinker<A>.rtree(value: () -> A): RTree<A> =
+   RTree(value, lazy {
+      val a = value()
+      shrink(a).distinct().filter { it != a }.map { rtree(it) }
+   })
+
+data class RTree<out A>(val value: () -> A, val children: Lazy<List<RTree<A>>> = lazy { emptyList<RTree<A>>() })
 
 fun <A, B> RTree<A>.map(f: (A) -> B): RTree<B> {
-   val b = f(value)
+   val b = { f(value()) }
    val c = lazy { children.value.map { it.map(f) } }
    return RTree(b, c)
 }

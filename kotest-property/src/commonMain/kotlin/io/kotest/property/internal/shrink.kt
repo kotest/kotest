@@ -24,14 +24,14 @@ internal suspend fun <A> doShrinking(
 ): A {
 
    if (initial.isEmpty())
-      return initial.value
+      return initial.value()
 
    val counter = Counter()
    val tested = mutableSetOf<A>()
    val sb = StringBuilder()
    sb.append("Attempting to shrink failed arg ${initial.value.show().value}\n")
 
-   val candidate = doStep(initial, mode, tested, counter, test, sb) ?: initial.value
+   val candidate = doStep(initial, mode, tested, counter, test, sb) ?: initial.value()
    result(sb, candidate as Any, counter.count)
    return candidate
 }
@@ -57,18 +57,18 @@ suspend fun <A> doStep(
    val candidates = tree.children.value
 
    candidates.asSequence()
-      .filter { tested.add(it.value) }
+      .filter { tested.add(it.value()) }
       .forEach { a ->
          counter.inc()
          try {
-            test(a.value)
+            test(a.value())
             if (PropertyTesting.shouldPrintShrinkSteps)
                sb.append("Shrink #${counter.count}: ${a.show().value} pass\n")
          } catch (t: Throwable) {
             if (PropertyTesting.shouldPrintShrinkSteps)
                sb.append("Shrink #${counter.count}: ${a.show().value} fail\n")
             // this result failed, so we'll recurse in to find further failures otherwise return this
-            return doStep(a, mode, tested, counter, test, sb) ?: a.value
+            return doStep(a, mode, tested, counter, test, sb) ?: a.value()
          }
       }
 

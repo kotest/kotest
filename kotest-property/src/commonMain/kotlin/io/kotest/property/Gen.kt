@@ -117,6 +117,6 @@ data class RandomSource(val random: Random, val seed: Long) {
 /**
  * Contains a single generated value from a [Gen] and an RTree of lazily evaluated shrinks.
  */
-data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree(value))
+data class Sample<out A>(val value: A, val shrinks: RTree<A> = RTree({ value }))
 
 fun <A> sampleOf(a: A, shrinker: Shrinker<A>) = Sample(a, shrinker.rtree(a))
