@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeRenderer
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -33,20 +34,19 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    }
 
    /**
-    * Offers the given file. If the file is a test file then accepts it
+    * Offers the given file. If the file is a test file (contains one or more specs) then accepts it
     * and refreshes the model. Otherwise the existing file (if any) is kept.
     */
-   fun offerVirtualFile(file: VirtualFile?) {
-      val f = file
-      if (f != null) {
-         val module = ModuleUtilCore.findModuleForFile(f, project)
+   fun offerVirtualFile(file: VirtualFile) {
+      ApplicationManager.getApplication().runReadAction {
+         val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module != null) {
             DumbService.getInstance(project).runWhenSmart {
                try {
-                  val psi = PsiManager.getInstance(project).findFile(f)
+                  val psi = PsiManager.getInstance(project).findFile(file)
                   val specs = psi?.specs() ?: emptyList()
                   if (specs.isNotEmpty()) {
-                     model = createTreeModel(f, project, specs, module)
+                     model = createTreeModel(file, project, specs, module)
                      expandAllNodes()
                   }
                } catch (e: Throwable) {
@@ -57,7 +57,7 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
    }
 
    /**
-    * Reloads the model based on the currently set file.
+    * Reloads the model based on the currently set file (if any).
     */
    fun reloadModel() {
       val f = file

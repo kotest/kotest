@@ -8,7 +8,6 @@ import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
 import io.kotest.plugin.intellij.psi.ifBinaryExpressionOperationIdent
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
-import io.kotest.plugin.intellij.psi.matchInfixFunctionWithStringAndLambaArg
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -26,34 +25,32 @@ object WordSpecStyle : SpecStyle {
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
-   private fun PsiElement.locateParentWhen(): String? {
-      val wen = this.matchInfixFunctionWithStringAndLambaArg(listOf("when", "When"))
-      return when {
-         wen != null -> wen
-         parent != null -> parent.locateParentWhen()
-         else -> null
+   private fun PsiElement.locateParentWhen(): Test? {
+      return when (val p = parent) {
+         null -> null
+         is KtBinaryExpression -> p.tryWhen() ?: parent.locateParentWhen()
+         else -> p.locateParentWhen()
       }
    }
 
-   private fun PsiElement.locateParentShould(): String? {
-      val should = this.matchInfixFunctionWithStringAndLambaArg(listOf("should", "Should"))
-      return when {
-         should == null && parent == null -> null
-         should == null -> parent.locateParentShould()
-         else -> should
+   private fun PsiElement.locateParentShould(): Test? {
+      return when (val p = parent) {
+         null -> null
+         is KtBinaryExpression -> p.tryShould() ?: p.locateParentShould()
+         else -> p.locateParentShould()
       }
    }
 
    private fun KtBinaryExpression.tryWhen(): Test? {
-      val name = extractStringLiteralFromLhsOfInfixFunction(listOf("When"))
+      val name = extractStringLiteralFromLhsOfInfixFunction(listOf("when", "When"))
       return if (name == null) null else Test(name, name, TestType.Container)
    }
 
    private fun KtBinaryExpression.tryShould(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("should", "Should"))
       return if (name == null) null else {
-         val w = parent.locateParentWhen()
-         return if (w == null) Test(name, name, TestType.Container) else Test(name, "$w when $name", TestType.Container)
+         val w = locateParentWhen()
+         return if (w == null) Test(name, name, TestType.Container) else Test(name, "${w.name} when $name", TestType.Container)
       }
    }
 
@@ -72,9 +69,9 @@ object WordSpecStyle : SpecStyle {
          val should = psi.locateParentShould()
          val w = psi.locateParentWhen()
          when {
-            should == null && w == null -> Test(subject, subject, TestType.Test)
-            w == null -> Test(subject, "$should should $subject", TestType.Test)
-            else -> Test(subject, "$w when $should should $subject", TestType.Test)
+            should != null && w != null -> Test(subject, "${w.name} when ${should.name} should $subject", TestType.Test)
+            should != null -> Test(subject, "${should.name} should $subject", TestType.Test)
+            else -> Test(subject, subject, TestType.Test)
          }
       }
    }

@@ -8,9 +8,8 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.Function
 import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.psi.isSpecSubclass
 import io.kotest.plugin.intellij.psi.isSubclassOfSpec
-import io.kotest.plugin.intellij.styles.SpecStyle
+import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.Test
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -29,24 +28,14 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    private fun markerForSpec(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingClassOrObjectForClassOrObjectToken() ?: return null
-      return SpecStyle.styles.asSequence()
-         .filter { ktclass.isSpecSubclass(it) }
-         .map { icon(ktclass) }
-         .firstOrNull()
+      return if (ktclass.isSubclassOfSpec()) icon(ktclass) else null
    }
 
    private fun markerForTest(element: LeafPsiElement): Info? {
-
-      // must be included in a spec class, pulled this check outside of the main sequence to avoid
-      // grabbing the class parents over and over
       val ktclass = element.enclosingClass() ?: return null
-      if (!SpecStyle.styles.any { ktclass.isSubclassOfSpec() }) return null
-
-      return SpecStyle.styles.asSequence()
-         .map { it.test(element) }
-         .filterNotNull()
-         .map { icon(it) }
-         .firstOrNull()
+      val style = ktclass.specStyle() ?:  return null
+      val test = style.test(element) ?: return null
+      return icon(test)
    }
 
    private fun icon(ktclass: KtClassOrObject): Info {

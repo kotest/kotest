@@ -101,6 +101,7 @@ fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationRe
  *
  * @param names one or more function names to search for
  */
+@Deprecated("")
 fun PsiElement.matchFunction2WithStringAndLambda(names: List<String>): String? {
    return when (val p = parent) {
       is KtStringTemplateEntry -> p.extractStringForFunction2WithStringAndLambda(names)

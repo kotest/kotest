@@ -25,13 +25,14 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
 
-      if (context.module != null)
-         if (!DependencyChecker.checkMissingDependencies(context.module)) return false
-
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
          if (ktclass != null && ktclass.isSubclassOfSpec()) {
+
+            if (context.module != null)
+               if (!DependencyChecker.checkMissingDependencies(context.module)) return false
+
             configuration.setSpec(ktclass)
             configuration.setModule(context.module)
             configuration.setGeneratedName()

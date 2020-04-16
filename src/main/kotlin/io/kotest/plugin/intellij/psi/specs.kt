@@ -44,7 +44,7 @@ fun PsiElement.isContainedInSpec(): Boolean {
 }
 
 /**
- * Returns true if this [KtClassOrObject] is a subclass of any Spec.
+ * Efficiently returns true if this [KtClassOrObject] is a subclass of any Spec.
  * This function will recursively check all superclasses.
  */
 fun KtClassOrObject.isSubclassOfSpec(): Boolean {
@@ -73,7 +73,22 @@ fun KtClassOrObject.isSpecSubclass(fqn: FqName): Boolean {
    return if (superClass.getKotlinFqName() == fqn) true else superClass.isSpecSubclass(fqn)
 }
 
-fun KtClassOrObject.specStyle(): SpecStyle? = SpecStyle.styles.find { this.isSpecSubclass(it) }
+/**
+ * Efficiently locates the spec style this class is from, or null if it's not a spec.
+ */
+fun KtClassOrObject.specStyle(): SpecStyle? {
+   val superClass = getSuperClass()
+   if (superClass != null) {
+      val fqn = superClass.getKotlinFqName() ?: return null
+      return SpecStyle.styles.find { it.fqn() == fqn } ?: superClass.specStyle()
+   }
+   // sometimes we don't have the full superclass type, but we can get the simple name
+   val superClassSimpleName = getSuperClassSimpleName()
+   if (superClassSimpleName != null) {
+      return SpecStyle.styles.find { it.fqn().shortName().asString() == superClassSimpleName }
+   }
+   return null
+}
 
 fun KtCallExpression.isDslInvocation(): Boolean {
    return children.size == 2
@@ -81,6 +96,9 @@ fun KtCallExpression.isDslInvocation(): Boolean {
       && children[1] is KtLambdaArgument
 }
 
+/**
+ * Returns any test lifecycle callbacks defined in this class.
+ */
 fun KtClassOrObject.callbacks(): List<Callback> {
 
    val body = this.getChildrenOfType<KtClassBody>().firstOrNull()
