@@ -75,12 +75,12 @@ class TeamCityConsoleWriter : ConsoleWriter {
             when (testCase.type) {
                TestType.Container -> {
                   insertDummyFailure(desc, result.error)
-                  println(TeamCityMessages.testSuiteFinished(desc.name))
+                  println(TeamCityMessages.testSuiteFinished(desc.name).duration(result.duration))
                }
                TestType.Test -> {
                   result.error?.apply { printStackTrace(this) }
                   val message = result.error?.message?.let { if (it.lines().size == 1) it else null } ?: "Test failed"
-                  println(TeamCityMessages.testFailed(desc.name).message(message))
+                  println(TeamCityMessages.testFailed(desc.name).message(message).duration(result.duration))
                }
             }
          }
@@ -95,8 +95,8 @@ class TeamCityConsoleWriter : ConsoleWriter {
          }
          TestStatus.Success -> {
             val msg = when (testCase.type) {
-               TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name)
-               TestType.Test -> TeamCityMessages.testFinished(desc.name)
+               TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name).duration(result.duration)
+               TestType.Test -> TeamCityMessages.testFinished(desc.name).duration(result.duration)
             }
             println(msg)
          }

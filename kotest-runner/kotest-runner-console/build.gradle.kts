@@ -39,7 +39,6 @@ kotlin {
             api(kotlin("reflect"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
-            // can stay as impl because will be provided in the users main build
             api(project(Projects.Core))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
@@ -52,9 +51,8 @@ kotlin {
       val jvmTest by getting {
          dependsOn(jvmMain)
          dependencies {
-            implementation(project(Projects.AssertionsShared))
+            implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(project(Projects.Extensions))
          }
       }
    }
