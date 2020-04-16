@@ -24,9 +24,9 @@ These are provided separately so you can pick and choose which parts to use if y
 
 |   |   |   |
 |---|---|---|
-| **Kotest Test Framework**  | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>  |
-| **Kotest Assertions Library**  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  |
-| **Kotest Property Testing**  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  |
+| **Test Framework**  | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>  |
+| **Assertions Library**  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  |
+| **Property Testing**  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  |
 
 #### Which subproject(s) to use?
 
@@ -40,7 +40,7 @@ These are provided separately so you can pick and choose which parts to use if y
 The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
 
 _Note: Kotest is a [multi-platform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you doing server side or android development then you want the modules that end with -JVM, such as `kotest-property-jvm`_
+If you are unfamilar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with -JVM, such as `kotest-property-jvm`_
 
 
 #### Gradle
