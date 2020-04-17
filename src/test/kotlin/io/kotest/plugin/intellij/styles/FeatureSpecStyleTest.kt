@@ -31,19 +31,19 @@ class FeatureSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[1].tooltipText shouldBe "Run Feature: no scenario"
-         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 204
+         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 227
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[2].tooltipText shouldBe "Run Feature: some feature"
-         (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 275
+         (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 299
 
          gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[3].tooltipText shouldBe "Run Feature: some feature Scenario: some scenario"
-         (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 310
+         (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 336
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[4].tooltipText shouldBe "Run Feature: another feature"
-         (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 398
+         (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 425
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[5].tooltipText shouldBe "Run Feature: another feature Scenario: test with config"
@@ -51,15 +51,15 @@ class FeatureSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[6].tooltipText shouldBe "Run Feature: this feature"
-         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 564
+         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 588
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[7].tooltipText shouldBe "Run Feature: this feature Feature: has nested feature contexts"
-         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 599
+         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 638
 
          gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[8].tooltipText shouldBe "Run Feature: this feature Feature: has nested feature contexts Scenario: test without config"
-         (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 652
+         (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 684
 
          gutters[9].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[9].tooltipText shouldBe "Run Feature: this feature Feature: has nested feature contexts Scenario: test with config"

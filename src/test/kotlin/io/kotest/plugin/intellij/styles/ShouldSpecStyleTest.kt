@@ -30,7 +30,7 @@ class ShouldSpecStyleTest : LightCodeInsightFixtureTestCase() {
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[1].tooltipText shouldBe "Run should top level test"
-         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 145
+         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 170
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[2].tooltipText shouldBe "Run should top level test with config"

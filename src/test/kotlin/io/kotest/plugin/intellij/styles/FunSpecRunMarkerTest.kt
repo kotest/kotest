@@ -29,7 +29,7 @@ class FunSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[1].tooltipText shouldBe "Run a string cannot be blank"
-         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 268
+         (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 301
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[2].tooltipText shouldBe "Run a string should be lower case"
@@ -37,11 +37,11 @@ class FunSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
 
          gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[3].tooltipText shouldBe "Run some context"
-         (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 445
+         (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 469
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[4].tooltipText shouldBe "Run some context -- a string cannot be blank"
-         (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 476
+         (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 509
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[5].tooltipText shouldBe "Run some context -- a string should be lower case"
@@ -49,11 +49,11 @@ class FunSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[6].tooltipText shouldBe "Run some context -- another context"
-         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 665
+         (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 692
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[7].tooltipText shouldBe "Run some context -- another context -- a string cannot be blank"
-         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 701
+         (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 734
 
          gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
          gutters[8].tooltipText shouldBe "Run some context -- another context -- a string should be lower case"
