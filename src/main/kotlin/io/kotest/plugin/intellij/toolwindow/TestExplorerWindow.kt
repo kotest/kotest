@@ -8,6 +8,9 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiTreeAnyChangeAbstractAdapter
 import com.intellij.ui.ScrollPaneFactory
 import java.awt.Color
 import java.awt.event.MouseAdapter
@@ -34,6 +37,7 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       setContent(ScrollPaneFactory.createScrollPane(tree))
       listenForSelectedEditorChanges()
       listenForFileChanges()
+      listenForDocumentChanges()
       refreshContent()
    }
 
@@ -42,10 +46,10 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
          VirtualFileManager.VFS_CHANGES,
          object : BulkFileListener {
             override fun after(events: MutableList<out VFileEvent>) {
-               val file = fileEditorManager.selectedEditor?.file
-               if (file != null) {
+               val selectedFile = fileEditorManager.selectedEditor?.file
+               if (selectedFile != null) {
                   val files = events.mapNotNull { it.file }
-                  val modified = files.firstOrNull { it.name == file.name }
+                  val modified = files.firstOrNull { it.name == selectedFile.name }
                   if (modified != null)
                      tree.offerVirtualFile(modified)
                }
@@ -66,6 +70,21 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
             }
          }
       )
+   }
+
+   private fun listenForDocumentChanges() {
+      PsiManager.getInstance(project).addPsiTreeChangeListener(object : PsiTreeAnyChangeAbstractAdapter() {
+         override fun onChange(file: PsiFile?) {
+            if (file != null) {
+               val selectedFile = fileEditorManager.selectedEditor?.file
+               if (selectedFile != null) {
+                  if (file.virtualFile.name == selectedFile.name) {
+                     tree.offerVirtualFile(file.virtualFile)
+                  }
+               }
+            }
+         }
+      })
    }
 
    private fun refreshContent() {
