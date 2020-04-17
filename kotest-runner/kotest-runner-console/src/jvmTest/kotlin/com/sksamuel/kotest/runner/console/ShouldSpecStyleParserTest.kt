@@ -20,12 +20,12 @@ class ShouldSpecStyleParserTest : FunSpec() {
     }
 
     test("should parse tests with parent") {
-      ShouldSpecStyleParser.parse(Description.spec("myspec"), "foo should testa") shouldBe
+      ShouldSpecStyleParser.parse(Description.spec("myspec"), "foo -- should testa") shouldBe
           Description.spec("myspec").append("foo").append("should testa")
 
       ShouldSpecStyleParser.parse(
           Description.spec("myspec"),
-          "foo -- bar should testatesta--") shouldBe
+          "foo -- bar -- should testatesta--") shouldBe
           Description.spec("myspec").append("foo").append("bar").append("should testatesta--")
     }
 

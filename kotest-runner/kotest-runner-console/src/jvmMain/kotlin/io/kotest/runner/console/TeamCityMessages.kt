@@ -4,6 +4,9 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 /**
+ * Message format:
+ * https://confluence.jetbrains.com/display/TCD65/Build+Script+Interaction+with+TeamCity#BuildScriptInteractionwithTeamCity-servMsgsServiceMessages
+ *
  * Some message implementations:
  *
  * https://github.com/JetBrains/intellij-community/blob/master/plugins/testng/testSources/com/theoryinpractice/testng/configuration/TestNGTreeHierarchyTest.java
