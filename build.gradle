@@ -39,7 +39,7 @@ intellij {
     sandboxDirectory = project.property("sandbox")
     version = 'IC-2019.1'
     pluginName = "kotest-plugin-intellij"
-    plugins = ["org.jetbrains.kotlin:$kotlin_version-release-IJ2019.1-1"]
+    plugins = ["org.jetbrains.kotlin:$kotlin_version-release-IJ2019.1-1", "junit"]
     downloadSources = true
     updateSinceUntilBuild = false
 }
