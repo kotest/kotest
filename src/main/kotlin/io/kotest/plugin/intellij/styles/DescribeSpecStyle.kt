@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
-import io.kotest.plugin.intellij.psi.ifCallExpressionNameIdent
+import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -119,7 +119,7 @@ object DescribeSpecStyle : SpecStyle {
    }
 
    override fun test(element: LeafPsiElement): Test? {
-      val call = element.ifCallExpressionNameIdent()
+      val call = element.ifCallExpressionLambdaOpenBrace()
       if (call != null) return test(call)
 
       val dot = element.ifDotExpressionSeparator()

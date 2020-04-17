@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import com.intellij.testIntegration.JavaTestFramework
+import io.kotest.plugin.intellij.psi.isContainedInSpec
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import javax.swing.Icon
 
@@ -34,7 +35,7 @@ class KotestTestFramework : JavaTestFramework() {
    override fun findTearDownMethod(clazz: PsiClass): PsiMethod? = null
 
    override fun isTestClass(clazz: PsiClass, canBePotential: Boolean): Boolean {
-      return if (canBePotential) isUnderTestSources(clazz) else clazz.superTypes.any { specs.contains(it.resolve()?.qualifiedName) }
+      return if (canBePotential) isUnderTestSources(clazz) else clazz.isContainedInSpec()
    }
 
    override fun getMarkerClassFQName(): String = "io.kotest.core.test.TestCase"

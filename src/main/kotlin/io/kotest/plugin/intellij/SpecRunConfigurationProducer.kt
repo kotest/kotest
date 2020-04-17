@@ -24,7 +24,6 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
-
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
@@ -55,6 +54,4 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       }
       return false
    }
-
-
 }

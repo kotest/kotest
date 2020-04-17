@@ -3,7 +3,6 @@ package io.kotest.plugin.intellij.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import io.kotest.plugin.intellij.styles.SpecStyle
-import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -20,6 +19,7 @@ import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import kotlin.time.ExperimentalTime
 
 /**
  * Returns any [KtClassOrObject]s located in this [PsiElement]
@@ -36,58 +36,27 @@ fun PsiFile.specs(): List<KtClassOrObject> {
 }
 
 /**
- * Returns true if this [PsiElement] is inside a spec class.
+ * Returns true if this [KtClassOrObject] is a subclass of any Spec.
+ * This method will not recursively check parents, and relies only on the simple name.
  */
-fun PsiElement.isContainedInSpec(): Boolean {
-   val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
-   return enclosingClass.isSubclassOfSpec()
-}
-
-/**
- * Efficiently returns true if this [KtClassOrObject] is a subclass of any Spec.
- * This function will recursively check all superclasses.
- */
-fun KtClassOrObject.isSubclassOfSpec(): Boolean {
-   // gets the [KtClassOrObject] instance for the superclass, can be null
-   val superClass = getSuperClass()
-   if (superClass != null) {
-      val fqn = superClass.getKotlinFqName() ?: return false
-      return SpecStyle.styles.any { it.fqn() == fqn } || superClass.isSubclassOfSpec()
-   }
-   // sometimes we don't have the full superclass type, but we can get the simple name
-   val superClassSimpleName = getSuperClassSimpleName()
-   if (superClassSimpleName != null) {
-      return SpecStyle.styles.any { it.fqn().shortName().asString() == superClassSimpleName }
-   }
-   return false
-}
-
-/**
- * Returns true if this [KtClassOrObject] is a subclass of a specific Spec.
- * This function will recursively check all superclasses.
- */
-fun KtClassOrObject.isSpecSubclass(style: SpecStyle) = isSpecSubclass(style.fqn())
+@OptIn(ExperimentalTime::class)
+fun KtClassOrObject.isSubclassOfSpec(): Boolean = this.specStyle() != null
 
 fun KtClassOrObject.isSpecSubclass(fqn: FqName): Boolean {
-   val superClass = getSuperClass() ?: return getSuperClassSimpleName() == fqn.shortName().asString()
-   return if (superClass.getKotlinFqName() == fqn) true else superClass.isSpecSubclass(fqn)
+   return when (val simpleName = getSuperClassSimpleName()) {
+      null -> false
+      else -> fqn.shortName().asString() == simpleName
+   }
 }
 
 /**
  * Efficiently locates the spec style this class is from, or null if it's not a spec.
  */
 fun KtClassOrObject.specStyle(): SpecStyle? {
-   val superClass = getSuperClass()
-   if (superClass != null) {
-      val fqn = superClass.getKotlinFqName() ?: return null
-      return SpecStyle.styles.find { it.fqn() == fqn } ?: superClass.specStyle()
+   return when (val simpleName = getSuperClassSimpleName()) {
+      null -> null
+      else -> SpecStyle.styles.find { it.fqn().shortName().asString() == simpleName }
    }
-   // sometimes we don't have the full superclass type, but we can get the simple name
-   val superClassSimpleName = getSuperClassSimpleName()
-   if (superClassSimpleName != null) {
-      return SpecStyle.styles.find { it.fqn().shortName().asString() == superClassSimpleName }
-   }
-   return null
 }
 
 fun KtCallExpression.isDslInvocation(): Boolean {
@@ -183,3 +152,12 @@ fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
    val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
    return enclosingClass.isSpecSubclass(fqn)
 }
+
+/**
+ * Returns true if this [PsiElement] is inside any spec class.
+ */
+fun PsiElement.isContainedInSpec(): Boolean {
+   val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false
+   return enclosingClass.isSubclassOfSpec()
+}
+

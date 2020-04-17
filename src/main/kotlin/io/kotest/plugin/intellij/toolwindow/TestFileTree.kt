@@ -2,12 +2,15 @@ package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeRenderer
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.NoAccessDuringPsiEvents
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import io.kotest.plugin.intellij.psi.specs
+import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
@@ -41,16 +44,14 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
       ApplicationManager.getApplication().runReadAction {
          val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module != null) {
-            DumbService.getInstance(project).runWhenSmart {
-               try {
-                  val psi = PsiManager.getInstance(project).findFile(file)
-                  val specs = psi?.specs() ?: emptyList()
-                  if (specs.isNotEmpty()) {
-                     model = createTreeModel(file, project, specs, module)
-                     expandAllNodes()
-                  }
-               } catch (e: Throwable) {
+            val psi = PsiManager.getInstance(project).findFile(file)
+            if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
+               DumbService.getInstance(project).runWhenSmart {
+                  offerVirtualFile(file)
                }
+            } else {
+               val specs = psi?.specs() ?: emptyList()
+               updateSpecs(specs, module, file)
             }
          }
       }
@@ -68,17 +69,24 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
          if (module == null) {
             model = noModuleModel()
          } else {
-            DumbService.getInstance(project).runWhenSmart {
-               try {
-                  val psi = PsiManager.getInstance(project).findFile(f)
-                  val specs = psi?.specs() ?: emptyList()
-                  model = createTreeModel(f, project, specs, module)
-                  expandAllNodes()
-               } catch (e: Throwable) {
+            val psi = PsiManager.getInstance(project).findFile(f)
+            if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
+               DumbService.getInstance(project).runWhenSmart {
+                  offerVirtualFile(f)
                }
+            } else {
+               val specs = psi?.specs() ?: emptyList()
+               updateSpecs(specs, module, f)
             }
          }
       }
+   }
+
+   private fun updateSpecs(specs: List<KtClassOrObject>,
+                           module: Module,
+                           file: VirtualFile) {
+      model = createTreeModel(file, project, specs, module)
+      expandAllNodes()
    }
 
    private fun noFileModel(): TreeModel {

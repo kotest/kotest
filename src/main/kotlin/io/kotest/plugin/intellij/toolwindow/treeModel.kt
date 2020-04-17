@@ -93,8 +93,3 @@ fun createTreeModel(file: VirtualFile,
 fun Module.isTestModule(): Boolean {
    return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().any { it.configuration.settings.isTestModule }
 }
-
-//fun TargetPlatform?.isJvmOnly() =
-//   this != null &&
-//      componentPlatforms.size == 1 &&
-//      componentPlatforms.first().platformName.toLowerCase() == "jvm"

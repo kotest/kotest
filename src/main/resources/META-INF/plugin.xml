@@ -24,6 +24,8 @@
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"
                   conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition"/>
 
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.IgnoredTestLineMarker"/>
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.KotestRunLineMarkerContributor"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.SpecRunConfigurationProducer"/>

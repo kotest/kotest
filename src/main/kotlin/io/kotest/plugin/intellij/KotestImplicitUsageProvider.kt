@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isSubclassOfSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import kotlin.time.ExperimentalTime
 
 /**
  * Allows to disable highlighting of certain elements as unused when such elements are not referenced

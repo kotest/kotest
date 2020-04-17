@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.Test
+import kotlin.time.ExperimentalTime
 
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
@@ -34,7 +35,6 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
-
       val element = sourceElement.get()
       if (element != null) {
          val test = findTest(element)
@@ -55,7 +55,6 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
             }
          }
       }
-
       return false
    }
 

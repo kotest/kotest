@@ -5,12 +5,11 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
+import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
-import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
-import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
@@ -31,12 +30,6 @@ fun KtCallExpression.extractStringFromStringInvokeWithLambda(): String? {
    }
    return null
 }
-
-fun PsiElement.isCallExprWithName(names: List<String>): Boolean =
-   this is KtCallExpression
-      && children.isNotEmpty()
-      && children[0] is KtReferenceExpression
-      && names.contains(children[0].text)
 
 fun KtCallExpression.functionName(): String? {
    val a = children[0]
@@ -71,8 +64,6 @@ fun KtCallExpression.getSingleStringArgOrNull(): String? {
 
 fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
 
-fun PsiElement.isOperation(names: List<String>): Boolean = this is KtOperationReferenceExpression && names.contains(text)
-
 /**
  * Returns the value of this string expression.
  */
@@ -105,7 +96,8 @@ fun KtCallExpression.hasFinalLambdaArg(): Boolean {
  *      - KtValueArgument (container wrapper for an argument, in this case the string name)
  *        - KtStringTemplateExpression (the expression for the string arg)
  *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
- *    - KtLambdaArgumnt (the test closure)
+ *    - KtLambdaArgument (the test closure)
+ *      - KtLambdaArgument
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): String? =
    extractStringArgForFunctionWithStringAndLambdaArgs(names.asList())
@@ -128,24 +120,33 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: L
  * If this [LeafPsiElement] is the dot between two calls in a dot expression, returns that dot expression.
  */
 fun LeafPsiElement.ifDotExpressionSeparator(): KtDotQualifiedExpression? {
-   val maybeDotQualifiedExpression = parent
-   if (maybeDotQualifiedExpression is KtDotQualifiedExpression) {
-      return maybeDotQualifiedExpression
+   if (text == ".") {
+      val maybeDotQualifiedExpression = parent
+      if (maybeDotQualifiedExpression is KtDotQualifiedExpression) {
+         return maybeDotQualifiedExpression
+      }
    }
    return null
 }
 
 /**
- * If this [LeafPsiElement] is an identifer of a function call name, then returns that function.
- * Eg, test("my function") <-- will detect leaf elements as part of the "test" identifer.
+ * If this [LeafPsiElement] is the open brace of a function lambda arg, then returns that function name.
+ * Eg, test("my function") {}
  *
  */
-fun LeafPsiElement.ifCallExpressionNameIdent(): KtCallExpression? {
-   val maybeNameReferenceExpression = parent
-   if (maybeNameReferenceExpression is KtNameReferenceExpression) {
-      val maybeCallExpression = maybeNameReferenceExpression.parent
-      if (maybeCallExpression is KtCallExpression) {
-         return maybeCallExpression
+fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
+   if (text == "{") {
+      val maybeFunctionLiteral = context
+      if (maybeFunctionLiteral is KtFunctionLiteral) {
+         val maybeLambdaExpression = maybeFunctionLiteral.context
+         if (maybeLambdaExpression is KtLambdaExpression) {
+            val maybeLambdaArg = maybeLambdaExpression.context
+            if (maybeLambdaArg is KtLambdaArgument) {
+               val maybeCallExpression = maybeLambdaArg.context
+               if (maybeCallExpression is KtCallExpression)
+                  return maybeCallExpression
+            }
+         }
       }
    }
    return null
@@ -253,57 +254,6 @@ fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<St
          && names.contains(b.text)) {
          return a.asString()
       }
-   }
-   return null
-}
-
-fun KtStringTemplateEntry.extractLhsForInfixFunction(names: List<String>): String? {
-   if (parent is KtStringTemplateExpression) {
-      val maybeBinaryExpr = parent.parent
-      if (maybeBinaryExpr is KtBinaryExpression) {
-         if (maybeBinaryExpr.children.size == 3
-            && maybeBinaryExpr.children[1].isOperation(names)
-            && maybeBinaryExpr.children[2] is KtLambdaExpression) {
-            return text
-         }
-      }
-   }
-   return null
-}
-
-fun KtBinaryExpression.extractLhsForInfixFunction(names: List<String>): String? {
-   if (children.size == 3
-      && children[0] is KtStringTemplateExpression
-      && children[1].isOperation(names)
-      && children[2] is KtLambdaExpression) {
-      val template = children[0]
-      if (template.children.isNotEmpty() && template.children[0] is KtStringTemplateEntry) {
-         return template.children[0].text
-      }
-   }
-   return null
-}
-
-fun KtStringTemplateEntry.extractLhsForStringInvoke(): String? {
-   if (parent is KtStringTemplateExpression) {
-      val maybeCallExpr = parent.parent
-      if (maybeCallExpr is KtCallExpression) {
-         if (maybeCallExpr.children.size == 2
-            && maybeCallExpr.children[1] is KtLambdaArgument) {
-            return text
-         }
-      }
-   }
-   return null
-}
-
-fun KtCallExpression.extractLhsForStringInvoke(): String? {
-   if (children.size == 2
-      && children[0] is KtStringTemplateExpression
-      && children[1] is KtLambdaArgument) {
-      return children[0] // KtStringTemplateExpression
-         .children[0] // KtStringTemplateEntry
-         .text
    }
    return null
 }
