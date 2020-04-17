@@ -24,7 +24,7 @@ object ShouldSpecStyle : SpecStyle {
 
    private fun locateParentTests(element: PsiElement): List<Test> {
       // if parent is null then we have hit the end
-      val p = element.parent ?: return emptyList()
+      val p = element.context ?: return emptyList()
       val context = if (p is KtCallExpression) listOfNotNull(p.tryContext()) else emptyList()
       return locateParentTests(p) + context
    }
@@ -48,7 +48,7 @@ object ShouldSpecStyle : SpecStyle {
 
    private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
-      val path = contexts.map { it.name }.joinToString { " -- " } + testName
+      val path = (contexts.map { it.name } + testName).joinToString(" -- ")
       return Test(testName, path, type)
    }
 
