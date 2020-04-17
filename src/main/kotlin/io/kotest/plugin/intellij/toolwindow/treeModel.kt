@@ -50,7 +50,7 @@ fun createTreeModel(file: VirtualFile,
       root.add(allModulesNode)
 
       project.allModules()
-         .filter { it.isTestModule() }
+         .filter { it.isKotlin() }
          .filter { it.name.endsWith("jvmTest") || it.name.endsWith("test") }
          .forEach {
             val moduleDescriptor = ModuleNodeDescriptor(it, project, allModulesDescriptor)
@@ -89,6 +89,8 @@ fun createTreeModel(file: VirtualFile,
 
    return DefaultTreeModel(root)
 }
+
+fun Module.isKotlin(): Boolean = FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().isNotEmpty()
 
 fun Module.isTestModule(): Boolean {
    return FacetManager.getInstance(this).allFacets.filterIsInstance<KotlinFacet>().any { it.configuration.settings.isTestModule }
