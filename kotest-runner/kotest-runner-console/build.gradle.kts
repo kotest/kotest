@@ -40,6 +40,7 @@ kotlin {
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
             api(project(Projects.Core))
+            api(project(Projects.Extensions))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
