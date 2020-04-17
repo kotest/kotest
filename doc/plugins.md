@@ -10,7 +10,7 @@ Sometimes this is available with less complex integrations, such as using [Liste
 The Mutation Testing tool [Pitest](https://pitest.org/) is integrated via plugin with Kotest. After [configuring](https://gradle-pitest-plugin.solidsoft.info/) the Pitest extension, add the Kotest Plugin dependency to your dependencies as well:
 
 ```kotlin
-    testImplementation("io.Kotest:Kotest-plugins-pitest-jvm:<version>")
+    testImplementation("io.kotest:kotest-plugins-pitest-jvm:<version>")
 ```
 
 After doing that, tell Pitest that we're going to use the `Kotest` as a `testPlugin`:
