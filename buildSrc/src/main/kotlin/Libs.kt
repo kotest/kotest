@@ -27,6 +27,10 @@ object Libs {
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
+   object Nhaarman {
+      const val MockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+   }
+
    object JUnitPlatform {
       private const val version = "1.6.2"
       const val commons = "org.junit.platform:junit-platform-commons:$version"

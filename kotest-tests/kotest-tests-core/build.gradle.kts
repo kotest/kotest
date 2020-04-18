@@ -36,14 +36,12 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
-            implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.Core))
+            implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
-            implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
-            implementation("com.nhaarman:mockito-kotlin:1.6.0")
-            implementation("org.mockito:mockito-core:2.24.0")
+            implementation(Libs.Nhaarman.MockitoKotlin)
             implementation(Libs.JUnitPlatform.engine)
             implementation(Libs.JUnitPlatform.api)
             implementation(Libs.JUnitPlatform.launcher)

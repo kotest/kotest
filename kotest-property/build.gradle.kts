@@ -40,8 +40,8 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(project(":kotest-mpp"))
             implementation(kotlin("stdlib-common"))
+            implementation(Projects.Mpp)
             api(project(Projects.Fp))
             api(project(Projects.AssertionsShared))
             implementation(Libs.Coroutines.coreCommon)
