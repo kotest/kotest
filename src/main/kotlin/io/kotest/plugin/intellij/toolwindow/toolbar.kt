@@ -29,6 +29,7 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
    result.add(CollapseAction(tree))
    result.addSeparator()
    result.add(FilterCallbacksAction(tree))
+   result.add(FilterIncludesAction(tree))
    result.add(FilterModulesAction(tree))
    result.addSeparator()
    result.add(NavigateToNodeAction())
@@ -49,26 +50,38 @@ class ExpandAllAction(private val tree: TestFileTree) : AnAction("Expand all", n
    }
 }
 
-class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter callbacks", null, AllIcons.General.Filter) {
+class FilterCallbacksAction(private val tree: TestFileTree) : ToggleAction("Filter callbacks", null, AllIcons.Nodes.Controller) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.filterOutCallbacks
+      return TestExplorerState.showCallbacks
    }
 
    override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.filterOutCallbacks = state
+      TestExplorerState.showCallbacks = state
       tree.reloadModel()
    }
 }
 
-class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter modules", null, AllIcons.Toolbar.Filterdups) {
+class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter modules", null, AllIcons.Nodes.ModuleGroup) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
-      return TestExplorerState.filterOutModules
+      return TestExplorerState.showModules
    }
 
    override fun setSelected(e: AnActionEvent, state: Boolean) {
-      TestExplorerState.filterOutModules = state
+      TestExplorerState.showModules = state
+      tree.reloadModel()
+   }
+}
+
+class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter includes", null, AllIcons.Nodes.Aspect) {
+
+   override fun isSelected(e: AnActionEvent): Boolean {
+      return TestExplorerState.showIncludes
+   }
+
+   override fun setSelected(e: AnActionEvent, state: Boolean) {
+      TestExplorerState.showIncludes = state
       tree.reloadModel()
    }
 }

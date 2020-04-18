@@ -44,7 +44,7 @@ fun createTreeModel(file: VirtualFile,
       }
    }
 
-   if (!TestExplorerState.filterOutModules) {
+   if (TestExplorerState.showModules) {
 
       val allModulesDescriptor = ModulesNodeDescriptor(project)
       val allModulesNode = DefaultMutableTreeNode(allModulesDescriptor)
@@ -74,7 +74,7 @@ fun createTreeModel(file: VirtualFile,
          val specNode = DefaultMutableTreeNode(specDescriptor)
          fileNode.add(specNode)
 
-         if (!TestExplorerState.filterOutCallbacks) {
+         if (TestExplorerState.showCallbacks) {
             val callbacks = spec.callbacks()
             callbacks.forEach {
                val callbackDescriptor = CallbackNodeDescriptor(project, specDescriptor, it.psi, it)
@@ -83,11 +83,13 @@ fun createTreeModel(file: VirtualFile,
             }
          }
 
-         val includes = spec.includes()
-         includes.forEach {
-            val includeDescriptor = IncludeNodeDescriptor(project, specDescriptor, it.psi, it)
-            val includeNode = DefaultMutableTreeNode(includeDescriptor)
-            specNode.add(includeNode)
+         if (TestExplorerState.showIncludes) {
+            val includes = spec.includes()
+            includes.forEach {
+               val includeDescriptor = IncludeNodeDescriptor(project, specDescriptor, it.psi, it)
+               val includeNode = DefaultMutableTreeNode(includeDescriptor)
+               specNode.add(includeNode)
+            }
          }
 
          val tests = style.tests(spec)
