@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
 import io.kotest.plugin.intellij.psi.Callback
 import io.kotest.plugin.intellij.psi.CallbackType
+import io.kotest.plugin.intellij.psi.Include
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
@@ -136,6 +137,24 @@ class ModuleNodeDescriptor(val module: Module,
    init {
       templatePresentation.presentableText = module.name
       templatePresentation.setIcon(AllIcons.Nodes.Module)
+   }
+
+   override fun update(presentation: PresentationData) {
+      presentation.isChanged = false
+   }
+
+   override fun getElement(): Any = this
+}
+
+class IncludeNodeDescriptor(project: Project,
+                            parent: SpecNodeDescriptor,
+                            val psi: PsiElement,
+                            include: Include) : PresentableNodeDescriptor<Any>(project, parent) {
+
+   init {
+      templatePresentation.presentableText = "Include: ${include.name}"
+      templatePresentation.locationString = include.type.name
+      templatePresentation.setIcon(AllIcons.Nodes.Artifact)
    }
 
    override fun update(presentation: PresentationData) {

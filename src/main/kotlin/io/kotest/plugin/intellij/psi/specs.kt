@@ -114,6 +114,91 @@ fun KtSuperTypeList.callbacks(): List<Callback> {
    return emptyList()
 }
 
+/**
+ * If this call expression is an include(factory) or include(factory()) then will
+ * return an [Include] describing that.
+ *
+ * Otherwise returns null.
+ */
+fun KtCallExpression.include(): Include? {
+   if (children.isNotEmpty() &&
+      children[0] is KtNameReferenceExpression &&
+      children[0].text == "include") {
+      val args = valueArgumentList
+      if (args != null) {
+         val maybeKtValueArgument = args.arguments.firstOrNull()
+         if (maybeKtValueArgument is KtValueArgument) {
+            when (val param = maybeKtValueArgument.children.firstOrNull()) {
+               is KtCallExpression -> {
+                  val name = param.children[0].text
+                  return Include(name, IncludeType.Function, this)
+               }
+               is KtNameReferenceExpression -> {
+                  val name = param.text
+                  return Include(name, IncludeType.Value, this)
+               }
+            }
+         }
+      }
+   }
+   return null
+}
+
+/**
+ * Returns any include operations defined in this class.
+ */
+fun KtClassOrObject.includes(): List<Include> {
+
+   val body = this.getChildrenOfType<KtClassBody>().firstOrNull()
+   if (body != null) return body.includes()
+
+   val superlist = this.getChildrenOfType<KtSuperTypeList>().firstOrNull()
+   if (superlist != null) return superlist.includes()
+
+   return emptyList()
+}
+
+fun KtClassBody.includes(): List<Include> {
+   val init = getChildrenOfType<KtClassInitializer>().firstOrNull()
+   if (init != null) {
+      val block = init.getChildrenOfType<KtBlockExpression>().firstOrNull()
+      if (block != null) {
+         return block.includes()
+      }
+   }
+   return emptyList()
+}
+
+fun KtSuperTypeList.includes(): List<Include> {
+   val entry = getChildrenOfType<KtSuperTypeCallEntry>().firstOrNull()
+   if (entry != null) {
+      val argList = entry.getChildrenOfType<KtValueArgumentList>().firstOrNull()
+      if (argList != null) {
+         val valueArg = argList.getChildrenOfType<KtValueArgument>().firstOrNull()
+         if (valueArg != null) {
+            val lambda = valueArg.getChildrenOfType<KtLambdaExpression>().firstOrNull()
+            if (lambda != null) {
+               val fliteral = lambda.getChildrenOfType<KtFunctionLiteral>().firstOrNull()
+               if (fliteral != null) {
+                  val block = fliteral.getChildrenOfType<KtBlockExpression>().firstOrNull()
+                  if (block != null) {
+                     return block.includes()
+                  }
+               }
+            }
+
+         }
+      }
+   }
+   return emptyList()
+}
+
+fun KtBlockExpression.includes(): List<Include> {
+   val calls = getChildrenOfType<KtCallExpression>()
+   return calls.mapNotNull { it.include() }
+}
+
+
 fun KtBlockExpression.callbacks(): List<Callback> {
    val calls = getChildrenOfType<KtCallExpression>()
    return calls
@@ -123,6 +208,10 @@ fun KtBlockExpression.callbacks(): List<Callback> {
          CallbackType.values().find { it.text == fname }?.let { Callback(it, call) }
       }
 }
+
+enum class IncludeType { Value, Function }
+
+data class Include(val name: String, val type: IncludeType, val psi: PsiElement)
 
 data class Callback(val type: CallbackType, val psi: PsiElement)
 

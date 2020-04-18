@@ -7,7 +7,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
 
-class FreeSpecStyleTest : LightCodeInsightFixtureTestCase() {
+class FreeSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

@@ -6,6 +6,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.psi.callbacks
+import io.kotest.plugin.intellij.psi.includes
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
@@ -80,6 +81,13 @@ fun createTreeModel(file: VirtualFile,
                val callbackNode = DefaultMutableTreeNode(callbackDescriptor)
                specNode.add(callbackNode)
             }
+         }
+
+         val includes = spec.includes()
+         includes.forEach {
+            val includeDescriptor = IncludeNodeDescriptor(project, specDescriptor, it.psi, it)
+            val includeNode = DefaultMutableTreeNode(includeDescriptor)
+            specNode.add(includeNode)
          }
 
          val tests = style.tests(spec)
