@@ -23,8 +23,11 @@ class FunSpecCallbackExample : FunSpec({
 
 })
 
+fun myfactory2() = funSpec {}
+
 val myfactory = funSpec {
    test("foo") {
 
    }
 }
+
