@@ -16,38 +16,18 @@ fun JTree.expandAllNodes(startingIndex: Int, rowCount: Int) {
    }
 }
 
-fun JTree.collapseAllNodes() {
-   fun collapseAllNodes(node: DefaultMutableTreeNode) {
-      node.children().asSequence().toList().forEach {
-         collapseAllNodes(it as DefaultMutableTreeNode)
-      }
+fun JTree.collapseTopLevelNodes() {
+   val root = model.root as DefaultMutableTreeNode
+   for (node in root.children().toList() as List<DefaultMutableTreeNode>) {
       val path = TreePath(node.path)
       this.collapsePath(path)
    }
-   collapseAllNodes(model.root as DefaultMutableTreeNode)
 }
 
-fun DefaultMutableTreeNode.nodeDescriptor(): PresentableNodeDescriptor<Any>? {
-   return when (val obj = userObject) {
-      is SpecNodeDescriptor -> obj
-      is TestNodeDescriptor -> obj
-      is IncludeNodeDescriptor -> obj
-      is CallbackNodeDescriptor -> obj
-      is ModulesNodeDescriptor -> obj
-      is ModuleNodeDescriptor -> obj
-      else -> null
-   }
-}
-
-fun TreePath.nodeDescriptor(): PresentableNodeDescriptor<Any>? {
+fun TreePath.nodeDescriptor(): PresentableNodeDescriptor<*>? {
    return when (val last = lastPathComponent) {
       is DefaultMutableTreeNode -> when (val obj = last.userObject) {
-         is SpecNodeDescriptor -> obj
-         is TestNodeDescriptor -> obj
-         is CallbackNodeDescriptor -> obj
-         is IncludeNodeDescriptor -> obj
-         is ModulesNodeDescriptor -> obj
-         is ModuleNodeDescriptor -> obj
+         is PresentableNodeDescriptor<*> -> obj
          else -> null
       }
       else -> null

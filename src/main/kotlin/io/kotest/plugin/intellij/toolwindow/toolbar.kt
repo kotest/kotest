@@ -38,9 +38,7 @@ private fun createActionGroup(tree: TestFileTree, project: Project): DefaultActi
 
 class CollapseAction(private val tree: TestFileTree) : AnAction("Collapse all", null, AllIcons.Actions.Collapseall) {
    override fun actionPerformed(e: AnActionEvent) {
-      tree.collapseAllNodes()
-      // always show the top level nodes at least
-      tree.expandRow(0)
+      tree.collapseTopLevelNodes()
    }
 }
 
