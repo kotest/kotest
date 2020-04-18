@@ -47,13 +47,7 @@ object ShouldSpecStyleParser : StyleParser {
   override fun parse(root: Description, testPath: String): Description {
     // -- is used by parents of parents
     val paths = testPath.split(" -- ")
-    val parents = paths.dropLast(1).fold(root) { acc, name -> acc.append(name) }
-    // must support both 'foo should wibble' and 'should wibble' as the final component
-    val index = paths.last().indexOf(" should ")
-    return when (index) {
-      -1 -> parents.append(paths.last())
-      else -> parents.append(paths.last().take(index)).append(paths.last().drop(index + 1))
-    }
+    return paths.fold(root) { acc, name -> acc.append(name) }
   }
 }
 
