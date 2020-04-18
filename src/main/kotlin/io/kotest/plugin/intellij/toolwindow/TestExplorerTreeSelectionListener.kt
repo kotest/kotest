@@ -8,11 +8,11 @@ object TestExplorerTreeSelectionListener : TreeSelectionListener {
 
    override fun valueChanged(e: TreeSelectionEvent) {
       if (TestExplorerState.autoscrollToSource) {
-         val psi = when (val node = e.path.node()) {
+         val psi = when (val node = e.path.nodeDescriptor()) {
             is SpecNodeDescriptor -> node.psi
             is CallbackNodeDescriptor -> node.psi
             is TestNodeDescriptor -> node.psi
-            is IncludeNodeDescriptor -> node.psi
+            is IncludeNodeDescriptor -> node.include.psi
             else -> null
          }
 

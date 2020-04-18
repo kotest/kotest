@@ -2,7 +2,6 @@ package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeRenderer
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.NoAccessDuringPsiEvents
@@ -10,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import io.kotest.plugin.intellij.psi.specs
-import org.jetbrains.kotlin.psi.KtClassOrObject
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeModel
@@ -18,6 +16,8 @@ import javax.swing.tree.TreeSelectionModel
 
 class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure.Tree() {
 
+   // the last file set on the editor, might not be the same as the currently selected file
+   // because it is only changed as we navigate to test files.
    private var file: VirtualFile? = null
 
    init {
@@ -45,14 +45,17 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
          val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module != null) {
             val psi = PsiManager.getInstance(project).findFile(file)
-            if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
-               DumbService.getInstance(project).runWhenSmart {
-                  if (retries > 0)
-                     offerVirtualFile(file, retries - 1)
+            if (psi != null) {
+               if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
+                  DumbService.getInstance(project).runWhenSmart {
+                     if (retries > 0)
+                        offerVirtualFile(file, retries - 1)
+                  }
+               } else {
+                  if (psi.specs().isNotEmpty()) {
+                     setVirtualFile(file)
+                  }
                }
-            } else {
-               val specs = psi?.specs() ?: emptyList()
-               updateSpecs(specs, module, file)
             }
          }
       }
@@ -62,41 +65,36 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
     * Reloads the model based on the currently set file (if any).
     */
    fun reloadModel() {
-      val f = file
-      if (f == null) {
-         model = noFileModel()
-      } else {
-         val module = ModuleUtilCore.findModuleForFile(f, project)
-         if (module == null) {
-            model = noModuleModel()
-         } else {
-            val psi = PsiManager.getInstance(project).findFile(f)
-            if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
-               DumbService.getInstance(project).runWhenSmart {
-                  offerVirtualFile(f)
-               }
-            } else {
-               val specs = psi?.specs() ?: emptyList()
-               updateSpecs(specs, module, f)
-            }
-         }
+      when (val f = file) {
+         null -> noFileModel()
+         else -> reloadModel(f)
       }
    }
 
-   private fun updateSpecs(specs: List<KtClassOrObject>,
-                           module: Module,
-                           file: VirtualFile) {
-      model = createTreeModel(file, project, specs, module)
-      expandAllNodes()
+   private fun reloadModel(file: VirtualFile, retries: Int = 10) {
+      val module = ModuleUtilCore.findModuleForFile(file, project) ?: return
+      val psi = PsiManager.getInstance(project).findFile(file) ?: return
+      if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
+         DumbService.getInstance(project).runWhenSmart {
+            if (retries > 0)
+               reloadModel(file, retries - 1)
+         }
+      } else {
+         val specs = psi.specs()
+         val expanded = isExpanded(0)
+         println("1 state $expanded")
+         model = createTreeModel(file, project, specs, module)
+         expandAllNodes()
+         setModuleGroupNodeExpandedState(expanded)
+      }
+   }
+
+   private fun setModuleGroupNodeExpandedState(expanded: Boolean) {
+      if (expanded) expandRow(0) else collapseRow(0)
    }
 
    private fun noFileModel(): TreeModel {
-      val root = DefaultMutableTreeNode("<no file selected>")
-      return DefaultTreeModel(root)
-   }
-
-   private fun noModuleModel(): TreeModel {
-      val root = DefaultMutableTreeNode("<no module>")
+      val root = DefaultMutableTreeNode("<no test file selected>")
       return DefaultTreeModel(root)
    }
 }

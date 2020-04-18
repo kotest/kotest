@@ -131,11 +131,11 @@ fun KtCallExpression.include(): Include? {
             when (val param = maybeKtValueArgument.children.firstOrNull()) {
                is KtCallExpression -> {
                   val name = param.children[0].text
-                  return Include(name, IncludeType.Function, this)
+                  return Include(name, IncludeType.Function, param)
                }
                is KtNameReferenceExpression -> {
                   val name = param.text
-                  return Include(name, IncludeType.Value, this)
+                  return Include(name, IncludeType.Value, param)
                }
             }
          }

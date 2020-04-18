@@ -25,7 +25,7 @@ class RunAction(text: String,
 
    override fun update(e: AnActionEvent) {
       if (e.isFromActionToolbar) {
-         e.presentation.isEnabled = when (tree.selectionPath?.node()) {
+         e.presentation.isEnabled = when (tree.selectionPath?.nodeDescriptor()) {
             is SpecNodeDescriptor -> true
             is TestNodeDescriptor -> true
             is ModuleNodeDescriptor -> true
@@ -38,7 +38,7 @@ class RunAction(text: String,
 fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Boolean) {
    val path = tree.selectionPath
    if (path != null) {
-      when (val node = path.node()) {
+      when (val node = path.nodeDescriptor()) {
          is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
          is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
          is ModuleNodeDescriptor -> runModule(node.module, executorId)

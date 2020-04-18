@@ -149,7 +149,7 @@ class ModuleNodeDescriptor(val module: Module,
 class IncludeNodeDescriptor(project: Project,
                             parent: SpecNodeDescriptor,
                             val psi: PsiElement,
-                            include: Include) : PresentableNodeDescriptor<Any>(project, parent) {
+                            val include: Include) : PresentableNodeDescriptor<Any>(project, parent) {
 
    init {
       templatePresentation.presentableText = "Include: ${include.name}"
