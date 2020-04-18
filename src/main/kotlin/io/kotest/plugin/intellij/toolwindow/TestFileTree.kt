@@ -40,14 +40,15 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
     * Offers the given file. If the file is a test file (contains one or more specs) then accepts it
     * and refreshes the model. Otherwise the existing file (if any) is kept.
     */
-   fun offerVirtualFile(file: VirtualFile) {
+   fun offerVirtualFile(file: VirtualFile, retries: Int = 10) {
       ApplicationManager.getApplication().runReadAction {
          val module = ModuleUtilCore.findModuleForFile(file, project)
          if (module != null) {
             val psi = PsiManager.getInstance(project).findFile(file)
             if (DumbService.getInstance(project).isDumb || NoAccessDuringPsiEvents.isInsideEventProcessing()) {
                DumbService.getInstance(project).runWhenSmart {
-                  offerVirtualFile(file)
+                  if (retries > 0)
+                     offerVirtualFile(file, retries - 1)
                }
             } else {
                val specs = psi?.specs() ?: emptyList()
