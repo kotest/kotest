@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
+import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 
 /**
  * Extracts the string literal from things like:
@@ -62,7 +63,8 @@ fun KtCallExpression.getSingleStringArgOrNull(): String? {
    return null
 }
 
-fun PsiElement.isNameReference(names: List<String>): Boolean = this is KtNameReferenceExpression && names.contains(text)
+fun PsiElement.isNameReference(names: List<String>): Boolean =
+   this is KtNameReferenceExpression && names.contains(text)
 
 /**
  * Returns the value of this string expression.
@@ -110,8 +112,7 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: L
       return children[1] // KtValueArgumentList
          .children[0] // KtValueArgument
          .children[0] // KtStringTemplateExpression
-         .children[0] // KtStringTemplateEntry
-         .text
+         .getChildOfType<KtStringTemplateEntry>()?.text
    }
    return null
 }
@@ -231,13 +232,20 @@ fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalL
    return null
 }
 
+/**
+ * Returns true if this argument has a single argument of type string.
+ */
 fun PsiElement.isSingleStringTemplateArg(): Boolean =
-   this is KtValueArgumentList
-      && children.size == 1
+   this is KtValueArgumentList && this.isSingleStringTemplateArg()
+
+/**
+ * Returns true if this argument has a single argument of type string.
+ */
+fun KtValueArgumentList.isSingleStringTemplateArg(): Boolean =
+   children.size == 1
       && children[0] is KtValueArgument
       && children[0].children.size == 1
       && children[0].children[0] is KtStringTemplateExpression
-
 
 /**
  * Returns the string literal used by an infix function, when the function is of the
