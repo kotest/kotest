@@ -74,7 +74,7 @@ class FilterModulesAction(private val tree: TestFileTree) : ToggleAction("Filter
    }
 }
 
-class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter includes", null, AllIcons.Nodes.Aspect) {
+class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filter includes", null, AllIcons.Nodes.Tag) {
 
    override fun isSelected(e: AnActionEvent): Boolean {
       return TestExplorerState.showIncludes
@@ -85,7 +85,6 @@ class FilterIncludesAction(private val tree: TestFileTree) : ToggleAction("Filte
       tree.reloadModel()
    }
 }
-
 
 class NavigateToNodeAction : ToggleAction(
    "Autoscroll to source",
