@@ -12,6 +12,7 @@ object TestExplorerTreeSelectionListener : TreeSelectionListener {
             is SpecNodeDescriptor -> node.psi
             is CallbackNodeDescriptor -> node.psi
             is TestNodeDescriptor -> node.psi
+            is IncludeNodeDescriptor -> node.psi
             else -> null
          }
 
