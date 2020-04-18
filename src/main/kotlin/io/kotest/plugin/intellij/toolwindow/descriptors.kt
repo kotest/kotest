@@ -154,7 +154,7 @@ class IncludeNodeDescriptor(project: Project,
    init {
       templatePresentation.presentableText = "Include: ${include.name}"
       templatePresentation.locationString = include.type.name
-      templatePresentation.setIcon(AllIcons.Nodes.Artifact)
+      templatePresentation.setIcon(AllIcons.Nodes.Aspect)
    }
 
    override fun update(presentation: PresentationData) {
