@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.asClue
+import io.kotest.assertions.json.Json
 import io.kotest.assertions.json.jsonKeyValueEntries
 import io.kotest.assertions.json.shouldContainExactly
 import io.kotest.assertions.json.shouldContainJsonKey
@@ -103,6 +105,14 @@ class JsonAssertionsTest : StringSpec({
             {..." should contain the path ${'$'}.store.table"""
 
     """{"data": null}""" shouldContainJsonKey "data" shouldBe "null"
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{"data": null}"""
+      nullableJson.shouldContainJsonKey("data")  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
+      use(nullableJson)
+    }
   }
 
   "test json key value" {
@@ -121,6 +131,14 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {..." should contain the element ${'$'}.store.book[1].author = JK Rowling"""
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{"data": "value"}"""
+      nullableJson.shouldContainJsonKeyValue("data", "value")
+      use(nullableJson)
+    }
   }
 
   "test json match by resource" {
@@ -150,5 +168,13 @@ class JsonAssertionsTest : StringSpec({
 
     shouldThrow<AssertionError> { """"string"""" shouldContainExactly 6.jsonKeyValueEntries }
     shouldThrow<AssertionError> { """["array elem"]""" shouldContainExactly 1.jsonKeyValueEntries }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{}"""
+      nullableJson.shouldContainExactly(0.jsonKeyValueEntries)  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
+      use(nullableJson)
+    }
   }
 })

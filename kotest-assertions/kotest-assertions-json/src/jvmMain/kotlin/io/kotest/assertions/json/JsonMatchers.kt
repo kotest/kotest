@@ -1,7 +1,5 @@
 package io.kotest.assertions.json
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.PathNotFoundException
 import io.kotest.assertions.failure
@@ -11,8 +9,6 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-import kotlin.reflect.KType
-import kotlin.reflect.full.isSupertypeOf
 import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalContracts::class)
@@ -106,8 +102,17 @@ fun containJsonKey(path: JsonKey) = object : Matcher<Json> {
     }
 }
 
-fun <T> Json?.shouldContainJsonKeyValue(path: JsonKey, value: T) = this should containJsonKeyValue(path, value)
+@OptIn(ExperimentalContracts::class)
+fun <T> Json?.shouldContainJsonKeyValue(path: JsonKey, value: T) {
+    contract {
+        returns() implies (this@shouldContainJsonKeyValue != null)
+    }
+
+    this should containJsonKeyValue(path, value)
+}
+
 fun <T> Json.shouldNotContainJsonKeyValue(path: JsonKey, value: T) = this shouldNot containJsonKeyValue(path, value)
+
 fun <T> containJsonKeyValue(path: JsonKey, t: T) = object : Matcher<Json?> {
     override fun test(value: Json?): MatcherResult {
         val sub = value?.limitLength()
