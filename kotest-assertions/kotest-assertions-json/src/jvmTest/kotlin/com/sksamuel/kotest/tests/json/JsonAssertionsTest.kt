@@ -5,6 +5,7 @@ import io.kotest.assertions.json.Json
 import io.kotest.assertions.json.jsonKeyValueEntries
 import io.kotest.assertions.json.shouldContainExactly
 import io.kotest.assertions.json.shouldContainJsonKey
+import io.kotest.assertions.json.shouldContainJsonKeyAndValueOfSpecificType
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.assertions.json.shouldMatchJsonResource
@@ -174,6 +175,29 @@ class JsonAssertionsTest : StringSpec({
 
       val nullableJson: Json? = """{}"""
       nullableJson.shouldContainExactly(0.jsonKeyValueEntries)  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
+      use(nullableJson)
+    }
+  }
+
+  "test json contains key and value of specific type" {
+    """{"c": null}""".shouldContainJsonKeyAndValueOfSpecificType<Int?>("c") shouldBe null
+    """{"a": 1}""".shouldContainJsonKeyAndValueOfSpecificType<Int>("a") shouldBe 1
+    """{"a": 1, "b": "2"}""".shouldContainJsonKeyAndValueOfSpecificType<String?>("b") shouldBe "2"
+
+    shouldThrow<AssertionError> { """{}""".shouldContainJsonKeyAndValueOfSpecificType<Int>("a") }
+    shouldThrow<AssertionError> { """{"a": 1}""".shouldContainJsonKeyAndValueOfSpecificType<String>("a") }
+
+    shouldThrow<AssertionError> { null.shouldContainJsonKeyAndValueOfSpecificType<Int>("a") }
+    shouldThrow<AssertionError> { null.shouldContainJsonKeyAndValueOfSpecificType<Int?>("a") }
+
+    shouldThrow<AssertionError> { """"string"""".shouldContainJsonKeyAndValueOfSpecificType<Int>("a") }
+    shouldThrow<AssertionError> { """["array elem"]""".shouldContainJsonKeyAndValueOfSpecificType<Int>("a") }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{"a": 1}"""
+      nullableJson.shouldContainJsonKeyAndValueOfSpecificType<Int>("a")
       use(nullableJson)
     }
   }
