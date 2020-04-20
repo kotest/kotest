@@ -42,6 +42,7 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(":kotest-assertions:kotest-assertions-arrow"))
             implementation(Libs.Coroutines.core)
+            implementation(Libs.Mocking.mockk)
             implementation("com.nhaarman:mockito-kotlin:1.6.0")
             implementation("org.mockito:mockito-core:2.24.0")
             implementation(Libs.JUnitPlatform.engine)

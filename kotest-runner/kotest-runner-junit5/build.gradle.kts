@@ -57,6 +57,7 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
             implementation(Libs.JUnitPlatform.testkit)
+            implementation(Libs.Mocking.mockk)
          }
       }
    }

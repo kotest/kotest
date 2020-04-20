@@ -13,22 +13,41 @@ import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 
+
+fun List<ProjectListener>.resolveName() =
+   groupBy { it.name }
+      .flatMap { entry -> if (entry.value.size > 1) {
+         entry.value.mapIndexed { index, listener -> "${listener.name}_$index" to listener }
+      } else{
+         entry.value.map { it.name to it }
+      }
+      }
+
 /**
  * Invokes any afterProject functions from the given listeners.
  */
-fun List<Listener>.afterProject(): Try<Unit> = Try {
-   log("invokeAfterAll")
-   filterIsInstance<ProjectListener>().forEach { it.afterProject() }
-}.mapFailure { AfterProjectListenerException(it) }
+fun List<Listener>.afterProject(): Try<List<RuntimeException>> = Try {
+   log("invokeAfterProject")
+   filterIsInstance<ProjectListener>()
+      .resolveName()
+      .map { it.first to Try { it.second.afterProject() } }
+      .filter { it.second.isFailure() }
+      .map { AfterProjectListenerException(it.first, (it.second as Try.Failure).error) }
+}.mapFailure { AfterProjectListenerException("afterProjectsInvocation", it) }
 
 /**
  * Invokes the beforeProject listeners, and prints project config using [dumpProjectConfig].
  */
-fun List<Listener>.beforeProject() = Try {
-   log("invokeBeforeAll")
+fun List<Listener>.beforeProject(): Try<List<RuntimeException>> = Try {
+   log("invokeBeforeProject")
    Project.dumpProjectConfig()
-   filterIsInstance<ProjectListener>().forEach { it.beforeProject() }
-}.mapFailure { BeforeBeforeListenerException(it) }
+
+   filterIsInstance<ProjectListener>()
+      .resolveName()
+      .map { it.first to Try { it.second.beforeProject() } }
+      .filter { it.second.isFailure() }
+      .map { BeforeProjectListenerException(it.first, (it.second as Try.Failure).error) }
+}.mapFailure { BeforeProjectListenerException("beforeProjectsInvocation", it) }
 
 /**
  * Invokes the beforeTest callbacks for this test, taking the listeners from

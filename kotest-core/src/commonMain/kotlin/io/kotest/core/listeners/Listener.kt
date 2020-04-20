@@ -1,3 +1,5 @@
 package io.kotest.core.listeners
 
-interface Listener
+interface Listener {
+   val name: String
+}
