@@ -1,50 +1,47 @@
 package io.kotest.core.engine
 
-import io.kotest.mpp.log
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
-import io.kotest.core.runtime.invokeAfterSpec
-import io.kotest.core.runtime.invokeBeforeSpec
+import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
+import io.kotest.core.test.*
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
 class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   private val results = mutableMapOf<TestCase, TestResult>()
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered
-   private val seen = mutableSetOf<Description>()
+   private val seen = ConcurrentHashMap.newKeySet<Description>()
 
    // keeps track of tests we've already notified the listener about
-   private val ignored = mutableListOf<Description>()
-   private val started = mutableListOf<Description>()
+   private val ignored = ConcurrentLinkedQueue<Description>()
+   private val started = ConcurrentLinkedQueue<Description>()
 
    // we keep a count to break ties (first discovered)
    data class Enqueued(val testCase: TestCase, val count: Int)
 
    private val counter = AtomicInteger(0)
 
-   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-   private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
+   private val comparator = Comparator<Enqueued> { o1, o2 ->
       val o1s = o1.testCase.description.names().size
       val o2s = o2.testCase.description.names().size
       if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
-   })
+   }
+
+   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
+   private val queues: ThreadLocal<PriorityQueue<Enqueued>> = ThreadLocal.withInitial {
+      PriorityQueue<Enqueued>(comparator)
+   }
 
    private fun enqueue(testCase: TestCase) {
-      queue.add(
+      queues.get().add(
          Enqueued(
             testCase,
             counter.incrementAndGet()
@@ -58,12 +55,14 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.rootTests().forEach { root ->
-         enqueue(root.testCase)
-      }
-      while (queue.isNotEmpty()) {
-         val (testCase, _) = queue.remove()
-         executeInCleanSpec(testCase)
+      val testCases = spec.rootTests().map { it.testCase }
+
+      runParallel(spec.threadsForSpec, testCases) {
+         executeInCleanSpec(it)
+         while (queues.get().isNotEmpty()) {
+            val (testCase, count) = queues.get().remove()
+            executeInCleanSpec(testCase)
+         }
       }
       results
    }
@@ -103,12 +102,8 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
                val t = nested.toTestCase(test.spec, test.description)
 
                // if this test is our target then we definitely run it
-               if (target.description == t.description) {
-                  open = false
-                  seen.add(t.description)
-                  run(t, target)
-                  // if the test is on the path to our target we must run it
-               } else if (t.description.isOnPath(target.description)) {
+               // or if the test is on the path to our target we must run it
+               if (t.description.isOnPath(target.description)) {
                   open = false
                   seen.add(t.description)
                   run(t, target)
@@ -140,7 +135,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             }
 
             override fun testFinished(testCase: TestCase, result: TestResult) {
-               if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
+               if (!queues.get().any { it.testCase.description.isDescendentOf(testCase.description) }) {
                   listener.testFinished(testCase, result)
                }
             }

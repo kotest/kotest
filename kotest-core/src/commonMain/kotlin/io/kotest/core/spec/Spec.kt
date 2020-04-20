@@ -2,7 +2,6 @@ package io.kotest.core.spec
 
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
-import io.kotest.core.listeners.RootTest
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
@@ -13,6 +12,7 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.fp.Tuple2
+import io.kotest.mpp.log
 
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
@@ -43,6 +43,9 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
          .ordered(order)
          .withIndex()
          .map { RootTest(it.value, it.index) }
+         .also {
+            log("Materialized roots: $it")
+         }
    }
 
    /**
@@ -152,3 +155,5 @@ fun List<TestCase>.ordered(spec: TestCaseOrder): List<TestCase> {
       TestCaseOrder.Lexicographic -> this.sortedBy { it.name.toLowerCase() }
    }
 }
+
+data class RootTest(val testCase: TestCase, val order: Int)

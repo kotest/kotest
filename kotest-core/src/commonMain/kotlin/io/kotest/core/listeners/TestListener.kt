@@ -2,9 +2,9 @@ package io.kotest.core.listeners
 
 import io.kotest.core.spec.IsolationMode.InstancePerLeaf
 import io.kotest.core.spec.IsolationMode.InstancePerTest
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 interface TestListener : Listener {
@@ -121,5 +121,3 @@ interface TestListener : Listener {
       results: Map<TestCase, TestResult>
    ): Unit = Unit
 }
-
-data class RootTest(val testCase: TestCase, val order: Int)

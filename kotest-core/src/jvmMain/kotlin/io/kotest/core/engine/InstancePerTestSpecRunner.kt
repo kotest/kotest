@@ -10,6 +10,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime
 
@@ -47,7 +48,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   private val results = mutableMapOf<TestCase, TestResult>()
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
@@ -62,8 +63,8 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.rootTests().forEach { test ->
-         executeInCleanSpec(test.testCase)
+      runParallel(spec.threadsForSpec, spec.rootTests().map { it.testCase }){
+         executeInCleanSpec(it)
             .getOrThrow()
       }
       results
@@ -107,9 +108,8 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {
 
-               if (namesInScope.contains(nested.name))
+               if (!namesInScope.add(nested.name))
                   throw IllegalStateException("Cannot add duplicate test ${nested.name}")
-               namesInScope.add(nested.name)
 
                val t = nested.toTestCase(test.spec, test.description)
                // if we are currently executing the target, then any registered tests are new, and we

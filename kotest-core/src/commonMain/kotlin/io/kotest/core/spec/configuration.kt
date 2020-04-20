@@ -48,6 +48,12 @@ abstract class TestConfiguration {
    var defaultTestConfig: TestCaseConfig? = null
 
    /**
+    * Returns the number of concurrent root test cases of Spec that can be executed.
+    * Defaults to 1.
+    */
+   var threadsForSpec: Int = 1
+
+   /**
     * Sets an assertion mode which is applied to every test.
     */
    var assertions: AssertionMode? = null
