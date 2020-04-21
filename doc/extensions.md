@@ -141,6 +141,8 @@ class MyProjectLevelConfig : AbstractProjectConfig() {
 
 Of course you can just add this extension to another extensions you're already using.
 
+After that done any class which should be ran with Robolectric should be annotated with `@RobolectricTest` annotation.
+
 ### Compilation test
 
 The ```kotest-assertions-compiler``` extension provides matchers to assert that given kotlin code snippet compiles or not.
