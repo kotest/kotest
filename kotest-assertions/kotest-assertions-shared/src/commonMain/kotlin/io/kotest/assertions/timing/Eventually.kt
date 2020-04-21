@@ -10,7 +10,7 @@ import kotlin.time.milliseconds
 
 @OptIn(ExperimentalTime::class)
 suspend fun <T> eventually(duration: Duration, f: suspend () -> T): T =
-   eventually(duration, 10.milliseconds, Exception::class, f)
+   eventually(duration, 25.milliseconds, Exception::class, f)
 
 @OptIn(ExperimentalTime::class)
 suspend fun <T> eventually(duration: Duration, poll: Duration, f: suspend () -> T): T =
@@ -21,7 +21,7 @@ suspend fun <T, E : Throwable> eventually(
    duration: Duration,
    exceptionClass: KClass<E>,
    f: suspend () -> T
-): T = eventually(duration, 10.milliseconds, exceptionClass, f)
+): T = eventually(duration, 25.milliseconds, exceptionClass, f)
 
 @OptIn(ExperimentalTime::class)
 suspend fun <T, E : Throwable> eventually(
