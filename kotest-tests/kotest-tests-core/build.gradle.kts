@@ -36,6 +36,7 @@ kotlin {
 
       val jvmTest by getting {
          dependencies {
+            implementation(kotlin("reflect"))
             implementation(project(Projects.Core))
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
