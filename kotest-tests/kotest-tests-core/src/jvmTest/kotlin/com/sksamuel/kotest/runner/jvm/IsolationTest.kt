@@ -1,6 +1,11 @@
 package com.sksamuel.kotest.runner.jvm
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
+import com.nhaarman.mockitokotlin2.argThat
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.then
 import io.kotest.core.spec.description
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.engine.IsolationTestEngineListener
