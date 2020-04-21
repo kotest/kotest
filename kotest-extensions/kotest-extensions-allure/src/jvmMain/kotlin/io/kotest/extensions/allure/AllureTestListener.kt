@@ -28,8 +28,7 @@ fun TestCase.description() = spec::class.findAnnotation<io.qameta.allure.Descrip
 @AutoScan
 object AllureTestListener : TestListener, ProjectListener {
 
-   override val name: String
-      get() = "AllureTestListener"
+   override val name = "AllureTestListener"
 
    internal val uuids = mutableMapOf<Description, UUID>()
 
