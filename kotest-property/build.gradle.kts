@@ -41,7 +41,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(Projects.Mpp)
+            implementation(project(Projects.Mpp))
             api(project(Projects.Fp))
             api(project(Projects.AssertionsShared))
             implementation(Libs.Coroutines.coreCommon)
@@ -75,6 +75,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<Test>("jvmTest") {
