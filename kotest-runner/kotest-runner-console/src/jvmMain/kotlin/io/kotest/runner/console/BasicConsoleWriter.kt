@@ -78,7 +78,7 @@ class BasicConsoleWriter : ConsoleWriter {
          }
    }
 
-   override fun engineFinished(t: Throwable?) {
+   override fun engineFinished(t: List<Throwable>) {
 
       val duration = Duration.ofMillis(System.currentTimeMillis() - start)
 
