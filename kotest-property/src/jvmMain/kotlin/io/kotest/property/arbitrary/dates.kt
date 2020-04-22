@@ -45,21 +45,21 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : Arb<LocalDate>() {
+fun Arb.Companion.localDate(minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDate: LocalDate = LocalDate.of(2030, 12, 31)): Arb<LocalDate> = object : Arb<LocalDate>() {
 
    override fun edgecases(): List<LocalDate> {
-      val yearRange = (minYear..maxYear)
+      val yearRange = (minDate.year..maxDate.year)
       val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
 
       val feb29Year = yearRange.firstOrNull { Year.of(it).isLeap }
       val feb29Date = feb29Year?.let { LocalDate.of(it, 2, 29) }
 
-      return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
+      return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth), LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth))
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<LocalDate>> = generateSequence {
-      val minDate = LocalDate.of(minYear, 1, 1)
-      val maxDate = LocalDate.of(maxYear, 12, 31)
+      val minDate = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
+      val maxDate = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
       val days = ChronoUnit.DAYS.between(minDate, maxDate)
       Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
    }
@@ -96,13 +96,13 @@ fun Arb.Companion.localDateTime(
 ): Arb<LocalDateTime> = object : Arb<LocalDateTime>() {
 
    override fun edgecases(): List<LocalDateTime> {
-      val localDates = localDate(minYear, maxYear).edgecases()
+      val localDates = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).edgecases()
       val times = localTime().edgecases()
       return localDates.flatMap { date -> times.map { date.atTime(it) } }
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<LocalDateTime>> = generateSequence {
-      val date = localDate(minYear, maxYear).single(rs)
+      val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).single(rs)
       val time = localTime().single(rs)
       Sample(date.atTime(time))
    }
