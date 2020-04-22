@@ -3,16 +3,29 @@ package io.kotest.core.spec.style
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecDsl
-import io.kotest.core.test.*
+import io.kotest.core.test.EnabledIf
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestType
+import io.kotest.core.test.createTestName
+import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 interface FeatureSpecDsl : SpecDsl {
+
    fun feature(name: String, init: suspend FeatureScope.() -> Unit) =
       addTest(
          createTestName("Feature: ", name),
          { FeatureScope(this, this@FeatureSpecDsl).init() },
          defaultConfig(),
+         TestType.Container
+      )
+
+   fun xfeature(name: String, init: suspend FeatureScope.() -> Unit) =
+      addTest(
+         createTestName("Feature: ", name),
+         { FeatureScope(this, this@FeatureSpecDsl).init() },
+         defaultConfig().copy(enabled = false),
          TestType.Container
       )
 }
@@ -54,6 +67,14 @@ class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
          TestType.Container
       )
 
+   suspend fun xfeature(name: String, init: suspend FeatureScope.() -> Unit) =
+      context.registerTestCase(
+         createTestName("Feature: ", name),
+         { FeatureScope(this, this@FeatureScope.dsl).init() },
+         dsl.defaultConfig().copy(enabled = false),
+         TestType.Container
+      )
+
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) =
       context.registerTestCase(
          createTestName("Scenario: ", name),
@@ -61,6 +82,15 @@ class FeatureScope(val context: TestContext, private val dsl: SpecDsl) {
          dsl.defaultConfig(),
          TestType.Test
       )
+
+   suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) =
+      context.registerTestCase(
+         createTestName("Scenario: ", name),
+         test,
+         dsl.defaultConfig().copy(enabled = false),
+         TestType.Test
+      )
+
 
    fun scenario(name: String) = ScenarioBuilder(createTestName("Scenario: ", name), context, dsl)
 }

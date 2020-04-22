@@ -7,10 +7,23 @@ class FeatureSpecTest : FeatureSpec() {
 
   init {
 
-    feature("a feature") {
-      scenario("can execute a scenario") {
-        1.shouldBeLessThan(4)
-      }
-    }
+     feature("a feature") {
+        scenario("can execute a scenario") {
+           1.shouldBeLessThan(4)
+        }
+        xscenario("should be ignored") {
+           error("Boom")
+        }
+     }
+
+     xfeature("should be ignored") {
+        error("Boom")
+     }
+
+     xfeature("should be ignored 2") {
+        scenario("should be ignored") {
+           error("Boom")
+        }
+     }
   }
 }
