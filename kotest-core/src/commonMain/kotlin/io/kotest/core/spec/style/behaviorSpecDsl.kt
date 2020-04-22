@@ -24,15 +24,22 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 interface BehaviorSpecDsl : SpecDsl {
 
-   fun Given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
-   fun given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test)
+   fun Given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test, true)
+   fun given(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test, true)
+   fun xgiven(name: String, test: suspend GivenContext.() -> Unit) = addGivenContext(name, test, false)
 
-   private fun addGivenContext(name: String, test: suspend GivenContext.() -> Unit) {
+   private fun addGivenContext(name: String, test: suspend GivenContext.() -> Unit, enabled: Boolean) {
       val testName = createTestName("Given: ", name)
       addTest(
          testName,
-         { GivenContext(Description.specUnsafe(this@BehaviorSpecDsl).append(testName), this, this@BehaviorSpecDsl).test() },
-         defaultConfig(),
+         {
+            GivenContext(
+               Description.specUnsafe(this@BehaviorSpecDsl).append(testName),
+               this,
+               this@BehaviorSpecDsl
+            ).test()
+         },
+         if (enabled) defaultConfig() else defaultConfig().copy(enabled = false),
          TestType.Container
       )
    }
@@ -95,27 +102,29 @@ class GivenContext(
       )
    }
 
-   suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
-   suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+   suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, true)
+   suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, true)
+   suspend fun xwhen(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, false)
 
-   private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+   private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit, enabled: Boolean) {
       val testName = createTestName("When: ", name)
       context.registerTestCase(
          testName,
          { WhenContext(this@GivenContext.description.append(testName), this, this@GivenContext.spec).test() },
-         spec.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Container
       )
    }
 
-   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
-   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun xthen(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, false)
 
-   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit, enabled: Boolean) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         spec.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Container
       )
    }
@@ -159,27 +168,29 @@ class GivenAndContext(
       )
    }
 
-   suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
-   suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test)
+   suspend fun When(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, true)
+   suspend fun `when`(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, true)
+   suspend fun xwhen(name: String, test: suspend WhenContext.() -> Unit) = addWhenContext(name, test, false)
 
-   private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit) {
+   private suspend fun addWhenContext(name: String, test: suspend WhenContext.() -> Unit, enabled: Boolean) {
       val testName = createTestName("When: ", name)
       context.registerTestCase(
          testName,
          { WhenContext(this@GivenAndContext.description.append(testName), this, this@GivenAndContext.spec).test() },
-         spec.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Container
       )
    }
 
-   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
-   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun xthen(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, false)
 
-   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit, enabled: Boolean) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         spec.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Container
       )
    }
@@ -223,14 +234,15 @@ class WhenContext(
       )
    }
 
-   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
-   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun xthen(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, false)
 
-   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit, enabled: Boolean) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         spec.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Test
       )
    }
@@ -240,30 +252,31 @@ class WhenContext(
 
 
 @KotestDsl
-class WhenAndContext(val context: TestContext, private val dsl: BehaviorSpecDsl) {
+class WhenAndContext(val context: TestContext, private val spec: BehaviorSpecDsl) {
    suspend fun And(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
    suspend fun and(name: String, test: suspend WhenAndContext.() -> Unit) = addAndContext(name, test)
 
    private suspend fun addAndContext(name: String, test: suspend WhenAndContext.() -> Unit) {
       context.registerTestCase(
          createTestName("And: ", name),
-         { WhenAndContext(this, this@WhenAndContext.dsl).test() },
-         dsl.defaultConfig(),
+         { WhenAndContext(this, this@WhenAndContext.spec).test() },
+         spec.defaultConfig(),
          TestType.Container
       )
    }
 
-   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
-   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test)
+   suspend fun Then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun then(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, true)
+   suspend fun xthen(name: String, test: suspend ThenContext.() -> Unit) = addThenContext(name, test, false)
 
-   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit) {
+   private suspend fun addThenContext(name: String, test: suspend ThenContext.() -> Unit, enabled: Boolean) {
       context.registerTestCase(
          createTestName("Then: ", name),
          { ThenContext(this).test() },
-         dsl.defaultConfig(),
+         if (enabled) spec.defaultConfig() else spec.defaultConfig().copy(enabled = false),
          TestType.Test
       )
    }
 
-   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, dsl)
+   fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
