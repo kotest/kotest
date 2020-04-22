@@ -29,7 +29,7 @@ class DateTest : WordSpec({
          val months = mutableSetOf<Int>()
          val days = mutableSetOf<Int>()
 
-         checkAll(10_000, Arb.localDate(1998, 1999)) {
+         checkAll(10_000, Arb.localDate(LocalDate.of(1998, 1, 1), LocalDate.of(1999, 12, 31))) {
             years += it.year
             months += it.monthValue
             days += it.dayOfMonth
@@ -42,11 +42,11 @@ class DateTest : WordSpec({
 
       "Contain Feb 29th if leap year" {
          val leapYear = 2016
-         Arb.localDate(leapYear, leapYear).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
+         Arb.localDate(LocalDate.of(leapYear, 1, 1), LocalDate.of(leapYear, 12, 31)).edgecases().toList() shouldContain LocalDate.of(2016, 2, 29)
       }
 
       "Contain the edgecases Feb 28, Jan 01 and Dec 31" {
-         Arb.localDate(2019, 2020).edgecases().toList() shouldContainAll listOf(
+         Arb.localDate(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31)).edgecases().toList() shouldContainAll listOf(
             LocalDate.of(2019, 1, 1),
             LocalDate.of(2020, 12, 31)
          )
