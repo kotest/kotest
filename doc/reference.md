@@ -22,11 +22,11 @@ Kotest is split into 3 basic sub-projects.
 These are provided separately so you can pick and choose which parts to use if you don't want to go _all in_ on Kotest.
 
 
-|   |   |   |
-|---|---|---|
-| **Test Framework**  | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>  |
-| **Assertions Library**  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  |
-| **Property Testing**  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  |
+|   |   | 
+|---|---|
+| **Test Framework** <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/> | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  |  
+| **Assertions Library** <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  |  
+| **Property Testing** <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  |  
 
 #### Which subproject(s) to use?
 
