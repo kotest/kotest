@@ -44,9 +44,6 @@ kotlin {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
             implementation(Libs.Coroutines.core)
-            implementation("org.mockito:mockito-core:2.24.0")
-            implementation("com.nhaarman:mockito-kotlin:1.6.0")
-            implementation(Libs.Mocking.mockk)
          }
       }
    }
