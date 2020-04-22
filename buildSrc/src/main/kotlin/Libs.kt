@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.3.71"
+   const val kotlinVersion = "1.3.72"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -25,10 +25,6 @@ object Libs {
    object Tschuchortdev {
       private const val version = "1.2.7"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
-   }
-
-   object Nhaarman {
-      const val MockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
    }
 
    object JUnitPlatform {
@@ -87,7 +83,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.3.1"
+      private const val version = "1.3.2"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
@@ -97,7 +93,7 @@ object Libs {
    }
 
    object Klock {
-      private const val version = "1.7.5"
+      private const val version = "1.10.5"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
 }

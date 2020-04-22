@@ -42,7 +42,7 @@ kotlin {
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Nhaarman.MockitoKotlin)
+            implementation(Libs.Mocking.mockk)
             implementation(Libs.JUnitPlatform.engine)
             implementation(Libs.JUnitPlatform.api)
             implementation(Libs.JUnitPlatform.launcher)

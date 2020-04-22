@@ -34,8 +34,6 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(Libs.Coroutines.core)
-            implementation(Libs.Nhaarman.MockitoKotlin)
-
          }
       }
    }
