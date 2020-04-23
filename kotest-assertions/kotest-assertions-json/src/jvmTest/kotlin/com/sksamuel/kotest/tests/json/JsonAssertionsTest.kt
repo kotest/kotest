@@ -7,6 +7,7 @@ import io.kotest.assertions.json.shouldContainExactly
 import io.kotest.assertions.json.shouldContainJsonKey
 import io.kotest.assertions.json.shouldContainJsonKeyAndValueOfSpecificType
 import io.kotest.assertions.json.shouldContainJsonKeyValue
+import io.kotest.assertions.json.shouldContainOnlyJsonKey
 import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.assertions.json.shouldMatchJsonResource
 import io.kotest.assertions.json.shouldNotContainJsonKey
@@ -198,6 +199,26 @@ class JsonAssertionsTest : StringSpec({
 
       val nullableJson: Json? = """{"a": 1}"""
       nullableJson.shouldContainJsonKeyAndValueOfSpecificType<Int>("a")
+      use(nullableJson)
+    }
+  }
+
+  "test json contains single key" {
+    """{"c": null}""".shouldContainOnlyJsonKey("c") shouldBe "null"
+    """{"c": []}""".shouldContainOnlyJsonKey("c") shouldBe "[]"
+    """{"c": "abc"}""".shouldContainOnlyJsonKey("c") shouldBe "\"abc\""
+
+    shouldThrow<AssertionError> { "" shouldContainOnlyJsonKey "c" }
+    shouldThrow<AssertionError> { """{"a": 1, "b": "2"}""" shouldContainOnlyJsonKey "a" }
+
+
+    shouldThrow<AssertionError> { null shouldContainOnlyJsonKey "abc" }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{"a": 1}"""
+      nullableJson.shouldContainOnlyJsonKey("a")  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
       use(nullableJson)
     }
   }
