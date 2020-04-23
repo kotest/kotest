@@ -5,6 +5,9 @@ package io.kotest.core.listeners
  */
 interface ProjectListener : Listener {
 
+   override val name: String
+      get() = "defaultProjectListener"
+
    /**
     * Executed before the first test of the project.
     */

@@ -43,7 +43,7 @@ actual fun createAssertionError(message: String, cause: Throwable?): AssertionEr
 
 /**
  * If JUnit5 is present, return an org.opentest4j.AssertionFailedError using the given message
- * and expeted and actual values, otherwise returns None.
+ * and expected and actual values, otherwise returns None.
  *
  * https://ota4j-team.github.io/opentest4j/docs/1.0.0/api/org/opentest4j/AssertionFailedError.html
  */

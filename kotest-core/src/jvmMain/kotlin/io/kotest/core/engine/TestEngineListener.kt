@@ -1,8 +1,8 @@
 package io.kotest.core.engine
 
+import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
@@ -26,7 +26,7 @@ interface TestEngineListener {
     * If an unrecoverable error was detected during execution then it will be passed
     * as the parameter to the engine.
     */
-   fun engineFinished(t: Throwable?) {}
+   fun engineFinished(t: List<Throwable>) {}
 
    /**
     * Is invoked once per [Spec] to indicate that this spec is about to

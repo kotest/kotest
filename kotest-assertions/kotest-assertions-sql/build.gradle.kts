@@ -42,7 +42,6 @@ kotlin {
          dependsOn(jvmMain)
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Nhaarman.MockitoKotlin)
             implementation(Libs.Mocking.mockk)
          }
       }

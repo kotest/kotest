@@ -144,7 +144,7 @@ class MochaConsoleWriter(
    private fun padNewLines(str: String, pad: String): String = str.lines().joinToString("\n") { "$pad$it" }
 
    @OptIn(ExperimentalTime::class)
-   override fun engineFinished(t: Throwable?) {
+   override fun engineFinished(t: List<Throwable>) {
 
       val duration = (System.currentTimeMillis() - start).milliseconds
 

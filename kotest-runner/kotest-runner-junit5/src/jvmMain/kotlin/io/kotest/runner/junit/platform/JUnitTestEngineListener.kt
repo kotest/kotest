@@ -1,16 +1,21 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.mpp.log
 import io.kotest.core.config.Project
+import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.internal.writeSpecFailures
+import io.kotest.core.runtime.AfterProjectListenerException
+import io.kotest.core.runtime.BeforeProjectListenerException
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
-import io.kotest.core.test.*
-import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.runtime.AfterProjectListenerException
-import io.kotest.core.runtime.BeforeBeforeListenerException
-import org.junit.platform.engine.*
-import org.junit.platform.engine.support.descriptor.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
+import io.kotest.mpp.log
+import org.junit.platform.engine.EngineExecutionListener
+import org.junit.platform.engine.TestDescriptor
+import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
 
 /**
@@ -86,29 +91,32 @@ class JUnitTestEngineListener(
     */
    private fun hasIgnored() = results.any { it.second.status == TestStatus.Ignored }
 
-   override fun engineFinished(t: Throwable?) {
-      log("Engine finished; throwable=[$t]")
+   override fun engineFinished(t: List<Throwable>) {
+      log("Engine finished; throwables=[${t.joinToString(separator = "\n", transform = { it.toString() })}]")
 
       if (Project.writeSpecFailureFile())
          writeSpecFailures(failedSpecs, Project.specFailureFilePath())
 
-      val result = when {
-         t is AfterProjectListenerException -> {
-            val container = createAndRegisterTest("AfterAllCallback")
-            listener.executionStarted(container)
-            listener.executionFinished(container, TestExecutionResult.failed(t))
-            TestExecutionResult.successful()
+      val result = t.map {
+         when (it) {
+            is AfterProjectListenerException -> {
+               val container = createAndRegisterTest(it.name)
+               listener.executionStarted(container)
+               listener.executionFinished(container, TestExecutionResult.failed(it))
+               TestExecutionResult.successful()
+            }
+            is BeforeProjectListenerException -> {
+               val container = createAndRegisterTest(it.name)
+               listener.executionStarted(container)
+               listener.executionFinished(container, TestExecutionResult.failed(it))
+               TestExecutionResult.successful()
+            }
+            else -> TestExecutionResult.failed(it)
          }
-         t is BeforeBeforeListenerException -> {
-            val container = createAndRegisterTest("BeforeAllCallback")
-            listener.executionStarted(container)
-            listener.executionFinished(container, TestExecutionResult.failed(t))
-            TestExecutionResult.successful()
-         }
-         t != null -> TestExecutionResult.failed(t)
-         Project.failOnIgnoredTests() && hasIgnored() ->
-            TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
-         else -> TestExecutionResult.successful()
+      }.find { it.status == TestExecutionResult.Status.FAILED } ?: if (Project.failOnIgnoredTests() && hasIgnored()) {
+         TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
+      } else {
+         TestExecutionResult.successful()
       }
 
       log("Notifying junit that root descriptor completed $root")

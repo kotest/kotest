@@ -1,13 +1,33 @@
 package io.kotest.core.runtime
 
 class AfterProjectListenerException : RuntimeException {
-   constructor(message: String, t: Throwable?) : super(message, t)
-   constructor(message: String) : super(message)
-   constructor(t: Throwable) : super(t)
+   constructor(message: String, t: Throwable?, name: String) : super(message, t) {
+      this.name = name
+   }
+
+   constructor(message: String, name: String) : super(message) {
+      this.name = name
+   }
+
+   constructor(name: String, t: Throwable) : super(t) {
+      this.name = name
+   }
+
+   val name: String
 }
 
-class BeforeBeforeListenerException : RuntimeException {
-   constructor(message: String, t: Throwable?) : super(message, t)
-   constructor(message: String) : super(message)
-   constructor(t: Throwable) : super(t)
+class BeforeProjectListenerException : RuntimeException {
+   constructor(message: String, t: Throwable?, name: String) : super(message, t) {
+      this.name = name
+   }
+
+   constructor(message: String, name: String) : super(message) {
+      this.name = name
+   }
+
+   constructor(name: String, t: Throwable) : super(t) {
+      this.name = name
+   }
+
+   val name: String
 }
