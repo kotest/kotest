@@ -8,7 +8,7 @@ To use Kotest's property-based testing you need to add the module `io.kotest:kot
 
 _Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+. It replaces the previous property test classes which are now deprecated.
 
-Note: Some generators are only available on the JVM. See the full list [here](generators.md).
+Note: Use imports from `io.kotest.property` and not `io.kotest.properties`.
 
 Introduction To Property Testing
 ----------------------
@@ -141,6 +141,8 @@ Kotest has two types of generators - `Arb` for arbitrary (random) values and `Ex
 Both types of gens can be mixed and matched in property tests. For example,
 you could test a function with 100 random positive integers (arbitrary) alongside every
 even number from 0 to 200 (exhaustive).
+
+Some generators are only available on the JVM. See the full list [here](generators.md).
 
 ### Arb
 
