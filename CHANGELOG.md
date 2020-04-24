@@ -1,6 +1,10 @@
 Changelog
 =========
 
+#### 4.0.4
+
+* Bugfix: Exceptions of type `LinkageError`, most commonly `ExceptionInInitializerError` were not being handled #1381
+
 #### 4.0.3
 
 * Feature: Koin support now works for koin 2.1 #1357
