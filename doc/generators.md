@@ -51,7 +51,7 @@ Most generators are available on all platforms. Some are JVM specific.
 | -------- | ----------- | --- | --- | ------ |
 | `Arb.choose(pairs)` | Generates values based on weights. For example, `Arb.choose(1 to 'A', 2 to 'B')` will generate 'A' 33% of the time and 'B' 66% of the time. | ✓ | ✓ | ✓ |
 | `Arb.shuffle(list)` | Generates random permutations of a list. For example, `Arb.shuffle(listOf(1,2,3))` could generate `listOf(3,1,2)`, `listOf(1,3,2)` and so on. | ✓ | ✓ | ✓ |
-| `Arb.choice(gens)` | Randomly selects one of the given gens and then uses that to generate the next element. | ✓ | ✓ | ✓ |
+| `Arb.choice(arbs)` | Randomly selects one of the given arbs and then uses that to generate the next element.  | ✓ | ✓ | ✓ |
 | `Arb.subsequence(list)` | Generates a random subsequence of the given list starting at index 0 and including the empty list. For example, `Arb.subsequence(listOf(1,2,3))` could generate `listOf(1)`, `listOf(1,2)`, and so on. | ✓ | ✓ | ✓ |
 
 |  Collections  | Description | JVM | JS  | Native |
