@@ -248,6 +248,7 @@ class WhenContext(
    }
 
    fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
+   fun Then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
 
 
@@ -279,4 +280,5 @@ class WhenAndContext(val context: TestContext, private val spec: BehaviorSpecDsl
    }
 
    fun then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
+   fun Then(name: String) = BehaviorSpecDsl.TestScope(name, context, spec)
 }
