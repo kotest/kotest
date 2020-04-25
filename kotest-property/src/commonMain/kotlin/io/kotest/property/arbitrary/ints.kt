@@ -1,18 +1,21 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.property.Arb
 import io.kotest.property.Shrinker
 import kotlin.math.abs
 import kotlin.random.nextInt
-import io.kotest.property.Arb
 
 fun Arb.Companion.int(min: Int, max: Int) = int(min..max)
 
 /**
  * Returns an [Arb] where each value is a randomly chosen [Int] in the given range.
- * The edgecases are: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1]
+ * The edgecases are: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1] with any not in the range
+ * filtered out.
  */
-fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE) =
-   arb(IntShrinker, listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)) { it.random.nextInt(range) }
+fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
+   val edgecases = listOf(0, 1, -1, Int.MAX_VALUE, Int.MIN_VALUE).filter { it in range }
+   return arb(IntShrinker, edgecases) { it.random.nextInt(range) }
+}
 
 /**
  * Returns an [Arb] where each value is a randomly chosen natural integer.
