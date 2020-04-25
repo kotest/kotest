@@ -11,9 +11,27 @@ object PropertyTesting {
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
 }
 
+data class PropTest(
+   val seed: Long? = null,
+   val minSuccess: Int = Int.MAX_VALUE,
+   val maxFailure: Int = 0,
+   val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   val iterations: Int? = null
+)
+
+fun PropTest.toPropTestConfig() =
+   PropTestConfig(
+      seed = seed,
+      minSuccess = minSuccess,
+      maxFailure = maxFailure,
+      iterations = iterations,
+      shrinkingMode = shrinkingMode
+   )
+
 data class PropTestConfig(
    val seed: Long? = null,
    val minSuccess: Int = Int.MAX_VALUE,
    val maxFailure: Int = 0,
-   val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000)
+   val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
+   val iterations: Int? = null
 )

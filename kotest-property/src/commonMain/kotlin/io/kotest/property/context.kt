@@ -26,13 +26,18 @@ class PropertyContext {
    fun classifications(): Map<String, Int> = classifications.toMap()
 
    /**
+    * Increase the count of [label].
+    */
+   fun classify(label: String) {
+      val current = classifications.getOrElse(label) { 0 }
+      classifications[label] = current + 1
+   }
+
+   /**
     * Increase the count of [label] if [condition] is true.
     */
    fun classify(condition: Boolean, label: String) {
-      if (condition) {
-         val current = classifications.getOrElse(label) { 0 }
-         classifications[label] = current + 1
-      }
+      if (condition) classify(label)
    }
 
    /**

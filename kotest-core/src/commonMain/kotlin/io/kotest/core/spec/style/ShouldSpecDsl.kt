@@ -142,9 +142,9 @@ class ContextScope(
       }
    }
 
-   fun test(name: String) = TestBuilder(name)
+   fun should(name: String) = TestBuilder(name)
 
-   suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
+   suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
       context.registerTestCase(name, test, spec.defaultConfig(), TestType.Test)
 }
 
