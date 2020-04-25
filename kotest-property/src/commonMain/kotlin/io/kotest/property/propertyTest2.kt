@@ -45,6 +45,16 @@ suspend inline fun <reified A, reified B> checkAll(
    property
 )
 
+suspend inline fun <reified A, reified B> PropTest.checkAll(
+   noinline property: suspend PropertyContext.(A, B) -> Unit
+) = proptest<A, B>(
+   this.iterations ?: PropertyTesting.defaultIterationCount,
+   Arb.default<A>(),
+   Arb.default<B>(),
+   this.toPropTestConfig(),
+   property
+)
+
 suspend inline fun <reified A, reified B> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A, B) -> Unit
