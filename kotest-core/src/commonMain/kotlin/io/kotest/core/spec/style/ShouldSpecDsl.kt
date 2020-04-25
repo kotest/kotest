@@ -153,6 +153,7 @@ class ContextScope(
 @OptIn(ExperimentalTime::class)
 class ShouldScope(val context: TestContext, private val dsl: SpecDsl) {
 
+   @Deprecated("use context(\"parent test\") to add parent tests")
    suspend operator fun String.invoke(init: suspend ShouldScope.() -> Unit) =
       context.registerTestCase(
          this,
