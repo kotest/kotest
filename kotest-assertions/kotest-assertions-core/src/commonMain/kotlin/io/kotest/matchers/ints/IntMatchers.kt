@@ -3,9 +3,27 @@ package io.kotest.matchers.ints
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 
+/**
+ * Verifies that the given integer is between a and b inclusive.
+ */
+fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
+
+/**
+ * Verifies that the given integer is NOT between a and b inclusive.
+ */
+fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
+
+/**
+ * Verifies that the given integer is between a and b inclusive.
+ */
 fun beBetween(a: Int, b: Int) = between(a, b)
+
+/**
+ * Verifies that the given integer is between a and b inclusive.
+ */
 fun between(a: Int, b: Int): Matcher<Int> = object : Matcher<Int> {
   override fun test(value: Int) = MatcherResult(
      value in a..b,
