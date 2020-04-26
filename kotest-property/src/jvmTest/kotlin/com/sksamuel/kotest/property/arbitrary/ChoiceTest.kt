@@ -38,7 +38,7 @@ class ChoiceTest : WordSpec({
          positiveNumbers shouldBe beGreaterThan(1)
       }
       "support covariance" {
-         Arb.choice(
+         val arbs: Arb<X> = Arb.choice(
             Arb.int().map { X.A(it) },
             Arb.int().map { X.B(it) },
             Arb.int().map { X.C(it) }
