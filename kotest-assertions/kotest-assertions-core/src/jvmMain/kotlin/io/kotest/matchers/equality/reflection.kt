@@ -73,9 +73,9 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
 /**
  * Matcher that compares values using specific fields
  *
- * Verifies that two instances not equal using only some specific fields. This is useful for matching
- * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
- * doesn't matter for you, for example)
+ * Verifies that two instances are equal considering only some specific fields. This is useful for matching on objects
+ * that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it doesn't
+ * matter for you, for example). However, if no fields are specified, all public fields are considered.
  *
  *
  * Example:
@@ -97,16 +97,14 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
-   init {
-      require(fields.isNotEmpty()) { "At-least one field must be used when checking for equality" }
-   }
-
    override fun test(value: T): MatcherResult {
       val hasNonPublicFields = fields.any { it.visibility != KVisibility.PUBLIC }
       if (hasNonPublicFields) {
          throw IllegalArgumentException("Only fields of public visibility are allowed to be use for used for checking equality")
       }
-      val failed = checkEqualityOfFields(fields.toList(), value, other)
+      val fieldsToBeConsidered: List<KProperty<*>> = fields.toList().takeUnless { it.isEmpty() }
+         ?: value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
+      val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
       return MatcherResult(
