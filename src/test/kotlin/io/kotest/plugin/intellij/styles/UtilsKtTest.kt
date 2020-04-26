@@ -1,29 +1,29 @@
 package io.kotest.plugin.intellij.styles
 
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.psi.buildSuggestedName
+import junit.framework.TestCase
 
-class UtilsKtTest : StringSpec() {
+class UtilsKtTest : TestCase() {
 
-  init {
+   fun `test work for packageName`() {
+      buildSuggestedName(null, null, "com.sksamuel.foo") shouldBe "All tests in 'com.sksamuel.foo'"
+      buildSuggestedName("", "", "com.sksamuel.foo") shouldBe "All tests in 'com.sksamuel.foo'"
+   }
 
-    "buildSuggestedName should work for spec only" {
-      buildSuggestedName("myspec", null) shouldBe "myspec"
-      buildSuggestedName("myspec", "") shouldBe "myspec"
-    }
+   fun `test work for spec without test`() {
+      buildSuggestedName("myspec", null, null) shouldBe "myspec"
+      buildSuggestedName("myspec", "", null) shouldBe "myspec"
+   }
 
-    "buildSuggestedName should return null if spec is null or blank" {
-      buildSuggestedName(null, "this is a test") shouldBe null
-      buildSuggestedName(null, "this is a test") shouldBe null
-      buildSuggestedName("", null) shouldBe null
-      buildSuggestedName("", null) shouldBe null
-    }
+   fun `test return null if spec is null or blank and package is blank`() {
+      buildSuggestedName(null, "this is a test", null) shouldBe null
+      buildSuggestedName(null, "this is a test", null) shouldBe null
+      buildSuggestedName("", null, null) shouldBe null
+      buildSuggestedName("", null, null) shouldBe null
+   }
 
-    "buildSuggestedName should work for spec and test" {
-      buildSuggestedName("myspec", "this is a test") shouldBe "myspec: this is a test"
-    }
-
-  }
-
+   fun `test work for spec and test`() {
+      buildSuggestedName("myspec", "this is a test", null) shouldBe "myspec: this is a test"
+   }
 }

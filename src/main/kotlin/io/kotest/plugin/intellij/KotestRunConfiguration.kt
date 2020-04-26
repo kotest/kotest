@@ -38,11 +38,13 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
    private var workingDirectory: String? = null
    private var testName: String? = null
    private var specName: String? = null
+   private var packageName: String? = null
 
-   override fun suggestedName(): String? = buildSuggestedName(specName, testName)
+   override fun suggestedName(): String? = buildSuggestedName(specName, testName, packageName)
 
    fun getTestName(): String? = testName
    fun getSpecName(): String? = specName
+   fun getPackageName(): String? = packageName
 
    override fun isPassParentEnvs(): Boolean = passParentEnvs
    override fun isAlternativeJrePathEnabled() = alternativeJrePathEnabled
@@ -101,12 +103,23 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       this.specName = spec?.fqName?.asString()
    }
 
+   fun setPackageName(packageName: String?) {
+      this.packageName = packageName
+   }
+
    override fun setPassParentEnvs(passParentEnvs: Boolean) {
       this.passParentEnvs = passParentEnvs
    }
 
    override fun setProgramParameters(programParameteres: String?) {
       this.programParameters = programParameteres
+   }
+
+   override fun getActionName(): String? = when {
+      packageName?.isNotBlank() ?: false -> "All tests in '$packageName'"
+      testName?.isNotBlank() ?: false -> testName
+      specName?.isNotBlank() ?: false -> specName
+      else -> super.getActionName()
    }
 
    override fun writeExternal(element: Element) {
@@ -116,6 +129,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       JDOMExternalizerUtil.writeField(element, ProgramParamsField, programParameters)
       JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
       JDOMExternalizerUtil.writeField(element, TestNameField, testName)
+      JDOMExternalizerUtil.writeField(element, PackageNameField, packageName)
       EnvironmentVariablesComponent.writeExternal(element, envs)
    }
 
@@ -126,6 +140,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       programParameters = JDOMExternalizerUtil.readField(element, ProgramParamsField)
       specName = JDOMExternalizerUtil.readField(element, SpecNameField)
       testName = JDOMExternalizerUtil.readField(element, TestNameField)
+      packageName = JDOMExternalizerUtil.readField(element, PackageNameField)
       EnvironmentVariablesComponent.readExternal(element, envs)
    }
 
@@ -137,6 +152,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       const val PassParentEnvsField = "passParentEnvs"
       const val ProgramParamsField = "programParameters"
       const val WorkingDirField = "workingDirectory"
+      const val PackageNameField = "packageName"
       const val TestNameField = "testName"
       const val SpecNameField = "specName"
    }

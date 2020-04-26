@@ -266,8 +266,9 @@ fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<St
    return null
 }
 
-fun buildSuggestedName(specName: String?, testName: String?): String? {
+fun buildSuggestedName(specName: String?, testName: String?, packageName: String?): String? {
    return when {
+      packageName != null && packageName.isNotBlank() -> "All tests in '$packageName'"
       specName == null || specName.isBlank() -> null
       testName == null || testName.isBlank() -> specName.split('.').last()
       else -> {

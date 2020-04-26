@@ -49,7 +49,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
          if (ktclass != null) {
-            return configuration.name == buildSuggestedName(ktclass.fqName?.asString(), null)
+            return configuration.name == buildSuggestedName(ktclass.fqName?.asString(), null, null)
          }
       }
       return false

@@ -17,7 +17,6 @@
    <depends>JUnit</depends>
 
    <extensions defaultExtensionNs="com.intellij">
-
       <configurationType implementation="io.kotest.plugin.intellij.KotestConfigurationType"/>
 
       <toolWindow id="Kotest" anchor="left" icon="/icon16_greyscale.png"
@@ -30,6 +29,7 @@
                                 implementationClass="io.kotest.plugin.intellij.KotestRunLineMarkerContributor"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.TestPathRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.PackageRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
 

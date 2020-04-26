@@ -11,7 +11,6 @@ import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.Test
-import kotlin.time.ExperimentalTime
 
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
@@ -67,7 +66,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
          val test = findTest(element)
          if (test != null) {
             val spec = element.enclosingClass()
-            val name = buildSuggestedName(spec?.fqName?.asString(), test.path)
+            val name = buildSuggestedName(spec?.fqName?.asString(), test.path, null)
             return configuration.name == name
          }
       }
