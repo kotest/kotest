@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 4.0.5
+
+* Bugfix: Focus mode would cause some nested tests to be ignored #1376
+* Bugfix: Arb.choice would include edgecases in the generated values #1406
+* Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged #1405
+
 #### 4.0.4
 
 * Bugfix: Exceptions of type `LinkageError`, most commonly `ExceptionInInitializerError` were not being handled #1381
