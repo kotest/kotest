@@ -19,18 +19,28 @@ import io.kotest.mpp.sysprop
  * - The test is filtered out via a [TestCaseFilter]
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.
- *
- * Note2: Focused tests will override any settings here.
- *
  */
 fun TestCase.isActive(): Boolean {
-   val focused = isFocused() && isTopLevel()
-   val hasFocused = spec.focusTests().isNotEmpty()
-   val enabledInConfig = config.enabled && config.enabledIf(this)
+
+   // this sys property disables the use of !
+   // when it's not set, then we use ! to disable tests
    val bangEnabled = sysprop("kotest.bang.disable") == null
-   val disabledViaBang = isBang() && bangEnabled
-   val activeViaTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
-   val filtered = Project.testCaseFilters()
-      .map { it.filter(description) }.any { it == TestFilterResult.Exclude }
-   return focused || !hasFocused && enabledInConfig && !disabledViaBang && !filtered && activeViaTags
+   if (isBang() && bangEnabled) return false
+
+   if (!config.enabled) return false
+   if (!config.enabledIf(this)) return false
+
+   // if we have tags specified on this
+   val enabledInTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
+   if (!enabledInTags) return false
+
+   val filtered = Project.testCaseFilters().map { it.filter(description) }.any { it == TestFilterResult.Exclude }
+   if (filtered) return false
+
+   // if the spec has focused tests, and this test is top level and not focused, then it's not active
+   val specHasFocusedTests = spec.focusTests().isNotEmpty()
+   if (isTopLevel() && !isFocused() && specHasFocusedTests)
+      return false
+
+   return true
 }

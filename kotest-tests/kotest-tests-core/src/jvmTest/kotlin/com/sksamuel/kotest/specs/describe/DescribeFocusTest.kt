@@ -1,24 +1,35 @@
 package com.sksamuel.kotest.specs.describe
 
 import io.kotest.core.spec.style.DescribeSpec
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
+import java.util.concurrent.atomic.AtomicInteger
 
 class DescribeFocusTest : DescribeSpec({
+
+   val counter = AtomicInteger(0)
+
+   afterSpec {
+      counter.get() shouldBe 2
+   }
+
    describe("f:Foo") {
-      it("foo") {
-         assertEquals(1, 2)
+      it("foo 1") {
+         counter.incrementAndGet()
+      }
+      it("foo 2") {
+         counter.incrementAndGet()
       }
    }
 
    describe("Bar") {
       it("bar") {
-         assertEquals(1, 2)
+         error("boom")
       }
    }
 
    describe("Baz") {
       it("baz") {
-         assertEquals(1, 2)
+         error("boom")
       }
    }
 })
