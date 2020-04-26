@@ -102,9 +102,9 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
    }
 
    override fun test(value: T): MatcherResult {
-      val nonPublicFields = fields.filterNot { it.visibility == KVisibility.PUBLIC }
-      if(nonPublicFields.isNotEmpty()) {
-         throw IllegalArgumentException("Fields of only public visibility are allowed to be use for used for checking equality")
+      val hasNonPublicFields = fields.any { it.visibility != KVisibility.PUBLIC }
+      if (hasNonPublicFields) {
+         throw IllegalArgumentException("Only fields of public visibility are allowed to be use for used for checking equality")
       }
       val failed = checkEqualityOfFields(fields.toList(), value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
