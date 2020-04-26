@@ -22,12 +22,7 @@ class ReflectionKtTest : FunSpec() {
          Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Foo::a)
          Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::a, Foo::c)
          Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::c, Foo::a)
-      }
-
-      test("shouldBeEqualToUsingFields should throw exception when no field is mentioned") {
-         assertThrows<IllegalArgumentException>("At-least one field is required to be mentioned for checking the equality") {
-            Foo("sammy", 23, false).shouldBeEqualToUsingFields(Foo("danny", 23, false))
-         }
+         Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
       }
 
       test("shouldBeEqualToUsingFields failure message") {

@@ -35,7 +35,6 @@ import kotlin.reflect.full.memberProperties
  *
  */
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
-   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned for checking the equality" }
    this should beEqualToUsingFields(other, *properties)
 }
 
@@ -68,16 +67,15 @@ fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KPropert
  *
  */
 fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
-   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned for checking the equality" }
    this shouldNot beEqualToUsingFields(other, *properties)
 }
 
 /**
  * Matcher that compares values using specific fields
  *
- * Verifies that two instances not equal using only some specific fields. This is useful for matching
- * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
- * doesn't matter for you, for example)
+ * Verifies that two instances are equal considering only some specific fields. This is useful for matching on objects
+ * that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it doesn't
+ * matter for you, for example). However, if no fields are specified, all public fields are considered.
  *
  *
  * Example:
@@ -100,11 +98,13 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  */
 fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
-      val nonPublicFields = fields.filterNot { it.visibility == KVisibility.PUBLIC }
-      if(nonPublicFields.isNotEmpty()) {
-         throw IllegalArgumentException("Fields of only public visibility are allowed to be use for used for checking equality")
+      val hasNonPublicFields = fields.any { it.visibility != KVisibility.PUBLIC }
+      if (hasNonPublicFields) {
+         throw IllegalArgumentException("Only fields of public visibility are allowed to be use for used for checking equality")
       }
-      val failed = checkEqualityOfFields(fields.toList(), value, other)
+      val fieldsToBeConsidered: List<KProperty<*>> = fields.toList().takeUnless { it.isEmpty() }
+         ?: value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
+      val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
 
       return MatcherResult(
@@ -139,7 +139,6 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
  */
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) {
-   require(properties.isNotEmpty()) { "At-least one field is required to be mentioned to be ignore for checking the equality" }
    this should beEqualToIgnoringFields(other, *properties)
 }
 
@@ -194,8 +193,11 @@ fun <T : Any> beEqualToIgnoringFields(
    other: T,
    vararg fields: KProperty<*>
 ): Matcher<T> = object : Matcher<T> {
-   override fun test(value: T): MatcherResult {
+   init {
+      require(fields.isNotEmpty()) { "At-least one field must be ignored when checking for equality" }
+   }
 
+   override fun test(value: T): MatcherResult {
       val fieldNames = fields.map { it.name }
       val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties
          .filterNot { fieldNames.contains(it.name) }
@@ -210,7 +212,6 @@ fun <T : Any> beEqualToIgnoringFields(
          "$value should not be equal to $other ignoring fields $fieldsString"
       )
    }
-
 }
 
 private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: T): List<String> {
