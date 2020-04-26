@@ -31,7 +31,8 @@
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.PackageRunConfigurationProducer"/>
 
-      <implicitUsageProvider implementation="io.kotest.plugin.intellij.KotestImplicitUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ProjectConfigImplicitUsageProvider"/>
 
       <testFramework implementation="io.kotest.plugin.intellij.KotestTestFramework" id="kotest"/>
 
