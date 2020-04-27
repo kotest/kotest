@@ -2284,46 +2284,46 @@ infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano
 /**
  * Asserts that this is equal to [other] using the [ChronoZonedDateTime.isEqual]
  *
- * Opposite of [ChronoZonedDateTime.shouldNotBeEqual]
+ * Opposite of [ZonedDateTime.shouldNotHaveSameInstantAs]
  *
  * ```
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldBeEqual(other)  // Assertion passes
+ *    date.shouldHaveSameInstantAs(other)  // Assertion passes
  *
  *
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldNotBeEqual(other)  // Assertion fails, date is NOT equal to the other date
+ *    date.shouldHaveSameInstantAs(other)  // Assertion fails, date is NOT equal to the other date
  * ```
  *
- * @see ZonedDateTime.shouldNotBeEqual
+ * @see ZonedDateTime.shouldNotHaveSameInstant
  */
-infix fun ZonedDateTime.shouldBeEqual(other: ZonedDateTime) = this shouldBe equal(other)
+infix fun ZonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime) = this should haveSameInstantAs(other)
 
 /**
  * Asserts that this is NOT equal to [other] using the [ChronoZonedDateTime.isEqual]
  *
- * Opposite of [ChronoZonedDateTime.shouldBeEqual]
+ * Opposite of [ZonedDateTime.shouldHaveSameInstantAs]
  *
  * ```
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldBeEqual(other)  // Assertion passes
+ *    date.shouldNotHaveSameInstantAs(other)  // Assertion passes
  *
  *
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldNotBeEqual(other)  // Assertion fails, date is equal to the other date
+ *    date.shouldNotHaveSameInstantAs(other)  // Assertion fails, date is equal to the other date
  * ```
  *
- * @see ZonedDateTime.shouldBeEqual
+ * @see ZonedDateTime.shouldHaveSameInstantAs
  */
-infix fun ZonedDateTime.shouldNotBeEqual(other: ZonedDateTime) = this shouldNotBe equal(other)
+infix fun ZonedDateTime.shouldNotHaveSameInstantAs(other: ZonedDateTime) = this shouldNot haveSameInstantAs(other)
 
 /**
  * Matcher that checks if ZonedDateTime is equal to another ZonedDateTime using the
@@ -2334,19 +2334,19 @@ infix fun ZonedDateTime.shouldNotBeEqual(other: ZonedDateTime) = this shouldNotB
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldBeEqual(other)  // Assertion passes
+ *    date.haveSameInstantAs(other)  // Assertion passes
  *
  *
  *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
  *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
  *
- *    date.shouldNotBeEqual(other)  // Assertion fails, date is NOT equal to the other date
+ *    date.haveSameInstantAs(other)  // Assertion fails, date is NOT equal to the other date
  * ```
  *
- * @see ZonedDateTime.shouldBeEqual
- * @see ZonedDateTime.shouldNotBeEqual
+ * @see ZonedDateTime.shouldHaveSameInstantAs
+ * @see ZonedDateTime.shouldNotHaveSameInstantAs
  */
-fun equal(other: ZonedDateTime) = object : Matcher<ZonedDateTime> {
+fun haveSameInstantAs(other: ZonedDateTime) = object : Matcher<ZonedDateTime> {
    override fun test(value: ZonedDateTime): MatcherResult =
       MatcherResult(
          passed = value.isEqual(other),
