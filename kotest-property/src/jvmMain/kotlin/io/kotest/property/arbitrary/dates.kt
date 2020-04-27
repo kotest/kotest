@@ -45,6 +45,23 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
  * @see [localDateTime]
  * @see [localTime]
  */
+@Deprecated("use the version with complete date instead", ReplaceWith("localDate"))
+fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = localDate(
+   minDate = LocalDate.of(minYear, 1, 1),
+   maxDate = LocalDate.of(maxYear, 12, 31)
+)
+
+/**
+ * Arberates a stream of random LocalDates
+ *
+ * This generator creates randomly generated LocalDates, in the range [[minDate, maxDate]].
+ *
+ * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * @see [localDateTime]
+ * @see [localTime]
+ */
 fun Arb.Companion.localDate(minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDate: LocalDate = LocalDate.of(2030, 12, 31)): Arb<LocalDate> = object : Arb<LocalDate>() {
 
    override fun edgecases(): List<LocalDate> {
