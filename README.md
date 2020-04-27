@@ -23,30 +23,41 @@ Note: This plugin is currently in a beta and requires the use of the 4.1.0.251-S
   }
 ```
 
-## Gutter Run Icons
+## Gutter Icons
 
-The plugin provides green run icons for specs, top level tests, and nested tests. From this icon you can run, debug, run with coverage, profile and so on.
+The plugin provides gutter run icons for specs, top level tests, and nested tests.
 
 ![gutter_icon_picture](docs/gutter_icons.png)
 
-If you execute a spec then all tests in that spec will be executed. If you execute a test, then that test and all nested tests will be executed.
+Any tests disabled via a bang or by _xfunctions_ such as `xdescribe`, will have a disabled test icon in the gutter.
+
+![gutter_icon_picture](docs/gutter_disabled.png)
+
+## Running Tests
+
+If you execute a spec from the gutter icon, then all tests in that spec will be executed.
+If you execute a test, then that test and all nested tests will be executed.
 
 ![gutter_icon_picture](docs/gutter_run.png)
 
 ## Tool Window
 
 The plugin provides a tool window view which displays the structure of your tests.
+The window describes the currently selected test file, which includes any specs defined in that file and tests
+contained inside those specs. The tree layout will mirror the structure of your tests for easy navigation.
 
-The window describes the currently selected test file, which includes any specs defined in that file, the tests
-defined inside those specs, any callbacks (such as before / after test), and any included test factories.
+![test_explorer_tests](docs/test_explorer_tests.png)
 
-![gutter_icon_picture](docs/test_explorer_tests.png)
+The tool window will include lifecycle callback methods (such as before / after test) if defined,
+as well as included test factories.
+
+![test_explorer_callbacks_picture](docs/test_explorer_callbacks.png)
 
 Clicking on a spec, test, include or callback will navigate directly to that element in the source editor.
 
 Any tests that have been disabled using the bang prefix will have a different icon.
 
-![gutter_icon_picture](docs/test_window_disabled_tests.png)
+![test_window_disabled_tests](docs/test_window_disabled_tests.png)
 
 You can execute (run/debug/run with coverage) a test or spec directly from this window. In addition, the window shows all test modules and allows you to run all tests in that module.
 
@@ -54,6 +65,17 @@ You can execute (run/debug/run with coverage) a test or spec directly from this 
 
 Modules, callbacks, and includes can be filtered out if you don't wish to see them. They are included by default.
 
+## Duplicated Test Highlighting
+
+You cannot have two tests with the same name. The plugin will highlight any duplicated test names as errors.
+
+![duplicated_test_picture](docs/duplicated_test_string_spec.png)
+
+## Context Menu Run / Debug
+
+Right clicking on a package will allow you to run, debug or run with coverage all the tests inside that package.
+
+![run_context_menu_picture](docs/run_context_menu.png)
 
 ## Intentions
 
