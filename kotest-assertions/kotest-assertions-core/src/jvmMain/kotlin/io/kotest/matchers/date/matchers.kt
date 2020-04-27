@@ -2280,3 +2280,77 @@ infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe sec
  * ```
  */
 infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano
+
+/**
+ * Asserts that this is equal to [other] using the [ChronoZonedDateTime.isEqual]
+ *
+ * Opposite of [ChronoZonedDateTime.shouldNotBeEqual]
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldBeEqual(other)  // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotBeEqual(other)  // Assertion fails, date is NOT equal to the other date
+ * ```
+ *
+ * @see ZonedDateTime.shouldNotBeEqual
+ */
+infix fun ZonedDateTime.shouldBeEqual(other: ZonedDateTime) = this shouldBe equal(other)
+
+/**
+ * Asserts that this is NOT equal to [other] using the [ChronoZonedDateTime.isEqual]
+ *
+ * Opposite of [ChronoZonedDateTime.shouldBeEqual]
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldBeEqual(other)  // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotBeEqual(other)  // Assertion fails, date is equal to the other date
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeEqual
+ */
+infix fun ZonedDateTime.shouldNotBeEqual(other: ZonedDateTime) = this shouldNotBe equal(other)
+
+/**
+ * Matcher that checks if ZonedDateTime is equal to another ZonedDateTime using the
+ * [ChronoZonedDateTime.isEqual]
+ *
+ *
+ * ```
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldBeEqual(other)  // Assertion passes
+ *
+ *
+ *    val date = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *    val other = ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-3))
+ *
+ *    date.shouldNotBeEqual(other)  // Assertion fails, date is NOT equal to the other date
+ * ```
+ *
+ * @see ZonedDateTime.shouldBeEqual
+ * @see ZonedDateTime.shouldNotBeEqual
+ */
+fun equal(other: ZonedDateTime) = object : Matcher<ZonedDateTime> {
+   override fun test(value: ZonedDateTime): MatcherResult =
+      MatcherResult(
+         passed = value.isEqual(other),
+         failureMessage = "$value should be equal to $other",
+         negatedFailureMessage = "$value should not be equal to $other"
+      )
+}

@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.date.after
 import io.kotest.matchers.date.atSameZone
 import io.kotest.matchers.date.before
+import io.kotest.matchers.date.equal
 import io.kotest.matchers.date.haveSameDay
 import io.kotest.matchers.date.haveSameHours
 import io.kotest.matchers.date.haveSameMinutes
@@ -15,6 +16,7 @@ import io.kotest.matchers.date.haveSameYear
 import io.kotest.matchers.date.shouldBeAfter
 import io.kotest.matchers.date.shouldBeBefore
 import io.kotest.matchers.date.shouldBeBetween
+import io.kotest.matchers.date.shouldBeEqual
 import io.kotest.matchers.date.shouldBeToday
 import io.kotest.matchers.date.shouldBeWithin
 import io.kotest.matchers.date.shouldHaveDayOfMonth
@@ -35,6 +37,7 @@ import io.kotest.matchers.date.shouldHaveSecond
 import io.kotest.matchers.date.shouldNotBeAfter
 import io.kotest.matchers.date.shouldNotBeBefore
 import io.kotest.matchers.date.shouldNotBeBetween
+import io.kotest.matchers.date.shouldNotBeEqual
 import io.kotest.matchers.date.shouldNotBeToday
 import io.kotest.matchers.date.shouldNotBeWithin
 import io.kotest.matchers.date.shouldNotHaveSameDayAs
@@ -408,6 +411,13 @@ class DateMatchersTest : StringSpec() {
     }
     "LocalDateTime should have nano" {
       LocalDateTime.of(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
+    }
+
+    "ZonedDateTime should be equal to another ZonedDateTime if these are equal irrespective of their timezone" {
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldBe equal(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3)))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldBeEqual ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotBe equal(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2)))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotBeEqual ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2))
     }
   }
 }
