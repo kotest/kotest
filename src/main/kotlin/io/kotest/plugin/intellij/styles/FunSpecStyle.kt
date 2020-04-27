@@ -59,7 +59,7 @@ object FunSpecStyle : SpecStyle {
    private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
-      return Test(testName, path, type)
+      return Test(testName, path, type, element)
    }
 
    /**
@@ -99,8 +99,8 @@ enum class TestType {
    Container, Test
 }
 
-data class Test(val name: String, val path: String, val enabled: Boolean, val testType: TestType) {
-   constructor(name: String, path: String, testType: TestType) : this(name, path, !name.startsWith("!"), testType)
+data class Test(val name: String, val path: String, val enabled: Boolean, val testType: TestType, val psi: PsiElement) {
+   constructor(name: String, path: String, testType: TestType, psi: PsiElement) : this(name, path, !name.startsWith("!"), testType, psi)
 }
 
 data class TestElement(val psi: PsiElement,

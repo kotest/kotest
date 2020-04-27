@@ -82,7 +82,6 @@ class TestFileTree(private val project: Project) : com.intellij.ui.treeStructure
       } else {
          val specs = psi.specs()
          val expanded = isExpanded(0)
-         println("1 state $expanded")
          model = createTreeModel(file, project, specs, module)
          expandAllNodes()
          setModuleGroupNodeExpandedState(expanded)

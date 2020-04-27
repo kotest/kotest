@@ -107,7 +107,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun buildTest(testName: String, disabled: Boolean, element: PsiElement, testType: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" ")
-      return Test(testName, path, !disabled, testType)
+      return Test(testName, path, !disabled, testType, element)
    }
 
    override fun test(element: PsiElement): Test? {

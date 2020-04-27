@@ -49,7 +49,7 @@ object ShouldSpecStyle : SpecStyle {
    private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName).joinToString(" -- ")
-      return Test(testName, path, type)
+      return Test(testName, path, type, element)
    }
 
    override fun test(element: PsiElement): Test? {

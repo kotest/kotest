@@ -28,7 +28,7 @@ object StringSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryTest(): Test? {
       val name = extractStringFromStringInvokeWithLambda() ?: return null
-      return Test(name, name, TestType.Test)
+      return Test(name, name, TestType.Test, this)
    }
 
    /**
@@ -38,7 +38,7 @@ object StringSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
-      return Test(name, name, TestType.Test)
+      return Test(name, name, TestType.Test, this)
    }
 
    /**
