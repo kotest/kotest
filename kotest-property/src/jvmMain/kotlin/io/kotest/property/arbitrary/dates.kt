@@ -34,6 +34,8 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
    }
 }
 
+fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1), LocalDate.of(2030, 12, 31))
+
 /**
  * Arberates a stream of random LocalDates
  *
@@ -45,7 +47,7 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
  * @see [localDateTime]
  * @see [localTime]
  */
-@Deprecated("use the version with complete date instead", ReplaceWith("localDate"))
+@Deprecated("use the version with complete date instead")
 fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = localDate(
    minDate = LocalDate.of(minYear, 1, 1),
    maxDate = LocalDate.of(maxYear, 12, 31)
@@ -75,10 +77,10 @@ fun Arb.Companion.localDate(minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDa
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<LocalDate>> = generateSequence {
-      val minDate = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
-      val maxDate = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
-      val days = ChronoUnit.DAYS.between(minDate, maxDate)
-      Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
+      val minDateGenerated = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
+      val maxDateGenerated = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
+      val days = ChronoUnit.DAYS.between(minDateGenerated, maxDateGenerated)
+      Sample(minDateGenerated.plusDays(rs.random.nextLong(days + 1)))
    }
 }
 
