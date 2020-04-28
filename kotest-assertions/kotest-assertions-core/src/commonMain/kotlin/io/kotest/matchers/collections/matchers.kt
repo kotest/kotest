@@ -111,18 +111,6 @@ fun <T> containNoNulls() = object : Matcher<Collection<T>> {
       )
 }
 
-infix fun <T> Array<T>.shouldContain(t: T) = asList().shouldContain(t)
-infix fun <T, C : Collection<T>> C.shouldContain(t: T) = this should contain(t)
-infix fun <T> Array<T>.shouldNotContain(t: T) = asList().shouldNotContain(t)
-infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
-fun <T, C : Collection<T>> contain(t: T) = object : Matcher<C> {
-   override fun test(value: C) = MatcherResult(
-      value.contains(t),
-      { "Collection should contain element ${t.show().value}; listing some elements ${value.take(5)}" },
-      { "Collection should not contain element ${t.show().value}" }
-   )
-}
-
 infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>) =
    asList().shouldNotContainExactlyInAnyOrder(expected.asList())
 
@@ -438,15 +426,6 @@ fun <T> Array<T>.shouldBeEmpty() = asList().shouldBeEmpty()
 fun <T> Collection<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Array<T>.shouldNotBeEmpty() = asList().shouldNotBeEmpty()
 fun <T> Collection<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
-
-fun <T> Array<T>.shouldContainAll(vararg ts: T) = asList().shouldContainAll(ts)
-fun <T> Collection<T>.shouldContainAll(vararg ts: T) = this should containAll(*ts)
-fun <T> Array<T>.shouldNotContainAll(vararg ts: T) = asList().shouldNotContainAll(ts)
-fun <T> Collection<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(*ts)
-infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>) = asList().shouldContainAll(ts)
-infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts)
-infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>) = asList().shouldNotContainAll(ts)
-infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts)
 
 fun <T> Array<T>.shouldContainAnyOf(vararg ts: T) = asList().shouldContainAnyOf(ts)
 fun <T> Collection<T>.shouldContainAnyOf(vararg ts: T) = this should containAnyOf(ts.asList())

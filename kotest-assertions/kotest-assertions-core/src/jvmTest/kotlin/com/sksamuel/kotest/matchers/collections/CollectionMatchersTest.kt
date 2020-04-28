@@ -11,7 +11,6 @@ import io.kotest.matchers.collections.beLargerThan
 import io.kotest.matchers.collections.beSameSizeAs
 import io.kotest.matchers.collections.beSmallerThan
 import io.kotest.matchers.collections.contain
-import io.kotest.matchers.collections.containAll
 import io.kotest.matchers.collections.containDuplicates
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -43,8 +42,6 @@ import io.kotest.matchers.collections.shouldBeStrictlyDecreasing
 import io.kotest.matchers.collections.shouldBeStrictlyDecreasingWith
 import io.kotest.matchers.collections.shouldBeStrictlyIncreasing
 import io.kotest.matchers.collections.shouldBeStrictlyIncreasingWith
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainDuplicates
 import io.kotest.matchers.collections.shouldContainNoNulls
@@ -71,7 +68,6 @@ import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasing
 import io.kotest.matchers.collections.shouldNotBeStrictlyDecreasingWith
 import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasing
 import io.kotest.matchers.collections.shouldNotBeStrictlyIncreasingWith
-import io.kotest.matchers.collections.shouldNotContainAll
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.collections.shouldNotContainExactly
@@ -528,30 +524,7 @@ class CollectionMatchersTest : WordSpec() {
          }
       }
 
-      "contain" should {
-         "test that a collection contains element x"  {
-            val col = listOf(1, 2, 3)
-            shouldThrow<AssertionError> {
-               col should contain(4)
-            }
-            col should contain(2)
-         }
 
-         "support type inference for subtypes of collection" {
-            val tests = listOf(
-               TestSealed.Test1("test1"),
-               TestSealed.Test2(2)
-            )
-            tests should contain(TestSealed.Test1("test1"))
-            tests.shouldContain(TestSealed.Test2(2))
-         }
-
-         "print errors unambiguously"  {
-            shouldThrow<AssertionError> {
-               listOf<Any>(1, 2).shouldContain(listOf<Any>(1L, 2L))
-            }.shouldHaveMessage("Collection should contain element [1L, 2L]; listing some elements [1, 2]")
-         }
-      }
 
       "containNoNulls" should {
          "test that a collection contains zero nulls"  {
@@ -623,48 +596,6 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf<Number>(1L, 2L) should containsInOrder(listOf<Number>(1, 2))
             }.shouldHaveMessage("[1L, 2L] did not contain the elements [1, 2] in order")
-         }
-      }
-
-      "containsAll" should {
-         "test that a collection contains all the elements but in any order" {
-            val col = listOf(1, 2, 3, 4, 5)
-
-            col should containAll(1, 2, 3)
-            col should containAll(3, 2, 1)
-            col should containAll(5, 1)
-            col should containAll(1, 5)
-            col should containAll(1)
-            col should containAll(5)
-
-            col.shouldContainAll(1, 2, 3)
-            col.shouldContainAll(3, 1)
-            col.shouldContainAll(3)
-
-            col.shouldNotContainAll(6)
-            col.shouldNotContainAll(1, 6)
-            col.shouldNotContainAll(6, 1)
-
-            shouldThrow<AssertionError> {
-               col should containAll(1, 2, 6)
-            }
-
-            shouldThrow<AssertionError> {
-               col should containAll(6)
-            }
-
-            shouldThrow<AssertionError> {
-               col should containAll(0, 1, 2)
-            }
-
-            shouldThrow<AssertionError> {
-               col should containAll(3, 2, 0)
-            }
-         }
-         "print errors unambiguously" {
-            shouldThrow<AssertionError> {
-               listOf<Number>(1, 2).shouldContainAll(listOf<Number>(1L, 2L))
-            }.shouldHaveMessage("Collection should contain all of [1L, 2L] but missing [1L, 2L]")
          }
       }
 

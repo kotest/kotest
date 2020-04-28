@@ -23,17 +23,6 @@ fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   )
 }
 
-
-fun <T> containAll(vararg ts: T) = containAll(ts.asList())
-fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    ts.all { value.contains(it) },
-    { "Collection should contain all of ${ts.show().value} " +
-      "but missing ${ts.filter { !value.contains(it) }.show().value}" },
-    { "Collection should not contain all of ${ts.show().value}" }
-  )
-}
-
 fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
 /** Assert that a collection contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->

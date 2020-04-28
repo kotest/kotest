@@ -79,6 +79,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.Property))
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.ConsoleRunner))
             implementation(Libs.OpenTest4j.core)
          }
       }
