@@ -34,6 +34,8 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
    }
 }
 
+fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1), LocalDate.of(2030, 12, 31))
+
 /**
  * Arberates a stream of random LocalDates
  *
@@ -45,23 +47,40 @@ fun Arb.Companion.period(maxYear: Int = 10): Arb<Period> = arb(listOf(Period.ZER
  * @see [localDateTime]
  * @see [localTime]
  */
-fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = object : Arb<LocalDate>() {
+@Deprecated("use the version with complete date instead")
+fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = localDate(
+   minDate = LocalDate.of(minYear, 1, 1),
+   maxDate = LocalDate.of(maxYear, 12, 31)
+)
+
+/**
+ * Arberates a stream of random LocalDates
+ *
+ * This generator creates randomly generated LocalDates, in the range [[minDate, maxDate]].
+ *
+ * If any of the years in the range contain a leap year, the date [29/02/YEAR] will always be a constant value of this
+ * generator.
+ *
+ * @see [localDateTime]
+ * @see [localTime]
+ */
+fun Arb.Companion.localDate(minDate: LocalDate = LocalDate.of(1970, 1, 1), maxDate: LocalDate = LocalDate.of(2030, 12, 31)): Arb<LocalDate> = object : Arb<LocalDate>() {
 
    override fun edgecases(): List<LocalDate> {
-      val yearRange = (minYear..maxYear)
+      val yearRange = (minDate.year..maxDate.year)
       val feb28Date = LocalDate.of(yearRange.random(), 2, 28)
 
       val feb29Year = yearRange.firstOrNull { Year.of(it).isLeap }
       val feb29Date = feb29Year?.let { LocalDate.of(it, 2, 29) }
 
-      return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31))
+      return listOfNotNull(feb28Date, feb29Date, LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth), LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth))
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<LocalDate>> = generateSequence {
-      val minDate = LocalDate.of(minYear, 1, 1)
-      val maxDate = LocalDate.of(maxYear, 12, 31)
-      val days = ChronoUnit.DAYS.between(minDate, maxDate)
-      Sample(minDate.plusDays(rs.random.nextLong(days + 1)))
+      val minDateGenerated = LocalDate.of(minDate.year, minDate.month, minDate.dayOfMonth)
+      val maxDateGenerated = LocalDate.of(maxDate.year, maxDate.month, maxDate.dayOfMonth)
+      val days = ChronoUnit.DAYS.between(minDateGenerated, maxDateGenerated)
+      Sample(minDateGenerated.plusDays(rs.random.nextLong(days + 1)))
    }
 }
 
@@ -96,13 +115,13 @@ fun Arb.Companion.localDateTime(
 ): Arb<LocalDateTime> = object : Arb<LocalDateTime>() {
 
    override fun edgecases(): List<LocalDateTime> {
-      val localDates = localDate(minYear, maxYear).edgecases()
+      val localDates = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).edgecases()
       val times = localTime().edgecases()
       return localDates.flatMap { date -> times.map { date.atTime(it) } }
    }
 
    override fun values(rs: RandomSource): Sequence<Sample<LocalDateTime>> = generateSequence {
-      val date = localDate(minYear, maxYear).single(rs)
+      val date = localDate(LocalDate.of(minYear, 1, 1), LocalDate.of(maxYear, 12, 31)).single(rs)
       val time = localTime().single(rs)
       Sample(date.atTime(time))
    }
