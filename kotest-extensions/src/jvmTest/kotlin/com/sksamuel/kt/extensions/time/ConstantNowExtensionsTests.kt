@@ -3,23 +3,15 @@ package com.sksamuel.kt.extensions.time
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.extensions.time.ConstantNowTestListener
 import io.kotest.extensions.time.withConstantNow
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
-import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.delay
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.time.Year
-import java.time.YearMonth
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.chrono.HijrahDate
 import java.time.chrono.JapaneseDate
 import java.time.chrono.MinguoDate
@@ -27,6 +19,9 @@ import java.time.chrono.ThaiBuddhistDate
 import kotlin.reflect.KClass
 
 class ConstantNowExtensionFunctionsTest : DescribeSpec() {
+
+   private val zoneId = ZoneId.of("Europe/Paris")
+   private val clock = Clock.systemUTC()
 
    init {
       describe("The ConstantNow extension function (HijrahDate)") {
@@ -36,6 +31,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the HijrahDate.now() with my own dateTime") {
             withConstantNow(now) {
                HijrahDate.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the HirahData.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               HijrahDate.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the HirahData.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               HijrahDate.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -62,6 +69,13 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
 
             Instant.now() shouldNotBeSameInstanceAs now
          }
+
+
+         it("Should replace the Instant.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               Instant.now(clock) shouldBeSameInstanceAs now
+            }
+         }
       }
       describe("The ConstantNow extension function (JapaneseDate)") {
 
@@ -70,6 +84,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the JapaneseDate.now() with my own dateTime") {
             withConstantNow(now) {
                JapaneseDate.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the JapaneseDate.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               JapaneseDate.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the JapaneseDate.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               JapaneseDate.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -90,6 +116,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
             }
          }
 
+         it("Should replace the LocalDate.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               LocalDate.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the LocalDate.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               LocalDate.now(clock) shouldBeSameInstanceAs now
+            }
+         }
+
          it("Should reverse to default behavior after execution") {
             withConstantNow(now) { }
             delay(10)
@@ -104,6 +142,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the LocalDateTime.now() with my own dateTime") {
             withConstantNow(now) {
                LocalDateTime.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the LocalDateTime.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               LocalDateTime.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the LocalDateTime.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               LocalDateTime.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -124,6 +174,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
             }
          }
 
+         it("Should replace the LocalTime.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               LocalTime.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the LocalTime.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               LocalTime.now(clock) shouldBeSameInstanceAs now
+            }
+         }
+
          it("Should reverse to default behavior after execution") {
             withConstantNow(now) { }
             delay(10)
@@ -138,6 +200,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the MinguoDate.now() with my own dateTime") {
             withConstantNow(now) {
                MinguoDate.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the MinguoDate.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               MinguoDate.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the MinguoDate.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               MinguoDate.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -158,6 +232,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
             }
          }
 
+         it("Should replace the OffsetDateTime.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               OffsetDateTime.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the OffsetDateTime.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               OffsetDateTime.now(clock) shouldBeSameInstanceAs now
+            }
+         }
+
          it("Should reverse to default behavior after execution") {
             withConstantNow(now) { }
             delay(10)
@@ -172,6 +258,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the OffsetTime.now() with my own dateTime") {
             withConstantNow(now) {
                OffsetTime.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the OffsetTime.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               OffsetTime.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the OffsetTime.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               OffsetTime.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -192,6 +290,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
             }
          }
 
+         it("Should replace the ThaiBuddhistDate.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               ThaiBuddhistDate.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the ThaiBuddhistDate.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               ThaiBuddhistDate.now(clock) shouldBeSameInstanceAs now
+            }
+         }
+
          it("Should reverse to default behavior after execution") {
             withConstantNow(now) { }
             delay(10)
@@ -206,6 +316,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the Year.now() with my own dateTime") {
             withConstantNow(now) {
                Year.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the Year.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               Year.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the Year.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               Year.now(clock) shouldBeSameInstanceAs now
             }
          }
 
@@ -226,6 +348,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
             }
          }
 
+         it("Should replace the YearMonth.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               YearMonth.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the YearMonth.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               YearMonth.now(clock) shouldBeSameInstanceAs now
+            }
+         }
+
          it("Should reverse to default behavior after execution") {
             withConstantNow(now) { }
             delay(10)
@@ -240,6 +374,18 @@ class ConstantNowExtensionFunctionsTest : DescribeSpec() {
          it("Should replace the ZonedDateTime.now() with my own dateTime") {
             withConstantNow(now) {
                ZonedDateTime.now() shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the ZonedDateTime.now(zoneId) to my own dateTime") {
+            withConstantNow(now) {
+               ZonedDateTime.now(zoneId) shouldBeSameInstanceAs now
+            }
+         }
+
+         it("Should replace the ZonedDateTime.now(clock) to my own dateTime") {
+            withConstantNow(now) {
+               ZonedDateTime.now(clock) shouldBeSameInstanceAs now
             }
          }
 
