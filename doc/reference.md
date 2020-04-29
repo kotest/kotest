@@ -22,7 +22,7 @@ Kotest is split into 3 basic sub-projects.
 These are provided separately so you can pick and choose which parts to use if you don't want to go _all in_ on Kotest.
 
 
-|   |   | 
+|   |   |
 |---|---|
 | **Test Framework**<br/>Provides the ability to layout tests in one of the spec styles and execute<br/>them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/><br/>[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
 | **Assertions Library**<br/>Provides over 300 rich assertions for JVM and JS, with helpful error<br/>messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/><br/>[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
@@ -464,6 +464,38 @@ However sometimes it may be desirable for each test scope - or each outer test s
 instance of the Spec class, much like JUnit. In this case, you will want to change what is called the _isolation mode_.
 
 All specs allow you to control the isolation mode. Full instructions can be found [here](isolation_mode.md)
+
+
+
+
+
+
+
+
+Mocking
+--------------
+
+Kotest itself has no mock features. However, you can plug-in your favourite mocking library with ease!
+
+Let's take for example [mockk](https://mockk.io):
+
+```kotlin
+class MyTest : FunSpec({
+
+    val repository = mockk<MyRepository>()
+    val target = MyService(repository)
+
+    test("Saves to repository") {
+        every { repository.save(any()) } just Runs
+        target.save(MyDataClass("a"))
+        verify(exactly = 1) { repository.save(MyDataClass("a")) }
+    }
+
+})
+```
+
+Sometimes you might need some extra configurations (such as setup mocks, restart their counter, etc). For that, please
+check [mock documentation](mocks.md)
 
 
 
