@@ -180,7 +180,7 @@ inline infix fun <reified T> Json?.shouldContainJsonKeyAndValueOfSpecificType(pa
 
         else -> throw failure(
             "${this.representation} should contain an element with type ${typeOf<T>()} with the path $path " +
-                    "but it contains ${mapper.writeValueAsString(result)}.representation}."
+                    "but it contains ${mapper.writeValueAsString(result).representation}."
         )
     }
 }
