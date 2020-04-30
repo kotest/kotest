@@ -8,6 +8,7 @@ import io.kotest.assertions.json.shouldContainJsonKey
 import io.kotest.assertions.json.shouldContainJsonKeyAndValueOfSpecificType
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldContainOnlyJsonKey
+import io.kotest.assertions.json.shouldContainOnlyJsonKeyAndValueOfSpecificType
 import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.assertions.json.shouldMatchJsonResource
 import io.kotest.assertions.json.shouldNotContainJsonKey
@@ -219,6 +220,28 @@ class JsonAssertionsTest : StringSpec({
 
       val nullableJson: Json? = """{"a": 1}"""
       nullableJson.shouldContainOnlyJsonKey("a")  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
+      use(nullableJson)
+    }
+  }
+
+  "test json contains single key and value of specific type" {
+    """{"c": null}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("c") shouldBe null
+    """{"c": 22}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("c") shouldBe 22
+    """{"c": 22}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int>("c") shouldBe 22
+//    """{"c": []}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Array<Int>>("c") shouldBe emptyArray()  // todo: fix this case
+    """{"c": "abc"}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<String>("c") shouldBe "abc"
+
+    shouldThrow<AssertionError> { "".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("c") }
+    shouldThrow<AssertionError> { """{"c": null}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int>("c") }
+    shouldThrow<AssertionError> { """{"a": 1, "b": "2"}""".shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("a") }
+
+    shouldThrow<AssertionError> { null.shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("c") }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = """{"a": 1}"""
+      nullableJson.shouldContainOnlyJsonKeyAndValueOfSpecificType<Int?>("a")  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
       use(nullableJson)
     }
   }
