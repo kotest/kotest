@@ -93,7 +93,7 @@ fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
  * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
  * Arbs edgecases
  */
-fun <A> Arb.Companion.choice(vararg arbs: Arb<A>): Arb<A> = arb(arbs.flatMap(Arb<A>::edgecases)) { rs ->
+fun <A> Arb.Companion.choice(vararg arbs: Arb<out A>): Arb<A> = arb(arbs.flatMap(Arb<out A>::edgecases)) { rs ->
    require(arbs.isNotEmpty()) { "No Arb instances passed to Arb.choice()." }
    val iters = arbs.map { it.values(rs).iterator() }
    fun next(): Sample<A>? {
