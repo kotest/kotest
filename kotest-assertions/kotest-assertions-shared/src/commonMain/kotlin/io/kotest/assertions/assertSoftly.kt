@@ -25,3 +25,20 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
     ErrorCollector.throwCollectedErrors()
   }
 }
+
+/**
+ * Run multiple assertions and throw a single error after all are executed if any fail
+ *
+ * This method will run all the assertions inside [assertions] block, and will collect all failures that may happen.
+ * It then compact all of them in a single throwable and throw it instead, or nothing if no assertion fail.
+ *
+ * ```
+ *     // All assertions below are going to be executed, even when one or multiple fail.
+ *     // All the failures are then collected and thrown in one single throwable.
+ *     "foo".assertSoftly {
+ *         this[2] shouldBe 'o'
+ *         length shouldBeLessThan 5
+ *     }
+ * ```
+ */
+inline fun <S, T> S.assertSoftly(crossinline assertions: S.() -> T): T = assertSoftly( { assertions() } as () -> T )
