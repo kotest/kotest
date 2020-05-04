@@ -41,4 +41,9 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  *     }
  * ```
  */
-inline fun <S, T> S.assertSoftly(crossinline assertions: S.() -> T): T = assertSoftly( { assertions() } as () -> T )
+inline fun <T> T.assertSoftly(assertions: T.(T) -> Unit): T {
+   return io.kotest.assertions.assertSoftly {
+      assertions(this)
+      this
+   }
+}

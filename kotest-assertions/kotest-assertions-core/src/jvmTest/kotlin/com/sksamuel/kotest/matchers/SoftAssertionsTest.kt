@@ -118,16 +118,43 @@ class SoftAssertionsTest : FreeSpec({
       }
     }
 
-     "works on a receiver object" {
-        shouldThrow<AssertionError> {
-           "foo".assertSoftly {
-              length shouldBe 2
-              this[1] shouldBe 'o' // should pass
-              this shouldNotBe "foo"
+
+     "Receiver version" - {
+        "works on a receiver object" {
+           shouldThrow<AssertionError> {
+              "foo".assertSoftly {
+                 length shouldBe 2
+                 this[1] shouldBe 'o' // should pass
+                 this shouldNotBe "foo"
+              }
+           }.let {
+              it.message should contain("1) expected:<2> but was:<3>")
+              it.message should contain("2) \"foo\" should not equal \"foo\"")
            }
-        }.let {
-           it.message should contain("1) expected:<2> but was:<3>")
-           it.message should contain("2) \"foo\" should not equal \"foo\"")
+        }
+
+        "Returns the receiver" {
+            val a = "foo".assertSoftly {
+               this shouldNotBe "bar"
+               shouldNotEndWith("abc")
+            }
+
+           a shouldBe "foo"
+        }
+
+        "works with 'it' receiver" {
+           val a = "foo".assertSoftly {
+              it shouldNotBe "bar"
+           }
+           a shouldBe "foo"
+        }
+
+        "works with my parameter name" {
+           val a = "foo".assertSoftly { foo ->  // No idea why anybody would use this, but it's better to keep the verification that this works
+              foo shouldNotBe "bar"
+           }
+
+           a shouldBe "foo"
         }
      }
   }
