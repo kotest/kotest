@@ -117,5 +117,18 @@ class SoftAssertionsTest : FreeSpec({
         it.message should contain("2) expected:<3> but was:<2>")
       }
     }
+
+     "works on a receiver object" {
+        shouldThrow<AssertionError> {
+           "foo".assertSoftly {
+              length shouldBe 2
+              this[1] shouldBe 'o' // should pass
+              this shouldNotBe "foo"
+           }
+        }.let {
+           it.message should contain("1) expected:<2> but was:<3>")
+           it.message should contain("2) \"foo\" should not equal \"foo\"")
+        }
+     }
   }
 })
