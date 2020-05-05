@@ -20,14 +20,7 @@ infix fun Json?.shouldMatchJson(json: Json?) {
     this should matchJson(json)
 }
 
-@OptIn(ExperimentalContracts::class)
-infix fun Json?.shouldNotMatchJson(json: Json?) {
-    contract {
-        returns() implies (this@shouldNotMatchJson != null)
-    }
-
-    this shouldNot matchJson(json)
-}
+infix fun Json?.shouldNotMatchJson(json: Json?) = this shouldNot matchJson(json)
 
 fun matchJson(json: Json?) = object : Matcher<Json?> {
 
