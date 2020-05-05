@@ -9,10 +9,10 @@ import kotlin.reflect.typeOf
  * Returns encoded JSON.
  *
  * We need to distinct `null` and `"null"`. The first one means there is no JSON at all, the second is null in JSON.
- * So we can't do just `Json.toString()`.
+ * So we can't do just `Json?.toString()`.
  */
 val Json?.representation
-    get(): String? = when (this) {
+    get(): String = when (this) {
         null -> null.toString()
 
         else -> "\"$this\""
