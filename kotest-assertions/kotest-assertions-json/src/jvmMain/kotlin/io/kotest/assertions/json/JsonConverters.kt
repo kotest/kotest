@@ -33,7 +33,7 @@ inline fun <reified T : Any?> Json?.shouldBeJsonValueOfType(): T {
             }
         }
 
-        return mapper.readValue(this, T::class.java)
+        return publishedMapper.readValue(this, T::class.java)
     } catch (thrown: Throwable) {
         throw failure("bad type of ${this.representation} - expected: ${typeOf<T>()}", cause = thrown)
     }

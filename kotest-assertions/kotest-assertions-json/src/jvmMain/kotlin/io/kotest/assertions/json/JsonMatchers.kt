@@ -32,8 +32,8 @@ infix fun Json?.shouldNotMatchJson(json: Json?) {
 fun matchJson(json: Json?) = object : Matcher<Json?> {
 
     override fun test(value: Json?): MatcherResult {
-        val actualJson = value?.let { mapper.readTree(it) }
-        val expectedJson = json?.let { mapper.readTree(it) }
+        val actualJson = value?.let { publishedMapper.readTree(it) }
+        val expectedJson = json?.let { publishedMapper.readTree(it) }
 
         return MatcherResult(
             actualJson == expectedJson,
@@ -49,8 +49,8 @@ infix fun Json.shouldNotMatchJsonResource(resource: String) = this shouldNot mat
 fun matchJsonResource(resource: String) = object : Matcher<Json> {
 
     override fun test(value: Json): MatcherResult {
-        val actualJson = mapper.readTree(value)
-        val expectedJson = mapper.readTree(this.javaClass.getResourceAsStream(resource))
+        val actualJson = publishedMapper.readTree(value)
+        val expectedJson = publishedMapper.readTree(this.javaClass.getResourceAsStream(resource))
 
         return MatcherResult(
             actualJson == expectedJson,
@@ -78,7 +78,7 @@ infix fun Json?.shouldContainJsonKey(path: JsonKey): Json {
             cause = result
         )
 
-        else -> mapper.writeValueAsString(result)
+        else -> publishedMapper.writeValueAsString(result)
     }
 }
 
@@ -180,7 +180,7 @@ inline infix fun <reified T> Json?.shouldContainJsonKeyAndValueOfSpecificType(pa
 
         else -> throw failure(
             "${this.representation} should contain an element with type ${typeOf<T>()} with the path $path " +
-                    "but it contains ${mapper.writeValueAsString(result).representation}."
+                    "but it contains ${publishedMapper.writeValueAsString(result).representation}."
         )
     }
 }
