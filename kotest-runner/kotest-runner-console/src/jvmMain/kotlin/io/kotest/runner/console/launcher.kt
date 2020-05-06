@@ -29,7 +29,7 @@ class Execute : CliktCommand(name = "Kotest console runner") {
 
    private val spec by option(
       "--spec",
-      help = "Specifies the spec where the tests are located. If omitted then all tests run"
+      help = "Specify the fully qualified name of the spec class which contains the test to execute"
    )
 
    private val slowDuration by option(

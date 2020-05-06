@@ -6,14 +6,11 @@ import io.kotest.core.listeners.RootTest
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
 
+
+@Testable
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
    /**
