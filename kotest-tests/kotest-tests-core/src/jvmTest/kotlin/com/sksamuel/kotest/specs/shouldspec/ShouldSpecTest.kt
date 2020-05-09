@@ -9,21 +9,21 @@ import kotlin.time.milliseconds
 class ShouldSpecTest : ShouldSpec() {
 
   init {
-    "a context" {
-      should("a test") {
-        1.shouldBeLessThan(2)
-      }
-      should("a test with config").config(enabled = true, timeout = 12321.milliseconds) {
-        1.shouldBeLessThan(2)
-      }
-      "a nested context" {
+     context("a context") {
         should("a test") {
-          1.shouldBeLessThan(2)
+           1.shouldBeLessThan(2)
         }
-      }
-      should("a test without a parent context") {
-        1.shouldBeLessThan(2)
-      }
+        should("a test with config").config(enabled = true, timeout = 12321.milliseconds) {
+           1.shouldBeLessThan(2)
+        }
+        context("a nested context") {
+           should("a test") {
+              1.shouldBeLessThan(2)
+           }
+        }
+        should("a test without a parent context") {
+           1.shouldBeLessThan(2)
+        }
     }
   }
 }

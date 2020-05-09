@@ -9,7 +9,6 @@ import io.kotest.core.sourceRef
 import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
 
-
 @Testable
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 

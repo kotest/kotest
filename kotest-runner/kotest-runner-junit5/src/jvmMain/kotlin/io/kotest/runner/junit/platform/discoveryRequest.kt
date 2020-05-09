@@ -26,7 +26,7 @@ import org.junit.platform.engine.discovery.UriSelector
  * - [UriSelector] - classes are scanned from the given uri
  * - [PackageSelector] - classes are scanned on the default classpath for the given package name
  *
- * Support filters are:
+ * Supported filters are:
  *
  * - [ClassNameFilter] - filters out specs based on a classname
  * - [PackageNameFilter] - filters out specs based on package names
@@ -35,8 +35,8 @@ import org.junit.platform.engine.discovery.UriSelector
  *
  * - [MethodSelector] - not supported because kotest does not define tests as methods
  * - [NestedMethodSelector] - not supported becase kotest does not define tests as methods
- * - [UniqueIdSelector]
- * - [DirectorySelector]
+ * - [UniqueIdSelector] - not supported becase kotest does not assign ids to tests
+ * - [DirectorySelector] - not supported becase kotest is not directory based
  */
 internal fun createDiscoveryRequest(request: EngineDiscoveryRequest): DiscoveryRequest {
 

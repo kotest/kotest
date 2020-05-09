@@ -10,17 +10,17 @@ class ShouldSpecExample : ShouldSpec() {
     should("top level test with config").config(enabled = true) {
       // test here
     }
-    "a context" {
-      should("do a test") {
-        // test here
-      }
-      should("have config").config(enabled = true) {
-        // test here
-      }
-    }
-    context("another context") {
-       context("a nested context") {
+     context("a context") {
         should("do a test") {
+           // test here
+        }
+        should("have config").config(enabled = true) {
+           // test here
+        }
+     }
+     context("another context") {
+        context("a nested context") {
+           should("do a test") {
           // test here
         }
       }
