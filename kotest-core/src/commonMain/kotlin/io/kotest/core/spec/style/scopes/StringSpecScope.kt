@@ -1,13 +1,9 @@
-package io.kotest.core.spec.style
+package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
-import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.SpecDsl
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -22,7 +18,7 @@ import kotlin.time.ExperimentalTime
  *
  */
 @OptIn(ExperimentalTime::class)
-interface StringSpecDsl : SpecDsl {
+interface StringSpecScope : RootScope {
 
    fun String.config(
       enabled: Boolean? = null,
@@ -33,14 +29,20 @@ interface StringSpecDsl : SpecDsl {
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
-   ) {
-      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
-      addTest(this, test, config, TestType.Test)
-   }
+   ) = RootTestWithConfigBuilder(this, registration(), false).config(
+      enabled,
+      invocations,
+      threads,
+      tags,
+      timeout,
+      extensions,
+      enabledIf,
+      test
+   )
 
    /**
     * Adds a String Spec test using the default test case config.
     */
    operator fun String.invoke(test: suspend TestContext.() -> Unit) =
-      addTest(this, test, defaultConfig(), TestType.Test)
+      registration().addTest(this, xdisabled = false, test = test)
 }
