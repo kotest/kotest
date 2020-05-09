@@ -26,17 +26,17 @@ class ShouldSpecInstancePerTestTest : ShouldSpec({
    isolation = IsolationMode.InstancePerTest
    val counter = AtomicInteger(0)
 
-   "a" {
+   context("a") {
       counter.incrementAndGet().shouldBe(1)
       should("b") {
          counter.incrementAndGet().shouldBe(2)
       }
-      "c" {
+      context("c") {
          counter.incrementAndGet().shouldBe(2)
          should("d") {
             counter.incrementAndGet().shouldBe(3)
          }
-         "e" {
+         context("e") {
             counter.incrementAndGet().shouldBe(3)
             should("f") {
                counter.incrementAndGet().shouldBe(4)
@@ -47,9 +47,9 @@ class ShouldSpecInstancePerTestTest : ShouldSpec({
          }
       }
    }
-   "h" {
+   context("h") {
       counter.incrementAndGet().shouldBe(1)
-      "i" {
+      context("i") {
          counter.incrementAndGet().shouldBe(2)
          should("j") {
             counter.incrementAndGet().shouldBe(3)

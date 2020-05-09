@@ -57,3 +57,5 @@ fun TestCaseConfig.deriveTestConfig(
  */
 @OptIn(ExperimentalTime::class)
 fun TestCaseConfig.resolvedTimeout(): Duration = this.timeout ?: Project.timeout()
+
+fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabled = false) else this

@@ -1,10 +1,15 @@
 package io.kotest.core.factory
 
+import io.kotest.core.config.Project
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.TestConfiguration
-import io.kotest.core.test.*
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 
 /**
  * A [TestFactoryConfiguration] provides a DSL to allow for easy creation of a
@@ -19,6 +24,8 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * Contains the [DynamicTest]s that have been added to this configuration.
     */
    internal var tests = emptyList<DynamicTest>()
+
+   internal fun resolvedDefaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
 
    // test lifecycle callbacks
    internal var beforeTests = emptyList<BeforeTest>()
@@ -45,7 +52,7 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * Adds a new [DynamicTest] to this factory. When this factory is included
     * into a [Spec] these tests will be added to the spec as root [TestCase]s.
     */
-   protected fun addDynamicTest(
+   internal fun addDynamicTest(
       name: String,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,

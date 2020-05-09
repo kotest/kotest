@@ -5,24 +5,24 @@ import io.kotest.core.spec.style.ShouldSpec
 
 class ShouldSpecBangTest : ShouldSpec() {
 
-  init {
-    should("!BangedShould") {
-      attemptToFail()
-    }
-
-    "!BangedContext" {
-      attemptToFail()
-    }
-
-    "NonBangedOuter" {
-      "!BangedInner" {
-        attemptToFail()
+   init {
+      should("!BangedShould") {
+         attemptToFail()
       }
-      "NonBangedInner" {
-        should("!BangedShould") {
-          attemptToFail()
-        }
+
+      context("!BangedContext") {
+         attemptToFail()
       }
-    }
-  }
+
+      context("NonBangedOuter") {
+         context("!BangedInner") {
+            attemptToFail()
+         }
+         context("NonBangedInner") {
+            should("!BangedShould") {
+               attemptToFail()
+            }
+         }
+      }
+   }
 }

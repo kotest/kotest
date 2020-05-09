@@ -108,8 +108,8 @@ class BehaviorSpecTest : BehaviorSpec() {
       }
 
       xgiven("should be ignored 3") {
-         `when`("should be ignored") {
-            then("should be ignored") {
+         `when`("should be ignored a") {
+            then("should be ignored b") {
                error("boom")
             }
          }
