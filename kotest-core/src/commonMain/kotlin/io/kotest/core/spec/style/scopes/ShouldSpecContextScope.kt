@@ -36,8 +36,11 @@ class ShouldSpecContextScope(
       }
    }
 
-   fun should(name: String) = TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, false)
-   fun xshould(name: String) = TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, true)
+   fun should(name: String) =
+      TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, xdisabled = false)
+
+   fun xshould(name: String) =
+      TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, xdisabled = true)
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
       addTest(createTestName("should ", name), xdisabled = false, test = test)

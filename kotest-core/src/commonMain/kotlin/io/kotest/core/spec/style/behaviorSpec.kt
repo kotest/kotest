@@ -26,8 +26,7 @@ class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), Behavio
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
 }
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(),
-   BehaviorSpecScope {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecScope {
 
    init {
       body()

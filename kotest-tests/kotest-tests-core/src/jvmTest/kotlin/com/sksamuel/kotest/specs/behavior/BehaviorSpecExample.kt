@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.specs.behavior
 
+import io.kotest.assertions.fail
 import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecExample : BehaviorSpec() {
@@ -12,6 +13,14 @@ class BehaviorSpecExample : BehaviorSpec() {
            then("a then with config").config(enabled = false) {
               // test here
            }
+           xthen("disabled") {
+              fail("boom")
+           }
+        }
+     }
+     xgiven("disabled given") {
+        `when`("should be ignored") {
+           fail("boom")
         }
      }
      Given("a capital given") {
@@ -21,6 +30,14 @@ class BehaviorSpecExample : BehaviorSpec() {
            }
            Then("a captial Then with config").config(enabled = false) {
               // test here
+           }
+        }
+        xwhen("an xdisabled when") {
+           fail("boom")
+        }
+        And("an and scope") {
+           xthen("xdisabled test") {
+              fail("boom")
            }
         }
      }

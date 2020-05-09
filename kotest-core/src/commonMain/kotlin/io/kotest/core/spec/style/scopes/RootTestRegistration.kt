@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.DslDrivenSpec
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
+import io.kotest.core.test.withXDisabled
 
 interface RootTestRegistration {
 
@@ -44,8 +45,7 @@ interface RootTestRegistration {
             type: TestType,
             test: suspend TestContext.() -> Unit
          ) {
-            val activeConfig = if (xdisabled) config.copy(enabled = false) else config
-            factory.addDynamicTest(name, test, activeConfig, type)
+            factory.addDynamicTest(name, test, config.withXDisabled(xdisabled), type)
          }
       }
 
@@ -58,8 +58,7 @@ interface RootTestRegistration {
             type: TestType,
             test: suspend TestContext.() -> Unit
          ) {
-            val activeConfig = if (xdisabled) config.copy(enabled = false) else config
-            spec.addRootTestCase(name, test, activeConfig, type)
+            spec.addRootTestCase(name, test, config.withXDisabled(xdisabled), type)
          }
       }
    }
