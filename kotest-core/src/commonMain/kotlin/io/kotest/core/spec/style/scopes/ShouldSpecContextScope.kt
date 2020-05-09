@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
@@ -16,23 +17,31 @@ import io.kotest.core.test.createTestName
 @KotestDsl
 class ShouldSpecContextScope(
    override val description: Description,
-   override val context: ScopeContext
+   override val lifecycle: Lifecycle,
+   override val testContext: TestContext,
+   override val defaultConfig: TestCaseConfig
 ) : ContainerScope {
 
    /**
     * Adds a nested context scope to this scope.
     */
    suspend fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
-      context.addContainerTest(name) {
+      addContainerTest(name, xdisabled = false) {
          ShouldSpecContextScope(
             this@ShouldSpecContextScope.description.append(name),
-            this@ShouldSpecContextScope.context.with(this)
+            this@ShouldSpecContextScope.lifecycle,
+            this,
+            this@ShouldSpecContextScope.defaultConfig
          ).test()
       }
    }
 
-   fun should(name: String) = TestWithConfigBuilder(createTestName("should ", name), context)
+   fun should(name: String) = TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, false)
+   fun xshould(name: String) = TestWithConfigBuilder(createTestName("should ", name), testContext, defaultConfig, true)
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
-      context.addTest(createTestName("should ", name), test)
+      addTest(createTestName("should ", name), xdisabled = false, test = test)
+
+   suspend fun xshould(name: String, test: suspend TestContext.() -> Unit) =
+      addTest(createTestName("should ", name), xdisabled = true, test = test)
 }

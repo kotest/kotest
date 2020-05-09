@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.style.scopes.ExpectSpecScope
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -18,20 +21,21 @@ fun expectSpec(block: ExpectSpecTestFactoryConfiguration.() -> Unit): TestFactor
    return config.build()
 }
 
-class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
-   override val addTest = ::addDynamicTest
-   override val addListener = ::listener
+class ExpectSpecTestFactoryConfiguration : TestFactoryConfiguration(), ExpectSpecScope {
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun description(): Description = Description.specUnsafe(this)
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecDsl {
-   override fun defaultConfig(): TestCaseConfig =
-      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override val addTest = ::addRootTestCase
-   override val addListener = ::listener
+abstract class ExpectSpec(body: ExpectSpec.() -> Unit = {}) : DslDrivenSpec(), ExpectSpecScope {
 
    init {
       body()
    }
+
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun description(): Description = Description.specUnsafe(this)
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }

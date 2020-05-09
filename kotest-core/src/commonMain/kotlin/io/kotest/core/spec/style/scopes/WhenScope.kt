@@ -2,10 +2,12 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
 
 /**
- * A scope that allows tests to be registered using the syntax:
+ * A context that allows tests to be registered using the syntax:
  *
  * then("some test")
  * then("some test").config(...)
@@ -20,7 +22,9 @@ import io.kotest.core.test.createTestName
 @KotestDsl
 class WhenScope(
    override val description: Description,
-   override val context: ScopeContext
+   override val lifecycle: Lifecycle,
+   override val testContext: TestContext,
+   override val defaultConfig: TestCaseConfig
 ) : ContainerScope {
 
    suspend fun And(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, true)
@@ -28,22 +32,27 @@ class WhenScope(
 
    private suspend fun addAnd(name: String, test: suspend WhenScope.() -> Unit, enabled: Boolean) {
       val testName = createTestName("And: ", name)
-      context.addContainerTest(testName, enabled) {
+      addContainerTest(testName, enabled) {
          WhenScope(
             this@WhenScope.description.append(testName),
-            this@WhenScope.context.with(this)
+            this@WhenScope.lifecycle,
+            this,
+            this@WhenScope.defaultConfig
          ).test()
       }
    }
 
-   fun then(name: String) = TestWithConfigBuilder(name, context)
-   fun Then(name: String) = TestWithConfigBuilder(name, context)
+   fun then(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = false)
+   fun Then(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = false)
 
-   suspend fun Then(name: String, test: suspend TerminalScope.() -> Unit) = addThen(name, test, true)
-   suspend fun then(name: String, test: suspend TerminalScope.() -> Unit) = addThen(name, test, true)
-   suspend fun xthen(name: String, test: suspend TerminalScope.() -> Unit) = addThen(name, test, false)
+   fun xthen(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = true)
+   fun xThen(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = true)
 
-   private suspend fun addThen(name: String, test: suspend TerminalScope.() -> Unit, enabled: Boolean) {
-      context.addContainerTest(createTestName("Then: ", name), enabled) { TerminalScope(this).test() }
+   suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, true)
+   suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, true)
+   suspend fun xthen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, false)
+
+   private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, enabled: Boolean) {
+      addTest(createTestName("Then: ", name), enabled, test)
    }
 }

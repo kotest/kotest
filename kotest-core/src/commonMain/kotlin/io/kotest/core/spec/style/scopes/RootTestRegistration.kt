@@ -10,57 +10,57 @@ interface RootTestRegistration {
 
    val defaultConfig: TestCaseConfig
 
-   suspend fun addContainerTest(name: String, test: suspend TestContext.() -> Unit) =
-      addTest(name, test, TestType.Container)
-
-   suspend fun addContainerTest(name: String, enabled: Boolean, test: suspend TestContext.() -> Unit) {
-      val config = if (enabled) defaultConfig else defaultConfig.copy(enabled = false)
-      addTest(name, test, config, TestType.Container)
-   }
-
-   suspend fun addTest(
-      name: String,
-      test: suspend TestContext.() -> Unit
-   ) = addTest(name, test, defaultConfig, TestType.Test)
-
-   suspend fun addTest(
-       name: String,
-       test: suspend TestContext.() -> Unit,
-       type: TestType
-   ) = addTest(name, test, defaultConfig, type)
+   fun addContainerTest(name: String, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
+      addTest(name, xdisabled, defaultConfig, TestType.Container, test)
 
    fun addTest(
-       name: String,
-       test: suspend TestContext.() -> Unit,
-       config: TestCaseConfig,
-       type: TestType
+      name: String,
+      xdisabled: Boolean,
+      test: suspend TestContext.() -> Unit
+   ) = addTest(name, xdisabled, defaultConfig, TestType.Test, test)
+
+   fun addTest(
+      name: String,
+      xdisabled: Boolean,
+      config: TestCaseConfig,
+      test: suspend TestContext.() -> Unit
+   ) = addTest(name, xdisabled, config, TestType.Test, test)
+
+   fun addTest(
+      name: String,
+      xdisabled: Boolean,
+      config: TestCaseConfig,
+      type: TestType,
+      test: suspend TestContext.() -> Unit
    )
 
    companion object {
-      fun from(factory: TestFactoryConfiguration): RootTestRegistration = object :
-          RootTestRegistration {
-
+      fun from(factory: TestFactoryConfiguration): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = factory.resolvedDefaultConfig()
-
          override fun addTest(
-             name: String,
-             test: suspend TestContext.() -> Unit,
-             config: TestCaseConfig,
-             type: TestType
-         ) = factory.addDynamicTest(name, test, config, type)
+            name: String,
+            xdisabled: Boolean,
+            config: TestCaseConfig,
+            type: TestType,
+            test: suspend TestContext.() -> Unit
+         ) {
+            val activeConfig = if (xdisabled) config.copy(enabled = false) else config
+            factory.addDynamicTest(name, test, activeConfig, type)
+         }
       }
 
-      fun from(spec: DslDrivenSpec): RootTestRegistration = object :
-          RootTestRegistration {
-
+      fun from(spec: DslDrivenSpec): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = spec.resolvedDefaultConfig()
-
          override fun addTest(
-             name: String,
-             test: suspend TestContext.() -> Unit,
-             config: TestCaseConfig,
-             type: TestType
-         ) = spec.addRootTestCase(name, test, config, type)
+            name: String,
+            xdisabled: Boolean,
+            config: TestCaseConfig,
+            type: TestType,
+            test: suspend TestContext.() -> Unit
+         ) {
+            val activeConfig = if (xdisabled) config.copy(enabled = false) else config
+            spec.addRootTestCase(name, test, activeConfig, type)
+         }
       }
    }
 }
