@@ -3,7 +3,8 @@ package com.sksamuel.kotest.matchers.collections
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.core.spec.style.WordSpecDsl
+import io.kotest.core.spec.style.scopes.WordSpecTerminalScope
+import io.kotest.core.spec.style.scopes.WordSpecShouldScope
 import io.kotest.matchers.sequences.shouldBeEmpty
 import io.kotest.matchers.sequences.shouldBeLargerThan
 import io.kotest.matchers.sequences.shouldBeSameCountAs
@@ -44,22 +45,22 @@ import io.kotest.matchers.sequences.shouldNotHaveElementAt
 class SequenceMatchersTest : WordSpec() {
 
    /* PassFail */
-   private suspend fun WordSpecDsl.WordScope.pass(name: String, test: suspend WordSpecDsl.FinalTestContext.() -> Unit) {
+   private suspend fun WordSpecShouldScope.pass(name: String, test: suspend WordSpecTerminalScope.() -> Unit) {
       ("succeed $name")(test)
    }
 
-   private suspend fun WordSpecDsl.WordScope.succeed(name: String, test: suspend WordSpecDsl.FinalTestContext.() -> Unit) = pass(name, test)
+   private suspend fun WordSpecShouldScope.succeed(name: String, test: suspend WordSpecTerminalScope.() -> Unit) = pass(name, test)
 
-   fun WordSpecDsl.WordScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
-   suspend fun WordSpecDsl.WordScope.fail(name: String, test: () -> Any?) {
+   fun WordSpecShouldScope.fail(msg: String): Nothing = io.kotest.assertions.fail(msg)
+   suspend fun WordSpecShouldScope.fail(name: String, test: () -> Any?) {
       ("fail $name") { shouldThrowAny(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecDsl.WordScope.abort(name: String, crossinline test: () -> Any?) {
+   suspend inline fun <reified E : Throwable> WordSpecShouldScope.abort(name: String, crossinline test: () -> Any?) {
       ("abort $name") { shouldThrow<E>(test) }
    }
 
-   suspend inline fun <reified E : Throwable> WordSpecDsl.WordScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
+   suspend inline fun <reified E : Throwable> WordSpecShouldScope.`throw`(name: String, crossinline test: () -> Any?) = abort<E>(
       name,
       test)
 

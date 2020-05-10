@@ -17,9 +17,9 @@ import kotlin.time.ExperimentalTime
  * }
  *
  */
-@OptIn(ExperimentalTime::class)
 interface StringSpecScope : RootScope {
 
+   @OptIn(ExperimentalTime::class)
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,

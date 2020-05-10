@@ -1,16 +1,13 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.TestContext
-import kotlin.time.ExperimentalTime
 
 /**
- * Example:
+ * Allows tests to be registered in the 'ShouldSpec' fashion.
  *
- * "some test" {
- *   "with context" {
- *      should("do something") {
- *        // test here
- *      }
+ *  context("with context") {
+ *    should("do something") {
+ *      // test here
  *    }
  *  }
  *
@@ -20,7 +17,6 @@ import kotlin.time.ExperimentalTime
  *    // test here
  *  }
  */
-@OptIn(ExperimentalTime::class)
 interface ShouldSpecScope : RootScope {
 
    /**

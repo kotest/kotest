@@ -18,7 +18,7 @@ class DescribeSpecXTest : DescribeSpec() {
       }
 
       describe("a describe") {
-         context("in context") {
+         describe("in context") {
             xit("xit should be skipped") {
                attemptToFail()
             }

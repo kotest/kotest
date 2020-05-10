@@ -16,6 +16,11 @@ class RootTestWithConfigBuilder(
    private val registration: RootTestRegistration,
    private val xdisabled: Boolean
 ) {
+
+   init {
+      DslState.state = "Test '$name' is incomplete"
+   }
+
    fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
@@ -26,6 +31,7 @@ class RootTestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
+      DslState.state = null
       val derivedConfig = registration
          .defaultConfig.deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
       registration.addTest(name, xdisabled, derivedConfig, TestType.Test, test)
@@ -39,6 +45,11 @@ class TestWithConfigBuilder(
    private val defaultTestConfig: TestCaseConfig,
    private val xdisabled: Boolean
 ) {
+
+   init {
+      DslState.state = "Test '$name' is incomplete"
+   }
+
    suspend fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
@@ -49,6 +60,7 @@ class TestWithConfigBuilder(
       enabledIf: EnabledIf? = null,
       test: suspend TestContext.() -> Unit
    ) {
+      DslState.state = null
       val derivedConfig =
          defaultTestConfig.deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
       val activeConfig = if (xdisabled) derivedConfig.copy(enabled = false) else derivedConfig

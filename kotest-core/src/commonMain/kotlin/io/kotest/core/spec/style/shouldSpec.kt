@@ -13,22 +13,6 @@ import io.kotest.core.test.TestCaseConfig
  *
  * The receiver of the block is a [ShouldSpecTestFactoryConfiguration] which allows tests
  * to be defined using the 'should-spec' style.
- *
- * Example:
- *
- * "some test" {
- *   "with context" {
- *      should("do something") {
- *        // test here
- *      }
- *    }
- *  }
- *
- *  or
- *
- *  should("do something") {
- *    // test here
- *  }
  */
 fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    val config = ShouldSpecTestFactoryConfiguration()

@@ -30,6 +30,7 @@ class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpe
 }
 
 abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecScope {
+
    init {
       body()
    }

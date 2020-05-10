@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
@@ -19,6 +20,7 @@ import io.kotest.core.test.createTestName
  * xexpect("some test").config(...)
  *
  */
+@KotestDsl
 class ExpectScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
@@ -29,14 +31,24 @@ class ExpectScope(
    suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = createTestName("Context: ", name)
       addContainerTest(testName, xdisabled = false) {
-         ExpectScope(this@ExpectScope.description.append(testName), lifecycle, this, defaultConfig).test()
+         ExpectScope(
+            this@ExpectScope.description.append(testName),
+            this@ExpectScope.lifecycle,
+            this,
+            this@ExpectScope.defaultConfig
+         ).test()
       }
    }
 
    suspend fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = createTestName("Context: ", name)
       addContainerTest(testName, xdisabled = true) {
-         ExpectScope(this@ExpectScope.description.append(testName), lifecycle, this, defaultConfig).test()
+         ExpectScope(
+            this@ExpectScope.description.append(testName),
+            this@ExpectScope.lifecycle,
+            this,
+            this@ExpectScope.defaultConfig
+         ).test()
       }
    }
 

@@ -2,6 +2,12 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.test.createTestName
 
+/**
+ * A context that allows tests to be registered using the syntax:
+ *
+ * given("some test")
+ * xgiven("some disabled test")
+ */
 @Suppress("FunctionName")
 interface BehaviorSpecScope : RootScope {
 

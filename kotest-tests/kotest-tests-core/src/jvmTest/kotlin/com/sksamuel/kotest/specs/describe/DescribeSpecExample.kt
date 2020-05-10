@@ -23,14 +23,14 @@ class DescribeSpecExample : DescribeSpec() {
                fail("should not be invoked")
             }
          }
-         context("with some context") {
+         describe("with some describe") {
             it("test name") {
                // test here
             }
             it("test name 2").config(enabled = false) {
                // test here
             }
-            context("with some context") {
+            describe("with some context") {
                it("test name") {
                   // test here
                }
@@ -45,14 +45,14 @@ class DescribeSpecExample : DescribeSpec() {
       }
 
       describe("some other thing") {
-         context("with some context") {
+         describe("with some describe") {
             it("test name") {
                // test here
             }
             it("test name 2").config(enabled = true) {
                // test here
             }
-            context("with some context") {
+            describe("with some context") {
                it("test name") {
                   // test here
                }
