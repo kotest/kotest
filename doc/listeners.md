@@ -151,7 +151,7 @@ class TestSpec : WordSpec({
 })
 ```
 
-Any listeners registered directly inside a `Spec` will be used for all tests in that spec (including factory tests and nested tests).
+Any listeners registered directly inside a `Spec` will be used for all tests in that spec (including [test factories](testfactories.md) and nested tests).
 
 Maybe you want a `TestListener` to run for every spec in the entire project. To do that, you can either mark the listener with `@AutoScan`, or you can register the listener via project config.
 For more information on this see [ProjectConfig](#project-config).

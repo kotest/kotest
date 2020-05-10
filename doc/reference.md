@@ -593,6 +593,19 @@ from a test run. For full details read this [page](tags.md).
 
 
 
+Test Factories
+-------------
+
+Kotest supports fully reusable tests via _test factories_. These are functions which return a set of dynamic tests
+which can be included in one or more specs. Each factory can be parameterized by simply adding parameters to the
+function that defines the factory.
+
+Each included test appears in the test output and report as if it was individually defined.
+
+Read more about [test factories](testfactories.md)
+
+
+
 Closing resource automatically
 --------------------------------------------
 
