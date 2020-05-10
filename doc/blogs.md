@@ -14,3 +14,4 @@ These blogs and articles can be useful in addition to the official docs to show 
 * [What's new in KotlinTest 3.2 and 3.3 by sksamuel (2019)](https://proandroiddev.com/whats-new-in-kotlintest-3-2-and-3-3-affbc1b25e1d)
 * [KotlinTest and property-based testing by  Biju Kunjummen (2017)](https://dzone.com/articles/kotlintest-and-property-based-testing)
 * [Kotest migration guide by Paweł Weselak (2020)](https://pawelweselak.com/posts/kotest-migration-guide/)
+* [Micronaut and KotlinTest by Ben (2020)](https://www.nerd.vision/post/micronaut-and-kotlintest)
