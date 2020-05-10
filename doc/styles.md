@@ -7,9 +7,9 @@ Others were created just for Kotest.
 | Test Style | Inspired By |
 | --- | --- |
 | [Fun Spec](#fun-spec) | ScalaTest |
-| [String Spec](#string-spec) | A Kotest original |
-| [Should Spec](#should-spec) | A Kotest original |
 | [Describe Spec](#describe-spec) | Javascript frameworks and RSpec |
+| [Should Spec](#should-spec) | A Kotest original |
+| [String Spec](#string-spec) | A Kotest original |
 | [Behavior Spec](#behavior-spec) | BDD frameworks |
 | [Free Spec](#free-spec) | ScalaTest |
 | [Word Spec](#word-spec) | ScalaTest |
