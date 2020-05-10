@@ -1,3 +1,4 @@
+@file:JvmName("platformjvm")
 package io.kotest.assertions.show
 
 import java.nio.file.Path

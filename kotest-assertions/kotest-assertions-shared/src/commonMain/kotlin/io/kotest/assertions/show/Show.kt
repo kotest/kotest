@@ -18,6 +18,10 @@ interface Show<in A> {
    fun show(a: A): Printed
 }
 
+/**
+ * Represents a value that has been appropriately formatted for display in output logs or error messages.
+ * For example, a null might be formatted as <null>.
+ */
 data class Printed(val value: String)
 
 fun String.printed() = Printed(this)
