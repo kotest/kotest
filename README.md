@@ -142,6 +142,7 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and non-deterministic code with [`eventually`](doc/nondeterministic.md) or [`continually`](doc/nondeterministic.md)
 * Let Kotest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
+* Create reusable parameterized tests via [test factories](doc/reference.md#test-factories)
 * Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
