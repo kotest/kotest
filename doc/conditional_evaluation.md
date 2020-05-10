@@ -27,6 +27,23 @@ You can use the same mechanism to run tests only under certain conditions.
 `isLinux` and `isPostgreSQL` in the example are just expressions (values, variables, properties, function calls) that evaluate to `true` or `false`.
 
 
+If you want to use a function that is based on the test rather than a value, then you can use `enabledIf`.
+
+For example, if we wanted to disable all tests that begin with the word "danger" when executing on Windows we could do this:
+
+```kotlin
+val disableDangerOnWindows: EnabledIf = { it.name.startsWith("danger") && IS_OS_LINUX }
+
+"danger will robinson".config(enabledIf = disableDangerOnWindows) {
+  // test here
+}
+
+"very safe will".config(enabledIf = disableDangerOnWindows) {
+ // test here
+}
+```
+
+
 ### Focus
 
 Kotest supports isolating a single **top level** test by preceding the test name with `f:`.
@@ -90,3 +107,27 @@ class SkipTestExceptionExample : StringSpec({
 ```
 
 `SkipTestException` is an open class, so you may extend it and customize it if you need it.
+
+### X-Methods
+
+Many spec styles offer variants of their keywords that begin with `x` to disable execution.
+This is a popular approach with Javascript testing frameworks. The idea is you can quickly add the x character
+to the test declaration to (temporarily) disable it.
+
+For example, with describe spec we can do this:
+
+```kotlin
+class XMethodsExample : DescribeSpec({
+
+  xdescribe("this block and it's children are now disabled") {
+    it("will not run") {
+      // disabled test
+    }
+  }
+
+})
+```
+
+See which specs support this and the syntax required on the [specs styles guide](styles.md).
+
+

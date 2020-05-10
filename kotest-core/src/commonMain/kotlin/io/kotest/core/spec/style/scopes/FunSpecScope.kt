@@ -13,6 +13,13 @@ interface FunSpecScope : RootScope {
       }
    }
 
+   /**
+    * Adds a disabled top level [FunSpecContextScope] to the spec.
+    */
+   fun xcontext(name: String, test: suspend FunSpecContextScope.() -> Unit) {
+      registration().addContainerTest(name, xdisabled = true) {}
+   }
+
    fun test(name: String): RootTestWithConfigBuilder =
       RootTestWithConfigBuilder(name, registration(), xdisabled = false)
 

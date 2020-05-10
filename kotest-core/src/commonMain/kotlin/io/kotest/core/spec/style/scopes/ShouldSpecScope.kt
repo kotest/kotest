@@ -29,6 +29,13 @@ interface ShouldSpecScope : RootScope {
    }
 
    /**
+    * Adds a top level context scope to the spec.
+    */
+   fun xcontext(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
+      registration().addContainerTest(name, xdisabled = true) {}
+   }
+
+   /**
     * Adds a top level test, with the given name and test function, with test config supplied
     * by invoking .config on the return of this function.
     */

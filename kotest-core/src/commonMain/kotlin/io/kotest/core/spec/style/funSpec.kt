@@ -26,8 +26,7 @@ class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecScope
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
 }
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(),
-   FunSpecScope {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecScope {
 
    init {
       body()
@@ -35,6 +34,6 @@ abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(),
 
    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
-   override fun registration(): RootTestRegistration = RootTestRegistration.Companion.from(this)
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 
 }
