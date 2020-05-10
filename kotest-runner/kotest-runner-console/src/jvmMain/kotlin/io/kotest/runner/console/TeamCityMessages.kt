@@ -1,5 +1,7 @@
 package io.kotest.runner.console
 
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -29,7 +31,7 @@ class TeamCityMessages(prefix: String?, command: String) {
 
    internal fun ignoreComment(value: String): TeamCityMessages = addAttribute("ignoreComment", value)
    internal fun message(value: String): TeamCityMessages = addAttribute("message", value.trim())
-   internal fun details(value: String): TeamCityMessages = addAttribute("details", value.trim())
+   private fun details(value: String): TeamCityMessages = addAttribute("details", value.trim())
    internal fun type(value: String): TeamCityMessages = addAttribute("type", value.trim())
    internal fun actual(value: String): TeamCityMessages = addAttribute("actual", value.trim())
    internal fun expected(value: String): TeamCityMessages = addAttribute("expected", value.trim())
@@ -42,20 +44,28 @@ class TeamCityMessages(prefix: String?, command: String) {
    override fun toString(): String = "$myText]"
 
    fun withException(error: Throwable?): TeamCityMessages {
-      return if (error == null) this else {
-         val line1 = error.message?.lines()?.firstOrNull()
-         val message = if (line1.isNullOrBlank()) "Test failed" else line1
-         val withMessage = message(message)
-         when (error) {
-            is org.opentest4j.AssertionFailedError ->
-               if (error.isActualDefined && error.isExpectedDefined) {
-                  withMessage.type("comparisonFailure")
-                     .actual(error.actual.stringRepresentation)
-                     .expected(error.expected.stringRepresentation)
-               } else withMessage
-            else -> withMessage
-         }
+      if (error == null) return this
+
+      val line1 = error.message?.lines()?.firstOrNull()
+      val message = if (line1.isNullOrBlank()) "Test failed" else line1
+      message(message)
+
+      error.stackTrace?.let {
+         val writer = StringWriter()
+         error.printStackTrace(PrintWriter(writer))
+         val stack = writer.buffer.toString()
+         details(stack)
       }
+
+      when (error) {
+         is org.opentest4j.AssertionFailedError ->
+            if (error.isActualDefined && error.isExpectedDefined) {
+               type("comparisonFailure")
+                  .actual(error.actual.stringRepresentation)
+                  .expected(error.expected.stringRepresentation)
+            }
+      }
+      return this
    }
 
    companion object {

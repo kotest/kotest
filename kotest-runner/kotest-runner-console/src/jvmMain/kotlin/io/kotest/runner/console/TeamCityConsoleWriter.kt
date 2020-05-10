@@ -97,7 +97,7 @@ class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter 
                   )
                }
                TestType.Test -> {
-                  result.error?.apply { printStackTrace(this) }
+                  //result.error?.apply { printStackTrace(this) }
                   println(
                      TeamCityMessages
                         .testFailed(prefix, desc.name)

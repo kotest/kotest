@@ -18,6 +18,8 @@ import io.kotest.data.row
 import io.kotest.extensions.system.captureStandardErr
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldHaveLineCount
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.runner.console.TeamCityConsoleWriter
 import kotlin.reflect.KClass
@@ -56,13 +58,13 @@ class TeamCityConsoleWriterTest : FunSpec() {
       test("before test should write testSuiteStarted for TestType.Container") {
          captureStandardOut {
             TeamCityConsoleWriter("testcity").testStarted(testCaseContainer)
-         } shouldBe "\ntestcity[testSuiteStarted name='my test container' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:36']\n"
+         } shouldBe "\ntestcity[testSuiteStarted name='my test container' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:38']\n"
       }
 
       test("before test should write testStarted for TestType.Test") {
          captureStandardOut {
             TeamCityConsoleWriter("testcity").testStarted(testCaseTest)
-         } shouldBe "\ntestcity[testStarted name='my test case' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:36']\n"
+         } shouldBe "\ntestcity[testStarted name='my test case' locationHint='kotest://com.sksamuel.kotest.runner.console.TeamCityConsoleWriterTest:38']\n"
       }
 
       test("after spec class should write testSuiteFinished") {
@@ -117,30 +119,6 @@ class TeamCityConsoleWriterTest : FunSpec() {
          } shouldBe "\ntestcity[testFinished name='my test case' duration='234']\n"
       }
 
-      test("afterTestCaseExecution for errored test should write stack trace for error to std err, and write testFailed to std out") {
-         captureStandardOut {
-            captureStandardErr {
-               TeamCityConsoleWriter("testcity").testFinished(
-                  testCaseTest,
-                  TestResult.throwable(AssertionError("wibble"), 925.milliseconds)
-               )
-            } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
-               "\tat com.sksamuel.kotest.runner.console.TeamCityConsoleWriter"
-         } shouldBe "\ntestcity[testFailed name='my test case' message='wibble' duration='925']\n"
-      }
-
-      test("afterTestCaseExecution for failed test should write stack trace for error to std err, and write testFailed to std out") {
-         captureStandardOut {
-            captureStandardErr {
-               TeamCityConsoleWriter("testcity").testFinished(
-                  testCaseTest,
-                  TestResult.throwable(AssertionError("wibble"), 33.milliseconds)
-               )
-            } shouldStartWith "\njava.lang.AssertionError: wibble\n" +
-               "\tat com.sksamuel.kotest.runner.console.TeamCityConsoleWriter"
-         } shouldBe "\ntestcity[testFailed name='my test case' message='wibble' duration='33']\n"
-      }
-
       test("after test should write testIgnored for test with ignored") {
          captureStandardOut {
             TeamCityConsoleWriter("testcity").testFinished(testCaseTest, TestResult.ignored("ignore me?"))
@@ -158,15 +136,24 @@ class TeamCityConsoleWriterTest : FunSpec() {
             }
          }
 
-         captureStandardOut {
+         val out = captureStandardOut {
             TeamCityConsoleWriter("testcity").testFinished(testCaseTest, TestResult.throwable(error, 8123.milliseconds))
-         } shouldBe "\ntestcity[testFailed name='my test case' message='Test failed' duration='8123']\n"
+         }
+         out.trim().shouldHaveLineCount(1)
+         out.shouldStartWith("\ntestcity[testFailed name='my test case' message='Test failed' details='")
+         out.shouldEndWith("duration='8123']\n")
       }
 
       test("should use comparison values when a supported exception type") {
-         captureStandardOut {
-            TeamCityConsoleWriter("testcity").testFinished(testCaseTest, TestResult.throwable(failure(Expected(Printed("expected")), Actual(Printed("actual"))), 14.milliseconds))
-         } shouldBe "\ntestcity[testFailed name='my test case' message='expected:<expected> but was:<actual>' type='comparisonFailure' actual='actual' expected='expected' duration='14']\n"
+         val out = captureStandardOut {
+            TeamCityConsoleWriter("testcity").testFinished(
+               testCaseTest,
+               TestResult.throwable(failure(Expected(Printed("expected")), Actual(Printed("actual"))), 14.milliseconds)
+            )
+         }
+         out.shouldStartWith("\ntestcity[testFailed name='my test case' message='expected:<expected> but was:<actual>' details='")
+         out.shouldEndWith("type='comparisonFailure' actual='actual' expected='expected' duration='14']\n")
+         out.trim().shouldHaveLineCount(1)
       }
    }
 }
