@@ -137,5 +137,4 @@ Executing a
 Executing b
 ```
 
-And as you can see, the `beforeTest` block added to `factory1
-` only applies to those tests defined in that factory, and not in the tests defined in the spec it was added to.
+And as you can see, the `beforeTest` block added to `factory1` only applies to those tests defined in that factory, and not in the tests defined in the spec it was added to.
