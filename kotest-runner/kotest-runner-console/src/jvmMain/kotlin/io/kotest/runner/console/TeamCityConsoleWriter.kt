@@ -11,22 +11,25 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.reflect.KClass
 
-class TeamCityConsoleWriter : ConsoleWriter {
+class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter {
 
    private var errors = false
 
    private fun locationHint(testCase: TestCase) =
       "kotest://" + testCase.spec.javaClass.canonicalName + ":" + testCase.source.lineNumber
 
+   private fun locationHint(kclass: KClass<out Spec>) =
+      "kotest://" + kclass.java.canonicalName + ":1"
+
    // intellij has no support for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to show something is red or yellow.
    private fun insertDummyFailure(desc: Description, t: Throwable?) {
       val initName = desc.name + " <init>"
-      println(TeamCityMessages.testStarted(initName))
+      println(TeamCityMessages.testStarted(prefix, initName))
       // we must print out the stack trace in between the dummy so it appears when you click on the test name
       if (t != null) printStackTrace(t)
       val message = t?.message?.let { if (it.lines().size == 1) it else null } ?: "Spec failed"
-      println(TeamCityMessages.testFailed(initName).message(message))
+      println(TeamCityMessages.testFailed(prefix, initName).message(message))
    }
 
    private fun printStackTrace(t: Throwable) {
@@ -41,28 +44,40 @@ class TeamCityConsoleWriter : ConsoleWriter {
 
    override fun specStarted(kclass: KClass<out Spec>) {
       println()
-      println(TeamCityMessages.testSuiteStarted(kclass.description().name))
+      println(
+         TeamCityMessages
+            .testSuiteStarted(prefix, kclass.description().name)
+            .locationHint(locationHint(kclass))
+      )
    }
 
    override fun specFinished(kclass: KClass<out Spec>, t: Throwable?, results: Map<TestCase, TestResult>) {
       println()
       val desc = kclass.description()
       if (t == null) {
-         println(TeamCityMessages.testSuiteFinished(desc.name))
+         println(TeamCityMessages.testSuiteFinished(prefix, desc.name))
       } else {
          errors = true
          insertDummyFailure(desc, t)
-         println(TeamCityMessages.testSuiteFinished(desc.name))
+         println(TeamCityMessages.testSuiteFinished(prefix, desc.name))
       }
    }
 
    override fun testStarted(testCase: TestCase) {
       if (testCase.type == TestType.Container) {
          println()
-         println(TeamCityMessages.testSuiteStarted(testCase.description.name).locationHint(locationHint(testCase)))
+         println(
+            TeamCityMessages
+               .testSuiteStarted(prefix, testCase.description.name)
+               .locationHint(locationHint(testCase))
+         )
       } else {
          println()
-         println(TeamCityMessages.testStarted(testCase.description.name).locationHint(locationHint(testCase)))
+         println(
+            TeamCityMessages
+               .testStarted(prefix, testCase.description.name)
+               .locationHint(locationHint(testCase))
+         )
       }
    }
 
@@ -75,12 +90,20 @@ class TeamCityConsoleWriter : ConsoleWriter {
             when (testCase.type) {
                TestType.Container -> {
                   insertDummyFailure(desc, result.error)
-                  println(TeamCityMessages.testSuiteFinished(desc.name).duration(result.duration))
+                  println(
+                     TeamCityMessages
+                        .testSuiteFinished(prefix, desc.name)
+                        .duration(result.duration)
+                  )
                }
                TestType.Test -> {
                   result.error?.apply { printStackTrace(this) }
-                  val message = result.error?.message?.let { if (it.lines().size == 1) it else null } ?: "Test failed"
-                  println(TeamCityMessages.testFailed(desc.name).message(message).duration(result.duration))
+                  println(
+                     TeamCityMessages
+                        .testFailed(prefix, desc.name)
+                        .withException(result.error)
+                        .duration(result.duration)
+                  )
                }
             }
          }
@@ -88,15 +111,16 @@ class TeamCityConsoleWriter : ConsoleWriter {
             val msg = when (testCase.type) {
                // this will show up as green rather than ignored in intellij but that's ok, we can't rewrite the IDE!
                // update: seems to have been fixed in intellij 2020
-               TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name)
-               TestType.Test -> TeamCityMessages.testIgnored(desc.name).ignoreComment(result.reason ?: "No reason")
+               TestType.Container -> TeamCityMessages.testSuiteFinished(prefix, desc.name)
+               TestType.Test -> TeamCityMessages.testIgnored(prefix, desc.name)
+                  .ignoreComment(result.reason ?: "No reason")
             }
             println(msg)
          }
          TestStatus.Success -> {
             val msg = when (testCase.type) {
-               TestType.Container -> TeamCityMessages.testSuiteFinished(desc.name).duration(result.duration)
-               TestType.Test -> TeamCityMessages.testFinished(desc.name).duration(result.duration)
+               TestType.Container -> TeamCityMessages.testSuiteFinished(prefix, desc.name).duration(result.duration)
+               TestType.Test -> TeamCityMessages.testFinished(prefix, desc.name).duration(result.duration)
             }
             println(msg)
          }
