@@ -22,19 +22,22 @@ Kotest is split into 3 basic sub-projects.
 These are provided separately so you can pick and choose which parts to use if you don't want to go _all in_ on Kotest.
 
 
-|   |   |
-|---|---|
-| **Test Framework**<br/>Provides the ability to layout tests in one of the spec styles and execute<br/>them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/><br/>[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Assertions Library**<br/>Provides over 300 rich assertions for JVM and JS, with helpful error<br/>messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/><br/>[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
-| **Property Testing**<br/>The most advanced property test library on the JVM, with shrinking support,<br/>and over 50 built in generators. |  <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/><br/>[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+|   |
+|---|
+| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript.<br/>
+   <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library.<br/>
+   <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support.<br/>
+   <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
 
 #### Which subproject(s) to use?
 
-* If you want to lay out tests in a more [structured way](styles.md); with built in coroutine support at every level; the ability to use [functions as test lifecycle callbacks](/doc/listeners.md#dsl-methods-with-functions); with extensive extension points and more, then build your test classes using the Kotest Test Framework.
+* If you want to lay out tests in a [fluid way](styles.md); with built in coroutine support at every level; the ability to use [functions as test lifecycle callbacks](/doc/listeners.md#dsl-methods-with-functions); with extensive extension points; with advanced [conditional evaluation](conditional_evaluation.md); and execute these tests on the JVM and/or Javascript, then build your test classes using the Kotest Test Framework.
 
-* If you want a Kotlin focused multi-platform enabled assertions library, with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md) and more, then opt to use the Kotest assertions library.
+* If you want a Kotlin focused multi-platform enabled assertions library; with over [300 rich assertions](matchers.md); with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md); modules for [arrow](https://arrow-kt.io/), json and more, then opt to use the Kotest assertions library.
 
-* If you want a powerful [property test](property_testing.md) library, with over 50 built in generators; the ability to easily compose new generators; with failure shrinking; with exhaustive checks; with coverage metrics; then choose the Kotest property test module.
+* If you want a powerful multi-platform enabled [property test](property_testing.md) library, with over 50 [built in generators](generators.md); the ability to easily compose new generators; with failure shrinking; with exhaustive checks; with coverage metrics; then choose the Kotest property test module.
 
 
 The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
