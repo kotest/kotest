@@ -351,7 +351,7 @@ class MyTests : FeatureSpec({
 Tests can be disabled using the `xfeature` and `xscenario` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
-class MyTests : DescribeSpec({
+class MyTests : FeatureSpec({
     feature("this outer block is enabled") {
         xscenario("this test is disabled") {
             // test here
