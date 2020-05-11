@@ -23,7 +23,7 @@ class FreeSpecInstancePerTestTest : FreeSpec({
       tests.add(it.a.name)
    }
 
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
 
    val count = AtomicInteger(0)
 

@@ -22,7 +22,7 @@ class FunSpecInstancePerTestTest : FunSpec({
       tests.add(it.a.name)
    }
 
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
 
    var count = 0
 

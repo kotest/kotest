@@ -1,5 +1,7 @@
 package com.sksamuel.kotest.specs.isolation.test
 
+import io.kotest.core.engine.SpecExecutor
+import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.*
 import io.kotest.core.test.TestCase
@@ -7,11 +9,9 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.engine.SpecExecutor
 
 private class BehaviorSpecWithAfterTestError : BehaviorSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -24,7 +24,7 @@ private class BehaviorSpecWithAfterTestError : BehaviorSpec({
 })
 
 private class FunSpecWithAfterTestError : FunSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -32,7 +32,7 @@ private class FunSpecWithAfterTestError : FunSpec({
 })
 
 private class StringSpecWithAfterTestError : StringSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -40,7 +40,7 @@ private class StringSpecWithAfterTestError : StringSpec({
 })
 
 private class ShouldSpecWithAfterTestError : ShouldSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -48,14 +48,14 @@ private class ShouldSpecWithAfterTestError : ShouldSpec({
 })
 
 private class DescribeSpecWithAfterTestError : DescribeSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
 })
 
 private class FeatureSpecWithAfterTestError : FeatureSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -65,14 +65,14 @@ private class FeatureSpecWithAfterTestError : FeatureSpec({
 })
 
 private class ExpectSpecWithAfterTestError : ExpectSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
 })
 
 private class FreeSpecWithAfterTestError : FreeSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }
@@ -80,7 +80,7 @@ private class FreeSpecWithAfterTestError : FreeSpec({
 })
 
 private class WordSpecWithAfterTestError : WordSpec({
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
    afterTest {
       error("boom")
    }

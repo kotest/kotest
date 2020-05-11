@@ -13,7 +13,7 @@ class StringSpecInstancePerLeafTest : StringSpec({
       buffer.shouldBe("abc")
    }
 
-   isolation = IsolationMode.InstancePerLeaf
+   isolationMode = IsolationMode.InstancePerLeaf
 
    val counter = AtomicInteger(0)
 
