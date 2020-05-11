@@ -77,9 +77,9 @@ class MyTests : StringSpec({
 Tests can be nested in one or more context blocks as well:
 
 ```kotlin
-class MyTests : FunSpec({
+class MyTests : StringSpec({
 	context("a test group") {
-		test("String length should return the length of the string") {
+		"String length should return the length of the string" {
 			"sammy".length shouldBe 5
 			"".length shouldBe 0
 		}
