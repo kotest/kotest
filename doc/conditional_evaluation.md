@@ -91,23 +91,6 @@ class BangExample : StringSpec({
 })
 ```
 
-### SkipTestException
-Sometimes you want to interrupt a test in runtime, as perhaps you don't know at compile-time if the test should be executed. For this, Kotest provides a way to interrupt it by throwing an exception: The `SkipTestException`.
-
-```kotlin
-class SkipTestExceptionExample : StringSpec({
-
-  "Test should be skipped" {
-    if(isLocalEnvironment()) {
-      throw SkipTestException("Cannot run this test in local environment.")
-    }
-  }
-
-})
-```
-
-`SkipTestException` is an open class, so you may extend it and customize it if you need it.
-
 ### X-Methods
 
 Many spec styles offer variants of their keywords that begin with `x` to disable execution.
