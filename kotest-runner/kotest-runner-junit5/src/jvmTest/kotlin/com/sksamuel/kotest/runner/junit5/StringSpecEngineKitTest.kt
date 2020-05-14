@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
@@ -287,7 +288,8 @@ class StringSpecEngineKitTest : FunSpec({
    }
 
    test("ExceptionInInitializerError exception in beforeTest") {
-      val fullyQualifiedTestClassName = "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInitializerErrorInBeforeTestFunction"
+      val fullyQualifiedTestClassName =
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInitializerErrorInBeforeTestFunction"
 
       EngineTestKit
          .engine("kotest")
@@ -396,6 +398,36 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
+   test("exception in beforeSpec with insolation mode instance per leaf") {
+      val fullyQualifiedTestClassName =
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInstancePerLeaf"
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInInstancePerLeaf::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 8
+            started().shouldHaveNames(
+               "Kotest",
+               fullyQualifiedTestClassName,
+               "Spec execution failed"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(fullyQualifiedTestClassName)
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "Spec execution failed",
+               fullyQualifiedTestClassName,
+               "Kotest"
+            )
+            aborted().shouldHaveNames("Spec execution failed")
+            dynamicallyRegistered().shouldHaveNames(
+               fullyQualifiedTestClassName,
+               "Spec execution failed"
+            )
+         }
+   }
 })
 
 private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
@@ -552,7 +584,6 @@ private class StringSpecExceptionInInitializerErrorInBeforeTestFunction : String
    }
 }
 
-
 private class StringSpecTestCase : StringSpec({
 
    "a failing test" {
@@ -575,3 +606,19 @@ private class StringSpecTestCase : StringSpec({
 private class StringSpecExceptionInInit : StringSpec({
    throw RuntimeException("kapow")
 })
+
+private class StringSpecExceptionInInstancePerLeaf : StringSpec({
+   "a failing test" {
+      1 shouldBe 2
+   }
+
+   "a passing test" {
+      1 shouldBe 1
+   }
+}) {
+   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
+
+   override fun beforeSpec(spec: Spec) {
+      throw RuntimeException("zopp!!")
+   }
+}
