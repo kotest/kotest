@@ -400,10 +400,10 @@ class StringSpecEngineKitTest : FunSpec({
 
    test("exception in beforeSpec with insolation mode instance per leaf") {
       val fullyQualifiedTestClassName =
-         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInstancePerLeaf"
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerLeaf"
       EngineTestKit
          .engine("kotest")
-         .selectors(selectClass(StringSpecExceptionInInstancePerLeaf::class.java))
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerLeaf::class.java))
          .configurationParameter("allow_private", "true")
          .execute()
          .allEvents().apply {
@@ -607,7 +607,7 @@ private class StringSpecExceptionInInit : StringSpec({
    throw RuntimeException("kapow")
 })
 
-private class StringSpecExceptionInInstancePerLeaf : StringSpec({
+private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
    "a failing test" {
       1 shouldBe 2
    }
