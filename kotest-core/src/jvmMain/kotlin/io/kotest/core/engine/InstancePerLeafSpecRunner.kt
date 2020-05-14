@@ -3,11 +3,7 @@ package io.kotest.core.engine
 import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
-import io.kotest.fp.Option
-import io.kotest.fp.Option.None
-import io.kotest.fp.Option.Some
 import io.kotest.fp.Try
-import io.kotest.fp.getOrElse
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.*
@@ -52,21 +48,17 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
-      var exception: Option<Throwable> = None
-      return Try {
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
          spec.rootTests().forEach { root ->
             enqueue(root.testCase)
          }
          while (queue.isNotEmpty()) {
             val (testCase, _) = queue.remove()
-            executeInCleanSpec(testCase).onFailure { exception = Some(it) }
+            executeInCleanSpec(testCase).getOrThrow()
          }
          results
-      }.flatMap {
-         exception.map { Try.Failure(it) }.getOrElse(Try.Success(results))
       }
-   }
+
 
    private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
       return createInstance(test.spec::class)

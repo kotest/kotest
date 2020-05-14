@@ -398,7 +398,7 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
-   test("exception in beforeSpec with insolation mode instance per leaf") {
+   test("exception in beforeSpec with isolation mode instance per leaf") {
       val fullyQualifiedTestClassName =
          "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerLeaf"
       EngineTestKit
