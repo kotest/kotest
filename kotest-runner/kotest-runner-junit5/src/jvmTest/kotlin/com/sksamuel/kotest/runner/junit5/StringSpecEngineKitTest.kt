@@ -288,7 +288,8 @@ class StringSpecEngineKitTest : FunSpec({
    }
 
    test("ExceptionInInitializerError exception in beforeTest") {
-      val fullyQualifiedTestClassName = "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInitializerErrorInBeforeTestFunction"
+      val fullyQualifiedTestClassName =
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInitializerErrorInBeforeTestFunction"
 
       EngineTestKit
          .engine("kotest")
@@ -427,7 +428,6 @@ class StringSpecEngineKitTest : FunSpec({
             )
          }
    }
-
 })
 
 private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
@@ -583,7 +583,6 @@ private class StringSpecExceptionInInitializerErrorInBeforeTestFunction : String
       }
    }
 }
-
 
 private class StringSpecTestCase : StringSpec({
 
