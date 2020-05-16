@@ -1,19 +1,10 @@
 package io.kotest.core.engine
 
-import io.kotest.mpp.log
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
-import io.kotest.core.runtime.invokeAfterSpec
-import io.kotest.core.runtime.invokeBeforeSpec
+import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
-import io.kotest.core.test.Description
-import io.kotest.core.test.NestedTest
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.toTestCase
+import io.kotest.core.test.*
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -58,15 +49,16 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      spec.rootTests().forEach { root ->
-         enqueue(root.testCase)
+         spec.rootTests().forEach { root ->
+            enqueue(root.testCase)
+         }
+         while (queue.isNotEmpty()) {
+            val (testCase, _) = queue.remove()
+            executeInCleanSpec(testCase).getOrThrow()
+         }
+         results
       }
-      while (queue.isNotEmpty()) {
-         val (testCase, _) = queue.remove()
-         executeInCleanSpec(testCase)
-      }
-      results
-   }
+
 
    private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
       return createInstance(test.spec::class)
