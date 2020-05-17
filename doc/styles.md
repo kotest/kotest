@@ -74,19 +74,15 @@ class MyTests : StringSpec({
 })
 ```
 
-Tests can be nested in one or more context blocks as well:
+Adding config to the test.
 
 ```kotlin
 class MyTests : StringSpec({
-	context("a test group") {
-		"String length should return the length of the string" {
-			"sammy".length shouldBe 5
-			"".length shouldBe 0
-		}
+	"strings.length should return size of string".config(enabled = false, invocations = 3) {
+		"hello".length shouldBe 5
 	}
 })
 ```
-
 
 
 
