@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
+import io.kotest.core.factory.normalizedTestName
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.KotestDsl
@@ -37,7 +38,7 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val nested = NestedTest(name, test, config, type, sourceRef())
+      val nested = NestedTest(name.normalizedTestName(), test, config, type, sourceRef())
       registerTestCase(nested)
    }
 
