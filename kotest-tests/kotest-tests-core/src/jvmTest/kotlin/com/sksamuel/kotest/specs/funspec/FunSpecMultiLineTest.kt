@@ -6,7 +6,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
 // tests that multi line test names are normalized
-@OptIn(ExperimentalTime::class)
+@ExperimentalTime
 class FunSpecMultiLineTest : FunSpec() {
 
    init {
@@ -14,7 +14,7 @@ class FunSpecMultiLineTest : FunSpec() {
       extension { (testCase, execute) ->
          execute(testCase)
          when (testCase.name) {
-            "test    case    1", "test    case    2" -> TestResult.success(0.seconds)
+            "test    case    1", "test    case    2", "context" -> TestResult.success(0.seconds)
             else -> TestResult.throwable(RuntimeException(testCase.name + " failed"), 0.seconds)
          }
       }
