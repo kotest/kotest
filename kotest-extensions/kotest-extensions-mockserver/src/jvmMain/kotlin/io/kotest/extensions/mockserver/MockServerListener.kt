@@ -11,7 +11,7 @@ class MockServerListener(private val port: Int) : TestListener {
 
    override suspend fun beforeSpec(spec: Spec) {
       super.beforeSpec(spec)
-      mockServer = startClientAndServer(1080)
+      mockServer = startClientAndServer(port)
    }
 
    override suspend fun afterSpec(spec: Spec) {
