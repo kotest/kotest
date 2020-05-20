@@ -5,7 +5,7 @@ The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) 
 
 ## Getting Started
 
-Note: This plugin is currently in a beta and requires the use of the 4.1.0.267-SNAPSHOT build of Kotest as well as the `kotest-runner-console-jvm` module included in your build.
+Note: This plugin is currently in a beta and requires the use of the 4.1.0.293-SNAPSHOT build of Kotest as well as the `kotest-runner-console-jvm` module included in your build.
 
 ```gradle
   // you need to add the sonatype snapshots repository to your build
