@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.idea.core.util.getLineCount
  * Note: This method is 1 indexed, which tallies with the line numbers reported by the console runner.
  */
 fun PsiFile.offsetForLine(line: Int): IntRange? {
-   return if (this.getLineCount() >= line) null else
+   return if (line >= getLineCount()) null else
       PsiDocumentManager.getInstance(project).getDocument(this)?.let {
          it.getLineStartOffset(line - 1)..it.getLineEndOffset(line - 1)
       }
