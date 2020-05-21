@@ -45,19 +45,3 @@ fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: () -> A) {
   }
 }
 
-/**
- * Verify that an asynchronous call should timeout
- */
-suspend fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: suspend () -> A) {
-   val timedOut = try {
-      withTimeout(unit.toMillis(timeout)) {
-         thunk()
-         false
-      }
-   } catch (t: TimeoutCancellationException) {
-      true
-   }
-   if (!timedOut) {
-      throw failure("Expected test to timeout for $timeout/$unit")
-   }
-}
