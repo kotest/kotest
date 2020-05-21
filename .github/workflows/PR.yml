@@ -24,11 +24,11 @@ jobs:
 
       - name: Run windows tests
         if: matrix.os == 'windows-latest'
-        run: ./gradlew nativeTest
+        run: ./gradlew mingwX64Test
 
       - name: Run macOS tests
         if: matrix.os == 'macOS-latest'
-        run: ./gradlew nativeTest
+        run: ./gradlew macosX64Test
 
       - name: Bundle the build report
         if: failure()
