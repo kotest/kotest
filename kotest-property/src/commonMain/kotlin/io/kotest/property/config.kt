@@ -16,7 +16,8 @@ data class PropTest(
    val minSuccess: Int = Int.MAX_VALUE,
    val maxFailure: Int = 0,
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
-   val iterations: Int? = null
+   val iterations: Int? = null,
+   val listeners: MutableList<PropTestListener> = mutableListOf()
 )
 
 fun PropTest.toPropTestConfig() =
@@ -25,7 +26,8 @@ fun PropTest.toPropTestConfig() =
       minSuccess = minSuccess,
       maxFailure = maxFailure,
       iterations = iterations,
-      shrinkingMode = shrinkingMode
+      shrinkingMode = shrinkingMode,
+      listeners = listeners
    )
 
 data class PropTestConfig(
@@ -33,5 +35,28 @@ data class PropTestConfig(
    val minSuccess: Int = Int.MAX_VALUE,
    val maxFailure: Int = 0,
    val shrinkingMode: ShrinkingMode = ShrinkingMode.Bounded(1000),
-   val iterations: Int? = null
-)
+   val iterations: Int? = null,
+   val listeners: MutableList<PropTestListener> = mutableListOf()
+) {
+   fun beforeTest(before: suspend () -> Unit) {
+      listeners.add(object : PropTestListener {
+         override suspend fun beforeTest() {
+            before()
+            super.beforeTest()
+         }
+      })
+   }
+   fun afterTest(after: suspend () -> Unit) {
+      listeners.add(object : PropTestListener {
+         override suspend fun afterTest() {
+            after()
+            super.afterTest()
+         }
+      })
+   }
+}
+
+interface PropTestListener {
+   suspend fun beforeTest(): Unit = Unit
+   suspend fun afterTest(): Unit = Unit
+}
