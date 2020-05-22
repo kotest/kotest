@@ -42,3 +42,4 @@ fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: () -> A) {
     throw failure("Expected test to timeout for $timeout/$unit")
   }
 }
+
