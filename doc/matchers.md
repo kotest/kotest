@@ -360,7 +360,6 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `date.shouldHaveHour(hour)` | Asserts that the date have correct hour. |
 | `date.shouldHaveMinute(Minute)` | Asserts that the date have correct minute. |
 | `date.shouldHaveSecond(second)` | Asserts that the date have correct second. |
-
 | `time.shouldHaveSameHoursAs(time)` | Asserts that the time has the same hours as the given time. |
 | `time.shouldHaveHours(hours)` | Asserts that the time has the given hours. |
 | `time.shouldHaveSameMinutesAs(time)` | Asserts that the time has the same minutes as the given time. |
