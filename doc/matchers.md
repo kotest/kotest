@@ -265,6 +265,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `future.shouldBeCancelled()` | Asserts that the future has been cancelled. |
 | `future.shouldBeCompleted()` | Asserts that the future has completed. |
 | `future.shouldBeCompletedExceptionally()` | Asserts that the the future has completed with an exception. |
+| `future.shouldCompleteExceptionallyWith(throwable)` | Asserts that the the future will complete with given exception. |
 
 | Threads ||
 | -------- | ---- |
