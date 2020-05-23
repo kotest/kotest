@@ -87,4 +87,10 @@ class FutureMatcherTest : StringSpec({
          completableFuture shouldNotCompleteExceptionallyWith exception
       }
    }
+   "test shouldNotCompleteExceptionallyWith passes when completable future completes without any exception" {
+      val completableFuture = CompletableFuture<Int>()
+      completableFuture.complete(2)
+
+      completableFuture shouldNotCompleteExceptionallyWith RuntimeException("Bang Bang")
+   }
 })

@@ -48,13 +48,13 @@ infix fun CompletableFuture<*>.shouldCompleteExceptionallyWith(throwable: Throwa
 infix fun CompletableFuture<*>.shouldNotCompleteExceptionallyWith(throwable: Throwable) =
    this shouldNot completeExceptionallyWith(throwable)
 
-fun completeExceptionallyWith(throwable: Throwable) = object : Matcher<CompletableFuture<*>> {
+internal fun completeExceptionallyWith(throwable: Throwable) = object : Matcher<CompletableFuture<*>> {
    override fun test(value: CompletableFuture<*>): MatcherResult {
       val exception = value.runCatching { get() }.exceptionOrNull()
       return MatcherResult(
          exception != null && exception.cause == throwable,
          { errorMessageForTestFailure(exception?.cause, throwable) },
-         { "Expected future not to fail with $exception, but it did fail with it." }
+         { "Expected future not to fail with ${exception?.cause}, but it did fail with it." }
       )
    }
 }
