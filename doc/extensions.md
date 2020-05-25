@@ -75,7 +75,7 @@ First an example of the project config.
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
-  override fun extensions(): List<ProjectLevelExtension> = listOf(SpringAutowireConstructorExtension)
+  override fun extensions(): List<Extension> = listOf(SpringAutowireConstructorExtension)
 }
 ```
 
