@@ -9,17 +9,18 @@ import io.kotest.mpp.sysprop
  * Build assertion error message.
  *
  * Show 10 passed and failed results by default. You can change the number of output results by setting the
- * system property `kotlintest.assertions.output.max=20`.
+ * system property `kotest.assertions.output.max=20`.
  *
  * E.g.:
  *
  * ```
- *     -Dkotlintest.assertions.output.max=20
+ *     -Dkotest.assertions.output.max=20
  * ```
  */
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
 
-   val maxResults = sysprop("kotlintest.assertions.output.max")?.toInt() ?: 10
+   val maxResults =
+      (sysprop("kotest.assertions.output.max") ?: sysprop("kotlintest.assertions.output.max"))?.toInt() ?: 10
 
    val passed = results.filterIsInstance<ElementPass<T>>()
    val failed = results.filterIsInstance<ElementFail<T>>()

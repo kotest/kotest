@@ -16,7 +16,7 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
 
    // we run tests and callbacks inside an executor so that the before/after callbacks
    // and the test itself run on the same thread.
-   // @see https://github.com/kotlintest/kotlintest/issues/447
+   // @see https://github.com/kotest/kotest/issues/447
    // this cannot be the main thread because we want to continue after a timeout, and
    // we can't interrupt a test doing `while (true) {}`
    //private val executor = Executors.newSingleThreadExecutor(NamedThreadFactory("ExecutionContext-Worker-%d"))
