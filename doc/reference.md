@@ -251,7 +251,7 @@ For example to create a matcher that checks that a string contains the substring
 
 ```kotlin
 fun containFoo() = object : Matcher<String> {
-  override fun test(value: String) = Result(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
+  override fun test(value: String) = MatcherResult(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
 }
 ```
 This matcher could then be used as follows:
