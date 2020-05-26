@@ -37,6 +37,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(project(":kotest-core"))
             implementation("org.pitest:pitest:1.4.11")
+            implementation(Libs.Coroutines.core)
          }
       }
 

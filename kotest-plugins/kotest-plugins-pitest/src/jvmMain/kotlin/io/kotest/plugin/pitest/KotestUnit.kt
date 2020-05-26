@@ -6,6 +6,7 @@ import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
 import io.kotest.core.engine.KotestEngine
 import io.kotest.core.engine.TestEngineListener
+import kotlinx.coroutines.runBlocking
 import org.pitest.testapi.Description
 import org.pitest.testapi.ResultCollector
 import org.pitest.testapi.TestUnit
@@ -15,7 +16,7 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
 
    override fun getDescription(): Description = Description(klass.description().fullName(), klass.java)
 
-   override fun execute(rc: ResultCollector) {
+   override fun execute(rc: ResultCollector) = runBlocking {
 
       val listener = object : TestEngineListener {
 

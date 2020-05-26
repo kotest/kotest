@@ -7,6 +7,7 @@ import io.kotest.core.engine.IsolationTestEngineListener
 import io.kotest.core.engine.KotestEngine
 import io.kotest.core.engine.SynchronizedTestEngineListener
 import io.kotest.core.engine.discovery.Discovery
+import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -31,7 +32,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
-   override fun execute(request: ExecutionRequest) {
+   override fun execute(request: ExecutionRequest) = runBlocking {
       log("JUnit ExecutionRequest[${request::class.java.name}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]")
       val root = request.rootTestDescriptor as KotestEngineDescriptor
       val listener = SynchronizedTestEngineListener(

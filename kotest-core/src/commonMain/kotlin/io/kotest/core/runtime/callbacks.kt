@@ -26,7 +26,7 @@ fun List<ProjectListener>.resolveName() =
 /**
  * Invokes any afterProject functions from the given listeners.
  */
-fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Try {
+suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Try {
    log("invokeAfterProject")
    filterIsInstance<ProjectListener>()
       .resolveName()
@@ -38,7 +38,7 @@ fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Tr
 /**
  * Invokes the beforeProject listeners, and prints project config using [dumpProjectConfig].
  */
-fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
+suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
    log("invokeBeforeProject")
    Project.dumpProjectConfig()
 
