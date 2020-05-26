@@ -163,10 +163,10 @@ An example of `@Autoscan` on a project listener:
 ```kotlin
 @AutoScan
 object MyProjectListener : ProjectListener {
-  override fun beforeProject() {
+  override suspend fun beforeProject() {
     println("Project starting")
   }
-  override fun afterProject() {
+  override suspend fun afterProject() {
     println("Project complete")
   }
 }
