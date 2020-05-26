@@ -20,14 +20,14 @@ class BeforeAfterProjectListenerExceptionHandlingTest : FunSpec({
          object : ProjectListener {
             override val name: String
                get() = "MyAfterProjectListenerName"
-            override fun afterProject() {
+            override suspend fun afterProject() {
                if (System.getenv("foo") == "true") error("afterProjectError")
             }
          },
          object : ProjectListener {
             override val name: String
                get() = "MyBeforeProjectListenerName"
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                if (System.getenv("foo") == "true") error("beforeProjectError")
             }
          }

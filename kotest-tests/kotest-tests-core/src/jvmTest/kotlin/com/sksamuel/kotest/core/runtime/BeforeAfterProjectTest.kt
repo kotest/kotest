@@ -34,12 +34,12 @@ class BeforeAfterProjectTest : FunSpec({
 
       val listeners = listOf(
          object : ProjectListener {
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                error("boom")
             }
          },
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                error("doom")
             }
          }

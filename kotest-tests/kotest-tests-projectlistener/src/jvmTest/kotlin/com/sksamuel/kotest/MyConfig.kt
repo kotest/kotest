@@ -12,11 +12,11 @@ object TestProjectListener : ProjectListener {
    var beforeAll = 0
    var afterAll = 0
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       beforeAll++
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       afterAll++
    }
 }

@@ -80,11 +80,11 @@ class SecurityManagerProjectListener(
    securityManager: SecurityManager?
 ) : SecurityManagerListener(securityManager), ProjectListener {
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeSecurityManager()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetSecurityManager()
    }
 }

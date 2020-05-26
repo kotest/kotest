@@ -20,7 +20,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    test("an AfterProjectListenerException should add marker spec") {
       every { Project.listeners() } returns listOf(
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                if (System.getenv("foo") == "true") error("too")
             }
          }
@@ -65,12 +65,12 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
    test("an AfterProjectListenerException should add 2 markers spec") {
       every { Project.listeners() } returns listOf(
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                if (System.getenv("coo") == "true") error("moo")
             }
          },
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                if (System.getenv("coo") == "true") error("boo")
             }
          }
@@ -121,7 +121,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             override val name: String
                get() = "MyAfterProjectListenerName"
 
-            override fun afterProject() {
+            override suspend fun afterProject() {
                if (System.getenv("foo") == "true") error("moo")
             }
          }

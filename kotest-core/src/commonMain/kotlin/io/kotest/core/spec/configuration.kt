@@ -144,7 +144,7 @@ abstract class TestConfiguration {
     */
    fun afterProject(f: AfterProject) {
       Project.registerListener(object : ProjectListener {
-         override fun afterProject() {
+         override suspend fun afterProject() {
             f()
          }
       })

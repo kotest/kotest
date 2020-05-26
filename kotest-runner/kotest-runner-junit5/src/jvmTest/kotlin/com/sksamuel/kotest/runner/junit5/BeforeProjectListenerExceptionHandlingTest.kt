@@ -20,7 +20,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
    test("an BeforeProjectListenerException should add marker spec") {
       every { Project.listeners() } returns listOf(
          object : ProjectListener {
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                if (System.getenv("foo") == "true") error("beforeProjectError")
             }
          }
@@ -60,7 +60,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
             override val name: String
                get() = "MyBeforeProjectListenerName1"
 
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                if (System.getenv("foo") == "true") error("beforeProjectError")
             }
          },
@@ -68,7 +68,7 @@ class BeforeProjectListenerExceptionHandlingTest : FunSpec({
             override val name: String
                get() = "MyBeforeProjectListenerName2"
 
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                if (System.getenv("foo") == "true") error("beforeProjectError")
             }
          }

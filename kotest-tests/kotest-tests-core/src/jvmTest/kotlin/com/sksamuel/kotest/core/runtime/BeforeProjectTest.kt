@@ -36,7 +36,7 @@ class BeforeAllTest : FunSpec({
          override val name
             get() = "BeforeAllTest ProjectListener"
 
-         override fun beforeProject() {
+         override suspend fun beforeProject() {
             error("boom")
          }
       })
@@ -58,7 +58,7 @@ class BeforeAllTest : FunSpec({
                get() = "BeforeAllTest1 ProjectListener"
             //override val name = "BeforeAllTest1 ProjectListener"
 
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                error("boom")
             }
          },
@@ -67,7 +67,7 @@ class BeforeAllTest : FunSpec({
                get() = "BeforeAllTest2 ProjectListener"
             //override val name = "BeforeAllTest2 ProjectListener"
 
-            override fun beforeProject() {
+            override suspend fun beforeProject() {
                error("doom")
             }
          }
