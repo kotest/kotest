@@ -89,7 +89,7 @@ class KotestEngine(
       // exitProcess(if (t == null) 0 else -1)
    }
 
-   fun execute() {
+   suspend fun execute() {
       notifyTestEngineListener()
          .flatMap { (listeners + Project.listeners()).beforeProject() }
          .fold(

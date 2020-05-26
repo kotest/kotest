@@ -11,10 +11,10 @@ interface ProjectListener : Listener {
    /**
     * Executed before the first test of the project.
     */
-   fun beforeProject() {}
+   suspend fun beforeProject() {}
 
    /**
     * Executed after the last test of the project.
     */
-   fun afterProject() {}
+   suspend fun afterProject() {}
 }

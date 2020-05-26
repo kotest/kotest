@@ -238,11 +238,11 @@ class SystemEnvironmentProjectListener(environment: Map<String, String>, mode: O
     */
    constructor(environment: Pair<String, String>, mode: OverrideMode = SetOrError) : this(mapOf(environment), mode)
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeSystemEnvironment()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetSystemEnvironment()
    }
 }

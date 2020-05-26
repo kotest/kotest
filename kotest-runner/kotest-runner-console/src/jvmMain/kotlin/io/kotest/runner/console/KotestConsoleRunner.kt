@@ -13,7 +13,7 @@ import io.kotest.core.spec.Spec
 
 class KotestConsoleRunner(private val listener: TestEngineListener) {
 
-   fun execute(packageName: String?, specFQN: String?, test: String?, tags: Tags?) {
+   suspend fun execute(packageName: String?, specFQN: String?, test: String?, tags: Tags?) {
 
       // if the spec class was null, then we perform discovery to locate all the classes
       // otherwise we instantiate that particular spec

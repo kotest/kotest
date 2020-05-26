@@ -9,12 +9,12 @@ object Container {
 
 @AutoScan
 object MyObjectProjectListener : ProjectListener {
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       Container.results = Container.results + "A"
    }
 
    // we have two after project listeners, so at least one must have been executed when we get to them both
-   override fun afterProject() {
+   override suspend fun afterProject() {
       Container.results = Container.results + "B"
       if (!Container.results.contains("B") && !Container.results.contains("D"))
          error("boom")
@@ -23,12 +23,12 @@ object MyObjectProjectListener : ProjectListener {
 
 @AutoScan
 class MyClassProjectListener : ProjectListener {
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       Container.results = Container.results + "C"
    }
 
    // we have two after project listeners, so at least one must have been executed when we get to them both
-   override fun afterProject() {
+   override suspend fun afterProject() {
       Container.results = Container.results + "D"
       if (!Container.results.contains("B") && !Container.results.contains("D"))
          error("boom")

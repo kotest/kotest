@@ -43,7 +43,7 @@ object AllureTestListener : TestListener, ProjectListener {
       throw t
    }
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       Paths.get("./allure-results").toFile().deleteRecursively()
    }
 

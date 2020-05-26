@@ -34,7 +34,7 @@ class AfterProjectTest : FunSpec({
       every { Project.listeners() } returns emptyList()
 
       val listeners = listOf(object : ProjectListener {
-         override fun afterProject() {
+         override suspend fun afterProject() {
             error("boom")
          }
       })
@@ -51,12 +51,12 @@ class AfterProjectTest : FunSpec({
       every { Project.listeners() } returns emptyList()
       val listeners = listOf(
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                error("boom")
             }
          },
          object : ProjectListener {
-            override fun afterProject() {
+            override suspend fun afterProject() {
                error("doom")
             }
          }

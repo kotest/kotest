@@ -72,11 +72,11 @@ class LocaleTestListener(locale: Locale) : LocaleListener(locale), TestListener 
 class LocaleProjectListener(newLocale: Locale) : LocaleListener(newLocale),
    ProjectListener {
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeLocale()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetLocale()
    }
 }

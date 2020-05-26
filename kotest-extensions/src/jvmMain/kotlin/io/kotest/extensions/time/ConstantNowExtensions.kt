@@ -125,11 +125,11 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) :
 class ConstantNowProjectListener<Time : Temporal>(now: Time) :
    ConstantNowListener<Time>(now), ProjectListener {
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeNow()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetNow()
    }
 }
