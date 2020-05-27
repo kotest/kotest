@@ -42,6 +42,29 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
   )
 }
 
+fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
+
+/**
+ * Assert that a collections contains a subsequence that matches the given subsequence of predicates, possibly with
+ * values in between.
+ */
+fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
+   require(predicates.isNotEmpty()) { "predicates must not be empty" }
+
+   var subsequenceIndex = 0
+   val actualIterator = actual.iterator()
+
+   while (actualIterator.hasNext() && subsequenceIndex < predicates.size) {
+      if (predicates[subsequenceIndex](actualIterator.next())) subsequenceIndex += 1
+   }
+
+   MatcherResult(
+      subsequenceIndex == predicates.size,
+      { "${actual.show().value} did not match the predicates ${predicates.show().value} in order" },
+      { "${actual.show().value} should not match the predicates ${predicates.show().value} in order" }
+   )
+}
+
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
