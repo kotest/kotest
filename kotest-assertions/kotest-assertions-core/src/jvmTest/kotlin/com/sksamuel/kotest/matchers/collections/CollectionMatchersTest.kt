@@ -19,6 +19,7 @@ import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
 import io.kotest.matchers.collections.containsInOrder
 import io.kotest.matchers.collections.endWith
+import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.monotonicallyDecreasing
