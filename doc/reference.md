@@ -297,7 +297,7 @@ If any assertions inside the block failed, the test will continue to
 run. All failures will be reported in a single exception at the end of
 the block.
 
-`assertSoftly` also works as a receiver:
+`assertSoftly` also works with a receiver:
 
 ```kotlin
 foo.assertSoftly {
