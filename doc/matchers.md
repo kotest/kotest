@@ -179,6 +179,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `collection.shouldHaveAtMostSize(n)` | Asserts that the collection has at most size n. |
 | `list.shouldBeSorted()` | Asserts that the list is sorted. |
 | `list.shouldContainInOrder(other)` | Asserts that this list contains the given list in order. Other elements may appear either side of the given list. |
+| `list.shouldExistInOrder({ element }, ...)` | Asserts that this list contains elements matching the predicates in order. Other elements may appear either side of the given list. |
 | `list.shouldHaveElementAt(index, element)` | Asserts that this list contains the given element at the given position. |
 | `list.shouldStartWith(lst)` | Asserts that this list starts with the elements of the given list, in order. |
 | `list.shouldEndWith(lst)` | Asserts that this list ends with the elements of the given list, in order. |
