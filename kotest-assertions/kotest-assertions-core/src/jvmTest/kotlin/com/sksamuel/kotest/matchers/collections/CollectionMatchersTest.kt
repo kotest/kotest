@@ -19,6 +19,7 @@ import io.kotest.matchers.collections.containNull
 import io.kotest.matchers.collections.containOnlyNulls
 import io.kotest.matchers.collections.containsInOrder
 import io.kotest.matchers.collections.endWith
+import io.kotest.matchers.collections.existInOrder
 import io.kotest.matchers.collections.haveElementAt
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.collections.monotonicallyDecreasing
@@ -596,6 +597,47 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf<Number>(1L, 2L) should containsInOrder(listOf<Number>(1, 2))
             }.shouldHaveMessage("[1L, 2L] did not contain the elements [1, 2] in order")
+         }
+      }
+
+      "existInOrder" should {
+         "test that a collection matches the predicates in the given order, duplicates permitted" {
+            val col = listOf(1, 1, 2, 2, 3, 3)
+
+            col should existInOrder(
+               { it == 1 },
+               { it == 2 },
+               { it == 3 }
+            )
+            col should existInOrder({ it == 1 })
+
+            shouldThrow<AssertionError> {
+               col should existInOrder(
+                  { it == 1 },
+                  { it == 2 },
+                  { it == 6 }
+               )
+            }
+
+            shouldThrow<AssertionError> {
+               col should existInOrder({ it == 4 })
+            }
+
+            shouldThrow<AssertionError> {
+               col should existInOrder(
+                  { it == 2 },
+                  { it == 1 },
+                  { it == 3 }
+               )
+            }
+         }
+         "work with unsorted collections" {
+            val actual = listOf(5, 3, 1, 2, 4, 2)
+            actual should existInOrder(
+               { it == 3 },
+               { it == 2 },
+               { it == 2 }
+            )
          }
       }
 

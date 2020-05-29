@@ -422,6 +422,14 @@ infix fun <T> Array<T>.shouldNotContainInOrder(expected: Array<T>) = asList().sh
 infix fun <T> Array<T>.shouldNotContainInOrder(expected: List<T>) = asList().shouldNotContainInOrder(expected)
 infix fun <T> List<T>.shouldNotContainInOrder(expected: List<T>) = this shouldNot containsInOrder(expected)
 
+fun <T> Array<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = asList().shouldExistInOrder(ps.toList())
+fun <T> List<T>.shouldExistInOrder(vararg ps: (T) -> Boolean) = this.shouldExistInOrder(ps.toList())
+infix fun <T> Array<T>.shouldExistInOrder(expected: List<(T) -> Boolean>) = asList().shouldExistInOrder(expected)
+infix fun <T> List<T>.shouldExistInOrder(expected: List<(T) -> Boolean>) = this should existInOrder(expected)
+infix fun <T> Array<T>.shouldNotExistInOrder(expected: Array<(T) -> Boolean>) = asList().shouldNotExistInOrder(expected.asList())
+infix fun <T> Array<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = asList().shouldNotExistInOrder(expected)
+infix fun <T> List<T>.shouldNotExistInOrder(expected: List<(T) -> Boolean>) = this shouldNot existInOrder(expected)
+
 fun <T> Array<T>.shouldBeEmpty() = asList().shouldBeEmpty()
 fun <T> Collection<T>.shouldBeEmpty() = this should beEmpty()
 fun <T> Array<T>.shouldNotBeEmpty() = asList().shouldNotBeEmpty()
