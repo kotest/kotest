@@ -1,3 +1,5 @@
+@file:Suppress("unused", "NAME_SHADOWING")
+
 package com.sksamuel.kotest.core.runtime.parallel
 
 import com.sksamuel.kotest.core.runtime.PersistentThreadLocal
@@ -5,9 +7,10 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainAnyOf
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeExactly
-import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
@@ -18,6 +21,7 @@ import kotlin.concurrent.getOrSet
 
 private val externalMultipleThreadCounter =
    PersistentThreadLocal<Int>()
+
 
 class SpecThreadInstancePerTestTest : FunSpec({
 
@@ -84,11 +88,15 @@ class SpecThreadInstancePerTestWithLockTest : FunSpec({
    test("test should lock object") {
       objects.add(lock)
       lock.lock()
-      delay(1000)
-      lock.unlock()
+      try {
+         delay(1000)
+      } finally {
+         lock.unlock()
+      }
+
    }
 
-   test("lock should be unlocked") {
+   test("lock should be unlocked because lock object is different") {
       objects.add(lock)
       delay(300)
       lock.isLocked shouldBe false
@@ -104,114 +112,207 @@ class SpecThreadInstancePerTestWithLockTest : FunSpec({
 
 })
 
-private val externalThreadCounter =
-   PersistentThreadLocal<Int>()
+private val externalThreadAccum =
+   PersistentThreadLocal<String>()
 
 class SpecThreadWithNestedTestInstancePerTestTest : FunSpec({
 
    isolation = IsolationMode.InstancePerTest
    threadsForSpec = 3
 
-   val multipleThreadCounter =
-      PersistentThreadLocal<Int>()
+   val innerThreadAccum =
+      PersistentThreadLocal<String>()
 
    afterSpec {
       assertSoftly {
-         multipleThreadCounter.map shouldHaveSize 1
-         multipleThreadCounter.map.values.sum() shouldBeInRange IntRange(1, 2)
+         innerThreadAccum.map shouldHaveSize 1
+         innerThreadAccum.map.values.shouldContainAnyOf("a", "aa", "b", "bb", "c", "cc", "cd", "cdd")
       }
    }
 
    afterProject {
       assertSoftly {
-         externalThreadCounter.map.shouldHaveSize(2)
-         externalThreadCounter.map.values.sum() shouldBe 10
+         externalThreadAccum.map.shouldHaveSize(3)
+         externalThreadAccum.map.values.shouldContainExactlyInAnyOrder("aaaaa", "bbbbb", "ccccccdcddcdd")
       }
    }
 
    context("First single thread context") {
-      val externalCounter = externalThreadCounter.getOrSet { 0 }
-      externalThreadCounter.set(externalCounter + 1)
+      val externalAccum = externalThreadAccum.getOrSet { "" }
+      externalThreadAccum.set(externalAccum + "a")
 
-      val counter = multipleThreadCounter.getOrSet { 0 }
-      multipleThreadCounter.set(counter + 1)
+      val accum = innerThreadAccum.getOrSet { "" }
+      innerThreadAccum.set(accum + "a")
 
-      test("test 1 should create own key in map with value 1") {
-         val externalCounter = externalThreadCounter.getOrSet { 0 }
-         externalThreadCounter.set(externalCounter + 1)
+      test("test 1 should create own key in map with value a") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "a")
 
-         val counter = multipleThreadCounter.getOrSet { 0 }
-         multipleThreadCounter.set(counter + 1)
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "a")
       }
 
       test("test 2 should create own key in map with value 1") {
-         val externalCounter = externalThreadCounter.getOrSet { 0 }
-         externalThreadCounter.set(externalCounter + 1)
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "a")
 
-         val counter = multipleThreadCounter.getOrSet { 0 }
-         multipleThreadCounter.set(counter + 1)
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "a")
       }
    }
 
    context("Second single thread context") {
 
-      val externalCounter = externalThreadCounter.getOrSet { 0 }
-      externalThreadCounter.set(externalCounter + 1)
+      val externalAccum = externalThreadAccum.getOrSet { "" }
+      externalThreadAccum.set(externalAccum + "b")
 
-      val counter = multipleThreadCounter.getOrSet { 0 }
-      multipleThreadCounter.set(counter + 1)
+      val accum = innerThreadAccum.getOrSet { "" }
+      innerThreadAccum.set(accum + "b")
 
-      test("test 1 should create key in map or add value 1") {
-         val externalCounter = externalThreadCounter.getOrSet { 0 }
-         externalThreadCounter.set(externalCounter + 1)
+      test("test 1 should create key in map or add value b") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "b")
 
-         val counter = multipleThreadCounter.getOrSet { 0 }
-         multipleThreadCounter.set(counter + 1)
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "b")
       }
 
-      test("test 2 should create key in map or add value 1") {
-         val externalCounter = externalThreadCounter.getOrSet { 0 }
-         externalThreadCounter.set(externalCounter + 1)
+      test("test 2 should create key in map or add value b") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "b")
 
-         val counter = multipleThreadCounter.getOrSet { 0 }
-         multipleThreadCounter.set(counter + 1)
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "b")
+      }
+   }
+
+   context("Third single thread context") {
+
+      val externalAccum = externalThreadAccum.getOrSet { "" }
+      externalThreadAccum.set(externalAccum + "c")
+
+      val accum = innerThreadAccum.getOrSet { "" }
+      innerThreadAccum.set(accum + "c")
+
+      test("test 1 should create new key in map for context or add value c") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "c")
+
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "c")
+      }
+
+      test("test 2 should create new key in map for context or add value c") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "c")
+
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "c")
+      }
+
+      context("First inner single thread context") {
+         val externalAccum = externalThreadAccum.getOrSet { "" }
+         externalThreadAccum.set(externalAccum + "d")
+
+         val accum = innerThreadAccum.getOrSet { "" }
+         innerThreadAccum.set(accum + "d")
+
+         test("test 1 should create new key in map for context or add value d") {
+            val externalAccum = externalThreadAccum.getOrSet { "" }
+            externalThreadAccum.set(externalAccum + "d")
+
+            val accum = innerThreadAccum.getOrSet { "" }
+            innerThreadAccum.set(accum + "d")
+         }
+
+         test("test 2 should create new key in map for context or add value d") {
+            val externalAccum = externalThreadAccum.getOrSet { "" }
+            externalThreadAccum.set(externalAccum + "d")
+
+            val accum = innerThreadAccum.getOrSet { "" }
+            innerThreadAccum.set(accum + "d")
+         }
       }
    }
 
 })
+
+private val locks = ConcurrentHashMap.newKeySet<ReentrantLock>()
 
 class SpecThreadWithNestedTestWithLockInstancePerTestTest : FunSpec({
 
    isolation = IsolationMode.InstancePerTest
    threadsForSpec = 3
 
-   val lock = ReentrantLock()
+   val outerContextLock = ReentrantLock()
 
-   context("Third single thread context") {
+   afterProject {
+      locks shouldHaveSize 12
+   }
+
+   context("First thread context") {
+      //This code a test by itself that's why objects will be added one more time if compare with InstancePerLeaf
+      val innerLock = ReentrantLock()
+      locks.add(innerLock)
+      locks.add(outerContextLock)
 
       test("test should lock object") {
          println(Thread.currentThread().name)
 
-         lock.lock()
-         delay(1000)
-         lock.unlock()
+         locks.add(innerLock)
+         locks.add(outerContextLock)
+
+         innerLock.lock()
+         outerContextLock.lock()
+         try {
+            delay(1000)
+         } finally {
+            outerContextLock.unlock()
+            innerLock.unlock()
+         }
       }
 
       test("lock should be unlocked") {
          println(Thread.currentThread().name)
 
+         locks.add(innerLock)
+         locks.add(outerContextLock)
          delay(300)
-         lock.isLocked shouldBe false
+         outerContextLock.isLocked shouldBe false
+         innerLock.isLocked shouldBe false
       }
+   }
 
-      test("lock should be unlocked too") {
+   context("Second single thread context") {
+      val innerLock = ReentrantLock()
+      locks.add(innerLock)
+      locks.add(outerContextLock)
+      test("test should lock object") {
          println(Thread.currentThread().name)
 
-         delay(300)
-         shouldThrow<AssertionError> {
-            lock.isLocked shouldBe true
+         locks.add(innerLock)
+         locks.add(outerContextLock)
+
+         innerLock.lock()
+         outerContextLock.lock()
+         try {
+            delay(1000)
+         } finally {
+            outerContextLock.unlock()
+            innerLock.unlock()
          }
       }
+
+      test("lock should be unlocked") {
+         println(Thread.currentThread().name)
+
+         locks.add(innerLock)
+         locks.add(outerContextLock)
+         delay(300)
+         outerContextLock.isLocked shouldBe false
+         innerLock.isLocked shouldBe false
+      }
+
    }
 })
 
@@ -229,6 +330,7 @@ class SpecThreadBeforeAfterInstancePerTestTest : FunSpec({
    beforeSpec {
       beforeSpecCounter.getAndIncrement()
    }
+
    beforeTest {
       beforeTestCounter.getAndIncrement()
    }
@@ -236,6 +338,7 @@ class SpecThreadBeforeAfterInstancePerTestTest : FunSpec({
    afterTest {
       afterTestCounter.getAndIncrement()
    }
+
    afterSpec {
       afterSpecCounter.getAndIncrement()
    }
@@ -273,6 +376,7 @@ class SpecThreadWithNestedBeforeAfterInstancePerTestTest : FunSpec({
    beforeSpec {
       beforeSpecNestedCounter.getAndIncrement()
    }
+
    beforeTest {
       beforeTestNestedCounter.getAndIncrement()
    }
@@ -280,38 +384,53 @@ class SpecThreadWithNestedBeforeAfterInstancePerTestTest : FunSpec({
    afterTest {
       afterTestNestedCounter.getAndIncrement()
    }
+
    afterSpec {
       afterSpecNestedCounter.getAndIncrement()
    }
 
    afterProject {
       assertSoftly {
-         beforeSpecNestedCounter.get() shouldBe 6
-         afterSpecNestedCounter.get() shouldBe 6
-         beforeTestNestedCounter.get() shouldBe 10
-         afterTestNestedCounter.get() shouldBe 10
+         beforeSpecNestedCounter.get() shouldBe 9
+         afterSpecNestedCounter.get() shouldBe 9
+         beforeTestNestedCounter.get() shouldBe 18
+         afterTestNestedCounter.get() shouldBe 18
       }
    }
 
    context("First single thread context") {
+      "context scope is a test and run before/after test 1 time"
 
-      test("test 1 should create own key in map with value 1") {
-         "void"
+      test("test 1 should run before/after test 2 times") {
+         "one time for context scope and 1 time for the test itself"
       }
 
-      test("test 2 should create own key in map with value 1") {
-         "void"
+      test("test 2 should run before/after test 2 times") {
+         "one time for context scope and 1 time for the test itself"
+      }
+
+      context("Inner First context") {
+         "context scope is a test and run before/after test 2 time"
+         "one time for outer context scope and 1 time for the Inner context scope (itself0"
+
+         test("test 3 from Inner First context should run before/after test 3 times") {
+            "one time for outer context scope, 1 time for Inner context scope and 1 for the test itself"
+         }
+         test("test 4 from Inner First context should run before/after test 3 times") {
+            "one time for outer context scope, 1 time for Inner context scope and 1 for the test itself"
+         }
       }
    }
 
    context("Second single thread context") {
+      "context scope is a test and run before/after test 1 time"
 
-      test("test 1 should create key in map or add value 1") {
-         "void"
+      test("test 1 should run before/after test 2 times") {
+         "one time for context scope and 1 time for the test itself"
       }
 
-      test("test 2 should create key in map or add value 1") {
-         "void"
+      test("test 2 should run before/after test 2 times") {
+         "one time for context scope and 1 time for the test itself"
       }
    }
 })
@@ -326,12 +445,17 @@ class SpecThreadBeforeTestConcurrentInstancePerTestTest : FunSpec({
    val lock = ReentrantLock()
 
    beforeTest {
-      while (lock.isLocked) {
+      val isLockAcquired = lock.tryLock()
+      if (isLockAcquired) {
+         lock.lock()
+         try {
+            delay(300)
+         } finally {
+            lock.unlock()
+         }
+      } else {
          lockedCounter.getAndIncrement()
       }
-      lock.lock()
-      delay(300)
-      lock.unlock()
    }
 
    afterProject {
@@ -363,12 +487,17 @@ class SpecThreadTestCaseExtensionConcurrentInstancePerTestTest : FunSpec({
    val lock = ReentrantLock()
 
    extension { (testCase, execute) ->
-      while (lock.isLocked) {
+      val isLockAcquired = lock.tryLock()
+      if (isLockAcquired) {
+         lock.lock()
+         try {
+            delay(300)
+         } finally {
+            lock.unlock()
+         }
+      } else {
          lockedCounterTestExtensionConcurrent.getAndIncrement()
       }
-      lock.lock()
-      delay(300)
-      lock.unlock()
       counterTestExtensionConcurrent.getAndIncrement()
       execute(testCase)
    }
@@ -402,13 +531,18 @@ class SpecThreadSpecExtensionConcurrentInstancePerTestTest : FunSpec({
 
    val lock = ReentrantLock()
 
-   aroundSpec { (spec, process) ->
-      while (lock.isLocked) {
+   aroundSpec { (_, process) ->
+      val isLockAcquired = lock.tryLock()
+      if (isLockAcquired) {
+         lock.lock()
+         try {
+            delay(300)
+         } finally {
+            lock.unlock()
+         }
+      } else {
          lockedCounterSpecExtensionConcurrent.getAndIncrement()
       }
-      lock.lock()
-      delay(300)
-      lock.unlock()
 
       aroundSpecCounter.getAndIncrement()
       process()
