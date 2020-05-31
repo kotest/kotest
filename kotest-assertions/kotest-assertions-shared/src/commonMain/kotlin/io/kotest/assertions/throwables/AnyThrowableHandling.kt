@@ -1,6 +1,6 @@
 package io.kotest.assertions.throwables
 
-import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.StringShow
 import io.kotest.assertions.show.show
@@ -61,7 +61,7 @@ inline fun shouldNotThrowAnyUnit(block: () -> Unit) = shouldNotThrowAny(block)
  * @see [shouldThrowAnyUnit]
  */
 inline fun shouldThrowAny(block: () -> Any?): Throwable {
-   AssertionCounter.inc()
+   assertionCounter.inc()
    val thrownException = try {
       block()
       null
@@ -93,7 +93,7 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
  *
  */
 inline fun <T> shouldNotThrowAny(block: () -> T): T {
-   AssertionCounter.inc()
+   assertionCounter.inc()
 
    val thrownException = try {
       return block()
@@ -114,7 +114,7 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
  * @see [shouldNotThrowMessage]
  * */
 inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
-   AssertionCounter.inc()
+   assertionCounter.inc()
 
    val thrownException = try {
       block()
@@ -139,7 +139,7 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
  * Verifies that a block of code does not throws any [Throwable] with given [message].
 * */
 inline fun <T> shouldNotThrowMessage(message: String, block: () -> T) {
-   AssertionCounter.inc()
+   assertionCounter.inc()
 
    val thrownException = try {
       block()

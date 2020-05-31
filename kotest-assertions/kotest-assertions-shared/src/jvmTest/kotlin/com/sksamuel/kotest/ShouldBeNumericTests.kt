@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.matchers
+package com.sksamuel.kotest
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe

@@ -1,7 +1,7 @@
 package io.kotest.matchers.result
 
-import io.kotest.assertions.ErrorCollector
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -82,7 +82,7 @@ class BeFailureOfType<A : Throwable>(private val clazz: KClass<A>) : Matcher<Res
 internal fun test(inverse: Boolean = false, block: () -> MatcherResult) {
   val result = block()
   if ((inverse && result.passed()) || (!inverse && !result.passed())) {
-    ErrorCollector.collectOrThrow(
+     errorCollector.collectOrThrow(
       failure(if (inverse) result.negatedFailureMessage() else result.failureMessage())
     )
   }

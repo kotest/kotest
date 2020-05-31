@@ -1,6 +1,6 @@
 package io.kotest.assertions
 
-expect object AssertionCounter {
+interface AssertionCounter {
 
    /**
     * Returns the number of assertions executed in the current context.
@@ -16,6 +16,21 @@ expect object AssertionCounter {
     * Increments the counter for the current context.
     */
    fun inc()
+}
+
+// the single assertion counter instance to be used by all clients
+expect val assertionCounter: AssertionCounter
+
+object BasicAssertionCounter : AssertionCounter {
+   private var counter = 0
+   override fun get(): Int = counter
+   override fun reset() {
+      counter = 0
+   }
+
+   override fun inc() {
+      counter++
+   }
 }
 
 fun AssertionCounter.getAndReset(): Int {

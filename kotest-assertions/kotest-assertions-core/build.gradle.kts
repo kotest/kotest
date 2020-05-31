@@ -27,17 +27,17 @@ kotlin {
          }
       }
 
-      linuxX64()
-      mingwX64()
-      macosX64()
-
-      if (Ci.ideaActive) {
-         when {
-            Ci.os.isMacOsX -> macosX64("native")
-            Ci.os.isWindows -> mingwX64("native")
-            Ci.os.isLinux -> linuxX64("native")
-         }
-      }
+//      linuxX64()
+//      mingwX64()
+//      macosX64()
+//
+//      if (Ci.ideaActive) {
+//         when {
+//            Ci.os.isMacOsX -> macosX64("native")
+//            Ci.os.isWindows -> mingwX64("native")
+//            Ci.os.isLinux -> linuxX64("native")
+//         }
+//      }
    }
 
    targets.all {
@@ -91,15 +91,15 @@ kotlin {
          }
       }
 
-      val nativeMain = if (Ci.ideaActive) get("nativeMain") else create("nativeMain")
-
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         val sourceSet = get(it)
-         sourceSet.dependsOn(nativeMain)
-         sourceSet.dependencies {
-            implementation(Libs.Coroutines.coreNative)
-         }
-      }
+//      val nativeMain = if (Ci.ideaActive) get("nativeMain") else create("nativeMain")
+//
+//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+//         val sourceSet = get(it)
+//         sourceSet.dependsOn(nativeMain)
+//         sourceSet.dependencies {
+//            implementation(Libs.Coroutines.coreNative)
+//         }
+//      }
    }
 }
 

@@ -4,7 +4,7 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.FunSpec
@@ -35,10 +35,10 @@ class AssertionCounterFunSpecTest : FunSpec() {
 
       test("assertion counter should count number of assertions") {
          // using the shouldBe here at the start will also increase the count
-         AssertionCounter.get() shouldBe 0
+         assertionCounter.get() shouldBe 0
          1 shouldBe 1
          "hello".length shouldBe 5
-         AssertionCounter.get() shouldBe 3
+         assertionCounter.get() shouldBe 3
       }
 
       test("AssertionMode.Error assertion mode should fail the test if no assertions were present") {
@@ -46,7 +46,7 @@ class AssertionCounterFunSpecTest : FunSpec() {
       }
 
       test("assertion counter should be reset between tests") {
-         AssertionCounter.get() shouldBe 0
+         assertionCounter.get() shouldBe 0
       }
 
       test("testing for throwable should count towards assertion total") {
