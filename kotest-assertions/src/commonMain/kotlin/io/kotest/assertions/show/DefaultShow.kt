@@ -14,17 +14,6 @@ object DefaultShow : Show<Any?> {
       is Short -> a.toString().printed()
       is Byte -> a.toString().printed()
       is String -> "\"$a\"".printed()
-      is Array<*> -> show(a.toList())
-      is BooleanArray -> show(a.toList())
-      is IntArray -> show(a.toList())
-      is ShortArray -> show(a.toList())
-      is FloatArray -> show(a.toList())
-      is DoubleArray -> show(a.toList())
-      is LongArray -> show(a.toList())
-      is ByteArray -> show(a.toList())
-      is CharArray -> show(a.toList())
-      is List<*> -> a.getCollectionSnippet()
-      is Iterable<*> -> show(a.toList())
       else -> a.toString().printed()
    }
 }
@@ -50,8 +39,4 @@ private fun Collection<*>.getCollectionSnippet(): Printed {
    ) {
       recursiveRepr(this, it).value
    }.printed()
-}
-
-internal fun recursiveRepr(root: Any, node: Any?): Printed {
-   return if (root == node) "(this ${root::class.simpleName})".printed() else node.show()
 }
