@@ -1,5 +1,7 @@
 package io.kotest.assertions
 
+import io.kotest.mpp.StackTraces
+
 expect val errorCollector: ErrorCollector
 
 enum class ErrorCollectionMode {
@@ -96,7 +98,7 @@ fun ErrorCollector.throwCollectedErrors() {
    clear()
    if (failures.isNotEmpty()) {
       val t = if (failures.size == 1) failures[0] else MultiAssertionError(failures)
-      cleanStackTrace(t)
+      StackTraces.cleanStackTrace(t)
       throw t
    }
 }

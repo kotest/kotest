@@ -1,6 +1,6 @@
 package io.kotest.assertions
 
-import io.kotest.mpp.throwableLocation
+import io.kotest.mpp.StackTraces.throwableLocation
 
 /** An error that bundles multiple other [Throwable]s together */
 class MultiAssertionError(errors: List<Throwable>) : AssertionError(createMessage(errors)) {

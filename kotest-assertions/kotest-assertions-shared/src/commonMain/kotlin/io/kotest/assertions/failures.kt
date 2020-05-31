@@ -1,14 +1,10 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.show.Printed
+import io.kotest.mpp.StackTraces
 
 data class Expected(val value: Printed)
 data class Actual(val value: Printed)
-
-/**
- * Removes io.kotest stack elements from the given throwable if the platform supports stack traces.
- */
-expect fun <T : Throwable> cleanStackTrace(throwable: T): T
 
 /**
  * Creates the most appropriate error from the given message, wrapping in clue context(s)
@@ -24,7 +20,7 @@ fun failure(message: String): AssertionError = failure(message, null)
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(message: String, cause: Throwable?): AssertionError {
-   return cleanStackTrace(createAssertionError(clueContextAsString() + message, cause))
+   return StackTraces.cleanStackTrace(Exceptions.createAssertionError(clueContextAsString() + message, cause))
 }
 
 /**
@@ -41,8 +37,8 @@ fun failure(message: String, cause: Throwable?): AssertionError {
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(expected: Expected, actual: Actual): Throwable {
-   return cleanStackTrace(
-      createAssertionError(
+   return StackTraces.cleanStackTrace(
+      Exceptions.createAssertionError(
          clueContextAsString() + intellijFormatError(expected, actual),
          null,
          expected,
@@ -50,22 +46,6 @@ fun failure(expected: Expected, actual: Actual): Throwable {
       )
    )
 }
-
-/**
- * Creates an [AssertionError] from the given message. If the platform supports nested exceptions, the cause
- * is set to the given [cause]. If the platform supports stack traces, then the stack is cleaned of `io.kotest`
- * lines.
- */
-expect fun createAssertionError(message: String, cause: Throwable?): AssertionError
-
-/**
- * Creates the best error type supported on the platform (eg opentest4j.AssertionFailedException) from the
- * given message and expected and actual values. If the platform supports nested exceptions, the cause
- * is set to the given [cause].
- *
- * If the platform has jUnit4 or jUnit5 on the classpath, it will use exceptions from those platforms.
- */
-expect fun createAssertionError(message: String, cause: Throwable?, expected: Expected, actual: Actual): Throwable
 
 /**
  * Returns a message formatted appropriately for intellij to show a diff.

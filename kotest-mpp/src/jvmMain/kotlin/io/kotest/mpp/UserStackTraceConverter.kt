@@ -1,4 +1,4 @@
-package io.kotest.assertions
+package io.kotest.mpp
 
 object UserStackTraceConverter {
 
