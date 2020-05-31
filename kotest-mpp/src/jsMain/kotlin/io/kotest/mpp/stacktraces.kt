@@ -1,6 +1,6 @@
 package io.kotest.mpp
 
-/**
- * Stack trace is not available on JS.
- */
-actual fun Throwable.throwableLocation(): String? = null
+actual object StackTraces {
+   actual fun Throwable.throwableLocation(): String? = null
+   actual fun <T : Throwable> cleanStackTrace(throwable: T): T = throwable
+}

@@ -19,10 +19,10 @@ package io.kotest.assertions
 inline fun <T> assertSoftly(assertions: () -> T): T {
   // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
   // outermost verifyAll block
-  if (ErrorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
-  ErrorCollector.setCollectionMode(ErrorCollectionMode.Soft)
+  if (errorCollector.getCollectionMode() == ErrorCollectionMode.Soft) return assertions()
+   errorCollector.setCollectionMode(ErrorCollectionMode.Soft)
   return assertions().apply {
-    ErrorCollector.throwCollectedErrors()
+    errorCollector.throwCollectedErrors()
   }
 }
 

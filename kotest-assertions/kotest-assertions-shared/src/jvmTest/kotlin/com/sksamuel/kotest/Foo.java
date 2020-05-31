@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.matchers;
+package com.sksamuel.kotest;
 
 public class Foo {
     public static final long JavaLong = 42L;

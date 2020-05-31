@@ -1,13 +1,7 @@
 package io.kotest.matchers
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.AssertionCounter
-import io.kotest.assertions.ErrorCollector
-import io.kotest.assertions.Expected
-import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.*
 import io.kotest.assertions.eq.eq
-import io.kotest.assertions.failure
-import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.show.show
 
 @Suppress("UNCHECKED_CAST")
@@ -16,17 +10,17 @@ infix fun <T, U : T> T.shouldBe(expected: U?) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> {
          val actual = this
-         AssertionCounter.inc()
+         assertionCounter.inc()
          // if we have null and non null, usually that's a failure, but people can override equals to allow it
          if (actual == null && expected != null && actual != expected) {
-            ErrorCollector.collectOrThrow(actualIsNull(expected))
+            errorCollector.collectOrThrow(actualIsNull(expected))
          } else if (actual != null && expected == null && actual != expected) {
-            ErrorCollector.collectOrThrow(expectedIsNull(actual))
+            errorCollector.collectOrThrow(expectedIsNull(actual))
          } else if (actual != null && expected != null) {
             // for two non-null values, we use the [eq] typeclass.
             val t = eq(actual, expected)
             if (t != null)
-               ErrorCollector.collectOrThrow(t)
+               errorCollector.collectOrThrow(t)
          }
       }
    }
@@ -50,10 +44,10 @@ infix fun <T> T.shouldNotBe(any: Any?) {
 
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
 infix fun <T> T.should(matcher: Matcher<T>) {
-   AssertionCounter.inc()
+   assertionCounter.inc()
    val result = matcher.test(this)
    if (!result.passed()) {
-      ErrorCollector.collectOrThrow(failure(result.failureMessage()))
+      errorCollector.collectOrThrow(failure(result.failureMessage()))
    }
 }
 

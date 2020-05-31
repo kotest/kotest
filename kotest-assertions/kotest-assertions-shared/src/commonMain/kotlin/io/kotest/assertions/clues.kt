@@ -20,10 +20,10 @@ inline fun <R> withClue(clue: Any, thunk: () -> R): R {
  */
 inline fun <T : Any, R> T.asClue(block: (T) -> R): R {
    try {
-      ErrorCollector.pushClue(this)
+      errorCollector.pushClue(this)
       return block(this)
    } finally {
-      ErrorCollector.popClue()
+      errorCollector.popClue()
    }
 }
 

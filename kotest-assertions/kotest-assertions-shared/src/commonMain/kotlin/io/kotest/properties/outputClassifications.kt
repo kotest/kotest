@@ -1,5 +1,6 @@
 package io.kotest.properties
 
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun outputClassifications(context: PropertyContext) {
   context.classificationCounts().entries.sortedByDescending { it.value }.forEach {
     val percentage = (it.value / context.attempts().toDouble() * 100)
