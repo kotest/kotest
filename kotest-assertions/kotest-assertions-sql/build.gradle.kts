@@ -33,8 +33,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            api(project(":kotest-assertions"))
+            api(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
 

@@ -33,7 +33,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(project(":kotest-assertions"))
+            api(project(":kotest-assertions"))
             implementation(Libs.Klock.klock)
          }
       }
