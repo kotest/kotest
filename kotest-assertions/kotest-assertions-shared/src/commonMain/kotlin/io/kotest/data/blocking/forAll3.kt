@@ -5,10 +5,10 @@ import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.table
-import io.kotest.mpp.paramNames
+import io.kotest.mpp.reflections
 
 fun <A, B, C> forAll(vararg rows: Row3<A, B, C>, testfn: (A, B, C) -> Unit) {
-   val params = testfn.paramNames
+   val params = reflections.paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
@@ -16,7 +16,7 @@ fun <A, B, C> forAll(vararg rows: Row3<A, B, C>, testfn: (A, B, C) -> Unit) {
 }
 
 fun <A, B, C> forNone(vararg rows: Row3<A, B, C>, testfn: (A, B, C) -> Unit) {
-   val params = testfn.paramNames
+   val params = reflections.paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
