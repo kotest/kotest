@@ -153,7 +153,7 @@ class MatchersTest : FreeSpec({
             val l = ArrayList<Any>()
             l.add(l)
             l shouldBe emptyList<Any>()
-         }.message shouldBe "expected:<[]> but was:<[(this Collection)]>"
+         }.message shouldBe "expected:<[]> but was:<[[(this Collection)]]>"
       }
    }
 
