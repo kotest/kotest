@@ -9,6 +9,17 @@ object PropertyTesting {
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", "false") == "true"
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", "true") == "true"
    var defaultIterationCount: Int = sysprop("kotest.proptest.default.iteration.count", "1000").toInt()
+
+   @PublishedApi
+   internal fun computeDefaultIteration(vararg gen: Gen<*>): Int {
+      var iterations = defaultIterationCount
+      gen.forEach {
+         if(it is Exhaustive<*> && it.minIterations() > iterations) {
+            iterations = it.minIterations()
+         }
+      }
+      return iterations
+   }
 }
 
 data class PropTest(
