@@ -32,8 +32,8 @@ kotlin {
    sourceSets {
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            api(project(":kotest-assertions"))
+            api(project(":kotest-assertions:kotest-assertions-core"))
             implementation(Libs.Arrow.fx)
             implementation(Libs.Arrow.validation)
             implementation(Libs.Arrow.syntax)

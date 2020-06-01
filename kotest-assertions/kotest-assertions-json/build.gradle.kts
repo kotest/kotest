@@ -33,7 +33,7 @@ kotlin {
 
       val jvmMain by getting {
          dependencies {
-            implementation(project(":kotest-assertions"))
+            api(project(":kotest-assertions"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")

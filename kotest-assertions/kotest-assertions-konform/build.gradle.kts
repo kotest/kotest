@@ -42,8 +42,8 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Konform.Konform)
-            implementation(project(":kotest-assertions"))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            api(project(":kotest-assertions"))
+            api(project(":kotest-assertions:kotest-assertions-core"))
          }
       }
 

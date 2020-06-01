@@ -33,7 +33,8 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
-            implementation(project(":kotest-assertions"))
+            api(project(":kotest-assertions"))
+            api(project(":kotest-assertions:kotest-assertions-core"))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation("org.jsoup:jsoup:1.12.2")

@@ -48,7 +48,7 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
             implementation(project(":kotest-mpp"))
-            implementation(project(":kotest-assertions"))
+            api(project(":kotest-assertions"))
          }
       }
 
