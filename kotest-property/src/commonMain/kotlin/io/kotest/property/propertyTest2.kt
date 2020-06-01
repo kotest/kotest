@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
+import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 
@@ -10,14 +11,14 @@ suspend fun <A, B> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest<A, B>(PropertyTesting.defaultIterationCount, genA, genB, PropTestConfig(), property)
+): PropertyContext = proptest<A, B>(computeDefaultIteration(genA, genB), genA, genB, PropTestConfig(), property)
 
 suspend fun <A, B> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = checkAll<A, B>(PropertyTesting.defaultIterationCount, config, genA, genB, property)
+): PropertyContext = checkAll<A, B>(computeDefaultIteration(genA, genB), config, genA, genB, property)
 
 suspend fun <A, B> checkAll(
    iterations: Int,
@@ -94,14 +95,14 @@ suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, genB, property)
+) = forAll<A, B>(computeDefaultIteration(genA, genB), PropTestConfig(), genA, genB, property)
 
 suspend fun <A, B> forAll(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
    genB: Gen<B>,
    property: suspend PropertyContext.(A, B) -> Boolean
-) = forAll<A, B>(PropertyTesting.defaultIterationCount, config, genA, genB, property)
+) = forAll<A, B>(computeDefaultIteration(genA, genB), config, genA, genB, property)
 
 suspend fun <A, B> forAll(
    iterations: Int,

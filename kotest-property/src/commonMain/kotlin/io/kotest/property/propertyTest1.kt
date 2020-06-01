@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
+import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 import kotlin.jvm.JvmName
@@ -13,7 +14,7 @@ suspend fun <A> Gen<A>.checkAll(property: suspend PropertyContext.(A) -> Unit) =
 suspend fun <A> checkAll(
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, PropTestConfig(), property)
+): PropertyContext = proptest(computeDefaultIteration(genA), genA, PropTestConfig(), property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(iterations: Int, property: suspend PropertyContext.(A) -> Unit) =
@@ -33,7 +34,7 @@ suspend fun <A> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(PropertyTesting.defaultIterationCount, genA, config, property)
+): PropertyContext = proptest(computeDefaultIteration(genA), genA, config, property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.checkAll(
@@ -92,7 +93,7 @@ suspend fun <A> Gen<A>.forAll(property: PropertyContext.(A) -> Boolean) =
 suspend fun <A> forAll(
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
-) = forAll(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, property)
+) = forAll(computeDefaultIteration(genA), PropTestConfig(), genA, property)
 
 
 @JvmName("checkAllExt")
@@ -113,7 +114,7 @@ suspend fun <A> forAll(
    config: PropTestConfig,
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
-) = forAll(PropertyTesting.defaultIterationCount, config, genA, property)
+) = forAll(computeDefaultIteration(genA), config, genA, property)
 
 @JvmName("checkAllExt")
 suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, property: PropertyContext.(A) -> Boolean) =

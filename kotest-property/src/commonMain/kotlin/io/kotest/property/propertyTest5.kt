@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
+import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 
@@ -13,7 +14,7 @@ suspend fun<A, B, C, D, E> checkAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = proptest<A, B, C, D, E>(PropertyTesting.defaultIterationCount, genA, genB, genC, genD, genE, PropTestConfig(), property)
+): PropertyContext = proptest<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), genA, genB, genC, genD, genE, PropTestConfig(), property)
 
 suspend fun<A, B, C, D, E> checkAll(
    config: PropTestConfig,
@@ -23,7 +24,7 @@ suspend fun<A, B, C, D, E> checkAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext = checkAll<A, B, C, D, E>(PropertyTesting.defaultIterationCount, config, genA, genB, genC, genD, genE, property)
+): PropertyContext = checkAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), config, genA, genB, genC, genD, genE, property)
 
 suspend fun<A, B, C, D, E> checkAll(
    iterations: Int,
@@ -111,7 +112,7 @@ suspend fun<A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, genB, genC, genD, genE, property)
+) = forAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), PropTestConfig(), genA, genB, genC, genD, genE, property)
 
 suspend fun<A, B, C, D, E> forAll(
    config: PropTestConfig = PropTestConfig(),
@@ -121,7 +122,7 @@ suspend fun<A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(PropertyTesting.defaultIterationCount, config, genA, genB, genC, genD, genE, property)
+) = forAll<A, B, C, D, E>(computeDefaultIteration(genA, genB, genC, genD, genE), config, genA, genB, genC, genD, genE, property)
 
 suspend fun<A, B, C, D, E> forAll(
    iterations: Int,
