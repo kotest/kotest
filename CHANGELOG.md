@@ -3,7 +3,7 @@ Changelog
 
 #### 4.0.6
 
-* Bufix: Dependencies of assertions-core are now included properly when not using junit runner #1425
+* Bugfix: Dependencies of assertions-core are now included properly when not using junit runner #1425
 * Bugfix: checkAll would fail if exhaustive size was very large #1456
 * Bugfix: Show typeclass on java.nio.filePath would cause stack overflow #1313
 
