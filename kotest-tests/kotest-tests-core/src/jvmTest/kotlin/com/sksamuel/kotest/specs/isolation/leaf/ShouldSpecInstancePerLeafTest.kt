@@ -16,17 +16,17 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
          buffer shouldBe "abacdacefaceghijhik"
       }
 
-      "a" {
+      context("a") {
          buffer += "a"
          should("b") {
             buffer += "b"
          }
-         "c" {
+         context("c") {
             buffer += "c"
             should("d") {
                buffer += "d"
             }
-            "e" {
+            context("e") {
                buffer += "e"
                should("f") {
                   buffer += "f"
@@ -37,9 +37,9 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
             }
          }
       }
-      "h" {
+      context("h") {
          buffer += "h"
-         "i" {
+         context("i") {
             buffer += "i"
             should("j") {
                buffer += "j"

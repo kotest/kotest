@@ -51,8 +51,8 @@ class KotestEngine(
       else
          ordered.partition { it.isDoNotParallelize() }
 
-      submitBatch(parallel, parallelism)
-      submitBatch(single, 1)
+      if (parallel.isNotEmpty()) submitBatch(parallel, parallelism)
+      if (single.isNotEmpty()) submitBatch(single, 1)
    }
 
    private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {
@@ -68,47 +68,69 @@ class KotestEngine(
          }
       }
       executor.shutdown()
-      log("Waiting for spec execution to terminate")
+      log("Waiting for specs execution to terminate")
 
-      val error = try {
+      try {
          executor.awaitTermination(1, TimeUnit.DAYS)
-         null
+         log("Spec executor has terminated")
       } catch (t: InterruptedException) {
-         log("Spec executor interupted", t)
-         t
+         log("Spec executor interrupted", t)
+         throw t
       }
-
-      log("Spec executor has terminated $error")
-
-      if (error != null) throw error
    }
 
-   private fun end(t: Throwable?) = Try {
-      if (t != null) {
-         log("Error during test engine run", t)
-         t.printStackTrace()
+   private fun end(errors: List<Throwable>) {
+      errors.forEach {
+         log("Error during test engine run", it)
+         it.printStackTrace()
       }
-      listener.engineFinished(t)
+      listener.engineFinished(errors)
       // explicitly exit because we spin up test threads that the user may have put into deadlock
       // exitProcess(if (t == null) 0 else -1)
    }
 
-   fun execute() {
+   suspend fun execute() {
       notifyTestEngineListener()
          .flatMap { (listeners + Project.listeners()).beforeProject() }
-         .flatMap { submitAll() }
          .fold(
-            {
+            { error ->
                // any exception here is swallowed, as we already have an exception to report
-               (listeners + Project.listeners()).afterProject()
-               end(it)
+               (listeners + Project.listeners()).afterProject().fold(
+                  { end(listOf(error, it)) },
+                  {
+                     end(it + error)
+                  }
+               )
+               return
+            },
+            { errors ->
+               if (errors.isNotEmpty()) {
+                  (listeners + Project.listeners()).afterProject().fold(
+                     { end(errors + listOf(it)) },
+                     { end(errors + it) }
+                  )
+                  return
+               }
+
+
+            }
+         )
+
+      Try { submitAll() }
+         .fold(
+            { error ->
+               (listeners + Project.listeners()).afterProject().fold(
+                  { end(listOf(error, it)) },
+                  { end(it + error) }
+               )
             },
             {
                // any exception here is used to notify the listener
                (listeners + Project.listeners()).afterProject().fold(
-                  { t -> end(t) },
-                  { end(null) }
+                  { end(listOf(it)) },
+                  { end(it) }
                )
+
             }
          )
    }

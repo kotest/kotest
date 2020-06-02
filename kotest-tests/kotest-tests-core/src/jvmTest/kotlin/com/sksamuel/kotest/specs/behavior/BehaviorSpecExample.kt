@@ -1,24 +1,45 @@
 package com.sksamuel.kotest.specs.behavior
 
+import io.kotest.assertions.fail
 import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecExample : BehaviorSpec() {
 
   init {
-    given("a sheet of string cells 4x4") {
-      `when`("get existing cell by reference (like A1 or B2)") {
-        then("should contain its value") {
-          // test here
+     given("a given") {
+        `when`("a when must be backticked because it is a keyword in kotlin") {
+           then("a then") {
+           }
+           then("a then with config").config(enabled = false) {
+              // test here
+           }
+           xthen("disabled") {
+              fail("boom")
+           }
         }
-        then("should set the datatype for the value") {
-          // test here
+     }
+     xgiven("disabled given") {
+        `when`("should be ignored") {
+           fail("boom")
         }
-      }
-      `when`("adding a new cell") {
-        then("the sheet should enlarge") {
-          // test here
+     }
+     Given("a capital given") {
+        When("this when uses capitals to avoid backticks") {
+           Then("Then also comes in captitals") {
+              // test here
+           }
+           Then("a captial Then with config").config(enabled = false) {
+              // test here
+           }
         }
-      }
-    }
+        xwhen("an xdisabled when") {
+           fail("boom")
+        }
+        And("an and scope") {
+           xthen("xdisabled test") {
+              fail("boom")
+           }
+        }
+     }
   }
 }

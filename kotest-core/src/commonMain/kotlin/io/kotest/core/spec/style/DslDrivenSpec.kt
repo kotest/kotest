@@ -1,6 +1,8 @@
 package io.kotest.core.spec.style
 
+import io.kotest.core.config.Project
 import io.kotest.core.factory.generate
+import io.kotest.core.factory.normalizedTestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.createTestCase
 import io.kotest.core.spec.description
@@ -23,7 +25,7 @@ abstract class DslDrivenSpec : Spec() {
    /**
     * Adds a new root-level [TestCase] to this [Spec].
     */
-   protected fun addRootTestCase(
+   internal fun addRootTestCase(
       name: String,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
@@ -32,6 +34,13 @@ abstract class DslDrivenSpec : Spec() {
       require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
       require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
       //require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
-      rootTestCases = rootTestCases + createTestCase(name, test, config, type)
+      rootTestCases = rootTestCases + createTestCase(name.normalizedTestName(), test, config, type)
    }
+
+   /**
+    * Returns the [TestCaseConfig] to be used by this spec, taking into account overrides of the var,
+    * the function version, and finally project defaults.
+    */
+   internal fun resolvedDefaultConfig(): TestCaseConfig =
+      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
 }

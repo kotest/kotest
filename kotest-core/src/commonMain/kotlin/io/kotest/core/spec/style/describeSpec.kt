@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.style.scopes.DescribeSpecScope
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -18,20 +20,19 @@ fun describeSpec(block: DescribeSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
-   override val addTest = ::addDynamicTest
-   override val addListener = ::listener
+class DescribeSpecTestFactoryConfiguration : TestFactoryConfiguration(), DescribeSpecScope {
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecDsl {
-   override fun defaultConfig(): TestCaseConfig =
-      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override val addTest = ::addRootTestCase
-   override val addListener = ::listener
+abstract class DescribeSpec(body: DescribeSpec.() -> Unit = {}) : DslDrivenSpec(), DescribeSpecScope {
 
    init {
       body()
    }
+
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }

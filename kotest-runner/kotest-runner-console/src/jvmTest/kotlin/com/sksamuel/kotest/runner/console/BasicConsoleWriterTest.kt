@@ -41,7 +41,7 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.testStarted(test5)
             writer.testFinished(test5, TestResult.success(Duration.ZERO))
             writer.specFinished(this@BasicConsoleWriterTest::class, null, emptyMap())
-            writer.engineFinished(null)
+            writer.engineFinished(emptyList())
          }
 
          //println(out)
@@ -97,7 +97,7 @@ class BasicConsoleWriterTest : FunSpec() {
             writer.testFinished(test5, TestResult.success(Duration.ZERO))
             writer.testFinished(test4, TestResult.ignored("don't like it"))
             writer.specFinished(this@BasicConsoleWriterTest::class, null, emptyMap())
-            writer.engineFinished(null)
+            writer.engineFinished(emptyList())
          }
 
          //println(out)

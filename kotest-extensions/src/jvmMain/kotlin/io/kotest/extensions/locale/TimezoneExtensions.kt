@@ -72,11 +72,11 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
 class TimeZoneProjectListener(timeZone: TimeZone) : TimeZoneListener(timeZone),
    ProjectListener {
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeTimeZone()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetTimeZone()
    }
 }

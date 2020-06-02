@@ -1,6 +1,6 @@
 package io.kotest.assertions.throwables
 
-import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.failure
 import io.kotest.mpp.bestName
 
@@ -89,7 +89,7 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  * @see [shouldThrowExactly]
  */
 inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
-   AssertionCounter.inc()
+   assertionCounter.inc()
    val expectedExceptionClass = T::class
    val thrownThrowable = try {
       block()
@@ -139,7 +139,7 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  *
  */
 inline fun <reified T : Throwable> shouldNotThrowExactly(block: () -> Any?) {
-   AssertionCounter.inc()
+   assertionCounter.inc()
    val thrown = try {
       block()
       return

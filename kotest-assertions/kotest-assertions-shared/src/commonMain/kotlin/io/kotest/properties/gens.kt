@@ -24,7 +24,7 @@ import kotlin.random.nextLong
  * a UTF8 string.
  */
 @JvmOverloads
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = object : Gen<String> {
    val literals = listOf("",
       "\n",
@@ -46,7 +46,7 @@ fun Gen.Companion.string(minSize: Int = 0, maxSize: Int = 100): Gen<String> = ob
  * chosen [Int]. The values always returned include
  * the following edge cases: [[Int.MIN_VALUE], [Int.MAX_VALUE], 0, 1, -1]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.int() = object : Gen<Int> {
    val literals = listOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 1, -1)
    override fun constants(): Iterable<Int> = literals
@@ -78,7 +78,7 @@ fun Gen.Companion.uint() = object : Gen<UInt> {
  * chosen [Short]. The values always returned include
  * the following edge cases: [[Short.MIN_VALUE], [Short.MAX_VALUE], 0]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS).toShort() }
 
 /**
@@ -86,7 +86,7 @@ fun Gen.Companion.short() = int().map { it.ushr(Int.SIZE_BITS - Short.SIZE_BITS)
  * chosen [UShort]. The values always returned include
  * the following edge cases: [[UShort.MIN_VALUE], [UShort.MAX_VALUE]]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 @ExperimentalUnsignedTypes
 fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort() }
 
@@ -95,7 +95,7 @@ fun Gen.Companion.ushort() = uint().map { it.shr(UInt.SIZE_BITS - UShort.SIZE_BI
  * chosen [Byte]. The values always returned include
  * the following edge cases: [[Byte.MIN_VALUE], [Byte.MAX_VALUE], 0]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.byte() = int().map { it.ushr(Int.SIZE_BITS - Byte.SIZE_BITS).toByte() }
 
 /**
@@ -111,7 +111,7 @@ fun Gen.Companion.ubyte() = uint().map { it.shr(UInt.SIZE_BITS - UByte.SIZE_BITS
  * chosen positive value. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
 
 /**
@@ -119,7 +119,7 @@ fun Gen.Companion.positiveIntegers(): Gen<Int> = int().filter { it > 0 }
  * chosen natural number. The values returned always include
  * the following edge cases: [Int.MAX_VALUE]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
 
 /**
@@ -127,14 +127,14 @@ fun Gen.Companion.nats(): Gen<Int> = int().filter { it >= 0 }
  * chosen negative value. The values returned always include
  * the following edge cases: [Int.MIN_VALUE]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeIntegers(): Gen<Int> = int().filter { it < 0 }
 
 /**
  * Returns a stream of values where each value is a randomly
  * chosen Double.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
   val literals = listOf(0.0,
     1.0,
@@ -159,7 +159,7 @@ fun Gen.Companion.double(): Gen<Double> = object : Gen<Double> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
                                  to: Double = Double.MAX_VALUE
 ): Gen<Double> = object : Gen<Double> {
@@ -173,10 +173,10 @@ fun Gen.Companion.numericDoubles(from: Double = Double.MIN_VALUE,
    override fun shrinker(): Shrinker<Double>? = DoubleShrinker
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.positiveDoubles(): Gen<Double> = double().filter { it > 0.0 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
 
 
@@ -184,7 +184,7 @@ fun Gen.Companion.negativeDoubles(): Gen<Double> = double().filter { it < 0.0 }
  * Returns a stream of values where each value is a randomly
  * chosen Float.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
   val literals = listOf(0F,
     Float.MIN_VALUE,
@@ -206,7 +206,7 @@ fun Gen.Companion.float(): Gen<Float> = object : Gen<Float> {
  *
  * This will only generate numbers ranging from [from] (inclusive) to [to] (inclusive)
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.numericFloats(
    from: Float = Float.MIN_VALUE,
    to: Float = Float.MAX_VALUE
@@ -230,7 +230,7 @@ fun Gen.Companion.numericFloats(
  * chosen long. The values returned always include
  * the following edge cases: [[Long.MIN_VALUE], [Long.MAX_VALUE], 0, 1, -1]
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.long(): Gen<Long> = object : Gen<Long> {
   val literals = listOf(Long.MIN_VALUE, Long.MAX_VALUE, 0L, 1L, -1L)
   override fun constants(): Iterable<Long> = literals
@@ -258,7 +258,7 @@ fun Gen.Companion.ulong(): Gen<ULong> = object : Gen<ULong> {
 /**
  * Returns both boolean values
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.bool(): Gen<Boolean> = object : Gen<Boolean> {
   override fun constants(): Iterable<Boolean> = listOf(true, false)
    override fun random(seed: Long?): Sequence<Boolean> {
@@ -280,7 +280,7 @@ private object CharSets {
  * Gen.char('A'..'C', 'D'..'E')
  * Ths will choose A, B, C, D, and E each 20% of the time.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
   return Gen.char(listOf(range) + ranges)
 }
@@ -294,7 +294,7 @@ fun Gen.Companion.char(range: CharRange, vararg ranges: CharRange): Gen<Char> {
  *
  * If no parameter is given, ASCII characters will be generated.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char> = object : Gen<Char> {
   init {
     require(ranges.all { !it.isEmpty() }) { "Ranges cannot be empty" }
@@ -325,7 +325,7 @@ fun Gen.Companion.char(ranges: List<CharRange> = CharSets.BASIC_LATIN): Gen<Char
  * a set of values generated by the given generator.
  */
 @JvmOverloads
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object : Gen<Set<T>> {
    init {
       require(maxSize >= 0) { "maxSize must be positive" }
@@ -346,7 +346,7 @@ fun <T> Gen.Companion.set(gen: Gen<T>, maxSize: Int = 100): Gen<Set<T>> = object
  * a list of values generated by the underlying generator.
  */
 @JvmOverloads
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = object : Gen<List<T>> {
    init {
       require(maxSize >= 0) { "maxSize must be positive" }
@@ -368,7 +368,7 @@ fun <T> Gen.Companion.list(gen: Gen<T>, maxSize: Int = 100): Gen<List<T>> = obje
  * Returns a [[Gen]] where each value is a [[Triple]] generated
  * by a value from each of three supplied generators.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C> Gen.Companion.triple(genA: Gen<A>,
                                    genB: Gen<B>,
                                    genC: Gen<C>): Gen<Triple<A, B, C>> = object : Gen<Triple<A, B, C>> {
@@ -389,20 +389,20 @@ fun <A, B, C> Gen.Companion.triple(genA: Gen<A>,
   }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, T> Gen.Companion.bind(gena: Gen<A>, createFn: (A) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = gena.random().map { createFn(it) }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, createFn: (A, B) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> =
       gena.random().zip(genb.random(seed)).map { createFn(it.first, it.second) }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
                                     genb: Gen<B>,
                                     genc: Gen<C>,
@@ -416,7 +416,7 @@ fun <A, B, C, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>,
                                        createFn: (A, B, C, D) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -428,7 +428,7 @@ fun <A, B, C, D, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>,
       .map { createFn(it.first.first.first, it.first.first.second, it.first.second, it.second) }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<C>, gend: Gen<D>, gene: Gen<E>,
                                           createFn: (A, B, C, D, E) -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
@@ -447,7 +447,7 @@ fun <A, B, C, D, E, T> Gen.Companion.bind(gena: Gen<A>, genb: Gen<B>, genc: Gen<
       }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
                                              genb: Gen<B>,
                                              genc: Gen<C>,
@@ -474,7 +474,7 @@ fun <A, B, C, D, E, F, T> Gen.Companion.bind(gena: Gen<A>,
       }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <A, B, C, D, E, F, G, T> Gen.Companion.bind(gena: Gen<A>,
                                                 genb: Gen<B>,
                                                 genc: Gen<C>,
@@ -526,7 +526,7 @@ fun <A> Gen.Companion.oneOf(vararg gens: Gen<out A>): Gen<A> = object : Gen<A> {
  * Returns a stream of values, where each
  * value is generated from the given function
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { fn() }
@@ -537,7 +537,7 @@ inline fun <T> Gen.Companion.create(crossinline fn: () -> T): Gen<T> = object : 
  * values will be picked. May not choose every
  * item in the list.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
   override fun constants(): Iterable<T> = emptyList()
    override fun random(seed: Long?): Sequence<T> {
@@ -549,14 +549,14 @@ fun <T> Gen.Companion.from(values: List<T>): Gen<T> = object : Gen<T> {
 /**
  * @return a new [Gen] created from the given [values] (see [from] List for more details)
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.from(values: Array<T>): Gen<T> = from(values.toList())
 
 /**
  * Returns a stream of values, where each value is
  * a random Int between the given min and max.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.ints(min, max)")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0. Use Arb.ints(min, max)")
 fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
   require(min < max) { "min must be < max" }
   return object : Gen<Int> {
@@ -574,7 +574,7 @@ fun Gen.Companion.choose(min: Int, max: Int): Gen<Int> {
  * Returns a stream of values, where each value is a
  * Long between the given min and max.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.longs(min, max)")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0. Use Arb.longs(min, max)")
 fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
   require(min < max) { "min must be < max" }
   return object : Gen<Long> {
@@ -595,7 +595,7 @@ fun Gen.Companion.choose(min: Long, max: Long): Gen<Long> {
  * @throws IllegalArgumentException If any negative weight is given or only
  * weights of zero are given.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0. Use Arb.choose(a, b, c, ...)")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0. Use Arb.choose(a, b, c, ...)")
 fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: Pair<Int, T>): Gen<T> {
   val allPairs = listOf(a, b) + cs
   val weights = allPairs.map { it.first }
@@ -627,7 +627,7 @@ fun <T : Any> Gen.Companion.choose(a: Pair<Int, T>, b: Pair<Int, T>, vararg cs: 
  * Returns a stream of values, where each value is
  * a pair generated by the underlying generators.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = object : Gen<Pair<K, V>> {
   override fun constants(): Iterable<Pair<K, V>> {
     val keys = genK.constants().toList()
@@ -643,7 +643,7 @@ fun <K, V> Gen.Companion.pair(genK: Gen<K>, genV: Gen<V>): Gen<Pair<K, V>> = obj
  * from the underlying generators.
  */
 @JvmOverloads
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -664,7 +664,7 @@ fun <K, V> Gen.Companion.map(genK: Gen<K>, genV: Gen<V>, maxSize: Int = 100): Ge
  *   the size of the [Map] is bounded between [0, [maxSize])
  */
 @JvmOverloads
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <K, V> Gen.Companion.map(gen: Gen<Pair<K, V>>, maxSize: Int = 100): Gen<Map<K, V>> = object : Gen<Map<K, V>> {
   init {
     require(maxSize >= 0) { "maxSize must be positive" }
@@ -708,13 +708,13 @@ fun Random.nextPrintableString(length: Int): String {
 /**
  * Returns a [[Gen]] which always returns the same value.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.constant(value: T): Gen<T> = object : Gen<T> {
    override fun constants(): Iterable<T> = listOf(value)
    override fun random(seed: Long?): Sequence<T> = generateInfiniteSequence { value }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
 
    // 0 is a multiple of everything
@@ -728,7 +728,7 @@ fun Gen.Companion.multiples(k: Int, max: Int): Gen<Int> = object : Gen<Int> {
    }
 }
 
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
 
    // 1 is a factor of all ints
@@ -745,7 +745,7 @@ fun Gen.Companion.factors(k: Int): Gen<Int> = object : Gen<Int> {
  * Returns a [Gen] which returns the sample values in the same order as they are passed in, once all sample values are used
  * it repeats elements from start.
  */
-@Deprecated("Deprecated and will be removed in 5.0. Migrate to the new property test classes in 4.0")
+@Deprecated("Deprecated and will be removed in 4.2. Migrate to the new property test classes in 4.0")
 fun <T> Gen.Companion.samples(vararg sampleValues: T) = object : Gen<T> {
     private fun getNextSampleElementProvider(): () -> T  {
         var currentIndex = 0;

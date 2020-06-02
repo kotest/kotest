@@ -22,11 +22,11 @@ class DescribeSpecBangTest : DescribeSpec() {
             attemptToFail()
          }
 
-         context("!BangedContext") {
+         describe("!BangedContext") {
             attemptToFail()
          }
 
-         context("NonBangedContext") {
+         describe("NonBangedContext") {
             it("!BangedIt") {
                attemptToFail()
             }

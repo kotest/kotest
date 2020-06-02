@@ -48,7 +48,7 @@ object SpringListener : TestListener {
    private val Spec.testContext: TestContextManager
       get() = testContexts.getValue(this)
 
-   // Check https://github.com/kotlintest/kotlintest/issues/950#issuecomment-524127221
+   // Check https://github.com/kotest/kotest/issues/950#issuecomment-524127221
    // for a in-depth explanation. Too much to write here
    private val Spec.method: Method
       get() {

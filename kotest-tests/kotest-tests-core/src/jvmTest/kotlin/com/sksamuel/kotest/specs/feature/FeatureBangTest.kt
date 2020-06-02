@@ -5,25 +5,25 @@ import io.kotest.core.spec.style.FeatureSpec
 
 class FeatureBangTest : FeatureSpec() {
 
-  init {
-    feature("!BangedFeature") {
-      attemptToFail()
-    }
-
-    feature("NonBangedFeature") {
-      and("!BangedAnd") {
-        attemptToFail()
+   init {
+      feature("!BangedFeature") {
+         attemptToFail()
       }
 
-      and("NonBangedAnd") {
-        scenario("!BangedScenario") {
-          attemptToFail()
-        }
-      }
+      feature("NonBangedFeature") {
+         feature("!BangedAnd") {
+            attemptToFail()
+         }
 
-      scenario("!BangedScenario") {
-        attemptToFail()
+         feature("NonBangedAnd") {
+            scenario("!BangedScenario") {
+               attemptToFail()
+            }
+         }
+
+         scenario("!BangedScenario") {
+            attemptToFail()
+         }
       }
-    }
-  }
+   }
 }

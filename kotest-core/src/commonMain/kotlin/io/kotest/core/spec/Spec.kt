@@ -5,14 +5,10 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
 import io.kotest.mpp.log
+import kotlin.js.JsName
 
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
@@ -48,11 +44,19 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
          }
    }
 
+
+   @Deprecated(
+      "This var was replaced by [isolationMode]. Use it instead",
+      ReplaceWith("isolationMode")
+   )
+   var isolation: IsolationMode? = null
+
    /**
     * Sets the [IsolationMode] used by the test engine when running tests in this spec.
     * If left null, then the project default is applied.
     */
-   var isolation: IsolationMode? = null
+   @JsName("isolationModeJs")
+   var isolationMode: IsolationMode? = null
 
    /**
     * Sets the [TestCaseOrder] to control the order of execution of root level tests in this spec.
@@ -143,7 +147,7 @@ fun Spec.resolvedTestCaseOrder() =
    this.testOrder ?: this.testCaseOrder() ?: Project.testCaseOrder()
 
 fun Spec.resolvedIsolationMode() =
-   this.isolation ?: this.isolationMode() ?: Project.isolationMode()
+   this.isolationMode ?: this.isolation ?: this.isolationMode() ?: Project.isolationMode()
 
 /**
  * Orders the collection of [TestCase]s based on the provided [TestCaseOrder].

@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.runner.junit5
 
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
@@ -286,6 +287,45 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
+   test("ExceptionInInitializerError exception in beforeTest") {
+      val fullyQualifiedTestClassName =
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInInitializerErrorInBeforeTestFunction"
+
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInInitializerErrorInBeforeTestFunction::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 11
+            started().shouldHaveNames(
+               "Kotest",
+               fullyQualifiedTestClassName,
+               "a failing test",
+               "a passing test"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               fullyQualifiedTestClassName
+            )
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "a failing test",
+               "a passing test",
+               fullyQualifiedTestClassName,
+               "Kotest"
+            )
+            aborted().shouldBeEmpty()
+            dynamicallyRegistered().shouldHaveNames(
+               fullyQualifiedTestClassName,
+               "a failing test",
+               "a passing test"
+            )
+         }
+   }
+
    test("exception in afterTest override") {
       EngineTestKit
          .engine("kotest")
@@ -358,6 +398,36 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
+   test("exception in beforeSpec with isolation mode instance per leaf") {
+      val fullyQualifiedTestClassName =
+         "com.sksamuel.kotest.runner.junit5.StringSpecExceptionInBeforeSpecForInstancePerLeaf"
+      EngineTestKit
+         .engine("kotest")
+         .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerLeaf::class.java))
+         .configurationParameter("allow_private", "true")
+         .execute()
+         .allEvents().apply {
+            count() shouldBe 8
+            started().shouldHaveNames(
+               "Kotest",
+               fullyQualifiedTestClassName,
+               "Spec execution failed"
+            )
+            skipped().shouldBeEmpty()
+            failed().shouldHaveNames(fullyQualifiedTestClassName)
+            succeeded().shouldHaveNames("Kotest")
+            finished().shouldHaveNames(
+               "Spec execution failed",
+               fullyQualifiedTestClassName,
+               "Kotest"
+            )
+            aborted().shouldHaveNames("Spec execution failed")
+            dynamicallyRegistered().shouldHaveNames(
+               fullyQualifiedTestClassName,
+               "Spec execution failed"
+            )
+         }
+   }
 })
 
 private class StringSpecExceptionInBeforeSpecOverride : StringSpec() {
@@ -427,7 +497,6 @@ private class StringSpecExceptionInAfterTestFunction : StringSpec() {
       }
    }
 }
-
 
 private class StringSpecExceptionInAfterSpec : StringSpec() {
 
@@ -499,6 +568,22 @@ private class StringSpecExceptionInBeforeTestFunction : StringSpec() {
    }
 }
 
+private class StringSpecExceptionInInitializerErrorInBeforeTestFunction : StringSpec() {
+   init {
+      "a failing test" {
+         1 shouldBe 2
+      }
+
+      "a passing test" {
+         1 shouldBe 1
+      }
+
+      beforeTest {
+         throw ExceptionInInitializerError("Unable to initialize")
+      }
+   }
+}
+
 private class StringSpecTestCase : StringSpec({
 
    "a failing test" {
@@ -521,3 +606,19 @@ private class StringSpecTestCase : StringSpec({
 private class StringSpecExceptionInInit : StringSpec({
    throw RuntimeException("kapow")
 })
+
+private class StringSpecExceptionInBeforeSpecForInstancePerLeaf : StringSpec({
+   "a failing test" {
+      1 shouldBe 2
+   }
+
+   "a passing test" {
+      1 shouldBe 1
+   }
+}) {
+   override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
+
+   override fun beforeSpec(spec: Spec) {
+      throw RuntimeException("zopp!!")
+   }
+}

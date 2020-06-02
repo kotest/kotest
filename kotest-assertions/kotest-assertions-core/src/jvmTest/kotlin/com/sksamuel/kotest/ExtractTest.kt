@@ -32,7 +32,11 @@ class ExtractTest : WordSpec() {
         shouldThrowAny {
           extracting(persons) { name }
               .shouldContainAll("<Some name that is wrong>")
-        }.message shouldBe """Collection should contain all of ["<Some name that is wrong>"] but missing ["<Some name that is wrong>"]"""
+        }.message shouldBe """Collection should contain all of [
+  "<Some name that is wrong>"
+] but was missing [
+  "<Some name that is wrong>"
+]"""
       }
 
     }

@@ -1,12 +1,12 @@
 package io.kotest.core.factory
 
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.core.listeners.TestListener
 import io.kotest.fp.Tuple2
 
 /**
- * Builds an immutable [TestFactory] from this configuration.
+ * Builds an immutable [TestFactory] from this [TestFactoryConfiguration].
  */
 fun TestFactoryConfiguration.build(): TestFactory {
 

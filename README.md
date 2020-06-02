@@ -4,7 +4,7 @@
 [![Build Status](https://github.com/kotest/kotest/workflows/build/badge.svg)](https://github.com/kotest/kotest/actions)
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core-jvm.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest)
 ![GitHub](https://img.shields.io/github/license/kotest/kotest)
-[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot&style=plastic"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 
@@ -142,9 +142,12 @@ This page gives you just a short overview of Kotest. There are many more feature
 * Reuse test logic for setup or tear down, with [Listeners](doc/reference.md#listeners).
 * Test asynchronous code with [`whenReady`](doc/reference.md#whenReady) and non-deterministic code with [`eventually`](doc/nondeterministic.md) or [`continually`](doc/nondeterministic.md)
 * Let Kotest [close resources automatically](doc/reference.md#autoclose): `val reader = autoClose(StringReader("xyz"))`
+* Create reusable parameterized tests via [test factories](doc/reference.md#test-factories)
 * Handle tricky scenarios such as System Environment with [extensions](doc/extensions.md)
 * Use the [Spring extension](doc/extensions.md#Spring) to automatically inject your spring test classes.
 * Test [Arrow](doc/extensions.md#Arrow) data types with the Arrow extension.
 * Make use of custom plugins for integrations with tools such as [Pitest](doc/plugins.md#Pitest)
 
 See our [getting started](doc/reference.md#getting-started) section or [full documentation](doc/reference.md).
+
+Read more about Kotest from third party [blogs and articles](doc/blogs.md).

@@ -3,6 +3,7 @@
 package io.kotest.property
 
 import io.kotest.matchers.shouldBe
+import io.kotest.property.PropertyTesting.computeDefaultIteration
 import io.kotest.property.arbitrary.default
 import io.kotest.property.internal.proptest
 
@@ -12,7 +13,7 @@ suspend fun<A, B, C, D> checkAll(
    genC: Gen<C>,
    genD: Gen<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Unit
-): PropertyContext = proptest<A, B, C, D>(PropertyTesting.defaultIterationCount, genA, genB, genC, genD, PropTestConfig(), property)
+): PropertyContext = proptest<A, B, C, D>(computeDefaultIteration(genA, genB, genC, genD), genA, genB, genC, genD, PropTestConfig(), property)
 
 suspend fun<A, B, C, D> checkAll(
    config: PropTestConfig,
@@ -21,7 +22,7 @@ suspend fun<A, B, C, D> checkAll(
    genC: Gen<C>,
    genD: Gen<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Unit
-): PropertyContext = checkAll<A, B, C, D>(PropertyTesting.defaultIterationCount, config, genA, genB, genC, genD, property)
+): PropertyContext = checkAll<A, B, C, D>(computeDefaultIteration(genA, genB, genC, genD), config, genA, genB, genC, genD, property)
 
 suspend fun<A, B, C, D> checkAll(
    iterations: Int,
@@ -102,7 +103,7 @@ suspend fun<A, B, C, D> forAll(
    genC: Gen<C>,
    genD: Gen<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Boolean
-) = forAll<A, B, C, D>(PropertyTesting.defaultIterationCount, PropTestConfig(), genA, genB, genC, genD, property)
+) = forAll<A, B, C, D>(computeDefaultIteration(genA, genB, genC, genD), PropTestConfig(), genA, genB, genC, genD, property)
 
 suspend fun<A, B, C, D> forAll(
    config: PropTestConfig = PropTestConfig(),
@@ -111,7 +112,7 @@ suspend fun<A, B, C, D> forAll(
    genC: Gen<C>,
    genD: Gen<D>,
    property: suspend PropertyContext.(A, B, C, D) -> Boolean
-) = forAll<A, B, C, D>(PropertyTesting.defaultIterationCount, config, genA, genB, genC, genD, property)
+) = forAll<A, B, C, D>(computeDefaultIteration(genA, genB, genC, genD), config, genA, genB, genC, genD, property)
 
 suspend fun<A, B, C, D> forAll(
    iterations: Int,

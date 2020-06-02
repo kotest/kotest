@@ -6,7 +6,6 @@ import io.kotest.assertions.diffLargeString
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
-import io.kotest.assertions.supportsStringDiff
 import io.kotest.mpp.sysprop
 
 /**
@@ -20,7 +19,7 @@ object StringEq : Eq<String> {
          actual == expected -> null
          equalIgnoringWhitespace(actual, expected) ->
             failure("expected: ${escapeLineBreaks(expected)} but was: ${escapeLineBreaks(actual)}\n(contents match, but line-breaks differ; output has been escaped to show line-breaks)")
-         supportsStringDiff() && useDiff(expected, actual) -> diff(expected, actual)
+         useDiff(expected, actual) -> diff(expected, actual)
          else -> failure(Expected(expected.show()), Actual(actual.show()))
       }
    }
@@ -32,11 +31,11 @@ object StringEq : Eq<String> {
    }
 
    private fun diff(expected: String, actual: String): Throwable {
-      val (expectedRepr, actualRepr) = diffLargeString(
-         expected,
-         actual
-      )
-      return failure(Expected(Printed(expectedRepr)), Actual(Printed(actualRepr)))
+      val result = diffLargeString(expected, actual)
+      return if (result == null)
+         failure(Expected(expected.show()), Actual(actual.show()))
+      else
+         failure(Expected(Printed(result.first)), Actual(Printed(result.second)))
    }
 
    private fun useDiff(expected: String, actual: String): Boolean {

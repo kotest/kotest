@@ -20,7 +20,7 @@ class JUnitXMLReportTest : WordSpec() {
       val file = when {
          System.getenv("GITHUB_ACTIONS") == "true" -> {
             println(
-               "XML: " + File(System.getenv("GITHUB_WORKSPACE") + "/kotlintest/kotest-tests/kotest-tests-core/build/test-results/test").listFiles()
+               "XML: " + File(System.getenv("GITHUB_WORKSPACE") + "/kotest/kotest-tests/kotest-tests-core/build/test-results/test").listFiles()
                   .joinToString("\n")
             )
             File(System.getenv("GITHUB_WORKSPACE") + "/kotest/$ReportPath")

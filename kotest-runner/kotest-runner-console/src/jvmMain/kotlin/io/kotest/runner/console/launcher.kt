@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.StringTag
 import io.kotest.core.Tags
+import kotlinx.coroutines.runBlocking
 import kotlin.system.exitProcess
 
 // this main method will launch the KotestConsoleRunner
@@ -29,7 +30,7 @@ class Execute : CliktCommand(name = "Kotest console runner") {
 
    private val spec by option(
       "--spec",
-      help = "Specifies the spec where the tests are located. If omitted then all tests run"
+      help = "Specify the fully qualified name of the spec class which contains the test to execute"
    )
 
    private val slowDuration by option(
@@ -47,7 +48,7 @@ class Execute : CliktCommand(name = "Kotest console runner") {
       help = "Specify the name of console writer implementation."
    )
 
-   override fun run() {
+   override fun run(): Unit = runBlocking {
 
       val term = if (source == "kotest-gradle-plugin") TermColors(TermColors.Level.ANSI256) else TermColors()
 

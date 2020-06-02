@@ -25,7 +25,7 @@ kotlin {
       targets.all {
          compilations.all {
             kotlinOptions {
-               freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+               freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
             }
          }
       }
@@ -34,7 +34,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(project(Projects.AssertionsShared))
-            implementation(project(":kotest-assertions:kotest-assertions-core"))
+            implementation(project(Projects.AssertionsCore))
          }
       }
 

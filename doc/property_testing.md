@@ -8,8 +8,6 @@ To use Kotest's property-based testing you need to add the module `io.kotest:kot
 
 _Upgrading from 3.x?_ The `kotest-property` module is only available in version 4.0+. It replaces the previous property test classes which are now deprecated.
 
-Note: Some generators are only available on the JVM. See the full list [here](generators.md).
-
 Introduction To Property Testing
 ----------------------
 
@@ -27,7 +25,7 @@ An example is the length of string A plus the length of string B should always b
 
 This is where the term _property_ testing originates.
 
-Kotest supports this through the `assertAll` function which accepts a function that tests the property.
+Kotest supports this through the `io.kotest.property.forAll` function which accepts an n-arity function `(a, ..., n) -> Boolean` that tests the property.
 
 For example, here is the property test that we mentioned just a few paragraphs ago. It checks that for any two Strings, the length of `a + b`
 is the same as the length of `a` plus the length of `b`. In this example Kotest would
@@ -36,16 +34,16 @@ execute the test 1000 times for random String combinations.
 ```kotlin
 class PropertyExample: StringSpec({
    "String size" {
-      assertAll<String, String> { a,b ->
+      forAll<String, String> { a, b ->
          (a + b).length == a.length + b.length
       }
    }
 })
 ```
 
-Notice that the function evalutes to a boolean value. We provide the type parameters to `assertAll` so the framework knows which type of values to generate (in this case random strings).
+Notice that the function must evaluate to a boolean value. We provide the type parameters to `forAll` so the framework knows which type of values to generate (in this case strings).
 
-If we don't want to provide a property that returns a boolean, Kotest allows for `checkAll` where you can simply execute assertions against the inputs. For example:
+If we don't want to provide a property that returns a boolean, Kotest also provides for `io.kotest.property.checkAll` which accepts an n-arity function `(a, ..., n) -> Unit` in which you can simply execute assertions against the inputs. For example:
 
 ```kotlin
 class PropertyExample: StringSpec({
@@ -57,6 +55,8 @@ class PropertyExample: StringSpec({
    }
 })
 ```
+
+The `checkAll` approach will consider a test valid if no exceptions were thrown.
 
 ### Iterations
 
@@ -86,7 +86,7 @@ For example:
 ```kotlin
 class PropertyExample: StringSpec({
    "String size" {
-      assertAll<String, String>(PropTestConfig(options here...)) { a,b ->
+      forAll<String, String>(PropTestConfig(options here...)) { a,b ->
          (a + b).length == a.length + b.length
       }
    }
@@ -108,7 +108,7 @@ For example:
 ```kotlin
 class PropertyExample: StringSpec({
    "String size" {
-      assertAll<String, String>(PropTestConfig(seed = 127305235)) { a,b ->
+      forAll<String, String>(PropTestConfig(seed = 127305235)) { a,b ->
          (a + b).length == a.length + b.length
       }
    }
@@ -123,7 +123,7 @@ to accept some small number of failures. You can specify that in config.
 ```kotlin
 class PropertyExample: StringSpec({
    "some flakey test" {
-      assertAll<String, String>(PropTestConfig(maxFailure = 3)) { a,b ->
+      forAll<String, String>(PropTestConfig(maxFailure = 3)) { a,b ->
          // max of 3 inputs can fail
       }
    }
@@ -141,6 +141,8 @@ Kotest has two types of generators - `Arb` for arbitrary (random) values and `Ex
 Both types of gens can be mixed and matched in property tests. For example,
 you could test a function with 100 random positive integers (arbitrary) alongside every
 even number from 0 to 200 (exhaustive).
+
+Some generators are only available on the JVM. See the full list [here](generators.md).
 
 ### Arb
 
@@ -162,7 +164,7 @@ Typical exhaustives include small collections, enums, boolean values, powerset o
 
 ### Specifying Generators
 
-You saw earlier when using `assertAll` or `checkAll` that if we specify the type parameters, Kotest will provide an appropriate gen.
+You saw earlier when using `forAll` or `checkAll` that if we specify the type parameters, Kotest will provide an appropriate gen.
 This is fine for basic tests but often we want more control over the sample space.
 
 To do this, we can instantiate the generators ourselves by using extension functions on `Arb` and/or `Exhaustive` and passing
@@ -172,12 +174,12 @@ For example, we may want to test a function for numbers in a certain range only.
 ```kotlin
 class PropertyExample: StringSpec({
     "is allowed to drink in Chicago" {
-        assertAll(Arb.int(21..150)) { a ->
+        forAll(Arb.int(21..150)) { a ->
             isDrinkingAge(a) // assuming some function that calculates if we're old enough to drink
         }
     }
     "is allowed to drink in London" {
-        assertAll(Arb.int(18..150)) { a ->
+        forAll(Arb.int(18..150)) { a ->
             isDrinkingAge(a) // assuming some function that calculates if we're old enough to drink
         }
     }
@@ -189,12 +191,12 @@ Actually, ages are a small space, it would probably be better not to leave the v
 ```kotlin
 class PropertyExample: StringSpec({
     "is allowed to drink in Chicago" {
-        assertAll(Exhaustive.int(21..150)) { a ->
+        forAll(Exhaustive.int(21..150)) { a ->
             isDrinkingAge(a) // assuming some function that calculates if we're old enough to drink
         }
     }
     "is allowed to drink in London" {
-        assertAll(Exhaustive.int(18..150)) { a ->
+        forAll(Exhaustive.int(18..150)) { a ->
             isDrinkingAge(a) // assuming some function that calculates if we're old enough to drink
         }
     }

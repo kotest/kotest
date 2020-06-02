@@ -65,6 +65,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(Libs.Coroutines.core)
             implementation(Libs.Classgraph.classgraph)
+            api(Libs.JUnitJupiter.api)
          }
       }
    }

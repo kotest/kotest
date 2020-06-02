@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.style.scopes.FeatureSpecScope
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -18,20 +20,20 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
    return config.build()
 }
 
-class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
-   override val addTest = ::addDynamicTest
-   override val addListener = ::listener
+class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecScope {
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecDsl {
-   override fun defaultConfig(): TestCaseConfig =
-      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override val addTest = ::addRootTestCase
-   override val addListener = ::listener
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecScope {
 
    init {
       body()
    }
+
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
+
 }

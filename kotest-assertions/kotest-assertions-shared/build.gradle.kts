@@ -26,11 +26,10 @@ kotlin {
             }
          }
       }
-      when {
-         Ci.os.isMacOsX -> macosX64("native")
-         Ci.os.isWindows -> mingwX64("native")
-         else -> linuxX64("native")
-      }
+
+      linuxX64()
+      mingwX64()
+      macosX64()
    }
 
    targets.all {
@@ -80,9 +79,8 @@ kotlin {
          }
       }
 
-      val nativeMain by getting {
-         dependsOn(commonMain)
-         dependencies {
+      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+         get(it).dependencies {
             implementation(Libs.Coroutines.coreNative)
          }
       }

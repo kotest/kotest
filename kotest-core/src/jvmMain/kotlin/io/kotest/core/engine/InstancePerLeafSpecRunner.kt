@@ -58,10 +58,10 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       val testCases = spec.rootTests().map { it.testCase }
 
       runParallel(spec.threadsForSpec, testCases) {
-         executeInCleanSpec(it)
+         executeInCleanSpec(it).getOrThrow()
          while (queues.get().isNotEmpty()) {
             val (testCase, count) = queues.get().remove()
-            executeInCleanSpec(testCase)
+            executeInCleanSpec(testCase).getOrThrow()
          }
       }
       results

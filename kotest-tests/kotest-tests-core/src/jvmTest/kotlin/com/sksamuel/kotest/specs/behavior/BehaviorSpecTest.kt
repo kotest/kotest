@@ -3,8 +3,8 @@ package com.sksamuel.kotest.specs.behavior
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.ints.shouldBeLessThan
-import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import java.util.concurrent.atomic.AtomicInteger
 
 class BehaviorSpecTest : BehaviorSpec() {
@@ -32,6 +32,10 @@ class BehaviorSpecTest : BehaviorSpec() {
 
             And("The string fuz") {
                val fuz = "fuz"
+
+               xwhen("should be ignored") {
+                  error("boom")
+               }
 
                When("I add them together") {
                   val together = foo + bar + fuz
@@ -74,6 +78,9 @@ class BehaviorSpecTest : BehaviorSpec() {
          Then("It should be foo") {
             foo shouldBe "foo"
          }
+         xthen("should be ignored") {
+            error("boom")
+         }
       }
 
 
@@ -87,6 +94,24 @@ class BehaviorSpecTest : BehaviorSpec() {
                counter.incrementAndGet()
             }
             counter.get() shouldBe 1
+         }
+      }
+
+      xgiven("should be ignored 1") {
+         error("boom")
+      }
+
+      xgiven("should be ignored 2") {
+         `when`("should be ignored") {
+            error("boom")
+         }
+      }
+
+      xgiven("should be ignored 3") {
+         `when`("should be ignored a") {
+            then("should be ignored b") {
+               error("boom")
+            }
          }
       }
 
@@ -107,14 +132,18 @@ class BehaviorSpecTest : BehaviorSpec() {
                   counter.incrementAndGet()
 
                   and("e") {
-
                      counter.incrementAndGet()
-
                      then("f") {
-
                         counter.incrementAndGet()
                      }
+                     xthen("should be ignored") {
+                        error("boom")
+                     }
                   }
+               }
+
+               xwhen("should be ignored") {
+                  error("boom")
                }
             }
          }

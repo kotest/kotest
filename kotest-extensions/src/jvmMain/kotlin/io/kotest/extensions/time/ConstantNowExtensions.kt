@@ -1,16 +1,19 @@
 package io.kotest.extensions.time
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import java.time.Clock
+import java.time.ZoneId
 import java.time.temporal.Temporal
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.staticFunctions
+import kotlin.reflect.jvm.javaType
 
 /**
  * Simulate the value of now() while executing [block]
@@ -39,12 +42,22 @@ inline fun <T, reified Time : Temporal> withConstantNow(now: Time, block: () -> 
 @PublishedApi
 internal fun <Time : Temporal> mockNow(value: Time, klass: KClass<Time>) {
    mockkStatic(klass)
-   every { getNoParameterNowFunction(klass).call() } returns value
+
+   getNowFunctions(klass).forEach {
+      if(it.parameters.isEmpty()) {
+         every { it.call() } returns value
+      } else {
+         if(it.parameters[0].type.javaType == ZoneId::class.java) {
+            every { it.call(any<ZoneId>()) } returns value
+         } else {
+            every { it.call(any<Clock>()) } returns value
+         }
+      }
+   }
 }
 
-@PublishedApi
-internal fun <Time : Temporal> getNoParameterNowFunction(klass: KClass<Time>): KFunction<*> {
-   return klass.staticFunctions.filter { it.name == "now" }.first { it.parameters.isEmpty() }
+internal fun <Time : Temporal> getNowFunctions(klass: KClass<in Time>): List<KFunction<*>> {
+   return klass.staticFunctions.filter { it.name == "now" }
 }
 
 @PublishedApi
@@ -112,11 +125,11 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) :
 class ConstantNowProjectListener<Time : Temporal>(now: Time) :
    ConstantNowListener<Time>(now), ProjectListener {
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeNow()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetNow()
    }
 }

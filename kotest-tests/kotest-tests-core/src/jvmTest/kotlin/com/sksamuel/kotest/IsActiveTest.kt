@@ -85,6 +85,11 @@ class IsActiveTest : StringSpec() {
          val test = TestCase.test(Description.spec("spec").append("f:my test"), IsActiveWithFocusTest()) {}
          test.isActive() shouldBe true
       }
+
+      "isActive should return true if not top level even if spec has top level focused tests" {
+         val test = TestCase.test(Description.spec("spec").append("f:my test").append("foo"), IsActiveWithFocusTest()) {}
+         test.isActive() shouldBe true
+      }
    }
 }
 

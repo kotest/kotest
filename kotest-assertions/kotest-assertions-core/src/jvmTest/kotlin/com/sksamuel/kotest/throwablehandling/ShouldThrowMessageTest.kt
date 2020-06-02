@@ -21,16 +21,14 @@ class ShouldThrowMessageTest : StringSpec() {
             }
          }
 
-         exception.localizedMessage shouldBe """Expected a throwable with message: Something else,
-                                                |but got a throwable with message: Mandatory parameter not present""".trimMargin()
+         exception.localizedMessage shouldBe """Expected a throwable with message "Something else" but got a throwable with message "Mandatory parameter not present"""".trimMargin()
       }
       "it should fail when a lambda does not throw any exception" {
          val exception = shouldThrow<AssertionError> {
             shouldThrowMessage("Something else") {}
          }
 
-         exception.localizedMessage shouldBe """Expected a throwable with message: Something else,
-                                                |but nothing was thrown""".trimMargin()
+         exception.localizedMessage shouldBe """Expected a throwable with message "Something else" but nothing was thrown""".trimMargin()
       }
 
       "it should fail when a lambda throw an exception having given message" {

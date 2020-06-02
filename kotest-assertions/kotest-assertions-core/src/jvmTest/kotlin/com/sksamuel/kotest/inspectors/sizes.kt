@@ -55,7 +55,7 @@ val tests = funSpec {
          "... and 2 more failed elements"
    }
    test("max results is controllable by sys prop") {
-      withSystemProperty("kotlintest.assertions.output.max", "3") {
+      withSystemProperty("kotest.assertions.output.max", "3") {
          shouldThrowAny {
             arrayOf(1, 2, 3, 4, 5).forAll {
                if (System.currentTimeMillis() > 0) throw NullPointerException()

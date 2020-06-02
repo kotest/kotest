@@ -1,6 +1,6 @@
 package io.kotest.core.test
 
-import io.kotest.assertions.AssertionCounter
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.AssertionMode.Error
@@ -35,11 +35,11 @@ fun Spec.resolvedAssertionMode(): AssertionMode =
  * @throws ZeroAssertionsError if the mode is [AssertionMode.Error] and no assertions were executed.
  */
 suspend fun AssertionMode.executeWithAssertionsCheck(name: String, run: suspend () -> Unit) {
-   AssertionCounter.reset()
+   assertionCounter.reset()
    run()
    val warningMessage = "Test '${name}' did not invoke any assertions"
 
-   if (AssertionCounter.getAndReset() == 0) {
+   if (assertionCounter.getAndReset() == 0) {
       when (this) {
          Error -> throw ZeroAssertionsError(warningMessage)
          Warn -> println("Warning: $warningMessage")

@@ -2,11 +2,13 @@ package com.sksamuel.kotest.matchers.date
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.date.after
 import io.kotest.matchers.date.atSameZone
 import io.kotest.matchers.date.before
 import io.kotest.matchers.date.haveSameDay
 import io.kotest.matchers.date.haveSameHours
+import io.kotest.matchers.date.haveSameInstantAs
 import io.kotest.matchers.date.haveSameMinutes
 import io.kotest.matchers.date.haveSameMonth
 import io.kotest.matchers.date.haveSameNanos
@@ -26,6 +28,7 @@ import io.kotest.matchers.date.shouldHaveMonth
 import io.kotest.matchers.date.shouldHaveNano
 import io.kotest.matchers.date.shouldHaveSameDayAs
 import io.kotest.matchers.date.shouldHaveSameHoursAs
+import io.kotest.matchers.date.shouldHaveSameInstantAs
 import io.kotest.matchers.date.shouldHaveSameMinutesAs
 import io.kotest.matchers.date.shouldHaveSameMonthAs
 import io.kotest.matchers.date.shouldHaveSameNanosAs
@@ -39,6 +42,7 @@ import io.kotest.matchers.date.shouldNotBeToday
 import io.kotest.matchers.date.shouldNotBeWithin
 import io.kotest.matchers.date.shouldNotHaveSameDayAs
 import io.kotest.matchers.date.shouldNotHaveSameHoursAs
+import io.kotest.matchers.date.shouldNotHaveSameInstantAs
 import io.kotest.matchers.date.shouldNotHaveSameMinutesAs
 import io.kotest.matchers.date.shouldNotHaveSameMonthAs
 import io.kotest.matchers.date.shouldNotHaveSameNanosAs
@@ -46,7 +50,6 @@ import io.kotest.matchers.date.shouldNotHaveSameSecondsAs
 import io.kotest.matchers.date.shouldNotHaveSameYearAs
 import io.kotest.matchers.date.within
 import io.kotest.matchers.shouldBe
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
@@ -408,6 +411,13 @@ class DateMatchersTest : StringSpec() {
     }
     "LocalDateTime should have nano" {
       LocalDateTime.of(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
+    }
+
+    "ZonedDateTime should be have same instant of the given ZonedDateTime irrespective of their timezone" {
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) should haveSameInstantAs(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3)))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldHaveSameInstantAs ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNot haveSameInstantAs(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2)))
+       ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotHaveSameInstantAs ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2))
     }
   }
 }

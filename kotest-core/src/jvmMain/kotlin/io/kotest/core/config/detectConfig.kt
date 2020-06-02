@@ -31,10 +31,10 @@ actual fun detectConfig(): ProjectConf {
    fun from(fqn: String): ProjectConf {
       val confClass = instantiate(Class.forName(fqn) as Class<AbstractProjectConfig>)
       val beforeAfterAllListener = object : ProjectListener {
-         override fun beforeProject() {
+         override suspend fun beforeProject() {
             confClass.beforeAll()
          }
-         override fun afterProject() {
+         override suspend fun afterProject() {
             confClass.afterAll()
          }
       }

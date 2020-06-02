@@ -1,6 +1,22 @@
 Changelog
 =========
 
+#### 4.0.6
+
+* Bugfix: Dependencies of assertions-core are now included properly when not using junit runner #1425
+* Bugfix: checkAll would fail if exhaustive size was very large #1456
+* Bugfix: Show typeclass on java.nio.filePath would cause stack overflow #1313
+
+#### 4.0.5
+
+* Bugfix: Focus mode would cause some nested tests to be ignored #1376
+* Bugfix: Arb.choice would include edgecases in the generated values #1406
+* Bugfix: Arb.int and Arb.long edgecases included values outside the specified ranged #1405
+
+#### 4.0.4
+
+* Bugfix: Exceptions of type `LinkageError`, most commonly `ExceptionInInitializerError` were not being handled #1381
+
 #### 4.0.3
 
 * Feature: Koin support now works for koin 2.1 #1357

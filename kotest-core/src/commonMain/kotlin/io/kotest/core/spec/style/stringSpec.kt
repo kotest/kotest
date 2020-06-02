@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.spec.style.scopes.StringSpecScope
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -21,20 +23,19 @@ fun stringSpec(block: StringSpecTestFactoryConfiguration.() -> Unit): TestFactor
 /**
  * Decorates a [TestFactoryConfiguration] with the StringSpec DSL.
  */
-class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
-   override val addTest = ::addDynamicTest
-   override val addListener = ::listener
+class StringSpecTestFactoryConfiguration : TestFactoryConfiguration(), StringSpecScope {
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecDsl {
-   override fun defaultConfig(): TestCaseConfig =
-      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override val addTest = ::addRootTestCase
-   override val addListener = ::listener
+abstract class StringSpec(body: StringSpec.() -> Unit = {}) : DslDrivenSpec(), StringSpecScope {
 
    init {
       body()
    }
+
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }

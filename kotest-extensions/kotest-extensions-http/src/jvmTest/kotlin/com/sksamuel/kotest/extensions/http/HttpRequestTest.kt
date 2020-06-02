@@ -11,7 +11,7 @@ import org.mockserver.model.HttpResponse.response
 
 class HttpRequestTest : FunSpec({
 
-   listener(MockServerListener(8080))
+   listener(MockServerListener(1080))
 
    beforeTest {
       MockServerClient("localhost", 1080).`when`(

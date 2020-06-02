@@ -29,7 +29,7 @@ class FreeSpecInstancePerLeafTest : FreeSpec({
       buffer shouldBe "abcabdaefghgi"
    }
 
-   isolation = IsolationMode.InstancePerLeaf
+   isolationMode = IsolationMode.InstancePerLeaf
 
    val count = AtomicInteger(0)
 

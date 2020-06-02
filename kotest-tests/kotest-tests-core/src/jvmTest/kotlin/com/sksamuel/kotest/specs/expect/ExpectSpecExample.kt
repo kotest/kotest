@@ -18,7 +18,18 @@ class ExpectSpecExample : ExpectSpec() {
             expect("some test 2").config(enabled = false) {
                // test here
             }
+            xexpect("disabled") {
+               error("Boom")
+            }
          }
+      }
+      xcontext("should be ignored 1") {
+         expect("disabled") {
+            error("Boom")
+         }
+      }
+      xcontext("should be ignored 2") {
+         error("Boom")
       }
    }
 }

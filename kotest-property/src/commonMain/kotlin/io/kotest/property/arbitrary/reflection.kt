@@ -1,7 +1,7 @@
 package io.kotest.property.arbitrary
 
-import io.kotest.property.Arb
 import io.kotest.mpp.bestName
+import io.kotest.property.Arb
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
@@ -28,4 +28,6 @@ expect inline fun <reified A> targetDefaultForClass(): Arb<A>?
 inline fun <reified A> Arb.Companion.forClass(kClass: KClass<*>): Arb<A> =
    defaultForClass(kClass)
       ?: targetDefaultForClass()
-      ?: throw IllegalArgumentException("Cannot infer generator for ${A::class}; specify generators explicitly")
+      ?: throw NoGeneratorFoundException("Cannot infer generator for ${A::class}; specify generators explicitly")
+
+class NoGeneratorFoundException(msg: String) : RuntimeException(msg)

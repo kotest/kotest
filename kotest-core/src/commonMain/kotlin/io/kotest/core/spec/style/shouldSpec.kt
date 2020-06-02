@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style
 
-import io.kotest.core.config.Project
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
+import io.kotest.core.spec.style.scopes.Lifecycle
+import io.kotest.core.spec.style.scopes.RootTestRegistration
+import io.kotest.core.spec.style.scopes.ShouldSpecScope
 import io.kotest.core.test.TestCaseConfig
 
 /**
@@ -11,22 +13,6 @@ import io.kotest.core.test.TestCaseConfig
  *
  * The receiver of the block is a [ShouldSpecTestFactoryConfiguration] which allows tests
  * to be defined using the 'should-spec' style.
- *
- * Example:
- *
- * "some test" {
- *   "with context" {
- *      should("do something") {
- *        // test here
- *      }
- *    }
- *  }
- *
- *  or
- *
- *  should("do something") {
- *    // test here
- *  }
  */
 fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    val config = ShouldSpecTestFactoryConfiguration()
@@ -34,22 +20,21 @@ fun shouldSpec(block: ShouldSpecTestFactoryConfiguration.() -> Unit): TestFactor
    return config.build()
 }
 
-class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecDsl {
-   override fun defaultConfig(): TestCaseConfig = defaultTestConfig ?: Project.testCaseConfig()
-   override val addTest = ::addDynamicTest
-   override val addListener = ::listener
+class ShouldSpecTestFactoryConfiguration : TestFactoryConfiguration(), ShouldSpecScope {
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 }
 
-abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecDsl {
-   override fun defaultConfig(): TestCaseConfig =
-      defaultTestConfig ?: defaultTestCaseConfig() ?: Project.testCaseConfig()
-
-   override val addTest = ::addRootTestCase
-   override val addListener = ::listener
+abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), ShouldSpecScope {
 
    init {
       body()
    }
+
+   override fun lifecycle(): Lifecycle = Lifecycle.from(this)
+   override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
+   override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
 
    // need to overload this so that when doing "string" should haveLength(5) in a word spec, we don't
    // clash with the other should method

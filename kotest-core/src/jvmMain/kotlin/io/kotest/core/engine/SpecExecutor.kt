@@ -7,7 +7,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedIsolationMode
-import io.kotest.core.spec.style.TestBuilders
+import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
@@ -43,7 +43,13 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    private fun checkClosedTestCases(results: Map<TestCase, TestResult>): Try<Map<TestCase, TestResult>> {
-      return if (TestBuilders.state == null) results.success() else Try.Failure(AssertionError("Incorrect usage of DSL"))
+      return when (val state = DslState.state) {
+         null -> results.success()
+         else -> {
+            DslState.state = null
+            Try.Failure(AssertionError(state))
+         }
+      }
    }
 
    /**

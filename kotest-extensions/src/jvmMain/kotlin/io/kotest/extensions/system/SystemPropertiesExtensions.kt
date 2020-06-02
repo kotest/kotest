@@ -262,11 +262,11 @@ class SystemPropertyProjectListener(newProperties: Map<String, String?>, mode: O
     */
    constructor(properties: Properties, mode: OverrideMode = SetOrError) : this(properties.toStringStringMap(), mode)
 
-   override fun beforeProject() {
+   override suspend fun beforeProject() {
       changeSystemProperties()
    }
 
-   override fun afterProject() {
+   override suspend fun afterProject() {
       resetSystemProperties()
    }
 }

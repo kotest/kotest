@@ -5,12 +5,6 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
-fun between(a: Long, b: Long): Matcher<Long> = object : Matcher<Long> {
-  override fun test(value: Long) = MatcherResult(value in a..b,
-    "$value is between ($a, $b)",
-    "$value is not between ($a, $b)")
-}
-
 fun lt(x: Long) = beLessThan(x)
 fun beLessThan(x: Long) = object : Matcher<Long> {
   override fun test(value: Long) = MatcherResult(value < x, "$value should be < $x", "$value should not be < $x")

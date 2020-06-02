@@ -1,10 +1,14 @@
 package io.kotest.assertions
 
+import io.kotest.mpp.StackTraces
+
+expect val errorCollector: ErrorCollector
+
 enum class ErrorCollectionMode {
    Soft, Hard
 }
 
-expect object ErrorCollector {
+interface ErrorCollector {
 
    fun getCollectionMode(): ErrorCollectionMode
 
@@ -36,7 +40,38 @@ expect object ErrorCollector {
    fun clueContext(): List<Any>
 }
 
-fun clueContextAsString() = ErrorCollector.clueContext().let {
+object BasicErrorCollector : ErrorCollector {
+
+   private val failures = mutableListOf<Throwable>()
+   private var mode = ErrorCollectionMode.Hard
+   private val clues = mutableListOf<Any>()
+
+   override fun getCollectionMode(): ErrorCollectionMode = mode
+
+   override fun setCollectionMode(mode: ErrorCollectionMode) {
+      this.mode = mode
+   }
+
+   override fun pushClue(clue: Any) {
+      clues.add(0, clue)
+   }
+
+   override fun popClue() {
+      clues.removeAt(0)
+   }
+
+   override fun clueContext(): List<Any> = clues.toList()
+
+   override fun pushError(t: Throwable) {
+      failures.add(t)
+   }
+
+   override fun errors(): List<Throwable> = failures.toList()
+
+   override fun clear() = failures.clear()
+}
+
+fun clueContextAsString() = errorCollector.clueContext().let {
    if (it.isEmpty()) "" else it.joinToString("\n", postfix = "\n")
 }
 
@@ -63,7 +98,7 @@ fun ErrorCollector.throwCollectedErrors() {
    clear()
    if (failures.isNotEmpty()) {
       val t = if (failures.size == 1) failures[0] else MultiAssertionError(failures)
-      cleanStackTrace(t)
+      StackTraces.cleanStackTrace(t)
       throw t
    }
 }

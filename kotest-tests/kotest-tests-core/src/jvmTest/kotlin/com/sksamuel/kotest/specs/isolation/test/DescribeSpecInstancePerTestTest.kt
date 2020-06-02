@@ -23,7 +23,7 @@ class DescribeSpecInstancePerTestTest : DescribeSpec({
       tests.add(it.a.name)
    }
 
-   isolation = IsolationMode.InstancePerTest
+   isolationMode = IsolationMode.InstancePerTest
 
    val counter = AtomicInteger(0)
 

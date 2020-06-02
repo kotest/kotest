@@ -63,8 +63,39 @@ fun <A> Arb.Companion.subsequence(list: List<A>) = arb {
  * The input must be non-empty.
  * The input gens must be infinite.
  */
-fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Arb<A> = arb { rs ->
+@Deprecated(
+   message = "Deprecated in favor of a function that returns an Arb instead of a Gen",
+   replaceWith = ReplaceWith("Arb.Companion.choice(vararg arbs: Arb<A>)")
+)
+fun <A> Arb.Companion.choice(vararg gens: Gen<A>): Gen<A> = arb { rs ->
    val iters = gens.map { it.generate(rs).iterator() }
+   fun next(): Sample<A>? {
+      val iter = iters.shuffled(rs.random).first()
+      return if (iter.hasNext()) iter.next() else null
+   }
+   sequence {
+      while (true) {
+         var next: Sample<A>? = null
+         while (next == null)
+            next = next()
+         yield(next.value)
+      }
+   }
+}
+
+/**
+ * Uses the Arbs provided to randomly generate the next element.
+ * The returned Arb.edgecases() contains all of edgecases of the provided arbs
+ * The input must be non-empty.
+ * The input arbs must be infinite.
+ *
+ * @throws IllegalArgumentException if no arbs have been passed to this function
+ * @return A new Arb<A> that will randomly select values from the provided Arbs, and combine all of the provided
+ * Arbs edgecases
+ */
+fun <A> Arb.Companion.choice(vararg arbs: Arb<out A>): Arb<A> = arb(arbs.flatMap(Arb<out A>::edgecases)) { rs ->
+   require(arbs.isNotEmpty()) { "No Arb instances passed to Arb.choice()." }
+   val iters = arbs.map { it.values(rs).iterator() }
    fun next(): Sample<A>? {
       val iter = iters.shuffled(rs.random).first()
       return if (iter.hasNext()) iter.next() else null

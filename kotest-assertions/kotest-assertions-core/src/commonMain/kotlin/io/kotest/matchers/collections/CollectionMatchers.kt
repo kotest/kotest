@@ -23,17 +23,6 @@ fun <T> beEmpty(): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
   )
 }
 
-
-fun <T> containAll(vararg ts: T) = containAll(ts.asList())
-fun <T> containAll(ts: Collection<T>): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
-  override fun test(value: Collection<T>) = MatcherResult(
-    ts.all { value.contains(it) },
-    { "Collection should contain all of ${ts.show().value} " +
-      "but missing ${ts.filter { !value.contains(it) }.show().value}" },
-    { "Collection should not contain all of ${ts.show().value}" }
-  )
-}
-
 fun <T> containsInOrder(vararg ts: T): Matcher<Collection<T>?> = containsInOrder(ts.asList())
 /** Assert that a collection contains a given subsequence, possibly with values in between. */
 fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
@@ -51,6 +40,29 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
     { "${actual.show().value} did not contain the elements ${subsequence.show().value} in order" },
     { "${actual.show().value} should not contain the elements ${subsequence.show().value} in order" }
   )
+}
+
+fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
+
+/**
+ * Assert that a collections contains a subsequence that matches the given subsequence of predicates, possibly with
+ * values in between.
+ */
+fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
+   require(predicates.isNotEmpty()) { "predicates must not be empty" }
+
+   var subsequenceIndex = 0
+   val actualIterator = actual.iterator()
+
+   while (actualIterator.hasNext() && subsequenceIndex < predicates.size) {
+      if (predicates[subsequenceIndex](actualIterator.next())) subsequenceIndex += 1
+   }
+
+   MatcherResult(
+      subsequenceIndex == predicates.size,
+      { "${actual.show().value} did not match the predicates ${predicates.show().value} in order" },
+      { "${actual.show().value} should not match the predicates ${predicates.show().value} in order" }
+   )
 }
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)

@@ -24,7 +24,7 @@ fun <A> Arb<A>.next(rs: RandomSource = RandomSource.Default): A = single(rs)
 
 /**
  * Creates a new [Arb] that performs no shrinking, and generates values from the given function
- * that is invoked once.
+ * that is invoked once to return a sequence of values.
  */
 fun <A> arb(edgecases: List<A> = emptyList(), f: (RandomSource) -> Sequence<A>) = object : Arb<A>() {
    override fun edgecases(): List<A> = edgecases

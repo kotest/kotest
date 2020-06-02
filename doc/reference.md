@@ -22,19 +22,19 @@ Kotest is split into 3 basic sub-projects.
 These are provided separately so you can pick and choose which parts to use if you don't want to go _all in_ on Kotest.
 
 
-|   |   |   |
-|---|---|---|
-| **Test Framework**  | Provides the ability to layout tests in one of the spec styles and execute them on the JVM or Javascript  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=latest%20release"/>  |
-| **Assertions Library**  | Provides over 300 rich assertions for JVM and JS, with helpful error messages and support for kotlin specific types.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=latest%20release"/>  |
-| **Property Testing**  | The most advanced property test library on the JVM, with shrinking support, and over 50 built in generators.  | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=latest%20release"/>  |
+|     |     |
+| --- | --- |
+| **Test Framework**<br/>Layout tests in a fluid way and execute them on the JVM or Javascript. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Assertions Library**<br/>A Kotlin-first multi-platform enabled assertions library. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-core.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
+| **Property Testing**<br/>An advanced multi-platform property test library with shrinking support. | <img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property.svg?label=release"/> [<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-core.svg?label=snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/) |
 
 #### Which subproject(s) to use?
 
-* If you want to lay out tests in a more [structured way](styles.md); with built in coroutine support at every level; the ability to use [functions as test lifecycle callbacks](/doc/listeners.md#dsl-methods-with-functions); with extensive extension points and more, then build your test classes using the Kotest Test Framework.
+* If you want to lay out tests in a [fluid way](styles.md); with built in coroutine support at every level; the ability to use [functions as test lifecycle callbacks](/doc/listeners.md#dsl-methods-with-functions); with extensive extension points; with advanced [conditional evaluation](conditional_evaluation.md); and execute these tests on the JVM and/or Javascript, then build your test classes using the Kotest Test Framework.
 
-* If you want a Kotlin focused multi-platform enabled assertions library, with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md) and more, then opt to use the Kotest assertions library.
+* If you want a Kotlin focused multi-platform enabled assertions library; with over [300 rich assertions](matchers.md); with support for [inspectors](inspectors.md); helpers for [non-determistic tests](nondeterministic.md); powerful [data driven testing](data_driven_testing.md); modules for [arrow](https://arrow-kt.io/), json and more, then opt to use the Kotest assertions library.
 
-* If you want a powerful [property test](property_testing.md) library, with over 50 built in generators; the ability to easily compose new generators; with failure shrinking; with exhaustive checks; with coverage metrics; then choose the Kotest property test module.
+* If you want a powerful multi-platform enabled [property test](property_testing.md) library, with over 50 [built in generators](generators.md); the ability to easily compose new generators; with failure shrinking; with exhaustive checks; with coverage metrics; then choose the Kotest property test module.
 
 
 The following instructions give you the batteries included setup in gradle or maven. Omit any modules you don't wish to use.
@@ -251,7 +251,7 @@ For example to create a matcher that checks that a string contains the substring
 
 ```kotlin
 fun containFoo() = object : Matcher<String> {
-  override fun test(value: String) = Result(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
+  override fun test(value: String) = MatcherResult(value.contains("foo"), "String $value should include foo", "String $value should not include foo")
 }
 ```
 This matcher could then be used as follows:
@@ -296,6 +296,16 @@ assertSoftly {
 If any assertions inside the block failed, the test will continue to
 run. All failures will be reported in a single exception at the end of
 the block.
+
+`assertSoftly` also works with a receiver:
+
+```kotlin
+foo.assertSoftly {
+    shouldNotEndWith("b")
+    length shouldBe 3
+}
+
+```
 
 
 
@@ -469,6 +479,38 @@ All specs allow you to control the isolation mode. Full instructions can be foun
 
 
 
+
+
+
+Mocking
+--------------
+
+Kotest itself has no mock features. However, you can plug-in your favourite mocking library with ease!
+
+Let's take for example [mockk](https://mockk.io):
+
+```kotlin
+class MyTest : FunSpec({
+
+    val repository = mockk<MyRepository>()
+    val target = MyService(repository)
+
+    test("Saves to repository") {
+        every { repository.save(any()) } just Runs
+        target.save(MyDataClass("a"))
+        verify(exactly = 1) { repository.save(MyDataClass("a")) }
+    }
+
+})
+```
+
+Sometimes you might need some extra configurations (such as setup mocks, restart their counter, etc). For that, please
+check [mock documentation](mocks.md)
+
+
+
+
+
 Test Case Config
 ------------------------------
 
@@ -548,6 +590,19 @@ only a subset of tests to run. Tags are added to tests and then one or more tag 
 from a test run. For full details read this [page](tags.md).
 
 
+
+
+
+Test Factories
+-------------
+
+Kotest supports fully reusable tests via _test factories_. These are functions which return a set of dynamic tests
+which can be included in one or more specs. Each factory can be parameterized by simply adding parameters to the
+function that defines the factory.
+
+Each included test appears in the test output and report as if it was individually defined.
+
+Read more about [test factories](testfactories.md)
 
 
 

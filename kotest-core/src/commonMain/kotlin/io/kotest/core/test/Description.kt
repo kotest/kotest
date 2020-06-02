@@ -23,8 +23,17 @@ data class Description(val parents: List<String>, val name: String) {
        * Creates a Spec level description object for the given name.
        */
       fun spec(name: String) = Description(emptyList(), name)
+
+      /**
+       * Creates a Spec level description from the given [Spec] instance.
+       */
       fun spec(spec: Spec) = spec::class.description()
+
+      /**
+       * Creates a Spec level description from the given instance, with no guarantees the instance is a Spec.
+       */
       fun specUnsafe(spec: Any) = spec::class.description()
+
       fun test(name: String) = Description(emptyList(), name)
    }
 

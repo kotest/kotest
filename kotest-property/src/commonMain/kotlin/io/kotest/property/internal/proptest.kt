@@ -23,9 +23,11 @@ suspend fun <A> proptest(
       .take(iterations)
       .forEach { a ->
          val shrinkfn = shrinkfn<A>(a, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value), random.seed) {
             context.property(a.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -51,9 +53,11 @@ suspend fun <A, B> proptest(
       .take(iterations)
       .forEach { (a, b) ->
          val shrinkfn = shrinkfn<A, B>(a, b, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value), random.seed) {
             context.property(a.value, b.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
 
    context.checkMaxSuccess(config, random.seed)
@@ -81,9 +85,11 @@ suspend fun <A, B, C> proptest(
       .forEach { (ab, c) ->
          val (a, b) = ab
          val shrinkfn = shrinkfn<A, B, C>(a, b, c, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value, c.value), random.seed) {
             context.property(a.value, b.value, c.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
 
    context.checkMaxSuccess(config, random.seed)
@@ -114,9 +120,11 @@ suspend fun <A, B, C, D> proptest(
          val (ab, c) = abc
          val (a, b) = ab
          val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value), random.seed) {
             context.property(a.value, b.value, c.value, d.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
 
    context.checkMaxSuccess(config, random.seed)
@@ -156,9 +164,11 @@ suspend fun <A, B, C, D, E> proptest(
          val (ab, c) = abc
          val (a, b) = ab
          val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value), random.seed) {
             context.property(a.value, b.value, c.value, d.value, e.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -200,9 +210,11 @@ suspend fun <A, B, C, D, E, F> proptest(
          val (ab, c) = abc
          val (a, b) = ab
          val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode)
+         config.listeners.forEach { it.beforeTest() }
          test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value, f.value), random.seed) {
             context.property(a.value, b.value, c.value, d.value, e.value, f.value)
          }
+         config.listeners.forEach { it.afterTest() }
       }
    context.checkMaxSuccess(config, random.seed)
    return context

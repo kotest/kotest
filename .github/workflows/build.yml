@@ -28,11 +28,11 @@ jobs:
 
          -  name: Run windows tests
             if: matrix.os == 'windows-latest'
-            run: ./gradlew nativeTest
+            run: ./gradlew mingwX64Test
 
          -  name: Run macOS tests
             if: matrix.os == 'macOS-latest'
-            run: ./gradlew nativeTest
+            run: ./gradlew macosX64Test
 
          -  name: Bundle the build report
             if: failure()
@@ -72,7 +72,7 @@ jobs:
                fetch-depth: 0
 
          -  name: deploy to sonatype snapshots
-            run: ./gradlew publishNativePublicationToDeployRepository
+            run: ./gradlew publishMacosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
@@ -88,7 +88,7 @@ jobs:
                fetch-depth: 0
 
          -  name: deploy to sonatype snapshots
-            run: ./gradlew publishNativePublicationToDeployRepository
+            run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}

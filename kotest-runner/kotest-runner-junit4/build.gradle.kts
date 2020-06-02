@@ -39,10 +39,10 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Mpp))
-            implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.Core))
-            implementation(project(Projects.Extensions))
+            api(project(Projects.Mpp))
+            api(project(Projects.AssertionsShared))
+            api(project(Projects.Core))
+            api(project(Projects.Extensions))
             api("junit:junit:4.13")
             api(Libs.Coroutines.core)
          }

@@ -35,9 +35,6 @@ fun beOdd() = object : Matcher<Int> {
       MatcherResult(value % 2 == 1, "$value should be odd", "$value should be even")
 }
 
-fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
-fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
-
 infix fun Int.shouldBeLessThan(x: Int) = this shouldBe lt(x)
 infix fun Int.shouldNotBeLessThan(x: Int) = this shouldNotBe lt(x)
 

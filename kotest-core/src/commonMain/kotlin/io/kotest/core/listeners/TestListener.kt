@@ -9,6 +9,9 @@ import kotlin.reflect.KClass
 
 interface TestListener : Listener {
 
+   override val name: String
+      get() = "defaultTestListener"
+
    /**
     * This callback will be invoked before a [TestCase] is executed.
     *
