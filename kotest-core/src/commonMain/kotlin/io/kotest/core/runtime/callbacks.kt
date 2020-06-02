@@ -16,11 +16,12 @@ import io.kotest.mpp.log
 
 fun List<ProjectListener>.resolveName() =
    groupBy { it.name }
-      .flatMap { entry -> if (entry.value.size > 1) {
-         entry.value.mapIndexed { index, listener -> "${listener.name}_$index" to listener }
-      } else{
-         entry.value.map { it.name to it }
-      }
+      .flatMap { entry ->
+         if (entry.value.size > 1) {
+            entry.value.mapIndexed { index, listener -> "${listener.name}_$index" to listener }
+         } else {
+            entry.value.map { it.name to it }
+         }
       }
 
 /**
@@ -55,32 +56,28 @@ suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerExcept
  */
 suspend fun TestCase.invokeBeforeTest(): Try<TestCase> = Try {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.beforeTest(this)
-   }
+   listeners.forEach { it.beforeTest(this) }
    this
 }
 
 suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> = Try {
    val listeners = this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.afterTest(this, result)
-   }
+   listeners
+      .asReversed()
+      .forEach { it.afterTest(this, result) }
    this
 }
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.beforeInvocation(this, k)
-   }
+   listeners.forEach { it.beforeInvocation(this, k) }
 }
 
 suspend fun TestCase.invokeAfterInvocation(k: Int) {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.afterInvocation(this, k)
-   }
+   listeners
+      .asReversed()
+      .forEach { it.afterInvocation(this, k) }
 }
 
 /**
@@ -90,9 +87,7 @@ suspend fun TestCase.invokeAfterInvocation(k: Int) {
 suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
    log("invokeBeforeSpec $this")
    val listeners = resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.beforeSpec(this)
-   }
+   listeners.forEach { it.beforeSpec(this) }
    this
 }
 
@@ -106,7 +101,9 @@ suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
    autoCloseables.forEach { it.close() }
 
    val listeners = resolvedTestListeners() + Project.testListeners()
-   listeners.forEach { it.afterSpec(this) }
+   listeners
+      .asReversed()
+      .forEach { it.afterSpec(this) }
    this
 }
 
