@@ -101,8 +101,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {
 
-      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
       var results: Try<Map<TestCase, TestResult>> = emptyMap<TestCase, TestResult>().success()
+      if (spec.rootTests().isEmpty()) return results
+
+      val extensions = spec.resolvedExtensions().filterIsInstance<SpecExtension>() + Project.specExtensions()
 
       // the terminal case after all (if any) extensions have been invoked
       val run: suspend () -> Unit = suspend {
