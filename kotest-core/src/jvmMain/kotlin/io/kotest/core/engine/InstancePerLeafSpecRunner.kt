@@ -57,7 +57,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
       val testCases = spec.rootTests().map { it.testCase }
 
-      runParallel(spec.threadsForSpec, testCases) {
+      runParallel(spec.threads, testCases) {
          executeInCleanSpec(it).getOrThrow()
          while (queues.get().isNotEmpty()) {
             val (testCase, count) = queues.get().remove()

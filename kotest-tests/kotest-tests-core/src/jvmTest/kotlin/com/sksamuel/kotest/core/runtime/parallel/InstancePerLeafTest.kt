@@ -24,8 +24,8 @@ private val externalMultipleThreadCounter =
 
 class SpecThreadInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    val internalThreadCounter =
       PersistentThreadLocal<Int>()
@@ -74,8 +74,8 @@ private val objects = ConcurrentHashMap.newKeySet<ReentrantLock>()
 
 class SpecThreadInstancePerLeafWithLockTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    val lock = ReentrantLock()
 
@@ -116,8 +116,8 @@ private val externalThreadAccum =
 
 class SpecThreadWithNestedTestInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    val innerThreadAccum =
       PersistentThreadLocal<String>()
@@ -241,8 +241,8 @@ private val locks = ConcurrentHashMap.newKeySet<ReentrantLock>()
 
 class SpecThreadWithNestedTestWithLockInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 2
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 2
 
    val outerContextLock = ReentrantLock()
 
@@ -325,8 +325,8 @@ private val afterSpecCounter = AtomicInteger(0)
 
 class SpecThreadBeforeAfterInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    beforeSpec {
       beforeSpecCounter.getAndIncrement()
@@ -371,8 +371,8 @@ private val afterSpecNestedCounter = AtomicInteger(0)
 
 class SpecThreadWithNestedBeforeAfterInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    beforeSpec {
       beforeSpecNestedCounter.getAndIncrement()
@@ -439,8 +439,8 @@ private val counterBeforeTestConcurrent = AtomicInteger(0)
 
 class SpecThreadBeforeTestConcurrentInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    val lock = ReentrantLock()
 
@@ -483,8 +483,8 @@ private val counterTestExtensionConcurrent = AtomicInteger(0)
 
 class SpecThreadTestCaseExtensionConcurrentInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
    val lock = ReentrantLock()
 
@@ -527,8 +527,8 @@ private val lockedCounterSpecExtensionConcurrent = AtomicInteger(0)
 
 class SpecThreadSpecExtensionConcurrentInstancePerLeafTest : FunSpec({
 
-   isolation = IsolationMode.InstancePerLeaf
-   threadsForSpec = 3
+   isolationMode = IsolationMode.InstancePerLeaf
+   threads = 3
 
 
    val lock = ReentrantLock()

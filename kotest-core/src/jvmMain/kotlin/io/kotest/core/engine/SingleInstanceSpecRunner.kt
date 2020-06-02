@@ -64,7 +64,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
          val testCases = spec.rootTests().map { it.testCase }
-         runParallel(spec.threadsForSpec, testCases) {
+         runParallel(spec.threads, testCases) {
             log("Executing test $it")
             runTest(it, context)
          }

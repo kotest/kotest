@@ -51,7 +51,7 @@ abstract class TestConfiguration {
     * Returns the number of concurrent root test cases of Spec that can be executed.
     * Defaults to 1.
     */
-   var threadsForSpec: Int = 1
+   var threads: Int = 1
 
    /**
     * Sets an assertion mode which is applied to every test.

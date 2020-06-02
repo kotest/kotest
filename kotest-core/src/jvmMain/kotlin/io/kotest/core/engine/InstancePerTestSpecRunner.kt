@@ -63,7 +63,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * can be registered back with the stack for execution later.
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      runParallel(spec.threadsForSpec, spec.rootTests().map { it.testCase }){
+      runParallel(spec.threads, spec.rootTests().map { it.testCase }){
          executeInCleanSpec(it)
             .getOrThrow()
       }
