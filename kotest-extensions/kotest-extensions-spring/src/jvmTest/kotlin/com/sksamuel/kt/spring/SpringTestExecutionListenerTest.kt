@@ -18,11 +18,21 @@ class SpringTestExecutionListenerTest : FunSpec() {
   @Autowired
   lateinit var userService: UserService
 
-  override fun listeners(): List<TestListener> {
-    return listOf(SpringListener)
-  }
-
   init {
+
+     //This order of declaration is IMPORTANT because now we have reverse order of after* callbacks execution
+     afterSpec{
+        DummyTestExecutionListener.beforeTestClass shouldBe 1
+        DummyTestExecutionListener.beforeTestMethod shouldBe 2
+        DummyTestExecutionListener.beforeTestExecution shouldBe 2
+        DummyTestExecutionListener.prepareTestInstance shouldBe 1
+        DummyTestExecutionListener.afterTestExecution shouldBe 2
+        DummyTestExecutionListener.afterTestmethod shouldBe 2
+        DummyTestExecutionListener.afterTestClass shouldBe 1
+     }
+
+     listeners(SpringListener)
+
     test("Should autowire with spring listeners") {
       userService.repository.findUser()
     }
@@ -30,16 +40,7 @@ class SpringTestExecutionListenerTest : FunSpec() {
     test("Dummy test to test spring listener in afterSpecClass") {
       // Only here to verify counts are incremented
     }
-  }
 
-   override fun afterSpec(spec: Spec) {
-    DummyTestExecutionListener.beforeTestClass shouldBe 1
-    DummyTestExecutionListener.beforeTestMethod shouldBe 2
-    DummyTestExecutionListener.beforeTestExecution shouldBe 2
-    DummyTestExecutionListener.prepareTestInstance shouldBe 1
-    DummyTestExecutionListener.afterTestExecution shouldBe 2
-    DummyTestExecutionListener.afterTestmethod shouldBe 2
-    DummyTestExecutionListener.afterTestClass shouldBe 1
   }
 }
 
