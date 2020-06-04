@@ -143,10 +143,12 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * If this errors then no further callbacks or tests will be executed.
     */
    private suspend fun invokePrepareSpecListeners(kclass: KClass<out Spec>): Try<Unit> = Try {
-      log("Executing notifyPrepareSpec")
-      Project.testListeners().forEach {
+      val listeners = Project.testListeners()
+      log("Notifying ${listeners.size} test listeners of callback 'prepareSpec'")
+      listeners.forEach {
          it.prepareSpec(kclass)
       }
+      log("'prepareSpec' callbacks complete")
    }
 
    /**
