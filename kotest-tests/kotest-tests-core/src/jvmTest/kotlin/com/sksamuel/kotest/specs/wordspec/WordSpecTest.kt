@@ -2,6 +2,8 @@ package com.sksamuel.kotest.specs.wordspec
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -32,6 +34,15 @@ class WordSpecTest : WordSpec() {
             }
          }
 
+      }
+      "a context with coroutine in word spec when scope" When {
+         launch { delay(1) }
+         "a context with coroutine in word spec should scope" Should {
+            launch { delay(1) }
+            "a dummy test" {
+
+            }
+         }
       }
    }
 }

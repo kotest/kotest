@@ -13,7 +13,7 @@ interface FreeSpecScope : RootScope {
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
       registration().addContainerTest(this, xdisabled = false) {
-         FreeScope(description().append(this@minus), lifecycle(), this, defaultConfig()).test()
+         FreeScope(description().append(this@minus), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 

@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("FunctionName")
 @KotestDsl
@@ -11,7 +12,8 @@ class WordSpecWhenScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    suspend infix fun String.Should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
@@ -25,7 +27,8 @@ class WordSpecWhenScope(
             this@WordSpecWhenScope.description.append(testName),
             this@WordSpecWhenScope.lifecycle,
             this,
-            this@WordSpecWhenScope.defaultConfig
+            this@WordSpecWhenScope.defaultConfig,
+            this@WordSpecWhenScope.coroutineContext
          ).test()
       }
    }

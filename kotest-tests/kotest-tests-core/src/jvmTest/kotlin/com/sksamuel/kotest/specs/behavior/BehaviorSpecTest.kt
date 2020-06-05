@@ -5,6 +5,8 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
 class BehaviorSpecTest : BehaviorSpec() {
@@ -145,6 +147,19 @@ class BehaviorSpecTest : BehaviorSpec() {
                xwhen("should be ignored") {
                   error("boom")
                }
+            }
+         }
+      }
+
+      given("something delay in given scope") {
+         launch { delay(1) }
+         `when`("something delay in when scope") {
+            launch { delay(1) }
+            and("something delay in when scope provided by and") {
+               launch { delay(1) }
+            }
+            then("one should be one") {
+               1 shouldBe 1
             }
          }
       }

@@ -15,7 +15,7 @@ interface DescribeSpecScope : RootScope {
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = createTestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
-         DescribeScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         DescribeScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 

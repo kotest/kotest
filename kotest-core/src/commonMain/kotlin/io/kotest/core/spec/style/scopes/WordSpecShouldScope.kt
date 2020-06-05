@@ -7,6 +7,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -22,7 +23,8 @@ class WordSpecShouldScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    @OptIn(ExperimentalTime::class)

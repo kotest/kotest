@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -25,7 +26,8 @@ class FeatureScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
@@ -35,7 +37,8 @@ class FeatureScope(
             this@FeatureScope.description.append(testName),
             this@FeatureScope.lifecycle,
             this,
-            this@FeatureScope.defaultConfig
+            this@FeatureScope.defaultConfig,
+            this@FeatureScope.coroutineContext
          ).test()
       }
    }
@@ -47,7 +50,8 @@ class FeatureScope(
             this@FeatureScope.description.append(testName),
             this@FeatureScope.lifecycle,
             this,
-            this@FeatureScope.defaultConfig
+            this@FeatureScope.defaultConfig,
+            this@FeatureScope.coroutineContext
          ).test()
       }
    }
