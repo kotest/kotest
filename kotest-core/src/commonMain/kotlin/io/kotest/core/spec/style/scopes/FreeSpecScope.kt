@@ -32,9 +32,19 @@ interface FreeSpecScope : RootScope {
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
    ) {
-      val config = defaultConfig().deriveTestConfig(enabled, tags, extensions, timeout, enabledIf, invocations, threads)
+      val config = defaultConfig().deriveTestConfig(
+         enabled,
+         tags,
+         extensions,
+         timeout,
+         invocationTimeout,
+         enabledIf,
+         invocations,
+         threads
+      )
       registration().addTest(this, false, config, test)
    }
 }

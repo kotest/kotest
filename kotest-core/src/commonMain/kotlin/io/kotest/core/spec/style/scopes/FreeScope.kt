@@ -42,6 +42,7 @@ class FreeScope(
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
    ) = TestWithConfigBuilder(this, testContext, defaultConfig, xdisabled = false).config(
       enabled,
@@ -51,6 +52,7 @@ class FreeScope(
       timeout,
       extensions,
       enabledIf,
+      invocationTimeout,
       test
    )
 }

@@ -19,9 +19,13 @@ data class TestResult(
          duration
       )
 
-      fun throwable(e: Throwable?, duration: Duration): TestResult {
+      /**
+       * Returns a [TestResult] derived from a throwable.
+       * If the throwable is either an [AssertionError] or one of the library specific assertion types,
+       * then a [TestStatus.Failure] will be returned, otherwise a [TestStatus.Error] will be returned.
+       */
+      fun throwable(e: Throwable, duration: Duration): TestResult {
          return when (e) {
-            null -> success(duration)
             is AssertionError -> failure(e, duration)
             else -> when (e::class.bestName()) {
                "org.opentest4j.AssertionFailedError", "AssertionFailedError" -> failure(e, duration)
@@ -64,10 +68,13 @@ data class TestResult(
 enum class TestStatus {
    // the test was skipped completely
    Ignored,
+
    // the test was successful
    Success,
+
    // the test failed because of some exception that was not an assertion error
    Error,
+
    // the test ran but an assertion failed
    Failure
 }

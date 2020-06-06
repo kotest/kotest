@@ -9,6 +9,7 @@ import io.kotest.core.test.TestStatus
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isActive
 import io.kotest.core.test.resolvedTimeout
+import io.kotest.core.test.resolvedInvocationTimeout
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.TimeoutCancellationException
@@ -145,11 +146,9 @@ class TestExecutor(
       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
          error("Cannot execute multiple invocations in parent tests")
 
-      // we calculate the timeout which will fail the test with a timed out message
-      val timeout = testCase.config.resolvedTimeout()
-      val t = executeAndWait(ec, testCase, context, timeout)
+      val t = executeAndWait(ec, testCase, context)
 
-      val result = TestResult.throwable(t, mark.elapsedNow())
+      val result = if (t == null) TestResult.success(mark.elapsedNow()) else TestResult.throwable(t, mark.elapsedNow())
       log("Test completed with result $result")
       result
    }
@@ -161,37 +160,52 @@ class TestExecutor(
    private suspend fun executeAndWait(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
-      context: TestContext,
-      timeout: Duration
-   ): Throwable? = try {
-      // all platforms support coroutine based interruption
-      withTimeout(timeout.toLongMilliseconds()) {
-         // not all platforms support executing with a timeout because it uses background threads to interrupt
-         ec.executeWithTimeoutInterruption(timeout) {
-            replay(
-               testCase.config.invocations,
-               testCase.config.threads,
-               { testCase.invokeBeforeInvocation(it) },
-               { testCase.invokeAfterInvocation(it) }) {
-               coroutineScope {
-                  val contextp = object : TestContext() {
-                     override val testCase: TestCase = context.testCase
-                     override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
-                     override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+      context: TestContext
+   ): Throwable? {
+
+      // this timeout applies to the test itself. If the test has multiple invocations then
+      // this timeout applies across all invocations. In other words, if a test has invocations = 3,
+      // each test takes 300ms, and a timeout of 800ms, this would fail, becauase 3 x 300 > 800.
+      val timeout = testCase.config.resolvedTimeout()
+      log("Test will execute with timeout $timeout")
+
+      // this timeout applies to each inovation. If a test has invocations = 3, and this timeout
+      // is set to 300ms, then each individual invocation must complete in under 300ms.
+      val invocationTimeout = testCase.config.resolvedInvocationTimeout()
+      log("Test will execute with invocationTimeout $invocationTimeout")
+
+      return try {
+
+         // all platforms support coroutine based interruption
+         withTimeout(timeout) {
+            // not all platforms support executing with a timeout because it uses background threads to interrupt
+            ec.executeWithTimeoutInterruption(timeout) {
+               withTimeout(invocationTimeout) {
+                  replay(
+                     testCase.config.invocations,
+                     testCase.config.threads,
+                     { testCase.invokeBeforeInvocation(it) },
+                     { testCase.invokeAfterInvocation(it) }) {
+                     coroutineScope {
+                        val contextp = object : TestContext() {
+                           override val testCase: TestCase = context.testCase
+                           override suspend fun registerTestCase(nested: NestedTest) = context.registerTestCase(nested)
+                           override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+                        }
+                        testCase.executeWithBehaviours(contextp)
+                     }
                   }
-                  testCase.executeWithBehaviours(contextp)
                }
             }
          }
+         null
+      } catch (e: TimeoutCancellationException) {
+         log("Timeout exception $e")
+         TimeoutException(timeout)
+      } catch (t: Throwable) {
+         t
+      } catch (e: AssertionError) {
+         e
       }
-      null
-   } catch (e: TimeoutCancellationException) {
-      println("timeout caught!")
-      println(e)
-      TimeoutException(timeout)
-   } catch (t: Throwable) {
-      t
-   } catch (e: AssertionError) {
-      e
    }
 }

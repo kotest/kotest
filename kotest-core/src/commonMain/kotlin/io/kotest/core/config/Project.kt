@@ -55,6 +55,7 @@ object Project {
    private var listeners = userconf.listeners
    private var filters = userconf.filters
    private var timeout = userconf.timeout ?: defaultTimeout
+   private var invocationTimeout = defaultTimeout
    private var failOnIgnoredTests = userconf.failOnIgnoredTests ?: false
    private var specExecutionOrder = userconf.specExecutionOrder ?: LexicographicSpecExecutionOrder
    private var writeSpecFailureFile = userconf.writeSpecFailureFile ?: false
@@ -139,9 +140,14 @@ object Project {
     * If not specified then defaults to [defaultTimeout]
     */
    fun timeout(): Duration = timeout
+   fun invocationTimeout(): Duration = invocationTimeout
 
    fun setTimeout(duration: Duration) {
       this.timeout = duration
+   }
+
+   fun setInvocationTimeout(duration: Duration) {
+      this.invocationTimeout = duration
    }
 
    fun tagExtensions(): List<TagExtension> = extensions

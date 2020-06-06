@@ -36,6 +36,17 @@ class TimeoutTest : StringSpec() {
       "a testcase timeout should interrupt suspended coroutine scope".config(timeout = 50.milliseconds) {
          someCoroutine()
       }
+
+      "a testcase timeout should apply to all invocations".config(timeout = 200.milliseconds, invocations = 3) {
+         delay(100)
+      }
+
+      "an invocation timeout should apply to individual test only".config(
+         invocationTimeout = 100.milliseconds,
+         timeout = 1000.milliseconds
+      ) {
+         delay(200)
+      }
    }
 }
 

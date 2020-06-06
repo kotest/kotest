@@ -36,6 +36,7 @@ class WordSpecShouldScope(
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
    ) = TestWithConfigBuilder(this, testContext, defaultConfig, false).config(
       enabled,
@@ -45,6 +46,7 @@ class WordSpecShouldScope(
       timeout,
       extensions,
       enabledIf,
+      invocationTimeout,
       test
    )
 

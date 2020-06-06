@@ -28,6 +28,7 @@ interface StringSpecScope : RootScope {
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
       enabledIf: EnabledIf? = null,
+      invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
    ) = RootTestWithConfigBuilder(this, registration(), false).config(
       enabled,
@@ -37,6 +38,7 @@ interface StringSpecScope : RootScope {
       timeout,
       extensions,
       enabledIf,
+      invocationTimeout,
       test
    )
 
