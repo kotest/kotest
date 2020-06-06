@@ -4,15 +4,26 @@ expect object StackTraces {
 
    /**
     * Returns the first line of this stack trace, skipping io.kotest if possible.
-    * On some platforms the stack trace may not be available.
+    * On some platforms the stack trace may not be available and will return null.
     */
    fun Throwable.throwableLocation(): String?
+
+   /**
+    * Returns the first n lines of this stack trace, skipping io.test if possible.
+    * On some platforms the stack trace may not be available and will return null.
+    */
+   fun Throwable.location(n: Int): List<String>?
 
    /**
     * Removes io.kotest stack elements from the given throwable if the platform supports stack traces,
     * otherwise returns the exception as is.
     */
    fun <T : Throwable> cleanStackTrace(throwable: T): T
+
+   /**
+    * Returns the root cause or this.
+    */
+   fun root(throwable: Throwable): Throwable
 }
 
 /**

@@ -1,6 +1,7 @@
 package io.kotest.property.internal
 
 import io.kotest.assertions.show.show
+import io.kotest.mpp.StackTraces.location
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
@@ -14,26 +15,32 @@ import kotlin.time.ExperimentalTime
  * For each step in the shrinker, we test all the values. If they all pass then the shrinking ends.
  * Otherwise, the next batch is taken and the shrinks continue.
  *
- * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case.
+ * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case
+ * along with the reason for the failure.
+ *
  */
 @OptIn(ExperimentalTime::class)
 suspend fun <A> doShrinking(
    initial: RTree<A>,
    mode: ShrinkingMode,
    test: suspend (A) -> Unit
-): A {
+): ShrinkResult<A> {
 
-   if (initial.isEmpty())
-      return initial.value()
+   if (initial.isEmpty()) return ShrinkResult(initial.value(), initial.value(), null)
 
    val counter = Counter()
    val tested = mutableSetOf<A>()
    val sb = StringBuilder()
-   sb.append("Attempting to shrink failed arg ${initial.value.show().value}\n")
+   sb.append("Attempting to shrink arg ${initial.value().show().value}\n")
 
-   val candidate = doStep(initial, mode, tested, counter, test, sb) ?: initial.value()
-   result(sb, candidate as Any, counter.count)
-   return candidate
+   val stepResult = doStep(initial, mode, tested, counter, test, sb)
+   result(sb, stepResult, counter.count)
+
+   return if (stepResult == null) {
+      ShrinkResult(initial.value(), initial.value(), null)
+   } else {
+      ShrinkResult(initial.value(), stepResult.failed, stepResult.cause)
+   }
 }
 
 class Counter {
@@ -42,7 +49,16 @@ class Counter {
 }
 
 /**
+ * The result of shrinking a failed arg.
+ * If no shrinking took place, shrink should be set to the same as iniital
+ */
+data class ShrinkResult<out A>(val initial: A, val shrink: A, val cause: Throwable?)
+
+data class StepResult<A>(val failed: A, val cause: Throwable)
+
+/**
  * Performs shrinking on the given RTree. Recurses into the tree for failing cases.
+ * Returns the last candidate to fail as a [StepResult] or null if the initial passes.
  */
 suspend fun <A> doStep(
    tree: RTree<A>,
@@ -51,24 +67,27 @@ suspend fun <A> doStep(
    counter: Counter,
    test: suspend (A) -> Unit,
    sb: StringBuilder
-): A? {
+): StepResult<A>? {
 
+   // if no more shrinking return null (if we've hit the bounds)
    if (!mode.isShrinking(counter.count)) return null
    val candidates = tree.children.value
 
    candidates.asSequence()
+      // shrinkers might generate duplicate candidates so we must filter them out to avoid infinite loops or slow shrinking
       .filter { tested.add(it.value()) }
       .forEach { a ->
+         val candidate = a.value()
          counter.inc()
          try {
-            test(a.value())
+            test(candidate)
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${a.show().value} pass\n")
+               sb.append("Shrink #${counter.count}: ${candidate.show().value} pass\n")
          } catch (t: Throwable) {
             if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${a.show().value} fail\n")
-            // this result failed, so we'll recurse in to find further failures otherwise return this
-            return doStep(a, mode, tested, counter, test, sb) ?: a.value()
+               sb.append("Shrink #${counter.count}: ${candidate.show().value} fail\n")
+            // this result failed, so we'll recurse in to find further failures otherwise return this candidate
+            return doStep(a, mode, tested, counter, test, sb) ?: StepResult(candidate, t)
          }
       }
 
@@ -84,10 +103,18 @@ private fun ShrinkingMode.isShrinking(count: Int): Boolean = when (this) {
    is ShrinkingMode.Bounded -> count < bound
 }
 
-private fun result(sb: StringBuilder, candidate: Any, count: Int) {
-   when (count) {
-      0 -> sb.append("Shrink result => ${candidate.show().value}\n")
-      else -> sb.append("Shrink result (after $count shrinks) => ${candidate.show().value}\n")
+private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
+   if (count == 0 || result == null) {
+      sb.append("Arg was not shunk\n")
+   } else {
+      sb.append("Shrink result (after $count shrinks) => ${result.failed.show().value}\n\n")
+      when (val location = result.cause.location(4)) {
+         null -> sb.append("Caused by ${result.cause}\n")
+         else -> {
+            sb.append("Caused by ${result.cause} at\n")
+            location.forEach { sb.append("\t$it\n") }
+         }
+      }
    }
    if (PropertyTesting.shouldPrintShrinkSteps) {
       println(sb)

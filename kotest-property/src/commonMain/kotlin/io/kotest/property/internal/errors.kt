@@ -15,41 +15,33 @@ internal fun throwPropertyTestAssertionError(
 /**
  * Generates an [AssertionError] for a property test with arg details and then throws it.
  *
- * @param values the failed values
- * @param shrinks the reduced (shrunk) values
+ * @param results the reduced (shrunk) values along with the initial values
  * @param e the underlying failure reason
  * @param attempts the iteration count at the time of failure
  */
 internal fun throwPropertyTestAssertionError(
-   values: List<Any?>,
-   shrinks: List<Any?>,
+   results: List<ShrinkResult<Any?>>,
    e: Throwable,
    attempts: Int,
    seed: Long
 ) {
-   val inputs = values.zip(shrinks).map { PropertyFailureInput(it.first, it.second) }
-   throw propertyAssertionError(e, attempts, seed, inputs)
+   throw propertyAssertionError(e, attempts, seed, results)
 }
-
-/**
- * Maps a failed property test arg to its shrunk value if any.
- */
-data class PropertyFailureInput<T>(val original: T?, val shrunk: T?)
 
 /**
  * Generates an [AssertionError] for a failed property test.
  *
  * @param e the test failure cause
  * @param attempt the iteration count at the time of failure
- * @param inputs the inputs that the test failed for
+ * @param results the inputs that the test failed for
  */
 internal fun propertyAssertionError(
    e: Throwable,
    attempt: Int,
    seed: Long,
-   inputs: List<PropertyFailureInput<out Any?>>
+   results: List<ShrinkResult<Any?>>
 ): Throwable {
-   return failure(propertyTestFailureMessage(attempt, inputs, seed, e), e)
+   return failure(propertyTestFailureMessage(attempt, results, seed, e), e)
 }
 
 /**
@@ -58,33 +50,35 @@ internal fun propertyAssertionError(
  */
 internal fun propertyTestFailureMessage(
    attempt: Int,
-   inputs: List<PropertyFailureInput<out Any?>>,
+   results: List<ShrinkResult<Any?>>,
    seed: Long,
    cause: Throwable
 ): String {
    val sb = StringBuilder()
    sb.append("Property failed after $attempt attempts\n")
-   if (inputs.isNotEmpty()) {
+   if (results.isNotEmpty()) {
       sb.append("\n")
-      inputs.withIndex().forEach {
-         val input = if (it.value.shrunk == it.value.original) {
-            "\tArg ${it.index}: ${it.value.shrunk.show().value}"
+      results.withIndex().forEach { (index, result) ->
+         val input = if (result.initial == result.shrink) {
+            "\tArg ${index}: ${result.initial.show().value}"
          } else {
-            "\tArg ${it.index}: ${it.value.shrunk.show().value} (shrunk from ${it.value.original})"
+            "\tArg ${index}: ${result.shrink.show().value} (shrunk from ${result.initial})"
          }
          sb.append(input)
          sb.append("\n")
       }
    }
    sb.append("\n")
+   sb.append("Repeat this test by using seed $seed\n\n")
+
+   // the cause we use in the final result is the result of the last shrinking step, otherwise we use the original
+   val finalCause = results.fold(cause) { t, result -> result.cause ?: t }
 
    // don't bother to include the exception type if it's AssertionError
-   val causedBy = when (cause::class.simpleName) {
-      "AssertionError" -> "Caused by: ${cause.message?.trim()}"
-      else -> "Caused by ${cause::class.simpleName}: ${cause.message?.trim()}"
+   val causedBy = when (finalCause::class.simpleName) {
+      "AssertionError" -> "Caused by: ${finalCause.message?.trim()}"
+      else -> "Caused by ${finalCause::class.simpleName}: ${finalCause.message?.trim()}"
    }
    sb.append(causedBy)
-   sb.append("\n\n")
-   sb.append("Repeat this test by using seed $seed\n")
    return sb.toString()
 }
