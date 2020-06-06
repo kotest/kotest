@@ -27,9 +27,9 @@ kotlin {
          }
       }
 
-      linuxX64()
-      mingwX64()
-      macosX64()
+//      linuxX64()
+//      mingwX64()
+//      macosX64()
    }
 
    targets.all {
@@ -46,7 +46,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
-            implementation(project(Projects.Mpp))
+            implementation(project(Projects.Common))
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
          }
@@ -83,11 +83,11 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
-         }
-      }
+//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+//         get(it).dependencies {
+//            implementation(Libs.Coroutines.coreNative)
+//         }
+//      }
    }
 }
 

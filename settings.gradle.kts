@@ -1,7 +1,6 @@
 enableFeaturePreview("GRADLE_METADATA")
 
-include("kotest-fp")
-include("kotest-mpp")
+include("kotest-common")
 include("kotest-core")
 include("kotest-assertions:kotest-assertions-shared")
 include("kotest-assertions:kotest-assertions-core")

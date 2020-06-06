@@ -36,6 +36,10 @@ fun <T> Option<T>.orElse(other: () -> Option<T>): Option<T> = when (this) {
 
 fun <T> T.some(): Option<T> = Option.Some(this)
 
-fun <T> Collection<T>.firstOption(): Option<T> = if (this.isEmpty()) Option.None else Option.Some(first())
+fun <T> Collection<T>.firstOption(): Option<T> = if (this.isEmpty()) Option.None else Option.Some(
+    first()
+)
 
-fun <T> T?.toOption(): Option<T> = if (this == null) Option.None else Option.Some(this)
+fun <T> T?.toOption(): Option<T> = if (this == null) Option.None else Option.Some(
+    this
+)

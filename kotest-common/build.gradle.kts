@@ -9,6 +9,9 @@ repositories {
    mavenCentral()
 }
 
+val ideaActive = System.getProperty("idea.active") == "true"
+val os = org.gradle.internal.os.OperatingSystem.current()
+
 kotlin {
 
    targets {
@@ -27,9 +30,9 @@ kotlin {
          }
       }
 
-      linuxX64()
-      mingwX64()
-      macosX64()
+//      linuxX64()
+//      mingwX64()
+//      macosX64()
    }
 
    targets.all {
@@ -45,6 +48,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
+            implementation(Libs.Coroutines.coreCommon)
          }
       }
 
@@ -64,17 +68,12 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
-         }
-      }
+//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+//         get(it).dependencies {
+//            implementation(Libs.Coroutines.coreNative)
+//         }
+//      }
    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-   kotlinOptions.jvmTarget = "1.8"
 }
 
 apply(from = "../publish-mpp.gradle.kts")

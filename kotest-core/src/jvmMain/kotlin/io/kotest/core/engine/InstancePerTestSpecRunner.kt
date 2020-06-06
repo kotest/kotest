@@ -62,13 +62,14 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * Once the target is found it can be executed as normal, and any test lambdas it contains
     * can be registered back with the stack for execution later.
     */
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      runParallel(spec.threads, spec.rootTests().map { it.testCase }){
-         executeInCleanSpec(it)
-            .getOrThrow()
-      }
-      results
-   }
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
+       Try {
+           runParallel(spec.threads, spec.rootTests().map { it.testCase }) {
+               executeInCleanSpec(it)
+                   .getOrThrow()
+           }
+           results
+       }
 
    /**
     * The intention of this runner is that each [TestCase] executes in it's own instance
@@ -89,14 +90,15 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
          .flatMap { it.invokeAfterSpec() }
    }
 
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
-      log("Created new spec instance $spec")
-      // we need to find the same root test but in the newly created spec
-      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
-      log("Starting root test ${root.testCase.description} in search of ${test.description}")
-      run(root.testCase, test)
-      spec
-   }
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> =
+       Try {
+           log("Created new spec instance $spec")
+           // we need to find the same root test but in the newly created spec
+           val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
+           log("Starting root test ${root.testCase.description} in search of ${test.description}")
+           run(root.testCase, test)
+           spec
+       }
 
    private suspend fun run(test: TestCase, target: TestCase) {
       val isTarget = test.description == target.description

@@ -9,11 +9,12 @@ import kotlin.reflect.KClass
  * Creates an instance of a [Spec] by delegating to constructor extensions, with
  * a fallback to a reflection based zero-args constructor.
  */
-fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> = Try {
-   val nullSpec: Spec? = null
-   Project.constructorExtensions()
-      .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
-}
+fun <T : Spec> instantiateSpec(clazz: KClass<T>): Try<Spec> =
+    Try {
+        val nullSpec: Spec? = null
+        Project.constructorExtensions()
+            .fold(nullSpec) { spec, ext -> spec ?: ext.instantiate(clazz) } ?: javaReflectNewInstance(clazz)
+    }
 
 fun <T : Spec> javaReflectNewInstance(clazz: KClass<T>): Spec {
    val constructor = clazz.java.constructors[0]

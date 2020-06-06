@@ -27,9 +27,9 @@ kotlin {
          }
       }
 
-      linuxX64()
-      mingwX64()
-      macosX64()
+//      linuxX64()
+//      mingwX64()
+//      macosX64()
    }
 
    targets.all {
@@ -45,8 +45,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(project(Projects.Mpp))
-            implementation(project(Projects.Fp))
+            implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
@@ -79,11 +78,11 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
-         }
-      }
+//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+//         get(it).dependencies {
+//            implementation(Libs.Coroutines.coreNative)
+//         }
+//      }
    }
 }
 
