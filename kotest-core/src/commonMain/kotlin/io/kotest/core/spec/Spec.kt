@@ -13,6 +13,14 @@ import kotlin.js.JsName
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
    /**
+    * Sets the number of root test cases that can be executed concurrently in this spec.
+    * On the JVM this will result in multiple threads being used.
+    * On other platforms this setting will have no effect.
+    * Defaults to 1.
+    */
+   var threads: Int = 1
+
+   /**
     * Materializes the tests defined in this spec as [TestCase] instances.
     */
    protected abstract fun materializeRootTests(): List<TestCase>

@@ -60,7 +60,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       runParallel(spec.threads, testCases) {
          executeInCleanSpec(it).getOrThrow()
          while (queues.get().isNotEmpty()) {
-            val (testCase, count) = queues.get().remove()
+            val (testCase, _) = queues.get().remove()
             executeInCleanSpec(testCase).getOrThrow()
          }
       }
