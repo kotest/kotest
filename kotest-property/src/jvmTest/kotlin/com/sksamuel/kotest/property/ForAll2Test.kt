@@ -89,7 +89,7 @@ class ForAll2Test : FunSpec({
    test("forAll with maxFailure") {
       shouldThrowAny {
          forAll(
-            PropTestConfig(maxFailure = 5),
+            PropTestConfig(maxFailure = 5, seed = 1900646515),
             Exhaustive.ints(0..10),
             Exhaustive.ints(20..30)
          ) { a, b -> a > b }
@@ -98,15 +98,15 @@ class ForAll2Test : FunSpec({
 	Arg 0: 5
 	Arg 1: 25
 
-Caused by: Property failed 6 times (maxFailure rate was 5)
+Repeat this test by using seed 1900646515
 
-Repeat this test by using seed"""
+Caused by: Property failed 6 times (maxFailure rate was 5)"""
    }
 
    test("forAll with minSuccess") {
       shouldThrowAny {
          forAll(
-            PropTestConfig(maxFailure = 9, minSuccess = 9),
+            PropTestConfig(maxFailure = 9, minSuccess = 9, seed = 1921315),
             Exhaustive.ints(0..10),
             Exhaustive.constant(8)
          ) { a, b -> a < b }
@@ -115,8 +115,8 @@ Repeat this test by using seed"""
 	Arg 0: 8
 	Arg 1: 8
 
-Caused by: Property failed 10 times (maxFailure rate was 9)
+Repeat this test by using seed 1921315
 
-Repeat this test by using seed"""
+Caused by: Property failed 10 times (maxFailure rate was 9)"""
    }
 })
