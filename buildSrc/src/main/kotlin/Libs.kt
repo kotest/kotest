@@ -13,7 +13,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.2"
+      private const val version = "2.13.3"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -23,7 +23,7 @@ object Libs {
    }
 
    object Tschuchortdev {
-      private const val version = "1.2.7"
+      private const val version = "1.2.8"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -53,7 +53,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.69"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.83"
    }
 
    object Mocking {
@@ -74,7 +74,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.5"
+      private const val version = "1.3.7"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
       const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
