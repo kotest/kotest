@@ -165,8 +165,9 @@ abstract class TestConfiguration {
       this._tags = this._tags + tags.toSet()
    }
 
-   fun listener(listener: TestListener) {
+   fun <T : TestListener> listener(listener: T): T {
       listeners(listener)
+      return listener
    }
 
    fun listeners(vararg listener: TestListener) {
