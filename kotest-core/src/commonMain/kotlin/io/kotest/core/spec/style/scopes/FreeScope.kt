@@ -6,6 +6,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -13,7 +14,8 @@ class FreeScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
@@ -22,7 +24,8 @@ class FreeScope(
             this@FreeScope.description.append(this@minus),
             this@FreeScope.lifecycle,
             this,
-            this@FreeScope.defaultConfig
+            this@FreeScope.defaultConfig,
+            this@FreeScope.coroutineContext
          ).test()
       }
    }

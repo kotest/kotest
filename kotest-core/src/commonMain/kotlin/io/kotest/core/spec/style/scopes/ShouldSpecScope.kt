@@ -24,7 +24,7 @@ interface ShouldSpecScope : RootScope {
     */
    fun context(name: String, test: suspend ShouldSpecContextScope.() -> Unit) {
       registration().addContainerTest(name, xdisabled = false) {
-         ShouldSpecContextScope(description().append(name), lifecycle(), this, defaultConfig()).test()
+         ShouldSpecContextScope(description().append(name), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 

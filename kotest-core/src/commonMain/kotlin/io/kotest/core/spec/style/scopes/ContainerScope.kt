@@ -3,18 +3,14 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.BeforeTest
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 import io.kotest.fp.Tuple2
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Contains methods used by container levels tests - such as adding before / after test callbacks.
  */
-interface ContainerScope {
+interface ContainerScope : CoroutineScope {
 
    /**
     * Returns the [Description] for the test that defined this scope.

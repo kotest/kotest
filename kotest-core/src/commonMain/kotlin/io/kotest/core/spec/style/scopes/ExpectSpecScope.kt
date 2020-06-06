@@ -11,14 +11,14 @@ interface ExpectSpecScope : RootScope {
    fun context(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = createTestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
-         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 
    fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = createTestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = true) {
-         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 

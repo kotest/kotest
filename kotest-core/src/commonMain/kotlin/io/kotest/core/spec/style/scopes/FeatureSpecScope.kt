@@ -17,7 +17,7 @@ interface FeatureSpecScope : RootScope {
    fun addFeature(name: String, xdisabled: Boolean, test: suspend FeatureScope.() -> Unit) {
       val testName = createTestName("Feature: ", name)
       registration().addContainerTest(testName, xdisabled = xdisabled) {
-         FeatureScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         FeatureScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 }

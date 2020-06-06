@@ -9,14 +9,14 @@ interface WordSpecScope : RootScope {
    infix fun String.should(test: suspend WordSpecShouldScope.() -> Unit) {
       val testName = "$this should"
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecShouldScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         WordSpecShouldScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 
    infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) {
       val testName = "$this should"
       registration().addContainerTest(testName, xdisabled = true) {
-         WordSpecShouldScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         WordSpecShouldScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 
@@ -26,7 +26,7 @@ interface WordSpecScope : RootScope {
    private fun addWhenContext(name: String, init: suspend WordSpecWhenScope.() -> Unit) {
       val testName = "$name when"
       registration().addContainerTest(testName, xdisabled = false) {
-         WordSpecWhenScope(description().append(testName), lifecycle(), this, defaultConfig()).init()
+         WordSpecWhenScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).init()
       }
    }
 }

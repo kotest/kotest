@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -24,7 +25,8 @@ class WhenScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    suspend fun And(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
@@ -38,7 +40,8 @@ class WhenScope(
             this@WhenScope.description.append(testName),
             this@WhenScope.lifecycle,
             this,
-            this@WhenScope.defaultConfig
+            this@WhenScope.defaultConfig,
+            this@WhenScope.coroutineContext
          ).test()
       }
    }

@@ -9,7 +9,7 @@ interface FunSpecScope : RootScope {
     */
    fun context(name: String, test: suspend FunSpecContextScope.() -> Unit) {
       registration().addContainerTest(name, xdisabled = false) {
-         FunSpecContextScope(description().append(name), lifecycle(), this, defaultConfig()).test()
+         FunSpecContextScope(description().append(name), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 

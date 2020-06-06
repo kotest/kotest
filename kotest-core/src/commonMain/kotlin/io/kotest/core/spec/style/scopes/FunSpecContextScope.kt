@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -18,7 +19,8 @@ class FunSpecContextScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    /**
@@ -30,7 +32,8 @@ class FunSpecContextScope(
             this@FunSpecContextScope.description.append(name),
             this@FunSpecContextScope.lifecycle,
             this,
-            this@FunSpecContextScope.defaultConfig
+            this@FunSpecContextScope.defaultConfig,
+            this@FunSpecContextScope.coroutineContext
          ).test()
       }
    }

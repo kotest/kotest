@@ -29,7 +29,7 @@ interface BehaviorSpecScope : RootScope {
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
       val testName = createTestName("Given: ", name)
       registration().addContainerTest(testName, xdisabled) {
-         GivenScope(description().append(testName), lifecycle(), this, defaultConfig()).test()
+         GivenScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 }

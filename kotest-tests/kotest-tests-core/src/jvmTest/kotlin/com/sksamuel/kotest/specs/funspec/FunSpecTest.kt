@@ -8,6 +8,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldNotBeBlank
 import io.kotest.matchers.string.shouldStartWith
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.nio.file.Paths
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -42,6 +44,13 @@ class FunSpecTest : FunSpec() {
             test("wibble") {
                "hello".shouldHaveLength(5)
             }
+         }
+      }
+
+      context("a context with coroutine in fun spec context scope") {
+         launch { delay(1) }
+         test("a dummy test") {
+
          }
       }
    }

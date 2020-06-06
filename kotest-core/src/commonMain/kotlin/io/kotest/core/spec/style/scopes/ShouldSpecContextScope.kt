@@ -5,6 +5,7 @@ import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.createTestName
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -19,7 +20,8 @@ class ShouldSpecContextScope(
    override val description: Description,
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
-   override val defaultConfig: TestCaseConfig
+   override val defaultConfig: TestCaseConfig,
+   override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
    /**
@@ -31,7 +33,8 @@ class ShouldSpecContextScope(
             this@ShouldSpecContextScope.description.append(name),
             this@ShouldSpecContextScope.lifecycle,
             this,
-            this@ShouldSpecContextScope.defaultConfig
+            this@ShouldSpecContextScope.defaultConfig,
+            this@ShouldSpecContextScope.coroutineContext
          ).test()
       }
    }
