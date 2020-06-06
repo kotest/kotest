@@ -3,20 +3,11 @@ package com.sksamuel.kotest.core.runtime
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.getOrSet
 
 class InvocationThreadTest : FunSpec({
-
-   class PersistentThreadLocal<T> : ThreadLocal<T>() {
-
-      val map = mutableMapOf<Long, T>()
-
-      override fun set(value: T) {
-         super.set(value)
-         map[Thread.currentThread().id] = value
-      }
-   }
 
    val singleThreadSingleInvocationCounter = AtomicInteger(0)
    val singleThreadMultipleInvocationCounter = PersistentThreadLocal<Int>()
@@ -43,3 +34,13 @@ class InvocationThreadTest : FunSpec({
       multipleThreadMultipleInvocationCounter.set(counter + 1)
    }
 })
+
+class PersistentThreadLocal<T> : ThreadLocal<T>() {
+
+   val map = ConcurrentHashMap<Long, T>()
+
+   override fun set(value: T) {
+      super.set(value)
+      map[Thread.currentThread().id] = value
+   }
+}

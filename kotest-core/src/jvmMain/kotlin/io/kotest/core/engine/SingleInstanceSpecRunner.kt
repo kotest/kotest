@@ -1,15 +1,12 @@
 package io.kotest.core.engine
 
-import io.kotest.mpp.log
-import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
-import io.kotest.core.runtime.invokeAfterSpec
-import io.kotest.core.runtime.invokeBeforeSpec
+import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.*
 import io.kotest.fp.Try
+import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime
 
@@ -21,7 +18,7 @@ import kotlin.time.ExperimentalTime
 @ExperimentalTime
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   private val results = mutableMapOf<TestCase, TestResult>()
+   private val results = ConcurrentHashMap<TestCase, TestResult>()
 
    inner class Context(
       override val testCase: TestCase,
@@ -66,11 +63,10 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         val roots = spec.rootTests()
-         log("Materialized roots: $roots")
-         roots.forEach { rootTest ->
-            log("Executing test $rootTest")
-            runTest(rootTest.testCase, context)
+         val testCases = spec.rootTests().map { it.testCase }
+         runParallel(spec.threads, testCases) {
+            log("Executing test $it")
+            runTest(it, context)
          }
       }
 
