@@ -54,7 +54,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
 
    @Deprecated(
-      "This var was replaced by [isolationMode]. Use it instead",
+      "This var was replaced by [isolationMode]. Use it instead. This var will be removed in 4.2.",
       ReplaceWith("isolationMode")
    )
    var isolation: IsolationMode? = null
