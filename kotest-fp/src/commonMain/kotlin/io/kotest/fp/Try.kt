@@ -85,5 +85,3 @@ fun <U, T : U> Try<T>.recover(f: (Throwable) -> U): Try<U> = when (this) {
 
 fun <T> T.success(): Try<T> = Try.Success(this)
 fun Throwable.failure(): Try<Nothing> = Try.Failure(this)
-
-expect fun nonFatal(t: Throwable): Boolean

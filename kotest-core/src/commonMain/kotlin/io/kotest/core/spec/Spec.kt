@@ -1,12 +1,12 @@
 package io.kotest.core.spec
 
+import io.kotest.core.Tuple2
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
 import io.kotest.core.test.*
-import io.kotest.fp.Tuple2
 import io.kotest.mpp.log
 import kotlin.js.JsName
 

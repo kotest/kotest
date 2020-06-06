@@ -42,8 +42,7 @@ kotlin {
             implementation(kotlin("stdlib-common"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Mpp))
-            // tuples are used in the callback listeners so must be exposed as api
-            api(project(Projects.Fp))
+            implementation(project(Projects.Fp))
             implementation(Libs.Coroutines.coreCommon)
          }
       }

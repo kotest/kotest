@@ -3,6 +3,7 @@
 package io.kotest.core.spec
 
 import io.kotest.core.Tag
+import io.kotest.core.Tuple2
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -17,7 +18,6 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestResult
-import io.kotest.fp.Tuple2
 import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit

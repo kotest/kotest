@@ -34,7 +34,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
          }
       }
    }
@@ -51,6 +51,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-js"))
+            implementation(Libs.Coroutines.coreJs)
          }
       }
 
@@ -58,6 +59,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            implementation(kotlin("reflect"))
          }
       }
 
@@ -67,6 +69,11 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+   kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 apply(from = "../publish-mpp.gradle.kts")

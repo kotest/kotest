@@ -1,10 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.test.*
-import io.kotest.fp.Tuple2
 import kotlinx.coroutines.CoroutineScope
 
 /**
