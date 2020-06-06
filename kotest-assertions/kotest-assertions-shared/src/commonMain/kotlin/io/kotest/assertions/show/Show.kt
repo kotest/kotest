@@ -2,7 +2,6 @@
 
 package io.kotest.assertions.show
 
-import io.kotest.mpp.isDataClass
 import kotlin.reflect.KClass
 
 /**
@@ -50,7 +49,7 @@ fun <T : Any> commonShowFor(t: T): Show<T> = when (t) {
    is KClass<*> -> KClassShow as Show<T>
    else -> when {
       // this won't work in JS or native, so they'll get the boring old toString version
-      t::class.isDataClass ?: false -> dataClassShow<T>()
+      io.kotest.mpp.reflection.isDataClass(t::class) ?: false -> dataClassShow<T>()
       else -> DefaultShow
    }
 }

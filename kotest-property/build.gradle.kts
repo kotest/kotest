@@ -26,12 +26,16 @@ kotlin {
             }
          }
       }
+
+      linuxX64()
+      mingwX64()
+      macosX64()
    }
 
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
          }
       }
    }
@@ -75,11 +79,17 @@ kotlin {
             implementation(project(Projects.ConsoleRunner))
          }
       }
+
+      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+         get(it).dependencies {
+            implementation(Libs.Coroutines.coreNative)
+         }
+      }
    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-   kotlinOptions.freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+   kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
    kotlinOptions.jvmTarget = "1.8"
 }
 

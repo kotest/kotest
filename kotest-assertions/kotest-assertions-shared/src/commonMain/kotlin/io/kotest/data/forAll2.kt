@@ -1,10 +1,10 @@
 package io.kotest.data
 
-import io.kotest.mpp.paramNames
+import io.kotest.mpp.reflection
 import kotlin.jvm.JvmName
 
 suspend fun <A, B> forAll(vararg rows: Row2<A, B>, testfn: suspend (A, B) -> Unit) {
-   val params = testfn.paramNames
+   val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    table(headers(paramA, paramB), *rows).forAll { a, b -> testfn(a, b) }
@@ -26,7 +26,7 @@ inline fun <A, B> Table2<A, B>.forAll(fn: (A, B) -> Unit) {
 }
 
 suspend fun <A, B> forNone(vararg rows: Row2<A, B>, testfn: suspend (A, B) -> Unit) {
-   val params = testfn.paramNames
+   val params = reflection.paramNames(testfn) ?: emptyList<String>()
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    table(headers(paramA, paramB), *rows).forNone { a, b -> testfn(a, b) }

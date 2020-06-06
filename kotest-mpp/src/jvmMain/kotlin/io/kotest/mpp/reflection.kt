@@ -5,30 +5,24 @@ package io.kotest.mpp
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.reflect
 
-actual fun KClass<*>.fqn(): String? = this.qualifiedName
+object JvmReflection : Reflection {
 
-/**
- * Returns the annotations on this class or empty list if not supported
- */
-actual fun KClass<*>.annotations(): List<Annotation> = try {
-   this.annotations
-} catch (e: Exception) {
-   emptyList()
-}
+   override fun fqn(kclass: KClass<*>): String? = kclass.qualifiedName
 
-/**
- * Returns true if this KClass is a data class.
- */
-actual val <T : Any> KClass<T>.isDataClass: Boolean?
-   get() = try {
-      this.isData
+   override fun annotations(kclass: KClass<*>): List<Annotation> = try {
+      kclass.annotations
+   } catch (e: Exception) {
+      emptyList()
+   }
+
+   override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = try {
+      kclass.isData
    } catch (e: Exception) {
       false
    }
 
-/**
- * Returns the names of the parameters if supported. Eg, for `fun foo(a: String, b: Boolean)` on the JVM
- * it would return [a, b] and on unsupported platforms an empty list.
- */
-actual val Function<*>.paramNames: List<String>
-   get() = reflect()?.parameters?.mapNotNull { it.name } ?: emptyList()
+   override fun paramNames(fn: Function<*>): List<String>? = fn.reflect()?.parameters?.mapNotNull { it.name }
+
+}
+
+actual val reflection: Reflection = JvmReflection
