@@ -31,7 +31,7 @@ kotlin {
    targets.all {
       compilations.all {
          kotlinOptions {
-            freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+            freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.Experimental"
          }
       }
    }
@@ -41,6 +41,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
+            implementation(Libs.Coroutines.coreCommon)
             implementation(Libs.Ktor.clientCore)
          }
       }
@@ -49,6 +50,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-js"))
+            implementation(Libs.Coroutines.coreJs)
             implementation(Libs.Ktor.clientJs)
          }
       }
@@ -57,6 +59,7 @@ kotlin {
          dependsOn(commonMain)
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
+            implementation(Libs.Coroutines.core)
             implementation(Libs.Ktor.clientApache)
          }
       }
