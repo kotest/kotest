@@ -21,18 +21,18 @@ class InspectorsTest : WordSpec() {
 
     "forNone" should {
       "pass if no elements pass fn test for a list" {
-        forNone(list) {
+         list.forNone {
           it shouldBe 10
         }
       }
       "pass if no elements pass fn test for an array" {
-        forNone(array) {
+         array.forNone {
           it shouldBe 10
         }
       }
       "fail if one elements passes fn test" {
         shouldThrow<AssertionError> {
-          forNone(list) {
+           list.forNone {
             it shouldBe 4
           }
         }.message shouldBe """1 elements passed but expected 0
@@ -48,7 +48,7 @@ The following elements failed:
       }
       "fail if all elements pass fn test" {
         shouldThrow<AssertionError> {
-          forNone(list) {
+           list.forNone {
             it should beGreaterThan(0)
           }
         }.message shouldBe """5 elements passed but expected 0
@@ -67,18 +67,18 @@ The following elements failed:
 
     "forSome" should {
       "pass if one elements pass test"  {
-        forSome(list) {
+         list.forSome {
           it shouldBe 3
         }
       }
       "pass if size-1 elements pass test"  {
-        forSome(list) {
+         list.forSome {
           it should beGreaterThan(1)
         }
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
-          forSome(array) {
+           array.forSome {
             it should beLessThan(0)
           }
         }.message shouldBe """No elements passed but expected at least one
@@ -95,7 +95,7 @@ The following elements failed:
       }
       "fail if all elements pass test"  {
         shouldThrow<AssertionError> {
-          forSome(list) {
+           list.forSome {
             it should beGreaterThan(0)
           }
         }.message shouldBe """All elements passed but expected < 5
@@ -114,13 +114,13 @@ The following elements failed:
 
     "forOne" should {
       "pass if one elements pass test"  {
-        forOne(list) {
+        list.forOne {
           it shouldBe 3
         }
       }
       "fail if > 1 elements pass test"  {
         shouldThrow<AssertionError> {
-          forOne(list) { t ->
+          list.forOne { t ->
             t should beGreaterThan(2)
           }
         }.message shouldBe """3 elements passed but expected 1
@@ -136,7 +136,7 @@ The following elements failed:
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
-          forOne(array) { t ->
+           array.forOne { t ->
             t shouldBe 22
           }
         }.message shouldBe """0 elements passed but expected 1
@@ -155,18 +155,18 @@ The following elements failed:
 
     "forAny" should {
       "pass if one elements pass test"  {
-        forAny(list) { t ->
+        list.forAny { t ->
           t shouldBe 3
         }
       }
       "pass if at least elements pass test"  {
-        forAny(list) { t ->
+        list.forAny { t ->
           t should beGreaterThan(2)
         }
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
-          forAny(array) { t ->
+           array.forAny { t ->
             t shouldBe 6
           }
         }.message shouldBe """0 elements passed but expected at least 1
@@ -185,13 +185,13 @@ The following elements failed:
 
     "forExactly" should {
       "pass if exactly k elements pass"  {
-        forExactly(2, list) { t ->
+         list.forExactly(2) { t ->
           t should beLessThan(3)
         }
       }
       "fail if more elements pass test"  {
         shouldThrow<AssertionError> {
-          forExactly(2, list) { t ->
+          list.forExactly(2) { t ->
             t should beGreaterThan(2)
           }
         }.message shouldBe """3 elements passed but expected 2
@@ -207,7 +207,7 @@ The following elements failed:
       }
       "fail if less elements pass test"  {
         shouldThrow<AssertionError> {
-          forExactly(2, array) { t ->
+           array.forExactly(2) { t ->
             t should beLessThan(2)
           }
         }.message shouldBe """1 elements passed but expected 2
@@ -223,7 +223,7 @@ The following elements failed:
       }
       "fail if no elements pass test"  {
         shouldThrow<AssertionError> {
-          forExactly(2, list) { t ->
+           list.forExactly(2) { t ->
             t shouldBe 33
           }
         }.message shouldBe """0 elements passed but expected 2
