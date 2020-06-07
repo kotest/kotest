@@ -32,6 +32,22 @@ fun <A, B : A> Exhaustive<A>.merge(other: Exhaustive<B>): Exhaustive<A> = object
    override val values: List<A> = this@merge.values.zip(other.values).flatMap { listOf(it.first, it.second) }
 }
 
+/**
+ * Returns a new [Exhaustive] which will merge the values from this Exhaustive and the values of
+ * the supplied Exhaustive together, taking one from each in turn.
+ *
+ * In other words, if genA provides 1,2,3 and genB provides 7,8,9 then the merged
+ * gen would output 1,7,2,8,3,9.
+ *
+ * The supplied gen and this gen must have a common supertype.
+ *
+ * @param other the arg to merge with this one
+ * @return the merged arg.
+ */
+
+fun <A, B : A, C : A> Exhaustive<B>.merge(other: Exhaustive<C>): Exhaustive<A> = object : Exhaustive<A>() {
+   override val values: List<A> = this@merge.values.zip(other.values).flatMap { listOf(it.first, it.second) }
+}
 
 /**
  * Returns a new [Exhaustive] which takes its elements from the receiver and filters them using the supplied
