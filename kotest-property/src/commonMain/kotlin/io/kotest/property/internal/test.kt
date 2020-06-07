@@ -3,8 +3,7 @@ package io.kotest.property.internal
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.assertions.show.show
-import io.kotest.mpp.StackTraces
-import io.kotest.mpp.StackTraces.location
+import io.kotest.mpp.stacktraces
 
 /**
  * Performs a property test for a single set of values, tracking the min success and max failure rates.
@@ -45,15 +44,15 @@ internal suspend fun handleException(
    config: PropTestConfig
 ) {
    if (config.maxFailure == 0) {
+
       println("Property test failed for inputs\n")
       inputs.withIndex().forEach { (index, value) ->
          println("$index) ${value.show().value}")
       }
       println()
 
-      val cause = StackTraces.root(e)
-
-      when (val stack = cause.location(4)) {
+      val cause = stacktraces.root(e)
+      when (val stack = stacktraces.throwableLocation(cause, 4)) {
          null -> println("Caused by $e")
          else -> {
             println("Caused by $e at")

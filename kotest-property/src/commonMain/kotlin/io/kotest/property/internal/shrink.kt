@@ -1,7 +1,7 @@
 package io.kotest.property.internal
 
 import io.kotest.assertions.show.show
-import io.kotest.mpp.StackTraces.location
+import io.kotest.mpp.stacktraces
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
 import io.kotest.property.ShrinkingMode
@@ -108,7 +108,7 @@ private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
       sb.append("Arg was not shunk\n")
    } else {
       sb.append("Shrink result (after $count shrinks) => ${result.failed.show().value}\n\n")
-      when (val location = result.cause.location(4)) {
+      when (val location = stacktraces.throwableLocation(result.cause, 4)) {
          null -> sb.append("Caused by ${result.cause}\n")
          else -> {
             sb.append("Caused by ${result.cause} at\n")
