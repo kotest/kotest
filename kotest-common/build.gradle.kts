@@ -30,9 +30,9 @@ kotlin {
          }
       }
 
-//      linuxX64()
-//      mingwX64()
-//      macosX64()
+      linuxX64()
+      mingwX64()
+      macosX64()
    }
 
    targets.all {
@@ -68,11 +68,11 @@ kotlin {
          }
       }
 
-//      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-//         get(it).dependencies {
-//            implementation(Libs.Coroutines.coreNative)
-//         }
-//      }
+      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
+         get(it).dependencies {
+            implementation(Libs.Coroutines.coreNative)
+         }
+      }
    }
 }
 
