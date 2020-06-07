@@ -9,24 +9,23 @@ import io.kotest.property.arbitrary.*
 class FlatMapTest : FunSpec() {
    init {
       test("flat map") {
-         Arb.int(1..10).flatMap { Arb.string(it) }.take(15, RandomSource.seeded(3242344L)).toList() shouldBe
-            listOf(
-               "\"i S",
-               "Twuy",
-               "OiZ3",
-               "6w7p",
-               "`SY\\",
-               "QMhd",
-               ", ]s",
-               "\$MEo",
-               "vxF_",
-               "!;S)",
-               "KsQm",
-               "mR9r",
-               "!-Ov",
-               "#!#&",
-               "kke3"
-            )
+         Arb.int(1..10).flatMap { listOf(it, it) }.take(15, RandomSource.seeded(3242344L)).toList() shouldBe listOf(
+            4,
+            4,
+            10,
+            10,
+            5,
+            5,
+            1,
+            1,
+            3,
+            3,
+            8,
+            8,
+            6,
+            6,
+            9
+         )
       }
    }
 }

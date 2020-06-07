@@ -103,10 +103,10 @@ fun <A, B> Arb<A>.map(f: (A) -> B): Arb<B> = object : Arb<B>() {
 /**
  * Returns a new [Arb] which takes its elements from the receiver and maps them using the supplied function.
  */
-fun <A, B> Arb<A>.flatMap(f: (A) -> Arb<B>): Arb<B> = object : Arb<B>() {
-   override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it).edgecases() }
+fun <A, B> Arb<A>.flatMap(f: (A) -> List<B>): Arb<B> = object : Arb<B>() {
+   override fun edgecases(): List<B> = this@flatMap.edgecases().flatMap { f(it) }
    override fun values(rs: RandomSource): Sequence<Sample<B>> {
-      return this@flatMap.values(rs).flatMap { f(it.value).values(rs) }
+      return this@flatMap.values(rs).flatMap { a -> f(a.value).asSequence().map { Sample(it) } }
    }
 }
 
