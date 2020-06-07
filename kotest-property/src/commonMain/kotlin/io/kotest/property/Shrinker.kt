@@ -17,6 +17,9 @@ package io.kotest.property
  * If the value cannot be shrunk further, or the type
  * does not support meaningful shrinking, then this function should
  * return an empty list.
+ *
+ * Note: It is important that you do not return the degenerate case as the first step in a shrinker.
+ * Otherwise, this could be tested first, it could pass, and no other routes would be explored.
  */
 interface Shrinker<A> {
 
