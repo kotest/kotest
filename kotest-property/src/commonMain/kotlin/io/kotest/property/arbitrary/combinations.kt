@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.Sample
+import kotlin.jvm.JvmName
 
 /**
  * Returns a stream of values based on weights:
@@ -37,6 +38,63 @@ fun <A : Any> Arb.Companion.choose(a: Pair<Int, A>, b: Pair<Int, A>, vararg cs: 
       }
    }
 }
+
+/**
+ * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
+ */
+fun <A : Any> Arb.Companion.frequency(
+   a: Pair<Int, A>,
+   b: Pair<Int, A>,
+   vararg cs: Pair<Int, A>
+): Arb<A> = choose(a, b, *cs)
+
+/**
+ * Returns a stream of values based on weights:
+ *
+ * Arb.choose(1 to arbA, 2 to arbB) will generate a value from arbA 33% of the time
+ * and from arbB 66% of the time.
+ *
+ * @throws IllegalArgumentException If any negative weight is given or only
+ * weights of zero are given.
+ */
+@JvmName("chooseArbs")
+fun <A : Any> Arb.Companion.choose(a: Pair<Int, Arb<A>>, b: Pair<Int, Arb<A>>, vararg cs: Pair<Int, Arb<A>>): Arb<A> {
+   val allPairs = listOf(a, b) + cs
+   val weights = allPairs.map { it.first }
+   require(weights.all { it >= 0 }) { "Negative weights not allowed" }
+   require(weights.any { it > 0 }) { "At least one weight must be greater than zero" }
+
+   // The algorithm for pick is a migration of
+   // the algorithm from Haskell QuickCheck
+   // http://hackage.haskell.org/package/QuickCheck
+   // See function frequency in the package Test.QuickCheck
+   tailrec fun pick(n: Int, l: List<Pair<Int, Iterator<A>>>): Iterator<A> {
+      val (w, e) = l.first()
+      return if (n <= w) e
+      else pick(n - w, l.drop(1))
+   }
+
+   return arb { rs ->
+      // we must open up an iter stream for each arb
+      val allIters = allPairs.map { (weight, arb) -> weight to arb.values(rs).map { it.value }.iterator() }
+      generateSequence {
+         val total = weights.sum()
+         val n = rs.random.nextInt(1, total + 1)
+         val arb = pick(n, allIters)
+         arb.next()
+      }
+   }
+}
+
+/**
+ * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
+ */
+@JvmName("frequencyArbs")
+fun <A : Any> Arb.Companion.frequency(
+   a: Pair<Int, Arb<A>>,
+   b: Pair<Int, Arb<A>>,
+   vararg cs: Pair<Int, Arb<A>>
+): Arb<A> = choose(a, b, *cs)
 
 /**
  * Generates random permutations of a list.
