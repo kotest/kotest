@@ -19,5 +19,17 @@ fun <T> eq(actual: T, expected: T): Throwable? = when {
    actual is Regex && expected is Regex -> RegexEq.equals(actual, expected)
    actual is String && expected is String -> StringEq.equals(actual, expected)
    actual is Number && expected is Number -> NumberEq.equals(actual, expected)
+   // HELP! How to get project config here? I was thinking...
+   // Project.showDetailedDataClassDiff() && actual.isDataClass() ...
+   actual.isDataClass() && expected.isDataClass() -> DataClassEq.equals(actual as Any, expected as Any)
    else -> DefaultEq.equals(actual as Any, expected as Any)
 }
+
+/**
+ * Determine if the object's class is is a data class.
+ *
+ * Platform dependent because of reflection usage.
+ *
+ * @return: true when a data diff is available on this platform and the objects class is a data class.
+ */
+expect fun Any?.isDataClass(): Boolean

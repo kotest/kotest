@@ -48,6 +48,20 @@ fun failure(expected: Expected, actual: Actual): Throwable {
 }
 
 /**
+ * HELP! Didn't know if I should add param to above or not?
+ */
+fun failure(expected: Expected, actual: Actual, detailedDiffMessage: String): Throwable {
+   return stacktraces.cleanStackTrace(
+      Exceptions.createAssertionError(
+         detailedDiffMessage + clueContextAsString() + intellijFormatError(expected, actual),
+         null,
+         expected,
+         actual
+      )
+   )
+}
+
+/**
  * Returns a message formatted appropriately for intellij to show a diff.
  *
  * This is the format intellij requires to recognize:

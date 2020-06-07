@@ -65,6 +65,7 @@ object Project {
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
    private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: DefaultTestCaseOrder
    private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
+   private var showDetailedDataClassDiff: Boolean = userconf.showDetailedDataClassDiff ?: true
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
@@ -202,6 +203,9 @@ object Project {
    fun setGlobalAssertSoftly(g: Boolean) {
       globalAssertSoftly = g
    }
+
+   fun showDetailedDataClassDiff(): Boolean = showDetailedDataClassDiff
+
 }
 
 /**
@@ -224,7 +228,8 @@ data class ProjectConf constructor(
    val specFailureFilePath: String? = null,
    val parallelism: Int? = null,
    val timeout: Duration? = null,
-   val testCaseConfig: TestCaseConfig? = null
+   val testCaseConfig: TestCaseConfig? = null,
+   val showDetailedDataClassDiff: Boolean? = null
 )
 
 /**
