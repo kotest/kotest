@@ -35,10 +35,10 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     */
    protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       instantiateSpec(kclass).onSuccess {
-         Try { listener.specInstantiated(it) }
+          Try { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()
-         Try { listener.specInstantiationError(kclass, it) }
+          Try { listener.specInstantiationError(kclass, it) }
       }
 
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {

@@ -1,7 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.show.Printed
-import io.kotest.mpp.StackTraces
+import io.kotest.mpp.stacktraces
 
 data class Expected(val value: Printed)
 data class Actual(val value: Printed)
@@ -20,7 +20,7 @@ fun failure(message: String): AssertionError = failure(message, null)
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(message: String, cause: Throwable?): AssertionError {
-   return StackTraces.cleanStackTrace(Exceptions.createAssertionError(clueContextAsString() + message, cause))
+   return stacktraces.cleanStackTrace(Exceptions.createAssertionError(clueContextAsString() + message, cause))
 }
 
 /**
@@ -37,7 +37,7 @@ fun failure(message: String, cause: Throwable?): AssertionError {
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(expected: Expected, actual: Actual): Throwable {
-   return StackTraces.cleanStackTrace(
+   return stacktraces.cleanStackTrace(
       Exceptions.createAssertionError(
          clueContextAsString() + intellijFormatError(expected, actual),
          null,

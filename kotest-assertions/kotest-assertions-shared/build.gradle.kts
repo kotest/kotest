@@ -45,8 +45,7 @@ kotlin {
       val commonMain by getting {
          dependencies {
             implementation(kotlin("stdlib-common"))
-            implementation(project(Projects.Mpp))
-            implementation(project(Projects.Fp))
+            implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
       }

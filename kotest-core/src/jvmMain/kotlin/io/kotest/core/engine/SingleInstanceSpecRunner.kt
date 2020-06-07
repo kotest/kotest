@@ -63,11 +63,11 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
-         val testCases = spec.rootTests().map { it.testCase }
-         runParallel(spec.threads, testCases) {
-            log("Executing test $it")
-            runTest(it, context)
-         }
+          val testCases = spec.rootTests().map { it.testCase }
+          runParallel(spec.threads, testCases) {
+              log("Executing test $it")
+              runTest(it, context)
+          }
       }
 
       return coroutineScope {

@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.3.72"
+   const val kotlinVersion = "1.3.71"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -74,7 +74,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.5"
+      private const val version = "1.3.6"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
       const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
       const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"

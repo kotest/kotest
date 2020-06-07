@@ -141,16 +141,16 @@ class TestExecutor(
       context: TestContext,
       mark: TimeMark
    ): Try<TestResult> = Try {
-      log("invokeTestCase $testCase")
+       log("invokeTestCase $testCase")
 
-      if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
-         error("Cannot execute multiple invocations in parent tests")
+       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
+           error("Cannot execute multiple invocations in parent tests")
 
-      val t = executeAndWait(ec, testCase, context)
+       val t = executeAndWait(ec, testCase, context)
 
-      val result = if (t == null) TestResult.success(mark.elapsedNow()) else TestResult.throwable(t, mark.elapsedNow())
-      log("Test completed with result $result")
-      result
+       val result = if (t == null) TestResult.success(mark.elapsedNow()) else TestResult.throwable(t, mark.elapsedNow())
+       log("Test completed with result $result")
+       result
    }
 
    /**

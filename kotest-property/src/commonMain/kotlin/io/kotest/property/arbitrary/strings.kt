@@ -10,8 +10,9 @@ import kotlin.random.nextInt
  * By default the arb uses a [ascii] codepoint generator, but this can be substituted
  * with any codepoint generator. There are many available, such as [katakana] and so on.
  *
- * The edge case values are a string of the min length, and a string of the max length, using the first
- * edgecase codepoint provided by the codepoints arb.
+ * The edge case values are a string of min length, using the first
+ * edgecase codepoint provided by the codepoints arb. If the min length is 0 and maxSize > 0, then
+ * the edgecases will include a string of length 1 as well.
  */
 fun Arb.Companion.string(
    minSize: Int = 0,
@@ -20,10 +21,10 @@ fun Arb.Companion.string(
 ): Arb<String> {
 
    val lowCodePoint = codepoints.edgecases().firstOption()
-   val shortest = lowCodePoint.map { cp -> List(minSize) { cp.asString() }.joinToString("") }.orNull()
-   val longest = lowCodePoint.map { cp -> List(maxSize) { cp.asString() }.joinToString("") }.orNull()
+   val min = lowCodePoint.map { cp -> List(minSize) { cp.asString() }.joinToString("") }.orNull()
+   val minPlus1 = lowCodePoint.map { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }.orNull()
 
-   val edgecases = listOfNotNull(shortest, longest)
+   val edgecases = listOfNotNull(min, minPlus1).filter { it.length >= minSize && it.length <= maxSize }
 
    return arb(StringShrinker, edgecases) { rs ->
       val codepointsIterator = codepoints.values(rs).iterator()

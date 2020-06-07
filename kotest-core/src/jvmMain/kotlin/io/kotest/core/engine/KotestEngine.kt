@@ -39,20 +39,20 @@ class KotestEngine(
    private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }
 
    private fun submitAll() = Try {
-      log("Submitting ${classes.size} specs")
+       log("Submitting ${classes.size} specs")
 
-      // the classes are ordered using an instance of SpecExecutionOrder
-      val ordered = Project.specExecutionOrder().sort(classes)
+       // the classes are ordered using an instance of SpecExecutionOrder
+       val ordered = Project.specExecutionOrder().sort(classes)
 
-      // if parallelize is enabled, then we must order the specs into two sets, depending on if they
-      // are thread safe or not.
-      val (single, parallel) = if (parallelism == 1)
-         ordered to emptyList()
-      else
-         ordered.partition { it.isDoNotParallelize() }
+       // if parallelize is enabled, then we must order the specs into two sets, depending on if they
+       // are thread safe or not.
+       val (single, parallel) = if (parallelism == 1)
+           ordered to emptyList()
+       else
+           ordered.partition { it.isDoNotParallelize() }
 
-      if (parallel.isNotEmpty()) submitBatch(parallel, parallelism)
-      if (single.isNotEmpty()) submitBatch(single, 1)
+       if (parallel.isNotEmpty()) submitBatch(parallel, parallelism)
+       if (single.isNotEmpty()) submitBatch(single, 1)
    }
 
    private fun submitBatch(specs: List<KClass<out Spec>>, parallelism: Int) {

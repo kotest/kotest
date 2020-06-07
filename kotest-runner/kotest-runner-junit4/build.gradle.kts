@@ -39,8 +39,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(project(Projects.Fp))
-            api(project(Projects.Mpp))
+            api(project(Projects.Common))
             api(project(Projects.AssertionsShared))
             api(project(Projects.Core))
             api(project(Projects.Extensions))

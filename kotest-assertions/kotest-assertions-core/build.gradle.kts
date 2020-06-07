@@ -46,7 +46,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(Libs.Coroutines.coreCommon)
-            implementation(project(Projects.Mpp))
+            implementation(project(Projects.Common))
             // this is api because we want to expose `shouldBe` etc
             api(project(Projects.AssertionsShared))
          }

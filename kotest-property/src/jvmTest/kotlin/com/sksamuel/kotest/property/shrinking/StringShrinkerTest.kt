@@ -65,9 +65,9 @@ class StringShrinkerTest : StringSpec({
          }
 
          if (a.contains("#")) {
-            shrunk shouldBe "#"
+            shrunk.shrink shouldBe "#"
          } else {
-            shrunk shouldBe a
+            shrunk.shrink shouldBe a
          }
       }
 
@@ -82,11 +82,11 @@ class StringShrinkerTest : StringSpec({
       val shrinks = StringShrinker.rtree(a)
       doShrinking(shrinks, ShrinkingMode.Unbounded) {
          it.length.shouldBeLessThan(3)
-      } shouldBe "aaa"
+      }.shrink shouldBe "aaa"
 
       doShrinking(shrinks, ShrinkingMode.Unbounded) {
          it.length.shouldBeLessThan(8)
-      } shouldBe "aaaaaaaa"
+      }.shrink shouldBe "aaaaaaaa"
 
       PropertyTesting.shouldPrintShrinkSteps = prt
    }

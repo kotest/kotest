@@ -27,47 +27,59 @@ fun List<ProjectListener>.resolveName() =
  * Invokes any afterProject functions from the given listeners.
  */
 suspend fun List<Listener>.afterProject(): Try<List<AfterProjectListenerException>> = Try {
-   log("invokeAfterProject")
-   filterIsInstance<ProjectListener>()
-      .resolveName()
-      .map { it.first to Try { it.second.afterProject() } }
-      .filter { it.second.isFailure() }
-      .map { AfterProjectListenerException(it.first, (it.second as Try.Failure).error) }
+    log("invokeAfterProject")
+    filterIsInstance<ProjectListener>()
+        .resolveName()
+        .map { it.first to Try { it.second.afterProject() } }
+        .filter { it.second.isFailure() }
+        .map {
+            AfterProjectListenerException(
+                it.first,
+                (it.second as Try.Failure).error
+            )
+        }
 }.mapFailure { AfterProjectListenerException("afterProjectsInvocation", it) }
 
 /**
  * Invokes the beforeProject listeners, and prints project config using [dumpProjectConfig].
  */
 suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerException>> = Try {
-   log("invokeBeforeProject")
-   Project.dumpProjectConfig()
+    log("invokeBeforeProject")
+    Project.dumpProjectConfig()
 
-   filterIsInstance<ProjectListener>()
-      .resolveName()
-      .map { it.first to Try { it.second.beforeProject() } }
-      .filter { it.second.isFailure() }
-      .map { BeforeProjectListenerException(it.first, (it.second as Try.Failure).error) }
+    filterIsInstance<ProjectListener>()
+        .resolveName()
+        .map { it.first to Try { it.second.beforeProject() } }
+        .filter { it.second.isFailure() }
+        .map {
+            BeforeProjectListenerException(
+                it.first,
+                (it.second as Try.Failure).error
+            )
+        }
 }.mapFailure { BeforeProjectListenerException("beforeProjectsInvocation", it) }
 
 /**
  * Invokes the beforeTest callbacks for this test, taking the listeners from
  * those present at the spec level and the project level.
  */
-suspend fun TestCase.invokeBeforeTest(): Try<TestCase> = Try {
-   val listeners = spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.beforeTest(this)
-   }
-   this
-}
+suspend fun TestCase.invokeBeforeTest(): Try<TestCase> =
+    Try {
+        val listeners = spec.resolvedTestListeners() + Project.testListeners()
+        listeners.forEach {
+            it.beforeTest(this)
+        }
+        this
+    }
 
-suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> = Try {
-   val listeners = this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.afterTest(this, result)
-   }
-   this
-}
+suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> =
+    Try {
+        val listeners = this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
+        listeners.forEach {
+            it.afterTest(this, result)
+        }
+        this
+    }
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()
@@ -88,12 +100,12 @@ suspend fun TestCase.invokeAfterInvocation(k: Int) {
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
-   log("invokeBeforeSpec $this")
-   val listeners = resolvedTestListeners() + Project.testListeners()
-   listeners.forEach {
-      it.beforeSpec(this)
-   }
-   this
+    log("invokeBeforeSpec $this")
+    val listeners = resolvedTestListeners() + Project.testListeners()
+    listeners.forEach {
+        it.beforeSpec(this)
+    }
+    this
 }
 
 /**
@@ -101,13 +113,13 @@ suspend fun Spec.invokeBeforeSpec(): Try<Spec> = Try {
  * This will be invoked for every instance of a spec.
  */
 suspend fun Spec.invokeAfterSpec(): Try<Spec> = Try {
-   log("invokeAfterSpec $this")
+    log("invokeAfterSpec $this")
 
-   autoCloseables.forEach { it.close() }
+    autoCloseables.forEach { it.close() }
 
-   val listeners = resolvedTestListeners() + Project.testListeners()
-   listeners.forEach { it.afterSpec(this) }
-   this
+    val listeners = resolvedTestListeners() + Project.testListeners()
+    listeners.forEach { it.afterSpec(this) }
+    this
 }
 
 /**

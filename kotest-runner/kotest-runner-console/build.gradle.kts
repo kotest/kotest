@@ -38,7 +38,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
             implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.Mpp))
+            implementation(project(Projects.Common))
             api(project(Projects.Core))
             api(project(Projects.Extensions))
             // needed at runtime by the intellij plugin

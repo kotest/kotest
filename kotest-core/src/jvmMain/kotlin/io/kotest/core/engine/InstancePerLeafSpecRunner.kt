@@ -54,18 +54,19 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     * of the containing [Spec] class. Therefore, when we begin executing a test case from
     * the queue, we must first instantiate a new spec, and begin execution on _that_ instance.
     */
-   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> = Try {
-      val testCases = spec.rootTests().map { it.testCase }
+   override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
+       Try {
+           val testCases = spec.rootTests().map { it.testCase }
 
-      runParallel(spec.threads, testCases) {
-         executeInCleanSpec(it).getOrThrow()
-         while (queues.get().isNotEmpty()) {
-            val (testCase, _) = queues.get().remove()
-            executeInCleanSpec(testCase).getOrThrow()
-         }
-      }
-      results
-   }
+           runParallel(spec.threads, testCases) {
+               executeInCleanSpec(it).getOrThrow()
+               while (queues.get().isNotEmpty()) {
+                   val (testCase, _) = queues.get().remove()
+                   executeInCleanSpec(testCase).getOrThrow()
+               }
+           }
+           results
+       }
 
    private suspend fun executeInCleanSpec(test: TestCase): Try<Spec> {
       return createInstance(test.spec::class)
@@ -75,13 +76,14 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    }
 
    // we need to find the same root test but in the newly created spec
-   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> = Try {
-      log("Created new spec instance $spec")
-      val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
-      log("Starting root test ${root.testCase.description} in search of ${test.description}")
-      run(root.testCase, test)
-      spec
-   }
+   private suspend fun interceptAndRun(spec: Spec, test: TestCase): Try<Spec> =
+       Try {
+           log("Created new spec instance $spec")
+           val root = spec.rootTests().first { it.testCase.description.isOnPath(test.description) }
+           log("Starting root test ${root.testCase.description} in search of ${test.description}")
+           run(root.testCase, test)
+           spec
+       }
 
    private suspend fun run(test: TestCase, target: TestCase) {
       coroutineScope {

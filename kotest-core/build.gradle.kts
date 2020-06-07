@@ -41,8 +41,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-common"))
             implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.Mpp))
-            implementation(project(Projects.Fp))
+            implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
          }
       }
