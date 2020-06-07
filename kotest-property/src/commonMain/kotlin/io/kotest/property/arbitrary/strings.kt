@@ -24,7 +24,10 @@ fun Arb.Companion.string(
    val min = lowCodePoint.map { cp -> List(minSize) { cp.asString() }.joinToString("") }.orNull()
    val minPlus1 = lowCodePoint.map { cp -> List(minSize + 1) { cp.asString() }.joinToString("") }.orNull()
 
-   val edgecases = listOfNotNull(min, minPlus1).filter { it.length >= minSize && it.length <= maxSize }
+   val edgecases = if (minSize == maxSize)
+      emptyList()
+   else
+      listOfNotNull(min, minPlus1).filter { it.length >= minSize && it.length <= maxSize }
 
    return arb(StringShrinker, edgecases) { rs ->
       val codepointsIterator = codepoints.values(rs).iterator()
@@ -33,9 +36,26 @@ fun Arb.Companion.string(
    }
 }
 
+/**
+ * Returns an [Arb] where each random value is a String which has a length in the given range.
+ * By default the arb uses a [ascii] codepoint generator, but this can be substituted
+ * with any codepoint generator. There are many available, such as [katakana] and so on.
+ *
+ * The edge case values are a string of the first value in the range, using the first edgecase
+ * codepoint provided by the codepoints arb.
+ */
 fun Arb.Companion.string(range: IntRange, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
    Arb.string(range.first, range.last, codepoints)
 
+/**
+ * Returns an [Arb] where each random value is a String of length [size].
+ * By default the arb uses a [ascii] codepoint generator, but this can be substituted
+ * with any codepoint generator. There are many available, such as [katakana] and so on.
+ *
+ * There are no edge case values associated with this arb.
+ */
+fun Arb.Companion.string(size: Int, codepoints: Arb<Codepoint> = Arb.ascii()): Arb<String> =
+   Arb.string(size, size, codepoints)
 
 
 object StringShrinker : Shrinker<String> {

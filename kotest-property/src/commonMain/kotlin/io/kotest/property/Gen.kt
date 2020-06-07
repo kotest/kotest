@@ -107,6 +107,9 @@ abstract class Exhaustive<A> : Gen<A>() {
 
 data class RandomSource(val random: Random, val seed: Long) {
    companion object {
+
+      fun seeded(seed: Long): RandomSource = RandomSource(Random(seed), seed)
+
       val Default = lazy {
          val seed = Random.Default.nextLong()
          RandomSource(Random(seed), seed)
