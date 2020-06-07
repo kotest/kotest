@@ -511,6 +511,34 @@ check [mock documentation](mocks.md)
 
 
 
+Temporary File
+---------------
+
+Sometimes it is requires for a test to create a file and delete it after test, deleting it manually may lead to flaky
+test.
+For example you may be trying to delete temporary file after some assertion, if the assertion passes all good, file
+is got deleted and next time you run's your tests you create a fresh file.
+But in case the assertion fails or any other error occurs, due to which file did not deleted, you will get a stale file
+which might effect your test.
+
+Kotest provide a function ```tempfile()``` which you can use in your Spec to create a temporary file for your tests,
+here Kotest takes the responsibility of deleting the temporary file after running all test in the Spec. That way your
+tests does not have to worry about clear the temporary file.
+
+```kotlin
+class MySpec : FunSpec({
+
+   val file = tempfile()
+
+   test("a temporary file dependent test") {
+      //...
+   }
+})
+
+```
+
+
+
 Test Case Config
 ------------------------------
 
