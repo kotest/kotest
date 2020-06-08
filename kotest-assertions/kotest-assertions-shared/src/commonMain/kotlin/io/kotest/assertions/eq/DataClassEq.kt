@@ -4,46 +4,59 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
-import kotlin.reflect.KCallable
-import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
+import io.kotest.matchers.shouldBe
+import io.kotest.mpp.Property
+import io.kotest.mpp.bestName
+import io.kotest.mpp.reflection
 
-private val <T : Any> KClass<T>.dataClassProperties: List<KCallable<*>>
-   get() {
-      val dataClassConstructorParams = ::constructors.get().last().parameters
-      val membersByName = ::members.get().associateBy(KCallable<*>::name)
-      return dataClassConstructorParams.map { membersByName[it.name] }.filterNotNull()
-   }
+internal fun isDataClassInstance(obj: Any?): Boolean =
+   obj != null && reflection.isDataClass(obj::class)
 
 /**
  * Prints a detailed diff of data class instances.
- *
- * HELP! Where should this class live, it contains reflection code and should only be reachable if the platform
- * supports data class diff (See Eq.kt)
  */
 internal object DataClassEq : Eq<Any> {
+
+   /**
+    * Used to determine at what level of nesting we abort processing the diff.
+    * To prevent stack overflows/cyclic dependencies.
+    */
+   private const val MAX_NESTED_DEPTH = 10
 
    override fun equals(actual: Any, expected: Any): Throwable? =
       if (test(actual, expected)) {
          null
       } else {
-         val detailedDiffMsg = dataClassDiff(actual, expected)?.let { diff ->
-            formatDifferences(diff) + "\n\n"
-         } ?: ""
+         val detailedDiffMsg = runCatching {
+            dataClassDiff(actual, expected)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
+         }.getOrElse { "" }
          failure(Expected(expected.show()), Actual(actual.show()), detailedDiffMsg)
       }
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
 
-   private fun dataClassDiff(actual: Any?, expected: Any?): DataClassDifference? {
+   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0): DataClassDifference? {
       require(actual != null && expected != null) { "Actual and expected values cannot be null in a data class comparison" }
-      val dataClassProperties = expected::class.dataClassProperties
-      val differences = computeDifferences(dataClassProperties, actual, expected)
-      return if (differences.isEmpty()) null else DataClassDifference(
-         expected::class.qualifiedName ?: "unknown classname",
-         differences
-      )
+      require(depth < MAX_NESTED_DEPTH) { "Max depth reached" }
+      val differences = computeMemberDifferences(expected, actual, depth)
+      return when {
+         differences.isEmpty() -> null
+         else -> DataClassDifference(expected::class.bestName(), differences)
+      }
    }
+
+   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int) =
+      reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
+         val actualPropertyValue = prop.call(actual)
+         val expectedPropertyValue = prop.call(expected)
+         if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue))
+            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1)?.let { diff ->
+               Pair(prop, diff)
+            }
+         else
+            runCatching { actualPropertyValue shouldBe expectedPropertyValue }
+               .fold(onSuccess = { null }, onFailure = { t -> Pair(prop, StandardDifference(t)) })
+      }
 
    private fun formatDifferences(dataClassDiff: DataClassDifference, indentStyle: List<Boolean> = emptyList()): String {
       val noOfDifferences = dataClassDiff.differences.size
@@ -54,34 +67,17 @@ internal object DataClassEq : Eq<Any> {
             is DataClassDifference -> formatDifferences(difference, indentStyle + isLastProperty)
          }
          buildString {
-            append(indentStyle.map { if (it) "   " else "│  " }.joinToString(separator = ""))
+            append(indentStyle.joinToString(separator = "") { if (it) "   " else "│  " })
             append(if (isLastProperty) '└' else '├')
             append(" ${property.name}: $diffMsg")
          }
       }.joinToString(separator = "\n", prefix = "data class diff for ${dataClassDiff.dataClassName}\n")
    }
-
-   private fun computeDifferences(
-      dataClassProperties: List<KCallable<*>>,
-      actual: Any,
-      expected: Any
-   ): List<Pair<KProperty1<Any, *>, PropertyDifference>> =
-      dataClassProperties.map { prop ->
-         // https://discuss.kotlinlang.org/t/type-projection-clash-when-accessing-property-delegate-instance/8331
-         // https://youtrack.jetbrains.com/issue/KT-16432?_ga=2.265298440.640424854.1589134567-1685779670.1523969764
-         val property = (prop as KProperty1<Any, *>)
-         val actualPropertyValue = property(actual)
-         val expectedPropertyValue = property(expected)
-         if (actualPropertyValue.isDataClass() && expectedPropertyValue.isDataClass())
-            dataClassDiff(actualPropertyValue, expectedPropertyValue)?.let { diff -> Pair(property, diff) }
-         else
-            eq(actualPropertyValue, expectedPropertyValue)?.let { t -> Pair(property, StandardDifference(t)) }
-      }.filterNotNull()
 }
 
 private sealed class PropertyDifference
 private data class StandardDifference(val differenceError: Throwable) : PropertyDifference()
 private data class DataClassDifference(
    val dataClassName: String,
-   val differences: List<Pair<KProperty1<Any, *>, PropertyDifference>>
+   val differences: List<Pair<Property, PropertyDifference>>
 ) : PropertyDifference()

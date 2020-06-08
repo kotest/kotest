@@ -42,6 +42,11 @@ interface Reflection {
     * it would return [a, b] and on unsupported platforms an empty list.
     */
    fun paramNames(fn: Function<*>): List<String>?
+
+   /**
+    * Returns a list of the class member properties defined in the primary constructor, if supported.
+    */
+   fun <T : Any> primaryConstructorMembers(klass: KClass<T>) : List<Property>
 }
 
 object BasicReflection : Reflection {
@@ -49,4 +54,7 @@ object BasicReflection : Reflection {
    override fun annotations(kclass: KClass<*>): List<Annotation> = emptyList()
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
    override fun paramNames(fn: Function<*>): List<String>? = null
+   override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property>  = emptyList()
 }
+
+data class Property(val name: String, val call: (Any) -> Any?)

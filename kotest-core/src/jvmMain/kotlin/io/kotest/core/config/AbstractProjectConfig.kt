@@ -159,14 +159,6 @@ abstract class AbstractProjectConfig {
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
-    * Print a detailed diff message when asserting on data class instances. This feature uses the properties defined in
-    * the data classes constructer to compare two instances, and print the differences.
-    *
-    * You might want to turn this off if you override equals() in your data classes.
-    */
-   open val showDetailedDataClassDiff: Boolean = true
-
-   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

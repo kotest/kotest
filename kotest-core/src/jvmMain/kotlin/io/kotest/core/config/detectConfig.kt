@@ -53,8 +53,7 @@ actual fun detectConfig(): ProjectConf {
          writeSpecFailureFile = confClass.writeSpecFailureFile ?: confClass.writeSpecFailureFile(),
          parallelism = max(confClass.parallelism, confClass.parallelism()),
          timeout = confClass.timeout,
-         testCaseConfig = confClass.defaultTestCaseConfig,
-         showDetailedDataClassDiff = confClass.showDetailedDataClassDiff
+         testCaseConfig = confClass.defaultTestCaseConfig
       )
    }
 

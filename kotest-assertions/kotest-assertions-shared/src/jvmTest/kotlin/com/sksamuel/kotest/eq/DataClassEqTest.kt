@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.eq
 
-import io.kotest.assertions.eq.isDataClass
+import io.kotest.assertions.eq.isDataClassInstance
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.assertThrows
 
@@ -12,21 +14,24 @@ data class DataClass3(val x: Int, val y: DataClass2, val z: Double)
 
 data class DataClassWithMultipleConstructors(val a: Int, val b: Float) {
    private var c: String = "";
+
    constructor(a: Int, b: Float, c: String) : this(a, b) {
       this.c = c
    }
 }
+
+data class CircularDataClass(val num: Int, val nested: CircularDataClass?)
 
 class RegularClass(val a: Int, val b: Float)
 
 class DataClassEqTest : StringSpec({
 
    "Data class instances are determined to be dataclasses" {
-      DataClass1(1, 3.4F).isDataClass() shouldBe true
+      isDataClassInstance(DataClass1(1, 3.4F)) shouldBe true
    }
 
    "Non data class instances are determined as not dataclasses" {
-      RegularClass(1, 3.4F).isDataClass() shouldBe false
+      isDataClassInstance(RegularClass(1, 3.4F)) shouldBe false
    }
 
    "Simple detailed diffs are shown" {
@@ -87,7 +92,6 @@ class DataClassEqTest : StringSpec({
          """.trimIndent()
    }
 
-
    "Only properties in the primary constructor are used in the diff" {
       DataClassWithMultipleConstructors(1, 2.2F, "hello") shouldBe
          DataClassWithMultipleConstructors(1, 2.2F, "goodbye")
@@ -105,14 +109,31 @@ class DataClassEqTest : StringSpec({
          """.trimIndent()
    }
 
-   /**
-    * Remaining tests:
-    *
-    * HELP! showDetailedDataClassDiff in PropertyConfig config can disable detailed diff.
-    * Should this be a per spec flag rather than global?
-    */
+   "Data class diffs are disabled when data class nesting is greater than 10 references deep" {
+      val actual = (0..10).fold(null) { acc: CircularDataClass?, i ->
+         CircularDataClass(i, acc)
+      }
+      val expected = (-1..11).fold(null) { acc: CircularDataClass?, i ->
+         CircularDataClass(i, acc)
+      }
+
+      val throwable = assertThrows<Throwable> { actual shouldBe expected }
+
+      throwable.message shouldNotStartWith "data class diff"
+   }
 })
 
+class `DataClassEq AssertionConfig Tests` : StringSpec({
 
+   afterTest { (test, result) ->
+      System.setProperty("kotest.assertions.show-data-class-diffs", "true")
+   }
 
+   "Data class diffs can be disabled with a system property" {
+      System.setProperty("kotest.assertions.show-data-class-diffs", "false")
 
+      val throwable = assertThrows<Throwable> { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
+
+      throwable.message shouldBe "expected:<DataClass1(a=2, b=3.5)> but was:<DataClass1(a=1, b=3.4)>"
+   }
+})
