@@ -130,6 +130,19 @@ class PropertyExample: StringSpec({
 })
 ```
 
+### PropTestListener
+
+Sometimes in property test it is required to perform some setup and tear down in each iteration of test.
+For this purpose you can register a ```PropTestListener``` with ```PropTestConfig```.
+```kotlin
+class PropertyExample: StringSpec({
+   "some property test which require setup and tear down in each iteration" {
+      forAll<String, String>(PropTestConfig(listeners = listOf(MyPropTestListener))) { a,b ->
+         // some assertion
+      }
+   }
+})
+```
 
 ## Generators
 
