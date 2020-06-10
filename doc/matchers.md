@@ -245,6 +245,11 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `date.shouldHaveSecond(second)` | Asserts that the date have correct second. |
 | `date.shouldHaveNano(nao)` | Asserts that the date have correct nano second. |
 
+| ZonedDateTime ||
+| -------- | ---- |
+| `zonedDateTime.shouldBeToday()` | Asserts that the ZonedDateTime has the same day as the today. |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+
 | Times ||
 | -------- | ---- |
 | `time.shouldHaveSameHoursAs(otherTime)` | Asserts that the time has the same hours as the given time. |
@@ -259,6 +264,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | -------- | ---- |
 | `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration. |
 | `shouldTimeout(timeout, unit, function)` | Asserts that given function does not complete within the given duration. |
+| `shouldTimeout(duration, suspendableFunction)` | Asserts that given suspendable function does not complete within the given duration. |
 
 | Futures ||
 | -------- | ---- |
