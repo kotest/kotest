@@ -1,6 +1,7 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.Actual
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.diffLargeString
 import io.kotest.assertions.failure
@@ -10,7 +11,15 @@ import io.kotest.mpp.sysprop
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
- * are of a certain size. The min size for the diff is retrieved by [largeStringDiffMinSize].
+ * are of a certain size.
+ *
+ * The min size for the diff is retrieved by [AssertionsConfig.largeStringDiffMinSize], which can be modified by setting
+ * the system property "kotest.assertions.multi-line-diff-size"
+ *
+ * E.g.:
+ * ```
+ *     -Dkotest.assertions.multi-line-diff-size=42
+ * ```
  */
 object StringEq : Eq<String> {
 
@@ -39,10 +48,10 @@ object StringEq : Eq<String> {
    }
 
    private fun useDiff(expected: String, actual: String): Boolean {
-      val minSizeForDiff = largeStringDiffMinSize()
+      val minSizeForDiff = AssertionsConfig.largeStringDiffMinSize
       return expected.lines().size >= minSizeForDiff
          && actual.lines().size >= minSizeForDiff &&
-         sysprop("kotest.assertions.multi-line-diff") != "simple"
+         AssertionsConfig.multiLineDiff != "simple"
    }
 }
 
@@ -54,4 +63,4 @@ fun escapeLineBreaks(input: String): String {
       .replace("\r", "\\r")
 }
 
-fun largeStringDiffMinSize() = sysprop("kotest.assertions.multi-line-diff-size", "50").toInt()
+

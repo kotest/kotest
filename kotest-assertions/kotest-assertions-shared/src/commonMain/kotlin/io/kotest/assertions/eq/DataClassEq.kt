@@ -13,7 +13,18 @@ internal fun isDataClassInstance(obj: Any?): Boolean =
    obj != null && reflection.isDataClass(obj::class)
 
 /**
- * Prints a detailed diff of data class instances.
+ * Prints a detailed diff of data class instances, highlighting which properties/fields of the data class instances
+ * differ.
+ *
+ * The Kotlin compiler derives the equals() implementation based on all properties declared in the primary constructor.
+ * As such this feature becomes less useful if you want to override equals() in your data classes. If this is the case
+ * you may wish to turn off this feature by setting the system property: "kotest.assertions.show-data-class-diffs" to
+ * "false".
+ *
+ * E.g.:
+ * ```
+ *     -Dkotest.assertions.show-data-class-diffs=false
+ * ```
  */
 internal object DataClassEq : Eq<Any> {
 
