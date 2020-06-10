@@ -264,6 +264,7 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | -------- | ---- |
 | `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration. |
 | `shouldTimeout(timeout, unit, function)` | Asserts that given function does not complete within the given duration. |
+| `shouldTimeout(duration, suspendableFunction)` | Asserts that given suspendable function does not complete within the given duration. |
 
 | Futures ||
 | -------- | ---- |
