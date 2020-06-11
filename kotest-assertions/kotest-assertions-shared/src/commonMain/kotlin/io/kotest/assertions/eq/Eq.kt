@@ -1,5 +1,7 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.AssertionsConfig
+
 /**
  * A [Eq] typeclass compares two values for equality, returning an [AssertionError] if they are
  * not equal, or null if they are equal.
@@ -19,5 +21,9 @@ fun <T> eq(actual: T, expected: T): Throwable? = when {
    actual is Regex && expected is Regex -> RegexEq.equals(actual, expected)
    actual is String && expected is String -> StringEq.equals(actual, expected)
    actual is Number && expected is Number -> NumberEq.equals(actual, expected)
+   shouldShowDataClassDiff(actual, expected) -> DataClassEq.equals(actual as Any, expected as Any)
    else -> DefaultEq.equals(actual as Any, expected as Any)
 }
+
+private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
+   AssertionsConfig.showDataClassDiff && isDataClassInstance(actual) && isDataClassInstance(expected)

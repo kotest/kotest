@@ -2,7 +2,9 @@
 
 package io.kotest.mpp
 
+import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.reflect
 
 object JvmReflection : Reflection {
@@ -23,6 +25,13 @@ object JvmReflection : Reflection {
 
    override fun paramNames(fn: Function<*>): List<String>? = fn.reflect()?.parameters?.mapNotNull { it.name }
 
+   override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> {
+      val constructorParams = klass::primaryConstructor.get()?.parameters ?: emptyList()
+      val membersByName = klass::members.get().associateBy(KCallable<*>::name)
+      return constructorParams.mapNotNull { param ->
+         membersByName[param.name]?.let { callable -> Property(callable.name) { callable.call(it) } }
+      }
+   }
 }
 
 actual val reflection: Reflection = JvmReflection

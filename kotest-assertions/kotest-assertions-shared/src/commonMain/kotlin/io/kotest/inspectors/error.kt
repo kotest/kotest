@@ -1,9 +1,9 @@
 package io.kotest.inspectors
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.exceptionToMessage
 import io.kotest.assertions.failure
 import io.kotest.assertions.show.show
-import io.kotest.mpp.sysprop
 
 /**
  * Build assertion error message.
@@ -19,8 +19,7 @@ import io.kotest.mpp.sysprop
  */
 fun <T> buildAssertionError(msg: String, results: List<ElementResult<T>>): Nothing {
 
-   val maxResults =
-      (sysprop("kotest.assertions.output.max") ?: sysprop("kotlintest.assertions.output.max"))?.toInt() ?: 10
+   val maxResults = AssertionsConfig.maxErrorsOutput
 
    val passed = results.filterIsInstance<ElementPass<T>>()
    val failed = results.filterIsInstance<ElementFail<T>>()

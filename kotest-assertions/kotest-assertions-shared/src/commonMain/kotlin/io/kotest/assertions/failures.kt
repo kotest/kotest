@@ -36,10 +36,10 @@ fun failure(message: String, cause: Throwable?): AssertionError {
  * If the platform supports stack traces,
  * then the stack is cleaned of `io.kotest` lines.
  */
-fun failure(expected: Expected, actual: Actual): Throwable {
+fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Throwable {
    return stacktraces.cleanStackTrace(
       Exceptions.createAssertionError(
-         clueContextAsString() + intellijFormatError(expected, actual),
+         prependMessage + clueContextAsString() + intellijFormatError(expected, actual),
          null,
          expected,
          actual

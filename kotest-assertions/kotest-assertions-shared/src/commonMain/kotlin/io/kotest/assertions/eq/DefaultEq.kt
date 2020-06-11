@@ -23,7 +23,7 @@ internal object DefaultEq : Eq<Any> {
    }
 }
 
-private fun makeComparable(any: Any?): Any? {
+internal fun makeComparable(any: Any?): Any? {
    return when (any) {
       is BooleanArray -> any.asList()
       is IntArray -> any.asList()
