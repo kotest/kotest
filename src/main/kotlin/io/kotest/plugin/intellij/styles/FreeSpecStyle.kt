@@ -65,7 +65,7 @@ object FreeSpecStyle : SpecStyle {
 
    private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
       val contexts = locateParentContainers(element)
-      val path = (contexts.map { it.name } + testName).joinToString(" -- ")
+      val path = (contexts.map { it.name } + testName).joinToString(" ")
       return Test(testName, path, type, element)
    }
 

@@ -36,14 +36,12 @@ object ShouldSpecStyle : SpecStyle {
 
    private fun KtDotQualifiedExpression.tryShouldWithConfig(): Test? {
       val should = extractLhsStringArgForDotExpressionWithRhsFinalLambda("should", "config") ?: return null
-      val name = "should $should"
-      return buildTest(name, this, TestType.Test)
+      return buildTest(should, this, TestType.Test)
    }
 
    private fun KtCallExpression.tryShould(): Test? {
       val should = extractStringArgForFunctionWithStringAndLambdaArgs("should") ?: return null
-      val name = "should $should"
-      return buildTest(name, this, TestType.Test)
+      return buildTest(should, this, TestType.Test)
    }
 
    private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
