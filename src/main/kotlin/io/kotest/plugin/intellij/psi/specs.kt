@@ -243,7 +243,7 @@ fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
 }
 
 /**
- * Returns true if this [PsiElement] is inside any spec class.
+ * Returns true if this [PsiElement] is located inside a class or object that subclasses a spec.
  */
 fun PsiElement.isContainedInSpec(): Boolean {
    val enclosingClass = getParentOfType<KtClassOrObject>(true) ?: return false

@@ -2,7 +2,6 @@ package io.kotest.plugin.intellij
 
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor
 import com.intellij.lang.Language
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -15,15 +14,15 @@ import javax.swing.Icon
 class KotestTestFramework : JavaTestFramework() {
 
    private val specs = listOf(
-       "io.kotest.core.spec.style.BehaviorSpec",
-       "io.kotest.core.spec.style.DescribeSpec",
-       "io.kotest.core.spec.style.ExpectSpec",
-       "io.kotest.core.spec.style.FeatureSpec",
-       "io.kotest.core.spec.style.FreeSpec",
-       "io.kotest.core.spec.style.FunSpec",
-       "io.kotest.core.spec.style.ShouldSpec",
-       "io.kotest.core.spec.style.StringSpec",
-       "io.kotest.core.spec.style.WordSpec"
+      "io.kotest.core.spec.style.BehaviorSpec",
+      "io.kotest.core.spec.style.DescribeSpec",
+      "io.kotest.core.spec.style.ExpectSpec",
+      "io.kotest.core.spec.style.FeatureSpec",
+      "io.kotest.core.spec.style.FreeSpec",
+      "io.kotest.core.spec.style.FunSpec",
+      "io.kotest.core.spec.style.ShouldSpec",
+      "io.kotest.core.spec.style.StringSpec",
+      "io.kotest.core.spec.style.WordSpec"
    )
 
    override fun getName(): String = "Kotest"
@@ -42,8 +41,6 @@ class KotestTestFramework : JavaTestFramework() {
 
    override fun getMnemonic(): Char = 'K'
    override fun getLibraryPath(): String? = null
-
-   override fun isLibraryAttached(module: Module): Boolean = true
 
    override fun getDefaultSuperClass(): String = "io.kotest.core.spec.style.StringSpec"
 

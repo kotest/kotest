@@ -21,7 +21,7 @@ object KotestSMTestLocator : SMTestLocator {
    private const val Protocol = "kotest"
 
    /**
-    * Fulls the load [PsiFile] for a given fqn name or returns null if the class cannot be found.
+    * Returns the PSI file that contains the class indicated by the fully qualified name.
     */
    private fun loadPsiFile(fqn: String, project: Project, scope: GlobalSearchScope): PsiFile? {
       val manager = PsiManager.getInstance(project)
