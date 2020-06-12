@@ -76,7 +76,7 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     * Returns a String version of this description, which is
     * the parents + this name concatenated with slashes.
     */
-   fun id(): String = (parents + listOf(name)).joinToString("/")
+   fun id(): String = (parents.map { it.displayName() } + listOf(name.displayName())).joinToString("/")
 
    fun names(): List<TestName> = parents + name
 

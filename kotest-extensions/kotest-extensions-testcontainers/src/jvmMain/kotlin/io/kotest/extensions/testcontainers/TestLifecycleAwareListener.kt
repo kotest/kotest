@@ -9,7 +9,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.net.URLEncoder
 import java.util.*
 
-internal class TestLifecycleAwareListener(startable: Startable) : TestListener {
+class TestLifecycleAwareListener(startable: Startable) : TestListener {
    private val testLifecycleAware = startable as? TestLifecycleAware
 
    override suspend fun beforeTest(testCase: TestCase) {
