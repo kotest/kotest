@@ -17,6 +17,8 @@ Changelog
 * Feature: Add shouldExistInOrder matcher #1460
 * Feature: Added Arb.orNull #1414
 * Feature: Provide a way to remove test prefixes in the test output when using specs which use prefixes #1486
+* Feature: Adds shouldCompleteExceptionallyWith matcher #1454
+* Feature: Exhaustive.merge for two gens with a common supertype #1502
 * Improvement: Added Byte.shouldBeBetween(min, max) and Arb.bytes #1408
 * Improvement: Remove kotlintest aliases #1457
 * Improvement: Parent scopes are not coroutine scopes #1488
