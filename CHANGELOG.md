@@ -1,6 +1,38 @@
 Changelog
 =========
 
+#### 4.1.0 RC1
+
+* Feature: The Kotest IntelliJ plugin has gone final. The plugin requires 4.1. or higher of Kotest. https://plugins.jetbrains.com/plugin/14080-kotest
+* Feature: Highlight diff when comparing data classes #826 #1242
+* Feature: Improve error message in tolerance matchers #1230
+* Feature: Add Arb for (lat, long) #1304
+* Feature: Integration with Testcontainers #1353
+* Feature: x variants for Behavior / Feature / Expect spec #1383
+* Feature: Add property test global config with before / after prop test callbacks #1435
+* Feature: Parallel execution test cases in Spec #1362
+* Feature: Add variable.assertSoftly #1427
+* Feature: Coroutine helper for timeout #1447
+* Feature: Add timeout to apply to individual tests when invocations > 1 #1442
+* Feature: Add shouldExistInOrder matcher #1460
+* Feature: Added Arb.orNull #1414
+* Feature: Provide a way to remove test prefixes in the test output when using specs which use prefixes #1486
+* Improvement: Added Byte.shouldBeBetween(min, max) and Arb.bytes #1408
+* Improvement: Remove kotlintest aliases #1457
+* Improvement: Parent scopes are not coroutine scopes #1488
+* Improvement: isolation instead of isolationMode #1418
+* Improvement: Reflection equality improvements #1413
+* Improvement: Property tests should report exception of running shrunk input #1279
+* Improvement: Make beforeProject and afterProject as suspend function #1461
+* Improvement: Updated arb flat map to accept lists #1500
+* Improvement: Date generators should allow for specific dates to be selected #1354
+* Bugfix: Test cases with multiline names broken #1441
+* Bugfix: Before\AfterProject catch only one Exception #1387
+* Bugfix: Arb.bind() calls the incorrect constructor #1487
+* Bugfix: Project config dump doesn't include enums properly #1379
+* Bugfix: Add Arb.choose that accepts weighted arbs #1499
+* Bugfix: Arb.list doesn't use ListShrinker #1493
+
 #### 4.0.6
 
 * Bugfix: Dependencies of assertions-core are now included properly when not using junit runner #1425
