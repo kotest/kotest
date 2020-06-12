@@ -2,6 +2,7 @@ package io.kotest.core.test
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
+import kotlin.reflect.KClass
 
 /**
  * The description gives the full path to a [TestCase].
@@ -29,6 +30,8 @@ data class Description(val parents: List<String>, val name: String) {
        */
       fun spec(spec: Spec) = spec::class.description()
 
+      fun spec(kclass: KClass<out Spec>) = kclass.description()
+
       /**
        * Creates a Spec level description from the given instance, with no guarantees the instance is a Spec.
        */
@@ -51,10 +54,16 @@ data class Description(val parents: List<String>, val name: String) {
       parents.last()
    )
 
+   /**
+    * Returns true if this description is for a spec.
+    */
    fun isSpec(): Boolean = parents.isEmpty()
 
-   fun spec(): Description =
-      spec(parents.first())
+   /**
+    * Returns a [Description] that models the spec that this description belongs to.
+    * Requires at least one parent, otherwise this description is a spec already.
+    */
+   fun spec(): Description = spec(parents.first())
 
    fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(
       parents.drop(1),

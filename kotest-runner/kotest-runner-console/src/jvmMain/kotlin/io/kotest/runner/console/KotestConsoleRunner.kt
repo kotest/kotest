@@ -13,7 +13,7 @@ import io.kotest.core.spec.Spec
 
 class KotestConsoleRunner(private val listener: TestEngineListener) {
 
-   suspend fun execute(packageName: String?, specFQN: String?, test: String?, tags: Tags?) {
+   suspend fun execute(packageName: String?, specFQN: String?, testPath: String?, tags: Tags?) {
 
       // if the spec class was null, then we perform discovery to locate all the classes
       // otherwise we instantiate that particular spec
@@ -23,13 +23,13 @@ class KotestConsoleRunner(private val listener: TestEngineListener) {
          Pair(result.specs, null)
       } else {
          val spec = (Class.forName(specFQN) as Class<Spec>).kotlin
-         val filter = test?.let { SpecAwareTestFilter(it, spec) }
+         val filter = testPath?.let { TestPathTestCaseFilter(it, spec) }
          listOf(spec) to filter
       }
 
       val runner = KotestEngine(
          specs,
-         if (filter == null) emptyList() else listOf(filter),
+         listOfNotNull(filter),
          Project.parallelism(),
          tags,
          listener

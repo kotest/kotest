@@ -29,16 +29,16 @@ class TeamCityMessages(prefix: String?, command: String) {
       return this
    }
 
-   internal fun ignoreComment(value: String): TeamCityMessages = addAttribute("ignoreComment", value)
-   internal fun message(value: String): TeamCityMessages = addAttribute("message", value.trim())
-   private fun details(value: String): TeamCityMessages = addAttribute("details", value.trim())
-   internal fun type(value: String): TeamCityMessages = addAttribute("type", value.trim())
-   internal fun actual(value: String): TeamCityMessages = addAttribute("actual", value.trim())
-   internal fun expected(value: String): TeamCityMessages = addAttribute("expected", value.trim())
-   internal fun locationHint(value: String): TeamCityMessages = addAttribute("locationHint", value)
+   fun ignoreComment(value: String): TeamCityMessages = addAttribute("ignoreComment", value)
+   fun message(value: String): TeamCityMessages = addAttribute("message", value.trim())
+   fun details(value: String): TeamCityMessages = addAttribute("details", value.trim())
+   fun type(value: String): TeamCityMessages = addAttribute("type", value.trim())
+   fun actual(value: String): TeamCityMessages = addAttribute("actual", value.trim())
+   fun expected(value: String): TeamCityMessages = addAttribute("expected", value.trim())
+   fun locationHint(value: String): TeamCityMessages = addAttribute("locationHint", value)
 
    @OptIn(ExperimentalTime::class)
-   internal fun duration(duration: Duration): TeamCityMessages =
+   fun duration(duration: Duration): TeamCityMessages =
       addAttribute("duration", duration.toLongMilliseconds().toString())
 
    override fun toString(): String = "$myText]"
