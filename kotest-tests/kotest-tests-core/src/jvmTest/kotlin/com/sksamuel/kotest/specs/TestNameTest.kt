@@ -12,7 +12,7 @@ class TestNameTest : FunSpec() {
 
       test("prefix should be placed before name when not null") {
          TestName(null, "test").displayName() shouldBe "test"
-         TestName("pref", "test").displayName() shouldBe "pref: test"
+         TestName("pref", "test").displayName() shouldBe "preftest"
       }
 
       test("Display Name should place bang before name") {
