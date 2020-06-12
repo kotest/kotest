@@ -1,10 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -38,7 +35,7 @@ class GivenScope(
    suspend fun xand(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
 
    private suspend fun addAnd(name: String, test: suspend GivenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = createTestName("And: ", name)
+      val testName = TestName("And: ", name)
       addContainerTest(testName, xdisabled) {
          GivenScope(
             this@GivenScope.description.append(testName),
@@ -55,7 +52,7 @@ class GivenScope(
    suspend fun xwhen(name: String, test: suspend WhenScope.() -> Unit) = addWhen(name, test, xdisabled = true)
 
    private suspend fun addWhen(name: String, test: suspend WhenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = createTestName("When: ", name)
+      val testName = TestName("When: ", name)
       addContainerTest(testName, xdisabled) {
          WhenScope(
             this@GivenScope.description.append(testName),
@@ -67,15 +64,15 @@ class GivenScope(
       }
    }
 
-   fun then(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = false)
-   fun Then(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = false)
-   fun xthen(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = true)
+   fun then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+   fun Then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+   fun xthen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
 
    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun xthen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
-      addTest(createTestName("Then: ", name), xdisabled, test)
+      addTest(TestName("Then: ", name), xdisabled, test)
    }
 }

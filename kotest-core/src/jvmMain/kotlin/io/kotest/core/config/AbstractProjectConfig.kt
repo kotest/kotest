@@ -159,6 +159,28 @@ abstract class AbstractProjectConfig {
    open val defaultTestCaseConfig: TestCaseConfig? = null
 
    /**
+    * Some specs have DSLs that include "prefix" words in the test name.
+    * For example, when using ExpectSpec like this:
+    *
+    * expect("this test 1") {
+    *   feature("this test 2") {
+    *   }
+    * }
+    *
+    * Will result in:
+    *
+    * Expect: this test 1
+    *   Feature: this test 2
+    *
+    * From 4.2, this feature can be disabled by setting this value to false.
+    * Then the output of the previous test would be:
+    *
+    * this test 1
+    *   this test 2
+    */
+   open val includeTestScopePrefixes: Boolean? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */

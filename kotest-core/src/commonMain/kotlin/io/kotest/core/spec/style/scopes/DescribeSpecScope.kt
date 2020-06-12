@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.TestName
 import kotlin.time.ExperimentalTime
 
 /**
@@ -13,14 +13,14 @@ import kotlin.time.ExperimentalTime
 interface DescribeSpecScope : RootScope {
 
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = createTestName("Describe: ", name)
+      val testName = TestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
          DescribeScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 
    fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = createTestName("Describe: ", name)
+      val testName = TestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = true) {}
    }
 }

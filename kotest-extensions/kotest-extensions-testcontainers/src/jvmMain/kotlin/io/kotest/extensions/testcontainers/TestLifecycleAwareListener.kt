@@ -9,7 +9,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.net.URLEncoder
 import java.util.*
 
-internal class TestLifecycleAwareListener(startable: Startable) : TestListener {
+class TestLifecycleAwareListener(startable: Startable) : TestListener {
    private val testLifecycleAware = startable as? TestLifecycleAware
 
    override suspend fun beforeTest(testCase: TestCase) {
@@ -24,7 +24,7 @@ internal class TestLifecycleAwareListener(startable: Startable) : TestListener {
 private fun TestCase.toTestDescription() = object : TestDescription {
 
    override fun getFilesystemFriendlyName(): String {
-      return URLEncoder.encode(name, "UTF-8")
+      return URLEncoder.encode(description.name.displayName(), "UTF-8")
    }
 
    override fun getTestId(): String {

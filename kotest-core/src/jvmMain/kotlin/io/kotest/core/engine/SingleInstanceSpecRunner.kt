@@ -26,7 +26,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
    ) : TestContext() {
 
       // these are the tests inside this context, so we can track for duplicates
-      private val seen = mutableSetOf<String>()
+      private val seen = mutableSetOf<TestName>()
 
       // in the single instance runner we execute each nested test as soon as the are registered
       override suspend fun registerTestCase(nested: NestedTest) {

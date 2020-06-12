@@ -9,11 +9,11 @@ class WhenCallbackOrderTest : WordSpec({
    var after = ""
 
    beforeTest {
-      before += it.name
+      before += it.description.name.displayName()
    }
 
    afterTest { (test, _) ->
-      after += test.name
+      after += test.description.name.displayName()
    }
 
    afterSpec {

@@ -31,16 +31,16 @@ interface ContainerScope : CoroutineScope {
 
    val defaultConfig: TestCaseConfig
 
-   suspend fun addContainerTest(name: String, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
+   suspend fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
    }
 
-   suspend fun addTest(name: String, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
+   suspend fun addTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Test, test)
    }
 
    suspend fun addTest(
-      name: String,
+      name: TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       type: TestType,

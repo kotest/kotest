@@ -49,6 +49,7 @@ data class TestCase(
    val assertionMode: AssertionMode? = null
 ) {
 
+   @Deprecated("use description.name")
    val name = description.name
 
    fun isTopLevel(): Boolean = description.isTopLevel()

@@ -184,7 +184,7 @@ abstract class TestConfiguration {
     * factory given the prefix.
     */
    fun include(prefix: String, factory: TestFactory) {
-      fun DynamicTest.addPrefix() = copy(name = prefix + name)
+      fun DynamicTest.addPrefix(): DynamicTest = copy(name = name.copy(name = "$prefix $name"))
       factories = factories + factory.copy(tests = factory.tests.map { it.addPrefix() })
    }
 

@@ -11,13 +11,13 @@ val emptyTestName = funSpec {
     test("empty test name should error") {
         shouldThrowAny {
             EmptyTestName()
-        }.message.shouldBe("Cannot add test with blank or empty name")
+        }.message.shouldBe("Cannot create test with blank or empty name")
     }
 
     test("blank test name should error") {
         shouldThrowAny {
             BlankTestName()
-        }.message.shouldBe("Cannot add test with blank or empty name")
+        }.message.shouldBe("Cannot create test with blank or empty name")
     }
 }
 

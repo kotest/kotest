@@ -52,19 +52,19 @@ class TestPathTestCaseFilterTest : FunSpec() {
       test("should filter for word specs") {
          val r = Description.spec(WordSpecs::class)
 
-         TestPathTestCaseFilter("a should - b", WordSpecs::class)
+         TestPathTestCaseFilter("a should -- b", WordSpecs::class)
             .filter(r.append("a should")) shouldBe TestFilterResult.Include
 
-         TestPathTestCaseFilter("a should - b", WordSpecs::class)
+         TestPathTestCaseFilter("a should -- b", WordSpecs::class)
             .filter(r.append("a should").append("b")) shouldBe TestFilterResult.Include
 
-         TestPathTestCaseFilter("a should - b", WordSpecs::class)
+         TestPathTestCaseFilter("a should -- b", WordSpecs::class)
             .filter(r.append("a should").append("c")) shouldBe TestFilterResult.Exclude
 
-         TestPathTestCaseFilter("a should - b", WordSpecs::class)
+         TestPathTestCaseFilter("a should -- b", WordSpecs::class)
             .filter(r.append("b should")) shouldBe TestFilterResult.Exclude
 
-         TestPathTestCaseFilter("a should - b", WordSpecs::class)
+         TestPathTestCaseFilter("a should -- b", WordSpecs::class)
             .filter(r.append("b should").append("b")) shouldBe TestFilterResult.Exclude
       }
 
@@ -75,39 +75,39 @@ class TestPathTestCaseFilterTest : FunSpec() {
             .filter(r.append("a")) shouldBe TestFilterResult.Include
 
          TestPathTestCaseFilter("a", FreeSpecs::class)
-            .filter(r.append("b").append("b")) shouldBe TestFilterResult.Exclude
-
-         TestPathTestCaseFilter("a - b", FreeSpecs::class)
-            .filter(r.append("a")) shouldBe TestFilterResult.Include
-
-         TestPathTestCaseFilter("a - b", FreeSpecs::class)
-            .filter(r.append("a").append("b")) shouldBe TestFilterResult.Include
-
-         TestPathTestCaseFilter("a - b", FreeSpecs::class)
-            .filter(r.append("c")) shouldBe TestFilterResult.Exclude
-
-         TestPathTestCaseFilter("a - b", FreeSpecs::class)
-            .filter(r.append("a").append("c")) shouldBe TestFilterResult.Exclude
-
-         TestPathTestCaseFilter("a - b", FreeSpecs::class)
-            .filter(r.append("b").append("b")) shouldBe TestFilterResult.Exclude
-
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
-            .filter(r.append("a")) shouldBe TestFilterResult.Include
-
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
-            .filter(r.append("a").append("b")) shouldBe TestFilterResult.Include
-
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
-            .filter(r.append("a").append("b").append("c")) shouldBe TestFilterResult.Include
-
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
-            .filter(r.append("b").append("b").append("c")) shouldBe TestFilterResult.Exclude
-
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
             .filter(r.append("b").append("c")) shouldBe TestFilterResult.Exclude
 
-         TestPathTestCaseFilter("a - b - c", FreeSpecs::class)
+         TestPathTestCaseFilter("a -- b", FreeSpecs::class)
+            .filter(r.append("a")) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a -- b", FreeSpecs::class)
+            .filter(r.append("a").append("b")) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a -- b", FreeSpecs::class)
+            .filter(r.append("c")) shouldBe TestFilterResult.Exclude
+
+         TestPathTestCaseFilter("a -- b", FreeSpecs::class)
+            .filter(r.append("a").append("c")) shouldBe TestFilterResult.Exclude
+
+         TestPathTestCaseFilter("a -- b", FreeSpecs::class)
+            .filter(r.append("b").append("b")) shouldBe TestFilterResult.Exclude
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
+            .filter(r.append("a")) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
+            .filter(r.append("a").append("b")) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
+            .filter(r.append("a").append("b").append("c")) shouldBe TestFilterResult.Include
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
+            .filter(r.append("b").append("b").append("c")) shouldBe TestFilterResult.Exclude
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
+            .filter(r.append("b").append("c")) shouldBe TestFilterResult.Exclude
+
+         TestPathTestCaseFilter("a -- b -- c", FreeSpecs::class)
             .filter(r.append("a").append("b").append("c").append("d")) shouldBe TestFilterResult.Include
       }
 
@@ -123,32 +123,32 @@ class TestPathTestCaseFilterTest : FunSpec() {
          TestPathTestCaseFilter("Given: a", BehaviorSpecs::class)
             .filter(r.append("Given: a").append("When: b").append("Then: c")) shouldBe TestFilterResult.Include
 
-         TestPathTestCaseFilter("Given: a - When: b", BehaviorSpecs::class)
+         TestPathTestCaseFilter("Given: a -- When: b", BehaviorSpecs::class)
             .filter(r.append("Given: a").append("When: b")) shouldBe TestFilterResult.Include
-         TestPathTestCaseFilter("Given: a - When: b", BehaviorSpecs::class)
+         TestPathTestCaseFilter("Given: a -- When: b", BehaviorSpecs::class)
             .filter(r.append("Given: aa")) shouldBe TestFilterResult.Exclude
-         TestPathTestCaseFilter("Given: a - When: b", BehaviorSpecs::class)
+         TestPathTestCaseFilter("Given: a -- When: b", BehaviorSpecs::class)
             .filter(r.append("Given: a").append("When: bb")) shouldBe TestFilterResult.Exclude
-         TestPathTestCaseFilter("Given: a - When: b", BehaviorSpecs::class)
+         TestPathTestCaseFilter("Given: a -- When: b", BehaviorSpecs::class)
             .filter(r.append("Given: a").append("When: b").append("Then: c")) shouldBe TestFilterResult.Include
 
          TestPathTestCaseFilter(
-            "Given: a - When: b - Then: c",
+            "Given: a -- When: b -- Then: c",
             BehaviorSpecs::class
          )
             .filter(r.append("Given: a").append("When: b").append("Then: c")) shouldBe TestFilterResult.Include
          TestPathTestCaseFilter(
-            "Given: a - When: b - Then: c",
+            "Given: a -- When: b -- Then: c",
             BehaviorSpecs::class
          )
             .filter(r.append("Given: aa").append("When: b").append("Then: c")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter(
-            "Given: a - When: b - Then: c",
+            "Given: a -- When: b -- Then: c",
             BehaviorSpecs::class
          )
             .filter(r.append("Given: a").append("When: bb").append("Then: c")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter(
-            "Given: a - When: b - Then: c",
+            "Given: a -- When: b -- Then: c",
             BehaviorSpecs::class
          )
             .filter(r.append("Given: a").append("When: b").append("Then: cc")) shouldBe TestFilterResult.Exclude
@@ -171,17 +171,17 @@ class TestPathTestCaseFilterTest : FunSpec() {
             .filter(r.append("Feature: a").append("Scenario: c")) shouldBe TestFilterResult.Exclude
 
          TestPathTestCaseFilter(
-            "Feature: a - Scenario: b",
+            "Feature: a -- Scenario: b",
             FeatureSpecs::class
          )
             .filter(r.append("Feature: a").append("Scenario: b")) shouldBe TestFilterResult.Include
          TestPathTestCaseFilter(
-            "Feature: a - Scenario: b",
+            "Feature: a -- Scenario: b",
             FeatureSpecs::class
          )
             .filter(r.append("Feature: aa")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter(
-            "Feature: a - Scenario: b",
+            "Feature: a -- Scenario: b",
             FeatureSpecs::class
          )
             .filter(r.append("Feature: a").append("Scenario: bb")) shouldBe TestFilterResult.Exclude

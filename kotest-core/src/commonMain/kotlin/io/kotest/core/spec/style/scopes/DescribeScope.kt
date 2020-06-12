@@ -1,10 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -30,7 +27,7 @@ class DescribeScope(
 ) : ContainerScope {
 
    suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = createTestName("Describe: ", name)
+      val testName = TestName("Describe: ", name)
       addContainerTest(testName, xdisabled = false) {
          DescribeScope(
             this@DescribeScope.description.append(testName),
@@ -43,7 +40,7 @@ class DescribeScope(
    }
 
    suspend fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = createTestName("Describe: ", name)
+      val testName = TestName("Describe: ", name)
       addContainerTest(testName, xdisabled = true) {
          DescribeScope(
             this@DescribeScope.description.append(testName),
@@ -55,9 +52,15 @@ class DescribeScope(
       }
    }
 
-   fun it(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = false)
-   fun xit(name: String) = TestWithConfigBuilder(name, testContext, defaultConfig, xdisabled = true)
+   fun it(name: String) =
+      TestWithConfigBuilder(TestName("It: ", name), testContext, defaultConfig, xdisabled = false)
 
-   suspend fun it(name: String, test: suspend TestContext.() -> Unit) = addTest(name, xdisabled = false, test = test)
-   suspend fun xit(name: String, test: suspend TestContext.() -> Unit) = addTest(name, xdisabled = true, test = test)
+   fun xit(name: String) =
+      TestWithConfigBuilder(TestName("It: ", name), testContext, defaultConfig, xdisabled = true)
+
+   suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
+      addTest(TestName(name), xdisabled = false, test = test)
+
+   suspend fun xit(name: String, test: suspend TestContext.() -> Unit) =
+      addTest(TestName(name), xdisabled = true, test = test)
 }

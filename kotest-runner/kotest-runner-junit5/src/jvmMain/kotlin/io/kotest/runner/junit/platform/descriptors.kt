@@ -15,7 +15,7 @@ import org.junit.platform.engine.support.descriptor.FileSource
 import java.io.File
 import kotlin.reflect.KClass
 
-fun UniqueId.appendSpec(description: Description) = this.append(Segment.Spec.value, description.name)!!
+fun UniqueId.appendSpec(description: Description) = this.append(Segment.Spec.value, description.name.displayName())!!
 
 sealed class Segment {
    abstract val value: String
@@ -65,7 +65,7 @@ fun TestDescriptor.append(
    type: TestDescriptor.Type,
    source: TestSource?,
    segment: Segment
-): TestDescriptor = append(description.name, type, source, segment)
+): TestDescriptor = append(description.name.displayName(), type, source, segment)
 
 /**
  * Creates a new [TestDescriptor] appended to the receiver and adds it as a child of the receiver.

@@ -19,7 +19,7 @@ class BasicConsoleWriter : ConsoleWriter {
    private val term = TermColors(TermColors.Level.ANSI256)
 
    private fun Description.indent(): String = "\t".repeat(parents.size)
-   private fun Description.indented(): String = "${indent()}$name"
+   private fun Description.indented(): String = "${indent()}${name.displayName()}"
 
    private var start = 0L
    private var n = 0
@@ -52,10 +52,10 @@ class BasicConsoleWriter : ConsoleWriter {
 
       if (t == null) {
          print("$n) ")
-         term.green(specDesc.name)
+         term.green(specDesc.name.displayName())
       } else {
          errors = true
-         red(specDesc.name + " *** FAILED ***")
+         red(specDesc.name.displayName() + " *** FAILED ***")
          red("  \tcause: ${t.message})")
       }
 
@@ -64,7 +64,7 @@ class BasicConsoleWriter : ConsoleWriter {
          .forEach { testCase ->
             val result = testResults[testCase.description]
             when (result?.status) {
-               null -> red("${testCase.description.name} did not complete")
+               null -> red("${testCase.description.name.displayName()} did not complete")
                TestStatus.Success -> green("   " + testCase.description.indented())
                TestStatus.Error, TestStatus.Failure -> {
                   errors = true
@@ -98,9 +98,9 @@ class BasicConsoleWriter : ConsoleWriter {
          println("Specs with failing tests:")
          failed.map { it.key.spec() }
             .distinct()
-            .sortedBy { it.name }
+            .sortedBy { it.name.displayName() }
             .forEach {
-               red(" - ${it.name}")
+               red(" - ${it.name.displayName()}")
             }
       }
    }

@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.KotestDsl
 import io.kotest.core.test.Description
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -31,7 +31,7 @@ class ExpectScope(
 ) : ContainerScope {
 
    suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
-      val testName = createTestName("Context: ", name)
+      val testName = TestName("Context: ", name)
       addContainerTest(testName, xdisabled = false) {
          ExpectScope(
             this@ExpectScope.description.append(testName),
@@ -44,7 +44,7 @@ class ExpectScope(
    }
 
    suspend fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
-      val testName = createTestName("Context: ", name)
+      val testName = TestName("Context: ", name)
       addContainerTest(testName, xdisabled = true) {
          ExpectScope(
             this@ExpectScope.description.append(testName),
@@ -57,19 +57,19 @@ class ExpectScope(
    }
 
    suspend fun expect(name: String, test: suspend TestContext.() -> Unit) {
-      val testName = createTestName("Expect: ", name)
-      addTest(testName, xdisabled = false, test = test)
+      addTest(TestName("Expect: ", name), xdisabled = false, test = test)
    }
 
    suspend fun xexpect(name: String, test: suspend TestContext.() -> Unit) {
-      val testName = createTestName("Expect: ", name)
-      addTest(testName, xdisabled = true, test = test)
+      addTest(TestName("Expect: ", name), xdisabled = true, test = test)
    }
 
-   fun expect(name: String) =
-      TestWithConfigBuilder(createTestName("Expect: ", name), testContext, defaultConfig, xdisabled = false)
+   fun expect(name: String): TestWithConfigBuilder {
+      return TestWithConfigBuilder(TestName("Expect: ", name), testContext, defaultConfig, xdisabled = false)
+   }
 
-   fun xexpect(name: String) =
-      TestWithConfigBuilder(createTestName("Expect: ", name), testContext, defaultConfig, xdisabled = true)
+   fun xexpect(name: String): TestWithConfigBuilder {
+      return TestWithConfigBuilder(TestName("Expect: ", name), testContext, defaultConfig, xdisabled = true)
+   }
 
 }

@@ -87,7 +87,7 @@ class JunitXmlListener : TestListener {
    }
 
    private fun write(kclass: KClass<out Spec>, document: Document) {
-      val path = Paths.get("target").resolve("TEST-" + kclass.description().name + ".xml")
+      val path = Paths.get("target").resolve("TEST-" + kclass.description().name.name + ".xml")
       val outputter = XMLOutputter(Format.getPrettyFormat())
       val writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)
       outputter.output(document, writer)

@@ -17,18 +17,24 @@ import kotlin.reflect.KClass
  * @param name the name of this test case
  */
 @Suppress("MemberVisibilityCanBePrivate")
-data class Description(val parents: List<String>, val name: String) {
+data class Description(val parents: List<TestName>, val name: TestName) {
 
    companion object {
+
+      operator fun invoke(parents: List<String>, name: String): Description =
+         Description(parents.map { TestName(null, it) }, TestName(null, name))
+
       /**
        * Creates a Spec level description object for the given name.
        */
-      fun spec(name: String) = Description(emptyList(), name)
+      fun spec(name: String) = spec(TestName(null, name))
+
+      fun spec(name: TestName) = Description(emptyList(), name)
 
       /**
        * Creates a Spec level description from the given [Spec] instance.
        */
-      fun spec(spec: Spec) = spec::class.description()
+      fun spec(spec: Spec): Description = spec::class.description()
 
       fun spec(kclass: KClass<out Spec>) = kclass.description()
 
@@ -37,22 +43,18 @@ data class Description(val parents: List<String>, val name: String) {
        */
       fun specUnsafe(spec: Any) = spec::class.description()
 
-      fun test(name: String) = Description(emptyList(), name)
+      fun test(name: String) = Description(emptyList(), TestName(null, name))
    }
 
-   fun append(name: String) =
-      Description(this.parents + this.name, name)
-
-   fun hasParent(description: Description): Boolean =
-      parents.containsAll(description.parents + listOf(description.name))
+   fun append(name: String) = append(null, name)
+   fun append(prefix: String?, name: String) = append(TestName(prefix, name))
+   fun append(name: TestName) = Description(this.parents + this.name, name)
 
    /**
     * Returns the parent of this description, unless it is a spec then it will throw
     */
-   fun parent(): Description = if (isSpec()) error("Cannot call .parent() on a spec") else Description(
-      parents.dropLast(1),
-      parents.last()
-   )
+   fun parent(): Description = if (isSpec()) error("Cannot call .parent() on a spec") else
+      Description(parents.dropLast(1), parents.last())
 
    /**
     * Returns true if this description is for a spec.
@@ -65,31 +67,31 @@ data class Description(val parents: List<String>, val name: String) {
     */
    fun spec(): Description = spec(parents.first())
 
-   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else Description(
-      parents.drop(1),
-      name
-   )
+   fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else
+      Description(parents.drop(1), name)
 
-   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
+   fun fullName(): String = (parents.map { it.displayName() } + name.displayName()).joinToString(" ")
 
    /**
     * Returns a String version of this description, which is
     * the parents + this name concatenated with slashes.
     */
-   fun id(): String = (parents + listOf(name)).joinToString("/")
+   fun id(): String = (parents.map { it.displayName() } + listOf(name.displayName())).joinToString("/")
 
-   fun names(): List<String> = parents + name
+   fun names(): List<TestName> = parents + name
 
    fun depth() = names().size
 
    /**
     * Returns true if this instance is the immediate parent of the supplied argument.
+    * Ignores test prefixes when comparing.
     */
    fun isParentOf(description: Description): Boolean =
-      parents + name == description.parents
+      parents.map { it.name } + name.name == description.parents.map { it.name }
 
    /**
     * Returns true if this instance is an ancestor (nth-parent) of the supplied argument.
+    * Ignores test prefixes when comparing.
     */
    fun isAncestorOf(description: Description): Boolean {
       if (isParentOf(description))
@@ -103,17 +105,20 @@ data class Description(val parents: List<String>, val name: String) {
    /**
     * Returns true if this instance is on the path to the given descripton. That is, if this
     * instance is either an ancestor of, of the same as, the given description.
+    * Ignores test prefixes when comparing.
     */
    fun isOnPath(description: Description): Boolean = this == description || this.isAncestorOf(description)
 
    /**
     * Returns true if this description is the same as or a child, grandchild, etc of the given description.
+    * Ignores test prefixes when comparing.
     */
    fun isDescendentOf(description: Description): Boolean = description.isOnPath(this)
 
    /**
     * Returns true if this test is a top level test. In other words, if the
     * test has no parents other than the spec itself.
+    * Ignores test prefixes when comparing.
     */
    fun isTopLevel(): Boolean = parents.size == 1 && parent().isSpec()
 }

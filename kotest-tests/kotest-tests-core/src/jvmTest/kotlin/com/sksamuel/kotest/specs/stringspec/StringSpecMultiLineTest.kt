@@ -13,7 +13,7 @@ class StringSpecMultiLineTest : StringSpec() {
 
       extension { (testCase, execute) ->
          execute(testCase)
-         when (testCase.name) {
+         when (testCase.name.displayName()) {
             "test    case    1" -> TestResult.success(0.seconds)
             else -> TestResult.throwable(IllegalStateException("failed"), 0.seconds)
          }

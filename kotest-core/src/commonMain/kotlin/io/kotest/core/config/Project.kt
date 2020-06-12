@@ -66,6 +66,28 @@ object Project {
    private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: DefaultTestCaseOrder
    private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
 
+   /**
+    * Some specs have DSLs that include "prefix" words in the test name.
+    * For example, when using ExpectSpec like this:
+    *
+    * expect("this test 1") {
+    *   feature("this test 2") {
+    *   }
+    * }
+    *
+    * Will result in:
+    *
+    * Expect: this test 1
+    *   Feature: this test 2
+    *
+    * From 4.2, this feature can be disabled by setting this value to true.
+    * Then the output of the previous test would be:
+    *
+    * this test 1
+    *   this test 2
+    */
+   private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
+
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
@@ -150,6 +172,8 @@ object Project {
       this.invocationTimeout = duration
    }
 
+   fun includeTestScopePrefixes() = includeTestScopePrefixes
+
    fun tagExtensions(): List<TagExtension> = extensions
       .filterIsInstance<TagExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
@@ -208,7 +232,7 @@ object Project {
  * Contains all the configuration details that can be set by a user supplied config object.
  */
 @OptIn(ExperimentalTime::class)
-data class ProjectConf constructor(
+data class ProjectConf(
    val extensions: List<Extension> = emptyList(),
    val listeners: List<Listener> = emptyList(),
    val filters: List<Filter> = emptyList(),
@@ -224,7 +248,8 @@ data class ProjectConf constructor(
    val specFailureFilePath: String? = null,
    val parallelism: Int? = null,
    val timeout: Duration? = null,
-   val testCaseConfig: TestCaseConfig? = null
+   val testCaseConfig: TestCaseConfig? = null,
+   val includeTestScopePrefixes: Boolean? = null
 )
 
 /**

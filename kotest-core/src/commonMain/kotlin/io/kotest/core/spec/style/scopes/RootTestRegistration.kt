@@ -2,33 +2,30 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.spec.style.DslDrivenSpec
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestType
-import io.kotest.core.test.withXDisabled
+import io.kotest.core.test.*
 
 interface RootTestRegistration {
 
    val defaultConfig: TestCaseConfig
 
-   fun addContainerTest(name: String, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
+   fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
 
    fun addTest(
-      name: String,
+      name: TestName,
       xdisabled: Boolean,
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, defaultConfig, TestType.Test, test)
 
    fun addTest(
-      name: String,
+      name: TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, config, TestType.Test, test)
 
    fun addTest(
-      name: String,
+      name: TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       type: TestType,
@@ -39,7 +36,7 @@ interface RootTestRegistration {
       fun from(factory: TestFactoryConfiguration): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = factory.resolvedDefaultConfig()
          override fun addTest(
-            name: String,
+            name: TestName,
             xdisabled: Boolean,
             config: TestCaseConfig,
             type: TestType,
@@ -52,7 +49,7 @@ interface RootTestRegistration {
       fun from(spec: DslDrivenSpec): RootTestRegistration = object : RootTestRegistration {
          override val defaultConfig: TestCaseConfig = spec.resolvedDefaultConfig()
          override fun addTest(
-            name: String,
+            name: TestName,
             xdisabled: Boolean,
             config: TestCaseConfig,
             type: TestType,
