@@ -32,36 +32,10 @@ object DependencyChecker {
 
    private val RequiredDeps = listOf(ConsoleDep, ReflectDep)
 
-//   private fun OrderEnumerator.libraries(): List<Dependency> {
-//      val libraries = mutableListOf<Dependency>()
-//      forEachLibrary { library ->
-//         val dep = library.name?.removePrefix("Gradle: ")?.removePrefix("Maven: ")
-//         if (dep != null) {
-//            val components = dep.split(':')
-//            if (components.size == 3) {
-//               val (group, artifact, version) = components
-//               libraries.add(Dependency(group, artifact, version))
-//            }
-//         }
-//         true
-//      }
-//      return libraries.toList()
-//   }
-
-   //private fun libraries(module: Module): List<Dependency> = OrderEnumerator.orderEntries(module).libraries()
-
    private fun hasDependency(dep: Dependency, module: Module): Boolean {
       val facade = JavaPsiFacade.getInstance(module.project)
       return facade.findClass(dep.fqn, GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, true)) != null
    }
-//      if (locationModule != null && !Comparing.equal(project.getBasePath(), locationVirtualFile != null ? locationVirtualFile.getPath() : null)) {
-//         for (String fqn : fqns) {
-//         if () != null) return true;
-//      }
-//      }
-//      return LocationUtil.isJarAttached(context.getLocation(), psiPackage, dep.fqn)
-//   }
-//      libraries(module).any { it.group == dep.group && it.artifact == dep.artifact }
 
    fun checkMissingDependencies(module: Module): Boolean {
       RequiredDeps.forEach {

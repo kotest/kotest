@@ -1,6 +1,5 @@
 package io.kotest.plugin.intellij.linemarker
 
-import com.intellij.codeInsight.daemon.GutterIconNavigationHandler
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.icons.AllIcons
@@ -8,7 +7,6 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.util.Function
 import io.kotest.plugin.intellij.psi.enclosingClass
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -43,8 +41,8 @@ class IgnoredTestLineMarker : LineMarkerProvider {
          element,
          element.textRange,
          AllIcons.Nodes.TestIgnored,
-         Function<PsiElement, String> { "Test is disabled" },
-         GutterIconNavigationHandler<PsiElement> { _, _ -> },
+         { "Test is disabled" },
+         { _, _ -> },
          GutterIconRenderer.Alignment.LEFT
       )
    }
