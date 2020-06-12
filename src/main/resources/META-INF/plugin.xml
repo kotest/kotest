@@ -4,7 +4,7 @@
    <name>kotest</name>
 
    <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
-   <idea-version since-build="191.4212.41"/>
+   <idea-version since-build="193"/>
 
    <description><![CDATA[
       Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.
