@@ -15,7 +15,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
    object MyExt : TestCaseExtension {
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         return when (testCase.description.name) {
+         return when (testCase.description.name.name) {
             "test1" -> TestResult.Ignored
             "test2" ->
                when (execute(testCase).status) {

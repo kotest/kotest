@@ -51,9 +51,9 @@ class MochaConsoleWriter(
 
    private fun testLine(testCase: TestCase, result: TestResult): String {
       val name = when (result.status) {
-         TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.name + " *** FAILED ***")
-         TestStatus.Success -> testCase.name
-         TestStatus.Ignored -> term.gray(testCase.name + " ??? IGNORED ???")
+         TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.name.displayName() + " *** FAILED ***")
+         TestStatus.Success -> testCase.name.displayName()
+         TestStatus.Ignored -> term.gray(testCase.name.displayName() + " ??? IGNORED ???")
       }
       val symbol = when (result.status) {
          TestStatus.Success -> SuccessSymbol
@@ -89,7 +89,7 @@ class MochaConsoleWriter(
       } else {
          errors = true
          print(margin)
-         println(term.red(specDesc.name + " *** FAILED ***"))
+         println(term.red(specDesc.name.displayName() + " *** FAILED ***"))
          println(term.red("$margin\tcause: ${t.message})"))
       }
       println()
@@ -128,7 +128,7 @@ class MochaConsoleWriter(
       errors = true
 
       print(margin)
-      println(term.red(specDesc.name + " *** FAILED ***"))
+      println(term.red(specDesc.name.displayName() + " *** FAILED ***"))
       println(term.red("$margin\tcause: ${t.message})"))
       println()
    }

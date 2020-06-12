@@ -1,10 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -31,7 +28,7 @@ class FeatureScope(
 ) : ContainerScope {
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = createTestName("Feature: ", name)
+      val testName = TestName("Feature", name)
       addContainerTest(testName, xdisabled = false) {
          FeatureScope(
             this@FeatureScope.description.append(testName),
@@ -44,7 +41,7 @@ class FeatureScope(
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = createTestName("Feature: ", name)
+      val testName = TestName("Feature", name)
       addContainerTest(testName, xdisabled = true) {
          FeatureScope(
             this@FeatureScope.description.append(testName),
@@ -57,15 +54,18 @@ class FeatureScope(
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(createTestName("Scenario: ", name), xdisabled = false, test = test)
+      addContainerTest(TestName("Scenario", name), xdisabled = false, test = test)
    }
 
-   suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) =
-      addContainerTest(createTestName("Scenario: ", name), xdisabled = true, test = test)
+   suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
+      addContainerTest(TestName("Scenario", name), xdisabled = true, test = test)
+   }
 
-   fun scenario(name: String) =
-      TestWithConfigBuilder(createTestName("Scenario: ", name), testContext, defaultConfig, false)
+   fun scenario(name: String): TestWithConfigBuilder {
+      return TestWithConfigBuilder(TestName("Scenario", name), testContext, defaultConfig, false)
+   }
 
-   fun xscenario(name: String) =
-      TestWithConfigBuilder(createTestName("Scenario: ", name), testContext, defaultConfig, true)
+   fun xscenario(name: String): TestWithConfigBuilder {
+      return TestWithConfigBuilder(TestName("Scenario", name), testContext, defaultConfig, true)
+   }
 }

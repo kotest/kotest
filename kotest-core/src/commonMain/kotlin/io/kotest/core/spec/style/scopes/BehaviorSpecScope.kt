@@ -1,6 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.core.test.createTestName
+import io.kotest.core.test.TestName
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -27,7 +27,7 @@ interface BehaviorSpecScope : RootScope {
    fun xgiven(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, true, test)
 
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
-      val testName = createTestName("Given: ", name)
+      val testName = TestName("Given", name)
       registration().addContainerTest(testName, xdisabled) {
          GivenScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }

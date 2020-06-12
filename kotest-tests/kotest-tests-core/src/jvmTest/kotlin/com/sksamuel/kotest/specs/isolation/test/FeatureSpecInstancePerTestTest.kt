@@ -20,7 +20,7 @@ class FeatureSpecInstancePerTestTest : FeatureSpec({
    }
 
    afterTest {
-      tests.add(it.a.name)
+      tests.add(it.a.name.displayName())
    }
 
    isolationMode = IsolationMode.InstancePerTest

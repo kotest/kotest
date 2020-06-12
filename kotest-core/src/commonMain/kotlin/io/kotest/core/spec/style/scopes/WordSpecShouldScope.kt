@@ -3,10 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.Description
-import io.kotest.core.test.EnabledIf
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
+import io.kotest.core.test.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -38,7 +35,7 @@ class WordSpecShouldScope(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
-   ) = TestWithConfigBuilder(this, testContext, defaultConfig, false).config(
+   ) = TestWithConfigBuilder(TestName(this), testContext, defaultConfig, false).config(
       enabled,
       invocations,
       threads,
@@ -51,7 +48,7 @@ class WordSpecShouldScope(
    )
 
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
-      addTest(this, xdisabled = false, test = { WordSpecTerminalScope(this).test() })
+      addTest(TestName(this), xdisabled = false, test = { WordSpecTerminalScope(this).test() })
    }
 
    // we need to override the should method to stop people nesting a should inside a should

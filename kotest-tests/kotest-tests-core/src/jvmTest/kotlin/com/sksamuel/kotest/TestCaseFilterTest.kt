@@ -25,7 +25,7 @@ class TestCaseFilterTest : StringSpec() {
   }
 
   override fun afterTest(testCase: TestCase, result: TestResult) {
-    when (testCase.description.name) {
+    when (testCase.description.name.displayName()) {
       "aa should run" -> result.status shouldBe TestStatus.Success
       "bb should be ignored" -> result.status shouldBe TestStatus.Ignored
     }
@@ -35,7 +35,7 @@ class TestCaseFilterTest : StringSpec() {
 
 object TestCaseFilterTestFilter : TestCaseFilter {
   override fun filter(description: Description): TestFilterResult {
-    return when (description.name) {
+    return when (description.name.displayName()) {
       "bb should be ignored" -> TestFilterResult.Exclude
       else -> TestFilterResult.Include
     }

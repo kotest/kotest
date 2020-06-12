@@ -57,7 +57,7 @@ object AllureTestListener : TestListener, ProjectListener {
       uuids[testCase.description] = uuid
 
       val labels = listOfNotNull(
-         createSuiteLabel(testCase.description.spec().name),
+         createSuiteLabel(testCase.description.spec().name.displayName()),
          createThreadLabel(),
          createHostLabel(),
          createLanguageLabel("kotlin"),
@@ -76,10 +76,10 @@ object AllureTestListener : TestListener, ProjectListener {
 
       val result = io.qameta.allure.model.TestResult()
          .setFullName(testCase.description.fullName())
-         .setName(testCase.name)
+         .setName(testCase.name.displayName())
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))
-         .setHistoryId(testCase.description.name)
+         .setHistoryId(testCase.description.name.displayName())
          .setLabels(labels)
          .setLinks(links)
          .setDescription(testCase.description())

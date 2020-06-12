@@ -2,7 +2,7 @@ package com.sksamuel.kotest.specs.expect
 
 import io.kotest.core.spec.style.ExpectSpec
 
-class ExpectSpecExample : ExpectSpec() {
+class ExpectSpecTest : ExpectSpec() {
    init {
       context("some context") {
          expect("some test") {
@@ -21,6 +21,12 @@ class ExpectSpecExample : ExpectSpec() {
             xexpect("disabled") {
                error("Boom")
             }
+            xexpect("xtest with config").config(invocations = 3) {
+               error("Boom")
+            }
+         }
+         xcontext("disabled nested context") {
+            error("Boom")
          }
       }
       xcontext("should be ignored 1") {

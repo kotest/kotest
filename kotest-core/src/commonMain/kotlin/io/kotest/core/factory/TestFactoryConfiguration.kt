@@ -5,11 +5,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.spec.AfterTest
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.TestConfiguration
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestContext
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 
 /**
  * A [TestFactoryConfiguration] provides a DSL to allow for easy creation of a
@@ -53,15 +49,12 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     * into a [Spec] these tests will be added to the spec as root [TestCase]s.
     */
    internal fun addDynamicTest(
-      name: String,
+      name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
       type: TestType
    ) {
       require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
-      require(name.isNotBlank() && name.isNotEmpty()) { "Cannot add test with blank or empty name" }
-      this.tests = this.tests + DynamicTest(name.normalizedTestName(), test, config, type, sourceRef())
+      this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef())
    }
 }
-
-fun String.normalizedTestName() = this.trim().replace("\n", "")

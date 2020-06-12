@@ -22,7 +22,7 @@ class ClassMethodAdaptingFilter(private val filter: PostDiscoveryFilter,
    SpecFilter {
    override fun invoke(klass: KClass<out Spec>): Boolean {
       val id = uniqueId.appendSpec(klass.description())
-      val descriptor = object : AbstractTestDescriptor(id, klass.description().name) {
+      val descriptor = object : AbstractTestDescriptor(id, klass.description().name.displayName()) {
          override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
          override fun getSource(): Optional<TestSource> = Optional.of(ClassSource.from(klass.java))
       }

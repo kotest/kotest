@@ -92,7 +92,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             var open = true
 
             // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<String>()
+            val namesInScope = mutableSetOf<TestName>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext

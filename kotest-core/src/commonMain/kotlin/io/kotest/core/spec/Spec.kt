@@ -104,7 +104,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 }
 
 fun Spec.createTestCase(
-   name: String,
+   name: TestName,
    test: suspend TestContext.() -> Unit,
    config: TestCaseConfig,
    type: TestType
@@ -164,7 +164,7 @@ fun List<TestCase>.ordered(spec: TestCaseOrder): List<TestCase> {
    return when (spec) {
       TestCaseOrder.Sequential -> this
       TestCaseOrder.Random -> this.shuffled()
-      TestCaseOrder.Lexicographic -> this.sortedBy { it.name.toLowerCase() }
+      TestCaseOrder.Lexicographic -> this.sortedBy { it.name.displayName().toLowerCase() }
    }
 }
 

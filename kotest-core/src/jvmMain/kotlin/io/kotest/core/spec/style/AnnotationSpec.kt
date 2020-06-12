@@ -52,9 +52,9 @@ abstract class AnnotationSpec : Spec() {
    private fun KFunction<*>.deriveTestCase(config: TestCaseConfig): TestCase {
       return if (this.isExpectingException()) {
          val expected = this.getExpectedException()
-         createTestCase(name, callExpectingException(expected), config, TestType.Test)
+         createTestCase(TestName(name), callExpectingException(expected), config, TestType.Test)
       } else {
-         createTestCase(name, callNotExpectingException(), config, TestType.Test)
+         createTestCase(TestName(name), callNotExpectingException(), config, TestType.Test)
       }
    }
 

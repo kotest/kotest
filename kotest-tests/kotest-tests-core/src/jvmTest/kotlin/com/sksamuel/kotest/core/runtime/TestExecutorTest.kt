@@ -47,7 +47,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          }
       }
       val executor = TestExecutor(listener, context)
-      val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
+      val testCase = Tests().rootTests().first { it.testCase.name.name == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
       finished shouldBe true
@@ -68,7 +68,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          }
       }
       val executor = TestExecutor(listener, context)
-      val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
+      val testCase = Tests().rootTests().first { it.testCase.name.name == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
       result.error shouldBe TimeoutException(100.milliseconds)
@@ -83,7 +83,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
          override fun testFinished(testCase: TestCase, result: TestResult) {}
       }, context) { error("foo") }
 
-      val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
+      val testCase = Tests().rootTests().first { it.testCase.name.name == "a" }.testCase
 
       shouldThrow<IllegalStateException> {
          executor.execute(testCase, context(testCase))

@@ -105,7 +105,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
       coroutineScope {
          val context = object : TestContext() {
             // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<String>()
+            val namesInScope = mutableSetOf<TestName>()
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
             override suspend fun registerTestCase(nested: NestedTest) {

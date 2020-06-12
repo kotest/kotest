@@ -26,6 +26,9 @@ class ShouldSpecTest : ShouldSpec() {
          should("a test without a parent context") {
             1.shouldBeLessThan(2)
          }
+         xshould("an ignored should test") {
+            error("boom")
+         }
       }
       context("a context with delay in child coroutine") {
          launch { delay(1) }
@@ -33,6 +36,10 @@ class ShouldSpecTest : ShouldSpec() {
             1.shouldBeLessThan(2)
          }
       }
-
+      xcontext("an ignored should context") {
+         should("ignored due to the outer context being disabled") {
+            error("boom")
+         }
+      }
    }
 }
