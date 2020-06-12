@@ -27,7 +27,7 @@ abstract class DslDrivenSpec : Spec() {
       config: TestCaseConfig,
       type: TestType
    ) {
-      require(rootTestCases.none { it.name == name }) { "Cannot add test with duplicate name $name" }
+      require(rootTestCases.none { it.description.name == name }) { "Cannot add test with duplicate name $name" }
       //require(acceptingTopLevelRegistration) { "Cannot add nested test here. Please see documentation on testing styles for how to layout nested tests correctly" }
       rootTestCases = rootTestCases + createTestCase(name, test, config, type)
    }

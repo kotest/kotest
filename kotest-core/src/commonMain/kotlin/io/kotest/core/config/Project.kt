@@ -86,7 +86,7 @@ object Project {
     * this test 1
     *   this test 2
     */
-   private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: false
+   private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 

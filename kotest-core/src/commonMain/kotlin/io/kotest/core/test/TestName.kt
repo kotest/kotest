@@ -11,8 +11,8 @@ data class TestName(val prefix: String?, val name: String, val focus: Boolean, v
    companion object {
       operator fun invoke(prefix: String?, name: String): TestName {
          return when {
-            name.startsWith("!") -> TestName(prefix, name.drop(1).trim(), focus = false, bang = true)
-            name.startsWith("f:") -> TestName(prefix, name.drop(2).trim(), focus = true, bang = false)
+            name.trim().startsWith("!") -> TestName(prefix, name.trim().drop(1).trim(), focus = false, bang = true)
+            name.trim().startsWith("f:") -> TestName(prefix, name.trim().drop(2).trim(), focus = true, bang = false)
             else -> TestName(prefix, name, focus = false, bang = false)
          }
       }
@@ -34,7 +34,7 @@ data class TestName(val prefix: String?, val name: String, val focus: Boolean, v
     */
    fun displayName(): String {
       val flattened = name.trim().replace("\n", "")
-      val withPrefix = if (Project.includeTestScopePrefixes() && prefix != null) "$prefix: " else ""
+      val withPrefix = if (Project.includeTestScopePrefixes() && prefix != null) prefix else ""
       return when {
          focus -> "f:$withPrefix$flattened"
          bang -> "!$withPrefix$flattened"
@@ -47,10 +47,10 @@ data class TestName(val prefix: String?, val name: String, val focus: Boolean, v
  * Returns true if this test is a focused test.
  * That is, if the name starts with "f:".
  */
-fun TestCase.isFocused() = this.name.focus
+fun TestCase.isFocused() = this.description.name.focus
 
 /**
  * Returns true if this test is disabled by being prefixed with a !
  */
-fun TestCase.isBang(): Boolean = this.name.bang
+fun TestCase.isBang(): Boolean = this.description.name.bang
 

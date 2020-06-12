@@ -24,7 +24,7 @@ class TestLifecycleAwareListener(startable: Startable) : TestListener {
 private fun TestCase.toTestDescription() = object : TestDescription {
 
    override fun getFilesystemFriendlyName(): String {
-      return URLEncoder.encode(name.displayName(), "UTF-8")
+      return URLEncoder.encode(description.name.displayName(), "UTF-8")
    }
 
    override fun getTestId(): String {

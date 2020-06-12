@@ -164,7 +164,7 @@ fun List<TestCase>.ordered(spec: TestCaseOrder): List<TestCase> {
    return when (spec) {
       TestCaseOrder.Sequential -> this
       TestCaseOrder.Random -> this.shuffled()
-      TestCaseOrder.Lexicographic -> this.sortedBy { it.name.displayName().toLowerCase() }
+      TestCaseOrder.Lexicographic -> this.sortedBy { it.description.name.displayName().toLowerCase() }
    }
 }
 

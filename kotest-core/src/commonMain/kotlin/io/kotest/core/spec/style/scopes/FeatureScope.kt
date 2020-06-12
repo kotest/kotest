@@ -28,7 +28,7 @@ class FeatureScope(
 ) : ContainerScope {
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = TestName("Feature", name)
+      val testName = TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = false) {
          FeatureScope(
             this@FeatureScope.description.append(testName),
@@ -41,7 +41,7 @@ class FeatureScope(
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureScope.() -> Unit) {
-      val testName = TestName("Feature", name)
+      val testName = TestName("Feature: ", name)
       addContainerTest(testName, xdisabled = true) {
          FeatureScope(
             this@FeatureScope.description.append(testName),
@@ -54,18 +54,18 @@ class FeatureScope(
    }
 
    suspend fun scenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(TestName("Scenario", name), xdisabled = false, test = test)
+      addContainerTest(TestName("Scenario: ", name), xdisabled = false, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestContext.() -> Unit) {
-      addContainerTest(TestName("Scenario", name), xdisabled = true, test = test)
+      addContainerTest(TestName("Scenario: ", name), xdisabled = true, test = test)
    }
 
    fun scenario(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Scenario", name), testContext, defaultConfig, false)
+      return TestWithConfigBuilder(TestName("Scenario: ", name), testContext, defaultConfig, false)
    }
 
    fun xscenario(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Scenario", name), testContext, defaultConfig, true)
+      return TestWithConfigBuilder(TestName("Scenario: ", name), testContext, defaultConfig, true)
    }
 }

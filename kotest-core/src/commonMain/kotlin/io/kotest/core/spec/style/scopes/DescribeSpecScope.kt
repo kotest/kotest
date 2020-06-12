@@ -13,14 +13,14 @@ import kotlin.time.ExperimentalTime
 interface DescribeSpecScope : RootScope {
 
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = TestName("Describe", name)
+      val testName = TestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
          DescribeScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
       }
    }
 
    fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
-      val testName = TestName("Describe", name)
+      val testName = TestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = true) {}
    }
 }

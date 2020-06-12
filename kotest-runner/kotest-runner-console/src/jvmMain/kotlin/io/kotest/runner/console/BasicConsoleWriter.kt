@@ -19,7 +19,7 @@ class BasicConsoleWriter : ConsoleWriter {
    private val term = TermColors(TermColors.Level.ANSI256)
 
    private fun Description.indent(): String = "\t".repeat(parents.size)
-   private fun Description.indented(): String = "${indent()}$name"
+   private fun Description.indented(): String = "${indent()}${name.displayName()}"
 
    private var start = 0L
    private var n = 0

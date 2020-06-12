@@ -3,11 +3,7 @@ package io.kotest.runner.console
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
-import io.kotest.core.test.Description
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
-import io.kotest.core.test.TestType
+import io.kotest.core.test.*
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
@@ -51,9 +47,9 @@ class MochaConsoleWriter(
 
    private fun testLine(testCase: TestCase, result: TestResult): String {
       val name = when (result.status) {
-         TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.name.displayName() + " *** FAILED ***")
-         TestStatus.Success -> testCase.name.displayName()
-         TestStatus.Ignored -> term.gray(testCase.name.displayName() + " ??? IGNORED ???")
+         TestStatus.Failure, TestStatus.Error -> term.brightRed(testCase.description.name.displayName() + " *** FAILED ***")
+         TestStatus.Success -> testCase.description.name.displayName()
+         TestStatus.Ignored -> term.gray(testCase.description.name.displayName() + " ??? IGNORED ???")
       }
       val symbol = when (result.status) {
          TestStatus.Success -> SuccessSymbol

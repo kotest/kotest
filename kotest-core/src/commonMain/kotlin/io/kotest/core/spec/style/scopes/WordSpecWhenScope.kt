@@ -22,8 +22,8 @@ class WordSpecWhenScope(
    suspend infix fun String.xshould(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, true)
 
    private suspend fun addShould(name: String, test: suspend WordSpecShouldScope.() -> Unit, xdisabled: Boolean) {
-      val testName = "$name should"
-      addContainerTest(TestName(name), xdisabled) {
+      val testName = TestName("$name should")
+      addContainerTest(testName, xdisabled) {
          WordSpecShouldScope(
             this@WordSpecWhenScope.description.append(testName),
             this@WordSpecWhenScope.lifecycle,

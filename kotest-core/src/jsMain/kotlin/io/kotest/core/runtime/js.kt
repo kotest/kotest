@@ -16,7 +16,7 @@ actual fun executeSpec(spec: Spec) {
    spec.rootTests().forEach { root ->
       // we have to always start the test so that the framework doesn't exit before we return
       // also it gives us a handle to the done callback
-      it(root.testCase.name.displayName()) { done ->
+      it(root.testCase.description.name.displayName()) { done ->
 
          val listener = object : TestExecutionListener {
             override fun testStarted(testCase: TestCase) {}

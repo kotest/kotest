@@ -76,7 +76,7 @@ object AllureTestListener : TestListener, ProjectListener {
 
       val result = io.qameta.allure.model.TestResult()
          .setFullName(testCase.description.fullName())
-         .setName(testCase.name.displayName())
+         .setName(testCase.description.name.displayName())
          .setUuid(uuid.toString())
          .setTestCaseId(safeId(testCase.description))
          .setHistoryId(testCase.description.name.displayName())

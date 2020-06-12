@@ -31,7 +31,7 @@ class WhenScope(
    suspend fun xand(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = true)
 
    private suspend fun addAnd(name: String, test: suspend WhenScope.() -> Unit, xdisabled: Boolean) {
-      val testName = TestName("And", name)
+      val testName = TestName("And: ", name)
       addContainerTest(testName, xdisabled) {
          WhenScope(
             this@WhenScope.description.append(testName),
@@ -52,6 +52,6 @@ class WhenScope(
    suspend fun xthen(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = true)
 
    private suspend fun addThen(name: String, test: suspend TestContext.() -> Unit, xdisabled: Boolean) {
-      addTest(TestName("Then", name), xdisabled, test)
+      addTest(TestName("Then: ", name), xdisabled, test)
    }
 }

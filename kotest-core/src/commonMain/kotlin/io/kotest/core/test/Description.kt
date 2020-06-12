@@ -70,7 +70,7 @@ data class Description(val parents: List<TestName>, val name: TestName) {
    fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else
       Description(parents.drop(1), name)
 
-   fun fullName(): String = (parents + listOf(name)).joinToString(" ")
+   fun fullName(): String = (parents.map { it.displayName() } + name.displayName()).joinToString(" ")
 
    /**
     * Returns a String version of this description, which is
@@ -87,7 +87,7 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     * Ignores test prefixes when comparing.
     */
    fun isParentOf(description: Description): Boolean =
-      parents.map { it.name } + name == description.parents.map { it.name }
+      parents.map { it.name } + name.name == description.parents.map { it.name }
 
    /**
     * Returns true if this instance is an ancestor (nth-parent) of the supplied argument.

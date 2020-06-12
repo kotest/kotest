@@ -15,7 +15,7 @@ class TestPathTestCaseFilter(
    spec: KClass<out Spec>
 ) : TestCaseFilter {
 
-   private val target = testPath.split(" -- ").fold(Description.spec(spec)) { acc, name -> acc.append(name) }
+   private val target = testPath.split(" -- ").fold(Description.spec(spec)) { desc, name -> desc.append(name) }
 
    override fun filter(description: Description): TestFilterResult {
       return when {

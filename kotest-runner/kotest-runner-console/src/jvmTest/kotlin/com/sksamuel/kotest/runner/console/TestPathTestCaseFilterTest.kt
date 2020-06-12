@@ -75,7 +75,7 @@ class TestPathTestCaseFilterTest : FunSpec() {
             .filter(r.append("a")) shouldBe TestFilterResult.Include
 
          TestPathTestCaseFilter("a", FreeSpecs::class)
-            .filter(r.append("b").append("b")) shouldBe TestFilterResult.Exclude
+            .filter(r.append("b").append("c")) shouldBe TestFilterResult.Exclude
 
          TestPathTestCaseFilter("a -- b", FreeSpecs::class)
             .filter(r.append("a")) shouldBe TestFilterResult.Include
