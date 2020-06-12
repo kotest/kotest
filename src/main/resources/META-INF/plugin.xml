@@ -10,7 +10,7 @@
       Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.
     ]]></description>
 
-   <version>4.0.0.111</version>
+   <version>1.0.0</version>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>

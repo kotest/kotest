@@ -65,5 +65,4 @@ compileTestKotlin {
 
 publishPlugin {
     token jetbrainsToken
-    channels 'Beta'
 }
