@@ -24,7 +24,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
 
    private lateinit var jrePathEditor: JrePathEditor
 
-   private lateinit var testName: LabeledComponent<TextFieldWithHistory>
+   private lateinit var testPath: LabeledComponent<TextFieldWithHistory>
 
    private lateinit var specName: LabeledComponent<TextFieldWithHistory>
 
@@ -55,7 +55,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
       selectedModule = configuration.configurationModule.module
       moduleSelector.reset(configuration)
       commonJavaParameters.reset(configuration)
-      testName.component.text = configuration.getTestName()
+      testPath.component.text = configuration.getTestPath()
       specName.component.text = configuration.getSpecName()
       packageName.component.text = configuration.getPackageName()
    }
@@ -64,7 +64,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
       configuration.setModule(selectedModule)
       moduleSelector.applyTo(configuration)
       commonJavaParameters.applyTo(configuration)
-      configuration.setTestName(testName.component.text)
+      configuration.setTestPath(testPath.component.text)
       configuration.setSpecName(specName.component.text)
       configuration.setPackageName(packageName.component.text)
    }
@@ -72,7 +72,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
    override fun createEditor() = panel
 
    private fun createUIComponents() {
-      testName = LabeledComponent.create(
+      testPath = LabeledComponent.create(
          TextFieldWithHistory(),
          "Scope", "West"
       )
@@ -84,7 +84,7 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
          TextFieldWithHistory(),
          "Scope", "West"
       )
-      testName.component.isEditable = true
+      testPath.component.isEditable = true
       specName.component.isEditable = true
       packageName.component.isEditable = true
    }

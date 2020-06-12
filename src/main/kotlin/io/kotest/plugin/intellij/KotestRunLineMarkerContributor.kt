@@ -64,7 +64,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    private fun icon(test: Test): Info {
       return Info(
          AllIcons.RunConfigurations.TestState.Run,
-         Function<PsiElement, String> { "Run ${test.path}" },
+         Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
          *ExecutorAction.getActions(1)
       )
    }

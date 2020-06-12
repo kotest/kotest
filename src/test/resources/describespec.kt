@@ -8,7 +8,7 @@ class DescribeSpecExample : DescribeSpec() {
          it("test name") {
             // test here
          }
-         xdescribe("ignored describe") {
+         xdescribe("xignored describe") {
 
          }
          describe("with some context") {
@@ -22,13 +22,13 @@ class DescribeSpecExample : DescribeSpec() {
                it("test name") {
                   // test here
                }
-               xit("ignored test") {
+               xit("xignored test") {
                   // test here
                }
                it("test name 2").config(invocations = 2) {
                   // test here
                }
-               xit("ignored test with config").config(invocations = 2) {
+               xit("xignored test with config").config(invocations = 2) {
                   // test here
                }
             }

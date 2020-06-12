@@ -33,15 +33,15 @@ class FreeSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
          (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 152
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[2].tooltipText shouldBe "Run some context -- more context"
+         gutters[2].tooltipText shouldBe "Run some context more context"
          (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 177
 
          gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[3].tooltipText shouldBe "Run some context -- more context -- as many as you want"
+         gutters[3].tooltipText shouldBe "Run some context more context as many as you want"
          (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 211
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[4].tooltipText shouldBe "Run some context -- more context -- as many as you want -- then a test"
+         gutters[4].tooltipText shouldBe "Run some context more context as many as you want then a test"
          (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 225
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
@@ -49,7 +49,7 @@ class FreeSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
          (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 324
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[6].tooltipText shouldBe "Run another context -- a test with config"
+         gutters[6].tooltipText shouldBe "Run another context a test with config"
          (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 354
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run

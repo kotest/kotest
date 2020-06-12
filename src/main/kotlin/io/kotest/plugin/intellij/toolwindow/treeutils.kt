@@ -16,6 +16,7 @@ fun JTree.expandAllNodes(startingIndex: Int, rowCount: Int) {
    }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun JTree.collapseTopLevelNodes() {
    val root = model.root as DefaultMutableTreeNode
    for (node in root.children().toList() as List<DefaultMutableTreeNode>) {

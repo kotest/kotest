@@ -12,26 +12,26 @@ import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 
 object BehaviorSpecStyle : SpecStyle {
 
-  override fun generateTest(specName: String, name: String): String {
-    return "Given(\"$name\") { }"
-  }
+   override fun generateTest(specName: String, name: String): String {
+      return "Given(\"$name\") { }"
+   }
 
-  override fun fqn() = FqName("io.kotest.core.spec.style.BehaviorSpec")
+   override fun fqn() = FqName("io.kotest.core.spec.style.BehaviorSpec")
 
-  override fun specStyleName(): String = "Behavior Spec"
+   override fun specStyleName(): String = "Behavior Spec"
 
-  // todo this could be optimized to not check for the other parts of the tree until the name is needed
-  override fun isTestElement(element: PsiElement): Boolean = test(element) != null
+   // todo this could be optimized to not check for the other parts of the tree until the name is needed
+   override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private val givens = listOf("given", "Given", "`given`", "`Given`")
    private val whens = listOf("when", "When", "`when`", "`When")
    private val thens = listOf("then", "Then", "`then`", "`Then`")
 
-   private fun PsiElement.locateParentTestName(): Test? {
+   private fun PsiElement.locateParent(): Test? {
       return when (val p = parent) {
          null -> null
          is KtCallExpression -> p.tryWhen() ?: p.tryGiven()
-         else -> p.locateParentTestName()
+         else -> p.locateParent()
       }
    }
 
@@ -39,8 +39,8 @@ object BehaviorSpecStyle : SpecStyle {
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
       return if (w == null) null else {
          val name = "When: $w"
-         val parent = locateParentTestName()?.path
-         val path = "$parent $name"
+         val parents = locateParent()?.path ?: emptyList()
+         val path = parents + name
          Test(name, path, TestType.Container, this)
       }
    }
@@ -49,25 +49,25 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = "Given: $given"
-         Test(name, name, TestType.Container, this)
+         Test(name, listOf(name), TestType.Container, this)
       }
    }
 
    private fun KtDotQualifiedExpression.tryThenWithConfig(): Test? {
       val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
       return if (then == null) null else {
-         val parent = locateParentTestName()?.path
-         val name = "$parent Then: $then"
-         Test(then, name, TestType.Test, this)
+         val parents = locateParent()?.path ?: emptyList()
+         val path = parents + "Then: $then"
+         Test(then, path, TestType.Test, this)
       }
    }
 
    private fun KtCallExpression.tryThen(): Test? {
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
-         val parent = locateParentTestName()?.path
-         val name = "$parent Then: $then"
-         Test(then, name, TestType.Test, this)
+         val parents = locateParent()?.path ?: emptyList()
+         val path = parents + "Then: $then"
+         Test(then, path, TestType.Test, this)
       }
    }
 

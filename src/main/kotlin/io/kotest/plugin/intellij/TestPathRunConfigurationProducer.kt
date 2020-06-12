@@ -45,7 +45,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
                if (context.module != null)
                   if (!DependencyChecker.checkMissingDependencies(context.module)) return false
 
-               configuration.setTestName(test.path)
+               configuration.setTestPath(test.testPath())
                configuration.setSpec(ktclass)
                configuration.setModule(context.module)
                configuration.setGeneratedName()
@@ -66,7 +66,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
          val test = findTest(element)
          if (test != null) {
             val spec = element.enclosingClass()
-            val name = buildSuggestedName(spec?.fqName?.asString(), test.path, null)
+            val name = buildSuggestedName(spec?.fqName?.asString(), test.testPath(), null)
             return configuration.name == name
          }
       }

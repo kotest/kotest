@@ -40,23 +40,23 @@ class FunSpecRunMarkerTest : LightCodeInsightFixtureTestCase() {
          (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 469
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[4].tooltipText shouldBe "Run some context -- a string cannot be blank"
+         gutters[4].tooltipText shouldBe "Run some context a string cannot be blank"
          (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 509
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[5].tooltipText shouldBe "Run some context -- a string should be lower case"
+         gutters[5].tooltipText shouldBe "Run some context a string should be lower case"
          (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 593
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[6].tooltipText shouldBe "Run some context -- another context"
+         gutters[6].tooltipText shouldBe "Run some context another context"
          (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 692
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[7].tooltipText shouldBe "Run some context -- another context -- a string cannot be blank"
+         gutters[7].tooltipText shouldBe "Run some context another context a string cannot be blank"
          (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 734
 
          gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[8].tooltipText shouldBe "Run some context -- another context -- a string should be lower case"
+         gutters[8].tooltipText shouldBe "Run some context another context a string should be lower case"
          (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 824
       }
    }

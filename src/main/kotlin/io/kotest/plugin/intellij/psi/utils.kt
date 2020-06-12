@@ -266,14 +266,15 @@ fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<St
    return null
 }
 
-fun buildSuggestedName(specName: String?, testName: String?, packageName: String?): String? {
+fun buildSuggestedName(specName: String?, testPath: String?, packageName: String?): String? {
    return when {
       packageName != null && packageName.isNotBlank() -> "All tests in '$packageName'"
       specName == null || specName.isBlank() -> null
-      testName == null || testName.isBlank() -> specName.split('.').last()
+      testPath == null || testPath.isBlank() -> specName.split('.').last()
       else -> {
          val simpleName = specName.split('.').last()
-         "$simpleName: $testName"
+         val readableTestPath = testPath.replace(" -- ", " ")
+         "$simpleName: $readableTestPath"
       }
    }
 }

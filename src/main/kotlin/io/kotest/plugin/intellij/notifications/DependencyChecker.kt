@@ -21,7 +21,7 @@ object DependencyChecker {
    private val ConsoleDep = Dependency(
       "io.kotest",
       "kotest-runner-console-jvm",
-      "4.1",
+      "4.1.0",
       "io.kotest.runner.console.TeamCityConsoleWriter"
    )
 

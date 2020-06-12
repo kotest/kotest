@@ -16,6 +16,7 @@ import io.kotest.plugin.intellij.toolwindow.createTreeModel
 import java.nio.file.Paths
 import javax.swing.tree.DefaultMutableTreeNode
 
+@Suppress("UNCHECKED_CAST")
 class FunSpecParseTest : LightCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {

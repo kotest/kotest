@@ -36,13 +36,11 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
    private var programParameters: String? = null
    private var vmParameters: String? = ""
    private var workingDirectory: String? = null
-   private var testName: String? = null
+   private var testPath: String? = null
    private var specName: String? = null
    private var packageName: String? = null
 
-   override fun suggestedName(): String? = buildSuggestedName(specName, testName, packageName)
-
-   fun getTestName(): String? = testName
+   fun getTestPath(): String? = testPath
    fun getSpecName(): String? = specName
    fun getPackageName(): String? = packageName
 
@@ -58,6 +56,8 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
 
    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
       SettingsEditorPanel(project)
+
+   override fun suggestedName(): String? = buildSuggestedName(specName, testPath, packageName)
 
    // let all modules be valid
    override fun getValidModules(): MutableCollection<Module> =
@@ -91,8 +91,8 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       this.envs = envs
    }
 
-   fun setTestName(testName: String?) {
-      this.testName = testName
+   fun setTestPath(testName: String?) {
+      this.testPath = testName
    }
 
    fun setSpecName(specName: String?) {
@@ -117,7 +117,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
 
    override fun getActionName(): String? = when {
       packageName?.isNotBlank() ?: false -> "All tests in '$packageName'"
-      testName?.isNotBlank() ?: false -> testName
+      testPath?.isNotBlank() ?: false -> testPath
       specName?.isNotBlank() ?: false -> specName
       else -> super.getActionName()
    }
@@ -128,7 +128,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       JDOMExternalizerUtil.writeField(element, WorkingDirField, workingDirectory)
       JDOMExternalizerUtil.writeField(element, ProgramParamsField, programParameters)
       JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
-      JDOMExternalizerUtil.writeField(element, TestNameField, testName)
+      JDOMExternalizerUtil.writeField(element, TestPathField, testPath)
       JDOMExternalizerUtil.writeField(element, PackageNameField, packageName)
       EnvironmentVariablesComponent.writeExternal(element, envs)
    }
@@ -139,7 +139,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       workingDirectory = JDOMExternalizerUtil.readField(element, WorkingDirField)
       programParameters = JDOMExternalizerUtil.readField(element, ProgramParamsField)
       specName = JDOMExternalizerUtil.readField(element, SpecNameField)
-      testName = JDOMExternalizerUtil.readField(element, TestNameField)
+      testPath = JDOMExternalizerUtil.readField(element, TestPathField)
       packageName = JDOMExternalizerUtil.readField(element, PackageNameField)
       EnvironmentVariablesComponent.readExternal(element, envs)
    }
@@ -153,7 +153,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
       const val ProgramParamsField = "programParameters"
       const val WorkingDirField = "workingDirectory"
       const val PackageNameField = "packageName"
-      const val TestNameField = "testName"
+      const val TestPathField = "testPath"
       const val SpecNameField = "specName"
    }
 }
