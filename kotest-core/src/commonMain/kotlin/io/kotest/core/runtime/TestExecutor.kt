@@ -180,7 +180,7 @@ class TestExecutor(
          withTimeout(timeout.toLongMilliseconds()) {
             // not all platforms support executing with a timeout because it uses background threads to interrupt
             ec.executeWithTimeoutInterruption(timeout) {
-               withTimeout(timeout.toLongMilliseconds()) {
+               withTimeout(invocationTimeout.toLongMilliseconds()) {
                   replay(
                      testCase.config.invocations,
                      testCase.config.threads,

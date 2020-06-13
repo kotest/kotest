@@ -35,6 +35,6 @@ val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)
    when (result.status) {
       TestStatus.Failure, TestStatus.Error -> TestResult.success(Duration.ZERO)
-      else -> TestResult.throwable(AssertionError("Should not happen"), Duration.ZERO)
+      else -> TestResult.throwable(AssertionError("${testCase.description.name.displayName()} passed but should fail"), Duration.ZERO)
    }
 }

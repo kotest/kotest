@@ -37,13 +37,25 @@ class TimeoutTest : StringSpec() {
          someCoroutine()
       }
 
-      "a testcase timeout should apply to all invocations".config(timeout = 600.milliseconds, invocations = 3) {
-         delay(400)
+      "a testcase timeout should apply to the total time of all invocations".config(
+         timeout = 1000.milliseconds,
+         invocations = 3
+      ) {
+         delay(500)
       }
 
-      "an invocation timeout should apply to individual test only".config(
+      "an invocation timeout should interrupt a test that otherwise would complete".config(
          invocationTimeout = 100.milliseconds,
-         timeout = 1000.milliseconds
+         timeout = 5000.milliseconds,
+         invocations = 3
+      ) {
+         delay(500)
+      }
+
+      "an invocation timeout should apply even to a single invocation".config(
+         invocationTimeout = 100.milliseconds,
+         timeout = 5000.milliseconds,
+         invocations = 1
       ) {
          delay(500)
       }
