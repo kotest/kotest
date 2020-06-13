@@ -58,7 +58,7 @@ class AnnotationSpecTest : AnnotationSpec() {
    private object IgnoreFailedTestExtension : TestCaseExtension {
 
       override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-         if (testCase.name.displayName() !in listOf("test4", "test5")) return execute(testCase)
+         if (testCase.name !in listOf("test4", "test5")) return execute(testCase)
 
          val result = execute(testCase)
          if (result.error !is AssertionError) {
@@ -69,7 +69,7 @@ class AnnotationSpecTest : AnnotationSpec() {
          val wrongExceptionMessage = "Expected exception of class FooException, but BarException was thrown instead."
          val noExceptionMessage = "Expected exception of class FooException, but no exception was thrown."
 
-         return when (testCase.name.displayName()) {
+         return when (testCase.name) {
             "test4" -> if (errorMessage == wrongExceptionMessage) {
                TestResult.success(Duration.ZERO)
             } else {

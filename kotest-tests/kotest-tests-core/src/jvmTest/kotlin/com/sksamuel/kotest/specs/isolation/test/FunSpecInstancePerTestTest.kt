@@ -19,7 +19,7 @@ class FunSpecInstancePerTestTest : FunSpec({
    }
 
    afterTest {
-      tests.add(it.a.name.displayName())
+      tests.add(it.a.name)
    }
 
    isolationMode = IsolationMode.InstancePerTest

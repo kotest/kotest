@@ -55,6 +55,7 @@ data class TestCase(
    fun isTopLevel(): Boolean = description.isTopLevel()
 
    // for compatibility with earlier plugins
+   @Deprecated("Use source.lineNumber", ReplaceWith("source.lineNumber"))
    fun getLine(): Int = source.lineNumber
 
    companion object {
