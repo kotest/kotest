@@ -38,8 +38,6 @@ class ShowTest : FunSpec() {
       }
 
       test("detect show for boolean") {
-         val q = true.show()
-
          true.show().value shouldBe "true"
          false.show().value shouldBe "false"
       }
