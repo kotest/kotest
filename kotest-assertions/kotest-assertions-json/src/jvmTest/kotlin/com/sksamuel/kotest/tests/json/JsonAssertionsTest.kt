@@ -155,6 +155,16 @@ class JsonAssertionsTest : StringSpec({
     shouldThrow<AssertionError> {
       testJson2.shouldMatchJsonResource("/json1.json")
     }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
+
+    shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: Json) {}
+
+      val nullableJson: Json? = testJson1
+      nullableJson.shouldMatchJsonResource("/json1.json")  // todo: use infix form after https://youtrack.jetbrains.com/issue/KT-27261 is resolved
+      use(nullableJson)
+    }
   }
 
   "test json contains countable elements" {

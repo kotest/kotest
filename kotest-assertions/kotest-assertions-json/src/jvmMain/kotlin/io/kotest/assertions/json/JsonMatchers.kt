@@ -36,13 +36,21 @@ fun matchJson(json: Json?) = object : Matcher<Json?> {
     }
 }
 
-infix fun Json.shouldMatchJsonResource(resource: String) = this should matchJsonResource(resource)
+@OptIn(ExperimentalContracts::class)
+infix fun Json?.shouldMatchJsonResource(resource: String) {
+    contract {
+        returns() implies (this@shouldMatchJsonResource != null)
+    }
+
+    this should matchJsonResource(resource)
+}
+
 infix fun Json.shouldNotMatchJsonResource(resource: String) = this shouldNot matchJsonResource(resource)
 
-fun matchJsonResource(resource: String) = object : Matcher<Json> {
+fun matchJsonResource(resource: String) = object : Matcher<Json?> {
 
-    override fun test(value: Json): MatcherResult {
-        val actualJson = publishedMapper.readTree(value)
+    override fun test(value: Json?): MatcherResult {
+        val actualJson = value?.let { publishedMapper.readTree(it) }
         val expectedJson = publishedMapper.readTree(this.javaClass.getResourceAsStream(resource))
 
         return MatcherResult(
