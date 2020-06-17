@@ -82,12 +82,17 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
 
-| JSON ||
+| JSON | For convenience, JSONs are simply strings. Also, there are some [type aliases](../kotest-assertions/kotest-assertions-json/src/jvmMain/kotlin/io/kotest/assertions/json/JsonTypes.kt) |
 | -------- | ---- |
-| `str.shouldMatchJson(json)` | Asserts that the JSON is equal to another JSON ignoring properties' order and formatting. |
-| `str.shouldContainJsonKey("$.key")` | Asserts that the JSON contains a `key`. |
-| `str.shouldContainJsonKeyValue("$.key", "value")` | Asserts that the JSON contains a `key` with a specific `value`. |
-| `str.shouldMatchJsonResource("/file.json")` | Asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting. |
+| `str?.shouldMatchJson(str?)` | Asserts that the JSON is equal to another JSON ignoring properties' order and formatting. |
+| `str?.shouldContainJsonKey("key"): str` | Asserts that the JSON is a JSON object and it contains a `key`. If true, returns the value of the key. |
+| `str?.shouldContainJsonPath("$.json.path"): str` | Asserts that the JSON contains a JSON path. If true, returns the value of the path. |
+| `str?.shouldContainJsonKeyValue("key", "value")` | Asserts that the JSON is a JSON object and it contains a `key` with a specific `value`. |
+| `str?.shouldContainJsonPathValue("$.json.path", "value")` | Asserts that the JSON contains a JSON path with a specific `value`. |
+| `str?.shouldHaveSize(int)` | Asserts that the JSON is a JSON object or array and it contains the specified number of elements. |
+| `str?.shouldBeOfJsonType(jsonType): T` | Asserts that the JSON is a JSON of the specified type. If true, returns the converted JSON. |
+| `str?.shouldContainOnlyJsonKey("key"): str` | A shorthand for sequential assertions `.shouldHaveSize(1)` and `.shouldContainJsonKey("key")`. Asserts that the JSON is a JSON object and it contains only a single key called `key`. If true, returns the value of the key. |
+| `str?.shouldMatchJsonResource("/file.json")` | Asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting. |
 
 | Integers ||
 | -------- | ---- |
