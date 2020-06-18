@@ -65,7 +65,7 @@ publishing {
 
             licenses {
                license {
-                  name.set("The Apache 2.0 License")
+                  name.set("Apache-2.0")
                   url.set("https://opensource.org/licenses/Apache-2.0")
                }
             }
