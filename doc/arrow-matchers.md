@@ -1,8 +1,8 @@
 Arrow Matchers
 ==========
 
-This page lists all current matchers in the KotlinTest arrow matchers extension library. To use this library
- you need to add `kotlintest-assertions-arrow` to your build.
+This page lists all current matchers in the Kotest arrow matchers extension library. To use this library
+ you need to add `kotest-assertions-arrow` to your build.
 
 | Option | |
 | -------- | ---- |
