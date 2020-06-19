@@ -1,4 +1,8 @@
 package io.kotest.assertions
 
+import kotlin.native.concurrent.ThreadLocal
+
+actual val errorCollector: ErrorCollector = NativeErrorCollector
+
 @ThreadLocal
-actual val errorCollector: ErrorCollector = BasicErrorCollector
+object NativeErrorCollector : BasicErrorCollector()

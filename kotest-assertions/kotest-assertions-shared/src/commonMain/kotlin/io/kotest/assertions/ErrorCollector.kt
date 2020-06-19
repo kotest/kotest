@@ -40,7 +40,7 @@ interface ErrorCollector {
    fun clueContext(): List<Any>
 }
 
-object BasicErrorCollector : ErrorCollector {
+open class BasicErrorCollector : ErrorCollector {
 
    private val failures = mutableListOf<Throwable>()
    private var mode = ErrorCollectionMode.Hard
