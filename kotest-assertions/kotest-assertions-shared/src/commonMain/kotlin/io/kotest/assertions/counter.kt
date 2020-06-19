@@ -21,7 +21,7 @@ interface AssertionCounter {
 // the single assertion counter instance to be used by all clients
 expect val assertionCounter: AssertionCounter
 
-object BasicAssertionCounter : AssertionCounter {
+open class BasicAssertionCounter : AssertionCounter {
    private var counter = 0
    override fun get(): Int = counter
    override fun reset() {

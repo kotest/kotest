@@ -1,4 +1,8 @@
 package io.kotest.assertions
 
+import kotlin.native.concurrent.ThreadLocal
+
+actual val assertionCounter: AssertionCounter = NativeAssertionCounter
+
 @ThreadLocal
-actual val assertionCounter: AssertionCounter = BasicAssertionCounter
+object NativeAssertionCounter : BasicAssertionCounter()

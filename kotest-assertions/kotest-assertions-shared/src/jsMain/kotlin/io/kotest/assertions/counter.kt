@@ -1,3 +1,5 @@
 package io.kotest.assertions
 
-actual val assertionCounter: AssertionCounter = BasicAssertionCounter
+actual val assertionCounter: AssertionCounter = JsAssertionCounter
+
+object JsAssertionCounter : BasicAssertionCounter()

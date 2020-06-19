@@ -1,3 +1,5 @@
 package io.kotest.assertions
 
-actual val errorCollector: ErrorCollector = BasicErrorCollector
+actual val errorCollector: ErrorCollector = JsErrorCollector
+
+object JsErrorCollector : BasicErrorCollector()
