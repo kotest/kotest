@@ -82,12 +82,12 @@ For Android-specific matchers, take a look [here](android_matchers.md)
 | `str.shouldStartWith("prefix")` | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
 | `str.shouldBeEqualIgnoringCase(other)` | Asserts that the string is equal to another string ignoring case. |
 
-| JSON ||
+| JSON | For convenience, JSONs are simply strings |
 | -------- | ---- |
-| `str.shouldMatchJson(json)` | Asserts that the JSON is equal to another JSON ignoring properties' order and formatting. |
-| `str.shouldContainJsonKey("$.key")` | Asserts that the JSON contains a `key`. |
-| `str.shouldContainJsonKeyValue("$.key", "value")` | Asserts that the JSON contains a `key` with a specific `value`. |
-| `str.shouldMatchJsonResource("/file.json")` | Asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting. |
+| `str?.shouldMatchJson(json?)` | Asserts that the JSON is equal to another JSON ignoring properties' order and formatting. |
+| `str?.shouldContainJsonKey("$.json.path")` | Asserts that the JSON contains a JSON path. |
+| `str?.shouldContainJsonKeyValue("$.json.path", value)` | Asserts that the JSON contains a JSON path with a specific `value`. |
+| `str?.shouldMatchJsonResource("/file.json")` | Asserts that the JSON is equal to the existing `/file.json` ignoring properties' order and formatting. |
 
 | Integers ||
 | -------- | ---- |
