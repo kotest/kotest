@@ -1,6 +1,9 @@
 Changelog
 =========
 
+#### 4.2.0 - Snapshots
+* Improvement: Use the SPDX compliant license identifier "Apache-2.0" in POM files #1517
+
 #### 4.1.0 RC1
 
 * Feature: The Kotest IntelliJ plugin has gone final. The plugin requires 4.1. or higher of Kotest. https://plugins.jetbrains.com/plugin/14080-kotest
