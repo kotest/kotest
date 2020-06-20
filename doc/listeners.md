@@ -113,18 +113,17 @@ The second, related, method is to override the callback functions in the Spec. T
 
 ```kotlin
 class TestSpec : WordSpec() {
-   init {
-
     override fun beforeTest(testCase: TestCase) {
-      println("Starting a test $it")
+        println("Starting a test $testCase")
     }
 
-    "this test" should {
-      "be alive" {
-        println("Johnny5 is alive!")
-      }
+    init {
+        "this test" should {
+            "be alive" {
+                println("Johnny5 is alive!")
+            }
+        }
     }
-  }
 }
 ```
 
