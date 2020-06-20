@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
  * Returns the [KtClassOrObject] if this [LeafPsiElement] has type [KtKeywordToken]
  * with the lexeme 'class' or 'object'
  */
-fun LeafPsiElement.enclosingClassOrObjectForClassOrObjectToken(): KtClass? {
+fun LeafPsiElement.enclosingClassClassOrObjectToken(): KtClass? {
    if (elementType is KtKeywordToken && (text == "class" || text == "object")) {
       val maybeKtClassOrObject = context
       if (maybeKtClassOrObject is KtClass) {
@@ -30,6 +30,7 @@ fun LeafPsiElement.enclosingClassOrObjectForClassOrObjectToken(): KtClass? {
 
 /**
  * Returns the simple name of the parent class of this class.
+ * Is efficient, does not require resolve.
  */
 fun KtClass.getSuperClassSimpleName(): String? {
    for (entry in superTypeListEntries) {
@@ -41,15 +42,15 @@ fun KtClass.getSuperClassSimpleName(): String? {
    return null
 }
 
-fun KtLightClass.toKtClass(): KtClass? {
-   val origin = this.kotlinOrigin
-   return if (origin is KtClass) origin else null
-}
+/**
+ * Returns the [KtClass] from this light class, otherwise null.
+ */
+fun KtLightClass.toKtClass(): KtClass? = kotlinOrigin?.toKtClass()
 
 /**
  * Returns true if this [KtClass] is a direct subclass of the given fully qualified name.
  */
-fun KtClass.isDirectSubclass(fqn: FqName): Boolean {
+private fun KtClass.isDirectSubclass(fqn: FqName): Boolean {
    return when (val simpleName = getSuperClassSimpleName()) {
       null -> false
       else -> fqn.shortName().asString() == simpleName
@@ -59,12 +60,17 @@ fun KtClass.isDirectSubclass(fqn: FqName): Boolean {
 /**
  * Returns true if this [KtClass] is a descendent of the given fully qualified name.
  * Recursively checks each parent.
+ * Efficiently checks the first parent without requiring resolve, but requires resolve for
+ * abstract parents.
  */
 fun KtClass.isSubclass(fqn: FqName): Boolean {
    if (isDirectSubclass(fqn)) return true
    return getSuperClass()?.isSubclass(fqn) ?: false
 }
 
+/**
+ * If this is an instance of [KtClass] returns this, otherwise returns null.
+ */
 fun KtClassOrObject.toKtClass(): KtClass? = if (this is KtClass) this else null
 
 /**
@@ -73,6 +79,11 @@ fun KtClassOrObject.toKtClass(): KtClass? = if (this is KtClass) this else null
 fun PsiFile.classes(): List<KtClass> {
    return this.getChildrenOfType<KtClass>().asList()
 }
+
+/**
+ * Returns the first [KtClass] parent of this element.
+ */
+fun PsiElement.enclosingKtClass(): KtClass? = getParentOfType(false)
 
 /**
  * Returns the superclass parent of this [KtClass].
@@ -95,11 +106,4 @@ fun KtClass.getSuperClass(): KtClass? {
       }
    }
    return null
-}
-
-/**
- * Returns the first [KtClass] parent of this element.
- */
-fun PsiElement.enclosingKtClass(): KtClass? {
-   return getParentOfType(false)
 }

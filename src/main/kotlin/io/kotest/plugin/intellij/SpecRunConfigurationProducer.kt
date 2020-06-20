@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
-import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 
 /**
@@ -26,7 +26,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
+         val ktclass = element.enclosingClassClassOrObjectToken()
          if (ktclass != null && ktclass.isDirectSubclassOfSpec()) {
 
             if (context.module != null)
@@ -47,7 +47,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {
-         val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
+         val ktclass = element.enclosingClassClassOrObjectToken()
          if (ktclass != null) {
             return configuration.name == buildSuggestedName(ktclass.fqName?.asString(), null, null)
          }

@@ -33,7 +33,7 @@ class ClassTests : LightCodeInsightFixtureTestCase() {
    fun testEnclosingClassOrObjectForClassOrObjectToken() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
       val element = psiFile.findElementAt(229) as LeafPsiElement
-      val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
+      val ktclass = element.enclosingClassClassOrObjectToken()
       ktclass.shouldNotBeNull()
       ktclass.name shouldBe "FunSpecExampleTest"
    }

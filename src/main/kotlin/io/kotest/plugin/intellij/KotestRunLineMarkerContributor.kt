@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.psi.enclosingKtClass
-import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
+import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.Test
@@ -41,7 +41,7 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
    }
 
    private fun markerForSpec(element: LeafPsiElement): Info? {
-      val ktclass = element.enclosingClassOrObjectForClassOrObjectToken() ?: return null
+      val ktclass = element.enclosingClassClassOrObjectToken() ?: return null
       return if (ktclass.isDirectSubclassOfSpec()) icon(ktclass) else null
    }
 

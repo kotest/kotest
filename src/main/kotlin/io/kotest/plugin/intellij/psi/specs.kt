@@ -230,7 +230,7 @@ enum class CallbackType {
  */
 fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
    val enclosingClass = getParentOfType<KtClass>(true) ?: return false
-   return enclosingClass.isDirectSubclass(fqn)
+   return enclosingClass.isSubclass(fqn)
 }
 
 /**
@@ -238,6 +238,6 @@ fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
  */
 fun PsiElement.isContainedInSpec(): Boolean {
    val enclosingClass = getParentOfType<KtClass>(true) ?: return false
-   return enclosingClass.isDirectSubclassOfSpec()
+   return enclosingClass.isSubclassOfSpec()
 }
 
