@@ -9,7 +9,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.psi.isSubclassOfSpec
+import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
@@ -27,7 +27,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassOrObjectForClassOrObjectToken()
-         if (ktclass != null && ktclass.isSubclassOfSpec()) {
+         if (ktclass != null && ktclass.isDirectSubclassOfSpec()) {
 
             if (context.module != null)
                if (!DependencyChecker.checkMissingDependencies(context.module)) return false

@@ -6,9 +6,9 @@ import com.intellij.icons.AllIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.psi.enclosingClass
+import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.enclosingClassOrObjectForClassOrObjectToken
-import io.kotest.plugin.intellij.psi.isSubclassOfSpec
+import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.styles.Test
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -30,7 +30,6 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
          // ignoring white space elements will save a lot of lookups
          is PsiWhiteSpace -> null
          is LeafPsiElement -> {
-//            println("getInfo for $element ${element.text} ${element.context}")
             when (element.context) {
                // rule out some common entries that can't possibly be test markers for performance
                is KtAnnotationEntry, is KtDeclarationModifierList, is KtImportDirective, is KtImportList, is KtPackageDirective -> null
@@ -43,11 +42,11 @@ class KotestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    private fun markerForSpec(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingClassOrObjectForClassOrObjectToken() ?: return null
-      return if (ktclass.isSubclassOfSpec()) icon(ktclass) else null
+      return if (ktclass.isDirectSubclassOfSpec()) icon(ktclass) else null
    }
 
    private fun markerForTest(element: LeafPsiElement): Info? {
-      val ktclass = element.enclosingClass() ?: return null
+      val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
       return icon(test)

@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
-import io.kotest.plugin.intellij.psi.enclosingClass
+import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.Test
 
@@ -39,7 +39,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
          val test = findTest(element)
          if (test != null) {
 
-            val ktclass = element.enclosingClass()
+            val ktclass = element.enclosingKtClass()
             if (ktclass != null) {
 
                if (context.module != null)
@@ -65,7 +65,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
       if (element != null) {
          val test = findTest(element)
          if (test != null) {
-            val spec = element.enclosingClass()
+            val spec = element.enclosingKtClass()
             val name = buildSuggestedName(spec?.fqName?.asString(), test.testPath(), null)
             return configuration.name == name
          }

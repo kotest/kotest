@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.psi.enclosingClass
+import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
@@ -34,7 +34,7 @@ class IgnoredTestLineMarker : LineMarkerProvider {
    }
 
    private fun markerForTest(element: LeafPsiElement): LineMarkerInfo<PsiElement>? {
-      val ktclass = element.enclosingClass() ?: return null
+      val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
       return if (test.enabled) null else LineMarkerInfo<PsiElement>(
