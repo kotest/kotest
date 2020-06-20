@@ -13,10 +13,8 @@ import kotlin.reflect.KClass
 object TagFilteredDiscoveryExtension : DiscoveryExtension {
    override fun afterScan(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
       return classes.filter { cls ->
-         cls.annotation<Tags>()?.let { annotation ->
-            val tags = annotation.values.map { value -> StringTag(value) }.toSet()
-            Project.tags().isActive(tags)
-         } ?: true
+         val tags = cls.annotation<Tags>()?.let { anno -> anno.values.map { StringTag(it) } } ?: emptyList()
+         Project.tags().isActive(tags.toSet())
       }
    }
 }

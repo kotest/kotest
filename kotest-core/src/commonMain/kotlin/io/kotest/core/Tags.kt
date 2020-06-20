@@ -2,24 +2,28 @@ package io.kotest.core
 
 data class Tags(val included: Set<Tag>, val excluded: Set<Tag>) {
 
-  companion object {
-    val Empty = Tags(emptySet(), emptySet())
-    fun include(vararg tags: Tag): Tags =
-       Tags(tags.toSet(), emptySet())
-    fun exclude(vararg tags: Tag): Tags =
-       Tags(emptySet(), tags.toSet())
-  }
+   companion object {
+      val Empty = Tags(emptySet(), emptySet())
+      fun include(vararg tags: Tag): Tags =
+         Tags(tags.toSet(), emptySet())
 
-  fun isActive(tag: Tag): Boolean = isActive(setOf(tag))
-  fun isActive(tags: Set<Tag>): Boolean {
-    return when {
-      excluded.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> false
-      included.isEmpty() -> true
-      included.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> true
-      else -> false
-    }
-  }
+      fun exclude(vararg tags: Tag): Tags =
+         Tags(emptySet(), tags.toSet())
+   }
 
-  fun combine(other: Tags) =
-     Tags(included + other.included, excluded + other.excluded)
+   fun isActive(tag: Tag): Boolean = isActive(setOf(tag))
+   fun isActive(tags: Set<Tag>): Boolean {
+      return when {
+         excluded.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> false
+         included.isEmpty() -> true
+         included.map { it.name }.intersect(tags.map { it.name }).isNotEmpty() -> true
+         else -> false
+      }
+   }
+
+   fun include(tag: Tag): Tags = copy(included = included + tag, excluded = excluded)
+   fun exclude(tag: Tag): Tags = copy(included = included, excluded = excluded + tag)
+
+   fun combine(other: Tags) =
+      Tags(included + other.included, excluded + other.excluded)
 }
