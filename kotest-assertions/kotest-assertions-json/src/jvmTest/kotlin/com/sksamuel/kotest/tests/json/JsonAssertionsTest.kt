@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.asClue
 import io.kotest.assertions.json.shouldContainJsonKey
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldMatchJson
@@ -44,6 +45,14 @@ class JsonAssertionsTest : StringSpec({
   "test json equality" {
     json1.shouldMatchJson(json2)
     json1.shouldNotMatchJson(json3)
+
+    null.shouldMatchJson(null)
+    null.shouldNotMatchJson(json1)
+    json1.shouldNotMatchJson(null)
+
+    shouldThrow<AssertionError> { null.shouldNotMatchJson(null) }
+    shouldThrow<AssertionError> { null.shouldMatchJson(json1) }
+    shouldThrow<AssertionError> { json1.shouldMatchJson(null) }
   }
 
   "should return correct error message on failure" {
@@ -71,6 +80,16 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {... should contain the path ${'$'}.store.table"""
+
+    shouldThrow<AssertionError> { null.shouldContainJsonKey("abc") }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+
+      val nullableJson: String? = """{"data": "value"}"""
+      nullableJson.shouldContainJsonKey("data")
+      use(nullableJson)
+    }
   }
 
   "test json key value" {
@@ -87,6 +106,16 @@ class JsonAssertionsTest : StringSpec({
     "store": {
         "book": [
             {... should contain the element ${'$'}.store.book[1].author = JK Rowling"""
+
+    shouldThrow<AssertionError> { null.shouldContainJsonKeyValue("ab", "cd") }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+
+      val nullableJson: String? = """{"data": "value"}"""
+      nullableJson.shouldContainJsonKeyValue("data", "value")
+      use(nullableJson)
+    }
   }
 
   "test json match by resource" {
@@ -100,5 +129,15 @@ class JsonAssertionsTest : StringSpec({
     shouldThrow<AssertionError> {
       testJson2.shouldMatchJsonResource("/json1.json")
     }.message shouldBe """expected: {"name":"sam","location":"chicago"} but was: {"name":"sam","location":"london"}"""
+
+    shouldThrow<AssertionError> { null shouldMatchJsonResource "/json1.json" }
+
+    "contract should work".asClue {
+      fun use(@Suppress("UNUSED_PARAMETER") json: String) {}
+
+      val nullableJson: String? = testJson1
+      nullableJson.shouldMatchJsonResource("/json1.json")
+      use(nullableJson)
+    }
   }
 })
