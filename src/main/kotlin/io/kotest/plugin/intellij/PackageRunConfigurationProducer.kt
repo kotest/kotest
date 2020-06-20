@@ -18,15 +18,14 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration?,
-                                           context: ConfigurationContext?): Boolean {
+   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
+                                           context: ConfigurationContext): Boolean {
       return false
    }
 
    override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
-                                              context: ConfigurationContext?,
+                                              context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
-      if (context == null) return false
       val index = ProjectRootManager.getInstance(context.project).fileIndex
       val dirservice = JavaDirectoryService.getInstance()
       val psiDirectory = sourceElement.get()

@@ -15,10 +15,10 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  */
 class SpecImplicitUsageProvider : ImplicitUsageProvider {
 
-   override fun isImplicitWrite(element: PsiElement?): Boolean = false
-   override fun isImplicitRead(element: PsiElement?): Boolean = false
+   override fun isImplicitWrite(element: PsiElement): Boolean = false
+   override fun isImplicitRead(element: PsiElement): Boolean = false
 
-   override fun isImplicitUsage(element: PsiElement?): Boolean {
+   override fun isImplicitUsage(element: PsiElement): Boolean {
       val ktclass = when (element) {
          is KtClassOrObject -> element
          is KtLightClass -> element.kotlinOrigin

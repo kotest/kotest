@@ -14,13 +14,13 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
  */
 class ProjectConfigImplicitUsageProvider : ImplicitUsageProvider {
 
-   override fun isImplicitWrite(element: PsiElement?): Boolean = false
-   override fun isImplicitRead(element: PsiElement?): Boolean = false
+   override fun isImplicitWrite(element: PsiElement): Boolean = false
+   override fun isImplicitRead(element: PsiElement): Boolean = false
 
    /**
     * Marks subclasses of AbstractProjectConfig as used.
     */
-   override fun isImplicitUsage(element: PsiElement?): Boolean {
+   override fun isImplicitUsage(element: PsiElement): Boolean {
       val parent = when (element) {
          is KtClassOrObject -> element.getSuperClassSimpleName()
          is KtLightClass -> element.kotlinOrigin?.getSuperClassSimpleName()
