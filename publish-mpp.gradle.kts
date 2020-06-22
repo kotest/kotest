@@ -23,7 +23,7 @@ val publications: PublicationContainer = (extensions.getByName("publishing") as 
 
 signing {
    useGpgCmd()
-   if (Ci.isReleaseVersion)
+   if (Ci.isRelease)
       sign(publications)
 }
 
@@ -41,7 +41,7 @@ publishing {
          val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
          val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
          name = "deploy"
-         url = if (Ci.isReleaseVersion) releasesRepoUrl else snapshotsRepoUrl
+         url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
          credentials {
             username = System.getenv("OSSRH_USERNAME") ?: ossrhUsername
             password = System.getenv("OSSRH_PASSWORD") ?: ossrhPassword

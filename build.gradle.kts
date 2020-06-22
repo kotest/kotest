@@ -43,13 +43,13 @@ allprojects {
    }
 
    group = "io.kotest"
-   version = Ci.publishVersion.value
+   version = Ci.publishVersion
 }
 
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
 signing {
    useGpgCmd()
-   if (Ci.isReleaseVersion)
+   if (Ci.isRelease)
       sign(publications)
 }

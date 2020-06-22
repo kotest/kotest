@@ -1,20 +1,32 @@
+import org.gradle.internal.os.OperatingSystem
+
 object Ci {
 
-   private val isGithub = System.getenv("GITHUB_ACTIONS") == "true"
+   private const val snapshotBase = "4.1.0"
+   val os: OperatingSystem = OperatingSystem.current()
+
    private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
-   val isReleaseVersion = !isGithub
+   private val snapshotVersion = "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
 
-   val ideaActive = System.getProperty("idea.active") == "true"
-   val os = org.gradle.internal.os.OperatingSystem.current()
+   private val releaseTag = detectReleaseTag()
 
-   private val snapshotBuildNumber = lazy {
-      Runtime.getRuntime().exec("git rev-list --count master")
-      val number = System.`in`.bufferedReader().read()
-      println("Snapshot build number: $number")
-      number
+   private fun detectReleaseTag(): String? {
+      return try {
+         val process = Runtime.getRuntime().exec("git tag --points-at master")
+         val reader = process.inputStream.bufferedReader()
+         val tag: String? = reader.readLine()
+         if (tag != null && tag.isNotBlank() && tag.startsWith("v")) tag.removePrefix("v") else null
+      } catch (e: Exception) {
+         println(e.message)
+         e.printStackTrace()
+         null
+      }
    }
 
-   private const val releaseVersion = "4.1.0.RC2"
-   private val snapshotVersion = lazy { "4.1.0.${githubBuildNumber}-SNAPSHOT" }
-   val publishVersion = lazy { if (isReleaseVersion) releaseVersion else snapshotVersion.value }
+   val isRelease = releaseTag != null
+
+   val publishVersion: String = when (releaseTag) {
+      null -> snapshotVersion
+      else -> releaseTag
+   }
 }
