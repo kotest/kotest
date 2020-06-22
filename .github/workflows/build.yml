@@ -55,7 +55,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy to sonatype snapshots
+         -  name: deploy to sonatype
             run: ./gradlew publish
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -73,7 +73,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy to sonatype snapshots
+         -  name: deploy to sonatype
             run: ./gradlew publishMacosX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -91,7 +91,7 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: deploy to sonatype snapshots
+         -  name: deploy to sonatype
             run: ./gradlew publishMingwX64PublicationToDeployRepository
             env:
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
