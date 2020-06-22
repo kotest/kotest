@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 object Ci {
 
+   private const val lastRelease = "4.1.0"
    private const val snapshotBase = "4.2.0"
    val os: OperatingSystem = OperatingSystem.current()
 

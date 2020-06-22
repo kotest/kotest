@@ -8,7 +8,6 @@
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 
-
 **Previously known as Kotlintest - From release 4.0 this project is now known as Kotest**
 
 
