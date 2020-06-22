@@ -8,7 +8,9 @@ object Ci {
    private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
    private val snapshotVersion = "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
 
-   private val releaseTag = detectReleaseTag()
+   private val releaseTag = detectReleaseTag().apply {
+      println("Release tag: $this")
+   }
 
    private fun detectReleaseTag(): String? {
       return try {
@@ -17,7 +19,7 @@ object Ci {
          val tag: String? = reader.readLine()
          if (tag != null && tag.isNotBlank() && tag.startsWith("v")) tag.removePrefix("v") else null
       } catch (e: Exception) {
-         println(e.message)
+         println("git tag failed " + e.message)
          e.printStackTrace()
          null
       }
