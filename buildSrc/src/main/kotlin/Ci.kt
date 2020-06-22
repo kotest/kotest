@@ -17,7 +17,7 @@ object Ci {
          val process = Runtime.getRuntime().exec("git log -1 --pretty=%B")
          val reader = process.inputStream.bufferedReader()
          val tag: String? = reader.readLine()
-         if (tag != null && tag.isNotBlank() && tag.startsWith("v")) tag.removePrefix("v") else null
+         if (tag != null && tag.isNotBlank() && tag.trim().startsWith("v")) tag.trim().removePrefix("v") else null
       } catch (e: Exception) {
          println("git tag failed " + e.message)
          e.printStackTrace()
