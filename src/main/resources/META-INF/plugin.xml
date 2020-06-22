@@ -3,11 +3,12 @@
    <id>kotest-plugin-intellij</id>
    <name>kotest</name>
 
-   <vendor email="sam@sksamuel.com" url="http://github.com/sksamuel">sksamuel</vendor>
+   <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
    <idea-version since-build="191.4212.41"/>
 
    <description><![CDATA[
-      Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.
+      Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
+      This plugin requires the use of Kotest 4.1.0 or newer.
     ]]></description>
 
    <version>1.0.0</version>
