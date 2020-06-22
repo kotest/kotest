@@ -5,14 +5,10 @@ The official [Kotest plugin](https://plugins.jetbrains.com/plugin/14080-kotest) 
 
 ## Getting Started
 
-[Download](https://github.com/kotest/kotest-intellij-plugin/archive/v0.90.16.zip) the lastest snapshot, then hit shift twice in Idea, `Plugins`, click on the settings wheel and then `Install Plugin from Disk`.
-
-Then restart and update your `build.gradle.kts` as following
-
-Note: This plugin is currently in a beta and requires the latest snapshot build of Kotest as well as the `kotest-runner-console-jvm` module included in your build.
+This plugin requires Kotest 4.1.0 as well as the `kotest-runner-console-jvm` module included in your build.
 
 ```kotlin
-  val kotestVersion = "4.1.0.293-SNAPSHOT"
+  val kotestVersion = "4.1.0"
   
   // you need to add the sonatype snapshots repository to your build
   repositories {
@@ -31,7 +27,7 @@ Note: This plugin is currently in a beta and requires the latest snapshot build 
   tasks.withType<Test> { useJUnitPlatform() }
 ```
 
-Ps: it works fine also with the current IDEA EAP 2020.1.2, Build #IU-201.7846.29, built on May 19, 2020
+This plugin has been tested with IDEA 2020.1.2 and 2019.3.1.
 
 ## Gutter Icons
 
