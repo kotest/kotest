@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import io.kotest.plugin.intellij.styles.SpecStyle
+import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -34,6 +35,8 @@ fun PsiFile.specs(): List<KtClass> {
  */
 fun KtClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
 
+fun KtLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
+
 /**
  * Returns true if this [KtClass] is a subclass of any Spec.
  * This method will not recursively check parents, it will only check the immediate parent.
@@ -48,6 +51,20 @@ fun KtClass.specStyle(): SpecStyle? {
    val supername = getSuperClassSimpleName()
    val style = SpecStyle.styles.find { it.fqn().shortName().asString() == supername }
    return style ?: getSuperClass()?.specStyle()
+}
+
+/**
+ * Efficiently locates the [SpecStyle] for this class, or null if this class is not a spec.
+ */
+fun KtLightClass.specStyle(): SpecStyle? {
+   val supername = superClass?.name ?: return null
+   val style = SpecStyle.styles.find { it.fqn().shortName().asString() == supername }
+   if (style != null) return style
+   return when (val s = superClass) {
+      is KtClass -> s.specStyle()
+      is KtLightClass -> s.specStyle()
+      else -> null
+   }
 }
 
 fun KtCallExpression.isDslInvocation(): Boolean {
