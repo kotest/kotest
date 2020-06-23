@@ -10,6 +10,7 @@ repositories {
 
 val ossrhUsername: String by project
 val ossrhPassword: String by project
+val signingKey: String? by project
 
 fun Project.publishing(action: PublishingExtension.() -> Unit) =
    configure(action)
@@ -23,8 +24,13 @@ val publications: PublicationContainer = (extensions.getByName("publishing") as 
 
 signing {
    useGpgCmd()
-   if (Ci.isRelease)
+   if (signingKey != null) {
+      @Suppress("UnstableApiUsage")
+      useInMemoryPgpKeys(signingKey, "")
+   }
+   if (Ci.isRelease) {
       sign(publications)
+   }
 }
 
 // Create dokka Jar task from dokka task output
