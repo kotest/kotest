@@ -108,6 +108,20 @@ an easy way to disable a test, by replacing `describe` with `xdescribe` and `it`
 Starting with 4.1 Kotest now rolled out the same functionality to the other styles. For example, you can disable a given
 block in `BehaviorSpec` by using `xgiven`, you can describe a context block in `FunSpec` with `xcontext` and so on.
 
+A full example in the `FunSpec` style.
+
+```kotlin
+class MyFunSpec : FunSpec({
+  xtest("a disabled test") {
+    // this test will not be invoked
+  }
+  xcontext("this context is disabled") {
+     test("and so this test is by extension") {
+     }
+  }
+})
+```
+
 See full details on the [styles page](https://github.com/kotest/kotest/blob/master/doc/styles.md).
 
 ### Removing test prefixes from test output

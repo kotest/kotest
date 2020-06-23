@@ -36,6 +36,10 @@ class FunSpecTest : FunSpec() {
          count += 1
       }
 
+      xtest("a disabled test") {
+         error("boom")
+      }
+
       context("a context can hold tests") {
          test("foo") {
             "a".shouldNotBeBlank()
