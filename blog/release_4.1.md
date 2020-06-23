@@ -191,6 +191,34 @@ describe("some test") {
 
 Another feature that was more an oversight than anything else - the `beforeProject` and `afterProject` callbacks inside `ProjectListener` are now suspendable functions.
 
+
+### Assert softly with receiver
+
+You might already be using `assertSoftly` to allow a test to finish before throwing all the failures at once. Now you can do the same but with a receiver.
+
+For example, rather than write
+
+```kotlin
+val person = ...
+assertSoftly {
+  person.name shouldBe "sam"
+  person.age shouldBe 99
+  person.city shouldBe "Chicago"
+}
+```
+
+You can now do:
+
+```kotlin
+val person = ...
+person.assertSoftly {
+  name shouldBe "sam"
+  age shouldBe 99
+  city shouldBe "Chicago"
+}
+```
+
+
 ### Better shrink information
 
 If you're using the property test framework you'll notice the improved shrinking output. This now includes both
