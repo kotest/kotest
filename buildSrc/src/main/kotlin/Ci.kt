@@ -1,10 +1,7 @@
-import org.gradle.internal.os.OperatingSystem
-
 object Ci {
 
    private const val lastRelease = "4.1.0"
    private const val snapshotBase = "4.2.0"
-   val os: OperatingSystem = OperatingSystem.current()
 
    private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
    private val snapshotVersion = "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
