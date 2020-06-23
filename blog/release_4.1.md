@@ -14,7 +14,7 @@ settings -> plugins and search for "kotest".
 ![plugin image](./images/plugin.png)
 
 As this is the first release that will be used by the majority of users, bugs will likely be found. If you do encounter
-something, please file an [issue](https://github.com/kotest/kotest-intellij-plugin)
+an issue, please open a ticket [here](https://github.com/kotest/kotest-intellij-plugin).
 
 The plugin provides gutter run icons for specs, top level tests, and nested tests.
 
