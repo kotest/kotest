@@ -221,7 +221,7 @@ person.assertSoftly {
 
 ### Better shrink information
 
-If you're using the property test framework you'll notice the improved shrinking output. This now includes both
+If you're using the [property test framework](https://github.com/kotest/kotest/blob/master/doc/property_testing.md) you'll notice the improved shrinking output. This now includes both
 the reason for the original failure (with the original args) and the reason for the shrunk failure (with the
 shrunks args).
 
