@@ -14,7 +14,7 @@ suspend fun <A> proptest(
    property: suspend PropertyContext.(A) -> Unit
 ): PropertyContext {
 
-   require(iterations >= genA.minIterations()) { "Require at least $iterations iterations to cover requirements" }
+   require(iterations >= genA.minIterations()) { "Require at least ${genA.minIterations()} iterations to cover requirements" }
 
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
