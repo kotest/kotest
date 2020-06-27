@@ -124,7 +124,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             }
          }
 
-         val testExecutor = TestExecutor(object : TestExecutionListener {
+         val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
             override fun testStarted(testCase: TestCase) {
                if (started.add(testCase.description)) {
                   listener.testStarted(testCase)

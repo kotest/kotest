@@ -1,3 +1,5 @@
+@file:Suppress("PrivatePropertyName")
+
 package io.kotest.core.test
 
 import io.kotest.core.spec.Spec
@@ -18,6 +20,8 @@ import kotlin.reflect.KClass
  */
 @Suppress("MemberVisibilityCanBePrivate")
 data class Description(val parents: List<TestName>, val name: TestName) {
+
+   private val PathSeperator = " -- "
 
    companion object {
 
@@ -67,6 +71,12 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     */
    fun spec(): Description = spec(parents.first())
 
+   /**
+    * Returns the programmatic path of the description. This is all the components joined
+    * together with the test path seperator, without prefixes on the names.
+    */
+   fun path(): String = (parents.map { it.name } + name.name).joinToString(PathSeperator)
+
    fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else
       Description(parents.drop(1), name)
 
@@ -83,22 +93,29 @@ data class Description(val parents: List<TestName>, val name: TestName) {
    fun depth() = names().size
 
    /**
-    * Returns true if this instance is the immediate parent of the supplied argument.
+    * Returns true if this description is the immediate parent of the given dargument.
     * Ignores test prefixes when comparing.
     */
-   fun isParentOf(description: Description): Boolean =
-      parents.map { it.name } + name.name == description.parents.map { it.name }
+   fun isParentOf(description: Description): Boolean {
+      return if (description.isSpec())
+         false
+      else // I am the parent if my path is equal to this other descriptions parent's path
+         path() == description.parent().path()
+   }
 
    /**
     * Returns true if this instance is an ancestor (nth-parent) of the supplied argument.
     * Ignores test prefixes when comparing.
     */
    fun isAncestorOf(description: Description): Boolean {
-      if (isParentOf(description))
-         return true
-      return if (description.isSpec()) false else {
-         val p = description.parent()
-         isAncestorOf(p)
+      return when {
+         // this description cannot be a parent of a spec
+         description.isSpec() -> false
+         isParentOf(description) -> true
+         else -> {
+            val p = description.parent()
+            isAncestorOf(p)
+         }
       }
    }
 
@@ -107,7 +124,7 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     * instance is either an ancestor of, of the same as, the given description.
     * Ignores test prefixes when comparing.
     */
-   fun isOnPath(description: Description): Boolean = this == description || this.isAncestorOf(description)
+   fun isOnPath(description: Description): Boolean = this.path() == description.path() || this.isAncestorOf(description)
 
    /**
     * Returns true if this description is the same as or a child, grandchild, etc of the given description.

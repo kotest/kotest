@@ -18,7 +18,7 @@ actual fun executeSpec(spec: Spec) {
       // also it gives us a handle to the done callback
       it(root.testCase.description.name.displayName()) { done ->
 
-         val listener = object : TestExecutionListener {
+         val listener = object : TestCaseExecutionListener {
             override fun testStarted(testCase: TestCase) {}
             override fun testIgnored(testCase: TestCase) {}
             override fun testFinished(testCase: TestCase, result: TestResult) {
@@ -34,7 +34,7 @@ actual fun executeSpec(spec: Spec) {
                   throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-js because the underlying JS frameworks do not support promises for outer root scopes. Please use FunSpec or StringSpec which ensure that only top level tests are used.")
                }
             }
-            TestExecutor(listener, CallingThreadExecutionContext).execute(root.testCase, context)
+            TestCaseExecutor(listener, CallingThreadExecutionContext).execute(root.testCase, context)
          }
 
          // we don't want to return the promise as the js frameworks will use that for test resolution

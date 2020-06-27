@@ -2,8 +2,8 @@ package com.sksamuel.kotest.timeout
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
+import io.kotest.core.runtime.TestCaseExecutionListener
+import io.kotest.core.runtime.TestCaseExecutor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Description
 import io.kotest.core.test.NestedTest
@@ -58,8 +58,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase
          }
-         val testExecutionListener = object : TestExecutionListener {}
-         val executor = TestExecutor(testExecutionListener, ExecutorExecutionContext)
+         val testExecutionListener = object : TestCaseExecutionListener {}
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext)
          executor.execute(testCase, context)
       }
 
@@ -89,8 +89,8 @@ class TestCaseTimeoutListenerTest : FunSpec() {
             override val coroutineContext: CoroutineContext = GlobalScope.coroutineContext
             override val testCase: TestCase = testCase
          }
-         val testExecutionListener = object : TestExecutionListener {}
-         val executor = TestExecutor(testExecutionListener, ExecutorExecutionContext)
+         val testExecutionListener = object : TestCaseExecutionListener {}
+         val executor = TestCaseExecutor(testExecutionListener, ExecutorExecutionContext)
          executor.execute(testCase, context)
       }
    }

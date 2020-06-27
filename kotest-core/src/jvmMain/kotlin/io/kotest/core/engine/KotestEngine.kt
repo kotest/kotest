@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
 
 class KotestEngine(
    val classes: List<KClass<out Spec>>,
-   filters: List<TestCaseFilter>,
+   val filters: List<TestCaseFilter>,
    val parallelism: Int,
    tags: Tags?,
    val listener: TestEngineListener,
@@ -34,6 +34,10 @@ class KotestEngine(
       Project.registerFilters(filters)
       if (tags != null)
          Project.registerExtension(SpecifiedTagsTagExtension(tags))
+   }
+
+   fun cleanup() {
+      Project.deregisterFilters(filters)
    }
 
    private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }

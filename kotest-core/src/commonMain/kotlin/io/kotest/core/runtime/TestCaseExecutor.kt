@@ -21,7 +21,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-interface TestExecutionListener {
+interface TestCaseExecutionListener {
    fun testStarted(testCase: TestCase) {}
    fun testIgnored(testCase: TestCase) {}
    fun testFinished(testCase: TestCase, result: TestResult) {}
@@ -32,7 +32,7 @@ data class TimeoutException constructor(val duration: Duration) :
    Exception("Test did not completed within ${duration.toLongMilliseconds()}ms")
 
 /**
- * Executes a single [TestCase]. Uses a [TestExecutionListener] to notify callers of events in the test.
+ * Executes a single [TestCase]. Uses a [TestCaseExecutionListener] to notify callers of events in the test.
  *
  * The [TimeoutExecutionContext] is used to provide a way of executing functions on the underlying platform
  * in a way that best utilizes threads or the lack of on that platform.
@@ -44,8 +44,8 @@ data class TimeoutException constructor(val duration: Duration) :
  * If the given test case is invalid, then this method should throw an exception.
  */
 @OptIn(ExperimentalTime::class)
-class TestExecutor(
-   private val listener: TestExecutionListener,
+class TestCaseExecutor(
+   private val listener: TestCaseExecutionListener,
    private val executionContext: TimeoutExecutionContext,
    private val validateTestCase: (TestCase) -> Unit = {}
 ) {
@@ -84,8 +84,14 @@ class TestExecutor(
    private suspend fun executeIfActive(testCase: TestCase, ifActive: suspend () -> TestResult): TestResult {
       // if the test case is active we execute it, otherwise we just invoke the callback with ignored
       return when (testCase.isActive()) {
-         true -> ifActive()
-         false -> TestResult.Ignored
+         true -> {
+            log("${testCase.description.path()} is active")
+            ifActive()
+         }
+         false -> {
+            log("${testCase.description.path()} is *not* active")
+            TestResult.Ignored
+         }
       }
    }
 

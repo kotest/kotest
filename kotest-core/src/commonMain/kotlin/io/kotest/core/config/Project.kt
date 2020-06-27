@@ -107,8 +107,16 @@ object Project {
       filters = filters + filter
    }
 
+   fun deregisterFilter(filter: Filter) {
+      filters = filters - filter
+   }
+
    fun registerFilters(vararg filters: Filter) {
       registerFilters(filters.asList())
+   }
+
+   fun deregisterFilters(filters: Collection<Filter>) {
+      filters.forEach { deregisterFilter(it) }
    }
 
    fun registerListeners(vararg listeners: Listener) = listeners.forEach { registerListener(it) }
