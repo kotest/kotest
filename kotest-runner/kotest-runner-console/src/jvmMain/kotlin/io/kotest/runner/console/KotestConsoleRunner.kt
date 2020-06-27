@@ -35,5 +35,6 @@ class KotestConsoleRunner(private val listener: TestEngineListener) {
          listener
       )
       runner.execute()
+      runner.cleanup()
    }
 }

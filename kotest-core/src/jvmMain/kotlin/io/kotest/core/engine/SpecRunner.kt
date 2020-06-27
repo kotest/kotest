@@ -43,7 +43,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
 
-      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("TestCaseExecutor-%d"))
+      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
 
       val futures = testCases.map { testCase ->
          executor.submit {

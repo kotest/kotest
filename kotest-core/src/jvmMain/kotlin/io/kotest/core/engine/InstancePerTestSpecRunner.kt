@@ -2,8 +2,8 @@ package io.kotest.core.engine
 
 import io.kotest.mpp.log
 import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
+import io.kotest.core.runtime.TestCaseExecutionListener
+import io.kotest.core.runtime.TestCaseExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
@@ -124,7 +124,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
                }
             }
          }
-         val testExecutor = TestExecutor(object : TestExecutionListener {
+         val testExecutor = TestCaseExecutor(object : TestCaseExecutionListener {
             override fun testStarted(testCase: TestCase) {
                if (isTarget) listener.testStarted(testCase)
             }

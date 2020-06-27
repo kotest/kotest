@@ -4,8 +4,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.runtime.CallingThreadExecutionContext
 import io.kotest.core.runtime.TimeoutExecutionContext
 import io.kotest.core.runtime.ExecutorExecutionContext
-import io.kotest.core.runtime.TestExecutionListener
-import io.kotest.core.runtime.TestExecutor
+import io.kotest.core.runtime.TestCaseExecutionListener
+import io.kotest.core.runtime.TestCaseExecutor
 import io.kotest.core.runtime.TimeoutException
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.funSpec
@@ -35,7 +35,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    test("test executor happy path") {
       var started = false
       var finished = false
-      val listener = object : TestExecutionListener {
+      val listener = object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
             started = true
          }
@@ -46,7 +46,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Success
          }
       }
-      val executor = TestExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "a" }.testCase
       executor.execute(testCase, context(testCase)).status shouldBe TestStatus.Success
       started shouldBe true
@@ -56,7 +56,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    test("test executor should timeout a suspendable call") {
       var started = false
       var finished = false
-      val listener = object : TestExecutionListener {
+      val listener = object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
             started = true
          }
@@ -67,7 +67,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
             result.status shouldBe TestStatus.Error
          }
       }
-      val executor = TestExecutor(listener, context)
+      val executor = TestCaseExecutor(listener, context)
       val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
@@ -77,7 +77,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    }
 
    test("test executor should throw if validation throws") {
-      val executor = TestExecutor(object : TestExecutionListener {
+      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
@@ -91,7 +91,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    }
 
    test("test executor should invoke before test") {
-      val executor = TestExecutor(object : TestExecutionListener {
+      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
@@ -103,7 +103,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    }
 
    test("test executor should invoke after test") {
-      val executor = TestExecutor(object : TestExecutionListener {
+      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {}
          override fun testIgnored(testCase: TestCase) {}
          override fun testFinished(testCase: TestCase, result: TestResult) {}
@@ -117,7 +117,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    test("test executor should start/finish test with error if before-test throws") {
       var started = false
       var finished = false
-      val executor = TestExecutor(object : TestExecutionListener {
+      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
             started = true
          }
@@ -138,7 +138,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
    test("test executor should start/finish test with error if after-test throws") {
       var started = false
       var finished = false
-      val executor = TestExecutor(object : TestExecutionListener {
+      val executor = TestCaseExecutor(object : TestCaseExecutionListener {
          override fun testStarted(testCase: TestCase) {
             started = true
          }

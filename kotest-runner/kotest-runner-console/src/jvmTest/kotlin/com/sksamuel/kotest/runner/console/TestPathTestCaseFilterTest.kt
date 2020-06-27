@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.runner.console
 
+import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.style.*
 import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.console.KotestConsoleRunner
 import io.kotest.runner.console.TestPathTestCaseFilter
 
 class TestPathTestCaseFilterTest : FunSpec() {
@@ -21,7 +24,10 @@ class TestPathTestCaseFilterTest : FunSpec() {
          TestPathTestCaseFilter("test a", FunSpecs::class).filter(r.append("test")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter("test", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter("test a", FunSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Include
-         TestPathTestCaseFilter("test a", FunSpecs::class).filter(r.append("test a b")) shouldBe TestFilterResult.Exclude
+         TestPathTestCaseFilter(
+            "test a",
+            FunSpecs::class
+         ).filter(r.append("test a b")) shouldBe TestFilterResult.Exclude
       }
 
       test("should filter for strings specs") {
@@ -29,7 +35,10 @@ class TestPathTestCaseFilterTest : FunSpec() {
 
          TestPathTestCaseFilter("test a", StringSpecs::class).filter(r.append("test")) shouldBe TestFilterResult.Exclude
          TestPathTestCaseFilter("test", StringSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Exclude
-         TestPathTestCaseFilter("test a", StringSpecs::class).filter(r.append("test a")) shouldBe TestFilterResult.Include
+         TestPathTestCaseFilter(
+            "test a",
+            StringSpecs::class
+         ).filter(r.append("test a")) shouldBe TestFilterResult.Include
          TestPathTestCaseFilter(
             "test a",
             StringSpecs::class
@@ -186,6 +195,35 @@ class TestPathTestCaseFilterTest : FunSpec() {
          )
             .filter(r.append("Feature: a").append("Scenario: bb")) shouldBe TestFilterResult.Exclude
       }
+
+      test("f:should filter for describe specs") {
+         val tests = mutableListOf<TestCase>()
+         val listener = object : TestEngineListener {
+            override fun testStarted(testCase: TestCase) {
+               println("Starting test case ${testCase.description.fullName()}")
+               tests.add(testCase)
+            }
+         }
+         val runner = KotestConsoleRunner(listener)
+         runner.execute(null, DescribeSpecs::class.java.name, "B", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "4", "5", "Describe: C", "6")
+
+         tests.clear()
+         runner.execute(null, DescribeSpecs::class.java.name, "B -- 4", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "4")
+
+         tests.clear()
+         runner.execute(null, DescribeSpecs::class.java.name, "B -- C", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "Describe: C", "6")
+
+         tests.clear()
+         runner.execute(null, DescribeSpecs::class.java.name, "B -- C -- 6", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "Describe: C", "6")
+
+         tests.clear()
+         runner.execute(null, DescribeSpecs::class.java.name, "B -- C -- 7", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "Describe: C")
+      }
    }
 }
 
@@ -199,3 +237,22 @@ class FunSpecs : FunSpec()
 class ShouldSpecs : ShouldSpec()
 class StringSpecs : StringSpec()
 class WordSpecs : WordSpec()
+
+private class DescribeSpecs : DescribeSpec({
+   describe("A") {
+      it("1") {
+      }
+      it("2") {
+      }
+   }
+   describe("B") {
+      it("4") {
+      }
+      it("5") {
+      }
+      describe("C") {
+         it("6") {
+         }
+      }
+   }
+})

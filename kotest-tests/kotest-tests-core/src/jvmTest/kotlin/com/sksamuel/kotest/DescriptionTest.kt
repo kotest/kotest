@@ -2,6 +2,7 @@ package com.sksamuel.kotest
 
 import io.kotest.core.test.Description
 import io.kotest.core.spec.CompositeSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -64,4 +65,8 @@ val descriptionTests = stringSpec {
    }
 }
 
-class DescriptionTest : CompositeSpec(descriptionTests)
+class DescriptionTest : FunSpec() {
+   init {
+      include(descriptionTests)
+   }
+}

@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  * The comparison ignores test prefixes.
  */
 class TestPathTestCaseFilter(
-   testPath: String,
+   private val testPath: String,
    spec: KClass<out Spec>
 ) : TestCaseFilter {
 
@@ -19,7 +19,7 @@ class TestPathTestCaseFilter(
 
    override fun filter(description: Description): TestFilterResult {
       return when {
-         description == target || target.isAncestorOf(description) || description.isAncestorOf(target) -> TestFilterResult.Include
+         description.path() == target.path() || target.isAncestorOf(description) || description.isAncestorOf(target) -> TestFilterResult.Include
          else -> TestFilterResult.Exclude
       }
    }
