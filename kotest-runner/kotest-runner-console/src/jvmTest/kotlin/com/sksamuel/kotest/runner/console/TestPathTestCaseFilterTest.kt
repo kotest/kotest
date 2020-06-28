@@ -45,19 +45,6 @@ class TestPathTestCaseFilterTest : FunSpec() {
          ).filter(r.append("test a b")) shouldBe TestFilterResult.Exclude
       }
 
-      test("should filter for should specs") {
-         val r = Description.spec(ShouldSpecs::class)
-
-         TestPathTestCaseFilter("should test a", ShouldSpecs::class)
-            .filter(r.append("should test")) shouldBe TestFilterResult.Exclude
-         TestPathTestCaseFilter("should test", ShouldSpecs::class)
-            .filter(r.append("should test a")) shouldBe TestFilterResult.Exclude
-         TestPathTestCaseFilter("should test a", ShouldSpecs::class)
-            .filter(r.append("should test a")) shouldBe TestFilterResult.Include
-         TestPathTestCaseFilter("should test a", ShouldSpecs::class)
-            .filter(r.append("should test a b")) shouldBe TestFilterResult.Exclude
-      }
-
       test("should filter for word specs") {
          val r = Description.spec(WordSpecs::class)
 
@@ -196,14 +183,37 @@ class TestPathTestCaseFilterTest : FunSpec() {
             .filter(r.append("Feature: a").append("Scenario: bb")) shouldBe TestFilterResult.Exclude
       }
 
-      test("f:should filter for describe specs") {
+      test("should filter for should spec") {
+
          val tests = mutableListOf<TestCase>()
          val listener = object : TestEngineListener {
             override fun testStarted(testCase: TestCase) {
-               println("Starting test case ${testCase.description.fullName()}")
                tests.add(testCase)
             }
          }
+
+         val runner = KotestConsoleRunner(listener)
+         runner.execute(null, ShouldSpecs::class.java.name, "a", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("should a")
+         tests.clear()
+
+         runner.execute(null, ShouldSpecs::class.java.name, "b", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("b", "should c", "should d", "e", "should f")
+         tests.clear()
+
+         runner.execute(null, ShouldSpecs::class.java.name, "b -- d", null)
+         tests.map { it.description.name.displayName() } shouldBe listOf("b", "should d")
+         tests.clear()
+      }
+
+      test("should filter for describe specs") {
+         val tests = mutableListOf<TestCase>()
+         val listener = object : TestEngineListener {
+            override fun testStarted(testCase: TestCase) {
+               tests.add(testCase)
+            }
+         }
+
          val runner = KotestConsoleRunner(listener)
          runner.execute(null, DescribeSpecs::class.java.name, "B", null)
          tests.map { it.description.name.displayName() } shouldBe listOf("Describe: B", "4", "5", "Describe: C", "6")
@@ -234,7 +244,25 @@ class FeatureSpecs : FeatureSpec()
 class FeatureSpecs2 : AbstractFeatureSpec()
 class FreeSpecs : FreeSpec()
 class FunSpecs : FunSpec()
-class ShouldSpecs : ShouldSpec()
+
+private class ShouldSpecs : ShouldSpec() {
+   init {
+      should("a") {
+      }
+      context("b") {
+         should("c") {
+         }
+         should("d") {
+         }
+         context("e") {
+            should("f") {
+            }
+         }
+      }
+   }
+}
+
+
 class StringSpecs : StringSpec()
 class WordSpecs : WordSpec()
 
