@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.Project
+import io.kotest.plugin.intellij.actions.RunAction
 import javax.swing.JComponent
 
 fun createToolbar(tree: TestFileTree, project: Project): JComponent {

@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.toolwindow
+package io.kotest.plugin.intellij.actions
 
 import com.intellij.execution.ExecutorRegistry
 import com.intellij.execution.RunManager
@@ -11,6 +11,10 @@ import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 import io.kotest.plugin.intellij.KotestRunConfiguration
 import io.kotest.plugin.intellij.notifications.DependencyChecker
+import io.kotest.plugin.intellij.toolwindow.ModuleNodeDescriptor
+import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
+import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor
+import io.kotest.plugin.intellij.toolwindow.nodeDescriptor
 import javax.swing.Icon
 import javax.swing.JTree
 
@@ -39,9 +43,17 @@ fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Bo
    val path = tree.selectionPath
    if (path != null) {
       when (val node = path.nodeDescriptor()) {
-         is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
-         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
-         is ModuleNodeDescriptor -> runModule(node.module, executorId)
+         is SpecNodeDescriptor -> if (executeBranch) runSpec(
+            node,
+            project,
+            executorId)
+         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(
+            node,
+            project,
+            executorId)
+         is ModuleNodeDescriptor -> runModule(
+            node.module,
+            executorId)
       }
    }
 }

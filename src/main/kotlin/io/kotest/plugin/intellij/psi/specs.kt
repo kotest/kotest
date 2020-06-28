@@ -217,6 +217,19 @@ fun KtBlockExpression.callbacks(): List<Callback> {
       }
 }
 
+/**
+ * Returns the Spec that contains this element, or null if this element is not located inside a spec class.
+ */
+fun PsiElement.enclosingSpec(): KtClass? {
+   val ktclass = getParentOfType<KtClass>(false)
+   return when {
+      ktclass == null -> null
+      ktclass.isSubclassOfSpec() -> ktclass
+      else -> ktclass.enclosingSpec()
+   }
+}
+
+
 enum class IncludeType { Value, Function }
 
 data class Include(val name: String, val type: IncludeType, val psi: PsiElement)

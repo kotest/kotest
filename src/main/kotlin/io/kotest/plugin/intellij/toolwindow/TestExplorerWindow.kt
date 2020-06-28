@@ -12,6 +12,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiTreeAnyChangeAbstractAdapter
 import com.intellij.ui.ScrollPaneFactory
+import io.kotest.plugin.intellij.actions.runNode
 import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent

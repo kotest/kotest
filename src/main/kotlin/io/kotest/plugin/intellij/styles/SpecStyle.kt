@@ -67,12 +67,13 @@ interface SpecStyle {
    fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    /**
-    * Returns all child tests located in the given [PsiElement].
+    * Returns all tests located in the given [PsiElement] as a tree of elements.
+    * Nested tests are associated with their parent TestElement.
     */
    fun tests(element: PsiElement): List<TestElement> {
       return element.children.flatMap { child ->
          when (child) {
-            // there are some element types we don't need to traverse to cycles and nested traversals
+            // there are some element types we don't need to traverse to save time and nested traversals
             is KtImportList, is KtPackageDirective -> emptyList()
             is KtConstructorCalleeExpression -> emptyList()
             is KtStringTemplateExpression -> emptyList()
@@ -83,7 +84,8 @@ interface SpecStyle {
                when (val test = test(child)) {
                   null -> tests(child)
                   else ->
-                     // if the test is a Container we don't need to inspect the children
+                     // if the test is a TestType.Test we don't need to inspect the children
+                     // because we know there can't be any further tests nested
                      when (test.testType) {
                         TestType.Container -> listOf(TestElement(child, test, tests(child)))
                         TestType.Test -> listOf(TestElement(child, test, emptyList()))
