@@ -23,12 +23,12 @@
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
 
-      <localInspection groupPath="Kotlin" language="JVM" shortName="NoZeroArgConstructorInspection"
-                       bundle="KotestGadgetsBundle"
-                       key="kotest.nozeroargsconstructor.name"
-                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"
-                       enabledByDefault="true" level="WARNING"
-                       implementationClass="io.kotest.plugin.intellij.inspections.NoZeroArgConstructorInspection"/>
+<!--      <localInspection groupPath="Kotlin" language="JVM" shortName="NoZeroArgConstructorInspection"-->
+<!--                       bundle="KotestGadgetsBundle"-->
+<!--                       key="kotest.nozeroargsconstructor.name"-->
+<!--                       groupBundle="KotestGadgetsBundle" groupKey="group.names.kotest"-->
+<!--                       enabledByDefault="true" level="WARNING"-->
+<!--                       implementationClass="io.kotest.plugin.intellij.inspections.NoZeroArgConstructorInspection"/>-->
 
       <toolWindow id="Kotest" anchor="left" icon="/icon16_greyscale.png"
                   factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"
