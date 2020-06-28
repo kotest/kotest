@@ -1,6 +1,6 @@
 object Ci {
 
-   private const val lastRelease = "4.1.0"
+   private const val lastRelease = "4.1.1"
 
    private const val snapshotBase = "4.2.0"
 
