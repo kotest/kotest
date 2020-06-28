@@ -21,14 +21,14 @@
       <action id="io.kotest.actions.NextTestAction"
               class="io.kotest.plugin.intellij.actions.NextTestAction" text="Next Test"
               description="Navigate to the next test in this spec class">
-         <add-to-group group-id="NavigateInFileGroup" anchor="after" relative-to-action="MethodUp"/>
+         <add-to-group group-id="CodeMenu" anchor="last"/>
          <keyboard-shortcut keymap="$default" first-keystroke="alt n"/>
       </action>
 
       <action id="io.kotest.actions.PreviousTestAction"
               class="io.kotest.plugin.intellij.actions.PreviousTestAction" text="Previous Test"
               description="Navigate to the previous test in this spec class">
-         <add-to-group group-id="NavigateInFileGroup" anchor="after" relative-to-action="io.kotest.actions.NextTestAction"/>
+         <add-to-group group-id="CodeMenu" anchor="last"/>
          <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
       </action>
    </actions>
