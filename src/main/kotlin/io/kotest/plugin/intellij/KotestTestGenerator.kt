@@ -13,8 +13,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testIntegration.createTest.CreateTestDialog
 import com.intellij.testIntegration.createTest.TestGenerator
+import io.kotest.plugin.intellij.styles.FunSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.StringSpecStyle
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.refactoring.memberInfo.toKotlinMemberInfo
 import org.jetbrains.kotlin.name.FqName
@@ -41,7 +41,7 @@ class KotestTestGenerator : TestGenerator {
   }
 
   private fun styleForSuperClass(fqn: FqName): SpecStyle =
-      SpecStyle.styles.find { it.fqn() == fqn } ?: StringSpecStyle
+      SpecStyle.styles.find { it.fqn() == fqn } ?: FunSpecStyle
 
   private fun generateTestFile(project: Project, d: CreateTestDialog): PsiFile? {
 
