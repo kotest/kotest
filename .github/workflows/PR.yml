@@ -33,6 +33,7 @@ jobs:
       - name: Bundle the build report
         if: failure()
         run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
       - name: Upload the build report
         if: failure()
         uses: actions/upload-artifact@master
