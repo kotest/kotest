@@ -8,7 +8,6 @@ import kotlinx.coroutines.withContext
 import org.testcontainers.lifecycle.Startable
 import org.testcontainers.lifecycle.TestLifecycleAware
 
-
 /**
  * [StartablePerTestListener] starts the given [startable] before execution of each test in the spec
  * and stops after execution of each test. If the [startable] also inherit from [TestLifecycleAware]
@@ -20,7 +19,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
  *
  * @see[StartablePerSpecListener]
  * */
-internal class StartablePerTestListener(private val startable: Startable) : TestListener {
+class StartablePerTestListener<T : Startable>(val startable: T) : TestListener {
    private val testLifecycleAwareListener = TestLifecycleAwareListener(startable)
 
    override suspend fun beforeTest(testCase: TestCase) {

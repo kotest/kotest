@@ -1,7 +1,6 @@
 package io.kotest.extensions.testcontainers
 
-import io.kotest.core.listeners.TestListener
 import org.testcontainers.lifecycle.Startable
 
-fun Startable.perTest(): TestListener = StartablePerTestListener(this)
-fun Startable.perSpec(): TestListener = StartablePerSpecListener(this)
+fun <T : Startable> T.perTest(): StartablePerTestListener<T> = StartablePerTestListener<T>(this)
+fun <T : Startable> T.perSpec(): StartablePerSpecListener<T> = StartablePerSpecListener<T>(this)
