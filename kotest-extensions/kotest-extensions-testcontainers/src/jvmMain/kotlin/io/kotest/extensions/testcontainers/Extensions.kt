@@ -7,11 +7,11 @@ fun <T : Startable> T.perTest(): StartablePerTestListener<T> = StartablePerTestL
 fun <T : Startable> T.perSpec(): StartablePerSpecListener<T> = StartablePerSpecListener<T>(this)
 
 fun <T : Startable> TestConfiguration.configurePerTest(startable: T): T {
-   listener(StartablePerSpecListener(startable))
+   listener(StartablePerTestListener(startable))
    return startable
 }
 
 fun <T : Startable> TestConfiguration.configurePerSpec(startable: T): T {
-   listener(StartablePerTestListener(startable))
+   listener(StartablePerSpecListener(startable))
    return startable
 }
