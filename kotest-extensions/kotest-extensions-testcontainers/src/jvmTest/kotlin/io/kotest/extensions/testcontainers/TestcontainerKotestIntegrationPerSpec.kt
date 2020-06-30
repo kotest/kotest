@@ -4,8 +4,8 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class TestcontainerKotestIntegrationPerSpec : StringSpec({
-   val testStartable = TestStartable()
-   listeners(testStartable.perSpec())
+
+   val testStartable = configurePerSpec(TestStartable())
 
    "start count for first test should be one" {
       testStartable.startCount shouldBe 1
