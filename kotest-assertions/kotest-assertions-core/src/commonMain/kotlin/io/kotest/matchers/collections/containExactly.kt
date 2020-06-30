@@ -2,15 +2,14 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.show.Printed
 import io.kotest.assertions.show.show
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.neverNullMatcher
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
+import io.kotest.matchers.*
 import kotlin.jvm.JvmName
 
+@JvmName("shouldContainExactly_iterable")
+infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) = this?.toList() should containExactly(expected.toList())
 @JvmName("shouldContainExactly_array")
 infix fun <T> Array<T>?.shouldContainExactly(expected: Array<T>) = this?.asList() should containExactly(*expected)
+fun <T> Iterable<T>?.shouldContainExactly(vararg expected: T) = this?.toList() should containExactly(*expected)
 fun <T> Array<T>?.shouldContainExactly(vararg expected: T) = this?.asList() should containExactly(*expected)
 
 infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
@@ -51,8 +50,11 @@ fun <T, C : Collection<T>> containExactly(expected: C): Matcher<C?> = neverNullM
    ) { "Collection should not be exactly ${expected.printed().value}" }
 }
 
+@JvmName("shouldNotContainExactly_iterable")
+infix fun <T> Iterable<T>?.shouldNotContainExactly(expected: Iterable<T>) = this?.toList() shouldNot containExactly(expected.toList())
 @JvmName("shouldNotContainExactly_array")
 infix fun <T> Array<T>?.shouldNotContainExactly(expected: Array<T>) = this?.asList() shouldNot containExactly(*expected)
+fun <T> Iterable<T>?.shouldNotContainExactly(vararg expected: T) = this?.toList() shouldNot containExactly(*expected)
 fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() shouldNot containExactly(*expected)
 
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
