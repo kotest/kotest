@@ -43,23 +43,15 @@ fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Bo
    val path = tree.selectionPath
    if (path != null) {
       when (val node = path.nodeDescriptor()) {
-         is SpecNodeDescriptor -> if (executeBranch) runSpec(
-            node,
-            project,
-            executorId)
-         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(
-            node,
-            project,
-            executorId)
-         is ModuleNodeDescriptor -> runModule(
-            node.module,
-            executorId)
+         is SpecNodeDescriptor -> if (executeBranch) runSpec(node, project, executorId)
+         is TestNodeDescriptor -> if (executeBranch || node.test.tests.isEmpty()) runTest(node, project, executorId)
+         is ModuleNodeDescriptor -> runModule(node.module, executorId)
       }
    }
 }
 
 fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
-   if (!DependencyChecker.checkMissingDependencies(node.module)) return
+   if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
 
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
@@ -79,7 +71,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
 }
 
 fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
-   if (!DependencyChecker.checkMissingDependencies(node.module)) return
+   if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
 
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
@@ -99,7 +91,7 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
 }
 
 fun runModule(module: Module, executorId: String) {
-   if (!DependencyChecker.checkMissingDependencies(module)) return
+   if (!DependencyChecker.hasRequiredDependencies(module, true)) return
 
    val name = "Run all in ${module.name}"
 

@@ -66,7 +66,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
    override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
       return when {
          configurationModule.module == null -> null
-         !DependencyChecker.checkMissingDependencies(configurationModule.module!!) -> null
+         !DependencyChecker.hasRequiredDependencies(configurationModule.module!!, true) -> null
          else -> KotestCommandLineState(environment, this)
       }
    }

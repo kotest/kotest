@@ -37,10 +37,12 @@ object DependencyChecker {
       return facade.findClass(dep.fqn, GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, true)) != null
    }
 
-   fun checkMissingDependencies(module: Module): Boolean {
+   fun hasRequiredDependencies(module: Module, showNotification: Boolean): Boolean {
       RequiredDeps.forEach {
          if (!hasDependency(it, module)) {
-            showDependencyNotification(it, module.project)
+            if (showNotification) {
+               showDependencyNotification(it, module.project)
+            }
             return false
          }
       }

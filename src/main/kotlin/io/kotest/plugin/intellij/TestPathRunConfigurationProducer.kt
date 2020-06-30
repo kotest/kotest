@@ -6,7 +6,6 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.styles.SpecStyle
@@ -41,10 +40,6 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
 
             val ktclass = element.enclosingKtClass()
             if (ktclass != null) {
-
-               if (context.module != null)
-                  if (!DependencyChecker.checkMissingDependencies(context.module)) return false
-
                configuration.setTestPath(test.testPath())
                configuration.setSpec(ktclass)
                configuration.setModule(context.module)
