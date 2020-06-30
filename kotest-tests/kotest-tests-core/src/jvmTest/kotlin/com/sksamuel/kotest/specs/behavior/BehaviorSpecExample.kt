@@ -16,12 +16,27 @@ class BehaviorSpecExample : BehaviorSpec() {
            xthen("disabled") {
               fail("boom")
            }
+           xThen("capitalized disabled then") {
+              fail("boom")
+           }
+        }
+        xWhen("capitalized disabled when") {
+           fail("Boom")
+        }
+        and("another given scope") {
+
+        }
+        xAnd("capitalized disabled and") {
+           fail("Boom")
         }
      }
      xgiven("disabled given") {
         `when`("should be ignored") {
            fail("boom")
         }
+     }
+     xGiven("a capitalized disabled given") {
+        fail("boom")
      }
      Given("a capital given") {
         When("this when uses capitals to avoid backticks") {

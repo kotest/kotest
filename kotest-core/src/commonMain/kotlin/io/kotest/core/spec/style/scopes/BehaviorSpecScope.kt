@@ -26,6 +26,11 @@ interface BehaviorSpecScope : RootScope {
     */
    fun xgiven(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, true, test)
 
+   /**
+    * Adds a top level disabled [GivenScope] to this spec.
+    */
+   fun xGiven(name: String, test: suspend GivenScope.() -> Unit) = addGiven(name, true, test)
+
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
       val testName = TestName("Given: ", name)
       registration().addContainerTest(testName, xdisabled) {
