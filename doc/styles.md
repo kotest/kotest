@@ -119,7 +119,7 @@ class MyTests : ShouldSpec({
 Tests can be disabled using the `xcontext` and `xshould` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
-class MyTests : DescribeSpec({
+class MyTests : ShouldSpec({
     context("this outer block is enabled") {
         xshould("this test is disabled") {
             // test here
