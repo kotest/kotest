@@ -20,9 +20,10 @@ import com.intellij.openapi.util.JDOMExternalizerUtil
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
+import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFactory, project: Project) :
+class KotestConfiguration(name: String, configurationFactory: ConfigurationFactory, project: Project) :
    ModuleBasedConfiguration<RunConfigurationModule, RunConfigurationOptions>(
       name,
       RunConfigurationModule(project),
@@ -35,7 +36,7 @@ class KotestRunConfiguration(name: String, configurationFactory: ConfigurationFa
    private var passParentEnvs: Boolean = true
    private var programParameters: String? = null
    private var vmParameters: String? = ""
-   private var workingDirectory: String? = null
+   private var workingDirectory: String? = PathMacroUtil.MODULE_WORKING_DIR
    private var testPath: String? = null
    private var specName: String? = null
    private var packageName: String? = null

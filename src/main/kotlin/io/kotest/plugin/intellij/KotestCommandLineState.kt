@@ -13,8 +13,8 @@ import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
 import com.intellij.execution.util.JavaParametersUtil
 
-class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestRunConfiguration) :
-    BaseJavaApplicationCommandLineState<KotestRunConfiguration>(environment, configuration) {
+class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestConfiguration) :
+    BaseJavaApplicationCommandLineState<KotestConfiguration>(environment, configuration) {
 
    override fun createJavaParameters(): JavaParameters {
 
@@ -76,7 +76,7 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
    }
 }
 
-class KotestSMTConsoleProperties(config: KotestRunConfiguration,
+class KotestSMTConsoleProperties(config: KotestConfiguration,
                                  executor: Executor) : SMTRunnerConsoleProperties(config, "kotest", executor) {
    init {
       isPrintTestingStartedTime = true

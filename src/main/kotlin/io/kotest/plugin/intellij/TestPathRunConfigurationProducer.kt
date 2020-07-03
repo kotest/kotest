@@ -14,15 +14,15 @@ import io.kotest.plugin.intellij.styles.Test
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
  *
- * A Run producer is called to create a [KotestRunConfiguration] from the [KotestConfigurationFactory]
+ * A Run producer is called to create a [KotestConfiguration] from the [KotestConfigurationFactory]
  * and then again to configure it with a context.
  *
  * This producer creates run configurations for individual tests.
  */
-class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
 
    /**
-    * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
+    * Returns the [KotestConfigurationFactory] used to create [KotestConfiguration]s.
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
@@ -30,7 +30,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
     * Returns true if the given context is applicable to this run producer.
     * This implementation will return true if the source element is a test in any of the [SpecStyle]s.
     */
-   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
@@ -54,7 +54,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
 
    // compares the existing configurations to the context in question
    // if one of the configurations matches then this should return true
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun isConfigurationFromContext(configuration: KotestConfiguration,
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null) {

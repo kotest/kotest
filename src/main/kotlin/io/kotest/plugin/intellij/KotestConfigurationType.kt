@@ -29,6 +29,6 @@ object KotestConfigurationType : ConfigurationType {
 
 class KotestConfigurationFactory(configurationType: ConfigurationType) : ConfigurationFactory(configurationType) {
   override fun createTemplateConfiguration(project: Project): RunConfiguration {
-    return KotestRunConfiguration("Kotest", this, project)
+    return KotestConfiguration("Kotest", this, project)
   }
 }

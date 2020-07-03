@@ -12,7 +12,7 @@ import com.intellij.openapi.ui.LabeledComponent
 import com.intellij.ui.TextFieldWithHistory
 import javax.swing.JPanel
 
-class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfiguration>() {
+class SettingsEditorPanel(project: Project) : SettingsEditor<KotestConfiguration>() {
 
    private lateinit var panel: JPanel
 
@@ -51,16 +51,19 @@ class SettingsEditorPanel(project: Project) : SettingsEditor<KotestRunConfigurat
       }
    }
 
-   override fun resetEditorFrom(configuration: KotestRunConfiguration) {
+   override fun resetEditorFrom(configuration: KotestConfiguration) {
       selectedModule = configuration.configurationModule.module
       moduleSelector.reset(configuration)
       commonJavaParameters.reset(configuration)
       testPath.component.text = configuration.getTestPath()
       specName.component.text = configuration.getSpecName()
       packageName.component.text = configuration.getPackageName()
+      jrePathEditor.setPathOrName(configuration.alternativeJrePath, configuration.isAlternativeJrePathEnabled)
    }
 
-   override fun applyEditorTo(configuration: KotestRunConfiguration) {
+   override fun applyEditorTo(configuration: KotestConfiguration) {
+      configuration.alternativeJrePath = jrePathEditor.jrePathOrName
+      configuration.isAlternativeJrePathEnabled = jrePathEditor.isAlternativeJreSelected
       configuration.setModule(selectedModule)
       moduleSelector.applyTo(configuration)
       commonJavaParameters.applyTo(configuration)

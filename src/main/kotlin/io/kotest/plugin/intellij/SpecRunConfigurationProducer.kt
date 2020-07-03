@@ -12,15 +12,15 @@ import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 
 /**
  * A run configuration contains the details of a particular run (in the drop down run box).
- * A Run producer is called to configure a [KotestRunConfiguration] after it has been created.
+ * A Run producer is called to configure a [KotestConfiguration] after it has been created.
  *
  * This producer creates run configurations for spec classes (run all).
  */
-class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
 
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
-   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val element = sourceElement.get()
@@ -38,7 +38,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
 
    // compares the existing configurations to the context in question
    // if one of the configurations matches then this should return true
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun isConfigurationFromContext(configuration: KotestConfiguration,
                                            context: ConfigurationContext): Boolean {
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {

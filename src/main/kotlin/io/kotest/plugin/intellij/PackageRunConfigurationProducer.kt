@@ -11,19 +11,19 @@ import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
 
-class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfiguration>() {
 
    /**
-    * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
+    * Returns the [KotestConfigurationFactory] used to create [KotestConfiguration]s.
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
-   override fun isConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun isConfigurationFromContext(configuration: KotestConfiguration,
                                            context: ConfigurationContext): Boolean {
       return false
    }
 
-   override fun setupConfigurationFromContext(configuration: KotestRunConfiguration,
+   override fun setupConfigurationFromContext(configuration: KotestConfiguration,
                                               context: ConfigurationContext,
                                               sourceElement: Ref<PsiElement>): Boolean {
       val index = ProjectRootManager.getInstance(context.project).fileIndex
@@ -43,7 +43,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       return false
    }
 
-   private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestRunConfiguration): Boolean {
+   private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestConfiguration): Boolean {
       val template = context.runManager.getConfigurationTemplate(configurationFactory)
       val contextModule = context.module
       val predefinedModule = (template.configuration as ModuleBasedConfiguration<*, *>).configurationModule.module
@@ -59,7 +59,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       return false
    }
 
-   private fun findModule(configuration: KotestRunConfiguration, contextModule: Module?): Module? {
+   private fun findModule(configuration: KotestConfiguration, contextModule: Module?): Module? {
       if (configuration.configurationModule.module == null && contextModule != null) {
          return contextModule
       }

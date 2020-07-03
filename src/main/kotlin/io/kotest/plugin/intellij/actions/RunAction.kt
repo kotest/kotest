@@ -9,7 +9,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.KotestRunConfiguration
+import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.toolwindow.ModuleNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
@@ -58,7 +58,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
 
    val name = node.test.test.name
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-   val run = config.configuration as KotestRunConfiguration
+   val run = config.configuration as KotestConfiguration
 
    run.setTestPath(node.test.test.testPath())
    run.setSpecName(node.spec.fqn.asString())
@@ -78,7 +78,7 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
 
    val name = node.fqn.shortName().asString()
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-   val run = config.configuration as KotestRunConfiguration
+   val run = config.configuration as KotestConfiguration
 
    run.setTestPath(null)
    run.setSpecName(node.fqn.asString())
@@ -99,7 +99,7 @@ fun runModule(module: Module, executorId: String) {
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
 
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
-   val run = config.configuration as KotestRunConfiguration
+   val run = config.configuration as KotestConfiguration
 
    run.setTestPath(null)
    run.setSpecName(null)
