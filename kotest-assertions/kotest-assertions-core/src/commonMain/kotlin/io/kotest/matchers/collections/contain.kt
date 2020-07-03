@@ -6,9 +6,11 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+infix fun <T> Iterable<T>.shouldNotContain(t: T) = toList().shouldNotContain(t)
 infix fun <T> Array<T>.shouldNotContain(t: T) = asList().shouldNotContain(t)
 infix fun <T, C : Collection<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 
+infix fun <T> Iterable<T>.shouldContain(t: T) = toList().shouldContain(t)
 infix fun <T> Array<T>.shouldContain(t: T) = asList().shouldContain(t)
 infix fun <T, C : Collection<T>> C.shouldContain(t: T) = this should contain(t)
 
