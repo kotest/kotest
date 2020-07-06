@@ -45,5 +45,21 @@ class FreeSpecTest : FreeSpec() {
          "support config".config(enabled = true) {
          }
       }
+
+      "for all" - {
+         data class TestCase(val string: String, val length: Int)
+         forAll(
+            mapOf(
+               "zero" to TestCase(string = "", length = 0),
+               "one" to TestCase(string = "a", length = 1)
+            )
+         ) {
+            it.string.length shouldBe it.length
+
+            "sub" - {
+               it.string.length shouldBe it.length
+            }
+         }
+      }
    }
 }

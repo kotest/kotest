@@ -52,4 +52,12 @@ class FreeScope(
       invocationTimeout,
       test
    )
+
+   suspend fun <T> forAll(testCases: Map<String, T>, testfn: suspend (FreeScope).(T) -> Unit) {
+      testCases.forEach { entry ->
+         entry.key - {
+            testfn(this, entry.value)
+         }
+      }
+   }
 }
