@@ -231,4 +231,4 @@ object MyConfig : AbstractProjectConfig() {
 
 These functions will now be invoked for every test case inside the `MyTestClass` test class. Maybe you want
  this listener to run for every test in the entire project. To do that, you would register the listener with
- the project config singleton. For more information on this see [ProjectConfig](#project-config).
+ the project config singleton. For more information on this see [ProjectConfig](project_config.md).
