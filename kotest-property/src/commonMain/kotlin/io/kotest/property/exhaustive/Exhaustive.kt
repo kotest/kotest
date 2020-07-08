@@ -5,14 +5,24 @@ import kotlin.jvm.JvmName
 
 /**
  * Returns an [Exhaustive] which provides the values from the given list.
+ * @param `as` a non empty list.
+ * @return [Exhaustive]
+ * @throws [IllegalArgumentException] if the `as` is a empty list.
  */
-fun <A> exhaustive(`as`: List<A>): Exhaustive<A> = object : Exhaustive<A>() {
-   override val values: List<A> = `as`
-}
+fun <A> exhaustive(`as`: List<A>): Exhaustive<A> = `as`.exhaustive()
 
+/**
+ * Returns an [Exhaustive] which provides the values from the receiver.
+ * @return [Exhaustive]
+ * @throws [IllegalArgumentException] if the receiver is a empty list.
+ */
 @JvmName("exhaustiveExt")
-fun <A> List<A>.exhaustive(): Exhaustive<A> = object : Exhaustive<A>() {
-   override val values: List<A> = this@exhaustive
+fun <A> List<A>.exhaustive(): Exhaustive<A> {
+   require(this.isNotEmpty()) { "Can't build a Exhaustive for a empty list." }
+
+   return object : Exhaustive<A>() {
+      override val values = this@exhaustive
+   }
 }
 
 /**
