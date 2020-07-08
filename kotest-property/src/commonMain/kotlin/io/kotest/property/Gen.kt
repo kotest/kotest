@@ -26,7 +26,11 @@ sealed class Gen<out A> {
 
    fun generate(rs: RandomSource): Sequence<Sample<A>> = when (this) {
       is Arb -> this.edgecases().asSequence().map { Sample(it) } + this.values(rs)
-      is Exhaustive -> generateSequence { this.values.map { Sample(it) } }.flatten()
+      is Exhaustive -> {
+         check(this.values.isNotEmpty()) { "Exhaustive.values shouldn't be a empty list." }
+
+         generateSequence { this.values.map { Sample(it) } }.flatten()
+      }
    }
 
    /**
