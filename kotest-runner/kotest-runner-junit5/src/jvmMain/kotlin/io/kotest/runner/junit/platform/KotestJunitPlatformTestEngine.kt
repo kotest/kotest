@@ -27,8 +27,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       const val EngineId = "kotest"
    }
 
-   override fun getId(): String =
-      EngineId
+   override fun getId(): String = EngineId
 
    override fun getGroupId(): Optional<String> = Optional.of("io.kotest")
 
