@@ -7,10 +7,10 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 import kotlin.reflect.KClass
 
 /**
@@ -35,10 +35,10 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     */
    protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       instantiateSpec(kclass).onSuccess {
-          Try { listener.specInstantiated(it) }
+         Try { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()
-          Try { listener.specInstantiationError(kclass, it) }
+         Try { listener.specInstantiationError(kclass, it) }
       }
 
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
@@ -47,9 +47,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
       val futures = testCases.map { testCase ->
          executor.submit {
-            runBlocking {
-               run(testCase)
-            }
+            future { run(testCase) }
          }
       }
       executor.shutdown()
@@ -70,3 +68,10 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       }
    }
 }
+
+fun <A> future(f: suspend () -> A): Future<A> =
+   CompletableFuture<A>().apply {
+      f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
+         res.fold(::complete, ::completeExceptionally)
+      })
+   }

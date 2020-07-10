@@ -66,7 +66,7 @@ class KotestEngine(
       )
       specs.forEach { klass ->
          executor.submit {
-            runBlocking {
+            future {
                specExecutor.execute(klass)
             }
          }
