@@ -81,6 +81,16 @@ class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter 
       }
    }
 
+   override fun engineFinished(t: List<Throwable>) {
+      if (t.isNotEmpty()) {
+         println()
+         println(TeamCityMessages.testStarted(prefix, "Test failure"))
+         println()
+         val errors = t.joinToString("\n") { t.toString() }
+         println(TeamCityMessages.testFailed(prefix, "Test failure").message(errors))
+      }
+   }
+
    override fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = testCase.description
       println()
@@ -119,7 +129,8 @@ class TeamCityConsoleWriter(private val prefix: String? = null) : ConsoleWriter 
          }
          TestStatus.Success -> {
             val msg = when (testCase.type) {
-               TestType.Container -> TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName()).duration(result.duration)
+               TestType.Container -> TeamCityMessages.testSuiteFinished(prefix, desc.name.displayName())
+                  .duration(result.duration)
                TestType.Test -> TeamCityMessages.testFinished(prefix, desc.name.displayName()).duration(result.duration)
             }
             println(msg)
