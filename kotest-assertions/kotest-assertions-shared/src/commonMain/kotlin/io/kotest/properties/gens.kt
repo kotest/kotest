@@ -55,7 +55,7 @@ fun Gen.Companion.int() = object : Gen<Int> {
       return generateSequence { r.nextInt() }
    }
 
-   override fun shrinker() = IntShrinker
+   override fun shrinker() = IntShrinker(Int.MIN_VALUE..Int.MAX_VALUE)
 }
 
 /**

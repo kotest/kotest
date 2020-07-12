@@ -13,4 +13,4 @@ fun Arb.Companion.byte(min: Byte = Byte.MIN_VALUE, max: Byte = Byte.MAX_VALUE): 
    }
 }
 
-val ByteShrinker = IntShrinker.bimap({ it.toInt() }, { it.toByte() })
+val ByteShrinker = IntShrinker(Byte.MIN_VALUE..Byte.MAX_VALUE).bimap({ it.toInt() }, { it.toByte() })
