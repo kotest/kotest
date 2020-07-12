@@ -4,6 +4,7 @@ import com.intellij.execution.CommonJavaRunConfigurationParameters
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.JavaRunConfigurationModule
 import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationModule
@@ -60,10 +61,23 @@ class KotestConfiguration(name: String, configurationFactory: ConfigurationFacto
 
    override fun suggestedName(): String? = buildSuggestedName(specName, testPath, packageName)
 
-   // let all modules be valid
-   override fun getValidModules(): MutableCollection<Module> =
-      ModuleManager.getInstance(project).modules.toMutableList()
+   override fun getValidModules(): MutableCollection<Module> {
+      // if we are executing a spec (or test in a spec) then we can narrow down the valid modules
+      return if (specName != null) {
+         JavaRunConfigurationModule.getModulesForClass(project, specName)
+      } else {
+         ModuleManager.getInstance(project).modules.toMutableList()
+      }
+   }
 
+   /**
+    * Prepares for executing a specific instance of the run configuration.
+    *
+    * @param executor the execution mode selected by the user (run, debug, profile etc.)
+    * @param environment the environment object containing additional settings for executing the configuration.
+    *
+    * @return the RunProfileState describing the process which is about to be started, or null if it's impossible to start the process.
+    */
    override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
       return when {
          configurationModule.module == null -> null
@@ -116,6 +130,13 @@ class KotestConfiguration(name: String, configurationFactory: ConfigurationFacto
       this.programParameters = programParameteres
    }
 
+   /**
+    * Returns the text of the context menu action to start this run configuration. This can be different from the run configuration name
+    * (for example, for a Java unit test method, the context menu shows just the name of the method, whereas the name of the run
+    * configuration includes the class name).
+    *
+    * @return the name of the action.
+    */
    override fun getActionName(): String? = when {
       packageName?.isNotBlank() ?: false -> "All tests in '$packageName'"
       testPath?.isNotBlank() ?: false -> testPath
