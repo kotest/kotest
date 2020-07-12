@@ -135,7 +135,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
          IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
          IsolationMode.InstancePerLeaf -> when (spec.resolvedThreads()) {
             0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
-            else -> InstancePerLeafConcurrentSpecRunner(listener, spec.resolvedThreads())
+            else -> ConcurrentInstancePerLeafSpecRunner(listener, spec.resolvedThreads())
          }
       }
    }

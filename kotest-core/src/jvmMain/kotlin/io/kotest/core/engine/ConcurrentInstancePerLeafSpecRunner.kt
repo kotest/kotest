@@ -19,7 +19,7 @@ import kotlin.time.ExperimentalTime
  * many threads will be used by the backing dispatcher. Thus, you can specify concurrency with a single
  * threaded pool, or multiple threads, depending on the environment and user requirements.
  */
-class InstancePerLeafConcurrentSpecRunner(
+class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
    private val threads: Int
 ) : SpecRunner(testEngineListener) {
