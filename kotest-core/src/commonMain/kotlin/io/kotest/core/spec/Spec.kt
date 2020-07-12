@@ -9,6 +9,7 @@ import io.kotest.core.sourceRef
 import io.kotest.core.test.*
 import io.kotest.mpp.log
 import kotlin.js.JsName
+import kotlin.reflect.KClass
 
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
@@ -18,7 +19,8 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
     * On other platforms this setting will have no effect.
     * Defaults to 1.
     */
-   var threads: Int = 1
+   @JsName("threadsJs")
+   var threads: Int? = null
 
    /**
     * Materializes the tests defined in this spec as [TestCase] instances.
@@ -156,6 +158,8 @@ fun Spec.resolvedTestCaseOrder() =
 
 fun Spec.resolvedIsolationMode() =
    this.isolationMode ?: this.isolation ?: this.isolationMode() ?: Project.isolationMode()
+
+fun Spec.resolvedThreads() = this.threads ?: this.threads() ?: 1
 
 /**
  * Orders the collection of [TestCase]s based on the provided [TestCaseOrder].

@@ -35,11 +35,38 @@ abstract class SpecRunner(val listener: TestEngineListener) {
     */
    protected fun createInstance(kclass: KClass<out Spec>): Try<Spec> =
       instantiateSpec(kclass).onSuccess {
-          Try { listener.specInstantiated(it) }
+         Try { listener.specInstantiated(it) }
       }.onFailure {
          it.printStackTrace()
-          Try { listener.specInstantiationError(kclass, it) }
+         Try { listener.specInstantiationError(kclass, it) }
       }
+
+   protected suspend fun runParallel(threads: Int, run: suspend () -> Unit) {
+      val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
+      val futures = (0 until threads).map {
+         executor.submit {
+            runBlocking {
+               run()
+            }
+         }
+      }
+      executor.shutdown()
+      log("Waiting for test case execution to terminate")
+
+      try {
+         executor.awaitTermination(1, TimeUnit.DAYS)
+      } catch (t: InterruptedException) {
+         log("Test case execution interrupted", t)
+         throw t
+      }
+
+      //Handle Uncaught Exception in threads or they will just be swallowed
+      try {
+         futures.forEach { it.get() }
+      } catch (e: ExecutionException) {
+         throw e.cause ?: e
+      }
+   }
 
    protected suspend fun runParallel(threads: Int, testCases: Collection<TestCase>, run: suspend (TestCase) -> Unit) {
 

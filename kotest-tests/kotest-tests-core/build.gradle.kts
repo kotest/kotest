@@ -41,6 +41,7 @@ kotlin {
             implementation(project(Projects.AssertionsCore))
             // we use the internals of the JVM project in the tests
             implementation(project(Projects.JunitRunner))
+            implementation(project(Projects.ConsoleRunner))
             implementation(Libs.Coroutines.core)
             implementation(Libs.Mocking.mockk)
             implementation(Libs.JUnitPlatform.engine)

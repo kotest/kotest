@@ -3,10 +3,7 @@ package io.kotest.core.engine
 import io.kotest.mpp.log
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.SpecExtension
-import io.kotest.core.spec.IsolationMode
-import io.kotest.core.spec.Spec
-import io.kotest.core.spec.resolvedExtensions
-import io.kotest.core.spec.resolvedIsolationMode
+import io.kotest.core.spec.*
 import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -57,21 +54,21 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * This is called only once per spec regardless of the number of instantiation events.
     */
    private fun notifySpecStarted(kclass: KClass<out Spec>) = Try {
-       log("Executing engine listener callback:specStarted $kclass")
-       listener.specStarted(kclass)
+      log("Executing engine listener callback:specStarted $kclass")
+      listener.specStarted(kclass)
    }
 
    private fun notifySpecInstantiated(spec: Spec) = Try {
-       log("Executing engine listener callback:specInstantiated spec:$spec")
-       listener.specInstantiated(spec)
+      log("Executing engine listener callback:specInstantiated spec:$spec")
+      listener.specInstantiated(spec)
    }
 
    private fun notifySpecInstantiationError(kclass: KClass<out Spec>, t: Throwable) =
-       Try {
-           t.printStackTrace()
-           log("Executing engine listener callback:specInstantiationError $kclass error:$t")
-           listener.specInstantiationError(kclass, t)
-       }
+      Try {
+         t.printStackTrace()
+         log("Executing engine listener callback:specInstantiationError $kclass error:$t")
+         listener.specInstantiationError(kclass, t)
+      }
 
    /**
     * Notifies the [TestEngineListener] that we have finished the execution of a [Spec].
@@ -82,9 +79,9 @@ class SpecExecutor(private val listener: TestEngineListener) {
       t: Throwable?,
       results: Map<TestCase, TestResult>
    ) = Try {
-       t?.printStackTrace()
-       log("Executing engine listener callback:specFinished $kclass")
-       listener.specFinished(kclass, t, results)
+      t?.printStackTrace()
+      log("Executing engine listener callback:specFinished $kclass")
+      listener.specFinished(kclass, t, results)
    }
 
    /**
@@ -107,8 +104,8 @@ class SpecExecutor(private val listener: TestEngineListener) {
 
       // the terminal case after all (if any) extensions have been invoked
       val run: suspend () -> Unit = suspend {
-         val mode = spec.resolvedIsolationMode()
-         val runner = mode.runner()
+         val runner = runner(spec)
+         log("SpecExecutor: Using runner $runner")
          results = runner.execute(spec)
       }
 
@@ -132,10 +129,15 @@ class SpecExecutor(private val listener: TestEngineListener) {
    }
 
    @OptIn(ExperimentalTime::class)
-   private fun IsolationMode.runner(): SpecRunner = when (this) {
-      IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
-      IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
-      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
+   private fun runner(spec: Spec): SpecRunner {
+      return when (spec.resolvedIsolationMode()) {
+         IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)
+         IsolationMode.InstancePerTest -> InstancePerTestSpecRunner(listener)
+         IsolationMode.InstancePerLeaf -> when (spec.resolvedThreads()) {
+            0, 1 -> InstancePerLeafSpecRunner(listener) // topo restore per leaf
+            else -> InstancePerLeafConcurrentSpecRunner(listener, spec.resolvedThreads())
+         }
+      }
    }
 
    /**
@@ -144,14 +146,14 @@ class SpecExecutor(private val listener: TestEngineListener) {
     * If this errors then no further callbacks or tests will be executed.
     */
    private suspend fun invokePrepareSpecListeners(kclass: KClass<out Spec>): Try<Unit> =
-       Try {
-           val listeners = Project.testListeners()
-           log("Notifying ${listeners.size} test listeners of callback 'prepareSpec'")
-           listeners.forEach {
-               it.prepareSpec(kclass)
-           }
-           log("'prepareSpec' callbacks complete")
-       }
+      Try {
+         val listeners = Project.testListeners()
+         log("Notifying ${listeners.size} test listeners of callback 'prepareSpec'")
+         listeners.forEach {
+            it.prepareSpec(kclass)
+         }
+         log("'prepareSpec' callbacks complete")
+      }
 
    /**
     * Notifies the user listeners that a [Spec] has finished completed.
@@ -160,10 +162,10 @@ class SpecExecutor(private val listener: TestEngineListener) {
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ): Try<Map<TestCase, TestResult>> = Try {
-       log("Executing notifyFinalizeSpec")
-       Project.testListeners().forEach {
-           it.finalizeSpec(kclass, results)
-       }
-       results
+      log("Notifying finalizeSpec")
+      Project.testListeners().forEach {
+         it.finalizeSpec(kclass, results)
+      }
+      results
    }
 }
