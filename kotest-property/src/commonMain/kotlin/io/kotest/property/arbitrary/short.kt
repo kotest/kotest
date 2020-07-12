@@ -18,7 +18,8 @@ fun Arb.Companion.ushort() = arb(UShortShrinker, listOf(0.toUShort(), UShort.MIN
    it.random.nextInt().toUInt().shr(UInt.SIZE_BITS - UShort.SIZE_BITS).toUShort()
 }
 
-val ShortShrinker = IntShrinker.bimap({ it.toInt() }, { it.toShort() })
+val ShortShrinker = IntShrinker(Short.MIN_VALUE..Short.MAX_VALUE).bimap({ it.toInt() }, { it.toShort() })
 
 @OptIn(ExperimentalUnsignedTypes::class)
-val UShortShrinker = IntShrinker.bimap({ it.toInt() }, { it.toUShort() })
+val UShortShrinker =
+   IntShrinker(UShort.MIN_VALUE.toShort()..UShort.MAX_VALUE.toShort()).bimap({ it.toInt() }, { it.toUShort() })
