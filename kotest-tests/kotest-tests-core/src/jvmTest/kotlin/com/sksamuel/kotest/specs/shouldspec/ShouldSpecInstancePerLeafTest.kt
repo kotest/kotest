@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 object Counters2 {
    var specs = mutableSetOf<Int>()
    var executed = mutableListOf<String>()
+   var threads = mutableSetOf<Long>()
 }
 
 class ShouldSpecInstancePerLeafTest : ShouldSpec() {
@@ -24,6 +25,7 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
 
       afterProject {
          Counters2.specs.size shouldBe 15
+         Counters2.threads.size shouldBe 1
          withClue("riker") {
             Counters2.executed.count { it == "riker" } shouldBe 3
          }
@@ -61,10 +63,13 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
 
       context("picard") {
          Counters2.executed.add(this.testContext.testCase.description.name.name)
+         Counters2.threads.add(Thread.currentThread().id)
          context("riker") {
             Counters2.executed.add(this.testContext.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
             should("data") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
                delay(1000)
             }
             xshould("geordi") {
@@ -72,20 +77,26 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
             }
             should("lwaxana") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
             }
          }
          context("mott") {
             Counters2.executed.add(this.testContext.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
             should("ro") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
             }
             context("obrien") {
                Counters2.executed.add(this.testContext.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
                should("barclay") {
                   Counters2.executed.add(this.testCase.description.name.name)
+                  Counters2.threads.add(Thread.currentThread().id)
                }
                should("gowron") {
                   Counters2.executed.add(this.testCase.description.name.name)
+                  Counters2.threads.add(Thread.currentThread().id)
                }
             }
             should("pulaski") {
@@ -94,37 +105,47 @@ class ShouldSpecInstancePerLeafTest : ShouldSpec() {
          }
          context("crusher") {
             Counters2.executed.add(this.testContext.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
             should("troi") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
             }
             should("yar") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
             }
             xshould("alexander") {
                error("foo")
             }
             should("hugh") {
                Counters2.executed.add(this.testCase.description.name.name)
+               Counters2.threads.add(Thread.currentThread().id)
             }
          }
       }
       context("q") {
          Counters2.executed.add(this.testContext.testCase.description.name.name)
+         Counters2.threads.add(Thread.currentThread().id)
          should("wesley") {
             Counters2.executed.add(this.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
          }
          should("worf") {
             Counters2.executed.add(this.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
          }
          should("lore") {
             Counters2.executed.add(this.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
             delay(1000)
          }
       }
       context("kehler") {
          Counters2.executed.add(this.testContext.testCase.description.name.name)
+         Counters2.threads.add(Thread.currentThread().id)
          should("keiko") {
             Counters2.executed.add(this.testCase.description.name.name)
+            Counters2.threads.add(Thread.currentThread().id)
          }
       }
    }

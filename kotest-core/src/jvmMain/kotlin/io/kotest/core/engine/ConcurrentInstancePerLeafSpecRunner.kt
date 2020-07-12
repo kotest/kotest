@@ -16,8 +16,10 @@ import kotlin.time.ExperimentalTime
  * A [SpecRunner] that executes each leaf [TestCase] in a seperate instance of the
  * containing [Spec] class, and each test inside it's own coroutine.
  *
- * Each coroutine is dispatched using a single threaded dispatcher. The user can specify the number
+ * Each root test is launched using a single threaded dispatcher. The user can specify the number
  * of dispatchers to use (round robin between root tests) by setting the threads value in a spec.
+ *
+ * All nested tests use the same dispatcher as their root test.
  */
 class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
