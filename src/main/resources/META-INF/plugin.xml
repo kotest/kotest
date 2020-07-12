@@ -15,7 +15,6 @@
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
-   <depends>JUnit</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"

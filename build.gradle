@@ -1,17 +1,17 @@
 buildscript {
-    ext.kotlin_version = '1.3.72'
-    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+   ext.kotlin_version = '1.3.72'
+   ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+   repositories {
+      mavenCentral()
+   }
+   dependencies {
+      classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+   }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
-    id "org.jetbrains.intellij" version "0.4.21"
+   id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
+   id "org.jetbrains.intellij" version "0.4.21"
 }
 
 apply plugin: 'idea'
@@ -20,49 +20,50 @@ apply plugin: 'java'
 apply plugin: 'org.jetbrains.intellij'
 
 repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
+   mavenCentral()
+   mavenLocal()
+   maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots"
+   }
 }
 
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'javax.xml.bind:jaxb-api:2.2.12'
-    compile 'javax.activation:activation:1.1.1'
-    testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.1.0.RC2'
-    testImplementation 'io.kotest:kotest-assertions-core-jvm:4.1.0.RC2'
+   compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+   compile 'javax.xml.bind:jaxb-api:2.2.12'
+   compile 'javax.activation:activation:1.1.1'
+   testImplementation 'io.kotest:kotest-runner-junit5-jvm:4.1.0.RC2'
+   testImplementation 'io.kotest:kotest-assertions-core-jvm:4.1.0.RC2'
 }
 
 intellij {
-    sandboxDirectory = project.property("sandbox")
-    version = 'IC-2019.1'
-    pluginName = "kotest-plugin-intellij"
-    plugins = ["org.jetbrains.kotlin:$kotlin_version-release-IJ2019.1-1", "junit"]
-    downloadSources = true
-    updateSinceUntilBuild = false
+   sandboxDirectory = project.property("sandbox")
+   version = 'IC-2019.3'
+   pluginName = "kotest-plugin-intellij"
+   plugins = ["org.jetbrains.kotlin:$kotlin_version-release-IJ2019.3-5", "java"]
+   downloadSources = true
+   type = "IC"
+   updateSinceUntilBuild = false
 }
 
 sourceSets {
-    main {
-        java {
-            srcDir 'src/main/kotlin`'
-        }
-    }
+   main {
+      java {
+         srcDir 'src/main/kotlin`'
+      }
+   }
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+   kotlinOptions.jvmTarget = "1.8"
 }
 
 publishPlugin {
-    token jetbrainsToken
+   token jetbrainsToken
 }
