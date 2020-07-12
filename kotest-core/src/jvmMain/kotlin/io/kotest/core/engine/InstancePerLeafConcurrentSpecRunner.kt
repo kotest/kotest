@@ -19,10 +19,10 @@ import kotlin.time.ExperimentalTime
  * many threads will be used by the backing dispatcher. Thus, you can specify concurrency with a single
  * threaded pool, or multiple threads, depending on the environment and user requirements.
  */
-class InstancePerLeafConcurrentSpecRunner(testEngineListener: TestEngineListener, threads: Int) :
-   SpecRunner(testEngineListener) {
-
-   private val dispatcher = Executors.newFixedThreadPool(threads).asCoroutineDispatcher()
+class InstancePerLeafConcurrentSpecRunner(
+   testEngineListener: TestEngineListener,
+   private val threads: Int
+) : SpecRunner(testEngineListener) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
 
@@ -31,10 +31,19 @@ class InstancePerLeafConcurrentSpecRunner(testEngineListener: TestEngineListener
 
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> {
       return Try {
+
+         /**
+          * Each root test will run in a single threaded dispatcher, and we make [threads] number of dispatchers.
+          * This allows thread affinity in a test, so that the same backing thread is used for all the coroutines of
+          * a single test path. Otherwise, things like Java's re-entrant lock will fail, as they use the current
+          * thread as part of the acquire/release strategy.
+          */
+         val dispatchers = List(threads) { Executors.newSingleThreadExecutor().asCoroutineDispatcher() }
+
          coroutineScope {
-            spec.rootTests().forEach { rootTest ->
+            spec.rootTests().withIndex().forEach { (index, rootTest) ->
                log("InstancePerLeafConcurrentSpecRunner: Launching coroutine for root test [${rootTest.testCase.description.fullName()}]")
-               launch(dispatcher) {
+               launch(dispatchers[index % threads]) {
                   executeInCleanSpec(rootTest.testCase).getOrThrow()
                   testCaseListener.rootFinished(rootTest.testCase)
                }
@@ -76,13 +85,14 @@ class InstancePerLeafConcurrentSpecRunner(testEngineListener: TestEngineListener
          val context = object : TestContext() {
 
             // the first discovered test should be executed using the same spec
-            val open = AtomicBoolean(true)
+            val first = AtomicBoolean(true)
 
             // check for duplicate names in the same scope
-            val namesInScope = mutableSetOf<TestName>()
+            val namesInScope = ConcurrentHashMap.newKeySet<TestName>()
 
             override val testCase: TestCase = test
             override val coroutineContext: CoroutineContext = this@coroutineScope.coroutineContext
+
             override suspend fun registerTestCase(nested: NestedTest) {
 
                if (!namesInScope.add(nested.name))
@@ -96,7 +106,7 @@ class InstancePerLeafConcurrentSpecRunner(testEngineListener: TestEngineListener
                   // if we have no target then we are speculatively executing the scope, so the first nested test
                   // can go on the same spec, any others need to go onto seperate specs.
                   targets.isEmpty() -> {
-                     if (open.compareAndSet(true, false)) {
+                     if (first.compareAndSet(true, false)) {
                         launch { run(t, emptyList()) }
                      } else {
                         launch { executeInCleanSpec(t) }
