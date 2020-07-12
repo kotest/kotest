@@ -2,47 +2,40 @@ package io.kotest.core.engine
 
 import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
-import io.kotest.core.spec.resolvedThreads
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.Comparator
 import kotlin.coroutines.CoroutineContext
 
 class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
-   private val results = ConcurrentHashMap<TestCase, TestResult>()
+   private val results = mutableMapOf<TestCase, TestResult>()
 
    // keeps track of tests we've already discovered
-   private val seen = ConcurrentHashMap.newKeySet<Description>()
+   private val seen = mutableSetOf<Description>()
 
    // keeps track of tests we've already notified the listener about
-   private val ignored = ConcurrentLinkedQueue<Description>()
-   private val started = ConcurrentLinkedQueue<Description>()
+   private val ignored = mutableListOf<Description>()
+   private val started = mutableListOf<Description>()
 
    // we keep a count to break ties (first discovered)
    data class Enqueued(val testCase: TestCase, val count: Int)
 
    private val counter = AtomicInteger(0)
 
-   private val comparator = Comparator<Enqueued> { o1, o2 ->
+   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
+   private val queue = PriorityQueue<Enqueued>(Comparator<Enqueued> { o1, o2 ->
       val o1s = o1.testCase.description.names().size
       val o2s = o2.testCase.description.names().size
       if (o1s == o2s) o1.count.compareTo(o2.count) else o2s.compareTo(o1s)
-   }
-
-   // the queue contains tests discovered to run next. We always run the tests with the "furthest" path first.
-   private val queues: ThreadLocal<PriorityQueue<Enqueued>> = ThreadLocal.withInitial {
-      PriorityQueue<Enqueued>(comparator)
-   }
+   })
 
    private fun enqueue(testCase: TestCase) {
-      queues.get().add(
+      queue.add(
          Enqueued(
             testCase,
             counter.incrementAndGet()
@@ -57,14 +50,12 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
       Try {
-         val testCases = spec.rootTests().map { it.testCase }
-
-         runParallel(spec.resolvedThreads(), testCases) {
-            executeInCleanSpec(it).getOrThrow()
-            while (queues.get().isNotEmpty()) {
-               val (testCase, _) = queues.get().remove()
-               executeInCleanSpec(testCase).getOrThrow()
-            }
+         spec.rootTests().forEach { root ->
+            enqueue(root.testCase)
+         }
+         while (queue.isNotEmpty()) {
+            val (testCase, _) = queue.remove()
+            executeInCleanSpec(testCase).getOrThrow()
          }
          results
       }
@@ -137,7 +128,7 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
             }
 
             override fun testFinished(testCase: TestCase, result: TestResult) {
-               if (!queues.get().any { it.testCase.description.isDescendentOf(testCase.description) }) {
+               if (!queue.any { it.testCase.description.isDescendentOf(testCase.description) }) {
                   listener.testFinished(testCase, result)
                }
             }
