@@ -13,11 +13,11 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.ExperimentalTime
 
 /**
- * A [SpecRunner] that executes each leaf [TestCase] in a seperate instance of the containing [Spec].
+ * A [SpecRunner] that executes each leaf [TestCase] in a seperate instance of the
+ * containing [Spec] class, and each test inside it's own coroutine.
  *
- * Each test will execute in it's own coroutine, therefore executing concurrently. The user must specify how
- * many threads will be used by the backing dispatcher. Thus, you can specify concurrency with a single
- * threaded pool, or multiple threads, depending on the environment and user requirements.
+ * Each coroutine is dispatched using a single threaded dispatcher. The user can specify the number
+ * of dispatchers to use (round robin between root tests) by setting the threads value in a spec.
  */
 class ConcurrentInstancePerLeafSpecRunner(
    testEngineListener: TestEngineListener,
@@ -49,6 +49,7 @@ class ConcurrentInstancePerLeafSpecRunner(
                }
             }
          }
+
          log("InstancePerLeafConcurrentSpecRunner: Root scope has completed, returning ${results.size} test results")
          results
       }

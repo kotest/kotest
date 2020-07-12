@@ -12,7 +12,7 @@ object Counters {
    var executed = mutableListOf<String>()
 }
 
-class ShouldSpecInstancePerLeafConcurrentTest : ShouldSpec() {
+class ShouldSpecConcurrentInstancePerLeafTest : ShouldSpec() {
 
    override fun isolationMode(): IsolationMode? = IsolationMode.InstancePerLeaf
 

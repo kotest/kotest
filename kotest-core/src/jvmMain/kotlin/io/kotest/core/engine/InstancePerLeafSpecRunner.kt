@@ -19,8 +19,8 @@ class InstancePerLeafSpecRunner(listener: TestEngineListener) : SpecRunner(liste
    private val seen = mutableSetOf<Description>()
 
    // keeps track of tests we've already notified the listener about
-   private val ignored = mutableListOf<Description>()
-   private val started = mutableListOf<Description>()
+   private val ignored = mutableSetOf<Description>()
+   private val started = mutableSetOf<Description>()
 
    // we keep a count to break ties (first discovered)
    data class Enqueued(val testCase: TestCase, val count: Int)
