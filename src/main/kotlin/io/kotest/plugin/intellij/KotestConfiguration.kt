@@ -19,7 +19,6 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import com.intellij.refactoring.listeners.RefactoringElementListener
-import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
@@ -87,9 +86,8 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
     * @return the RunProfileState describing the process which is about to be started, or null if it's impossible to start the process.
     */
    override fun getState(executor: Executor, environment: ExecutionEnvironment): KotestRunnableState? {
-      return when {
-         configurationModule.module == null -> null
-         !DependencyChecker.hasRequiredDependencies(configurationModule.module!!, true) -> null
+      return when (configurationModule.module) {
+         null -> null
          else -> KotestRunnableState(environment, this)
       }
    }

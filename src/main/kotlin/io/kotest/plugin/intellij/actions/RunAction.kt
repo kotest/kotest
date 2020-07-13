@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 import io.kotest.plugin.intellij.KotestConfiguration
-import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.toolwindow.ModuleNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor
@@ -51,8 +50,6 @@ fun runNode(tree: JTree, project: Project, executorId: String, executeBranch: Bo
 }
 
 fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
-   if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
-
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
@@ -71,8 +68,6 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
 }
 
 fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
-   if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
-
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
@@ -91,8 +86,6 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
 }
 
 fun runModule(module: Module, executorId: String) {
-   if (!DependencyChecker.hasRequiredDependencies(module, true)) return
-
    val name = "Run all in ${module.name}"
 
    val manager = RunManager.getInstance(module.project)
