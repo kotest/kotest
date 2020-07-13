@@ -1,0 +1,29 @@
+package io.kotest.plugin.intellij
+
+import com.intellij.execution.Executor
+import com.intellij.execution.actions.JavaRerunFailedTestsAction
+import com.intellij.execution.configurations.RunProfileState
+import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.testframework.SourceScope
+import com.intellij.execution.ui.ConsoleView
+import com.intellij.openapi.module.Module
+
+class RerunFailedTestsAction(consoleView: ConsoleView,
+                             props: KotestSMTConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
+
+   override fun getRunProfile(env: ExecutionEnvironment): MyRunProfile? {
+      val configuration = myConsoleProperties.configuration as KotestConfiguration
+      val run = KotestRunnableState(env, configuration)
+      return object : MyRunProfile(configuration) {
+
+         override fun getModules(): Array<Module> {
+            val scope = SourceScope.modules(configuration.modules)
+            return if (scope == null) Module.EMPTY_ARRAY else scope.modulesToCompile
+         }
+
+         override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
+            return run
+         }
+      }
+   }
+}

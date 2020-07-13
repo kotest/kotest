@@ -5,32 +5,47 @@ import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
 import com.intellij.execution.application.BaseJavaApplicationCommandLineState
 import com.intellij.execution.configurations.JavaParameters
+import com.intellij.execution.impl.ConsoleBuffer
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
+import com.intellij.execution.testframework.JavaAwareTestConsoleProperties
 import com.intellij.execution.testframework.TestConsoleProperties
+import com.intellij.execution.testframework.actions.AbstractRerunFailedTestsAction
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
-import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.execution.testframework.sm.runner.SMTestLocator
+import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.util.JavaParametersUtil
+import com.intellij.psi.search.GlobalSearchScope
 
 class KotestCommandLineState(environment: ExecutionEnvironment, configuration: KotestConfiguration) :
-    BaseJavaApplicationCommandLineState<KotestConfiguration>(environment, configuration) {
+   BaseJavaApplicationCommandLineState<KotestConfiguration>(environment, configuration) {
 
    override fun createJavaParameters(): JavaParameters {
 
       val params = JavaParameters()
       params.isUseClasspathJar = true
 
-      val module = configuration.configurationModule
-      val jreHome = if (myConfiguration.isAlternativeJrePathEnabled) {
-         myConfiguration.alternativeJrePath
-      } else {
-         null
+      val configurationModule = configuration.configurationModule
+
+
+      setupJavaParameters(params)
+
+//      for (ext in RunConfigurationExtension.EP_NAME.extensionList) {
+//         // ext.updateJavaParameters(configuration, javaParameters, runnerSettings, environment.executor)
+//      }
+
+      if (ConsoleBuffer.useCycleBuffer()) {
+         javaParameters.vmParametersList.addProperty("idea.test.cyclic.buffer.size", ConsoleBuffer.getCycleBufferSize().toString())
       }
 
       val pathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS
-      JavaParametersUtil.configureModule(module, params, pathType, jreHome)
-      setupJavaParameters(params)
+      val jreHome = if (myConfiguration.isAlternativeJrePathEnabled) myConfiguration.alternativeJrePath else null
+      if (configurationModule != null) {
+         JavaParametersUtil.configureModule(configurationModule, javaParameters, pathType, jreHome)
+      } else {
+         JavaParametersUtil.configureProject(configuration.project, javaParameters, pathType, jreHome)
+      }
+
 
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
@@ -77,11 +92,19 @@ class KotestCommandLineState(environment: ExecutionEnvironment, configuration: K
 }
 
 class KotestSMTConsoleProperties(config: KotestConfiguration,
-                                 executor: Executor) : SMTRunnerConsoleProperties(config, "kotest", executor) {
+                                 executor: Executor) : JavaAwareTestConsoleProperties<KotestConfiguration>("Kotest", config, executor) {
    init {
       isPrintTestingStartedTime = true
    }
 
-   override fun getTestLocator(): SMTestLocator = KotestSMTestLocator
+   override fun getTestLocator(): SMTestLocator = KotestTestLocator
+
+   override fun initScope(): GlobalSearchScope {
+      return GlobalSearchScope.allScope(project)
+   }
+
+   override fun createRerunFailedTestsAction(consoleView: ConsoleView): AbstractRerunFailedTestsAction? {
+      return RerunFailedTestsAction(consoleView, this)
+   }
 }
 

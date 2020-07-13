@@ -1,35 +1,32 @@
 package io.kotest.plugin.intellij
 
-import com.intellij.execution.CommonJavaRunConfigurationParameters
 import com.intellij.execution.Executor
+import com.intellij.execution.JavaTestConfigurationBase
+import com.intellij.execution.Location
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.JavaRunConfigurationModule
-import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.execution.configurations.RunConfigurationModule
-import com.intellij.execution.configurations.RunConfigurationOptions
-import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.execution.testframework.sm.runner.SMRunnerConsolePropertiesProvider
+import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.execution.testframework.sm.runner.SMTRunnerConsoleProperties
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMExternalizerUtil
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiMethod
+import com.intellij.refactoring.listeners.RefactoringElementListener
 import io.kotest.plugin.intellij.notifications.DependencyChecker
 import io.kotest.plugin.intellij.psi.buildSuggestedName
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
-class KotestConfiguration(name: String, configurationFactory: ConfigurationFactory, project: Project) :
-   ModuleBasedConfiguration<RunConfigurationModule, RunConfigurationOptions>(
-      name,
-      RunConfigurationModule(project),
-      configurationFactory
-   ), CommonJavaRunConfigurationParameters, SMRunnerConsolePropertiesProvider {
+class KotestConfiguration(name: String, factory: ConfigurationFactory, project: Project) :
+   JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory) {
 
    private var alternativeJrePath: String? = ""
    private var alternativeJrePathEnabled = false
@@ -49,12 +46,23 @@ class KotestConfiguration(name: String, configurationFactory: ConfigurationFacto
    override fun isPassParentEnvs(): Boolean = passParentEnvs
    override fun isAlternativeJrePathEnabled() = alternativeJrePathEnabled
    override fun getEnvs(): MutableMap<String, String> = envs
+
+   // I think this is used when something is renamed so the config can update itself // todo
+   override fun getRefactoringElementListener(element: PsiElement?): RefactoringElementListener? = null
+
    override fun getPackage(): String? = null
    override fun getRunClass(): String? = null
    override fun getVMParameters(): String? = vmParameters
    override fun getAlternativeJrePath() = alternativeJrePath
    override fun getProgramParameters(): String? = programParameters
    override fun getWorkingDirectory(): String? = workingDirectory
+
+   override fun getTestSearchScope(): TestSearchScope = TestSearchScope.SINGLE_MODULE
+
+   override fun beClassConfiguration(aClass: PsiClass) {
+   }
+
+   override fun getTestType(): String = "spec"
 
    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
       SettingsEditorPanel(project)
@@ -78,20 +86,29 @@ class KotestConfiguration(name: String, configurationFactory: ConfigurationFacto
     *
     * @return the RunProfileState describing the process which is about to be started, or null if it's impossible to start the process.
     */
-   override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
+   override fun getState(executor: Executor, environment: ExecutionEnvironment): KotestRunnableState? {
       return when {
          configurationModule.module == null -> null
          !DependencyChecker.hasRequiredDependencies(configurationModule.module!!, true) -> null
-         else -> KotestCommandLineState(environment, this)
+         else -> KotestRunnableState(environment, this)
       }
+   }
+
+   override fun setSearchScope(searchScope: TestSearchScope?) {
    }
 
    override fun setAlternativeJrePath(path: String?) {
       alternativeJrePath = path
    }
 
+   override fun bePatternConfiguration(classes: MutableList<PsiClass>?, method: PsiMethod?) {
+   }
+
    override fun setVMParameters(value: String?) {
       vmParameters = value
+   }
+
+   override fun beMethodConfiguration(location: Location<PsiMethod>?) {
    }
 
    override fun setAlternativeJrePathEnabled(enabled: Boolean) {
@@ -125,6 +142,8 @@ class KotestConfiguration(name: String, configurationFactory: ConfigurationFacto
    override fun setPassParentEnvs(passParentEnvs: Boolean) {
       this.passParentEnvs = passParentEnvs
    }
+
+   override fun isConfiguredByElement(element: PsiElement?): Boolean = false
 
    override fun setProgramParameters(programParameteres: String?) {
       this.programParameters = programParameteres

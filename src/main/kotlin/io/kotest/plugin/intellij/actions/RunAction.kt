@@ -54,7 +54,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
    if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
 
    val manager = RunManager.getInstance(project)
-   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
    val name = node.test.test.name
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
@@ -74,7 +74,7 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
    if (!DependencyChecker.hasRequiredDependencies(node.module, true)) return
 
    val manager = RunManager.getInstance(project)
-   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
    val name = node.fqn.shortName().asString()
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
@@ -96,7 +96,7 @@ fun runModule(module: Module, executorId: String) {
    val name = "Run all in ${module.name}"
 
    val manager = RunManager.getInstance(module.project)
-   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)
+   val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
    val run = config.configuration as KotestConfiguration

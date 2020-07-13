@@ -16,7 +16,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
  * A parser for location URLs reported by test runners.
  * Kotest reports its location hints as kotest://my.package.classname:line
  */
-object KotestSMTestLocator : SMTestLocator {
+object KotestTestLocator : SMTestLocator {
 
    private const val Protocol = "kotest"
 
