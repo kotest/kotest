@@ -6,7 +6,6 @@ import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
-import com.intellij.util.PathUtil
 import java.io.File
 
 class KotestRunnableState(env: ExecutionEnvironment,
@@ -20,15 +19,30 @@ class KotestRunnableState(env: ExecutionEnvironment,
    override fun passForkMode(forkMode: String?, tempFile: File?, parameters: JavaParameters?) {}
 
    override fun createJavaParameters(): JavaParameters {
-      val javaParameters = super.createJavaParameters()
+      val params = super.createJavaParameters()
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
-      javaParameters.mainClass = "io.kotest.runner.console.LauncherKt"
-      return javaParameters
+      params.mainClass = "io.kotest.runner.console.LauncherKt"
+
+      val packageName = configuration.getPackageName()
+      if (packageName != null && packageName.isNotBlank())
+         params.programParametersList.add("--package", packageName)
+
+      // spec can be omitted if you want to run all tests in a module
+      val specName = configuration.getSpecName()
+      if (specName != null && specName.isNotBlank())
+         params.programParametersList.add("--spec", specName)
+
+      // test can be omitted if you want to run the entire spec or package
+      val testName = configuration.getTestPath()
+      if (testName != null && testName.isNotBlank())
+         params.programParametersList.add("--testpath", testName)
+
+      return params
    }
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
-      javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("io.kotest.runner.console.TeamCityConsoleWriter")))
+   //   javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("io.kotest.runner.console.TeamCityConsoleWriter")))
    }
 
    override fun getScope(): TestSearchScope = TestSearchScope.WHOLE_PROJECT
