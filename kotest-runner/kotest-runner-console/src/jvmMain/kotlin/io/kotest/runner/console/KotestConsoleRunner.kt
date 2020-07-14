@@ -3,7 +3,6 @@
 package io.kotest.runner.console
 
 import io.kotest.core.Tags
-import io.kotest.core.config.Project
 import io.kotest.core.engine.KotestEngine
 import io.kotest.core.engine.TestEngineListener
 import io.kotest.core.engine.discovery.Discovery
@@ -11,6 +10,9 @@ import io.kotest.core.engine.discovery.DiscoveryRequest
 import io.kotest.core.engine.discovery.DiscoverySelector
 import io.kotest.core.spec.Spec
 
+/**
+ * Creates a kotest engine and launches the tests.
+ */
 class KotestConsoleRunner(private val listener: TestEngineListener) {
 
    suspend fun execute(packageName: String?, specFQN: String?, testPath: String?, tags: Tags?) {
@@ -30,7 +32,6 @@ class KotestConsoleRunner(private val listener: TestEngineListener) {
       val runner = KotestEngine(
          specs,
          listOfNotNull(filter),
-         Project.parallelism(),
          tags,
          listener
       )

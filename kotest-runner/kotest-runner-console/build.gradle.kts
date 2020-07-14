@@ -37,14 +37,10 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             api(kotlin("reflect"))
-            implementation(project(Projects.AssertionsShared))
-            implementation(project(Projects.Common))
-            api(project(Projects.Core))
-            api(project(Projects.Extensions))
+            compileOnly(project(Projects.Core))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
-            api(Libs.Classgraph.classgraph)
             api(Libs.Coroutines.core)
          }
       }

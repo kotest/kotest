@@ -41,7 +41,7 @@ class BeforeAllTest : FunSpec({
          }
       })
 
-      val engine = KotestEngine(listOf(DummySpec3::class), emptyList(), 1, null, listener, listeners)
+      val engine = KotestEngine(listOf(DummySpec3::class), emptyList(), null, listener, listeners)
       engine.execute()
       assertSoftly {
          errors shouldHaveSize 1
@@ -73,7 +73,7 @@ class BeforeAllTest : FunSpec({
          }
       )
 
-      val engine = KotestEngine(listOf(DummySpec3::class), emptyList(), 1, null, listener, listeners)
+      val engine = KotestEngine(listOf(DummySpec3::class), emptyList(), null, listener, listeners)
       engine.execute()
       assertSoftly {
          errors shouldHaveSize 2

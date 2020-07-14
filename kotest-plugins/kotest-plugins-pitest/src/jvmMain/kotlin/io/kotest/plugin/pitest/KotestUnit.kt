@@ -42,7 +42,6 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
       val engine = KotestEngine(
          listOf(klass),
          emptyList(),
-         1,
          null,
          listener
       )

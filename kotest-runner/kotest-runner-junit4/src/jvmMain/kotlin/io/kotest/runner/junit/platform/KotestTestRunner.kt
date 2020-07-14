@@ -20,7 +20,6 @@ class KotestTestRunner(
         val runner = KotestEngine(
             listOf(klass.kotlin),
             emptyList(),
-            Project.parallelism(),
             null,
             listener
         )
