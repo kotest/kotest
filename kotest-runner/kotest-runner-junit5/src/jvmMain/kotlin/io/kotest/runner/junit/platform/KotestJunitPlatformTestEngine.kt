@@ -1,7 +1,6 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.mpp.log
-import io.kotest.core.config.Project
 import io.kotest.core.spec.Spec
 import io.kotest.core.engine.IsolationTestEngineListener
 import io.kotest.core.engine.KotestEngine
@@ -45,7 +44,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val runner = KotestEngine(
          root.classes,
          emptyList(),
-         Project.parallelism(),
          null,
          listener
       )

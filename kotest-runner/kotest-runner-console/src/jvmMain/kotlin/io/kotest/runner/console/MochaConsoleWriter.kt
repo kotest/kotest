@@ -3,7 +3,11 @@ package io.kotest.runner.console
 import com.github.ajalt.mordant.TermColors
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
-import io.kotest.core.test.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestStatus
+import io.kotest.core.test.TestType
 import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
