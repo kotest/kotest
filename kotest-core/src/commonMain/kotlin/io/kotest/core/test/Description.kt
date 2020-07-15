@@ -88,12 +88,24 @@ data class Description(val parents: List<TestName>, val name: TestName) {
     */
    fun id(): String = (parents.map { it.displayName() } + listOf(name.displayName())).joinToString("/")
 
+   /**
+    * Returns each component of this description as a [TestName].
+    * Eg,
+    *
+    * context("a context") {
+    *   context("and another") {
+    *     test("a test") { }
+    *   }
+    * }
+    *
+    * Would return a list of four components - the spec, a context, and another, a test.
+    */
    fun names(): List<TestName> = parents + name
 
    fun depth() = names().size
 
    /**
-    * Returns true if this description is the immediate parent of the given dargument.
+    * Returns true if this description is the immediate parent of the given argument.
     * Ignores test prefixes when comparing.
     */
    fun isParentOf(description: Description): Boolean {

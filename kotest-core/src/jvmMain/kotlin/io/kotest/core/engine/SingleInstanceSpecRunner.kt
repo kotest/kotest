@@ -2,6 +2,7 @@ package io.kotest.core.engine
 
 import io.kotest.core.runtime.*
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.resolvedThreads
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import io.kotest.mpp.log
@@ -65,7 +66,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
 
       suspend fun interceptAndRun(context: CoroutineContext) = Try {
           val rootTests = spec.rootTests().map { it.testCase }
-          runParallel(spec.threads, rootTests) {
+          runParallel(spec.resolvedThreads(), rootTests) {
               log("Executing test $it")
               runTest(it, context)
           }

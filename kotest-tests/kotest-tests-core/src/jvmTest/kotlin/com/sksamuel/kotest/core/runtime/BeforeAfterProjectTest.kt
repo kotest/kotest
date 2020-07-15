@@ -45,7 +45,7 @@ class BeforeAfterProjectTest : FunSpec({
          }
       )
 
-      val engine = KotestEngine(listOf(DummySpec::class), emptyList(), 1, null, listener, listeners)
+      val engine = KotestEngine(listOf(DummySpec::class), emptyList(), null, listener, listeners)
       engine.execute()
       assertSoftly {
          errors shouldHaveSize 2

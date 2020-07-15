@@ -17,12 +17,20 @@ class TeamCityMessagesTest : ShouldSpec({
       msg shouldBe """testcity[testFailed name='escape brackets' message='expected:<|[foo|]> but was:<|[bar|]>' duration='67']"""
    }
 
-   should("escape quotes") {
+   should("escape quotes in messages") {
       val msg = TeamCityMessages.testFailed("testcity", "escape quotes")
          .message("foo'bar")
          .duration(67.milliseconds)
          .toString()
       msg shouldBe """testcity[testFailed name='escape quotes' message='foo|'bar' duration='67']"""
+   }
+
+   should("escape quotes in names") {
+      val msg = TeamCityMessages.testFailed("testcity", "isn't busy")
+         .message("foo'bar")
+         .duration(67.milliseconds)
+         .toString()
+      msg shouldBe """testcity[testFailed name='isn|'t busy' message='foo|'bar' duration='67']"""
    }
 
    should("escape new lines") {

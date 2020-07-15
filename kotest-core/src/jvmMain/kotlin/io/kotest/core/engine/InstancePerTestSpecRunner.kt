@@ -7,6 +7,7 @@ import io.kotest.core.runtime.TestCaseExecutor
 import io.kotest.core.runtime.invokeAfterSpec
 import io.kotest.core.runtime.invokeBeforeSpec
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.resolvedThreads
 import io.kotest.core.test.*
 import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
@@ -64,7 +65,7 @@ class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(liste
     */
    override suspend fun execute(spec: Spec): Try<Map<TestCase, TestResult>> =
        Try {
-           runParallel(spec.threads, spec.rootTests().map { it.testCase }) {
+           runParallel(spec.resolvedThreads(), spec.rootTests().map { it.testCase }) {
                executeInCleanSpec(it)
                    .getOrThrow()
            }

@@ -2,20 +2,20 @@ package io.kotest.properties.shrinking
 
 import kotlin.math.abs
 
-object IntShrinker : Shrinker<Int> {
+class IntShrinker(private val range: IntRange) : Shrinker<Int> {
    override fun shrink(failure: Int): List<Int> =
       when (failure) {
          0 -> emptyList()
-         1, -1 -> listOf(0)
+         1, -1 -> listOf(0).filter { it in range }
          else -> {
             val a = listOf(0, 1, -1, abs(failure), failure / 3, failure / 2, failure * 2 / 3)
             val b = (1..5).map { failure - it }.reversed().filter { it > 0 }
-            (a + b).distinct().filterNot { it == failure }
+            (a + b).distinct().filterNot { it == failure }.filter { it in range }
          }
       }
 }
 
-object LongShrinker : Shrinker<Long> {
+class LongShrinker(private val range: IntRange) : Shrinker<Long> {
    override fun shrink(failure: Long): List<Long> =
       when (failure) {
          0L -> emptyList()

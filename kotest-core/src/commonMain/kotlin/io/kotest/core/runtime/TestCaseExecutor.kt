@@ -21,12 +21,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-interface TestCaseExecutionListener {
-   fun testStarted(testCase: TestCase) {}
-   fun testIgnored(testCase: TestCase) {}
-   fun testFinished(testCase: TestCase, result: TestResult) {}
-}
-
 @OptIn(ExperimentalTime::class)
 data class TimeoutException constructor(val duration: Duration) :
    Exception("Test did not completed within ${duration.toLongMilliseconds()}ms")
