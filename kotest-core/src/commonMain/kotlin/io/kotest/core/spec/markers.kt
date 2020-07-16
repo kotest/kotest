@@ -1,10 +1,5 @@
 package io.kotest.core.spec
 
-// used by intellij to detect junit 5 tests
-expect annotation class Junit5EnabledIfSystemProperty constructor(val named: String, val matches: String)
-
-expect annotation class Junit5TestFactory()
-
 /**
  * The annotation [JsTest] is intercepted by the kotlin.js framework adapter to generate tests.
  * It is simply an alias to kotlin.test.Test on the JS target.
