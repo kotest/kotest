@@ -26,6 +26,9 @@ class DescribeScope(
    override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
+   @Deprecated("use nested describe", ReplaceWith("describe(name, test)"))
+   suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) = describe(name, test)
+
    suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = TestName("Describe: ", name)
       addContainerTest(testName, xdisabled = false) {
