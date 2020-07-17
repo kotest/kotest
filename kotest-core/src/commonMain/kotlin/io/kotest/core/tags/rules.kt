@@ -47,3 +47,10 @@ sealed class Expression {
    data class Not(val expr: Expression) : Expression()
    data class Identifier(val ident: String) : Expression()
 }
+
+fun Expression.asString(): String = when (this) {
+   is Expression.Or -> left.asString() + " | " + right.asString()
+   is Expression.And -> left.asString() + " & " + right.asString()
+   is Expression.Not -> "!" + expr.asString()
+   is Expression.Identifier -> this.ident
+}

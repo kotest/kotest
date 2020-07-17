@@ -7,6 +7,7 @@ import io.kotest.core.spec.*
 import io.kotest.core.spec.style.scopes.DslState
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.isActive
 import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
@@ -30,7 +31,7 @@ class SpecExecutor(private val listener: TestEngineListener) {
       notifySpecStarted(kclass)
          .flatMap { invokePrepareSpecListeners(kclass) }
          .flatMap { createInstance(kclass) }
-         .flatMap { runTests(it) }
+         .flatMap { runTestsIfAtLeastOneActive(it) }
          .flatMap { checkClosedTestCases(it) }
          .flatMap { invokeFinalizeSpecListeners(kclass, it) }
          .fold(
@@ -94,7 +95,19 @@ class SpecExecutor(private val listener: TestEngineListener) {
          .onSuccess { notifySpecInstantiated(it) }
 
    /**
+    * The root tests on this spec are retrieved, and if none are active, then no
+    * execution step takes place. Otherwise if at least one active, the [runTests]
+    * function is invoked.
+    */
+   private suspend fun runTestsIfAtLeastOneActive(spec: Spec): Try<Map<TestCase, TestResult>> {
+      val roots = spec.rootTests()
+      val active = roots.any { it.testCase.isActive() }
+      return if (active) runTests(spec) else emptyMap<TestCase, TestResult>().success()
+   }
+
+   /**
     * Runs the tests in this spec by delegation to a [SpecRunner].
+    *
     * Before the tests are executed we invoke any spec extensions to intercept this spec.
     */
    private suspend fun runTests(spec: Spec): Try<Map<TestCase, TestResult>> {

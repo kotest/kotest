@@ -4,7 +4,6 @@ import io.kotest.core.*
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.*
 import io.kotest.core.listeners.TestListener
-import kotlin.reflect.KClass
 
 /**
  * Contains methods which can be overriden to set config in the same way that KotlinTest 3.x allowed.
@@ -45,6 +44,10 @@ interface SpecConfigurationMethods {
     * Any tags added here will be in applied to all [TestCase]s defined
     * in this [Spec] in addition to any defined on the individual
     * tests themselves.
+    *
+    * Note: The spec instance will still need to be instantiated to retrieve these tags.
+    * If you want to exclude a Spec without an instance being created, use @Tags
+    * on the Spec class.
     */
    fun tags(): Set<Tag> = emptySet()
 

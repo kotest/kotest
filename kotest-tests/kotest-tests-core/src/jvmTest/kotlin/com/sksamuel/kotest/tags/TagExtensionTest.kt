@@ -1,4 +1,4 @@
-package com.sksamuel.kotest
+package com.sksamuel.kotest.tags
 
 import io.kotest.core.Tag
 import io.kotest.core.Tags
@@ -36,7 +36,7 @@ class TagExtensionTest : StringSpec() {
 
       listener(object : TestListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            results.map { it.key.name to it.value.status }.toMap() shouldBe mapOf(
+            results.map { it.key.displayName to it.value.status }.toMap() shouldBe mapOf(
                "should be tagged with tagA and therefore included" to TestStatus.Success,
                "should be untagged and therefore excluded" to TestStatus.Ignored,
                "should be tagged with tagB and therefore excluded" to TestStatus.Ignored

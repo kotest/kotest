@@ -8,8 +8,10 @@ import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop
 
 /**
- * This [TagExtension] includes and excludes tags using the system properties
- * 'kotest.tags.include' and 'kotest.tags.exclude'.
+ * This [TagExtension] includes and excludes tags using the system properties:
+ * 'kotest.tags', 'kotest.tags.include' and 'kotest.tags.exclude'.
+ *
+ * Note: If 'kotest.tags' is used then the other two properties will be ignored.
  *
  * On non-JVM targets this extension will have no effect.
  */
@@ -26,7 +28,8 @@ object SystemPropertyTagExtension : TagExtension {
 
       val includedTags = readTagsProperty("kotest.tags.include")
       val excludedTags = readTagsProperty("kotest.tags.exclude")
+      val expression = sysprop("kotest.tags")
 
-      return Tags(includedTags.toSet(), excludedTags.toSet())
+      return if (expression == null) Tags(includedTags.toSet(), excludedTags.toSet()) else Tags(expression)
    }
 }
