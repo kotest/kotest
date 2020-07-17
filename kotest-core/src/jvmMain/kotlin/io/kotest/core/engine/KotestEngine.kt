@@ -27,6 +27,16 @@ class KotestEngine(
    val listeners: List<Listener> = emptyList()
 ) {
 
+   @Deprecated("for backwards compatibility")
+   constructor(
+      classes: List<KClass<out Spec>>,
+      filters: List<TestCaseFilter>,
+      parallelism: Int,
+      tags: Tags?,
+      listener: TestEngineListener,
+      listeners: List<Listener> = emptyList()
+   ) : this(classes, filters, tags, listener, listeners)
+
    private val specExecutor = SpecExecutor(listener)
 
    init {
