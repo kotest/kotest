@@ -1,5 +1,6 @@
 package io.kotest.core.config
 
+import io.kotest.core.tags.asString
 import io.kotest.mpp.bestName
 import kotlin.time.ExperimentalTime
 
@@ -34,20 +35,7 @@ fun Project.createConfigSummary(): String {
       }
    }
 
-   if (tags().included.isNotEmpty()) {
-      sb.buildOutput("Included Tags")
-      tags().included.map(::mapClassName).forEach {
-         sb.buildOutput(it, indentation = 1)
-      }
-   }
-
-   if (tags().included.isNotEmpty()) {
-      sb.buildOutput("Excluded Tags")
-      tags().excluded.map(::mapClassName).forEach {
-         sb.buildOutput(it, indentation = 1)
-      }
-   }
-
+   tags().expression?.let { sb.buildOutput("Tags", it.asString()) }
    return sb.toString()
 }
 

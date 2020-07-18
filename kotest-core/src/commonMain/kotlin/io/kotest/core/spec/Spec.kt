@@ -1,15 +1,16 @@
 package io.kotest.core.spec
 
+import io.kotest.core.Tag
 import io.kotest.core.Tuple2
 import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.executeSpec
 import io.kotest.core.sourceRef
+import io.kotest.core.tags
 import io.kotest.core.test.*
 import io.kotest.mpp.log
 import kotlin.js.JsName
-import kotlin.reflect.KClass
 
 abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
@@ -56,7 +57,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
 
 
    @Deprecated(
-      "This var was replaced by [isolationMode]. Use it instead. This var will be removed in 4.2.",
+      "This var was replaced by [isolationMode]. Use it instead. This var will be removed in 4.3",
       ReplaceWith("isolationMode")
    )
    var isolation: IsolationMode? = null
@@ -160,6 +161,13 @@ fun Spec.resolvedIsolationMode() =
    this.isolationMode ?: this.isolation ?: this.isolationMode() ?: Project.isolationMode()
 
 fun Spec.resolvedThreads() = this.threads ?: this.threads() ?: 1
+
+/**
+ * Returns all spec level tags associated with this spec instance.
+ */
+fun Spec.resolvedTags(): Set<Tag> {
+   return this::class.tags() + this.tags() + this._tags
+}
 
 /**
  * Orders the collection of [TestCase]s based on the provided [TestCaseOrder].
