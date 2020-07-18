@@ -1,7 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**

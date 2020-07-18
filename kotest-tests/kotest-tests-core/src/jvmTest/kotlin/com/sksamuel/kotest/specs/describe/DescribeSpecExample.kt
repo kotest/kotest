@@ -81,6 +81,9 @@ class DescribeSpecExample : DescribeSpec() {
          it("test name") {
             // test here
          }
+         xit("disabled test with config").config(invocations = 3) {
+            fail("should not be invoked")
+         }
       }
 
       xcontext("disabled top level context") {

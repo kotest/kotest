@@ -29,7 +29,13 @@ interface DescribeSpecScope : RootScope {
 
    private fun test(testName: TestName, test: suspend DescribeScope.() -> Unit) {
       registration().addContainerTest(testName, xdisabled = false) {
-         DescribeScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
+         DescribeScope(
+            this@DescribeSpecScope.description().append(testName),
+            this@DescribeSpecScope.lifecycle(),
+            this,
+            this@DescribeSpecScope.defaultConfig(),
+            this.coroutineContext
+         ).test()
       }
    }
 
