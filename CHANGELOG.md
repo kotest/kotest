@@ -4,6 +4,20 @@ Changelog
 #### 4.2.0 - Snapshots
 * Improvement: Use the SPDX compliant license identifier "Apache-2.0" in POM files #1517
 
+#### 4.1.2
+
+* Bugfix: Dkotest.tags.include= only takes into account @Tags #1536 sksamuel
+* Bugfix: Ensure exhaustive isn't build with an empty list #1549 Cleidiano Oliveira
+* Bugfix: Add concurrent spec runner and fix sequential spec runner #1547 sksamuel
+* Bugfix: Take into account `range` for `IntShrinker` and `LongShrinker` #1535 sksamuel
+* Feature: Support expressions for tags as an alternative to include/exclude #863 sksamuel
+* Feature: Expand some matchers to Iterable #1538 Leonardo Colman Lopes
+* Improvement: Add the ability to make parameter substitutions when executing http files #1560 Shane Lathrop
+* Improvement: Added xGiven / xWhen / xThen options to Behavior spec #1534 sksamuel
+* Improvement: Added nicer syntax for Test Containers sksamuel
+* Improvement: Restore context to describe #1565 sksamuel
+* Breaking Change: Updates method signature of assertSoftly to take object under test as argument Ashish Kumar Joy
+
 #### 4.1.1
 
 * Bugfix: Issue with describe spec and the intellij plugin fixed #1528
