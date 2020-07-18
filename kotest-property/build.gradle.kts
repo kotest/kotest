@@ -20,16 +20,9 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
-
-//      linuxX64()
-//      mingwX64()
-//      macosX64()
    }
 
    targets.all {
@@ -65,7 +58,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
             implementation(Libs.Wumpz.diffutils)
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Mifmif.generex)
          }
       }

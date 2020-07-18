@@ -43,7 +43,7 @@ kotlin {
             api(project(Projects.Core))
             api(project(Projects.AssertionsCore))
             api(project(Projects.Extensions))
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
             api(Libs.JUnitPlatform.engine)
             api(Libs.JUnitPlatform.api)
             api(Libs.JUnitPlatform.launcher)

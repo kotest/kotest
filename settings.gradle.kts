@@ -1,5 +1,13 @@
 enableFeaturePreview("GRADLE_METADATA")
 
+pluginManagement {
+   repositories {
+      mavenCentral()
+      gradlePluginPortal()
+      maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+   }
+}
+
 include("kotest-common")
 include("kotest-core")
 include("kotest-assertions:kotest-assertions-shared")
@@ -9,8 +17,8 @@ include("kotest-assertions:kotest-assertions-json")
 include("kotest-assertions:kotest-assertions-ktor")
 include("kotest-assertions:kotest-assertions-jsoup")
 include("kotest-assertions:kotest-assertions-konform")
-include("kotest-assertions:kotest-assertions-compiler")
-include("kotest-assertions:kotest-assertions-klock")
+//include("kotest-assertions:kotest-assertions-compiler")
+//include("kotest-assertions:kotest-assertions-klock")
 include("kotest-assertions:kotest-assertions-sql")
 include("kotest-property")
 include("kotest-property:kotest-property-arrow")
