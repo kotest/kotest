@@ -39,6 +39,16 @@ class DescribeSpecExample : DescribeSpec() {
                }
             }
          }
+         context("a context is like a describe") {
+            it("test name") {
+               // test here
+            }
+         }
+         xcontext("a disabled context") {
+            it("test name") {
+               // test here
+            }
+         }
          xdescribe("disabled describe") {
             fail("should not be invoked")
          }
@@ -64,6 +74,16 @@ class DescribeSpecExample : DescribeSpec() {
       }
 
       xdescribe("disabled top level describe") {
+         fail("should not be invoked")
+      }
+
+      context("top level context") {
+         it("test name") {
+            // test here
+         }
+      }
+
+      xcontext("disabled top level context") {
          fail("should not be invoked")
       }
    }
