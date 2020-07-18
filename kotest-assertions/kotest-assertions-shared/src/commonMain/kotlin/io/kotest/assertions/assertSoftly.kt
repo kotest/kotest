@@ -35,15 +35,15 @@ inline fun <T> assertSoftly(assertions: () -> T): T {
  * ```
  *     // All assertions below are going to be executed, even when one or multiple fail.
  *     // All the failures are then collected and thrown in one single throwable.
- *     "foo".assertSoftly {
+ *     assertSoftly("foo") {
  *         this[2] shouldBe 'o'
  *         length shouldBeLessThan 5
  *     }
  * ```
  */
-inline fun <T> T.assertSoftly(assertions: T.(T) -> Unit): T {
-   return io.kotest.assertions.assertSoftly {
-      assertions(this)
-      this
+inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
+   return assertSoftly {
+      t.assertions(t)
+      t
    }
 }

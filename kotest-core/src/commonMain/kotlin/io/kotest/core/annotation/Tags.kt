@@ -2,6 +2,7 @@ package io.kotest.core.annotation
 
 /**
  * Attach tag to [io.kotest.core.spec.Spec], excluded spec won't be initiated.
+ * An unannotated spec will still be instantiated to order to check if root tests are included.
  */
 // @Inherited TODO Not supported by Kotlin yet, better to have it so Tags can be added to base spec
 @Target(AnnotationTarget.CLASS)

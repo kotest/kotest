@@ -3,6 +3,7 @@ package io.kotest.core.test
 import io.kotest.core.config.Project
 import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
+import io.kotest.core.spec.resolvedTags
 import io.kotest.mpp.log
 import io.kotest.mpp.sysprop
 
@@ -31,11 +32,18 @@ fun TestCase.isActive(): Boolean {
       return false
    }
 
-   if (!config.enabled) return false
-   if (!config.enabledIf(this)) return false
+   if (!config.enabled) {
+      log("${description.fullName()} is disabled by enabled property in config")
+      return false
+   }
+
+   if (!config.enabledIf(this)) {
+      log("${description.fullName()} is disabled by enabledIf function in config")
+      return false
+   }
 
    // if we have tags specified on this
-   val enabledInTags = Project.tags().isActive(config.tags + spec.tags() + spec._tags)
+   val enabledInTags = Project.tags().isActive(config.tags + spec.resolvedTags())
    if (!enabledInTags) {
       log("${description.fullName()} is disabled by tags")
       return false

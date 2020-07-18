@@ -12,6 +12,9 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 interface DescribeSpecScope : RootScope {
 
+   @Deprecated("use nested describe", ReplaceWith("describe(name, test)"))
+   fun context(name: String, test: suspend DescribeScope.() -> Unit) = describe(name, test)
+
    fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = TestName("Describe: ", name)
       registration().addContainerTest(testName, xdisabled = false) {

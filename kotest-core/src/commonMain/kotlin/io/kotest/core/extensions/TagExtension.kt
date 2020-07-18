@@ -11,7 +11,7 @@ import io.kotest.core.Tags
  * match to be skipped.
  *
  * Note: If multiple extensions are registered then all returned
- * [Tags] are combined together.
+ * [Tags] are combined together using ORs
  *
  * The default [SystemPropertyTagExtension] is automatically registered
  * which includes and excludes tags using the system properties

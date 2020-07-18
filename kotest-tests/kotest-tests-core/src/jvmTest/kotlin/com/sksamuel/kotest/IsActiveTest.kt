@@ -52,13 +52,45 @@ class IsActiveTest : StringSpec() {
          Project.deregisterExtension(ext)
       }
 
+      "isActive should return false if it is excluded by a tag expression" {
+
+         val mytag = StringTag("mytag")
+
+         val ext = object : TagExtension {
+            override fun tags(): Tags = Tags("!mytag")
+         }
+
+         Project.registerExtension(ext)
+
+         val config = TestCaseConfig(tags = setOf(mytag))
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe false
+
+         Project.deregisterExtension(ext)
+      }
+
       "isActive should return false if it has no tags and included tags are set" {
 
          val yourtag = StringTag("yourtag")
 
          val ext = object : TagExtension {
-            override fun tags(): Tags =
-               Tags(setOf(yourtag), emptySet())
+            override fun tags(): Tags = Tags(setOf(yourtag), emptySet())
+         }
+
+         Project.registerExtension(ext)
+
+         val mytag = StringTag("mytag")
+         val config = TestCaseConfig(tags = setOf(mytag))
+         val test = TestCase.test(Description.spec("foo"), this@IsActiveTest) {}.copy(config = config)
+         test.isActive() shouldBe false
+
+         Project.deregisterExtension(ext)
+      }
+
+      "isActive should return false if it has no tags and a tag expression with include is set" {
+
+         val ext = object : TagExtension {
+            override fun tags(): Tags = Tags("yourtag")
          }
 
          Project.registerExtension(ext)
@@ -87,7 +119,8 @@ class IsActiveTest : StringSpec() {
       }
 
       "isActive should return true if not top level even if spec has top level focused tests" {
-         val test = TestCase.test(Description.spec("spec").append("f:my test").append("foo"), IsActiveWithFocusTest()) {}
+         val test =
+            TestCase.test(Description.spec("spec").append("f:my test").append("foo"), IsActiveWithFocusTest()) {}
          test.isActive() shouldBe true
       }
    }

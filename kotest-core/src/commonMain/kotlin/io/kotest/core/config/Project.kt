@@ -13,7 +13,7 @@ import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.SystemPropertyTagExtension
 import io.kotest.core.extensions.TagExtension
-import io.kotest.core.extensions.TagFilteredDiscoveryExtension
+import io.kotest.core.extensions.TagsExcludedDiscoveryExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.filters.Filter
 import io.kotest.core.filters.TestCaseFilter
@@ -49,7 +49,7 @@ object Project {
       SystemPropertyTagExtension,
       RuntimeTagExtension,
       IgnoredSpecDiscoveryExtension,
-      TagFilteredDiscoveryExtension
+      TagsExcludedDiscoveryExtension
    )
 
    private var listeners = userconf.listeners
@@ -123,6 +123,10 @@ object Project {
 
    fun registerListener(listener: Listener) {
       listeners = listeners + listener
+   }
+
+   fun deregisterListener(listener: Listener) {
+      listeners = listeners - listener
    }
 
    fun extensions() = extensions
