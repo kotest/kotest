@@ -40,15 +40,21 @@ import kotlin.contracts.contract
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
-@OptIn(ExperimentalContracts::class)
+@Deprecated("Use the smart contract version: a.shouldBeInstanceOf<B>(); a.bMethod()")
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
+   val matcher = beInstanceOf<T>()
+   this shouldBe matcher
+   block(this as T)
+   return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <reified T : Any> Any?.shouldBeInstanceOf() {
    contract {
       returns() implies (this@shouldBeInstanceOf is T)
    }
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
-   block(this as T)
-   return this as T
 }
 
 /**
@@ -98,15 +104,21 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
-@OptIn(ExperimentalContracts::class)
+@Deprecated("Use the smart contract version: a.shouldBeTypeOf<B>(); a.bMethod()")
 inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
+   val matcher = beOfType<T>()
+   this shouldBe matcher
+   block(this as T)
+   return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun <reified T : Any> Any?.shouldBeTypeOf() {
    contract {
       returns() implies (this@shouldBeTypeOf is T)
    }
    val matcher = beOfType<T>()
    this shouldBe matcher
-   block(this as T)
-   return this
 }
 
 /**

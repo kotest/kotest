@@ -75,7 +75,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list = arrayListOf(1, 2, 3)
 
-        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
+        list.shouldBeInstanceOf<ArrayList<Int>> {
           it shouldBeSameInstanceAs list
         }
       }
@@ -84,13 +84,6 @@ class TypeMatchersTest : WordSpec() {
         val list = arrayListOf(1, 2, 3)
 
         val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>> {}
-        typecastedList shouldBeSameInstanceAs list
-      }
-
-      "Returns typecasted value when invoked without arguments" {
-        val list = arrayListOf(1, 2, 3)
-        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>>()
-
         typecastedList shouldBeSameInstanceAs list
       }
 
@@ -140,14 +133,6 @@ class TypeMatchersTest : WordSpec() {
           list.shouldBeTypeOf<ArrayList<Int>>()
           list[0] shouldBe 1
        }
-
-      "Returns typecasted value when executed without argument" {
-        val list: Any = arrayListOf(1, 2, 3)
-
-        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>>()
-        typecastedList shouldBeSameInstanceAs list
-        typecastedList[0] shouldBe 1
-      }
 
       "accepts null values" {
         val arrayList: List<Int>? = null
