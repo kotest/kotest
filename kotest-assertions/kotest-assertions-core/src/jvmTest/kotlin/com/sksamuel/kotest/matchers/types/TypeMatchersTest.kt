@@ -65,11 +65,12 @@ class TypeMatchersTest : WordSpec() {
           shouldThrow<AssertionError> {
              arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
           }
-          "use smart contracts to cast" {
-             val list: Collection<Int> = arrayListOf(1, 2, 3)
-             list.shouldBeInstanceOf<ArrayList<Int>>()
-             list.add(4) // this will only work if smart contracts worked
-          }
+       }
+
+       "use smart contracts to cast" {
+          val list: Collection<Int> = arrayListOf(1, 2, 3)
+          list.shouldBeInstanceOf<ArrayList<Int>>()
+          list.add(4) // this will only work if smart contracts worked
        }
 
       "Allow execution with a lambda" {
