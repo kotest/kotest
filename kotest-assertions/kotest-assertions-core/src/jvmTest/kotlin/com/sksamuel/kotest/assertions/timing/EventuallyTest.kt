@@ -60,7 +60,7 @@ class EventuallyTest : WordSpec() {
             }
          }
          "fail tests throw unexpected exception type"  {
-            shouldThrow<KotlinNullPointerException> {
+            shouldThrow<NullPointerException> {
                eventually(2.seconds, IOException::class) {
                   (null as String?)!!.length
                }
