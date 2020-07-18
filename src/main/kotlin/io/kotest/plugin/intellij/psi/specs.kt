@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtSuperTypeList
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
  * Returns all [KtClass] children of this [PsiFile] that are instances of a spec class.
@@ -221,7 +221,7 @@ fun KtBlockExpression.callbacks(): List<Callback> {
  * Returns the Spec that contains this element, or null if this element is not located inside a spec class.
  */
 fun PsiElement.enclosingSpec(): KtClass? {
-   val ktclass = getParentOfType<KtClass>(false)
+   val ktclass = this.getStrictParentOfType<KtClass>()
    return when {
       ktclass == null -> null
       ktclass.isSubclassOfSpec() -> ktclass
@@ -259,7 +259,7 @@ enum class CallbackType {
  * of the given spec FQN
  */
 fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
-   val enclosingClass = getParentOfType<KtClass>(true) ?: return false
+   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
    return enclosingClass.isSubclass(fqn)
 }
 
@@ -267,7 +267,7 @@ fun PsiElement.isContainedInSpec(fqn: FqName): Boolean {
  * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
  */
 fun PsiElement.isContainedInSpec(): Boolean {
-   val enclosingClass = getParentOfType<KtClass>(true) ?: return false
+   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
    return enclosingClass.isSubclassOfSpec()
 }
 

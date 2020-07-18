@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtPrimaryConstructor
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
  * Returns the [KtClassOrObject] if this [LeafPsiElement] has type [KtKeywordToken]
@@ -83,7 +83,7 @@ fun PsiFile.classes(): List<KtClass> {
 /**
  * Returns the first [KtClass] parent of this element.
  */
-fun PsiElement.enclosingKtClass(): KtClass? = getParentOfType(false)
+fun PsiElement.enclosingKtClass(): KtClass? = getStrictParentOfType()
 
 /**
  * Returns the superclass parent of this [KtClass].
