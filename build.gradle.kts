@@ -4,10 +4,9 @@ buildscript {
       mavenCentral()
       mavenLocal()
       google()
-   }
-
-   dependencies {
-      // classpath "io.kotest:kotest-gradle-plugin:1.1.1-LOCAL"
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
+      maven("https://kotlin.bintray.com/kotlinx")
+      gradlePluginPortal()
    }
 }
 
@@ -40,6 +39,8 @@ allprojects {
       mavenCentral()
       jcenter()
       google()
+      maven("https://dl.bintray.com/kotlin/kotlin-eap")
+      maven("https://kotlin.bintray.com/kotlinx")
    }
 
    group = "io.kotest"

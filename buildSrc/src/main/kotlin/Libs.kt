@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.3.71"
+   const val kotlinVersion = "1.4-M3"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -13,7 +13,7 @@ object Libs {
    }
 
    object Allure {
-      private const val version = "2.13.2"
+      private const val version = "2.13.5"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
    }
 
@@ -23,7 +23,7 @@ object Libs {
    }
 
    object Tschuchortdev {
-      private const val version = "1.2.7"
+      private const val version = "1.2.9"
       const val kotlinCompileTesting = "com.github.tschuchortdev:kotlin-compile-testing:$version"
    }
 
@@ -74,16 +74,19 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.6"
-      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$version"
-      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
-      const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+      private const val version = "1.3.7-1.4-M3"
+      const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
+      const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
       const val coreNative = "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$version"
+      const val coreLinux = "org.jetbrains.kotlinx:kotlinx-coroutines-core-linuxx64:$version"
+      const val coreMingw = "org.jetbrains.kotlinx:kotlinx-coroutines-core-mingwx64:$version"
+      const val coreMacos = "org.jetbrains.kotlinx:kotlinx-coroutines-core-macosx64:$version"
+      const val jdk8 = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$version"
    }
 
    object Ktor {
-      private const val version = "1.3.2"
+      private const val version = "1.3.2-1.4-M3"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
@@ -93,7 +96,7 @@ object Libs {
    }
 
    object Klock {
-      private const val version = "1.10.5"
+      private const val version = "1.10.6"
       const val klock = "com.soywiz.korlibs.klock:klock:$version"
    }
 }

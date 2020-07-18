@@ -1,5 +1,13 @@
 enableFeaturePreview("GRADLE_METADATA")
 
+pluginManagement {
+   repositories {
+      mavenCentral()
+      gradlePluginPortal()
+      maven ("https://dl.bintray.com/kotlin/kotlin-eap")
+   }
+}
+
 include("kotest-common")
 include("kotest-core")
 include("kotest-assertions:kotest-assertions-shared")

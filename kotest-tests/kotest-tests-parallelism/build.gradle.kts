@@ -33,7 +33,7 @@ kotlin {
       val jvmTest by getting {
          dependencies {
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
          }
       }
    }

@@ -44,7 +44,7 @@ kotlin {
             api(project(Projects.Core))
             api(project(Projects.Extensions))
             api("junit:junit:4.13")
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
          }
       }
 

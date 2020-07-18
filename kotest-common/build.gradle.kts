@@ -23,13 +23,9 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
-
       linuxX64()
       mingwX64()
       macosX64()
@@ -68,9 +64,21 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
+      val macosX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreMacos)
+         }
+      }
+
+      val mingwX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreMingw)
+         }
+      }
+
+      val linuxX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreLinux)
          }
       }
    }

@@ -40,7 +40,7 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(":kotest-assertions:kotest-assertions-core"))
             implementation(project(Projects.JunitRunner))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
          }
       }
    }

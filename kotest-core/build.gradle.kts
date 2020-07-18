@@ -19,11 +19,8 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
    }
 
@@ -61,7 +58,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Classgraph.classgraph)
             api(Libs.JUnitJupiter.api)
          }
