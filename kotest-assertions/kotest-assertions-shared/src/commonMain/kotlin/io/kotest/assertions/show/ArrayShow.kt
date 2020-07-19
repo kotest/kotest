@@ -1,6 +1,7 @@
 package io.kotest.assertions.show
 
 object ArrayShow : Show<Any> {
+   @Suppress("UNCHECKED_CAST")
    override fun show(a: Any): Printed = when (a) {
       is LongArray -> ListShow<Long>().show(a.asList())
       is IntArray -> ListShow<Int>().show(a.asList())

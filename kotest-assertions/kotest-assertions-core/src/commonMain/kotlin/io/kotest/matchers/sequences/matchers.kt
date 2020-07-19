@@ -148,7 +148,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.max() ?: t) <= t,
+      (value.maxOrNull() ?: t) <= t,
       { "Sequence should have upper bound $t" },
       { "Sequence should not have upper bound $t" }
    )
@@ -158,7 +158,7 @@ infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = th
 
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C) = MatcherResult(
-      (value.min() ?: t) >= t,
+      (value.minOrNull() ?: t) >= t,
       { "Sequence should have lower bound $t" },
       { "Sequence should not have lower bound $t" }
    )
@@ -184,10 +184,10 @@ fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    )
 }
 
-fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted<T>()
-fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorted<T>()
+fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()
+fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorted()
 
-fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted<T>()
+fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted()
 fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
       @Suppress("UNUSED_DESTRUCTURED_PARAMETER_ENTRY")
@@ -234,12 +234,10 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<
 }
 
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
-
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith(cmp)
 
 infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
-infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(
-   t)
+infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
 
 fun <T> singleElement(t: T) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(
@@ -269,8 +267,7 @@ fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<
 }
 
 
-infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(
-   other)
+infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
 
 fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(
@@ -280,8 +277,7 @@ fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    )
 }
 
-infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(
-   other)
+infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
 
 fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(

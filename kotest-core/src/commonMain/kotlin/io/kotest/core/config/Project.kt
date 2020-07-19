@@ -135,7 +135,7 @@ object Project {
    fun listeners() = listeners
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   @Deprecated("Use registerListener(Listener)")
+   @Deprecated("Use registerListener(Listener). Will be removed in 4.3")
    fun registerProjectListener(listener: Listener) {
       registerListener(listener)
    }

@@ -4,8 +4,6 @@ import arrow.validation.Refinement
 import io.kotest.assertions.arrow.matcher
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.should
-import io.kotest.properties.Gen
-import io.kotest.properties.PropertyContext
 
 /**
  * Asserts that a value of type [A] complies with the [refinement]
@@ -22,14 +20,4 @@ fun <F, A> A.beRefinedBy(refinement: Refinement<F, A>): Matcher<A> =
       passed = this@beRefinedBy.refinement(),
       msg = invalidValueMsg(this@beRefinedBy)
     )
-  }
-
-/**
- * Filters [GA] creating a new generator that complies with the rules in [refinement]
- */
-fun <F, A> forAll(GA: Gen<A>, refinement: Refinement<F, A>, f: (A) -> Boolean): Unit =
-  refinement.applicativeError().run {
-    val genA: Gen<A> = GA.filter { it.beRefinedBy(refinement).test(it).passed() }
-    val property: PropertyContext.(A) -> Boolean = { f(it) }
-    io.kotest.properties.forAll(genA, property)
   }

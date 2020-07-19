@@ -27,7 +27,7 @@ class KotestEngine(
    val listeners: List<Listener> = emptyList()
 ) {
 
-   @Deprecated("for backwards compatibility")
+   @Deprecated("for backwards compatibility. Will be removed in 4.4")
    constructor(
       classes: List<KClass<out Spec>>,
       filters: List<TestCaseFilter>,
