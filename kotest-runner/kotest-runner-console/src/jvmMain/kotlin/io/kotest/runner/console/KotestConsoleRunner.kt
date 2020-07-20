@@ -17,8 +17,8 @@ class KotestConsoleRunner(private val listener: TestEngineListener) {
       val launcher = KotestEngineLauncher(listener).withTags(tags)
       val spec = specFQN?.let { Class.forName(it).kotlin as KClass<out Spec> }
       when {
-         spec != null && testPath != null -> launcher.forSpec(spec).addFilter(TestPathTestCaseFilter(testPath, spec))
-            .launch()
+         spec != null && testPath != null ->
+            launcher.forSpec(spec).addFilter(TestPathTestCaseFilter(testPath, spec)).launch()
          spec != null -> launcher.forSpec(spec).launch()
          packageName != null -> launcher.forPackage(packageName).launch()
          else -> launcher.launch()

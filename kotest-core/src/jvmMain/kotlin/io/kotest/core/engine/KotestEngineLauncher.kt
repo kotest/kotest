@@ -8,6 +8,10 @@ import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
+/**
+ * The contract on this class cannot change without breaking the kotest plugin.
+ * It must remain a backwards compatible layer between the launchers and the engine.
+ */
 class KotestEngineLauncher(
    private val listener: TestEngineListener,
    private val specs: List<KClass<out Spec>>,
