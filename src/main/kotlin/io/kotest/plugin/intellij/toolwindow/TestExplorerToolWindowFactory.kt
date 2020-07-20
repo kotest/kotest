@@ -13,4 +13,8 @@ class TestExplorerToolWindowFactory : ToolWindowFactory {
       val content = contentFactory.createContent(explorer, "", false)
       toolWindow.contentManager.addContent(content)
    }
+
+   override fun isApplicable(project: Project): Boolean {
+      return true
+   }
 }

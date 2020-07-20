@@ -4,7 +4,6 @@
    <name>kotest</name>
 
    <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
-   <idea-version since-build="191.4212.41"/>
 
    <description><![CDATA[
       Official IntelliJ IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
@@ -46,8 +45,7 @@
       <!--                       implementationClass="io.kotest.plugin.intellij.inspections.NoZeroArgConstructorInspection"/>-->
 
       <toolWindow id="Kotest" anchor="left" icon="/icon16_greyscale.png"
-                  factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"
-                  conditionClass="io.kotest.plugin.intellij.toolwindow.TestExplorerCondition"/>
+                  factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
 
       <codeInsight.lineMarkerProvider language="kotlin"
                                       implementationClass="io.kotest.plugin.intellij.linemarker.IgnoredTestLineMarker"/>
