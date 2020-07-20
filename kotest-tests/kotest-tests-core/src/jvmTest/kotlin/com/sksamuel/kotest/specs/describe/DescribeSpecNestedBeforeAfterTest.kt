@@ -30,6 +30,17 @@ class DescribeSpecNestedBeforeAfterTest : DescribeSpec({
          a shouldBe "n"
          a = "resetme"
       }
+
+      describe("bar") {
+         it("f") {
+            a shouldBe "n" // from the outer before
+            a = "resetme"
+         }
+         it("g") {
+            a shouldBe "n"
+            a = "resetme"
+         }
+      }
    }
 
    afterSpec {
