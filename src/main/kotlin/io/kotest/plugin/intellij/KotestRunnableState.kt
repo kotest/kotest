@@ -13,7 +13,7 @@ class KotestRunnableState(env: ExecutionEnvironment,
                           private val config: KotestConfiguration) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
    override fun getForkMode(): String = "none"
-   override fun getFrameworkId(): String = "kotest"
+   override fun getFrameworkId(): String = "Kotest"
    override fun getFrameworkName(): String = "Kotest"
    override fun getConfiguration(): KotestConfiguration = config
 

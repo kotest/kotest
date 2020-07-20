@@ -18,10 +18,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfi
     */
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType)
 
-   override fun isConfigurationFromContext(configuration: KotestConfiguration,
-                                           context: ConfigurationContext): Boolean {
-      return false
-   }
+   override fun isConfigurationFromContext(configuration: KotestConfiguration, context: ConfigurationContext): Boolean = false
 
    override fun setupConfigurationFromContext(configuration: KotestConfiguration,
                                               context: ConfigurationContext,

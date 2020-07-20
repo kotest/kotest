@@ -46,7 +46,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
    override fun isAlternativeJrePathEnabled() = alternativeJrePathEnabled
    override fun getEnvs(): MutableMap<String, String> = envs
 
-   // I think this is used when something is renamed so the config can update itself // todo
+   // this is used when something is renamed so the config can update itself
    override fun getRefactoringElementListener(element: PsiElement?): RefactoringElementListener? = null
 
    override fun getPackage(): String? = null
@@ -184,7 +184,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
    }
 
    override fun createTestConsoleProperties(executor: Executor): SMTRunnerConsoleProperties {
-      return KotestSMTConsoleProperties(this, executor)
+      return KotestTestConsoleProperties(this, executor)
    }
 
    companion object {

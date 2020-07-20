@@ -16,6 +16,9 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import javax.swing.Icon
 
+/**
+ * Used by various test utilties in the plugin sdk
+ */
 class KotestTestFramework : TestFramework {
 
    override fun getDefaultSuperClass(): String = "io.kotest.core.spec.style.FunSpec"

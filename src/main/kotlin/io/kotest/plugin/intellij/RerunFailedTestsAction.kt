@@ -9,7 +9,7 @@ import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.module.Module
 
 class RerunFailedTestsAction(consoleView: ConsoleView,
-                             props: KotestSMTConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
+                             props: KotestTestConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
 
    override fun getRunProfile(env: ExecutionEnvironment): MyRunProfile? {
       val configuration = myConsoleProperties.configuration as KotestConfiguration
