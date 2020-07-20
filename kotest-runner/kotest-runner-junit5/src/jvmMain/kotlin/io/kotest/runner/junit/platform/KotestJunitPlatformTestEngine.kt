@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.mpp.log
 import io.kotest.core.spec.Spec
 import io.kotest.core.engine.IsolationTestEngineListener
-import io.kotest.core.engine.KotestEngine
+import io.kotest.core.engine.KotestEngineLauncher
 import io.kotest.core.engine.SynchronizedTestEngineListener
 import io.kotest.core.engine.discovery.Discovery
 import kotlinx.coroutines.runBlocking
@@ -41,13 +41,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
             )
          )
       )
-      val runner = KotestEngine(
-         root.classes,
-         emptyList(),
-         null,
-         listener
-      )
-      runner.execute()
+      KotestEngineLauncher(listener).withSpecs(root.classes).launch()
    }
 
    override fun discover(

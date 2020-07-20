@@ -3,12 +3,11 @@
 package io.kotest.runner.console
 
 import io.kotest.core.Tags
-import io.kotest.core.engine.KotestEngine
+import io.kotest.core.engine.KotestEngineLauncher
 import io.kotest.core.engine.TestEngineListener
-import io.kotest.core.engine.discovery.Discovery
-import io.kotest.core.engine.discovery.DiscoveryRequest
 import io.kotest.core.engine.discovery.DiscoverySelector
 import io.kotest.core.spec.Spec
+import kotlin.reflect.KClass
 
 /**
  * Creates a kotest engine and launches the tests.
@@ -16,26 +15,13 @@ import io.kotest.core.spec.Spec
 class KotestConsoleRunner(private val listener: TestEngineListener) {
 
    suspend fun execute(packageName: String?, specFQN: String?, testPath: String?, tags: Tags?) {
-
-      // if the spec class was null, then we perform discovery to locate all the classes
-      // otherwise we instantiate that particular spec
-      val (specs, filter) = if (specFQN == null) {
-         val packageSelector = packageName?.let { DiscoverySelector.PackageDiscoverySelector(it) }
-         val result = Discovery.discover(DiscoveryRequest(selectors = listOfNotNull(packageSelector)))
-         Pair(result.specs, null)
-      } else {
-         val spec = (Class.forName(specFQN) as Class<Spec>).kotlin
-         val filter = testPath?.let { TestPathTestCaseFilter(it, spec) }
-         listOf(spec) to filter
+      val launcher = KotestEngineLauncher(listener).withTags(tags)
+      val spec = specFQN?.let { Class.forName(it).kotlin as KClass<out Spec> }
+      when {
+         spec != null && testPath != null ->launcher.forSpec(spec).addFilter(TestPathTestCaseFilter(testPath, spec)).launch()
+         spec != null -> launcher.forSpec(spec).launch()
+         packageName != null -> launcher.addSelector(DiscoverySelector.PackageDiscoverySelector(packageName)).launch()
+         else -> launcher.launch()
       }
-
-      val runner = KotestEngine(
-         specs,
-         listOfNotNull(filter),
-         tags,
-         listener
-      )
-      runner.execute()
-      runner.cleanup()
    }
 }
