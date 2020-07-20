@@ -55,6 +55,16 @@ class BehaviorSpecNestedBeforeAfterTest : BehaviorSpec({
             a = "resetme"
          }
       }
+      `when`("h") {
+         then("i") {
+            a shouldBe "n" // from the outer before
+            a = "resetme"
+         }
+         then("k") {
+            a shouldBe "n"
+            a = "resetme"
+         }
+      }
    }
 
    afterSpec {
