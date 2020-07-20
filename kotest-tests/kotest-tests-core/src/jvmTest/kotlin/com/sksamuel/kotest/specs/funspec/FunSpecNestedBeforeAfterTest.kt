@@ -46,6 +46,17 @@ class FunSpecNestedBeforeAfterTest : FunSpec({
       test("b") {
          a shouldBe "wobble"
       }
+
+      context("fizz") {
+         test("a") {
+            a shouldBe "wobble" // from the outer before
+            a = "resetme"
+         }
+         test("b") {
+            a shouldBe "wobble"
+            a = "resetme"
+         }
+      }
    }
 
    afterSpec {
