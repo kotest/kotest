@@ -43,6 +43,7 @@ object SpringListener : TestListener {
 
    override suspend fun afterSpec(spec: Spec) {
       spec.testContext.afterTestClass()
+      testContexts.remove(spec)
    }
 
    private val Spec.testContext: TestContextManager
