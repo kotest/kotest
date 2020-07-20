@@ -1,9 +1,11 @@
 package com.sksamuel.kotest.eq
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.MapEq
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 
 class MapEqTest : FunSpec({
    test("should give null for simple equal maps") {
@@ -16,7 +18,22 @@ class MapEqTest : FunSpec({
       val map1 = mapOf("a" to "b")
       val map2 = mapOf("a" to "c")
 
-      MapEq.equals(map1, map2).shouldNotBeNull()
+      val throwable = MapEq.equals(map1, map2)
+
+      assertSoftly {
+         throwable.shouldNotBeNull()
+         throwable.message shouldBe """
+            Expected
+            {
+              "a" = "c"
+            }
+            to be equal to
+            {
+              "a" = "b"
+            }
+            Values differed at keys a
+         """.trimIndent()
+      }
    }
 
    test("should give null for complex equal maps") {
@@ -67,7 +84,21 @@ class MapEqTest : FunSpec({
          )
       )
 
-      MapEq.equals(actual, expected).shouldNotBeNull()
+      val throwable = MapEq.equals(actual, expected)
+      assertSoftly {
+         throwable.shouldNotBeNull()
+         throwable.message shouldBe """
+            Expected
+            {
+              "1" = [("2", [("3", "bar")])]
+            }
+            to be equal to
+            {
+              "1" = [("2", [("3", [("4", ["foo"])])])]
+            }
+            Values differed at keys 1
+         """.trimIndent()
+      }
    }
 
    test("should give null for equal maps having map as keys") {
@@ -97,7 +128,21 @@ class MapEqTest : FunSpec({
             "a" to arrayOf(1, 2, 3)
          )
       )
-      MapEq.equals(map1, map2).shouldNotBeNull()
+      val throwable = MapEq.equals(map1, map2)
+      assertSoftly {
+         throwable.shouldNotBeNull()
+         throwable.message shouldBe """
+            Expected
+            {
+              [("a", "c")] = [("a", [1, 2, 3])]
+            }
+            to be equal to
+            {
+              [("a", "b")] = [("a", [1, 2, 3])]
+            }
+            Values differed at keys {a=b}
+         """.trimIndent()
+      }
    }
 
 })
