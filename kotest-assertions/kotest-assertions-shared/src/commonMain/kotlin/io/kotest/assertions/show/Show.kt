@@ -31,6 +31,7 @@ fun <T : Any> showFor(t: T): Show<T> = platformShow(t) ?: commonShowFor(t)
 
 expect fun <A : Any> platformShow(a: A): Show<A>?
 
+@Suppress("UNCHECKED_CAST")
 fun <T : Any> commonShowFor(t: T): Show<T> = when (t) {
    is String -> StringShow as Show<T>
    is Map<*, *> -> MapShow as Show<T>
@@ -49,7 +50,7 @@ fun <T : Any> commonShowFor(t: T): Show<T> = when (t) {
    is KClass<*> -> KClassShow as Show<T>
    else -> when {
       // this won't work in JS or native, so they'll get the boring old toString version
-      io.kotest.mpp.reflection.isDataClass(t::class) ?: false -> dataClassShow<T>()
+      io.kotest.mpp.reflection.isDataClass(t::class) -> dataClassShow<T>()
       else -> DefaultShow
    }
 }

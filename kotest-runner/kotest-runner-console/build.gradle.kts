@@ -41,7 +41,7 @@ kotlin {
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
          }
       }
 

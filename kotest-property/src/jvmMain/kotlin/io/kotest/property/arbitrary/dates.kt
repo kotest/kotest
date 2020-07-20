@@ -47,7 +47,7 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  * @see [localDateTime]
  * @see [localTime]
  */
-@Deprecated("use the version with complete date instead")
+@Deprecated("use the version with complete date instead. Will be removed in 4.3")
 fun Arb.Companion.localDate(minYear: Int = 1970, maxYear: Int = 2030): Arb<LocalDate> = localDate(
    minDate = LocalDate.of(minYear, 1, 1),
    maxDate = LocalDate.of(maxYear, 12, 31)

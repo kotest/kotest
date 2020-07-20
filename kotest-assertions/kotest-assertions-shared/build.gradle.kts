@@ -20,13 +20,9 @@ kotlin {
          }
       }
       js {
-         val main by compilations.getting {
-            kotlinOptions {
-               moduleKind = "commonjs"
-            }
-         }
+         browser()
+         nodejs()
       }
-
       linuxX64()
       mingwX64()
       macosX64()
@@ -63,7 +59,7 @@ kotlin {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
             implementation(Libs.Coroutines.jdk8)
             implementation(Libs.Wumpz.diffutils)
             implementation("com.univocity:univocity-parsers:2.8.4")
@@ -78,9 +74,21 @@ kotlin {
          }
       }
 
-      listOf("macosX64Main", "linuxX64Main", "mingwX64Main").forEach {
-         get(it).dependencies {
-            implementation(Libs.Coroutines.coreNative)
+      val macosX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreMacos)
+         }
+      }
+
+      val mingwX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreMingw)
+         }
+      }
+
+      val linuxX64Main by getting {
+         dependencies {
+            implementation(Libs.Coroutines.coreLinux)
          }
       }
    }

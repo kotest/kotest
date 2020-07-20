@@ -49,16 +49,12 @@ data class TestCase(
    val assertionMode: AssertionMode? = null
 ) {
 
-   @Deprecated("use displayName()")
+   @Deprecated("use displayName(). Will be removed in 4.3")
    val name = description.name.displayName()
 
    val displayName = description.name.displayName()
 
    fun isTopLevel(): Boolean = description.isTopLevel()
-
-   // for compatibility with earlier plugins
-   @Deprecated("Use source.lineNumber", ReplaceWith("source.lineNumber"))
-   fun getLine(): Int = source.lineNumber
 
    companion object {
 

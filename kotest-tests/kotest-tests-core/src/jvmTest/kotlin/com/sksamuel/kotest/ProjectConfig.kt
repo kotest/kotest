@@ -7,7 +7,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.filters.Filter
 import io.kotest.core.spec.FailureFirstSpecExecutionOrder
 import io.kotest.core.spec.SpecExecutionOrder
-import io.kotest.properties.PropertyTesting
 
 object ProjectConfig : AbstractProjectConfig() {
 
@@ -26,9 +25,5 @@ object ProjectConfig : AbstractProjectConfig() {
 
    override fun beforeAll() {
       intercepterLog.append("B1.")
-   }
-
-   init {
-      PropertyTesting.shouldPrintShrinkSteps = false
    }
 }

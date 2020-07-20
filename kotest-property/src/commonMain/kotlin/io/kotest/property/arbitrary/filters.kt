@@ -1,7 +1,6 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import io.kotest.properties.forAll
 import io.kotest.property.RandomSource
 
 /**

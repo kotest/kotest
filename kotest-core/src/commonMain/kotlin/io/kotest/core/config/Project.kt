@@ -9,6 +9,7 @@ import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.IgnoredSpecDiscoveryExtension
+import io.kotest.core.extensions.RuntimeTagExpressionExtension
 import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.SystemPropertyTagExtension
@@ -48,6 +49,7 @@ object Project {
    private var extensions = userconf.extensions + listOf(
       SystemPropertyTagExtension,
       RuntimeTagExtension,
+      RuntimeTagExpressionExtension,
       IgnoredSpecDiscoveryExtension,
       TagsExcludedDiscoveryExtension
    )
@@ -135,7 +137,7 @@ object Project {
    fun listeners() = listeners
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
 
-   @Deprecated("Use registerListener(Listener)")
+   @Deprecated("Use registerListener(Listener). Will be removed in 4.3")
    fun registerProjectListener(listener: Listener) {
       registerListener(listener)
    }
