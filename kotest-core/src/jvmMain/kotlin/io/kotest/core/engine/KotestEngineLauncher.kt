@@ -79,4 +79,6 @@ class KotestEngineLauncher(
          selectors = selectors + selector
       )
    }
+
+   fun forPackage(packageName: String) = addSelector(DiscoverySelector.PackageDiscoverySelector(packageName))
 }
