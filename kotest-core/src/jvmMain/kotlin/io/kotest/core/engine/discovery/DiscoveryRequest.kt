@@ -21,7 +21,19 @@ import kotlin.reflect.KVisibility
 data class DiscoveryRequest(
    val selectors: List<DiscoverySelector> = emptyList(),
    val filters: List<DiscoveryFilter> = emptyList()
-)
+) {
+   fun withSelector(selector: DiscoverySelector): DiscoveryRequest =
+      copy(selectors = this.selectors + selector)
+
+   fun withFilter(filter: DiscoveryFilter): DiscoveryRequest =
+      copy(filters = this.filters + filter)
+
+   fun withSelectors(selectors: List<DiscoverySelector>): DiscoveryRequest =
+      copy(selectors = this.selectors + selectors)
+
+   fun withFilters(filters: List<DiscoveryFilter>): DiscoveryRequest =
+      copy(filters = this.filters + filters)
+}
 
 sealed class DiscoveryFilter {
 
