@@ -6,6 +6,8 @@ import io.kotest.assertions.show.printed
 import io.kotest.assertions.show.show
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.io.File
+import java.nio.file.Paths
 
 class ShowTest : FunSpec() {
    init {
@@ -35,6 +37,8 @@ class ShowTest : FunSpec() {
       test("Detect show for any") {
          13.show().value shouldBe "13"
          true.show().value shouldBe "true"
+         File("/a/b/c").show().value shouldBe "/a/b/c"
+         Paths.get("/a/b/c").show().value shouldBe "/a/b/c"
       }
 
       test("detect show for boolean") {
