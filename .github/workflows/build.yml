@@ -7,7 +7,7 @@ on:
          - '*.md'
       branches:
          - master
-         - 'releases/**'
+         - release/*
 
 jobs:
    build:
