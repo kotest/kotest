@@ -2,6 +2,7 @@ Changelog
 =========
 
 #### 4.2.0 - Snapshots
+
 * Improvement: Use the SPDX compliant license identifier "Apache-2.0" in POM files [#1517](https://github.com/kotest/kotest/issues/1517)
 
 #### 4.1.2
