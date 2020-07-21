@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  */
 class KotestConsoleRunner(private val listener: TestEngineListener) {
 
-   suspend fun execute(packageName: String?, specFQN: String?, testPath: String?, tags: Tags?) {
+   fun execute(packageName: String?, specFQN: String?, testPath: String?, tags: Tags?) {
       val launcher = KotestEngineLauncher(listener).withTags(tags)
       val spec = specFQN?.let { Class.forName(it).kotlin as KClass<out Spec> }
       when {

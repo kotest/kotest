@@ -6,6 +6,7 @@ import io.kotest.core.engine.discovery.DiscoveryRequest
 import io.kotest.core.engine.discovery.DiscoverySelector
 import io.kotest.core.filters.TestCaseFilter
 import io.kotest.core.spec.Spec
+import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 
 /**
@@ -22,7 +23,7 @@ class KotestEngineLauncher(
 
    constructor(listener: TestEngineListener) : this(listener, emptyList(), emptyList(), null, emptyList())
 
-   suspend fun launch() {
+   fun launch() {
 
       val specs = when {
          specs.isNotEmpty() -> specs
@@ -33,7 +34,9 @@ class KotestEngineLauncher(
       val config = KotestEngineConfig(specs, filters, listener, tags)
       val runner = KotestEngine(config)
 
-      runner.execute()
+      runBlocking {
+         runner.execute()
+      }
       try {
          runner.cleanup()
       } catch (e: Exception) {

@@ -36,12 +36,10 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(kotlin("stdlib-jdk8"))
-            api(kotlin("reflect"))
             compileOnly(project(Projects.Core))
             // needed at runtime by the intellij plugin
             api(Libs.Ajalt.clikt)
             api(Libs.Ajalt.mordant)
-            api(Libs.Coroutines.core)
          }
       }
 
