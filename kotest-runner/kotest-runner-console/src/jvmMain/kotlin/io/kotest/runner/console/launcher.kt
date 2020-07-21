@@ -36,12 +36,12 @@ class Execute : CliktCommand(name = "Kotest console runner") {
    private val slowDuration by option(
       "--slow-duration",
       help = "Optional time in millis controlling when a test is marked as slow"
-   ).int().default(1000)
+   ).int().default(2000)
 
    private val verySlowDuration by option(
       "--very-slow-duration",
       help = "Optional time in millis controlling when a test is marked as very slow"
-   ).int().default(3000)
+   ).int().default(5000)
 
    private val writerClass by option(
       "--writer",
