@@ -43,9 +43,15 @@ class KotestRunnableState(env: ExecutionEnvironment,
    }
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
-     javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("io.kotest.runner.console.TeamCityConsoleWriter")))
-     javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.clikt.core.CliktCommand")))
-     javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.mordant.TermColors")))
+      try {
+         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("io.kotest.runner.console.TeamCityMessages")))
+         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.clikt.core.CliktCommand")))
+         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.mordant.TermColors")))
+      } catch (e: Throwable) {
+         println(e)
+         e.printStackTrace()
+         throw e
+      }
    }
 
    override fun getScope(): TestSearchScope = TestSearchScope.WHOLE_PROJECT
