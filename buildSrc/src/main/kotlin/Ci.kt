@@ -1,7 +1,6 @@
 object Ci {
 
    private const val lastRelease = "4.1.3"
-
    private const val snapshotBase = "4.2.0"
 
    private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
