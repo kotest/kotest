@@ -59,7 +59,19 @@ interface SpecConfigurationMethods {
 
    fun afterTest(testCase: TestCase, result: TestResult) {}
 
+   fun afterContainer(testCase: TestCase, result: TestResult) {}
+
+   fun afterAny(testCase: TestCase, result: TestResult) {}
+
+   fun afterEach(testCase: TestCase, result: TestResult) {}
+
    fun beforeSpec(spec: Spec) {}
+
+   fun beforeEach(testCase: TestCase) {}
+
+   fun beforeAny(testCase: TestCase) {}
+
+   fun beforeContainer(testCase: TestCase) {}
 
    fun beforeTest(testCase: TestCase) {}
 

@@ -60,26 +60,48 @@ suspend fun List<Listener>.beforeProject(): Try<List<BeforeProjectListenerExcept
 }.mapFailure { BeforeProjectListenerException("beforeProjectsInvocation", it) }
 
 /**
- * Invokes the beforeTest callbacks for this test, taking the listeners from
+ * Invokes all before test callbacks for this test, taking the listeners from
  * those present at the spec level and the project level.
  */
-suspend fun TestCase.invokeBeforeTest(): Try<TestCase> =
+suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
     Try {
-        val listeners = spec.resolvedTestListeners() + Project.testListeners()
-        listeners.forEach {
-            it.beforeTest(this)
-        }
-        this
-    }
+        spec.resolvedTestListeners() + Project.testListeners()
+    }.fold({
+        Try.Failure(it)
+    }, { listeners ->
+        Try {
+            listeners.forEach {
+                it.beforeTest(this)
+                it.beforeContainer(this)
+                it.beforeAny(this)
+                it.beforeEach(this)
+            }
 
-suspend fun TestCase.invokeAfterTest(result: TestResult): Try<TestCase> =
-    Try {
-        val listeners = this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
-        listeners.forEach {
-            it.afterTest(this, result)
+            this
         }
-        this
-    }
+    })
+
+/**
+ * Invokes all after test callbacks for this test, taking the listeners from
+ * those present at the config level, spec level and the project level.
+ */
+suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCase> =
+    Try {
+        this.config.listeners + spec.resolvedTestListeners() + Project.testListeners()
+    }.fold({
+        Try.Failure(it)
+    }, { listeners ->
+        Try {
+            listeners.forEach {
+                it.afterTest(this, result)
+                it.afterEach(this, result)
+                it.afterAny(this, result)
+                it.afterContainer(this, result)
+            }
+
+            this
+        }
+    })
 
 suspend fun TestCase.invokeBeforeInvocation(k: Int) {
    val listeners = spec.resolvedTestListeners() + Project.testListeners()

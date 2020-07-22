@@ -91,6 +91,54 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
       })
    }
 
+   override fun beforeContainer(f: BeforeContainer) {
+      listener(object : TestListener {
+         override suspend fun beforeContainer(testCase: TestCase) {
+            if (testCase.type == TestType.Container) f(testCase)
+         }
+      })
+   }
+
+   override fun afterContainer(f: AfterContainer) {
+      listener(object : TestListener {
+         override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+            if (testCase.type == TestType.Container) f(Tuple2(testCase, result))
+         }
+      })
+   }
+
+   override fun beforeEach(f: BeforeEach) {
+      listener(object : TestListener {
+         override suspend fun beforeEach(testCase: TestCase) {
+            if (testCase.type == TestType.Test) f(testCase)
+         }
+      })
+   }
+
+   override fun afterEach(f: AfterEach) {
+      listener(object : TestListener {
+         override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+            if (testCase.type == TestType.Test) f(Tuple2(testCase, result))
+         }
+      })
+   }
+
+   override fun beforeAny(f: BeforeAny) {
+      listener(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
+            f(testCase)
+         }
+      })
+   }
+
+   override fun afterAny(f: AfterAny) {
+      listener(object : TestListener {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+            f(Tuple2(testCase, result))
+         }
+      })
+   }
+
    /**
     * The annotation [JsTest] is intercepted by the kotlin.js compiler and invoked in the generated
     * javascript code. We need to hook into this function to invoke our execution code which will
@@ -135,6 +183,10 @@ fun Spec.resolvedTestListeners(): List<TestListener> {
          this@resolvedTestListeners.afterSpec(spec)
       }
 
+      override suspend fun beforeSpec(spec: Spec) {
+         this@resolvedTestListeners.beforeSpec(spec)
+      }
+
       override suspend fun afterTest(testCase: TestCase, result: TestResult) {
          this@resolvedTestListeners.afterTest(testCase, result)
       }
@@ -143,8 +195,28 @@ fun Spec.resolvedTestListeners(): List<TestListener> {
          this@resolvedTestListeners.beforeTest(testCase)
       }
 
-      override suspend fun beforeSpec(spec: Spec) {
-         this@resolvedTestListeners.beforeSpec(spec)
+      override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+         this@resolvedTestListeners.afterContainer(testCase, result)
+      }
+
+      override suspend fun beforeContainer(testCase: TestCase) {
+         this@resolvedTestListeners.beforeContainer(testCase)
+      }
+
+      override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+         this@resolvedTestListeners.afterEach(testCase, result)
+      }
+
+      override suspend fun beforeEach(testCase: TestCase) {
+         this@resolvedTestListeners.beforeEach(testCase)
+      }
+
+      override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+         this@resolvedTestListeners.afterAny(testCase, result)
+      }
+
+      override suspend fun beforeAny(testCase: TestCase) {
+         this@resolvedTestListeners.beforeAny(testCase)
       }
    }
    return this._listeners + this.listeners() + callbacks + factories.flatMap { it.listeners }

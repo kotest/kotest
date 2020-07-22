@@ -114,16 +114,17 @@ class TestCaseExecutor(
       log("Executing active test $testCase")
       listener.testStarted(testCase)
 
-      return testCase.invokeBeforeTest()
+      return testCase
+         .invokeAllBeforeTestCallbacks()
          .flatMap { invokeTestCase(executionContext, it, context, mark) }
          .fold(
             {
                TestResult.throwable(it, mark.elapsedNow()).apply {
-                  testCase.invokeAfterTest(this)
+                  testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
-               testCase.invokeAfterTest(result)
+               testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
                      { TestResult.throwable(it, mark.elapsedNow()) },
                      { result }
