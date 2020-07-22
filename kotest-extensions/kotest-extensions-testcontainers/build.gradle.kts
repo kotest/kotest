@@ -35,7 +35,7 @@ kotlin {
             implementation(kotlin("stdlib-jdk8"))
             implementation(project(Projects.Core))
             api("org.testcontainers:testcontainers:1.14.3")
-            api(Libs.Coroutines.core)
+            api(Libs.Coroutines.coreJvm)
          }
       }
 

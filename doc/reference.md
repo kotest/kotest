@@ -297,10 +297,10 @@ If any assertions inside the block failed, the test will continue to
 run. All failures will be reported in a single exception at the end of
 the block.
 
-`assertSoftly` also works with a receiver:
+Another version of `assertSoftly` takes an test target and lambda with test target as its receiver.
 
 ```kotlin
-foo.assertSoftly {
+assertSoftly(foo) {
     shouldNotEndWith("b")
     length shouldBe 3
 }

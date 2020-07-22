@@ -48,29 +48,35 @@ class TypeMatchersTest : WordSpec() {
     }
 
     "beInstanceOf" should {
-      "test that value is assignable to class" {
-        val arrayList: List<Int> = arrayListOf(1, 2, 3)
+       "test that value is assignable to class" {
+          val arrayList: List<Int> = arrayListOf(1, 2, 3)
 
-        arrayList should beInstanceOf(ArrayList::class)
-        arrayList.shouldBeInstanceOf<ArrayList<*>>()
+          arrayList should beInstanceOf(ArrayList::class)
+          arrayList.shouldBeInstanceOf<ArrayList<*>>()
 
-        arrayList should beInstanceOf(List::class)
+          arrayList should beInstanceOf(List::class)
 
-        shouldThrow<AssertionError> {
-          arrayList should beInstanceOf(LinkedList::class)
-        }
+          shouldThrow<AssertionError> {
+             arrayList should beInstanceOf(LinkedList::class)
+          }
 
-        arrayList.shouldNotBeInstanceOf<LinkedList<*>>()
+          arrayList.shouldNotBeInstanceOf<LinkedList<*>>()
 
-        shouldThrow<AssertionError> {
-          arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
-        }
-      }
+          shouldThrow<AssertionError> {
+             arrayList.shouldNotBeInstanceOf<ArrayList<*>>()
+          }
+       }
+
+       "use smart contracts to cast" {
+          val list: Collection<Int> = arrayListOf(1, 2, 3)
+          list.shouldBeInstanceOf<ArrayList<Int>>()
+          list.add(4) // this will only work if smart contracts worked
+       }
 
       "Allow execution with a lambda" {
         val list = arrayListOf(1, 2, 3)
 
-        list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> ->
+        list.shouldBeInstanceOf<ArrayList<Int>> {
           it shouldBeSameInstanceAs list
         }
       }
@@ -79,13 +85,6 @@ class TypeMatchersTest : WordSpec() {
         val list = arrayListOf(1, 2, 3)
 
         val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>> {}
-        typecastedList shouldBeSameInstanceAs list
-      }
-
-      "Returns typecasted value when invoked without arguments" {
-        val list = arrayListOf(1, 2, 3)
-        val typecastedList = list.shouldBeInstanceOf<ArrayList<Int>>()
-
         typecastedList shouldBeSameInstanceAs list
       }
 
@@ -116,7 +115,7 @@ class TypeMatchersTest : WordSpec() {
       "Allow execution with a lambda" {
         val list: Any = arrayListOf(1, 2, 3)
 
-        list.shouldBeTypeOf<ArrayList<Int>> { it: ArrayList<Int> ->
+        list.shouldBeTypeOf<ArrayList<Int>> {
           it shouldBeSameInstanceAs list
           it[0] shouldBe 1
         }
@@ -130,13 +129,11 @@ class TypeMatchersTest : WordSpec() {
         typecastedList[0] shouldBe 1
       }
 
-      "Returns typecasted value when executed without argument" {
-        val list: Any = arrayListOf(1, 2, 3)
-
-        val typecastedList = list.shouldBeTypeOf<ArrayList<Int>>()
-        typecastedList shouldBeSameInstanceAs list
-        typecastedList[0] shouldBe 1
-      }
+       "uses smart contracts to cast" {
+          val list: Any = arrayListOf(1, 2, 3)
+          list.shouldBeTypeOf<ArrayList<Int>>()
+          list[0] shouldBe 1
+       }
 
       "accepts null values" {
         val arrayList: List<Int>? = null

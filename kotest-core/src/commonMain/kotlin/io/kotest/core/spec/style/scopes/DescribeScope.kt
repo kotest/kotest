@@ -1,7 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -26,25 +29,32 @@ class DescribeScope(
    override val coroutineContext: CoroutineContext
 ) : ContainerScope {
 
-   @Deprecated("use nested describe", ReplaceWith("describe(name, test)"))
-   suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) = describe(name, test)
+   suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) {
+      val testName = TestName("Context: ", name)
+      containerTest(testName, false, test)
+   }
 
    suspend fun describe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = TestName("Describe: ", name)
-      addContainerTest(testName, xdisabled = false) {
-         DescribeScope(
-            this@DescribeScope.description.append(testName),
-            this@DescribeScope.lifecycle,
-            this,
-            this@DescribeScope.defaultConfig,
-            this@DescribeScope.coroutineContext
-         ).test()
-      }
+      containerTest(testName, false, test)
+   }
+
+   suspend fun xcontext(name: String, test: suspend DescribeScope.() -> Unit) {
+      val testName = TestName("Context: ", name)
+      containerTest(testName, true, test)
    }
 
    suspend fun xdescribe(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = TestName("Describe: ", name)
-      addContainerTest(testName, xdisabled = true) {
+      containerTest(testName, true, test)
+   }
+
+   private suspend fun containerTest(
+      testName: TestName,
+      xdisabled: Boolean,
+      test: suspend DescribeScope.() -> Unit
+   ) {
+      addContainerTest(testName, xdisabled = xdisabled) {
          DescribeScope(
             this@DescribeScope.description.append(testName),
             this@DescribeScope.lifecycle,

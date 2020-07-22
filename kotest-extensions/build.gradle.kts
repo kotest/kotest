@@ -43,7 +43,7 @@ kotlin {
          dependencies {
             implementation(project(Projects.JunitRunner))
             implementation(project(Projects.AssertionsCore))
-            implementation(Libs.Coroutines.core)
+            implementation(Libs.Coroutines.coreJvm)
          }
       }
    }
