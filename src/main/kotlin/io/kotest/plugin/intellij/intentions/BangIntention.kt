@@ -1,6 +1,5 @@
 package io.kotest.plugin.intellij.intentions
 
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInsight.intention.PsiElementBaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -10,7 +9,7 @@ import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.psi.KtLiteralStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 
-class BangIntention : PsiElementBaseIntentionAction(), IntentionAction {
+class BangIntention : PsiElementBaseIntentionAction() {
 
   override fun getText(): String = "Add/Remove bang to test name"
 
