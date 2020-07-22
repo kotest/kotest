@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.spec.description
 import io.kotest.core.spec.Spec
-import io.kotest.core.engine.KotestEngine
+import io.kotest.core.engine.KotestEngineLauncher
 import io.kotest.core.engine.TestEngineListener
 import kotlinx.coroutines.runBlocking
 import org.pitest.testapi.Description
@@ -39,12 +39,6 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
          }
       }
 
-      val engine = KotestEngine(
-         listOf(klass),
-         emptyList(),
-         null,
-         listener
-      )
-      engine.execute()
+      KotestEngineLauncher(listener).forSpec(klass).launch()
    }
 }

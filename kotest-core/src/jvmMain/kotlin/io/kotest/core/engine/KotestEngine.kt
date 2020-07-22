@@ -18,16 +18,26 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
-class KotestEngine(
+data class KotestEngineConfig(
    val classes: List<KClass<out Spec>>,
    val filters: List<TestCaseFilter>,
-   tags: Tags?,
    val listener: TestEngineListener,
-   // added to listeners statically added via Project.add
-   val listeners: List<Listener> = emptyList()
-) {
+   val tags: Tags?
+)
 
-   @Deprecated("for backwards compatibility. Will be removed in 4.4")
+class KotestEngine(private val config: KotestEngineConfig) {
+
+   @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
+   constructor(
+      classes: List<KClass<out Spec>>,
+      filters: List<TestCaseFilter>,
+      tags: Tags?,
+      listener: TestEngineListener,
+      // added to listeners statically added via Project.add
+      listeners: List<Listener> = emptyList()
+   ) : this(KotestEngineConfig(classes, filters, listener, tags))
+
+   @Deprecated("for backwards compatibility, do not use, will be removed as soon as possible")
    constructor(
       classes: List<KClass<out Spec>>,
       filters: List<TestCaseFilter>,
@@ -37,25 +47,24 @@ class KotestEngine(
       listeners: List<Listener> = emptyList()
    ) : this(classes, filters, tags, listener, listeners)
 
-   private val specExecutor = SpecExecutor(listener)
+   private val specExecutor = SpecExecutor(config.listener)
 
    init {
-      Project.registerFilters(filters)
-      if (tags != null)
-         Project.registerExtension(SpecifiedTagsTagExtension(tags))
+      Project.registerFilters(config.filters)
+      config.tags?.let { Project.registerExtension(SpecifiedTagsTagExtension(it)) }
    }
 
    fun cleanup() {
-      Project.deregisterFilters(filters)
+      Project.deregisterFilters(config.filters)
    }
 
-   private fun notifyTestEngineListener() = Try { listener.engineStarted(classes) }
+   private fun notifyTestEngineListener() = Try { config.listener.engineStarted(config.classes) }
 
    private fun submitAll() = Try {
-      log("Submitting ${classes.size} specs")
+      log("Submitting ${config.classes.size} specs")
 
       // the classes are ordered using an instance of SpecExecutionOrder
-      val ordered = Project.specExecutionOrder().sort(classes)
+      val ordered = Project.specExecutionOrder().sort(config.classes)
 
       // if parallelize is enabled, then we must order the specs into two sets, depending on if they
       // are thread safe or not.
@@ -97,18 +106,18 @@ class KotestEngine(
          log("Error during test engine run", it)
          it.printStackTrace()
       }
-      listener.engineFinished(errors)
+      config.listener.engineFinished(errors)
       // explicitly exit because we spin up test threads that the user may have put into deadlock
       // exitProcess(if (t == null) 0 else -1)
    }
 
    suspend fun execute() {
       notifyTestEngineListener()
-         .flatMap { (listeners + Project.listeners()).beforeProject() }
+         .flatMap { Project.listeners().beforeProject() }
          .fold(
             { error ->
                // any exception here is swallowed, as we already have an exception to report
-               (listeners + Project.listeners()).afterProject().fold(
+               Project.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   {
                      end(it + error)
@@ -118,7 +127,7 @@ class KotestEngine(
             },
             { errors ->
                if (errors.isNotEmpty()) {
-                  (listeners + Project.listeners()).afterProject().fold(
+                  Project.listeners().afterProject().fold(
                      { end(errors + listOf(it)) },
                      { end(errors + it) }
                   )
@@ -132,14 +141,14 @@ class KotestEngine(
       Try { submitAll() }
          .fold(
             { error ->
-               (listeners + Project.listeners()).afterProject().fold(
+               Project.listeners().afterProject().fold(
                   { end(listOf(error, it)) },
                   { end(it + error) }
                )
             },
             {
                // any exception here is used to notify the listener
-               (listeners + Project.listeners()).afterProject().fold(
+               Project.listeners().afterProject().fold(
                   { end(listOf(it)) },
                   { end(it) }
                )

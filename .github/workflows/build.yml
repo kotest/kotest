@@ -2,11 +2,9 @@ name: build
 
 on:
    push:
-      paths-ignore:
-         - 'doc/**'
-         - '*.md'
       branches:
          - master
+         - release/*
 
 jobs:
    build:

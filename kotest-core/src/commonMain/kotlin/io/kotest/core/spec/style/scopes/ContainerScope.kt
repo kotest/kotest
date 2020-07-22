@@ -56,7 +56,7 @@ interface ContainerScope : CoroutineScope {
    fun beforeTest(f: BeforeTest) {
       lifecycle.addListener(object : TestListener {
          override suspend fun beforeTest(testCase: TestCase) {
-            if (description.isParentOf(testCase.description)) f(testCase)
+            if (description.isAncestorOf(testCase.description)) f(testCase)
          }
       })
    }
@@ -67,7 +67,7 @@ interface ContainerScope : CoroutineScope {
    fun afterTest(f: AfterTest) {
       lifecycle.addListener(object : TestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-            if (description.isParentOf(testCase.description)) f(Tuple2(testCase, result))
+            if (description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
          }
       })
    }
