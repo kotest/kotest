@@ -88,6 +88,16 @@ object Project {
     */
    private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
 
+   /**
+    * The casing of the tests' names can be adjusted using different strategies. It affects **only**
+    * the first letter of tests' prefixes (I.e.: Given, When, Then) and the first letter of the tests'
+    * titles.
+    *
+    * This setting's options are defined in [TestNameCaseOptions]. Check the previous enum for the
+    * available options and examples.
+    */
+   private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AS_IS
+
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
@@ -186,6 +196,12 @@ object Project {
 
    fun includeTestScopePrefixes() = includeTestScopePrefixes
 
+   fun testNameCase() = testNameCase
+
+   fun testNameCase(caseConfig: TestNameCaseOptions) {
+      testNameCase = caseConfig
+   }
+
    fun tagExtensions(): List<TagExtension> = extensions
       .filterIsInstance<TagExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
@@ -241,6 +257,19 @@ object Project {
 }
 
 /**
+ * Test naming strategies to adjust test name case.
+ *
+ * @property AS_IS For: should("Happen something") yields: should Happen something
+ * @property SENTENCE For: should("Happen something") yields: Should happen something
+ * @property LOWERCASE For: should("Happen something") yields: should happen something
+ */
+enum class TestNameCaseOptions {
+   AS_IS,
+   SENTENCE,
+   LOWERCASE
+}
+
+/**
  * Contains all the configuration details that can be set by a user supplied config object.
  */
 @OptIn(ExperimentalTime::class)
@@ -261,7 +290,8 @@ data class ProjectConf(
    val parallelism: Int? = null,
    val timeout: Duration? = null,
    val testCaseConfig: TestCaseConfig? = null,
-   val includeTestScopePrefixes: Boolean? = null
+   val includeTestScopePrefixes: Boolean? = null,
+   val testNameCase: TestNameCaseOptions? = null
 )
 
 /**

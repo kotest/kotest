@@ -181,6 +181,16 @@ abstract class AbstractProjectConfig {
    open val includeTestScopePrefixes: Boolean? = null
 
    /**
+    * The casing of the tests' names can be adjusted using different strategies. It affects **only**
+    * the first letter of tests' prefixes (I.e.: Given, When, Then) and the first letter of the tests'
+    * titles.
+    *
+    * This setting's options are defined in [TestNameCaseOptions]. Check the previous enum for the
+    * available options and examples.
+    */
+   open val testNameCase: TestNameCaseOptions? = null
+
+   /**
     * Executed before the first test of the project, but after the
     * [ProjectListener.beforeProject] methods.
     */
