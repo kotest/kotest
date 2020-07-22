@@ -32,7 +32,7 @@ class TestNameTest : FunSpec() {
          TestName(null, "test").displayName() shouldBe "test"
          TestName("pref", "test").displayName() shouldBe "preftest"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          TestName(null, "Test").displayName() shouldBe "test"
          TestName(null, "test").displayName() shouldBe "test"
          TestName("Pref", "Test").displayName() shouldBe "preftest"
@@ -56,7 +56,7 @@ class TestNameTest : FunSpec() {
          TestName(null, name).bang.shouldBeTrue()
          TestName(null, name).displayName() shouldBe "!banged"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          listOf("!banged", "!Banged").forEach {
             TestName(null, it).bang.shouldBeTrue()
             TestName(null, it).displayName() shouldBe "!banged"
@@ -76,7 +76,7 @@ class TestNameTest : FunSpec() {
          TestName(prefix, name).bang.shouldBeTrue()
          TestName(prefix, name).displayName() shouldBe "!Prefix: banged"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          listOf("!banged", "!Banged").forEach {
             TestName(prefix, it).bang.shouldBeTrue()
             TestName(prefix, it).displayName() shouldBe "!prefix: banged"
@@ -96,7 +96,7 @@ class TestNameTest : FunSpec() {
          TestName(null, name).focus.shouldBeTrue()
          TestName(null, name).displayName() shouldBe "f:Focused"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          listOf("f:Focused", "f:focused").forEach {
             TestName(null, it).focus.shouldBeTrue()
             TestName(null, it).displayName() shouldBe "f:focused"
@@ -116,7 +116,7 @@ class TestNameTest : FunSpec() {
          TestName(prefix, name).focus.shouldBeTrue()
          TestName(prefix, name).displayName() shouldBe "f:Prefix: Focused"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          listOf("f:Focused", "f:focused").forEach {
             TestName(prefix, it).focus.shouldBeTrue()
             TestName(prefix, it).displayName() shouldBe "f:prefix: focused"
@@ -135,7 +135,7 @@ class TestNameTest : FunSpec() {
          val name = "!f: BangFocus"
          TestName(prefix, name).displayName() shouldBe "!Prefix: f: BangFocus"
 
-         Project.testNameCase(TestNameCaseOptions.Lowercase)
+         Project.testNameCase(TestNameCaseOptions.InitialLowercase)
          TestName(prefix, name).displayName() shouldBe "!prefix: f: BangFocus"
 
          Project.testNameCase(TestNameCaseOptions.Sentence)
