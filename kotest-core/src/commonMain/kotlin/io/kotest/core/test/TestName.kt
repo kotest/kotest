@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.config.Project
+import io.kotest.core.config.TestNameCaseOptions
 
 /**
  * Models the name of a test. A test can sometimes have a prefix set, eg when using FeatureSpec.
@@ -31,17 +32,41 @@ data class TestName(val prefix: String?, val name: String, val focus: Boolean, v
     *
     * This means the user writes when("!disable") and the platform invokes ("when", "!disable")
     * and ends up with !when disable, so that it is correctly parsed by the test runtime.
+    *
+    * To create test names with proper case, this function's result is affected by the
+    * [Project.testNameCase] property.
     */
    fun displayName(): String {
       val flattened = name.trim().replace("\n", "")
       val withPrefix = if (Project.includeTestScopePrefixes() && prefix != null) prefix else ""
+
+      val name = if (withPrefix.isBlank()) {
+         when (Project.testNameCase()) {
+            TestNameCaseOptions.Sentence -> flattened.capitalize()
+            TestNameCaseOptions.InitialLowercase -> flattened.uncapitalize()
+            TestNameCaseOptions.Lowercase -> flattened.toLowerCase()
+            else -> flattened
+         }
+      }
+      else {
+         when (Project.testNameCase()) {
+            TestNameCaseOptions.Sentence -> "${withPrefix.capitalize()}${flattened.uncapitalize()}"
+            TestNameCaseOptions.InitialLowercase -> "${withPrefix.uncapitalize()}${flattened.uncapitalize()}"
+            TestNameCaseOptions.Lowercase -> "${withPrefix.toLowerCase()}${flattened.toLowerCase()}"
+            else -> "$withPrefix$flattened"
+         }
+      }
+
       return when {
-         focus -> "f:$withPrefix$flattened"
-         bang -> "!$withPrefix$flattened"
-         else -> "$withPrefix$flattened"
+         focus -> "f:$name"
+         bang -> "!$name"
+         else -> name
       }
    }
 }
+
+private fun String.uncapitalize() =
+   this[0].toLowerCase() + substring(1 until this.length)
 
 /**
  * Returns true if this test is a focused test.

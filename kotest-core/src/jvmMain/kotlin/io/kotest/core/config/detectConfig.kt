@@ -54,7 +54,8 @@ actual fun detectConfig(): ProjectConf {
          parallelism = max(confClass.parallelism, confClass.parallelism()),
          timeout = confClass.timeout,
          testCaseConfig = confClass.defaultTestCaseConfig,
-         includeTestScopePrefixes = confClass.includeTestScopePrefixes
+         includeTestScopePrefixes = confClass.includeTestScopePrefixes,
+         testNameCase = confClass.testNameCase
       )
    }
 

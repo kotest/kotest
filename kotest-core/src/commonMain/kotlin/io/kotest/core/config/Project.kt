@@ -90,6 +90,15 @@ object Project {
     */
    private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
 
+   /**
+    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
+    * prefixes (I.e.: Given, When, Then) and tests' titles.
+    *
+    * This setting's options are defined in [TestNameCaseOptions]. Check the previous enum for the
+    * available options and examples.
+    */
+   private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AsIs
+
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
@@ -188,6 +197,12 @@ object Project {
 
    fun includeTestScopePrefixes() = includeTestScopePrefixes
 
+   fun testNameCase() = testNameCase
+
+   fun testNameCase(caseConfig: TestNameCaseOptions) {
+      testNameCase = caseConfig
+   }
+
    fun tagExtensions(): List<TagExtension> = extensions
       .filterIsInstance<TagExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
@@ -243,6 +258,21 @@ object Project {
 }
 
 /**
+ * Test naming strategies to adjust test name case.
+ *
+ * @property AsIs For: should("Happen SOMETHING") yields: should Happen SOMETHING
+ * @property Sentence For: should("Happen SOMETHING") yields: Should happen SOMETHING
+ * @property InitialLowercase For: should("Happen SOMETHING") yields: should happen SOMETHING
+ * @property Lowercase For: should("Happen SOMETHING") yields: should happen something
+ */
+enum class TestNameCaseOptions {
+   AsIs,
+   Sentence,
+   InitialLowercase,
+   Lowercase
+}
+
+/**
  * Contains all the configuration details that can be set by a user supplied config object.
  */
 @OptIn(ExperimentalTime::class)
@@ -263,7 +293,8 @@ data class ProjectConf(
    val parallelism: Int? = null,
    val timeout: Duration? = null,
    val testCaseConfig: TestCaseConfig? = null,
-   val includeTestScopePrefixes: Boolean? = null
+   val includeTestScopePrefixes: Boolean? = null,
+   val testNameCase: TestNameCaseOptions? = null
 )
 
 /**
