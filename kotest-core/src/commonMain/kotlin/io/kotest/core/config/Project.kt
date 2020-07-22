@@ -91,14 +91,13 @@ object Project {
    private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
 
    /**
-    * The casing of the tests' names can be adjusted using different strategies. It affects **only**
-    * the first letter of tests' prefixes (I.e.: Given, When, Then) and the first letter of the tests'
-    * titles.
+    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
+    * prefixes (I.e.: Given, When, Then) and tests' titles.
     *
     * This setting's options are defined in [TestNameCaseOptions]. Check the previous enum for the
     * available options and examples.
     */
-   private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AS_IS
+   private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AsIs
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
 
@@ -261,14 +260,16 @@ object Project {
 /**
  * Test naming strategies to adjust test name case.
  *
- * @property AS_IS For: should("Happen something") yields: should Happen something
- * @property SENTENCE For: should("Happen something") yields: Should happen something
- * @property LOWERCASE For: should("Happen something") yields: should happen something
+ * @property AsIs For: should("Happen SOMETHING") yields: should Happen SOMETHING
+ * @property Sentence For: should("Happen SOMETHING") yields: Should happen SOMETHING
+ * @property InitialLowercase For: should("Happen SOMETHING") yields: should happen SOMETHING
+ * @property Lowercase For: should("Happen SOMETHING") yields: should happen something
  */
 enum class TestNameCaseOptions {
-   AS_IS,
-   SENTENCE,
-   LOWERCASE
+   AsIs,
+   Sentence,
+   InitialLowercase,
+   Lowercase
 }
 
 /**

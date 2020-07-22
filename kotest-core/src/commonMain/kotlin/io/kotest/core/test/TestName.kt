@@ -42,15 +42,17 @@ data class TestName(val prefix: String?, val name: String, val focus: Boolean, v
 
       val name = if (withPrefix.isBlank()) {
          when (Project.testNameCase()) {
-            TestNameCaseOptions.SENTENCE -> flattened.capitalize()
-            TestNameCaseOptions.LOWERCASE -> flattened.uncapitalize()
+            TestNameCaseOptions.Sentence -> flattened.capitalize()
+            TestNameCaseOptions.InitialLowercase -> flattened.uncapitalize()
+            TestNameCaseOptions.Lowercase -> flattened.toLowerCase()
             else -> flattened
          }
       }
       else {
          when (Project.testNameCase()) {
-            TestNameCaseOptions.SENTENCE -> "${withPrefix.capitalize()}${flattened.uncapitalize()}"
-            TestNameCaseOptions.LOWERCASE -> "${withPrefix.uncapitalize()}${flattened.uncapitalize()}"
+            TestNameCaseOptions.Sentence -> "${withPrefix.capitalize()}${flattened.uncapitalize()}"
+            TestNameCaseOptions.InitialLowercase -> "${withPrefix.uncapitalize()}${flattened.uncapitalize()}"
+            TestNameCaseOptions.Lowercase -> "${withPrefix.toLowerCase()}${flattened.toLowerCase()}"
             else -> "$withPrefix$flattened"
          }
       }
