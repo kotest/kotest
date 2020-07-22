@@ -4,6 +4,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -103,6 +104,30 @@ class ConstantNowTestListener<Time : Temporal>(now: Time) :
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetNow()
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) changeNow()
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) resetNow()
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) changeNow()
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) resetNow()
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      changeNow()
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetNow()
    }
 }

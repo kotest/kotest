@@ -4,6 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestType
 import java.util.TimeZone
 
 /**
@@ -56,6 +57,30 @@ class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), Tes
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetTimeZone()
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) changeTimeZone()
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) resetTimeZone()
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) changeTimeZone()
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) resetTimeZone()
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      changeTimeZone()
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetTimeZone()
    }
 }

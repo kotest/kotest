@@ -4,10 +4,8 @@ import io.kotest.mpp.log
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
+import io.kotest.core.test.*
 import io.kotest.core.test.Description
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestStatus
 import io.qameta.allure.*
 import io.qameta.allure.model.Label
 import io.qameta.allure.model.Status
@@ -51,6 +49,38 @@ object AllureTestListener : TestListener, ProjectListener {
       description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
 
    override suspend fun beforeTest(testCase: TestCase) {
+      startAllureTestCase(testCase)
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      stopAllureTestCase(testCase, result)
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) startAllureTestCase(testCase)
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) stopAllureTestCase(testCase, result)
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) startAllureTestCase(testCase)
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) stopAllureTestCase(testCase, result)
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      startAllureTestCase(testCase)
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+      stopAllureTestCase(testCase, result)
+   }
+
+   private fun startAllureTestCase(testCase: TestCase) {
       log("Allure beforeTest $testCase")
 
       val uuid = UUID.randomUUID()
@@ -88,8 +118,7 @@ object AllureTestListener : TestListener, ProjectListener {
       allure().startTestCase(uuid.toString())
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-
+   private fun stopAllureTestCase(testCase: TestCase, result: TestResult) {
       log("Allure afterTest $testCase")
       val uuid = uuids[testCase.description]
 

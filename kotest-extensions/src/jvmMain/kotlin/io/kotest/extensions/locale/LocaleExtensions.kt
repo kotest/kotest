@@ -4,6 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestType
 import java.util.Locale
 
 /**
@@ -56,6 +57,30 @@ class LocaleTestListener(locale: Locale) : LocaleListener(locale), TestListener 
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetLocale()
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) changeLocale()
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) resetLocale()
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) changeLocale()
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) resetLocale()
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      changeLocale()
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetLocale()
    }
 }

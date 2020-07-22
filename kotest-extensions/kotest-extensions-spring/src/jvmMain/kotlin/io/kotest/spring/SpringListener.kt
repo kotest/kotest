@@ -6,6 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
+import io.kotest.core.test.TestType
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
@@ -32,18 +33,50 @@ object SpringListener : TestListener {
    }
 
    override suspend fun beforeTest(testCase: TestCase) {
-      testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
-      testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
+      preProcessTest(testCase)
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
-      testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
+      postProcessTest(testCase)
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) preProcessTest(testCase)
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) postProcessTest(testCase)
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) preProcessTest(testCase)
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) postProcessTest(testCase)
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      preProcessTest(testCase)
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+      postProcessTest(testCase)
    }
 
    override suspend fun afterSpec(spec: Spec) {
       spec.testContext.afterTestClass()
       testContexts.remove(spec)
+   }
+
+   private fun preProcessTest(testCase: TestCase) {
+      testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
+      testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
+   }
+
+   private fun postProcessTest(testCase: TestCase) {
+      testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
+      testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
    }
 
    private val Spec.testContext: TestContextManager

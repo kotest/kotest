@@ -3,6 +3,7 @@ package io.kotest.extensions.system
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -54,6 +55,38 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
    fun output(): String = String(buffer.toByteArray())
 
    override suspend fun beforeTest(testCase: TestCase) {
+      redirectStandardOut()
+   }
+
+   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      restoreStandardOutput()
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) redirectStandardOut()
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) restoreStandardOutput()
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) redirectStandardOut()
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) restoreStandardOutput()
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      redirectStandardOut()
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+      restoreStandardOutput()
+   }
+
+   private fun redirectStandardOut() {
       buffer = ByteArrayOutputStream()
       previous = System.out
       if (tee) {
@@ -63,9 +96,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
       }
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      System.setOut(previous)
-   }
+   private fun restoreStandardOutput() = System.setOut(previous)
 }
 
 /**

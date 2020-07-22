@@ -4,6 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestType
 import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.lang.reflect.Field
 
@@ -181,6 +182,30 @@ class SystemEnvironmentTestListener(environment: Map<String, String>, mode: Over
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+      resetSystemEnvironment()
+   }
+
+   override suspend fun beforeContainer(testCase: TestCase) {
+      if (testCase.type == TestType.Container) changeSystemEnvironment()
+   }
+
+   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Container) resetSystemEnvironment()
+   }
+
+   override suspend fun beforeEach(testCase: TestCase) {
+      if (testCase.type == TestType.Test) changeSystemEnvironment()
+   }
+
+   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+      if (testCase.type == TestType.Test) resetSystemEnvironment()
+   }
+
+   override suspend fun beforeAny(testCase: TestCase) {
+      changeSystemEnvironment()
+   }
+
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetSystemEnvironment()
    }
 }

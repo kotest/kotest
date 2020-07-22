@@ -34,11 +34,11 @@ class SpringTestExecutionListenerTest : FunSpec() {
 
    override fun afterSpec(spec: Spec) {
     DummyTestExecutionListener.beforeTestClass shouldBe 1
-    DummyTestExecutionListener.beforeTestMethod shouldBe 2
-    DummyTestExecutionListener.beforeTestExecution shouldBe 2
+    DummyTestExecutionListener.beforeTestMethod shouldBe 6
+    DummyTestExecutionListener.beforeTestExecution shouldBe 6
     DummyTestExecutionListener.prepareTestInstance shouldBe 1
-    DummyTestExecutionListener.afterTestExecution shouldBe 2
-    DummyTestExecutionListener.afterTestmethod shouldBe 2
+    DummyTestExecutionListener.afterTestExecution shouldBe 6
+    DummyTestExecutionListener.afterTestmethod shouldBe 6
     DummyTestExecutionListener.afterTestClass shouldBe 1
   }
 }
