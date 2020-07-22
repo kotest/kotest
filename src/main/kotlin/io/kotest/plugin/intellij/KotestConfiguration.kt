@@ -37,6 +37,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
    private var testPath: String? = null
    private var specName: String? = null
    private var packageName: String? = null
+   private var searchScope: TestSearchScope.Wrapper = TestSearchScope.Wrapper()
 
    fun getTestPath(): String? = testPath
    fun getSpecName(): String? = specName
@@ -52,21 +53,31 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
    override fun getPackage(): String? = null
    override fun getRunClass(): String? = null
    override fun getVMParameters(): String? = vmParameters
-   override fun getAlternativeJrePath() = alternativeJrePath
    override fun getProgramParameters(): String? = programParameters
    override fun getWorkingDirectory(): String? = workingDirectory
 
-   override fun getTestSearchScope(): TestSearchScope = TestSearchScope.SINGLE_MODULE
-
-   override fun beClassConfiguration(aClass: PsiClass) {
+   // used by AbstractJavaTestConfigurationProducer which we don't use as that class is basically
+   // around helpers for classes/methods based testing
+   // but we implement it nicely anyway
+   override fun getTestType(): String = when {
+      testPath != null -> "test"
+      specName != null -> "spec"
+      packageName != null -> "package"
+      else -> "source"
    }
 
-   override fun getTestType(): String = "spec"
-
-   override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
-      SettingsEditorPanel(project)
+   override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = SettingsEditorPanel(project)
 
    override fun suggestedName(): String? = buildSuggestedName(specName, testPath, packageName)
+
+   override fun getAlternativeJrePath() = alternativeJrePath
+   override fun setAlternativeJrePath(path: String?) {
+      alternativeJrePath = path
+   }
+
+   override fun setAlternativeJrePathEnabled(enabled: Boolean) {
+      alternativeJrePathEnabled = enabled
+   }
 
    override fun getValidModules(): MutableCollection<Module> {
       // if we are executing a spec (or test in a spec) then we can narrow down the valid modules
@@ -92,25 +103,17 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       }
    }
 
+   override fun getTestSearchScope(): TestSearchScope = this.searchScope.scope
    override fun setSearchScope(searchScope: TestSearchScope?) {
+      if (searchScope == null) this.searchScope.scope = searchScope
    }
 
-   override fun setAlternativeJrePath(path: String?) {
-      alternativeJrePath = path
-   }
-
-   override fun bePatternConfiguration(classes: MutableList<PsiClass>?, method: PsiMethod?) {
-   }
+   override fun bePatternConfiguration(classes: MutableList<PsiClass>?, method: PsiMethod?) {}
+   override fun beMethodConfiguration(location: Location<PsiMethod>?) {}
+   override fun beClassConfiguration(aClass: PsiClass) {}
 
    override fun setVMParameters(value: String?) {
       vmParameters = value
-   }
-
-   override fun beMethodConfiguration(location: Location<PsiMethod>?) {
-   }
-
-   override fun setAlternativeJrePathEnabled(enabled: Boolean) {
-      alternativeJrePathEnabled = enabled
    }
 
    override fun setWorkingDirectory(workingDirectory: String?) {
@@ -141,6 +144,8 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       this.passParentEnvs = passParentEnvs
    }
 
+   // used by AbstractJavaTestConfigurationProducer to help when comparing run configuration instances
+   // we don't use that abstract class becauase it is mainly focused on class/method style tests
    override fun isConfiguredByElement(element: PsiElement?): Boolean = false
 
    override fun setProgramParameters(programParameteres: String?) {
@@ -169,6 +174,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
       JDOMExternalizerUtil.writeField(element, TestPathField, testPath)
       JDOMExternalizerUtil.writeField(element, PackageNameField, packageName)
+      searchScope.writeExternal(element)
       EnvironmentVariablesComponent.writeExternal(element, envs)
    }
 
@@ -180,6 +186,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       specName = JDOMExternalizerUtil.readField(element, SpecNameField)
       testPath = JDOMExternalizerUtil.readField(element, TestPathField)
       packageName = JDOMExternalizerUtil.readField(element, PackageNameField)
+      searchScope.readExternal(element)
       EnvironmentVariablesComponent.readExternal(element, envs)
    }
 
