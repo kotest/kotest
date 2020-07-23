@@ -20,6 +20,8 @@ import kotlin.reflect.full.primaryConstructor
 
 object SpringListener : TestListener {
 
+   var ignoreWarning: Boolean = false
+
    // Each Spec needs its own context. However, this listener is a singleton, so we need
    // to keep this map to separate those contexts instead of making this class non-singleton, thus
    // breaking client code
@@ -56,7 +58,9 @@ object SpringListener : TestListener {
          val klass = this::class.java
 
          return if (Modifier.isFinal(klass.modifiers)) {
-            println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            if (!ignoreWarning) {
+               println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            }
             this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
          } else {
             val fakeSpec = ByteBuddy()
