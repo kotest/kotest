@@ -1,7 +1,9 @@
 package io.kotest.matchers
 
 import io.kotest.assertions.*
+import io.kotest.assertions.eq.actualIsNull
 import io.kotest.assertions.eq.eq
+import io.kotest.assertions.eq.expectedIsNull
 import io.kotest.assertions.show.show
 
 @Suppress("UNCHECKED_CAST")
@@ -11,28 +13,11 @@ infix fun <T, U : T> T.shouldBe(expected: U?) {
       else -> {
          val actual = this
          assertionCounter.inc()
-         // if we have null and non null, usually that's a failure, but people can override equals to allow it
-         if (actual == null && expected != null && actual != expected) {
-            errorCollector.collectOrThrow(actualIsNull(expected))
-         } else if (actual != null && expected == null && actual != expected) {
-            errorCollector.collectOrThrow(expectedIsNull(actual))
-         } else if (actual != null && expected != null) {
-            // for two non-null values, we use the [eq] typeclass.
-            val t = eq(actual, expected)
-            if (t != null)
-               errorCollector.collectOrThrow(t)
-         }
+         eq(actual, expected)?.let { errorCollector.collectOrThrow(it) }
       }
    }
 }
 
-private fun actualIsNull(expected: Any): AssertionError {
-   return AssertionError("Expected ${expected.show().value} but actual was null")
-}
-
-private fun expectedIsNull(actual: Any): AssertionError {
-   return AssertionError("Expected null but actual was ${actual.show().value}")
-}
 
 @Suppress("UNCHECKED_CAST")
 infix fun <T> T.shouldNotBe(any: Any?) {

@@ -9,12 +9,12 @@ internal object MapEq : Eq<Map<*, *>?> {
          actual == null && expected == null -> null
          actual != null && expected != null -> {
             val haveUnequalKeys = eq(actual.keys, expected.keys)
-            if(haveUnequalKeys != null) generateError(actual, expected)
+            if (haveUnequalKeys != null) generateError(actual, expected)
             else {
                val hasDifferentValue = actual.keys.any { key ->
                   eq(actual[key], expected[key]) != null
                }
-               if(hasDifferentValue) generateError(actual, expected)
+               if (hasDifferentValue) generateError(actual, expected)
                else null
             }
          }
