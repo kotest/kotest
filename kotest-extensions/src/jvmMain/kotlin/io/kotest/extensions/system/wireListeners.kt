@@ -3,6 +3,7 @@ package io.kotest.extensions.system
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import org.apache.commons.io.output.TeeOutputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
@@ -53,7 +54,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 
    fun output(): String = String(buffer.toByteArray())
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.out
       if (tee) {
@@ -63,7 +64,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
       }
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       System.setOut(previous)
    }
 }
@@ -74,15 +75,14 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
  *
  * Users can query the written data by fetching the buffer by invoking [output].
  */
-class SystemErrWireListener(private val tee: Boolean = true) :
-   TestListener {
+class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
    private var buffer = ByteArrayOutputStream()
    private var previous = System.err
 
    fun output(): String = String(buffer.toByteArray())
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.err
       if (tee) {
@@ -92,7 +92,7 @@ class SystemErrWireListener(private val tee: Boolean = true) :
       }
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       System.setErr(previous)
    }
 }

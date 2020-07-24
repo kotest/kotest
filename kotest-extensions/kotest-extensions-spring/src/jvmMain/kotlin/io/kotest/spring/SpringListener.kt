@@ -34,12 +34,12 @@ object SpringListener : TestListener {
       spec.testContext.prepareTestInstance(spec)
    }
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       testCase.spec.testContext.beforeTestMethod(testCase.spec, testCase.spec.method)
       testCase.spec.testContext.beforeTestExecution(testCase.spec, testCase.spec.method)
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       testCase.spec.testContext.afterTestMethod(testCase.spec, testCase.spec.method, null as Throwable?)
       testCase.spec.testContext.afterTestExecution(testCase.spec, testCase.spec.method, null as Throwable?)
    }

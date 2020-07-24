@@ -4,6 +4,7 @@ import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -95,14 +96,12 @@ abstract class ConstantNowListener<Time : Temporal>(private val now: Time) {
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowTestListener<Time : Temporal>(now: Time) :
-   ConstantNowListener<Time>(now), TestListener {
-
-   override suspend fun beforeTest(testCase: TestCase) {
+class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now), TestListener {
+   override suspend fun beforeAny(testCase: TestCase) {
       changeNow()
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetNow()
    }
 }

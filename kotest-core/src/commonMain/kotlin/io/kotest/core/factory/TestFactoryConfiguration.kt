@@ -2,9 +2,7 @@ package io.kotest.core.factory
 
 import io.kotest.core.config.Project
 import io.kotest.core.sourceRef
-import io.kotest.core.spec.AfterTest
-import io.kotest.core.spec.BeforeTest
-import io.kotest.core.spec.TestConfiguration
+import io.kotest.core.spec.*
 import io.kotest.core.test.*
 
 /**
@@ -26,6 +24,12 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
    // test lifecycle callbacks
    internal var beforeTests = emptyList<BeforeTest>()
    internal var afterTests = emptyList<AfterTest>()
+   internal var beforeContainers = emptyList<BeforeContainer>()
+   internal var afterContainers = emptyList<AfterContainer>()
+   internal var beforeEaches = emptyList<BeforeEach>()
+   internal var afterEaches = emptyList<AfterEach>()
+   internal var beforeAnys = emptyList<BeforeAny>()
+   internal var afterAnys = emptyList<AfterAny>()
 
    /**
     * Registers a new before-test callback to be executed before every [TestCase].
@@ -42,6 +46,63 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
     */
    override fun afterTest(f: AfterTest) {
       afterTests = afterTests + f
+   }
+
+   /**
+    * Registers a new before-container callback to be executed before every [TestCase]
+    * with type [TestType.Container].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun beforeContainer(f: BeforeContainer) {
+      beforeContainers = beforeContainers + f
+   }
+
+   /**
+    * Registers a new after-container callback to be executed after every [TestCase]
+    * with type [TestType.Container].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   override fun afterContainer(f: AfterContainer) {
+      afterContainers = afterContainers + f
+   }
+
+   /**
+    * Registers a new before-each callback to be executed before every [TestCase]
+    * with type [TestType.Test].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun beforeEach(f: BeforeEach) {
+      beforeEaches = beforeEaches + f
+   }
+
+   /**
+    * Registers a new after-each callback to be executed after every [TestCase]
+    * with type [TestType.Test].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   override fun afterEach(f: AfterEach) {
+      afterEaches = afterEaches + f
+   }
+
+   /**
+    * Registers a new before-any callback to be executed before every [TestCase]
+    * with type [TestType.Test] or [TestType.Container].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   override fun beforeAny(f: BeforeAny) {
+      beforeAnys = beforeAnys + f
+   }
+
+   /**
+    * Registers a new after-container callback to be executed after every [TestCase]
+    * with type [TestType.Container] or [TestType.Test].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   override fun afterAny(f: AfterAny) {
+      afterAnys = afterAnys + f
    }
 
    /**

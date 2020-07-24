@@ -2,8 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tuple2
 import io.kotest.core.listeners.TestListener
-import io.kotest.core.spec.AfterTest
-import io.kotest.core.spec.BeforeTest
+import io.kotest.core.spec.*
 import io.kotest.core.test.*
 import kotlinx.coroutines.CoroutineScope
 
@@ -72,4 +71,79 @@ interface ContainerScope : CoroutineScope {
       })
    }
 
+   /**
+    * Registers a [BeforeContainer] function that executes before every test with type [TestType.Container] in
+    * this scope.
+    */
+   fun beforeContainer(f: BeforeContainer) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun beforeContainer(testCase: TestCase) {
+            if (description.isAncestorOf(testCase.description)) {
+               f(testCase)
+            }
+         }
+      })
+   }
+
+   /**
+    * Registers an [AfterContainer] function that executes after every test with type [TestType.Container] in
+    * this scope.
+    */
+   fun afterContainer(f: AfterContainer) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+            if (description.isAncestorOf(testCase.description)) {
+               f(Tuple2(testCase, result))
+            }
+         }
+      })
+   }
+
+   /**
+    * Registers a [BeforeEach] function that executes before every test with type [TestType.Test] in this scope.
+    */
+   fun beforeEach(f: BeforeEach) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun beforeEach(testCase: TestCase) {
+            if (description.isAncestorOf(testCase.description)) {
+               f(testCase)
+            }
+         }
+      })
+   }
+
+   /**
+    * Registers an [AfterEach] function that executes after every test with type [TestType.Test] in this scope.
+    */
+   fun afterEach(f: AfterEach) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+            if (description.isAncestorOf(testCase.description)) {
+               f(Tuple2(testCase, result))
+            }
+         }
+      })
+   }
+
+   /**
+    * Registers a [BeforeAny] function that executes before every test with any [TestType] in this scope.
+    */
+   fun beforeAny(f: BeforeAny) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun beforeAny(testCase: TestCase) {
+            if (description.isAncestorOf(testCase.description)) f(testCase)
+         }
+      })
+   }
+
+   /**
+    * Registers an [AfterAny] function that executes after every test with any [TestType] in this scope.
+    */
+   fun afterAny(f: AfterAny) {
+      lifecycle.addListener(object : TestListener {
+         override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+            if (description.isAncestorOf(testCase.description)) f(Tuple2(testCase, result))
+         }
+      })
+   }
 }

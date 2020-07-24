@@ -14,14 +14,17 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.runtime.configureRuntime
-import io.kotest.core.test.AssertionMode
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseConfig
-import io.kotest.core.test.TestResult
+import io.kotest.core.test.*
 import kotlin.reflect.KClass
 
 typealias BeforeTest = suspend (TestCase) -> Unit
 typealias AfterTest = suspend (Tuple2<TestCase, TestResult>) -> Unit
+typealias BeforeEach = suspend (TestCase) -> Unit
+typealias AfterEach = suspend (Tuple2<TestCase, TestResult>) -> Unit
+typealias BeforeContainer = suspend (TestCase) -> Unit
+typealias AfterContainer = suspend (Tuple2<TestCase, TestResult>) -> Unit
+typealias BeforeAny = suspend (TestCase) -> Unit
+typealias AfterAny = suspend (Tuple2<TestCase, TestResult>) -> Unit
 typealias BeforeSpec = suspend (Spec) -> Unit
 typealias AfterSpec = suspend (Spec) -> Unit
 typealias AfterProject = () -> Unit
@@ -105,6 +108,51 @@ abstract class TestConfiguration {
     * and the [TestResult] outcome of that test.
     */
    abstract fun afterTest(f: AfterTest)
+
+   /**
+    * Registers a new before-container callback to be executed before every [TestCase]
+    * with type [TestType.Container].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   abstract fun beforeContainer(f: BeforeContainer)
+
+   /**
+    * Registers a new after-container callback to be executed after every [TestCase]
+    * with type [TestType.Container].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   abstract fun afterContainer(f: AfterContainer)
+
+   /**
+    * Registers a new before-each callback to be executed before every [TestCase]
+    * with type [TestType.Test].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   abstract fun beforeEach(f: BeforeEach)
+
+   /**
+    * Registers a new after-each callback to be executed after every [TestCase]
+    * with type [TestType.Test].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   abstract fun afterEach(f: AfterEach)
+
+   /**
+    * Registers a new before-any callback to be executed before every [TestCase]
+    * with type [TestType.Test] or [TestType.Container].
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
+   abstract fun beforeAny(f: BeforeAny)
+
+   /**
+    * Registers a new after-container callback to be executed after every [TestCase]
+    * with type [TestType.Container] or [TestType.Test].
+    * The callback provides two parameters - the test case that has just completed,
+    * and the [TestResult] outcome of that test.
+    */
+   abstract fun afterAny(f: AfterAny)
 
    fun beforeSpec(f: BeforeSpec) {
       listener(object : TestListener {

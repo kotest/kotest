@@ -4,6 +4,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
+import io.kotest.core.test.TestType
 
 /**
  * Replaces System Security Manager with [securityManager]
@@ -55,11 +56,11 @@ abstract class SecurityManagerListener(protected val securityManager: SecurityMa
 class SecurityManagerTestListener(securityManager: SecurityManager?) : SecurityManagerListener(securityManager),
    TestListener {
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       changeSecurityManager()
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       resetSecurityManager()
    }
 }
