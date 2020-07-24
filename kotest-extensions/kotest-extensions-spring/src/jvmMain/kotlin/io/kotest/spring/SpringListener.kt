@@ -1,11 +1,12 @@
 package io.kotest.spring
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.spec.Spec
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.AutoScan
+import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
+import io.kotest.mpp.sysprop
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy
@@ -19,6 +20,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 object SpringListener : TestListener {
+
+   var ignoreSpringListenerOnFinalClassWarning: Boolean = false
 
    // Each Spec needs its own context. However, this listener is a singleton, so we need
    // to keep this map to separate those contexts instead of making this class non-singleton, thus
@@ -56,7 +59,9 @@ object SpringListener : TestListener {
          val klass = this::class.java
 
          return if (Modifier.isFinal(klass.modifiers)) {
-            println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            if (!ignoreSpringListenerOnFinalClassWarning || !sysprop("kotest.listener.spring.ignore.warning", "false").toBoolean()) {
+               println("Using SpringListener on a final class. If any Spring annotation fails to work, try making this class open.")
+            }
             this@SpringListener::class.java.getMethod("afterSpec", Spec::class.java, Continuation::class.java)
          } else {
             val fakeSpec = ByteBuddy()

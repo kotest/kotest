@@ -35,6 +35,7 @@ kotlin {
       val jvmMain by getting {
          dependencies {
             implementation(project(":kotest-core"))
+            implementation(project(":kotest-common"))
             implementation(project(Projects.AssertionsShared))
             implementation(kotlin("stdlib-jdk8"))
             implementation(kotlin("reflect"))
