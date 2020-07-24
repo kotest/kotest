@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.config.Project
+import io.kotest.core.engine.KotestFrameworkSystemProperties
 import io.kotest.core.filters.TestFilterResult
 import io.kotest.core.spec.focusTests
 import io.kotest.core.spec.resolvedTags
@@ -26,7 +27,7 @@ fun TestCase.isActive(): Boolean {
 
    // this sys property disables the use of !
    // when it's not set, then we use ! to disable tests
-   val bangEnabled = sysprop("kotest.bang.disable") == null
+   val bangEnabled = sysprop(KotestFrameworkSystemProperties.disableBangPrefix) == null
    if (isBang() && bangEnabled) {
       log("${description.fullName()} is disabled by bang")
       return false

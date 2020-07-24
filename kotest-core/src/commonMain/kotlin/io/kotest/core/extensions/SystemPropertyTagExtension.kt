@@ -3,6 +3,7 @@ package io.kotest.core.extensions
 import io.kotest.core.StringTag
 import io.kotest.core.Tag
 import io.kotest.core.Tags
+import io.kotest.core.engine.KotestFrameworkSystemProperties
 import io.kotest.fp.getOrElse
 import io.kotest.fp.toOption
 import io.kotest.mpp.sysprop
@@ -26,9 +27,9 @@ object SystemPropertyTagExtension : TagExtension {
             )
          }
 
-      val includedTags = readTagsProperty("kotest.tags.include")
-      val excludedTags = readTagsProperty("kotest.tags.exclude")
-      val expression = sysprop("kotest.tags")
+      val includedTags = readTagsProperty(KotestFrameworkSystemProperties.includeTags)
+      val excludedTags = readTagsProperty(KotestFrameworkSystemProperties.excludeTags)
+      val expression = sysprop(KotestFrameworkSystemProperties.tagExpression)
 
       return if (expression == null) Tags(includedTags.toSet(), excludedTags.toSet()) else Tags(expression)
    }

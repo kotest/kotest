@@ -5,6 +5,7 @@ package io.kotest.core.config
 import io.kotest.core.Tags
 import io.kotest.core.config.Project.registerExtension
 import io.kotest.core.config.Project.setFailOnIgnoredTests
+import io.kotest.core.engine.KotestFrameworkSystemProperties
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.extensions.Extension
@@ -28,6 +29,11 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DefaultTestCaseOrder
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.fp.Option
+import io.kotest.fp.getOrElse
+import io.kotest.fp.orElse
+import io.kotest.fp.toOption
+import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -66,7 +72,10 @@ object Project {
    private var parallelism = userconf.parallelism ?: 1
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
    private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: DefaultTestCaseOrder
-   private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
+
+   private var isolationMode: IsolationMode = userconf.isolationMode.toOption()
+      .orElse(systemPropertyIsolationMode())
+      .getOrElse(IsolationMode.SingleInstance)
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.
@@ -90,7 +99,19 @@ object Project {
     */
    private var includeTestScopePrefixes = userconf.includeTestScopePrefixes ?: true
 
+   /**
+    * The casing of the tests' names can be adjusted using different strategies. It affects tests'
+    * prefixes (I.e.: Given, When, Then) and tests' titles.
+    *
+    * This setting's options are defined in [TestNameCaseOptions]. Check the previous enum for the
+    * available options and examples.
+    */
+   private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AsIs
+
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
+
+   private fun systemPropertyIsolationMode(): Option<IsolationMode> =
+      sysprop(KotestFrameworkSystemProperties.isolationMode).toOption().map { IsolationMode.valueOf(it) }
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
 
@@ -188,6 +209,12 @@ object Project {
 
    fun includeTestScopePrefixes() = includeTestScopePrefixes
 
+   fun testNameCase() = testNameCase
+
+   fun testNameCase(caseConfig: TestNameCaseOptions) {
+      testNameCase = caseConfig
+   }
+
    fun tagExtensions(): List<TagExtension> = extensions
       .filterIsInstance<TagExtension>()
       .filterNot { autoScanIgnoredClasses().contains(it::class) }
@@ -243,6 +270,21 @@ object Project {
 }
 
 /**
+ * Test naming strategies to adjust test name case.
+ *
+ * @property AsIs For: should("Happen SOMETHING") yields: should Happen SOMETHING
+ * @property Sentence For: should("Happen SOMETHING") yields: Should happen SOMETHING
+ * @property InitialLowercase For: should("Happen SOMETHING") yields: should happen SOMETHING
+ * @property Lowercase For: should("Happen SOMETHING") yields: should happen something
+ */
+enum class TestNameCaseOptions {
+   AsIs,
+   Sentence,
+   InitialLowercase,
+   Lowercase
+}
+
+/**
  * Contains all the configuration details that can be set by a user supplied config object.
  */
 @OptIn(ExperimentalTime::class)
@@ -263,7 +305,8 @@ data class ProjectConf(
    val parallelism: Int? = null,
    val timeout: Duration? = null,
    val testCaseConfig: TestCaseConfig? = null,
-   val includeTestScopePrefixes: Boolean? = null
+   val includeTestScopePrefixes: Boolean? = null,
+   val testNameCase: TestNameCaseOptions? = null
 )
 
 /**
