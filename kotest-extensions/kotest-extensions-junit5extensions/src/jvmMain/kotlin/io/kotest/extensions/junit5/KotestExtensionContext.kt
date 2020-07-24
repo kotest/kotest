@@ -37,8 +37,8 @@ class KotestExtensionContext(private val spec: Spec) : ExtensionContext {
 
    override fun publishReportEntry(map: MutableMap<String, String>?) {}
 
-   override fun getStore(namespace: ExtensionContext.Namespace?): ExtensionContext.Store {
-      return ExtensionStore()
+   override fun getStore(namespace: ExtensionContext.Namespace): ExtensionContext.Store {
+      return ExtensionStore(namespace)
    }
 }
 
@@ -49,38 +49,56 @@ class KotestTestInstances(private val instance: Spec) : TestInstances {
    override fun <T : Any?> findInstance(requiredType: Class<T>?): Optional<T> = Optional.of(instance as T)
 }
 
-class ExtensionStore : ExtensionContext.Store {
+@Suppress("UNCHECKED_CAST")
+class ExtensionStore(private val namespace: ExtensionContext.Namespace) : ExtensionContext.Store {
 
-   private val map = mutableMapOf<Any?, Any?>()
+   private val map = mutableMapOf<Pair<ExtensionContext.Namespace, Any>, Any?>()
 
-   override fun get(key: Any?): Any? = map[key]
+   override fun get(key: Any): Any? = map[key]
 
-   override fun <V : Any?> get(key: Any?, requiredType: Class<V>?): V? {
-      return map[key] as? V
+   override fun <V : Any> get(key: Any, requiredType: Class<V>): V? {
+      val value = map[namespace to key]
+      return when {
+         value == null -> null
+         value::class.java.name == requiredType.name -> value as V
+         else -> error("Value is not of required type $requiredType")
+      }
    }
 
-   override fun <K : Any?, V : Any?> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>?): Any? {
-      return map[key]
+   override fun <K : Any, V : Any> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>): Any? {
+      return when (val value = map[namespace to key]) {
+         null -> defaultCreator.apply(key)
+         else -> value
+      }
    }
 
-   override fun <K : Any?, V : Any?> getOrComputeIfAbsent(
+   override fun <K : Any, V : Any> getOrComputeIfAbsent(
       key: K,
-      defaultCreator: Function<K, V>?,
-      requiredType: Class<V>?
+      defaultCreator: Function<K, V>,
+      requiredType: Class<V>
    ): V? {
-      return map[key] as? V
+      val value = map[namespace to key]
+      return when {
+         value == null -> defaultCreator.apply(key)
+         value::class.java.name == requiredType.name -> value as V
+         else -> error("Value is not of required type $requiredType")
+      }
    }
 
-   override fun put(key: Any?, value: Any?) {
-      map[key] = value
+   override fun put(key: Any, value: Any?) {
+      map[namespace to key] = value
    }
 
-   override fun remove(key: Any?): Any? {
+   override fun remove(key: Any): Any? {
       return map.remove(key)
    }
 
-   override fun <V : Any?> remove(key: Any?, requiredType: Class<V>?): V? {
-      return map.remove(key) as? V
+   override fun <V : Any> remove(key: Any, requiredType: Class<V>): V? {
+      val value = map[namespace to key]
+      return when {
+         value == null -> null
+         value::class.java.name == requiredType.name -> map.remove(namespace to key) as V
+         else -> error("Value is not of required type $requiredType")
+      }
    }
-
 }

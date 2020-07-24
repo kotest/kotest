@@ -39,6 +39,13 @@ kotlin {
             implementation(Libs.JUnitJupiter.api)
          }
       }
+
+      val jvmTest by getting {
+         dependsOn(jvmMain)
+         dependencies {
+            implementation(project(Projects.JunitRunner))
+         }
+      }
    }
 }
 
