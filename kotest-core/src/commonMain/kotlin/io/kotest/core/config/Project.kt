@@ -5,6 +5,7 @@ package io.kotest.core.config
 import io.kotest.core.Tags
 import io.kotest.core.config.Project.registerExtension
 import io.kotest.core.config.Project.setFailOnIgnoredTests
+import io.kotest.core.engine.KotestFrameworkSystemProperties
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.DiscoveryExtension
 import io.kotest.core.extensions.Extension
@@ -28,6 +29,11 @@ import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.DefaultTestCaseOrder
 import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.fp.Option
+import io.kotest.fp.getOrElse
+import io.kotest.fp.orElse
+import io.kotest.fp.toOption
+import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -66,7 +72,10 @@ object Project {
    private var parallelism = userconf.parallelism ?: 1
    private var autoScanIgnoredClasses: List<KClass<*>> = emptyList()
    private var testCaseOrder: TestCaseOrder = userconf.testCaseOrder ?: DefaultTestCaseOrder
-   private var isolationMode: IsolationMode = userconf.isolationMode ?: IsolationMode.SingleInstance
+
+   private var isolationMode: IsolationMode = userconf.isolationMode.toOption()
+      .orElse(systemPropertyIsolationMode())
+      .getOrElse(IsolationMode.SingleInstance)
 
    /**
     * Some specs have DSLs that include "prefix" words in the test name.
@@ -100,6 +109,9 @@ object Project {
    private var testNameCase: TestNameCaseOptions = userconf.testNameCase ?: TestNameCaseOptions.AsIs
 
    fun testCaseConfig() = userconf.testCaseConfig ?: TestCaseConfig()
+
+   private fun systemPropertyIsolationMode(): Option<IsolationMode> =
+      sysprop(KotestFrameworkSystemProperties.isolationMode).toOption().map { IsolationMode.valueOf(it) }
 
    fun registerExtensions(vararg extensions: Extension) = extensions.forEach { registerExtension(it) }
 
