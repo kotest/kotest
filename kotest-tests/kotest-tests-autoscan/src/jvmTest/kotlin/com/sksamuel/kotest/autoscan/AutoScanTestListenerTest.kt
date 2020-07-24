@@ -39,19 +39,19 @@ object MyTestListener : TestListener {
    }
 
    override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) maybeIncrementBeforeCounter(testCase)
+      maybeIncrementBeforeCounter(testCase)
    }
 
    override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) maybeIncrementAfterCounter(testCase)
+      maybeIncrementAfterCounter(testCase)
    }
 
    override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) maybeIncrementBeforeCounter(testCase)
+      maybeIncrementBeforeCounter(testCase)
    }
 
    override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) maybeIncrementAfterCounter(testCase)
+      maybeIncrementAfterCounter(testCase)
    }
 
    override suspend fun beforeAny(testCase: TestCase) {

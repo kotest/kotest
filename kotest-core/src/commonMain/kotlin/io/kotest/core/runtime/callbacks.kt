@@ -10,6 +10,7 @@ import io.kotest.core.spec.resolvedExtensions
 import io.kotest.core.spec.resolvedTestListeners
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.TestType
 import io.kotest.fp.Try
 import io.kotest.mpp.log
 
@@ -71,10 +72,10 @@ suspend fun TestCase.invokeAllBeforeTestCallbacks(): Try<TestCase> =
     }, { listeners ->
         Try {
             listeners.forEach {
-                it.beforeTest(this)
-                it.beforeContainer(this)
+                if (type == TestType.Container) it.beforeContainer(this)
+                if (type == TestType.Test) it.beforeEach(this)
                 it.beforeAny(this)
-                it.beforeEach(this)
+                it.beforeTest(this)
             }
 
             this
@@ -94,9 +95,9 @@ suspend fun TestCase.invokeAllAfterTestCallbacks(result: TestResult): Try<TestCa
         Try {
             listeners.forEach {
                 it.afterTest(this, result)
-                it.afterEach(this, result)
                 it.afterAny(this, result)
-                it.afterContainer(this, result)
+                if (type == TestType.Test) it.afterEach(this, result)
+                if (type == TestType.Container) it.afterContainer(this, result)
             }
 
             this

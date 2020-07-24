@@ -78,7 +78,7 @@ interface ContainerScope : CoroutineScope {
    fun beforeContainer(f: BeforeContainer) {
       lifecycle.addListener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
-            if (testCase.type == TestType.Container && description.isAncestorOf(testCase.description)) {
+            if (description.isAncestorOf(testCase.description)) {
                f(testCase)
             }
          }
@@ -92,7 +92,7 @@ interface ContainerScope : CoroutineScope {
    fun afterContainer(f: AfterContainer) {
       lifecycle.addListener(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Container && description.isAncestorOf(testCase.description)) {
+            if (description.isAncestorOf(testCase.description)) {
                f(Tuple2(testCase, result))
             }
          }
@@ -105,7 +105,7 @@ interface ContainerScope : CoroutineScope {
    fun beforeEach(f: BeforeEach) {
       lifecycle.addListener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
-            if (testCase.type == TestType.Test && description.isAncestorOf(testCase.description)) {
+            if (description.isAncestorOf(testCase.description)) {
                f(testCase)
             }
          }
@@ -118,7 +118,7 @@ interface ContainerScope : CoroutineScope {
    fun afterEach(f: AfterEach) {
       lifecycle.addListener(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Test && description.isAncestorOf(testCase.description)) {
+            if (description.isAncestorOf(testCase.description)) {
                f(Tuple2(testCase, result))
             }
          }

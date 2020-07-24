@@ -94,7 +94,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
    override fun beforeContainer(f: BeforeContainer) {
       listener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
-            if (testCase.type == TestType.Container) f(testCase)
+            f(testCase)
          }
       })
    }
@@ -102,7 +102,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
    override fun afterContainer(f: AfterContainer) {
       listener(object : TestListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Container) f(Tuple2(testCase, result))
+            f(Tuple2(testCase, result))
          }
       })
    }
@@ -110,7 +110,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
    override fun beforeEach(f: BeforeEach) {
       listener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {
-            if (testCase.type == TestType.Test) f(testCase)
+            f(testCase)
          }
       })
    }
@@ -118,7 +118,7 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
    override fun afterEach(f: AfterEach) {
       listener(object : TestListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Test) f(Tuple2(testCase, result))
+            f(Tuple2(testCase, result))
          }
       })
    }
