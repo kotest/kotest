@@ -9,23 +9,23 @@ class KotestExtensionContextTest : WordSpec({
 
    "ExtensionContext" should {
       "return value when type is of the required type" {
-         val extensionStore = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
+         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
          val a = Person("foo", 20)
 
-         extensionStore.put("foo", a)
-         val b = extensionStore.get("foo", Person::class.java)
+         store.put("foo", a)
+         val b = store.get("foo", Person::class.java)
 
          a shouldBe b
       }
       "throw when value is not of the required type" {
 
-         val extensionStore = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
+         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
          val person = Person("foo", 20)
 
-         extensionStore.put("foo", person)
+         store.put("foo", person)
 
          shouldThrowAny {
-            extensionStore.get("foo", Vehicle::class.java)
+            store.get("foo", Vehicle::class.java)
          }
       }
    }
