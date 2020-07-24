@@ -96,33 +96,7 @@ abstract class ConstantNowListener<Time : Temporal>(private val now: Time) {
  * **ATTENTION**: This code is very sensitive to race conditions. as the static method is global to the whole JVM instance,
  * if you're mocking `now` while running in parallel, the results may be inconsistent.
  */
-class ConstantNowTestListener<Time : Temporal>(now: Time) :
-   ConstantNowListener<Time>(now), TestListener {
-
-   override suspend fun beforeTest(testCase: TestCase) {
-      changeNow()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      resetNow()
-   }
-
-   override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) changeNow()
-   }
-
-   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) resetNow()
-   }
-
-   override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) changeNow()
-   }
-
-   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) resetNow()
-   }
-
+class ConstantNowTestListener<Time : Temporal>(now: Time) : ConstantNowListener<Time>(now), TestListener {
    override suspend fun beforeAny(testCase: TestCase) {
       changeNow()
    }

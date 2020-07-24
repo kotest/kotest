@@ -8,10 +8,10 @@ class TestContainerKotestIntegrationPerTest : StringSpec({
    val testStartable = configurePerTest(TestStartable())
 
    "start count for first test should be one" {
-      testStartable.startCount shouldBe 3
+      testStartable.startCount shouldBe 1
    }
 
    "start count for second test should be two" {
-      testStartable.startCount shouldBe 6
+      testStartable.startCount shouldBe 2
    }
 })

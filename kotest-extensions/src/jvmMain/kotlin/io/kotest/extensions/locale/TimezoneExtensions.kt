@@ -52,30 +52,6 @@ abstract class TimeZoneListener(private val timeZone: TimeZone) {
  */
 class TimeZoneTestListener(timeZone: TimeZone) : TimeZoneListener(timeZone), TestListener {
 
-   override suspend fun beforeTest(testCase: TestCase) {
-      changeTimeZone()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      resetTimeZone()
-   }
-
-   override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) changeTimeZone()
-   }
-
-   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) resetTimeZone()
-   }
-
-   override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) changeTimeZone()
-   }
-
-   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) resetTimeZone()
-   }
-
    override suspend fun beforeAny(testCase: TestCase) {
       changeTimeZone()
    }

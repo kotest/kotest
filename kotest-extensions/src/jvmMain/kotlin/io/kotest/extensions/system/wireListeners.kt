@@ -54,39 +54,7 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 
    fun output(): String = String(buffer.toByteArray())
 
-   override suspend fun beforeTest(testCase: TestCase) {
-      redirectStandardOut()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      restoreStandardOutput()
-   }
-
-   override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) redirectStandardOut()
-   }
-
-   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) restoreStandardOutput()
-   }
-
-   override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) redirectStandardOut()
-   }
-
-   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) restoreStandardOutput()
-   }
-
    override suspend fun beforeAny(testCase: TestCase) {
-      redirectStandardOut()
-   }
-
-   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-      restoreStandardOutput()
-   }
-
-   private fun redirectStandardOut() {
       buffer = ByteArrayOutputStream()
       previous = System.out
       if (tee) {
@@ -96,7 +64,9 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
       }
    }
 
-   private fun restoreStandardOutput() = System.setOut(previous)
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+      System.setOut(previous)
+   }
 }
 
 /**
@@ -105,15 +75,14 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
  *
  * Users can query the written data by fetching the buffer by invoking [output].
  */
-class SystemErrWireListener(private val tee: Boolean = true) :
-   TestListener {
+class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
    private var buffer = ByteArrayOutputStream()
    private var previous = System.err
 
    fun output(): String = String(buffer.toByteArray())
 
-   override suspend fun beforeTest(testCase: TestCase) {
+   override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
       previous = System.err
       if (tee) {
@@ -123,7 +92,7 @@ class SystemErrWireListener(private val tee: Boolean = true) :
       }
    }
 
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+   override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       System.setErr(previous)
    }
 }

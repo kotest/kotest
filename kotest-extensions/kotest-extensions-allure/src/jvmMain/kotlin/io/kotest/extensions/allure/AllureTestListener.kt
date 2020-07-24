@@ -48,30 +48,6 @@ object AllureTestListener : TestListener, ProjectListener {
    private fun safeId(description: Description): String =
       description.id().replace('/', ' ').replace("[^\\sa-zA-Z0-9]".toRegex(), "")
 
-   override suspend fun beforeTest(testCase: TestCase) {
-      startAllureTestCase(testCase)
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      stopAllureTestCase(testCase, result)
-   }
-
-   override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) startAllureTestCase(testCase)
-   }
-
-   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) stopAllureTestCase(testCase, result)
-   }
-
-   override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) startAllureTestCase(testCase)
-   }
-
-   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) stopAllureTestCase(testCase, result)
-   }
-
    override suspend fun beforeAny(testCase: TestCase) {
       startAllureTestCase(testCase)
    }

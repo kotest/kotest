@@ -56,30 +56,6 @@ abstract class SecurityManagerListener(protected val securityManager: SecurityMa
 class SecurityManagerTestListener(securityManager: SecurityManager?) : SecurityManagerListener(securityManager),
    TestListener {
 
-   override suspend fun beforeTest(testCase: TestCase) {
-      changeSecurityManager()
-   }
-
-   override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      resetSecurityManager()
-   }
-
-   override suspend fun beforeContainer(testCase: TestCase) {
-      if (testCase.type == TestType.Container) changeSecurityManager()
-   }
-
-   override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Container) resetSecurityManager()
-   }
-
-   override suspend fun beforeEach(testCase: TestCase) {
-      if (testCase.type == TestType.Test) changeSecurityManager()
-   }
-
-   override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-      if (testCase.type == TestType.Test) resetSecurityManager()
-   }
-
    override suspend fun beforeAny(testCase: TestCase) {
       changeSecurityManager()
    }
