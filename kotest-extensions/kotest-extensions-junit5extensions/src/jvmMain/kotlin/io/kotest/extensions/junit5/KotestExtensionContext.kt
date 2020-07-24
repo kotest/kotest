@@ -1,0 +1,86 @@
+package io.kotest.extensions.junit5
+
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.description
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.TestInstances
+import java.lang.reflect.AnnotatedElement
+import java.lang.reflect.Method
+import java.util.Optional
+import java.util.function.Function
+
+class KotestExtensionContext(private val spec: Spec) : ExtensionContext {
+
+   override fun getParent(): Optional<ExtensionContext> = Optional.empty()
+   override fun getRoot(): ExtensionContext = this
+
+   override fun getUniqueId(): String = spec::class.description().id()
+
+   override fun getDisplayName(): String = spec::class.description().fullName()
+
+   override fun getTags(): MutableSet<String> = spec.tags().map { it.name }.toMutableSet()
+
+   override fun getElement(): Optional<AnnotatedElement> = Optional.empty()
+
+   override fun getTestClass(): Optional<Class<*>> = Optional.of(spec::class.java)
+   override fun getTestMethod(): Optional<Method> = Optional.empty()
+
+   override fun getTestInstanceLifecycle(): Optional<TestInstance.Lifecycle> =
+      Optional.of(TestInstance.Lifecycle.PER_CLASS)
+
+   override fun getTestInstance(): Optional<Any> = Optional.of(spec)
+   override fun getTestInstances(): Optional<TestInstances> = Optional.of(KotestTestInstances(spec))
+
+   override fun getExecutionException(): Optional<Throwable> = Optional.empty()
+   override fun getConfigurationParameter(key: String?): Optional<String> = Optional.empty()
+
+   override fun publishReportEntry(map: MutableMap<String, String>?) {}
+
+   override fun getStore(namespace: ExtensionContext.Namespace?): ExtensionContext.Store {
+      return ExtensionStore()
+   }
+}
+
+class KotestTestInstances(private val instance: Spec) : TestInstances {
+   override fun getInnermostInstance(): Any = instance
+   override fun getEnclosingInstances(): MutableList<Any> = mutableListOf(instance)
+   override fun getAllInstances(): MutableList<Any> = mutableListOf(instance)
+   override fun <T : Any?> findInstance(requiredType: Class<T>?): Optional<T> = Optional.of(instance as T)
+}
+
+class ExtensionStore : ExtensionContext.Store {
+
+   private val map = mutableMapOf<Any?, Any?>()
+
+   override fun get(key: Any?): Any? = map[key]
+
+   override fun <V : Any?> get(key: Any?, requiredType: Class<V>?): V? {
+      return map[key] as? V
+   }
+
+   override fun <K : Any?, V : Any?> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>?): Any? {
+      return map[key]
+   }
+
+   override fun <K : Any?, V : Any?> getOrComputeIfAbsent(
+      key: K,
+      defaultCreator: Function<K, V>?,
+      requiredType: Class<V>?
+   ): V? {
+      return map[key] as? V
+   }
+
+   override fun put(key: Any?, value: Any?) {
+      map[key] = value
+   }
+
+   override fun remove(key: Any?): Any? {
+      return map.remove(key)
+   }
+
+   override fun <V : Any?> remove(key: Any?, requiredType: Class<V>?): V? {
+      return map.remove(key) as? V
+   }
+
+}
