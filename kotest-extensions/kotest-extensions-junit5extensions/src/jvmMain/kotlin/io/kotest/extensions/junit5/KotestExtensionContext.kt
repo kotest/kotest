@@ -2,6 +2,7 @@ package io.kotest.extensions.junit5
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.description
+import io.kotest.core.test.TestCase
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstances
@@ -10,14 +11,20 @@ import java.lang.reflect.Method
 import java.util.Optional
 import java.util.function.Function
 
-class KotestExtensionContext(private val spec: Spec) : ExtensionContext {
+class KotestExtensionContext(
+   private val spec: Spec,
+   private val test: TestCase?
+) : ExtensionContext {
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
    override fun getUniqueId(): String = spec::class.description().id()
 
-   override fun getDisplayName(): String = spec::class.description().fullName()
+   override fun getDisplayName(): String = when (test) {
+      null -> spec::class.description().fullName()
+      else -> test.displayName
+   }
 
    override fun getTags(): MutableSet<String> = spec.tags().map { it.name }.toMutableSet()
 
@@ -29,7 +36,11 @@ class KotestExtensionContext(private val spec: Spec) : ExtensionContext {
    override fun getTestInstanceLifecycle(): Optional<TestInstance.Lifecycle> =
       Optional.of(TestInstance.Lifecycle.PER_CLASS)
 
-   override fun getTestInstance(): Optional<Any> = Optional.of(spec)
+   override fun getTestInstance(): Optional<Any> = when (test) {
+      null -> Optional.of(spec)
+      else -> Optional.of(test)
+   }
+
    override fun getTestInstances(): Optional<TestInstances> = Optional.of(KotestTestInstances(spec))
 
    override fun getExecutionException(): Optional<Throwable> = Optional.empty()
