@@ -93,14 +93,14 @@ class ForAll2Test : FunSpec({
             Exhaustive.ints(0..10),
             Exhaustive.ints(20..30)
          ) { a, b -> a > b }
-      }.message shouldStartWith """Property failed after 6 attempts
-
-	Arg 0: 5
-	Arg 1: 25
+      }.message shouldBe """Property failed after 6 attempts
 
 Repeat this test by using seed 1900646515
 
-Caused by: Property failed 6 times (maxFailure rate was 5)"""
+Caused by: Property failed 6 times (maxFailure rate was 5)
+Last error was caused by args:
+  0) 0
+  1) 25"""
    }
 
    test("forAll with minSuccess") {
@@ -110,13 +110,10 @@ Caused by: Property failed 6 times (maxFailure rate was 5)"""
             Exhaustive.ints(0..10),
             Exhaustive.constant(8)
          ) { a, b -> a < b }
-      }.message shouldStartWith """Property failed after 42 attempts
-
-	Arg 0: 8
-	Arg 1: 8
+      }.message shouldBe """Property failed after 11 attempts
 
 Repeat this test by using seed 1921315
 
-Caused by: Property failed 10 times (maxFailure rate was 9)"""
+Caused by: Property passed 8 times (minSuccess rate was 9)"""
    }
 })

@@ -7,7 +7,7 @@ import kotlin.math.min
 fun PropertyContext.checkMaxSuccess(config: PropTestConfig, seed: Long) {
    val min = min(config.minSuccess, attempts())
    if (successes() < min) {
-      val e = AssertionError("Property passed ${successes()} times (minSuccess rate was $min)")
-      throwPropertyTestAssertionError(e, attempts(), seed)
+      val error = "Property passed ${successes()} times (minSuccess rate was $min)\n"
+      throwPropertyTestAssertionError(AssertionError(error), attempts(), seed)
    }
 }
