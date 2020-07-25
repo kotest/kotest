@@ -17,6 +17,7 @@ import kotlin.reflect.KClass
  * or [FileShow] if [A] is `java.io.File`,
  * or `null` otherwise.
  */
+@Suppress("UNCHECKED_CAST")
 actual fun <A : Any> platformShow(a: A): Show<A>? = when {
   javaNioPathKlass()?.isInstance(a) ?: false -> PathShow as Show<A>
   javaIoFileKlass()?.isInstance(a) ?: false -> FileShow as Show<A>

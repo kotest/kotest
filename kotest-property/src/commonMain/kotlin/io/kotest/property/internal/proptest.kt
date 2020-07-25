@@ -1,5 +1,6 @@
 package io.kotest.property.internal
 
+import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
@@ -33,6 +34,26 @@ suspend fun <A> proptest(
    return context
 }
 
+suspend fun <A> proptest(
+   exhaustiveA: Exhaustive<A>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      config.listeners.forEach { it.beforeTest() }
+      test(context, config, { emptyList() }, listOf(a), random.seed) {
+         context.property(a)
+      }
+      config.listeners.forEach { it.afterTest() }
+   }
+
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
 
 suspend fun <A, B> proptest(
    iterations: Int,
@@ -59,6 +80,30 @@ suspend fun <A, B> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B> proptest(
+   exhaustiveA: Exhaustive<A>,
+   exhaustiveB: Exhaustive<B>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      exhaustiveB.values.forEach { b ->
+         config.listeners.forEach { it.beforeTest() }
+         test(context, config, { emptyList() }, listOf(a, b), random.seed) {
+            context.property(a, b)
+         }
+         config.listeners.forEach { it.afterTest() }
+      }
+   }
 
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -96,6 +141,33 @@ suspend fun <A, B, C> proptest(
    return context
 }
 
+suspend fun <A, B, C> proptest(
+   exhaustiveA: Exhaustive<A>,
+   exhaustiveB: Exhaustive<B>,
+   exhaustiveC: Exhaustive<C>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      exhaustiveB.values.forEach { b ->
+         exhaustiveC.values.forEach { c ->
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, { emptyList() }, listOf(a, b, c), random.seed) {
+               context.property(a, b, c)
+            }
+            config.listeners.forEach { it.afterTest() }
+         }
+      }
+   }
+
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
 suspend fun <A, B, C, D> proptest(
    iterations: Int,
    genA: Gen<A>,
@@ -108,7 +180,8 @@ suspend fun <A, B, C, D> proptest(
 
    // we must have enough iterations to cover the max(minsize).
 
-   val minSize = listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull()!!
+   val minSize =
+      listOf(genA.minIterations(), genB.minIterations(), genC.minIterations(), genD.minIterations()).maxOrNull()!!
    require(iterations >= minSize) { "Require at least $minSize iterations to cover requirements" }
 
    val context = PropertyContext()
@@ -126,6 +199,36 @@ suspend fun <A, B, C, D> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
+
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B, C, D> proptest(
+   exhaustiveA: Exhaustive<A>,
+   exhaustiveB: Exhaustive<B>,
+   exhaustiveC: Exhaustive<C>,
+   exhaustiveD: Exhaustive<D>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      exhaustiveB.values.forEach { b ->
+         exhaustiveC.values.forEach { c ->
+            exhaustiveD.values.forEach { d ->
+               config.listeners.forEach { it.beforeTest() }
+               test(context, config, { emptyList() }, listOf(a, b, c, d), random.seed) {
+                  context.property(a, b, c, d)
+               }
+               config.listeners.forEach { it.afterTest() }
+            }
+         }
+      }
+   }
 
    context.checkMaxSuccess(config, random.seed)
    return context
@@ -174,6 +277,39 @@ suspend fun <A, B, C, D, E> proptest(
    return context
 }
 
+suspend fun <A, B, C, D, E> proptest(
+   exhaustiveA: Exhaustive<A>,
+   exhaustiveB: Exhaustive<B>,
+   exhaustiveC: Exhaustive<C>,
+   exhaustiveD: Exhaustive<D>,
+   exhaustiveE: Exhaustive<E>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      exhaustiveB.values.forEach { b ->
+         exhaustiveC.values.forEach { c ->
+            exhaustiveD.values.forEach { d ->
+               exhaustiveE.values.forEach { e ->
+                  config.listeners.forEach { it.beforeTest() }
+                  test(context, config, { emptyList() }, listOf(a, b, c, d, e), random.seed) {
+                     context.property(a, b, c, d, e)
+                  }
+                  config.listeners.forEach { it.afterTest() }
+               }
+            }
+         }
+      }
+   }
+
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
 suspend fun <A, B, C, D, E, F> proptest(
    iterations: Int,
    genA: Gen<A>,
@@ -216,6 +352,42 @@ suspend fun <A, B, C, D, E, F> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
+   context.checkMaxSuccess(config, random.seed)
+   return context
+}
+
+suspend fun <A, B, C, D, E, F> proptest(
+   exhaustiveA: Exhaustive<A>,
+   exhaustiveB: Exhaustive<B>,
+   exhaustiveC: Exhaustive<C>,
+   exhaustiveD: Exhaustive<D>,
+   exhaustiveE: Exhaustive<E>,
+   exhaustiveF: Exhaustive<F>,
+   config: PropTestConfig,
+   property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
+): PropertyContext {
+
+   val context = PropertyContext()
+   val random = config.seed?.random() ?: RandomSource.Default
+
+   exhaustiveA.values.forEach { a ->
+      exhaustiveB.values.forEach { b ->
+         exhaustiveC.values.forEach { c ->
+            exhaustiveD.values.forEach { d ->
+               exhaustiveE.values.forEach { e ->
+                  exhaustiveF.values.forEach { f ->
+                     config.listeners.forEach { it.beforeTest() }
+                     test(context, config, { emptyList() }, listOf(a, b, c, d, e, f), random.seed) {
+                        context.property(a, b, c, d, e, f)
+                     }
+                     config.listeners.forEach { it.afterTest() }
+                  }
+               }
+            }
+         }
+      }
+   }
+
    context.checkMaxSuccess(config, random.seed)
    return context
 }
