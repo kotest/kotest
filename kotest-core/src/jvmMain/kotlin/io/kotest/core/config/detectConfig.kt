@@ -13,9 +13,9 @@ import kotlin.math.max
  * Loads a config object from the underlying target by scanning the classpath
  * for instances of [AbstractProjectConfig].
  */
+@Suppress("UNCHECKED_CAST")
 actual fun detectConfig(): ProjectConf {
 
-   @Suppress("UNCHECKED_CAST")
    fun <T> instantiate(klass: Class<T>): T =
       when (val field = klass.declaredFields.find { it.name == "INSTANCE" }) {
          // if the static field for an object cannot be found, then instantiate

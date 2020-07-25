@@ -151,3 +151,25 @@ suspend inline fun <reified A> forAll(
    Arb.default<A>(),
    config
 ) { a -> property(a) shouldBe true }
+
+suspend fun <A> checkAll(
+   config: PropTestConfig,
+   exhaustiveA: Exhaustive<A>,
+   property: suspend PropertyContext.(A) -> Unit
+): PropertyContext = proptest(exhaustiveA, config, property)
+
+suspend fun <A> forAll(
+   config: PropTestConfig,
+   exhaustiveA: Exhaustive<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+): PropertyContext = proptest(exhaustiveA, config) { a -> property(a) shouldBe true }
+
+suspend fun <A> checkAll(
+   exhaustiveA: Exhaustive<A>,
+   property: suspend PropertyContext.(A) -> Unit
+): PropertyContext = proptest(exhaustiveA, PropTestConfig(), property)
+
+suspend fun <A> forAll(
+   exhaustiveA: Exhaustive<A>,
+   property: suspend PropertyContext.(A) -> Boolean
+): PropertyContext = proptest(exhaustiveA, PropTestConfig()) { a -> property(a) shouldBe true }
