@@ -20,6 +20,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import com.intellij.refactoring.listeners.RefactoringElementListener
 import io.kotest.plugin.intellij.psi.buildSuggestedName
+import io.kotest.plugin.intellij.run.KotestRunnableState
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject

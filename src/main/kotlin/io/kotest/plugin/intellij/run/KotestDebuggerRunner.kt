@@ -1,7 +1,8 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.run
 
 import com.intellij.execution.JavaTestFrameworkDebuggerRunner
 import com.intellij.execution.configurations.RunProfile
+import io.kotest.plugin.intellij.KotestConfiguration
 
 class KotestDebuggerRunner : JavaTestFrameworkDebuggerRunner() {
 

@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.run
 
 import com.intellij.execution.JavaTestFrameworkRunnableState
 import com.intellij.execution.configurations.JavaParameters
@@ -7,6 +7,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
 import com.intellij.util.PathUtil
+import io.kotest.plugin.intellij.KotestConfiguration
 import java.io.File
 
 class KotestRunnableState(env: ExecutionEnvironment,

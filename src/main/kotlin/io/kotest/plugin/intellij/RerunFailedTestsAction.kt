@@ -7,6 +7,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.SourceScope
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.module.Module
+import io.kotest.plugin.intellij.run.KotestRunnableState
 
 class RerunFailedTestsAction(consoleView: ConsoleView,
                              props: KotestTestConsoleProperties) : JavaRerunFailedTestsAction(consoleView, props) {
