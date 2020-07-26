@@ -7,7 +7,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.kotest.fp.Try
 import io.kotest.mpp.log
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -45,7 +44,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
       val executor = Executors.newFixedThreadPool(threads, NamedThreadFactory("SpecRunner-%d"))
       val futures = (0 until threads).map {
          executor.submit {
-            runBlocking {
+            future {
                run()
             }
          }
@@ -74,7 +73,7 @@ abstract class SpecRunner(val listener: TestEngineListener) {
 
       val futures = testCases.map { testCase ->
          executor.submit {
-            runBlocking {
+            future {
                run(testCase)
             }
          }
