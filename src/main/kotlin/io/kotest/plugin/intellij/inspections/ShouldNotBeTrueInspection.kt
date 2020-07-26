@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import io.kotest.plugin.intellij.psi.isTestFile
 import org.jetbrains.kotlin.idea.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.intentions.loopToCallChain.isTrueConstant
 import org.jetbrains.kotlin.psi.KtBinaryExpression
@@ -33,8 +32,6 @@ class ShouldNotBeTrueInspection : AbstractKotlinInspection() {
    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
       return object : PsiElementVisitor() {
          override fun visitElement(element: PsiElement) {
-            if (!element.containingFile.isTestFile()) return
-
             if (element is KtBinaryExpression) {
                if (element.operationReference.text == "shouldNotBe") {
                   if (element.right?.isTrueConstant() == true) {

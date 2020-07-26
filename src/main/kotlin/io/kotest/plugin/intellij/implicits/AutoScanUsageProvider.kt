@@ -2,7 +2,6 @@ package io.kotest.plugin.intellij.implicits
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.psi.isTestFile
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClass
 
@@ -18,8 +17,6 @@ class AutoScanUsageProvider : ImplicitUsageProvider {
    override fun isImplicitRead(element: PsiElement): Boolean = false
 
    override fun isImplicitUsage(element: PsiElement): Boolean {
-      if (!element.containingFile.isTestFile()) return false
-
       val ktclass = when (element) {
          is KtClass -> element
          is KtLightClass -> when (val origin = element.kotlinOrigin) {
