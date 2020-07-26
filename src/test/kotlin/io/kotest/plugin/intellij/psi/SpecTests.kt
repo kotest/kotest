@@ -1,12 +1,12 @@
 package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import java.nio.file.Paths
 
-class SpecTests : LightCodeInsightFixtureTestCase() {
+class SpecTests : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

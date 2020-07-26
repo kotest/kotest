@@ -1,6 +1,6 @@
 package io.kotest.plugin.intellij.styles
 
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -17,7 +17,7 @@ import java.nio.file.Paths
 import javax.swing.tree.DefaultMutableTreeNode
 
 @Suppress("UNCHECKED_CAST")
-class FunSpecParseTest : LightCodeInsightFixtureTestCase() {
+class FunSpecParseTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()

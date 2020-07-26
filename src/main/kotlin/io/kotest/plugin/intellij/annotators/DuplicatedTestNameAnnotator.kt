@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.annotators
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
@@ -23,8 +24,7 @@ class DuplicatedTestNameAnnotator : Annotator {
                val tests = style.tests(ktclass)
                val duplicated = tests.count { it.test.name == test.name } > 1
                if (duplicated) {
-                  val range = test.psi.textRange
-                  holder.createErrorAnnotation(range, "Duplicated test name")
+                  holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
                }
             }
          }

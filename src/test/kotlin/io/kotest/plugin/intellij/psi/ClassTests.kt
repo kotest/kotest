@@ -1,13 +1,13 @@
 package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.jetbrains.kotlin.name.FqName
 import java.nio.file.Paths
 
-class ClassTests : LightCodeInsightFixtureTestCase() {
+class ClassTests : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
