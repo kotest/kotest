@@ -14,13 +14,8 @@ import io.kotest.fp.Try
 import io.kotest.mpp.log
 import kotlinx.coroutines.runBlocking
 import java.util.Collections.emptyList
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.Future
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
 import kotlin.reflect.KClass
 
 data class KotestEngineConfig(
@@ -89,7 +84,7 @@ class KotestEngine(private val config: KotestEngineConfig) {
       )
       specs.forEach { klass ->
          executor.submit {
-            future {
+            runBlocking {
                specExecutor.execute(klass)
             }
          }
@@ -162,10 +157,3 @@ class KotestEngine(private val config: KotestEngineConfig) {
          )
    }
 }
-
-fun future(f: suspend () -> Unit): Future<Unit> =
-   CompletableFuture<Unit>().apply {
-      f.startCoroutine(Continuation(EmptyCoroutineContext) { res ->
-         res.fold(::complete, ::completeExceptionally)
-      })
-   }

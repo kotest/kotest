@@ -1,7 +1,7 @@
 package io.kotest.core.runtime
 
-import io.kotest.core.engine.future
 import io.kotest.core.internal.NamedThreadFactory
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -24,7 +24,7 @@ actual suspend fun replay(
       val error = AtomicReference<Throwable>(null)
       for (k in 0 until times) {
          executor.submit {
-            future {
+            runBlocking {
                try {
                   before(k)
                   action(k)
