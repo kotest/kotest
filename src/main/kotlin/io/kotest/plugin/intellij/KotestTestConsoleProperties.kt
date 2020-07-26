@@ -16,7 +16,8 @@ class KotestTestConsoleProperties(config: KotestConfiguration,
    override fun getTestLocator(): SMTestLocator = KotestTestLocator
 
    override fun initScope(): GlobalSearchScope {
-      return GlobalSearchScope.allScope(project)
+      val sourceScope = configuration.testSearchScope.getSourceScope(configuration)
+      return sourceScope?.globalSearchScope ?: GlobalSearchScope.allScope(project)
    }
 
    override fun createRerunFailedTestsAction(consoleView: ConsoleView): AbstractRerunFailedTestsAction? {
