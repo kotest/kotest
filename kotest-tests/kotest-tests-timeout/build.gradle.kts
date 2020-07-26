@@ -35,7 +35,6 @@ kotlin {
             implementation(project(":kotest-core"))
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.JunitRunner))
-            implementation(project(":kotest-runner:kotest-runner-console"))
             implementation(Libs.Coroutines.coreJvm)
          }
       }
