@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.implicits
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.getSuperClassSimpleName
+import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.toKtClass
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
 import org.jetbrains.kotlin.psi.KtClass
@@ -22,6 +23,8 @@ class ProjectConfigImplicitUsageProvider : ImplicitUsageProvider {
     * Marks subclasses of AbstractProjectConfig as used.
     */
    override fun isImplicitUsage(element: PsiElement): Boolean {
+      if (!element.containingFile.isTestFile()) return false
+
       val parent = when (element) {
          is KtClass -> element.getSuperClassSimpleName()
          is KtLightClass -> element.toKtClass()?.getSuperClassSimpleName()
