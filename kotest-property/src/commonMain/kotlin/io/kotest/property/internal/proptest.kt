@@ -1,5 +1,6 @@
 package io.kotest.property.internal
 
+import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.PropTestConfig
@@ -20,35 +21,28 @@ suspend fun <A> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random)
-      .take(iterations)
-      .forEach { a ->
-         val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value), random.seed) {
-            context.property(a.value)
+   when (genA) {
+      is Arb -> {
+         genA.generate(random)
+            .take(iterations)
+            .forEach { a ->
+               val shrinkfn = shrinkfn(a, property, config.shrinkingMode)
+               config.listeners.forEach { it.beforeTest() }
+               test(context, config, shrinkfn, listOf(a.value), random.seed) {
+                  context.property(a.value)
+               }
+               config.listeners.forEach { it.afterTest() }
+            }
+      }
+      is Exhaustive -> {
+         genA.values.forEach { a ->
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, { emptyList() }, listOf(a), random.seed) {
+               context.property(a)
+            }
+            config.listeners.forEach { it.afterTest() }
          }
-         config.listeners.forEach { it.afterTest() }
       }
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A> proptest(
-   exhaustiveA: Exhaustive<A>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      config.listeners.forEach { it.beforeTest() }
-      test(context, config, { emptyList() }, listOf(a), random.seed) {
-         context.property(a)
-      }
-      config.listeners.forEach { it.afterTest() }
    }
 
    context.checkMaxSuccess(config, random.seed)
@@ -70,44 +64,33 @@ suspend fun <A, B> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random).zip(genB.generate(random))
-      .take(iterations)
-      .forEach { (a, b) ->
-         val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value, b.value), random.seed) {
-            context.property(a.value, b.value)
+   if (genA is Exhaustive && genB is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, { emptyList() }, listOf(a, b), random.seed) {
+               context.property(a, b)
+            }
+            config.listeners.forEach { it.afterTest() }
          }
-         config.listeners.forEach { it.afterTest() }
       }
-
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A, B> proptest(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      exhaustiveB.values.forEach { b ->
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, { emptyList() }, listOf(a, b), random.seed) {
-            context.property(a, b)
+   } else {
+      genA.generate(random).zip(genB.generate(random))
+         .take(iterations)
+         .forEach { (a, b) ->
+            val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode)
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, shrinkfn, listOf(a.value, b.value), random.seed) {
+               context.property(a.value, b.value)
+            }
+            config.listeners.forEach { it.afterTest() }
          }
-         config.listeners.forEach { it.afterTest() }
-      }
    }
 
    context.checkMaxSuccess(config, random.seed)
    return context
 }
+
 
 suspend fun <A, B, C> proptest(
    iterations: Int,
@@ -125,43 +108,30 @@ suspend fun <A, B, C> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random))
-      .take(iterations)
-      .forEach { (ab, c) ->
-         val (a, b) = ab
-         val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value, b.value, c.value), random.seed) {
-            context.property(a.value, b.value, c.value)
+   if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            genC.values.forEach { c ->
+               config.listeners.forEach { it.beforeTest() }
+               test(context, config, { emptyList() }, listOf(a, b, c), random.seed) {
+                  context.property(a, b, c)
+               }
+               config.listeners.forEach { it.afterTest() }
+            }
          }
-         config.listeners.forEach { it.afterTest() }
       }
-
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A, B, C> proptest(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A, B, C) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      exhaustiveB.values.forEach { b ->
-         exhaustiveC.values.forEach { c ->
+   } else {
+      genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random))
+         .take(iterations)
+         .forEach { (ab, c) ->
+            val (a, b) = ab
+            val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode)
             config.listeners.forEach { it.beforeTest() }
-            test(context, config, { emptyList() }, listOf(a, b, c), random.seed) {
-               context.property(a, b, c)
+            test(context, config, shrinkfn, listOf(a.value, b.value, c.value), random.seed) {
+               context.property(a.value, b.value, c.value)
             }
             config.listeners.forEach { it.afterTest() }
          }
-      }
    }
 
    context.checkMaxSuccess(config, random.seed)
@@ -187,47 +157,34 @@ suspend fun <A, B, C, D> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random))
-      .take(iterations)
-      .forEach { (abc, d) ->
-         val (ab, c) = abc
-         val (a, b) = ab
-         val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode)
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value), random.seed) {
-            context.property(a.value, b.value, c.value, d.value)
-         }
-         config.listeners.forEach { it.afterTest() }
-      }
-
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A, B, C, D> proptest(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   exhaustiveD: Exhaustive<D>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A, B, C, D) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      exhaustiveB.values.forEach { b ->
-         exhaustiveC.values.forEach { c ->
-            exhaustiveD.values.forEach { d ->
-               config.listeners.forEach { it.beforeTest() }
-               test(context, config, { emptyList() }, listOf(a, b, c, d), random.seed) {
-                  context.property(a, b, c, d)
+   if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            genC.values.forEach { c ->
+               genD.values.forEach { d ->
+                  config.listeners.forEach { it.beforeTest() }
+                  test(context, config, { emptyList() }, listOf(a, b, c, d), random.seed) {
+                     context.property(a, b, c, d)
+                  }
+                  config.listeners.forEach { it.afterTest() }
                }
-               config.listeners.forEach { it.afterTest() }
             }
          }
       }
+   } else {
+
+      genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random))
+         .take(iterations)
+         .forEach { (abc, d) ->
+            val (ab, c) = abc
+            val (a, b) = ab
+            val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode)
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value), random.seed) {
+               context.property(a.value, b.value, c.value, d.value)
+            }
+            config.listeners.forEach { it.afterTest() }
+         }
    }
 
    context.checkMaxSuccess(config, random.seed)
@@ -259,51 +216,37 @@ suspend fun <A, B, C, D, E> proptest(
    val context = PropertyContext()
    val random = config.seed?.random() ?: RandomSource.Default
 
-   genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random))
-      .zip(genE.generate(random))
-      .take(iterations)
-      .forEach { (abcd, e) ->
-         val (abc, d) = abcd
-         val (ab, c) = abc
-         val (a, b) = ab
-         val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
-         config.listeners.forEach { it.beforeTest() }
-         test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value), random.seed) {
-            context.property(a.value, b.value, c.value, d.value, e.value)
-         }
-         config.listeners.forEach { it.afterTest() }
-      }
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A, B, C, D, E> proptest(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   exhaustiveD: Exhaustive<D>,
-   exhaustiveE: Exhaustive<E>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A, B, C, D, E) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      exhaustiveB.values.forEach { b ->
-         exhaustiveC.values.forEach { c ->
-            exhaustiveD.values.forEach { d ->
-               exhaustiveE.values.forEach { e ->
-                  config.listeners.forEach { it.beforeTest() }
-                  test(context, config, { emptyList() }, listOf(a, b, c, d, e), random.seed) {
-                     context.property(a, b, c, d, e)
+   if (genA is Exhaustive && genB is Exhaustive && genC is Exhaustive && genD is Exhaustive && genE is Exhaustive) {
+      genA.values.forEach { a ->
+         genB.values.forEach { b ->
+            genC.values.forEach { c ->
+               genD.values.forEach { d ->
+                  genE.values.forEach { e ->
+                     config.listeners.forEach { it.beforeTest() }
+                     test(context, config, { emptyList() }, listOf(a, b, c, d, e), random.seed) {
+                        context.property(a, b, c, d, e)
+                     }
+                     config.listeners.forEach { it.afterTest() }
                   }
-                  config.listeners.forEach { it.afterTest() }
                }
             }
          }
       }
+   } else {
+      genA.generate(random).zip(genB.generate(random)).zip(genC.generate(random)).zip(genD.generate(random))
+         .zip(genE.generate(random))
+         .take(iterations)
+         .forEach { (abcd, e) ->
+            val (abc, d) = abcd
+            val (ab, c) = abc
+            val (a, b) = ab
+            val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode)
+            config.listeners.forEach { it.beforeTest() }
+            test(context, config, shrinkfn, listOf(a.value, b.value, c.value, d.value, e.value), random.seed) {
+               context.property(a.value, b.value, c.value, d.value, e.value)
+            }
+            config.listeners.forEach { it.afterTest() }
+         }
    }
 
    context.checkMaxSuccess(config, random.seed)
@@ -352,42 +295,6 @@ suspend fun <A, B, C, D, E, F> proptest(
          }
          config.listeners.forEach { it.afterTest() }
       }
-   context.checkMaxSuccess(config, random.seed)
-   return context
-}
-
-suspend fun <A, B, C, D, E, F> proptest(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   exhaustiveD: Exhaustive<D>,
-   exhaustiveE: Exhaustive<E>,
-   exhaustiveF: Exhaustive<F>,
-   config: PropTestConfig,
-   property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
-): PropertyContext {
-
-   val context = PropertyContext()
-   val random = config.seed?.random() ?: RandomSource.Default
-
-   exhaustiveA.values.forEach { a ->
-      exhaustiveB.values.forEach { b ->
-         exhaustiveC.values.forEach { c ->
-            exhaustiveD.values.forEach { d ->
-               exhaustiveE.values.forEach { e ->
-                  exhaustiveF.values.forEach { f ->
-                     config.listeners.forEach { it.beforeTest() }
-                     test(context, config, { emptyList() }, listOf(a, b, c, d, e, f), random.seed) {
-                        context.property(a, b, c, d, e, f)
-                     }
-                     config.listeners.forEach { it.afterTest() }
-                  }
-               }
-            }
-         }
-      }
-   }
-
    context.checkMaxSuccess(config, random.seed)
    return context
 }

@@ -90,7 +90,6 @@ suspend inline fun <reified A, reified B> checkAll(
    property
 )
 
-
 suspend fun <A, B> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -144,30 +143,3 @@ suspend inline fun <reified A, reified B> forAll(
    Arb.default<B>(),
    config
 ) { a, b -> property(a, b) shouldBe true }
-
-
-suspend fun <A, B> checkAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, config, property)
-
-suspend fun <A, B> checkAll(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   property: suspend PropertyContext.(A, B) -> Unit
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, PropTestConfig(), property)
-
-suspend fun <A, B> forAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   property: suspend PropertyContext.(A, B) -> Boolean
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, config) { a, b -> property(a, b) shouldBe true }
-
-suspend fun <A, B> forAll(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   property: suspend PropertyContext.(A, B) -> Boolean
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, PropTestConfig()) { a, b -> property(a, b) shouldBe true }

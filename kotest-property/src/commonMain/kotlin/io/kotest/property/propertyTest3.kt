@@ -162,35 +162,3 @@ suspend inline fun <reified A, reified B, reified C> forAll(
    config
 ) { a, b, c -> property(a, b, c) shouldBe true }
 
-
-suspend fun <A, B, C> checkAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   property: suspend PropertyContext.(A, B, C) -> Unit
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, exhaustiveC, config, property)
-
-suspend fun <A, B, C> checkAll(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   property: suspend PropertyContext.(A, B, C) -> Unit
-): PropertyContext = proptest(exhaustiveA, exhaustiveB, exhaustiveC, PropTestConfig(), property)
-
-suspend fun <A, B, C> forAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   property: suspend PropertyContext.(A, B, C) -> Boolean
-): PropertyContext =
-   proptest(exhaustiveA, exhaustiveB, exhaustiveC, config) { a, b, c -> property(a, b, c) shouldBe true }
-
-suspend fun <A, B, C> forAll(
-   exhaustiveA: Exhaustive<A>,
-   exhaustiveB: Exhaustive<B>,
-   exhaustiveC: Exhaustive<C>,
-   property: suspend PropertyContext.(A, B, C) -> Boolean
-): PropertyContext =
-   proptest(exhaustiveA, exhaustiveB, exhaustiveC, PropTestConfig()) { a, b, c -> property(a, b, c) shouldBe true }
