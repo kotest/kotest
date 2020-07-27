@@ -172,6 +172,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
       JDOMExternalizerUtil.writeField(element, TestPathField, testPath)
       JDOMExternalizerUtil.writeField(element, PackageNameField, packageName)
+      JDOMExternalizerUtil.writeField(element, VmParamsField, vmParameters)
       searchScope.writeExternal(element)
       EnvironmentVariablesComponent.writeExternal(element, envs)
    }
@@ -184,6 +185,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       specName = JDOMExternalizerUtil.readField(element, SpecNameField)
       testPath = JDOMExternalizerUtil.readField(element, TestPathField)
       packageName = JDOMExternalizerUtil.readField(element, PackageNameField)
+      vmParameters = JDOMExternalizerUtil.readField(element, VmParamsField)
       searchScope.readExternal(element)
       EnvironmentVariablesComponent.readExternal(element, envs)
    }
@@ -197,6 +199,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
       const val ProgramParamsField = "programParameters"
       const val WorkingDirField = "workingDirectory"
       const val PackageNameField = "packageName"
+      const val VmParamsField = "vmparams"
       const val TestPathField = "testPath"
       const val SpecNameField = "specName"
    }
