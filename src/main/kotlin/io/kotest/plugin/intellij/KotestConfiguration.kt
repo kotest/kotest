@@ -19,8 +19,10 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import com.intellij.refactoring.listeners.RefactoringElementListener
-import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.run.KotestRunnableState
+import io.kotest.plugin.intellij.run.RunData
+import io.kotest.plugin.intellij.run.actionName
+import io.kotest.plugin.intellij.run.suggestedName
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -69,7 +71,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
 
    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = SettingsEditorPanel(project)
 
-   override fun suggestedName(): String? = buildSuggestedName(specName, testPath, packageName)
+   override fun suggestedName(): String? = RunData(specName, testPath, packageName).suggestedName()
 
    override fun getAlternativeJrePath() = alternativeJrePath
    override fun setAlternativeJrePath(path: String?) {
@@ -160,12 +162,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
     *
     * @return the name of the action.
     */
-   override fun getActionName(): String? = when {
-      packageName?.isNotBlank() ?: false -> "All tests in '$packageName'"
-      testPath?.isNotBlank() ?: false -> testPath
-      specName?.isNotBlank() ?: false -> specName
-      else -> super.getActionName()
-   }
+   override fun getActionName(): String? = RunData(specName, testPath, packageName).actionName()
 
    override fun writeExternal(element: Element) {
       super.writeExternal(element)

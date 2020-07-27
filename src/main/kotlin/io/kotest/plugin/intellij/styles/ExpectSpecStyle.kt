@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
@@ -31,23 +35,23 @@ object ExpectSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(context, this, TestType.Container)
+      return buildTest(TestName(context.text, context.interpolated), this, TestType.Container)
    }
 
    private fun KtCallExpression.tryExpect(): Test? {
       val expect = extractStringArgForFunctionWithStringAndLambdaArgs("expect") ?: return null
-      return buildTest(expect, this, TestType.Test)
+      return buildTest(TestName(expect.text, expect.interpolated), this, TestType.Test)
    }
 
    private fun KtDotQualifiedExpression.tryExpectWithConfig(): Test? {
       val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("expect", "config") ?: return null
-      return buildTest(expect, this, TestType.Test)
+      return buildTest(TestName(expect.text, expect.interpolated), this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName)
-      return Test(testName, path, type, element)
+      return Test(testName, path.map { TestPathEntry(it.name) }, type, false, path.size == 1, element)
    }
 
    override fun test(element: PsiElement): Test? {

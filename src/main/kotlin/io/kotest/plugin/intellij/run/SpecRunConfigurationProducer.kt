@@ -9,7 +9,6 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 
@@ -47,7 +46,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassClassOrObjectToken()
          if (ktclass != null) {
-            return configuration.name == buildSuggestedName(ktclass.fqName?.asString(), null, null)
+            return configuration.name == RunData(ktclass.fqName?.asString(), null, null).suggestedName()
          }
       }
       return false

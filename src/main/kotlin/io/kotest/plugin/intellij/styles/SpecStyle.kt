@@ -2,6 +2,9 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestElement
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.isContainedInSpec
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtConstructorCalleeExpression

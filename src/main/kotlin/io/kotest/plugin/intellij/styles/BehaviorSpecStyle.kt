@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
@@ -35,21 +39,21 @@ object BehaviorSpecStyle : SpecStyle {
       }
    }
 
-   private fun KtCallExpression.tryWhen(): Test? {
-      val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
-      return if (w == null) null else {
-         val name = "When: $w"
-         val parents = locateParent()?.path ?: emptyList()
-         val path = parents + name
-         Test(name, path, TestType.Container, this)
-      }
-   }
-
    private fun KtCallExpression.tryGiven(): Test? {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
-         val name = "Given: $given"
-         Test(name, listOf(name), TestType.Container, this)
+         val name = TestName("Given: ${given.text}", given.interpolated)
+         Test(name, listOf(TestPathEntry(name.name)), TestType.Container, xdisabled = false, root = true, psi = this)
+      }
+   }
+
+   private fun KtCallExpression.tryWhen(): Test? {
+      val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
+      return if (w == null) null else {
+         val name = TestName("When: ${w.text}", w.interpolated)
+         val parents = locateParent()?.path ?: emptyList()
+         val path = parents + TestPathEntry(name.name)
+         Test(name, path, TestType.Container, xdisabled = false, root = false, psi = this)
       }
    }
 
@@ -57,8 +61,9 @@ object BehaviorSpecStyle : SpecStyle {
       val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
-         val path = parents + "Then: $then"
-         Test(then, path, TestType.Test, this)
+         val name = TestName("Then: ${then.text}", then.interpolated)
+         val path = parents + TestPathEntry(name.name)
+         Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
       }
    }
 
@@ -66,8 +71,9 @@ object BehaviorSpecStyle : SpecStyle {
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
-         val path = parents + "Then: $then"
-         Test(then, path, TestType.Test, this)
+         val name = TestName("Then: ${then.text}", then.interpolated)
+         val path = parents + TestPathEntry(name.name)
+         Test(name, path, TestType.Test, false, root = false, psi = this)
       }
    }
 

@@ -9,11 +9,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Icons
+import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.Callback
 import io.kotest.plugin.intellij.psi.CallbackType
 import io.kotest.plugin.intellij.psi.Include
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -88,7 +88,7 @@ class TestNodeDescriptor(project: Project,
 
    init {
       templatePresentation.locationString = null
-      templatePresentation.presentableText = test.test.name
+      templatePresentation.presentableText = test.test.name.name
       when (test.test.enabled) {
          true -> when (isUnique) {
             true -> templatePresentation.setIcon(AllIcons.Nodes.Test)

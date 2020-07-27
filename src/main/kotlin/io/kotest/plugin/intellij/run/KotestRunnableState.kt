@@ -13,6 +13,14 @@ import java.io.File
 class KotestRunnableState(env: ExecutionEnvironment,
                           private val config: KotestConfiguration) : JavaTestFrameworkRunnableState<KotestConfiguration>(env) {
 
+   private val mainClass = "io.kotest.launcher.LauncherKt"
+
+   private val requiredJars = listOf(
+      "io.kotest.launcher.TeamCityMessages",
+      "com.github.ajalt.clikt.core.CliktCommand",
+      "com.github.ajalt.mordant.TermColors"
+   )
+
    override fun getForkMode(): String = "none"
    override fun getFrameworkId(): String = "Kotest"
    override fun getFrameworkName(): String = "Kotest"
@@ -24,7 +32,7 @@ class KotestRunnableState(env: ExecutionEnvironment,
       val params = super.createJavaParameters()
       // this main class is what will be executed by intellij when someone clicks run
       // it is a main function that will launch the KotestConsoleRunner
-      params.mainClass = "io.kotest.runner.console.LauncherKt"
+      params.mainClass = mainClass
 
       val packageName = configuration.getPackageName()
       if (packageName != null && packageName.isNotBlank())
@@ -36,18 +44,16 @@ class KotestRunnableState(env: ExecutionEnvironment,
          params.programParametersList.add("--spec", specName)
 
       // test can be omitted if you want to run the entire spec or package
-      val testName = configuration.getTestPath()
-      if (testName != null && testName.isNotBlank())
-         params.programParametersList.add("--testpath", testName)
+      val testPath = configuration.getTestPath()
+      if (testPath != null && testPath.isNotBlank())
+         params.programParametersList.add("--testpath", testPath)
 
       return params
    }
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
       try {
-         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("io.kotest.runner.console.TeamCityMessages")))
-         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.clikt.core.CliktCommand")))
-         javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName("com.github.ajalt.mordant.TermColors")))
+         requiredJars.forEach { javaParameters.classPath.addFirst(PathUtil.getJarPathForClass(Class.forName(it))) }
       } catch (e: Throwable) {
          println(e)
          e.printStackTrace()

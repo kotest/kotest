@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
@@ -31,23 +35,23 @@ object FeatureSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryFeature(): Test? {
       val feature = extractStringArgForFunctionWithStringAndLambdaArgs("feature") ?: return null
-      return buildTest(feature, this, TestType.Container)
+      return buildTest(TestName(feature.text, feature.interpolated), this, TestType.Container)
    }
 
    private fun KtCallExpression.tryScenario(): Test? {
       val scenario = extractStringArgForFunctionWithStringAndLambdaArgs("scenario") ?: return null
-      return buildTest(scenario, this, TestType.Test)
+      return buildTest(TestName(scenario.text, scenario.interpolated), this, TestType.Test)
    }
 
    private fun KtDotQualifiedExpression.tryScenarioWithConfig(): Test? {
       val feature = extractLhsStringArgForDotExpressionWithRhsFinalLambda("scenario", "config") ?: return null
-      return buildTest(feature, this, TestType.Test)
+      return buildTest(TestName(feature.text, feature.interpolated), this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
-      val features = element.locateParentTests()
-      val path = (features.map { it.name } + testName)
-      return Test(testName, path, type, element)
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
+      val parents = element.locateParentTests()
+      val path = (parents.map { it.name } + testName)
+      return Test(testName, path.map { TestPathEntry(it.name) }, type, false, path.size == 1, element)
    }
 
    override fun test(element: PsiElement): Test? {

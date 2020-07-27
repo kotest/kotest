@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
@@ -39,8 +43,8 @@ object FreeSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
-      val name = extractStringFromStringInvokeWithLambda() ?: return null
-      return buildTest(name, this, TestType.Test)
+      val string = extractStringFromStringInvokeWithLambda() ?: return null
+      return buildTest(TestName(string.text, string.interpolated), this, TestType.Test)
    }
 
    /**
@@ -49,8 +53,8 @@ object FreeSpecStyle : SpecStyle {
     *   "some test".config(...) {}
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
-      val name = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
-      return buildTest(name, this, TestType.Test)
+      val string = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
+      return buildTest(TestName(string.text, string.interpolated), this, TestType.Test)
    }
 
    /**
@@ -59,14 +63,14 @@ object FreeSpecStyle : SpecStyle {
     *   "some test" - {}
     */
    private fun KtBinaryExpression.tryContainer(): Test? {
-      val name = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
-      return buildTest(name, this, TestType.Container)
+      val string = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
+      return buildTest(TestName(string.text, string.interpolated), this, TestType.Container)
    }
 
-   private fun buildTest(testName: String, element: PsiElement, type: TestType): Test {
+   private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
       val contexts = locateParentContainers(element)
       val path = (contexts.map { it.name } + testName)
-      return Test(testName, path, type, element)
+      return Test(testName, path.map { TestPathEntry(it.name) }, type, false, path.size == 1, element)
    }
 
    override fun test(element: PsiElement): Test? {

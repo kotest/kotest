@@ -10,18 +10,16 @@ import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
-import org.jetbrains.kotlin.psi.KtStringTemplateEntry
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 
 /**
  * Extracts the string literal from things like:
  *
  *   "my test" {}
  */
-fun KtCallExpression.extractStringFromStringInvokeWithLambda(): String? {
+fun KtCallExpression.extractStringFromStringInvokeWithLambda(): StringArg? {
    if (children.size == 2) {
       val maybeStringTemplate = children[0]
       val maybeLambdaArgument = children[1]
@@ -40,41 +38,10 @@ fun KtCallExpression.functionName(): String? {
 fun KtCallExpression.hasFunctionName(names: List<String>): Boolean = names.contains(functionName())
 
 /**
- * If this [KtCallExpression] has a single arg in it's value list,
- * and that single arg is of type [KtStringTemplateExpression], then it
- * returns the value of that arg, otherwise null
+ * Returns true if this element is a name reference and the name is one of the given strings.
  */
-fun KtCallExpression.getSingleStringArgOrNull(): String? {
-
-   if (children.size < 2)
-      return null
-
-   val argList = children[1]
-   if (argList is KtValueArgumentList && argList.children.size == 1) {
-      val value = argList.children[0]
-      if (value is KtValueArgument) {
-         val maybeStringTemplateExpression = value.children[0]
-         if (maybeStringTemplateExpression is KtStringTemplateExpression) {
-            return maybeStringTemplateExpression.asString()
-         }
-      }
-   }
-
-   return null
-}
-
 fun PsiElement.isNameReference(names: List<String>): Boolean =
    this is KtNameReferenceExpression && names.contains(text)
-
-/**
- * Returns the value of this string expression.
- */
-fun KtStringTemplateExpression.asString(): String? {
-   return when (val entry = children[0]) {
-      is KtStringTemplateEntry -> entry.text
-      else -> null
-   }
-}
 
 /**
  * Returns true if the final argument to this call is a lambda arg
@@ -101,21 +68,36 @@ fun KtCallExpression.hasFinalLambdaArg(): Boolean {
  *    - KtLambdaArgument (the test closure)
  *      - KtLambdaArgument
  */
-fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): String? =
+fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): StringArg? =
    extractStringArgForFunctionWithStringAndLambdaArgs(names.asList())
 
-fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: List<String>): String? {
+/**
+ * Matches code in the form:
+ *
+ *   function("some string") { }
+ *
+ * The structure in PSI for this is:
+ *
+ *  KtCallExpression (the function invocation)
+ *    - KtNameReferenceExpression (the name of the function)
+ *    - KtValueArgumentList
+ *      - KtValueArgument (container wrapper for an argument, in this case the string name)
+ *        - KtStringTemplateExpression (the expression for the string arg)
+ *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
+ *    - KtLambdaArgument (the test closure)
+ *      - KtLambdaArgument
+ */
+fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: List<String>): StringArg? {
    if (children.size == 3
       && children[0].isNameReference(names)
-      && children[1].isSingleStringTemplateArg()
+      && children[1] is KtValueArgumentList
       && children[2] is KtLambdaArgument) {
-      return children[1] // KtValueArgumentList
-         .children[0] // KtValueArgument
-         .children[0] // KtStringTemplateExpression
-         .getChildOfType<KtStringTemplateEntry>()?.text
+      return (children[1] as KtValueArgumentList).getSingleStringArgOrNull()
    }
    return null
 }
+
+data class StringArg(val text: String, val interpolated: Boolean)
 
 /**
  * If this [LeafPsiElement] is the dot between two calls in a dot expression, returns that dot expression.
@@ -186,57 +168,35 @@ fun LeafPsiElement.ifCallExpressionLhsStringOpenQuote(): KtCallExpression? {
    return null
 }
 
-
 /**
- * For invocations of the form a("foo").b(...) { } returns the single string arg passed to the first function.
+ * If this [KtCallExpression] has a single arg in it's value list, returns that string, otherwise null.
  */
-fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: String,
-                                                                                   rhs: String): String? =
-   extractLhsStringArgForDotExpressionWithRhsFinalLambda(listOf(lhs), listOf(rhs))
-
-fun KtDotQualifiedExpression.extractLhsStringArgForDotExpressionWithRhsFinalLambda(lhs: List<String>,
-                                                                                   rhs: List<String>): String? {
-   if (children.size != 2)
-      return null
-
-   val a = children[0]
-   val b = children[1]
-
-   if (a is KtCallExpression && b is KtCallExpression) {
-      if (a.hasFunctionName(lhs) && b.hasFunctionName(rhs)) {
-         val testName = a.getSingleStringArgOrNull()
-         if (testName != null && b.hasFinalLambdaArg())
-            return testName
-      }
+fun KtCallExpression.getSingleStringArgOrNull(): StringArg? {
+   return when {
+      children.size < 2 -> null
+      children[1] is KtValueArgumentList -> (children[1] as KtValueArgumentList).getSingleStringArgOrNull()
+      else -> null
    }
-
-   return null
 }
 
 /**
- * For invocations of the form "foo".b(...) { } returns the string literal on the LHS
+ * If this [KtValueArgumentList] has a single argument of type [KtStringTemplateExpression],
+ * returns the value of the expression, otherwise null.
  */
-fun KtDotQualifiedExpression.extractStringForStringExtensionFunctonWithRhsFinalLambda(rhs: String): String? {
-   if (children.size != 2)
-      return null
-
-   val a = children[0]
-   val b = children[1]
-
-   if (a is KtStringTemplateExpression && b is KtCallExpression) {
-      if (b.hasFunctionName(listOf(rhs)) && b.hasFinalLambdaArg()) {
-         return a.asString()
+fun KtValueArgumentList.getSingleStringArgOrNull(): StringArg? {
+   if (children.size == 1) {
+      val arg = children[0]
+      if (arg is KtValueArgument) {
+         if (arg.children.size == 1) {
+            val template = arg.children[0]
+            if (template is KtStringTemplateExpression) {
+               return template.asString()
+            }
+         }
       }
    }
-
    return null
 }
-
-/**
- * Returns true if this argument has a single argument of type string.
- */
-fun PsiElement.isSingleStringTemplateArg(): Boolean =
-   this is KtValueArgumentList && this.isSingleStringTemplateArg()
 
 /**
  * Returns true if this argument has a single argument of type string.
@@ -246,35 +206,3 @@ fun KtValueArgumentList.isSingleStringTemplateArg(): Boolean =
       && children[0] is KtValueArgument
       && children[0].children.size == 1
       && children[0].children[0] is KtStringTemplateExpression
-
-/**
- * Returns the string literal used by an infix function, when the function is of the
- * form <string literal> <operation> <lambda-expression>, eg, "test" should { } or "test" - {}
- */
-fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<String>): String? {
-   if (children.size == 3) {
-      val a = children[0]
-      val b = children[1]
-      val c = children[2]
-      if (a is KtStringTemplateExpression
-         && b is KtOperationReferenceExpression
-         && c is KtLambdaExpression
-         && names.contains(b.text)) {
-         return a.asString()
-      }
-   }
-   return null
-}
-
-fun buildSuggestedName(specName: String?, testPath: String?, packageName: String?): String? {
-   return when {
-      packageName != null && packageName.isNotBlank() -> "All tests in '$packageName'"
-      specName == null || specName.isBlank() -> null
-      testPath == null || testPath.isBlank() -> specName.split('.').last()
-      else -> {
-         val simpleName = specName.split('.').last()
-         val readableTestPath = testPath.replace(" -- ", " ")
-         "$simpleName: $readableTestPath"
-      }
-   }
-}

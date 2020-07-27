@@ -5,10 +5,10 @@ import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.includes
 import io.kotest.plugin.intellij.psi.specStyle
-import io.kotest.plugin.intellij.styles.TestElement
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
 import org.jetbrains.kotlin.idea.util.projectStructure.allModules

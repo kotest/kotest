@@ -2,6 +2,11 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.psi.StringArg
 import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
@@ -43,19 +48,29 @@ object WordSpecStyle : SpecStyle {
 
    private fun KtBinaryExpression.tryWhen(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("when", "When"))
-      return if (name == null) null else Test(name, listOf(name), TestType.Container, this)
+      return if (name == null) null else {
+         val testName = TestName(name.text, name.interpolated)
+         Test(testName, listOf(TestPathEntry(name.text)), TestType.Container, xdisabled = false, root = true, psi = this)
+      }
    }
 
    private fun KtBinaryExpression.tryShould(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("should", "Should"))
       return if (name == null) null else {
+         val testName = TestName(name.text, name.interpolated)
          val w = locateParentWhen()
-         return if (w == null) Test(name, listOf(name), TestType.Container, this) else Test(
-            name,
-            listOf("${w.name} when", name),
-            TestType.Container,
-            this
-         )
+         return if (w == null) {
+            Test(testName, listOf(TestPathEntry(name.text + " should")), TestType.Container, xdisabled = false, root = true, psi = this)
+         } else {
+            Test(
+               testName,
+               listOf(TestPathEntry("${w.name.name} when"), TestPathEntry(name.text)),
+               TestType.Container,
+               xdisabled = false,
+               root = false,
+               psi = this
+            )
+         }
       }
    }
 
@@ -69,17 +84,35 @@ object WordSpecStyle : SpecStyle {
       return buildSubjectWithParents(subject, this)
    }
 
-   private fun buildSubjectWithParents(subject: String?, psi: PsiElement): Test? {
+   private fun buildSubjectWithParents(subject: StringArg?, psi: PsiElement): Test? {
       return if (subject == null) null else {
          val should = psi.locateParentShould()
          val w = psi.locateParentWhen()
          when {
-            should != null && w != null -> Test(subject,
-               listOf("${w.name} when", "${should.name} should", subject),
+            should != null && w != null -> Test(
+               TestName(subject.text, subject.interpolated),
+               listOf(TestPathEntry("${w.name.name} when"), TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
                TestType.Test,
-               psi)
-            should != null -> Test(subject, listOf("${should.name} should", subject), TestType.Test, psi)
-            else -> Test(subject, listOf(subject), TestType.Test, psi)
+               xdisabled = false,
+               root = false,
+               psi = psi
+            )
+            should != null -> Test(
+               TestName(subject.text, subject.interpolated),
+               listOf(TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
+               TestType.Test,
+               xdisabled = false,
+               root = false,
+               psi = psi
+            )
+            else -> Test(
+               TestName(subject.text, subject.interpolated),
+               listOf(TestPathEntry(subject.text)),
+               TestType.Test,
+               xdisabled = false,
+               root = true,
+               psi = psi
+            )
          }
       }
    }

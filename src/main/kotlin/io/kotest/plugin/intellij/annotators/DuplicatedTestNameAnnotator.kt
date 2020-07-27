@@ -19,13 +19,12 @@ class DuplicatedTestNameAnnotator : Annotator {
          val style = ktclass.specStyle()
          if (style != null) {
             val test = style.test(element)
-            if (test != null) {
-               if (!test.name.contains('$')) {
-                  val tests = style.tests(ktclass)
-                  val duplicated = tests.count { it.test.name == test.name } > 1
-                  if (duplicated) {
-                     holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
-                  }
+            // if the name is interpolated we can't run checks as it could be anything
+            if (test != null && !test.name.interpolated) {
+               val tests = style.tests(ktclass)
+               val duplicated = tests.count { it.test.name == test.name } > 1
+               if (duplicated) {
+                  holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
                }
             }
          }

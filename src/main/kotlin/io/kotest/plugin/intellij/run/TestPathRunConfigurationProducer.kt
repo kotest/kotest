@@ -9,10 +9,9 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.KotestConfiguration
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
-import io.kotest.plugin.intellij.psi.buildSuggestedName
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.styles.Test
+import io.kotest.plugin.intellij.Test
 
 /**
  * A run configuration creates the details of a particular run (in the drop down run box).
@@ -64,7 +63,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConf
          val test = findTest(element)
          if (test != null) {
             val spec = element.enclosingKtClass()
-            val name = buildSuggestedName(spec?.fqName?.asString(), test.testPath(), null)
+            val name = RunData(spec?.fqName?.asString(), test.testPath(), null).suggestedName()
             return configuration.name == name
          }
       }

@@ -2,6 +2,10 @@ package io.kotest.plugin.intellij.styles
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestName
+import io.kotest.plugin.intellij.TestPathEntry
+import io.kotest.plugin.intellij.TestType
 import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsFinalLambda
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
@@ -40,7 +44,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
-      return buildTest(name, name.startsWith("!"), this, TestType.Container)
+      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Container)
    }
 
    /**
@@ -51,7 +55,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("it") ?: return null
-      return buildTest(name, name.startsWith("!"), this, TestType.Test)
+      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -62,7 +66,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryXIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xit") ?: return null
-      return buildTest(name, true, this, TestType.Test)
+      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Test)
    }
 
    /**
@@ -73,7 +77,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryXDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe") ?: return null
-      return buildTest(name, true, this, TestType.Container)
+      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Container)
    }
 
    /**
@@ -84,7 +88,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
-      return buildTest(name, name.startsWith("!"), this, TestType.Test)
+      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -95,13 +99,13 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
-      return buildTest(name, true, this, TestType.Test)
+      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Test)
    }
 
-   private fun buildTest(testName: String, disabled: Boolean, element: PsiElement, testType: TestType): Test {
+   private fun buildTest(testName: TestName, xdisabled: Boolean, element: PsiElement, testType: TestType): Test {
       val contexts = locateParentTests(element)
       val path = (contexts.map { it.name } + testName)
-      return Test(testName, path, !disabled, testType, element)
+      return Test(testName, path.map { TestPathEntry(it.name) }, testType, xdisabled, path.size == 1, element)
    }
 
    override fun test(element: PsiElement): Test? {

@@ -10,7 +10,7 @@ import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.enclosingClassClassOrObjectToken
 import io.kotest.plugin.intellij.psi.isDirectSubclassOfSpec
 import io.kotest.plugin.intellij.psi.specStyle
-import io.kotest.plugin.intellij.styles.Test
+import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
