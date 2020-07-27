@@ -31,7 +31,7 @@ dependencies {
    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
    compile 'javax.xml.bind:jaxb-api:2.2.12'
    compile 'javax.activation:activation:1.1.1'
-   compile 'io.kotest:kotest-launcher:1.0.3'
+   compile 'io.kotest:kotest-launcher:1.0.4'
    testImplementation 'io.kotest:kotest-assertions-core-jvm:4.1.3'
 }
 
