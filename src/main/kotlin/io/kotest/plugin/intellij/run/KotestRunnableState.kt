@@ -1,8 +1,10 @@
 package io.kotest.plugin.intellij.run
 
+import com.intellij.execution.Executor
 import com.intellij.execution.JavaTestFrameworkRunnableState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
+import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
@@ -49,6 +51,16 @@ class KotestRunnableState(env: ExecutionEnvironment,
          params.programParametersList.add("--testpath", testPath)
 
       return params
+   }
+
+   override fun createHandler(executor: Executor?): OSProcessHandler {
+      try {
+         return super.createHandler(executor)
+      } catch (t: Throwable) {
+         println(t.message)
+         t.printStackTrace()
+         throw t
+      }
    }
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
