@@ -9,9 +9,27 @@ data class TestElement(
 )
 
 data class TestName(
+   val prefix: String?,
    val name: String,
+   val focus: Boolean,
+   val bang: Boolean,
    val interpolated: Boolean // set to true if the name contains one or more interpolated variables
-)
+) {
+   companion object {
+      operator fun invoke(prefix: String?, name: String, interpolated: Boolean): TestName {
+         return when {
+            name.trim().startsWith("!") -> TestName(prefix, name.trim().drop(1).trim(), focus = false, bang = true, interpolated = interpolated)
+            name.trim().startsWith("f:") -> TestName(prefix, name.trim().drop(2).trim(), focus = true, bang = false, interpolated = interpolated)
+            else -> TestName(prefix, name, focus = false, bang = false, interpolated = interpolated)
+         }
+      }
+   }
+
+   fun displayName(): String {
+      val flattened = name.trim().replace("\n", "")
+      return if (prefix == null) flattened else "$prefix$flattened"
+   }
+}
 
 // components for the path, should not include prefixes
 data class TestPathEntry(val name: String)
@@ -25,13 +43,9 @@ data class Test(
    val psi: PsiElement // the canonical element that identifies this test
 ) {
 
-   val isBang: Boolean = name.name.startsWith("!")
-
-   val isFocus: Boolean = name.name.startsWith("f:")
-
    val isNested: Boolean = !root
 
-   val enabled: Boolean = !xdisabled && !isBang
+   val enabled: Boolean = !xdisabled && !name.bang
 
    /**
     * Returns the test path with delimiters so that the launcher can parse into components

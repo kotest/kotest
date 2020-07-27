@@ -35,17 +35,17 @@ object ExpectSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(context.text, context.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container)
    }
 
    private fun KtCallExpression.tryExpect(): Test? {
       val expect = extractStringArgForFunctionWithStringAndLambdaArgs("expect") ?: return null
-      return buildTest(TestName(expect.text, expect.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test)
    }
 
    private fun KtDotQualifiedExpression.tryExpectWithConfig(): Test? {
       val expect = extractLhsStringArgForDotExpressionWithRhsFinalLambda("expect", "config") ?: return null
-      return buildTest(TestName(expect.text, expect.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, expect.text, expect.interpolated), this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {

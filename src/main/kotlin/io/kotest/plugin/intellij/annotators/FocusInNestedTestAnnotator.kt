@@ -23,7 +23,7 @@ class FocusInNestedTestAnnotator : Annotator {
          if (style != null) {
             val test = style.test(element)
             if (test != null) {
-               if (test.isFocus && test.isNested) {
+               if (test.name.focus && test.isNested) {
                   holder.newAnnotation(HighlightSeverity.WARNING, "Focus only works on top level tests").range(test.psi).create()
                }
             }

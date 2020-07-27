@@ -28,36 +28,36 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 175
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[1].tooltipText shouldBe "Run Given: a given"
+         gutters[1].tooltipText shouldBe "Run a given"
          (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 251
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[2].tooltipText shouldBe "Run Given: a given When: a when"
+         gutters[2].tooltipText shouldBe "Run a given a when"
          (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 276
 
          gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[3].tooltipText shouldBe "Run Given: a given When: a when Then: a test"
+         gutters[3].tooltipText shouldBe "Run a given a when a test"
          (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 301
 
          gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[4].tooltipText shouldBe "Run Given: a given When: a when Then: another test"
+         gutters[4].tooltipText shouldBe "Run a given a when another test"
          (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 379
 
          gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[5].tooltipText shouldBe "Run Given: a given When: another when"
+         gutters[5].tooltipText shouldBe "Run a given another when"
          (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 451
 
          gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[6].tooltipText shouldBe "Run Given: a given When: another when Then: a test"
+         gutters[6].tooltipText shouldBe "Run a given another when a test"
          (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 476
 
          gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[7].tooltipText shouldBe "Run Given: a given When: another when Then: a test with config"
+         gutters[7].tooltipText shouldBe "Run a given another when a test with config"
          (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 545
       }
    }
 
    fun testMethodGeneration() {
-      BehaviorSpecStyle.generateTest("myspec", "testName") shouldBe "Given(\"testName\") { }"
+      BehaviorSpecStyle.generateTest("myspec", "testName") shouldBe "given(\"testName\") { }"
    }
 }

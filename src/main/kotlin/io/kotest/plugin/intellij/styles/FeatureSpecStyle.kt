@@ -35,17 +35,17 @@ object FeatureSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryFeature(): Test? {
       val feature = extractStringArgForFunctionWithStringAndLambdaArgs("feature") ?: return null
-      return buildTest(TestName(feature.text, feature.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Container)
    }
 
    private fun KtCallExpression.tryScenario(): Test? {
       val scenario = extractStringArgForFunctionWithStringAndLambdaArgs("scenario") ?: return null
-      return buildTest(TestName(scenario.text, scenario.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, scenario.text, scenario.interpolated), this, TestType.Test)
    }
 
    private fun KtDotQualifiedExpression.tryScenarioWithConfig(): Test? {
       val feature = extractLhsStringArgForDotExpressionWithRhsFinalLambda("scenario", "config") ?: return null
-      return buildTest(TestName(feature.text, feature.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, feature.text, feature.interpolated), this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {

@@ -44,7 +44,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("describe") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Container)
+      return buildTest(TestName(null,name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Container)
    }
 
    /**
@@ -55,7 +55,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("it") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -66,7 +66,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryXIt(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xit") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test)
    }
 
    /**
@@ -77,7 +77,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryXDescribe(): Test? {
       val name = extractStringArgForFunctionWithStringAndLambdaArgs("xdescribe") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Container)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container)
    }
 
    /**
@@ -88,7 +88,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("it", "config") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
+      return buildTest(TestName(null,name.text, name.interpolated), name.text.startsWith("!"), this, TestType.Test)
    }
 
    /**
@@ -99,7 +99,7 @@ object DescribeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryXItWithConfig(): Test? {
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xit", "config") ?: return null
-      return buildTest(TestName(name.text, name.interpolated), true, this, TestType.Test)
+      return buildTest(TestName(null,name.text, name.interpolated), true, this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, xdisabled: Boolean, element: PsiElement, testType: TestType): Test {

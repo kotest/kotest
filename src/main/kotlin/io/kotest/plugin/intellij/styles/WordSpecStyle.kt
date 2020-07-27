@@ -49,7 +49,7 @@ object WordSpecStyle : SpecStyle {
    private fun KtBinaryExpression.tryWhen(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("when", "When"))
       return if (name == null) null else {
-         val testName = TestName(name.text, name.interpolated)
+         val testName = TestName(null, name.text, name.interpolated)
          Test(testName, listOf(TestPathEntry(name.text)), TestType.Container, xdisabled = false, root = true, psi = this)
       }
    }
@@ -57,7 +57,7 @@ object WordSpecStyle : SpecStyle {
    private fun KtBinaryExpression.tryShould(): Test? {
       val name = extractStringLiteralFromLhsOfInfixFunction(listOf("should", "Should"))
       return if (name == null) null else {
-         val testName = TestName(name.text, name.interpolated)
+         val testName = TestName(null, name.text, name.interpolated)
          val w = locateParentWhen()
          return if (w == null) {
             Test(testName, listOf(TestPathEntry(name.text + " should")), TestType.Container, xdisabled = false, root = true, psi = this)
@@ -90,7 +90,7 @@ object WordSpecStyle : SpecStyle {
          val w = psi.locateParentWhen()
          when {
             should != null && w != null -> Test(
-               TestName(subject.text, subject.interpolated),
+               TestName(null, subject.text, subject.interpolated),
                listOf(TestPathEntry("${w.name.name} when"), TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
                TestType.Test,
                xdisabled = false,
@@ -98,7 +98,7 @@ object WordSpecStyle : SpecStyle {
                psi = psi
             )
             should != null -> Test(
-               TestName(subject.text, subject.interpolated),
+               TestName(null, subject.text, subject.interpolated),
                listOf(TestPathEntry("${should.name.name} should"), TestPathEntry(subject.text)),
                TestType.Test,
                xdisabled = false,
@@ -106,7 +106,7 @@ object WordSpecStyle : SpecStyle {
                psi = psi
             )
             else -> Test(
-               TestName(subject.text, subject.interpolated),
+               TestName(null, subject.text, subject.interpolated),
                listOf(TestPathEntry(subject.text)),
                TestType.Test,
                xdisabled = false,

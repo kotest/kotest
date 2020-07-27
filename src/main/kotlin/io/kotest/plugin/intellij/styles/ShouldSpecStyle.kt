@@ -35,17 +35,17 @@ object ShouldSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(context.text, context.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container)
    }
 
    private fun KtDotQualifiedExpression.tryShouldWithConfig(): Test? {
       val should = extractLhsStringArgForDotExpressionWithRhsFinalLambda("should", "config") ?: return null
-      return buildTest(TestName(should.text, should.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test)
    }
 
    private fun KtCallExpression.tryShould(): Test? {
       val should = extractStringArgForFunctionWithStringAndLambdaArgs("should") ?: return null
-      return buildTest(TestName(should.text, should.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, should.text, should.interpolated), this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {

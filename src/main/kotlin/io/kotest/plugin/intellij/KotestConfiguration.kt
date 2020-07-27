@@ -1,3 +1,5 @@
+@file:Suppress("RedundantOverride")
+
 package io.kotest.plugin.intellij
 
 import com.intellij.execution.Executor
@@ -162,7 +164,7 @@ class KotestConfiguration(name: String, factory: ConfigurationFactory, project: 
     *
     * @return the name of the action.
     */
-   override fun getActionName(): String? = RunData(specName, testPath, packageName).actionName()
+   override fun getActionName(): String? = super.getActionName()
 
    override fun writeExternal(element: Element) {
       super.writeExternal(element)

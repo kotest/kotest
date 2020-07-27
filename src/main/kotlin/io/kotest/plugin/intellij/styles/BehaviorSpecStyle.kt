@@ -17,14 +17,12 @@ import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 object BehaviorSpecStyle : SpecStyle {
 
    override fun generateTest(specName: String, name: String): String {
-      return "Given(\"$name\") { }"
+      return "given(\"$name\") { }"
    }
 
    override fun fqn() = FqName("io.kotest.core.spec.style.BehaviorSpec")
-
    override fun specStyleName(): String = "Behavior Spec"
 
-   // todo this could be optimized to not check for the other parts of the tree until the name is needed
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
    private val givens = listOf("given", "Given", "`given`", "`Given`")
@@ -42,7 +40,7 @@ object BehaviorSpecStyle : SpecStyle {
    private fun KtCallExpression.tryGiven(): Test? {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
-         val name = TestName("Given: ${given.text}", given.interpolated)
+         val name = TestName("Given: ", given.text, given.interpolated)
          Test(name, listOf(TestPathEntry(given.text)), TestType.Container, xdisabled = false, root = true, psi = this)
       }
    }
@@ -50,7 +48,7 @@ object BehaviorSpecStyle : SpecStyle {
    private fun KtCallExpression.tryWhen(): Test? {
       val w = this.extractStringArgForFunctionWithStringAndLambdaArgs(whens)
       return if (w == null) null else {
-         val name = TestName("When: ${w.text}", w.interpolated)
+         val name = TestName("When: ", w.text, w.interpolated)
          val parents = locateParent()?.path ?: emptyList()
          val path = parents + TestPathEntry(w.text)
          Test(name, path, TestType.Container, xdisabled = false, root = false, psi = this)
@@ -61,7 +59,7 @@ object BehaviorSpecStyle : SpecStyle {
       val then = extractLhsStringArgForDotExpressionWithRhsFinalLambda(thens, listOf("config"))
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
-         val name = TestName("Then: ${then.text}", then.interpolated)
+         val name = TestName("Then: ", then.text, then.interpolated)
          val path = parents + TestPathEntry(then.text)
          Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
       }
@@ -71,9 +69,9 @@ object BehaviorSpecStyle : SpecStyle {
       val then = this.extractStringArgForFunctionWithStringAndLambdaArgs(thens)
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
-         val name = TestName("Then: ${then.text}", then.interpolated)
+         val name = TestName("Then: ", then.text, then.interpolated)
          val path = parents + TestPathEntry(then.text)
-         Test(name, path, TestType.Test, false, root = false, psi = this)
+         Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
       }
    }
 

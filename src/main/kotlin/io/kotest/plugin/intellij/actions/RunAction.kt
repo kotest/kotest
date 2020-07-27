@@ -54,7 +54,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
    val manager = RunManager.getInstance(project)
    val executor = ExecutorRegistry.getInstance().getExecutorById(executorId)!!
 
-   val name = node.test.test.name.name
+   val name = node.test.test.name.displayName()
    val config = manager.createConfiguration(name, KotestConfigurationFactory(KotestConfigurationType))
    val run = config.configuration as KotestConfiguration
 

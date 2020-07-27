@@ -64,7 +64,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestConf
          if (test != null) {
             val spec = element.enclosingKtClass()
             return configuration.getTestPath() == test.testPath()
-               && configuration.getPackageName() == null
+               && configuration.getPackageName().isNullOrBlank()
                && configuration.getSpecName() == spec?.fqName?.asString()
          }
       }

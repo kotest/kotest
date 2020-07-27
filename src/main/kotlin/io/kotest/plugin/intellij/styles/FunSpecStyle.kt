@@ -35,7 +35,7 @@ object FunSpecStyle : SpecStyle {
 
    private fun KtCallExpression.tryContext(): Test? {
       val context = extractStringArgForFunctionWithStringAndLambdaArgs("context") ?: return null
-      return buildTest(TestName(context.text, context.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container)
    }
 
    /**
@@ -46,7 +46,7 @@ object FunSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryTest(): Test? {
       val test = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
-      return buildTest(TestName(test.text, test.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test)
    }
 
    /**
@@ -57,7 +57,7 @@ object FunSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val test = extractLhsStringArgForDotExpressionWithRhsFinalLambda("test", "config") ?: return null
-      return buildTest(TestName(test.text, test.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test)
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {

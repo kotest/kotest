@@ -88,7 +88,7 @@ class TestNodeDescriptor(project: Project,
 
    init {
       templatePresentation.locationString = null
-      templatePresentation.presentableText = test.test.name.name
+      templatePresentation.presentableText = test.test.name.displayName()
       when (test.test.enabled) {
          true -> when (isUnique) {
             true -> templatePresentation.setIcon(AllIcons.Nodes.Test)

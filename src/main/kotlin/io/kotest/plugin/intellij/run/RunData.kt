@@ -18,7 +18,7 @@ fun generateName(fqName: FqName, test: Test?): String {
    return if (test == null) {
       fqName.shortName().asString()
    } else {
-      fqName.shortName().asString() + ": " + test.name.name
+      fqName.shortName().asString() + ": " + test.name.displayName()
    }
 }
 
@@ -26,7 +26,7 @@ fun generateName(ktclass: KtClass, test: Test?): String {
    return if (test == null) {
       ktclass.fqName?.shortName()?.asString() ?: ktclass.toString()
    } else {
-      ktclass.fqName?.shortName()?.asString() + ": " + test.name.name
+      ktclass.fqName?.shortName()?.asString() + ": " + test.name.displayName()
    }
 }
 

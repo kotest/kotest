@@ -44,7 +44,7 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtCallExpression.tryTest(): Test? {
       val string = extractStringFromStringInvokeWithLambda() ?: return null
-      return buildTest(TestName(string.text, string.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test)
    }
 
    /**
@@ -54,7 +54,7 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
       val string = extractStringForStringExtensionFunctonWithRhsFinalLambda("config") ?: return null
-      return buildTest(TestName(string.text, string.interpolated), this, TestType.Test)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Test)
    }
 
    /**
@@ -64,7 +64,7 @@ object FreeSpecStyle : SpecStyle {
     */
    private fun KtBinaryExpression.tryContainer(): Test? {
       val string = extractStringLiteralFromLhsOfInfixFunction(listOf("-")) ?: return null
-      return buildTest(TestName(string.text, string.interpolated), this, TestType.Container)
+      return buildTest(TestName(null, string.text, string.interpolated), this, TestType.Container)
    }
 
    private fun buildTest(testName: TestName, element: PsiElement, type: TestType): Test {
