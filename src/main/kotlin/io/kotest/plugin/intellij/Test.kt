@@ -13,11 +13,12 @@ data class TestName(
    val interpolated: Boolean // set to true if the name contains one or more interpolated variables
 )
 
+// components for the path, should not include prefixes
 data class TestPathEntry(val name: String)
 
 data class Test(
-   val name: TestName,
-   val path: List<TestPathEntry>,
+   val name: TestName, // the human readable name for this test. Includes prefixes.
+   val path: List<TestPathEntry>, // components for the path, should not include prefixes
    val testType: TestType,
    val xdisabled: Boolean, // if true then this test was defined using one of the x methods
    val root: Boolean, // true if this test is a top level test

@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project
 import io.kotest.plugin.intellij.KotestConfigurationFactory
 import io.kotest.plugin.intellij.KotestConfigurationType
 import io.kotest.plugin.intellij.KotestConfiguration
+import io.kotest.plugin.intellij.run.generateName
 import io.kotest.plugin.intellij.toolwindow.ModuleNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor
@@ -60,7 +61,7 @@ fun runTest(node: TestNodeDescriptor, project: Project, executorId: String) {
    run.setTestPath(node.test.test.testPath())
    run.setSpecName(node.spec.fqn.asString())
    run.setModule(node.module)
-   run.setGeneratedName()
+   run.name = generateName(node.spec.fqn, node.test.test)
 
    manager.addConfiguration(config)
    manager.selectedConfiguration = config
@@ -78,7 +79,7 @@ fun runSpec(node: SpecNodeDescriptor, project: Project, executorId: String) {
    run.setTestPath(null)
    run.setSpecName(node.fqn.asString())
    run.setModule(node.module)
-   run.setGeneratedName()
+   run.name = generateName(node.fqn, null)
 
    manager.addConfiguration(config)
    manager.selectedConfiguration = config

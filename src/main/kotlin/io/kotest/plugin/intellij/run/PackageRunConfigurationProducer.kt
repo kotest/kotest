@@ -35,7 +35,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfi
             if (psiPackage != null) {
                setupConfigurationModule(context, configuration)
                configuration.setPackageName(psiPackage.qualifiedName)
-               configuration.setGeneratedName()
+               configuration.name = generateName(psiPackage.qualifiedName)
                return true
             }
          }

@@ -31,7 +31,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
          if (ktclass != null && ktclass.isDirectSubclassOfSpec()) {
             configuration.setSpec(ktclass)
             configuration.setModule(context.module)
-            configuration.setGeneratedName()
+            configuration.name = generateName(ktclass, null)
             return true
          }
       }
@@ -46,7 +46,9 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestConfigur
       if (element != null && element is LeafPsiElement) {
          val ktclass = element.enclosingClassClassOrObjectToken()
          if (ktclass != null) {
-            return configuration.name == RunData(ktclass.fqName?.asString(), null, null).suggestedName()
+            return configuration.getTestPath() == null
+               && configuration.getPackageName() == null
+               && configuration.getSpecName() == ktclass.fqName?.asString()
          }
       }
       return false

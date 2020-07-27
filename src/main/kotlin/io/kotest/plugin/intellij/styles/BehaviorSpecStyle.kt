@@ -43,7 +43,7 @@ object BehaviorSpecStyle : SpecStyle {
       val given = this.extractStringArgForFunctionWithStringAndLambdaArgs(givens)
       return if (given == null) null else {
          val name = TestName("Given: ${given.text}", given.interpolated)
-         Test(name, listOf(TestPathEntry(name.name)), TestType.Container, xdisabled = false, root = true, psi = this)
+         Test(name, listOf(TestPathEntry(given.text)), TestType.Container, xdisabled = false, root = true, psi = this)
       }
    }
 
@@ -52,7 +52,7 @@ object BehaviorSpecStyle : SpecStyle {
       return if (w == null) null else {
          val name = TestName("When: ${w.text}", w.interpolated)
          val parents = locateParent()?.path ?: emptyList()
-         val path = parents + TestPathEntry(name.name)
+         val path = parents + TestPathEntry(w.text)
          Test(name, path, TestType.Container, xdisabled = false, root = false, psi = this)
       }
    }
@@ -62,7 +62,7 @@ object BehaviorSpecStyle : SpecStyle {
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
          val name = TestName("Then: ${then.text}", then.interpolated)
-         val path = parents + TestPathEntry(name.name)
+         val path = parents + TestPathEntry(then.text)
          Test(name, path, TestType.Test, xdisabled = false, root = false, psi = this)
       }
    }
@@ -72,7 +72,7 @@ object BehaviorSpecStyle : SpecStyle {
       return if (then == null) null else {
          val parents = locateParent()?.path ?: emptyList()
          val name = TestName("Then: ${then.text}", then.interpolated)
-         val path = parents + TestPathEntry(name.name)
+         val path = parents + TestPathEntry(then.text)
          Test(name, path, TestType.Test, false, root = false, psi = this)
       }
    }
