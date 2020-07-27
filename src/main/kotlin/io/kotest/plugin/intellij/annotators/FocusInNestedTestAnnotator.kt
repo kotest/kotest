@@ -8,7 +8,11 @@ import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
 
-class DuplicatedTestNameAnnotator : Annotator {
+/**
+ * Focus on tests only works at the top level.
+ * This annotator will flag as a warning any nested test using f:
+ */
+class FocusInNestedTestAnnotator : Annotator {
    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
       // we only care about test files
       if (!element.containingFile.isTestFile()) return
@@ -18,12 +22,9 @@ class DuplicatedTestNameAnnotator : Annotator {
          val style = ktclass.specStyle()
          if (style != null) {
             val test = style.test(element)
-            // if the name is interpolated we can't run checks as it could be anything
-            if (test != null && !test.name.interpolated) {
-               val tests = style.tests(ktclass)
-               val duplicated = tests.count { it.test.name == test.name } > 1
-               if (duplicated) {
-                  holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
+            if (test != null) {
+               if (test.isFocus && test.isNested) {
+                  holder.newAnnotation(HighlightSeverity.WARNING, "Focus only works on top level tests").range(test.psi).create()
                }
             }
          }

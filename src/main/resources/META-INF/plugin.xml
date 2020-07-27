@@ -37,6 +37,9 @@
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
 
+      <annotator language="kotlin"
+                 implementationClass="io.kotest.plugin.intellij.annotators.FocusInNestedTestAnnotator"/>
+
       <!--      <localInspection groupPath="Kotlin" language="JVM" shortName="NoZeroArgConstructorInspection"-->
       <!--                       bundle="KotestGadgetsBundle"-->
       <!--                       key="kotest.nozeroargsconstructor.name"-->

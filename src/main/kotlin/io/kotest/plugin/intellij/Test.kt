@@ -28,6 +28,8 @@ data class Test(
 
    val isFocus: Boolean = name.name.startsWith("f:")
 
+   val isNested: Boolean = !root
+
    val enabled: Boolean = !xdisabled && !isBang
 
    /**
