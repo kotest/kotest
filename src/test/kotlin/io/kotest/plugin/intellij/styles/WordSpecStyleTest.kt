@@ -28,7 +28,7 @@ class WordSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 87
 
          gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-         gutters[1].tooltipText shouldBe "Run some should context"
+         gutters[1].tooltipText shouldBe "Run some should context should"
          (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 159
 
          gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
