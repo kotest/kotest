@@ -32,19 +32,6 @@ class ForAll2Test : FunSpec({
       context.failures() shouldBe 0
    }
 
-   test("forAll with 2 exhaustives") {
-
-      val context = forAll(
-         1000,
-         Exhaustive.ints(0..100),
-         Exhaustive.longs(200L..300L)
-      ) { a, b -> a + b == b + a }
-
-      context.attempts() shouldBe 1000
-      context.successes() shouldBe 1000
-      context.failures() shouldBe 0
-   }
-
    test("forAll with 2 implicit arbitraries") {
       val context = forAll<Int, Long> { a, b -> a + b == b + a }
       context.attempts() shouldBe 1000

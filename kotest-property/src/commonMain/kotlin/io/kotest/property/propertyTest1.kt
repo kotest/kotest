@@ -86,7 +86,7 @@ suspend inline fun <reified A> checkAll(
    property
 )
 
-@JvmName("checkAllExt")
+@JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(property: PropertyContext.(A) -> Boolean) =
    forAll(this, property)
 
@@ -95,8 +95,7 @@ suspend fun <A> forAll(
    property: PropertyContext.(A) -> Boolean
 ) = forAll(computeDefaultIteration(genA), PropTestConfig(), genA, property)
 
-
-@JvmName("checkAllExt")
+@JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(iterations: Int, property: PropertyContext.(A) -> Boolean) =
    forAll(iterations, this, property)
 
@@ -106,7 +105,7 @@ suspend fun <A> forAll(
    property: PropertyContext.(A) -> Boolean
 ) = forAll(iterations, PropTestConfig(), genA, property)
 
-@JvmName("checkAllExt")
+@JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(config: PropTestConfig, property: PropertyContext.(A) -> Boolean) =
    forAll(config, this, property)
 
@@ -116,7 +115,7 @@ suspend fun <A> forAll(
    property: PropertyContext.(A) -> Boolean
 ) = forAll(computeDefaultIteration(genA), config, genA, property)
 
-@JvmName("checkAllExt")
+@JvmName("forAllExt")
 suspend fun <A> Gen<A>.forAll(iterations: Int, config: PropTestConfig, property: PropertyContext.(A) -> Boolean) =
    forAll(iterations, config, this, property)
 
@@ -126,7 +125,6 @@ suspend fun <A> forAll(
    genA: Gen<A>,
    property: PropertyContext.(A) -> Boolean
 ) = proptest(iterations, genA, config) { a -> property(a) shouldBe true }
-
 
 suspend inline fun <reified A> forAll(
    crossinline property: suspend PropertyContext.(A) -> Boolean
@@ -152,24 +150,3 @@ suspend inline fun <reified A> forAll(
    config
 ) { a -> property(a) shouldBe true }
 
-suspend fun <A> checkAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(exhaustiveA, config, property)
-
-suspend fun <A> forAll(
-   config: PropTestConfig,
-   exhaustiveA: Exhaustive<A>,
-   property: suspend PropertyContext.(A) -> Boolean
-): PropertyContext = proptest(exhaustiveA, config) { a -> property(a) shouldBe true }
-
-suspend fun <A> checkAll(
-   exhaustiveA: Exhaustive<A>,
-   property: suspend PropertyContext.(A) -> Unit
-): PropertyContext = proptest(exhaustiveA, PropTestConfig(), property)
-
-suspend fun <A> forAll(
-   exhaustiveA: Exhaustive<A>,
-   property: suspend PropertyContext.(A) -> Boolean
-): PropertyContext = proptest(exhaustiveA, PropTestConfig()) { a -> property(a) shouldBe true }
