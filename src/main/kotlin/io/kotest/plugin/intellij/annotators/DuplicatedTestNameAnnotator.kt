@@ -10,7 +10,6 @@ import io.kotest.plugin.intellij.psi.specStyle
 
 class DuplicatedTestNameAnnotator : Annotator {
    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-
       // we only care about test files
       if (!element.containingFile.isTestFile()) return
 
@@ -21,10 +20,12 @@ class DuplicatedTestNameAnnotator : Annotator {
          if (style != null) {
             val test = style.test(element)
             if (test != null) {
-               val tests = style.tests(ktclass)
-               val duplicated = tests.count { it.test.name == test.name } > 1
-               if (duplicated) {
-                  holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
+               if (!test.name.contains('$')) {
+                  val tests = style.tests(ktclass)
+                  val duplicated = tests.count { it.test.name == test.name } > 1
+                  if (duplicated) {
+                     holder.newAnnotation(HighlightSeverity.WARNING, "Duplicated test name").range(test.psi).create()
+                  }
                }
             }
          }
