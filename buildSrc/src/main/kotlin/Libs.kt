@@ -1,6 +1,6 @@
 object Libs {
 
-   const val kotlinVersion = "1.4-M3"
+   const val kotlinVersion = "1.4.0-rc"
    const val dokkaVersion = "0.10.1"
    const val adarshrTestLoggerVersion = "2.0.0"
    const val gradleVersionsPluginVersion = "0.28.0"
@@ -15,11 +15,6 @@ object Libs {
    object Allure {
       private const val version = "2.13.5"
       const val commons = "io.qameta.allure:allure-java-commons:$version"
-   }
-
-   object Ajalt {
-      const val clikt = "com.github.ajalt:clikt:2.6.0"
-      const val mordant = "com.github.ajalt:mordant:1.2.1"
    }
 
    object Tschuchortdev {
@@ -53,7 +48,7 @@ object Libs {
    }
 
    object Classgraph {
-      const val classgraph = "io.github.classgraph:classgraph:4.8.69"
+      const val classgraph = "io.github.classgraph:classgraph:4.8.87"
    }
 
    object Mocking {
@@ -74,7 +69,7 @@ object Libs {
    }
 
    object Coroutines {
-      private const val version = "1.3.7-1.4-M3"
+      private const val version = "1.3.8-1.4.0.rc"
       const val coreCommon = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
       const val coreJvm = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$version"
       const val coreJs = "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$version"
@@ -86,7 +81,7 @@ object Libs {
    }
 
    object Ktor {
-      private const val version = "1.3.2-1.4-M3"
+      private const val version = "1.3.2-1.4.0-rc"
       const val serverCore = "io.ktor:ktor-server-core:$version"
       const val serverTestHost = "io.ktor:ktor-server-test-host:$version"
       const val clientJs = "io.ktor:ktor-client-js:$version"
