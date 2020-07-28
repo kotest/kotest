@@ -7,8 +7,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.mpp.log
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 /**
  * Contains [Spec] classes discovered as part of a discovery request scan.
@@ -52,7 +50,7 @@ object Discovery {
 
    fun discover(request: DiscoveryRequest): DiscoveryResult = requests.getOrPut(request) {
       val specClasses =
-         if(request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
+         if (request.onlySelectsSingleClasses()) loadSelectedSpecs(request) else fromClassPaths
 
       val filtered = specClasses
          .asSequence()
@@ -78,24 +76,24 @@ object Discovery {
     * Returns whether or not this is a requests that selects single classes
     * only. Used to avoid full classpath scans when not necessary.
     */
-   private fun  DiscoveryRequest.onlySelectsSingleClasses() : Boolean =
-         selectors.isNotEmpty() &&
-            selectors.all { it is DiscoverySelector.ClassDiscoverySelector }
+   private fun DiscoveryRequest.onlySelectsSingleClasses(): Boolean =
+      selectors.isNotEmpty() &&
+         selectors.all { it is DiscoverySelector.ClassDiscoverySelector }
 
    /**
     * Returns a list of [Spec] classes from discovery requests that only have
     * selectors of type [DiscoverySelector.ClassDiscoverySelector].
     */
-   @OptIn(ExperimentalTime::class)
    private fun loadSelectedSpecs(request: DiscoveryRequest): List<KClass<out Spec>> {
       log("Starting loading of selected tests...")
-      val (loadedClasses, time) = measureTimedValue {
-         request
-            .selectors
-            .map { Class.forName((it as DiscoverySelector.ClassDiscoverySelector).className).kotlin }
-            .filter(isSpecSubclass)
-            .filterIsInstance<KClass<out Spec>>()      }
-      log("Loading of selected tests completed in $time")
+      val start = System.currentTimeMillis()
+      val loadedClasses = request
+         .selectors
+         .map { Class.forName((it as DiscoverySelector.ClassDiscoverySelector).className).kotlin }
+         .filter(isSpecSubclass)
+         .filterIsInstance<KClass<out Spec>>()
+      val duration = System.currentTimeMillis() - start
+      log("Loading of selected tests completed in ${duration}ms")
       return loadedClasses
    }
 
@@ -103,27 +101,26 @@ object Discovery {
     * Returns a list of [Spec] classes detected using classgraph in the list of
     * locations specified by the uris param.
     */
-   @OptIn(ExperimentalTime::class)
    private fun scanUris(): List<KClass<out Spec>> {
       log("Starting test discovery scan...")
-      val (scanResult, time) = measureTimedValue {
-         ClassGraph()
-            .enableClassInfo()
-            .enableExternalClasses()
-            .ignoreClassVisibility()
-            .blacklistPackages(
-               "java.*",
-               "javax.*",
-               "sun.*",
-               "com.sun.*",
-               "kotlin.*",
-               "androidx.*",
-               "org.jetbrains.kotlin.*",
-               "org.junit.*"
-            )
-            .scan()
-      }
-      log("Test discovery completed in $time")
+      val start = System.currentTimeMillis()
+      val scanResult = ClassGraph()
+         .enableClassInfo()
+         .enableExternalClasses()
+         .ignoreClassVisibility()
+         .blacklistPackages(
+            "java.*",
+            "javax.*",
+            "sun.*",
+            "com.sun.*",
+            "kotlin.*",
+            "androidx.*",
+            "org.jetbrains.kotlin.*",
+            "org.junit.*"
+         )
+         .scan()
+      val duration = System.currentTimeMillis() - start
+      log("Test discovery completed in ${duration}ms")
 
       return scanResult.use { result ->
          result.getSubclasses(Spec::class.java.name)
