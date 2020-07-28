@@ -58,7 +58,7 @@ class JunitXmlListener : TestListener {
          val e = Element("testcase")
          e.setAttribute("name", testcase.description.fullName())
          e.setAttribute("classname", kclass.java.canonicalName)
-         e.setAttribute("time", result.duration.inSeconds.toString())
+         e.setAttribute("time", (result.duration / 1000).toString())
 
          when (result.status) {
             TestStatus.Error -> {

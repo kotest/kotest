@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun Option<*>.shouldBeSome() {
   contract {
     returns() implies (this@shouldBeSome is Some<*>)

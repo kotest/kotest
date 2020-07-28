@@ -16,14 +16,10 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
-@OptIn(ExperimentalTime::class)
-data class TimeoutException constructor(val duration: Duration) :
-   Exception("Test did not completed within ${duration.toLongMilliseconds()}ms")
+data class TimeoutException constructor(val duration: Long) :
+   Exception("Test did not completed within ${duration}ms")
 
 /**
  * Executes a single [TestCase]. Uses a [TestCaseExecutionListener] to notify callers of events in the test.
@@ -37,7 +33,6 @@ data class TimeoutException constructor(val duration: Duration) :
  *
  * If the given test case is invalid, then this method should throw an exception.
  */
-@OptIn(ExperimentalTime::class)
 class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val executionContext: TimeoutExecutionContext,
@@ -46,7 +41,7 @@ class TestCaseExecutor(
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       validateTestCase(testCase)
-      val mark = TimeSource.Monotonic.markNow()
+      val mark = Mark()
       return intercept(testCase, context, mark, testCase.extensions()).apply {
          when (status) {
             TestStatus.Ignored -> listener.testIgnored(testCase)
@@ -62,7 +57,7 @@ class TestCaseExecutor(
    private suspend fun intercept(
       testCase: TestCase,
       context: TestContext,
-      mark: TimeMark,
+      mark: Mark,
       extensions: List<TestCaseExtension>
    ): TestResult {
       return when {
@@ -108,7 +103,7 @@ class TestCaseExecutor(
    private suspend fun executeActiveTest(
       testCase: TestCase,
       context: TestContext,
-      mark: TimeMark
+      mark: Mark
    ): TestResult {
 
       log("Executing active test $testCase")
@@ -119,14 +114,14 @@ class TestCaseExecutor(
          .flatMap { invokeTestCase(executionContext, it, context, mark) }
          .fold(
             {
-               TestResult.throwable(it, mark.elapsedNow()).apply {
+               TestResult.throwable(it, mark.elapsed()).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
-                     { TestResult.throwable(it, mark.elapsedNow()) },
+                     { TestResult.throwable(it, mark.elapsed()) },
                      { result }
                   )
             }
@@ -140,24 +135,25 @@ class TestCaseExecutor(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
       context: TestContext,
-      mark: TimeMark
+      mark: Mark
    ): Try<TestResult> = Try {
-       log("invokeTestCase $testCase")
+      log("invokeTestCase $testCase")
 
-       if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
-           error("Cannot execute multiple invocations in parent tests")
+      if (testCase.config.invocations > 1 && testCase.type == TestType.Container)
+         error("Cannot execute multiple invocations in parent tests")
 
-       val t = executeAndWait(ec, testCase, context)
+      val t = executeAndWait(ec, testCase, context)
 
-       val result = if (t == null) TestResult.success(mark.elapsedNow()) else TestResult.throwable(t, mark.elapsedNow())
-       log("Test completed with result $result")
-       result
+      val result = if (t == null) TestResult.success(mark.elapsed()) else TestResult.throwable(t, mark.elapsed())
+      log("Test completed with result $result")
+      result
    }
 
    /**
     * Invokes the given [TestCase] handling timeouts.
     * We create a scope here so that our coroutine waits for any child coroutines created by user code.
     */
+   @OptIn(ExperimentalTime::class)
    private suspend fun executeAndWait(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
@@ -202,7 +198,7 @@ class TestCaseExecutor(
          null
       } catch (e: TimeoutCancellationException) {
          log("Timeout exception $e")
-         TimeoutException(timeout)
+         TimeoutException(timeout.toLongMilliseconds())
       } catch (t: Throwable) {
          t
       } catch (e: AssertionError) {

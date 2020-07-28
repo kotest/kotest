@@ -71,7 +71,7 @@ fun testExecutorTests(context: TimeoutExecutionContext) = funSpec {
       val testCase = Tests().rootTests().first { it.testCase.name == "b" }.testCase
       val result = executor.execute(testCase, context(testCase))
       result.status shouldBe TestStatus.Error
-      result.error shouldBe TimeoutException(100.milliseconds)
+      result.error shouldBe TimeoutException(100)
       started shouldBe true
       finished shouldBe true
    }

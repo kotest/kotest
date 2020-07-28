@@ -6,11 +6,8 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestStatus
 import java.lang.AssertionError
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 // this tests that we can manipulate the result of a test case from an extension
-@ExperimentalTime
 class TestCaseExtensionAroundAdviceTest : StringSpec() {
 
    object MyExt : TestCaseExtension {
@@ -19,8 +16,8 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
             "test1" -> TestResult.Ignored
             "test2" ->
                when (execute(testCase).status) {
-                  TestStatus.Error -> TestResult.success(Duration.ZERO)
-                  else -> TestResult.throwable(AssertionError("boom"), Duration.ZERO)
+                  TestStatus.Error -> TestResult.success(0)
+                  else -> TestResult.throwable(AssertionError("boom"), 0)
                }
             "test3" -> if (testCase.config.enabled) throw RuntimeException() else execute(testCase)
             "test4" -> execute(testCase.copy(config = testCase.config.copy(enabled = false)))

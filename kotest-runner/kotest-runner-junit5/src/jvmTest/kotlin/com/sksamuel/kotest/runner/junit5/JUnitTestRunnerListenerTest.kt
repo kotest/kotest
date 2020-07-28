@@ -62,8 +62,8 @@ val childFailsParentTest = funSpec {
       listener.specStarted(JUnitTestRunnerListenerTests::class)
       listener.testStarted(test1)
       listener.testStarted(test2)
-      listener.testFinished(test2, TestResult.throwable(AssertionError("boom"), Duration.ZERO))
-      listener.testFinished(test1, TestResult.success(Duration.ZERO))
+      listener.testFinished(test2, TestResult.throwable(AssertionError("boom"), 0))
+      listener.testFinished(test1, TestResult.success(0))
       listener.specFinished(JUnitTestRunnerListenerTests::class, null, emptyMap())
       listener.engineFinished(emptyList())
 

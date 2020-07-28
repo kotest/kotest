@@ -8,10 +8,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class AnnotationSpecTest : AnnotationSpec() {
 
    private class FooException : RuntimeException()
@@ -62,7 +59,7 @@ class AnnotationSpecTest : AnnotationSpec() {
 
          val result = execute(testCase)
          if (result.error !is AssertionError) {
-            return TestResult.throwable(AssertionError("Expecting an assertion error!"), Duration.ZERO)
+            return TestResult.throwable(AssertionError("Expecting an assertion error!"), 0)
          }
 
          val errorMessage = result.error!!.message
@@ -71,14 +68,14 @@ class AnnotationSpecTest : AnnotationSpec() {
 
          return when (testCase.name) {
             "test4" -> if (errorMessage == wrongExceptionMessage) {
-               TestResult.success(Duration.ZERO)
+               TestResult.success(0)
             } else {
-               TestResult.throwable(AssertionError("Wrong message."), Duration.ZERO)
+               TestResult.throwable(AssertionError("Wrong message."), 0)
             }
             "test5" -> if (errorMessage == noExceptionMessage) {
-               TestResult.success(Duration.ZERO)
+               TestResult.success(0)
             } else {
-               TestResult.throwable(AssertionError("Wrong message."), Duration.ZERO)
+               TestResult.throwable(AssertionError("Wrong message."), 0)
             }
             else -> fail("boom")
          }

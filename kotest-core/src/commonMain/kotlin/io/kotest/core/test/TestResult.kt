@@ -1,18 +1,15 @@
 package io.kotest.core.test
 
 import io.kotest.mpp.bestName
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 data class TestResult(
    val status: TestStatus,
    val error: Throwable?,
    val reason: String?,
-   val duration: Duration
+   val duration: Long
 ) {
    companion object {
-      fun success(duration: Duration) = TestResult(
+      fun success(duration: Long) = TestResult(
          TestStatus.Success,
          null,
          null,
@@ -24,7 +21,7 @@ data class TestResult(
        * If the throwable is either an [AssertionError] or one of the library specific assertion types,
        * then a [TestStatus.Failure] will be returned, otherwise a [TestStatus.Error] will be returned.
        */
-      fun throwable(e: Throwable, duration: Duration): TestResult {
+      fun throwable(e: Throwable, duration: Long): TestResult {
          return when (e) {
             is AssertionError -> failure(e, duration)
             else -> when (e::class.bestName()) {
@@ -39,17 +36,17 @@ data class TestResult(
          TestStatus.Ignored,
          null,
          null,
-         Duration.ZERO
+         0
       )
 
-      private fun failure(e: Throwable, duration: Duration) = TestResult(
+      private fun failure(e: Throwable, duration: Long) = TestResult(
          TestStatus.Failure,
          e,
          null,
          duration
       )
 
-      private fun error(t: Throwable, duration: Duration) = TestResult(
+      private fun error(t: Throwable, duration: Long) = TestResult(
          TestStatus.Error,
          t,
          null,
@@ -60,7 +57,7 @@ data class TestResult(
          TestStatus.Ignored,
          null,
          reason,
-         Duration.ZERO
+         0
       )
    }
 }

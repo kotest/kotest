@@ -10,7 +10,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun Validated<*, *>.shouldBeValid() {
   contract {
     returns() implies (this@shouldBeValid is Valid<*>)
@@ -38,7 +38,7 @@ fun <A> beValid(a: A) = object : Matcher<Validated<*, A>> {
       MatcherResult(value == Valid(a), "$value should be Valid(a=$a)", "$value should not be Valid(a=$a)")
 }
 
-@UseExperimental(ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 fun Validated<*, *>.shouldBeInvalid() {
   contract {
     returns() implies (this@shouldBeInvalid is Validated.Invalid<*>)

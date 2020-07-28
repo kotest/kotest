@@ -3,17 +3,14 @@ package com.sksamuel.kotest.core.runtime
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class InvocationThreadErrorTest : FunSpec({
 
    aroundTest { (testCase, process) ->
       val result = process(testCase)
       when (result.status) {
-         TestStatus.Error -> TestResult.success(Duration.ZERO)
-         else -> TestResult.throwable(RuntimeException("should fail"), Duration.ZERO)
+         TestStatus.Error -> TestResult.success(0)
+         else -> TestResult.throwable(RuntimeException("should fail"), 0)
       }
    }
 

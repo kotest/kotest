@@ -36,7 +36,7 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
          scheduler.schedule({
             if (hasResumed.compareAndSet(false, true)) {
                thisThread.interrupt()
-               val t = TimeoutException(timeout)
+               val t = TimeoutException(timeout.toLongMilliseconds())
                cont.resumeWithException(t)
             }
          }, timeout.toLongMilliseconds(), TimeUnit.MILLISECONDS)

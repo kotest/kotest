@@ -5,10 +5,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestStatus
 import kotlinx.coroutines.delay
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@ExperimentalTime
 class GlobalTimeoutTest : StringSpec() {
 
    init {
@@ -30,11 +27,10 @@ class GlobalTimeoutTest : StringSpec() {
 /**
  * A Test Case extension that expects each test to fail, and will invert the test result.
  */
-@OptIn(ExperimentalTime::class)
 val expectFailureExtension: TestCaseExtensionFn = { (testCase, execute) ->
    val result = execute(testCase)
    when (result.status) {
-      TestStatus.Failure, TestStatus.Error -> TestResult.success(Duration.ZERO)
-      else -> TestResult.throwable(AssertionError("${testCase.description.name.displayName()} passed but should fail"), Duration.ZERO)
+      TestStatus.Failure, TestStatus.Error -> TestResult.success(0)
+      else -> TestResult.throwable(AssertionError("${testCase.description.name.displayName()} passed but should fail"), 0)
    }
 }
