@@ -20,7 +20,9 @@ repositories {
 
 kotlin {
 
-   js()
+   js {
+      browser()
+   }
 
    sourceSets {
 

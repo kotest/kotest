@@ -47,6 +47,18 @@ allprojects {
    version = Ci.publishVersion
 }
 
+kotlin {
+   targets {
+      jvm {
+         compilations.all {
+            kotlinOptions {
+               jvmTarget = "1.8"
+            }
+         }
+      }
+   }
+}
+
 val publications: PublicationContainer = (extensions.getByName("publishing") as PublishingExtension).publications
 
 signing {
