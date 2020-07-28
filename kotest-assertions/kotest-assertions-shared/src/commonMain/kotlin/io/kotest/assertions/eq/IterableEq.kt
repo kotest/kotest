@@ -8,7 +8,6 @@ import io.kotest.assertions.show.show
 object IterableEq : Eq<Iterable<*>> {
    override fun equals(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       return when {
-         actual === expected -> null
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected)
          else -> checkIterableEquality(actual, expected)
       }

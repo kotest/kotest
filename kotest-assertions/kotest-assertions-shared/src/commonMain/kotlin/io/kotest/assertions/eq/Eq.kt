@@ -20,6 +20,7 @@ interface Eq<T> {
 fun <T: Any?> eq(actual: T, expected: T): Throwable? {
    // if we have null and non null, usually that's a failure, but people can override equals to allow it
    return when {
+      actual === expected -> null
       actual == null && expected == null -> null
       actual == null && expected != null && actual != expected -> actualIsNull(expected)
       actual != null && expected == null && actual != expected -> expectedIsNull(actual)

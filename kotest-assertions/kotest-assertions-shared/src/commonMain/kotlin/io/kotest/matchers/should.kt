@@ -13,7 +13,7 @@ infix fun <T, U : T> T.shouldBe(expected: U?) {
       else -> {
          val actual = this
          assertionCounter.inc()
-         eq(actual, expected)?.let { errorCollector.collectOrThrow(it) }
+         eq(actual, expected)?.let(errorCollector::collectOrThrow)
       }
    }
 }
