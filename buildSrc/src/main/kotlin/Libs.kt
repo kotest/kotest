@@ -87,7 +87,6 @@ object Libs {
       const val clientJs = "io.ktor:ktor-client-js:$version"
       const val clientCore = "io.ktor:ktor-client-core:$version"
       const val clientApache = "io.ktor:ktor-client-apache:$version"
-      const val clientCurl = "io.ktor:ktor-client-curl:$version"
    }
 
    object Klock {
