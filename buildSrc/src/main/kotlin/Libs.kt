@@ -70,7 +70,7 @@ object Libs {
    }
 
    object Wumpz {
-      const val diffutils = "com.github.wumpz:diffutils:2.2"
+      const val diffutils = "io.github.java-diff-utils:java-diff-utils:4.5"
    }
 
    object Coroutines {

@@ -34,7 +34,7 @@ class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listen
          log("Nested test case discovered $nested")
          val nestedTestCase = nested.toTestCase(testCase.spec, testCase.description)
          if (seen.contains(nested.name))
-            throw IllegalStateException("Cannot add duplicate test name ${nested.name}")
+            throw IllegalStateException("Cannot add duplicate test name ${nested.name.name}")
          seen.add(nested.name)
          runTest(nestedTestCase, coroutineContext)
       }
