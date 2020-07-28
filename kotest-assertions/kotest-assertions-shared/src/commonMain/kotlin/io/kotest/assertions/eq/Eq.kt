@@ -30,6 +30,7 @@ fun <T: Any?> eq(actual: T, expected: T): Throwable? {
          actual is String && expected is String -> StringEq.equals(actual, expected)
          actual is Number && expected is Number -> NumberEq.equals(actual, expected)
          actual is Iterable<*> && expected is Iterable<*> -> IterableEq.equals(actual, expected)
+         actual is Array<*> && expected is Array<*> -> IterableEq.equals(actual.toList(), expected.toList())
          shouldShowDataClassDiff(actual, expected) -> DataClassEq.equals(actual as Any, expected as Any)
          else -> DefaultEq.equals(actual as Any, expected as Any)
       }
