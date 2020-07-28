@@ -1,5 +1,6 @@
 package io.kotest.core.spec
 
+import io.kotest.mpp.annotation
 import kotlin.reflect.KClass
 
 /**
@@ -26,3 +27,11 @@ object RandomSpecExecutionOrder : SpecExecutionOrder {
    override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> =
       classes.shuffled()
 }
+
+object AnnotatedSpecExecutionOrder : SpecExecutionOrder {
+   override fun sort(classes: List<KClass<out Spec>>): List<KClass<out Spec>> {
+      return classes.sortedBy { it.annotation<Order>()?.value ?: Int.MAX_VALUE }
+   }
+}
+
+annotation class Order(val value: Int)
