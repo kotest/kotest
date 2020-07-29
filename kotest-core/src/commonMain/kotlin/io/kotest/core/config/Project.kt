@@ -37,7 +37,6 @@ import io.kotest.mpp.sysprop
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
 
 /**
  * A central store of project wide configuration. This configuration contains defaults for kotest, and is
@@ -50,7 +49,7 @@ import kotlin.time.seconds
 object Project {
 
    private val userconf = detectConfig()
-   private val defaultTimeout = 600.seconds
+   private val defaultTimeoutInMillis: Long = 600 * 1000
 
    private var extensions = userconf.extensions + listOf(
       SystemPropertyTagExtension,
@@ -62,8 +61,8 @@ object Project {
 
    private var listeners = userconf.listeners
    private var filters = userconf.filters
-   private var timeout = userconf.timeout ?: defaultTimeout
-   private var invocationTimeout = defaultTimeout
+   private var timeout = userconf.timeout?.toLongMilliseconds() ?: defaultTimeoutInMillis
+   private var invocationTimeout = defaultTimeoutInMillis
    private var failOnIgnoredTests = userconf.failOnIgnoredTests ?: false
    private var specExecutionOrder = userconf.specExecutionOrder ?: LexicographicSpecExecutionOrder
    private var writeSpecFailureFile = userconf.writeSpecFailureFile ?: false
@@ -196,15 +195,23 @@ object Project {
     * Returns the default timeout for tests as specified in user config.
     * If not specified then defaults to [defaultTimeout]
     */
-   fun timeout(): Duration = timeout
-   fun invocationTimeout(): Duration = invocationTimeout
+   fun timeout(): Long = timeout
+   fun invocationTimeout(): Long = invocationTimeout
 
    fun setTimeout(duration: Duration) {
-      this.timeout = duration
+      this.timeout = duration.toLongMilliseconds()
+   }
+
+   fun setTimeout(durationInMillis: Long) {
+      this.timeout = durationInMillis
    }
 
    fun setInvocationTimeout(duration: Duration) {
-      this.invocationTimeout = duration
+      this.invocationTimeout = duration.toLongMilliseconds()
+   }
+
+   fun setInvocationTimeout(durationInMillis: Long) {
+      this.invocationTimeout = durationInMillis
    }
 
    fun includeTestScopePrefixes() = includeTestScopePrefixes

@@ -73,12 +73,14 @@ fun TestCaseConfig.deriveTestConfig(
  * Returns the timeout for a [TestCase] taking into account project settings.
  */
 @OptIn(ExperimentalTime::class)
-fun TestCaseConfig.resolvedTimeout(): Duration = this.timeout ?: Project.timeout()
+fun TestCaseConfig.resolvedTimeout(): Long =
+   this.timeout?.toLongMilliseconds() ?: Project.timeout()
 
 /**
  * Returns the timeout for a test invocation taking into account project settings.
  */
 @OptIn(ExperimentalTime::class)
-fun TestCaseConfig.resolvedInvocationTimeout(): Duration = this.invocationTimeout ?: Project.invocationTimeout()
+fun TestCaseConfig.resolvedInvocationTimeout(): Long =
+   this.invocationTimeout?.toLongMilliseconds() ?: Project.invocationTimeout()
 
 fun TestCaseConfig.withXDisabled(xdisabled: Boolean) = if (xdisabled) copy(enabled = false) else this

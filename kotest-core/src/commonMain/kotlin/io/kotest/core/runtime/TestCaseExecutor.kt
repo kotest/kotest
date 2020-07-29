@@ -16,7 +16,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 
 data class TimeoutException constructor(val duration: Long) :
    Exception("Test did not completed within ${duration}ms")
@@ -153,7 +152,6 @@ class TestCaseExecutor(
     * Invokes the given [TestCase] handling timeouts.
     * We create a scope here so that our coroutine waits for any child coroutines created by user code.
     */
-   @OptIn(ExperimentalTime::class)
    private suspend fun executeAndWait(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
@@ -174,10 +172,10 @@ class TestCaseExecutor(
       return try {
 
          // all platforms support coroutine based interruption
-         withTimeout(timeout.inMilliseconds.toLong()) {
+         withTimeout(timeout) {
             // not all platforms support executing with a timeout because it uses background threads to interrupt
-            ec.executeWithTimeoutInterruption(timeout.inMilliseconds.toLong()) {
-               withTimeout(invocationTimeout.toLongMilliseconds()) {
+            ec.executeWithTimeoutInterruption(timeout) {
+               withTimeout(invocationTimeout) {
                   replay(
                      testCase.config.invocations,
                      testCase.config.threads,
@@ -198,7 +196,7 @@ class TestCaseExecutor(
          null
       } catch (e: TimeoutCancellationException) {
          log("Timeout exception $e")
-         TimeoutException(timeout.toLongMilliseconds())
+         TimeoutException(timeout)
       } catch (t: Throwable) {
          t
       } catch (e: AssertionError) {

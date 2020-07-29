@@ -2,15 +2,13 @@ package io.kotest.core.config
 
 import io.kotest.core.tags.asString
 import io.kotest.mpp.bestName
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 fun Project.createConfigSummary(): String {
 
    val sb = StringBuilder()
 
    sb.buildOutput("Parallelism", parallelism().toString() + " thread(s)")
-   sb.buildOutput("Default test timeout", timeout().toLongMilliseconds().toString() + "ms")
+   sb.buildOutput("Default test timeout", timeout().toString() + "ms")
    sb.buildOutput("Default test order", testCaseOrder().name)
    sb.buildOutput("Default isolation mode", isolationMode().name)
    sb.buildOutput("Global soft assertations", globalAssertSoftly().toString().capitalize())
