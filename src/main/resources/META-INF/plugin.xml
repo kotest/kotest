@@ -11,7 +11,7 @@
     ]]></description>
 
    <version>1.0.0</version>
-   <idea-version since-build="193.6911.18"/>
+   <idea-version since-build="191.4212.41"/>
 
    <depends>org.jetbrains.kotlin</depends>
    <depends>com.intellij.modules.java</depends>
