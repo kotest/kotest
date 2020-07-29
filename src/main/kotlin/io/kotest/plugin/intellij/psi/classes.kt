@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.psi.KtPrimaryConstructor
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.getSuperNames
 
 /**
  * Returns the [KtClassOrObject] if this [LeafPsiElement] has type [KtKeywordToken]
@@ -65,7 +66,7 @@ private fun KtClass.isDirectSubclass(fqn: FqName): Boolean {
  */
 fun KtClass.isSubclass(fqn: FqName): Boolean {
    if (isDirectSubclass(fqn)) return true
-   return getSuperClass()?.isSubclass(fqn) ?: false
+   return getSuperNames().contains(fqn.shortName().asString())
 }
 
 /**
