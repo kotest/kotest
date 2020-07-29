@@ -41,14 +41,7 @@ val plugins = listOf(
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
-      "192",
-      "192.*",
-      "192.7142.36",
-      "AS-3.6",
-      listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio3.6-5")
-   ),
-   plugin.PluginDescriptor(
-      "193",
+      "193.5233.102",
       "193.*",
       "193.5233.102",
       "AS-4.0",
@@ -63,7 +56,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "AS-3.6"
+val productName = System.getenv("PRODUCT_NAME") ?: "AS-4.1"
 val descriptor = plugins.first { it.productName == productName }
 
 val jetbrainsToken: String by project
