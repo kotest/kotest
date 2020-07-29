@@ -20,11 +20,10 @@ jobs:
                fetch-depth: 0
 
          -  name: deploy to jetbrains
-            run: ./gradlew --stacktrace verifyPlugin
+            run: ./gradlew --stacktrace publishPlugin
             env:
                PRODUCT_NAME: ${{ matrix.product }}
-               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+               JETBRAINS_TOKEN: ${{ secrets.JETBRAINS_TOKEN }}
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
