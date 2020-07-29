@@ -68,6 +68,8 @@ sourceSets {
    }
 }
 
+val jetbrainsToken: String by project
+
 tasks {
    compileKotlin {
       kotlinOptions {
@@ -79,6 +81,10 @@ tasks {
       archiveClassifier.set(sdk.version)
    }
 
+   publishPlugin {
+      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
+   }
+
    patchPluginXml {
       setVersion("${project.version}-${sdk.version}")
       setSinceBuild(sdk.since)
@@ -88,7 +94,3 @@ tasks {
 
 //sourceCompatibility = 1.8
 //targetCompatibility = 1.8
-
-//publishPlugin {
-//   token(jetbrainsToken)
-//}
