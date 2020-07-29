@@ -4,7 +4,9 @@ import com.intellij.execution.Executor
 import com.intellij.execution.JavaTestFrameworkRunnableState
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
+import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.OSProcessHandler
+import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.TestSearchScope
 import com.intellij.openapi.module.Module
@@ -55,13 +57,11 @@ class KotestRunnableState(env: ExecutionEnvironment,
    }
 
    override fun createHandler(executor: Executor?): OSProcessHandler {
-      try {
-         return super.createHandler(executor)
-      } catch (t: Throwable) {
-         println(t.message)
-         t.printStackTrace()
-         throw t
-      }
+      appendForkInfo(executor)
+      val processHandler = KillableColoredProcessHandler(createCommandLine())
+      ProcessTerminatedListener.attach(processHandler)
+      createSearchingForTestsTask().attachTaskToProcess(processHandler)
+      return processHandler
    }
 
    override fun configureRTClasspath(javaParameters: JavaParameters, module: Module?) {
