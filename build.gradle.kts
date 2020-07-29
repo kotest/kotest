@@ -52,7 +52,6 @@ intellij {
    updateSinceUntilBuild = false
 }
 
-
 dependencies {
    compileOnly(kotlin("stdlib"))
    implementation("javax.xml.bind:jaxb-api:2.2.12")
@@ -74,6 +73,10 @@ tasks {
       kotlinOptions {
          jvmTarget = "1.8"
       }
+   }
+
+   buildPlugin {
+      archiveClassifier.set(sdk.version)
    }
 
    patchPluginXml {
