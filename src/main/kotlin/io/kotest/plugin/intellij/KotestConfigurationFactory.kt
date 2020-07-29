@@ -8,8 +8,8 @@ import com.intellij.openapi.project.Project
 class KotestConfigurationFactory(configurationType: ConfigurationType) : ConfigurationFactory(configurationType) {
 
    override fun createTemplateConfiguration(project: Project): RunConfiguration {
-      return KotestConfiguration("Kotest", this, project)
+      return KotestConfiguration(Constants.FrameworkName, this, project)
    }
 
-   override fun getId(): String = "Kotest"
+   override fun getId(): String = Constants.FrameworkId
 }

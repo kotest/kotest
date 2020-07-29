@@ -37,7 +37,7 @@ class KotestTestFramework : TestFramework {
       return clazz is PsiClass && clazz.isContainedInSpec()
    }
 
-   override fun getName(): String = "Kotest"
+   override fun getName(): String = Constants.FrameworkName
    override fun getLanguage(): Language = KotlinLanguage.INSTANCE
    override fun getIcon(): Icon = Icons.Kotest16
 

@@ -4,6 +4,7 @@ import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.psi.specs
 import io.kotest.plugin.intellij.toolwindow.CallbackNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.IncludeNodeDescriptor
@@ -17,7 +18,7 @@ import java.nio.file.Paths
 import javax.swing.tree.DefaultMutableTreeNode
 
 @Suppress("UNCHECKED_CAST")
-class FunSpecParseTest : LightJavaCodeInsightFixtureTestCase() {
+class TreeModelTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
       val path = Paths.get("./src/test/resources/").toAbsolutePath()
@@ -31,7 +32,7 @@ class FunSpecParseTest : LightJavaCodeInsightFixtureTestCase() {
       assertSoftly {
          val root = model.root as DefaultMutableTreeNode
          val kotest = root.userObject as KotestRootNodeDescriptor
-         kotest.presentation.presentableText shouldBe "Kotest"
+         kotest.presentation.presentableText shouldBe Constants.FrameworkName
 
          val children = root.children().toList() as List<DefaultMutableTreeNode>
          children.size shouldBe 2

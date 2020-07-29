@@ -8,6 +8,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.Icons
 import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.Callback
@@ -19,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 class KotestRootNodeDescriptor(project: Project) : PresentableNodeDescriptor<Any>(project, null) {
    init {
-      templatePresentation.presentableText = "Kotest"
+      templatePresentation.presentableText = Constants.FrameworkName
    }
 
    override fun update(presentation: PresentationData) {

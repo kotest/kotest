@@ -18,7 +18,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
  */
 object KotestTestLocator : SMTestLocator {
 
-   private const val Protocol = "kotest"
+   private const val Protocol = Constants.FrameworkId
 
    /**
     * Returns the PSI file that contains the class indicated by the fully qualified name.
