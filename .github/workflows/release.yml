@@ -20,7 +20,7 @@ jobs:
                fetch-depth: 0
 
          -  name: deploy to jetbrains
-            run: ./gradlew publishPlugin
+            run: ./gradlew ----stacktrace publishPlugin
             env:
                SDK_VERISON: ${{ matrix.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
