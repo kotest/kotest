@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.annotators
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.createWarnAnnotation
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
@@ -23,7 +24,7 @@ class FocusInNestedTestAnnotator : Annotator {
             val test = style.test(element)
             if (test != null) {
                if (test.name.focus && test.isNested) {
-                  holder.createWarningAnnotation(test.psi, "Focus only works on top level tests")
+                  holder.createWarnAnnotation(test.psi, "Focus only works on top level tests")
                }
             }
          }

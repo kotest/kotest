@@ -42,6 +42,8 @@ val plugins = listOf(
 val sdkVersion = System.getenv("SDK_VERISON") ?: "IC-2020.2"
 val sdk = plugins.first { it.version == sdkVersion }
 
+val jetbrainsToken: String by project
+
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
@@ -82,7 +84,7 @@ tasks {
    }
 
    publishPlugin {
-      token(System.getenv("JETBRAINS_TOKEN") ?: "secret")
+      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
    }
 
    patchPluginXml {
