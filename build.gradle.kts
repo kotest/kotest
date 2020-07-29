@@ -56,7 +56,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "AS-4.1"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.2"
 val descriptor = plugins.first { it.productName == productName }
 
 val jetbrainsToken: String by project
