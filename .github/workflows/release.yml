@@ -1,0 +1,21 @@
+name: release
+
+on:
+   workflow_dispatch:
+
+
+jobs:
+   build:
+      runs-on: ubuntu-latest
+
+      steps:
+         -  name: Checkout the repo
+            uses: actions/checkout@v2
+            with:
+               fetch-depth: 0
+
+         -  name: Run ubuntu tests
+            run: ./gradlew check
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
