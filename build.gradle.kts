@@ -42,7 +42,7 @@ val plugins = listOf(
 val sdkVersion = System.getenv("PLUGIN_VERISON") ?: "IC-2020.2"
 val sdk = plugins.first { it.version == sdkVersion }
 
-version = System.getenv("RELEASE_VERSION") ?: "0.999"
+version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 intellij {
    sandboxDirectory = project.property("sandbox").toString()
