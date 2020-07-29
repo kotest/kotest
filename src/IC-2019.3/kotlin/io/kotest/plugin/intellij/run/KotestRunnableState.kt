@@ -60,7 +60,6 @@ class KotestRunnableState(env: ExecutionEnvironment,
       appendForkInfo(executor)
       val processHandler = KillableColoredProcessHandler(createCommandLine())
       ProcessTerminatedListener.attach(processHandler)
-      createSearchingForTestsTask().attachTaskToProcess(processHandler)
       return processHandler
    }
 
