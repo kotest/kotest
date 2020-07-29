@@ -39,8 +39,10 @@ val plugins = listOf(
    )
 )
 
-val sdkVersion = project.properties["sdk.version"] ?: "IC-2020.2"
+val sdkVersion = System.getenv("PLUGIN_VERISON") ?: "IC-2020.2"
 val sdk = plugins.first { it.version == sdkVersion }
+
+version = System.getenv("RELEASE_VERSION") ?: "0.999"
 
 intellij {
    sandboxDirectory = project.property("sandbox").toString()
@@ -68,8 +70,6 @@ sourceSets {
    }
 }
 
-val jetbrainsToken: String by project
-
 tasks {
    compileKotlin {
       kotlinOptions {
@@ -82,7 +82,7 @@ tasks {
    }
 
    publishPlugin {
-      token(System.getenv("JETBRAINS_TOKEN") ?: jetbrainsToken)
+      token(System.getenv("JETBRAINS_TOKEN") ?: "secret")
    }
 
    patchPluginXml {

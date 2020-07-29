@@ -2,7 +2,10 @@ name: release
 
 on:
    workflow_dispatch:
-
+      inputs:
+         releaseVersion:
+            description: 'Release build version'
+            required: true
 
 jobs:
    build:
@@ -22,6 +25,7 @@ jobs:
          -  name: deploy to jetbrains
             run: ./gradlew publishPlugin
             env:
+               RELEASE_VERSION: ${{ github.event.inputs.releaseVersion }}
                PLUGIN_VERISON: ${{ matrix.version }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
