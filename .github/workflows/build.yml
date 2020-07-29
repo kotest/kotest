@@ -14,7 +14,7 @@ jobs:
 
       strategy:
          matrix:
-            version: ["IC-2019.3", "IC-2020.1", "IC-2020.2", "Studio3.6", "Studio4.0"]
+            product: ["IC-2019.3", "IC-2020.1", "IC-2020.2", "AS-3.6", "AS-4.0", "AS-4.1"]
          max-parallel: 3
 
       steps:
@@ -26,7 +26,7 @@ jobs:
          -  name: Run ubuntu tests
             run: ./gradlew check
             env:
-               SDK_VERISON: ${{ matrix.version }}
+               PRODUCT_NAME: ${{ matrix.product }}
 
          -  name: Bundle the build report
             if: failure()
