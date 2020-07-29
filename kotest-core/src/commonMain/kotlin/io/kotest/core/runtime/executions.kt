@@ -7,7 +7,6 @@ import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestType
 import io.kotest.core.test.executeWithAssertionsCheck
 import io.kotest.core.test.resolvedAssertionMode
-import kotlin.time.ExperimentalTime
 
 internal suspend fun TestCase.executeWithBehaviours(context: TestContext) {
    val fn = test
@@ -21,7 +20,6 @@ internal suspend fun TestCase.executeWithBehaviours(context: TestContext) {
 /**
  * Wraps an execution function checking for assertion mode, if a [TestType.Test] and if enabled.
  */
-@OptIn(ExperimentalTime::class)
 private suspend fun wrapTestWithAssertionModeCheck(testCase: TestCase, run: suspend () -> Unit) {
    when (testCase.type) {
       TestType.Container -> run()

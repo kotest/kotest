@@ -12,7 +12,6 @@ import io.kotest.fp.Try
 import io.kotest.fp.flatten
 import io.kotest.fp.success
 import kotlin.reflect.KClass
-import kotlin.time.ExperimentalTime
 
 /**
  * Handles the execution of a single [Spec] class.
@@ -141,7 +140,6 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }
    }
 
-   @OptIn(ExperimentalTime::class)
    private fun runner(spec: Spec): SpecRunner {
       return when (spec.resolvedIsolationMode()) {
          IsolationMode.SingleInstance -> SingleInstanceSpecRunner(listener)

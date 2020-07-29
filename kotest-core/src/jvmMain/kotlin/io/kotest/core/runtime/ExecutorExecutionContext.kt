@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 object ExecutorExecutionContext : TimeoutExecutionContext {
 
@@ -21,9 +19,8 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
    // we can't interrupt a test doing `while (true) {}`
    //private val executor = Executors.newSingleThreadExecutor(NamedThreadFactory("ExecutionContext-Worker-%d"))
 
-   @OptIn(ExperimentalTime::class)
-   override suspend fun <T> executeWithTimeoutInterruption(timeout: Duration, f: suspend () -> T): T {
-      log("Scheduler will interrupt this execution in ${timeout}ms")
+   override suspend fun <T> executeWithTimeoutInterruption(timeoutInMillis: Long, f: suspend () -> T): T {
+      log("Scheduler will interrupt this execution in ${timeoutInMillis}ms")
 
       val scheduler = Executors.newScheduledThreadPool(1, NamedThreadFactory("ExecutionContext-Scheduler-%d"))
       val hasResumed = AtomicBoolean(false)
@@ -36,10 +33,10 @@ object ExecutorExecutionContext : TimeoutExecutionContext {
          scheduler.schedule({
             if (hasResumed.compareAndSet(false, true)) {
                thisThread.interrupt()
-               val t = TimeoutException(timeout.toLongMilliseconds())
+               val t = TimeoutException(timeoutInMillis)
                cont.resumeWithException(t)
             }
-         }, timeout.toLongMilliseconds(), TimeUnit.MILLISECONDS)
+         }, timeoutInMillis, TimeUnit.MILLISECONDS)
          scheduler.shutdown()
 
          try {

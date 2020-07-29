@@ -174,9 +174,9 @@ class TestCaseExecutor(
       return try {
 
          // all platforms support coroutine based interruption
-         withTimeout(timeout.toLongMilliseconds()) {
+         withTimeout(timeout.inMilliseconds.toLong()) {
             // not all platforms support executing with a timeout because it uses background threads to interrupt
-            ec.executeWithTimeoutInterruption(timeout) {
+            ec.executeWithTimeoutInterruption(timeout.inMilliseconds.toLong()) {
                withTimeout(invocationTimeout.toLongMilliseconds()) {
                   replay(
                      testCase.config.invocations,

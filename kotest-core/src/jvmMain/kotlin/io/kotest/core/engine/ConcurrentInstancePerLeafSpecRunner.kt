@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 
 /**
  * A [SpecRunner] that executes each leaf [TestCase] in a seperate instance of the
@@ -82,7 +81,6 @@ class ConcurrentInstancePerLeafSpecRunner(
     * discovered, and it hasn't yet be seen on previous executions, then a coroutine is launched to
     * execute that test.
     */
-   @OptIn(ExperimentalTime::class)
    private suspend fun run(test: TestCase, targets: List<TestName>) {
       coroutineScope {
          val context = object : TestContext() {

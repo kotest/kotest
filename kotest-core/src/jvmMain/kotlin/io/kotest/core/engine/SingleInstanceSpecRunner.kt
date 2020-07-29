@@ -9,14 +9,12 @@ import io.kotest.mpp.log
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 
 /**
  * Implementation of [SpecRunner] that executes all tests against the
  * same [Spec] instance. In other words, only a single instance of the spec class
  * is instantiated for all the test cases.
  */
-@ExperimentalTime
 class SingleInstanceSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()

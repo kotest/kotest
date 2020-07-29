@@ -13,7 +13,6 @@ import io.kotest.fp.Try
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 
 /**
  * Implementation of [SpecRunner] that executes each [TestCase] in a fresh instance
@@ -46,7 +45,6 @@ import kotlin.time.ExperimentalTime
  * spec3.outerTest
  * spec3.innerTestB
  */
-@ExperimentalTime
 class InstancePerTestSpecRunner(listener: TestEngineListener) : SpecRunner(listener) {
 
    private val results = ConcurrentHashMap<TestCase, TestResult>()
