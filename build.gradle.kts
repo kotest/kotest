@@ -43,21 +43,21 @@ val plugins = listOf(
    plugin.PluginDescriptor(
       "192",
       "192.*",
-      "IC-2019.2",
+      "192.7142.36",
       "AS-3.6",
       listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio3.6-5")
    ),
    plugin.PluginDescriptor(
       "193",
       "193.*",
-      "IC-2019.3",
+      "193.5233.102",
       "AS-4.0",
       listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.0-5")
    ),
    plugin.PluginDescriptor(
-      "201",
+      "201.7223.91",
       "201.*",
-      "IC-2020.1",
+      "201.7223.91",
       "AS-4.1",
       listOf("gradle", "android", "java", "org.jetbrains.kotlin:1.3.72-release-Studio4.1-5")
    )
@@ -93,6 +93,9 @@ sourceSets {
       withConvention(KotlinSourceSet::class) {
          kotlin.srcDirs("src/${descriptor.productName}/kotlin")
       }
+      resources {
+         srcDir("src/${descriptor.productName}/resources")
+      }
    }
 }
 
@@ -117,6 +120,3 @@ tasks {
       setUntilBuild(descriptor.until)
    }
 }
-
-//sourceCompatibility = 1.8
-//targetCompatibility = 1.8
