@@ -36,6 +36,24 @@ val plugins = listOf(
       "202.*",
       "IC-2020.2",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
+   ),
+   plugin.PluginDescriptor(
+      "191",
+      "191.*",
+      "Studio3.5",
+      listOf("org.jetbrains.kotlin:1.3.30-release-Studio3.5-1")
+   ),
+   plugin.PluginDescriptor(
+      "192",
+      "192.*",
+      "Studio3.6",
+      listOf("android", "java", "org.jetbrains.kotlin:1.3.61-release-Studio3.6-1")
+   ),
+   plugin.PluginDescriptor(
+      "193",
+      "193.*",
+      "Studio4.0",
+      listOf("android", "java", "org.jetbrains.kotlin:1.3.70-release-Studio4.0-1")
    )
 )
 
