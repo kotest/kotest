@@ -6,6 +6,11 @@ on:
 
 jobs:
    build:
+
+      strategy:
+         matrix:
+            version: ["IC-2019.3", "IC-2020.1", "IC-2020.2"]
+
       runs-on: ubuntu-latest
 
       steps:
@@ -14,8 +19,12 @@ jobs:
             with:
                fetch-depth: 0
 
-         -  name: Run ubuntu tests
-            run: ./gradlew check
+         -  name: deploy to jetbrains
+            run: ./gradlew publishPlugin
+            env:
+               PLUGIN_VERISON: ${{ matrix.version }}
+               OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+               OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=true -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
