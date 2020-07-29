@@ -3,6 +3,6 @@ package plugin
 data class PluginDescriptor(
    val since: String,
    val until: String,
-   val sdk: String,
+   val version: String,
    val deps: List<String>
 )

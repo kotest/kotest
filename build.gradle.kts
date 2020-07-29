@@ -28,27 +28,27 @@ val plugins = listOf(
    plugin.PluginDescriptor(
       "201",
       "201.*",
-      "IJ2020.1",
+      "IC-2020.1",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
       "202",
       "202.*",
-      "IJ2020.2",
+      "IC-2020.2",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    )
 )
 
-val sdkVersion = project.properties["ij.version"] ?: "IC-2019.3"
-val sdk = plugins.first { it.sdk == sdkVersion }
+val sdkVersion = project.properties["sdk.version"] ?: "IC-2020.2"
+val sdk = plugins.first { it.version == sdkVersion }
 
 intellij {
    sandboxDirectory = project.property("sandbox").toString()
-   version = sdk.sdk
+   version = sdk.version
    pluginName = "kotest-plugin-intellij"
    setPlugins(*sdk.deps.toTypedArray())
    downloadSources = true
-//   type = "IC"
+   type = "IC"
    updateSinceUntilBuild = false
 }
 
@@ -63,7 +63,7 @@ dependencies {
 sourceSets {
    main {
       withConvention(KotlinSourceSet::class) {
-         kotlin.srcDirs("src/${sdk.sdk}/kotlin")
+         kotlin.srcDirs("src/${sdk.version}/kotlin")
       }
    }
 }
@@ -76,7 +76,7 @@ tasks {
    }
 
    patchPluginXml {
-      setVersion("${project.version}-${sdk.sdk}")
+      setVersion("${project.version}-${sdk.version}")
       setSinceBuild(sdk.since)
       setUntilBuild(sdk.until)
    }
