@@ -4,11 +4,12 @@ on:
    workflow_dispatch:
 
 jobs:
-   build:
+   release:
 
       strategy:
          matrix:
             version: ["IC-2019.3", "IC-2020.1", "IC-2020.2"]
+         max-parallel: 1
 
       runs-on: ubuntu-latest
 
