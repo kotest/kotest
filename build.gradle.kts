@@ -58,6 +58,7 @@ dependencies {
    implementation("javax.xml.bind:jaxb-api:2.2.12")
    implementation("javax.activation:activation:1.1.1")
    implementation("io.kotest:kotest-launcher:1.0.5")
+   testImplementation("io.kotest:kotest-assertions-core-jvm:4.1.3")
 }
 
 sourceSets {

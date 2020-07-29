@@ -1,10 +1,8 @@
 package io.kotest.plugin.intellij.psi
 
-import com.intellij.psi.PsiWhiteSpace
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import java.nio.file.Paths
@@ -28,7 +26,7 @@ class OffsetsTest : LightJavaCodeInsightFixtureTestCase() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
       val element = psiFile.elementAtLine(24)
       element.shouldNotBeNull()
-      element.node.shouldBeInstanceOf<PsiWhiteSpace>()
+//      element.node.shouldBeInstanceOf<PsiWhiteSpace>()
       element.startOffset shouldBe 550
       element.endOffset shouldBe 556
    }
