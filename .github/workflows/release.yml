@@ -8,7 +8,7 @@ jobs:
 
       strategy:
          matrix:
-            version: ["IC-2019.3", "IC-2020.1", "IC-2020.2", "Studio3.5", "Studio3.6", "Studio4.0"]
+            product: ["IC-2019.3", "IC-2020.1", "IC-2020.2", "Studio3.6", "Studio4.0"]
          max-parallel: 1
 
       runs-on: ubuntu-latest
@@ -20,9 +20,9 @@ jobs:
                fetch-depth: 0
 
          -  name: deploy to jetbrains
-            run: ./gradlew ----stacktrace publishPlugin
+            run: ./gradlew --stacktrace publishPlugin
             env:
-               SDK_VERISON: ${{ matrix.version }}
+               PRODUCT_NAME: ${{ matrix.product }}
                OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
