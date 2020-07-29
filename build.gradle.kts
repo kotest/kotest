@@ -20,24 +20,17 @@ repositories {
 
 val plugins = listOf(
    plugin.PluginDescriptor(
-      "193",
+      "193.4099.13",
       "193.*",
       "IC-2019.3",
       "IC-2019.3",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2019.3-5")
    ),
    plugin.PluginDescriptor(
-      "201",
-      "201.*",
-      "IC-2020.1",
-      "IC-2020.1",
-      listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
-   ),
-   plugin.PluginDescriptor(
-      "202",
+      "201.6487",
       "202.*",
-      "IC-2020.2",
-      "IC-2020.2",
+      "IC-2020.1",
+      "IC-2020.1",
       listOf("java", "org.jetbrains.kotlin:1.3.72-release-IJ2020.1-5")
    ),
    plugin.PluginDescriptor(
@@ -56,7 +49,7 @@ val plugins = listOf(
    )
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.2"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-2020.1"
 val descriptor = plugins.first { it.productName == productName }
 
 val jetbrainsToken: String by project
