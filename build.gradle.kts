@@ -39,7 +39,7 @@ val plugins = listOf(
    )
 )
 
-val sdkVersion = System.getenv("PLUGIN_VERISON") ?: "IC-2020.2"
+val sdkVersion = System.getenv("SDK_VERISON") ?: "IC-2020.2"
 val sdk = plugins.first { it.version == sdkVersion }
 
 version = "1.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
