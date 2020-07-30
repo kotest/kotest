@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.equality.shouldBeEqualToUsingFields
+import io.kotest.matchers.equality.shouldNotBeEqualToIgnoringFields
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.KVisibility
@@ -74,6 +75,35 @@ class ReflectionKtTest : FunSpec() {
          assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
             car1.shouldBeEqualToUsingFields(car2, aPrivateField)
          }
+      }
+
+      test("shouldBeEqualToIgnoringFields should consider private in equality check when ignorePrivateField is false") {
+         val car1 = Car("car", 10000, 707)
+         val car2 = Car("car", 9000, 700)
+         val car3 = Car("car", 7000, 707)
+
+         car1.shouldBeEqualToIgnoringFields(car3, false, Car::price)
+         shouldThrow<AssertionError> {
+            car1.shouldBeEqualToIgnoringFields(car2, false, Car::price)
+         }
+      }
+
+      test("shouldNotBeEqualToIgnoringFields should consider private in equality check when ignorePrivateField is false") {
+         val car1 = Car("car", 10000, 707)
+         val car2 = Car("car", 9000, 700)
+         val car3 = Car("car", 7000, 707)
+
+         car1.shouldNotBeEqualToIgnoringFields(car2, false, Car::price)
+         shouldThrow<AssertionError> {
+            car1.shouldNotBeEqualToIgnoringFields(car3, false, Car::price)
+         }
+      }
+
+      test("shouldBeEqualToIgnoringFields should not consider private in equality check when ignorePrivateField is true") {
+         val car1 = Car("car", 10000, 707)
+         val car2 = Car("car", 9000, 700)
+
+         car1.shouldBeEqualToIgnoringFields(car2, true, Car::price)
       }
    }
 }

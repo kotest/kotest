@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldNot
 import kotlin.reflect.KProperty
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * Asserts that this is equal to [other] using specific fields
@@ -139,13 +140,42 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
  */
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) {
-   this should beEqualToIgnoringFields(other, *properties)
+   this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, fields = *properties)
+}
+
+/**
+ * Asserts that this is equal to [other] without using specific fields
+ *
+ * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful for matching
+ * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
+ * doesn't matter for you, for example)
+ *
+ * Opposite of [shouldNotBeEqualToIgnoringFields]
+ *
+ * Example:
+ * ```
+ * data class Foo(val id: Int, val description: String)
+ *
+ * val firstFoo = Foo(1, "Bar!")
+ * val secondFoo = Foo(2, "Bar!")
+ *
+ * firstFoo.shouldBeEqualToIgnoringFields(secondFoo, Foo::id) // Assertion passes
+ *
+ * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
+ * ```
+ *
+ * Note: Throws [IllegalArgumentException] in case [properties] parameter is not provided.
+ */
+
+fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, ignorePrivateFields: Boolean, vararg properties: KProperty<*>) {
+   this should beEqualToIgnoringFields(other = other, ignorePrivateFields = ignorePrivateFields, fields = *properties)
 }
 
 /**
  * Asserts that this is not equal to [other] without using specific fields
  *
- * Verifies that [this] instance is not equal to [other] without using some specific fields. This is useful for matching
+ * Verifies that [this] instance is not equal to [other] without using some specific fields and ignoring/not-ignoring
+ * private fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
  * doesn't matter for you, for example)
  *
@@ -163,7 +193,32 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProp
  *
  */
 fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>) =
-   this shouldNot beEqualToIgnoringFields(other, *properties)
+   this shouldNot beEqualToIgnoringFields(other = other, ignorePrivateFields = true, fields = *properties)
+
+
+/**
+ * Asserts that this is not equal to [other] without using specific fields
+ *
+ * Verifies that [this] instance is not equal to [other] without using some specific fields and ignoring/not-ignoring
+ * private fields.
+ * This is useful for matching on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
+ * doesn't matter for you, for example)
+ *
+ * Opposite of [shouldBeEqualToIgnoringFields]
+ *
+ * Example:
+ * ```
+ * data class Foo(val id: Int, val description: String, private val quote: String)
+ *
+ * val firstFoo = Foo(1, "Bar!")
+ * val secondFoo = Foo(2, "BAT!")
+ *
+ * firstFoo.shouldNotBeEqualToIgnoringFields(secondFoo, ,Foo::id) // Assertion passes
+ * ```
+ *
+ */
+fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, ignorePrivateFields: Boolean, vararg properties: KProperty<*>) =
+   this shouldNot beEqualToIgnoringFields(other = other, ignorePrivateFields = ignorePrivateFields, fields = *properties)
 
 /**
  * Matcher that compares values without using specific fields
@@ -191,6 +246,7 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KP
  */
 fun <T : Any> beEqualToIgnoringFields(
    other: T,
+   ignorePrivateFields: Boolean,
    vararg fields: KProperty<*>
 ): Matcher<T> = object : Matcher<T> {
    init {
@@ -199,9 +255,14 @@ fun <T : Any> beEqualToIgnoringFields(
 
    override fun test(value: T): MatcherResult {
       val fieldNames = fields.map { it.name }
-      val fieldsToBeConsidered: List<KProperty<*>> = value::class.memberProperties
+      val fieldsExcludingGivenFields = value::class.memberProperties
          .filterNot { fieldNames.contains(it.name) }
-         .filter { it.visibility == KVisibility.PUBLIC }
+
+      val fieldsToBeConsidered: List<KProperty<*>> = if(ignorePrivateFields) {
+         fieldsExcludingGivenFields.filter { it.visibility == KVisibility.PUBLIC }
+      } else {
+         fieldsExcludingGivenFields.onEach { it.isAccessible = true }
+      }
 
       val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
       val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
