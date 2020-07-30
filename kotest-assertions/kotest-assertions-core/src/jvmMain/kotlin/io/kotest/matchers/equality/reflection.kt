@@ -146,20 +146,22 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProp
 /**
  * Asserts that this is equal to [other] without using specific fields
  *
- * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful for matching
- * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
- * doesn't matter for you, for example)
+ * Verifies that [this] instance is equal to [other] without using some specific fields and ignoring/not-ignoring
+ * private fields.
+ * This is useful for matching on objects that contain unknown values, such as a database Entity that contains an
+ * ID (you don't know this ID, and it doesn't matter for you, for example)
  *
  * Opposite of [shouldNotBeEqualToIgnoringFields]
  *
  * Example:
  * ```
- * data class Foo(val id: Int, val description: String)
+ * data class Foo(val id: Int, val description: String, private val quote: String)
  *
- * val firstFoo = Foo(1, "Bar!")
- * val secondFoo = Foo(2, "Bar!")
+ * val firstFoo = Foo(1, "Bar!", "Q1")
+ * val secondFoo = Foo(2, "Bar!", "Q2")
  *
- * firstFoo.shouldBeEqualToIgnoringFields(secondFoo, Foo::id) // Assertion passes
+ * firstFoo.shouldBeEqualToIgnoringFields(other = secondFoo, ignorePrivateFields = true , properties = Foo::id) // Assertion passes
+ * firstFoo.shouldBeEqualToIgnoringFields(other = secondFoo, ignorePrivateFields = false , properties = Foo::id) // Assertion fails
  *
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
@@ -174,8 +176,7 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, ignorePrivateFields: Boo
 /**
  * Asserts that this is not equal to [other] without using specific fields
  *
- * Verifies that [this] instance is not equal to [other] without using some specific fields and ignoring/not-ignoring
- * private fields. This is useful for matching
+ * Verifies that [this] instance is not equal to [other] without using some specific fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
  * doesn't matter for you, for example)
  *
@@ -210,10 +211,11 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, vararg properties: KP
  * ```
  * data class Foo(val id: Int, val description: String, private val quote: String)
  *
- * val firstFoo = Foo(1, "Bar!")
- * val secondFoo = Foo(2, "BAT!")
+ * val firstFoo = Foo(1, "Bar!", "Q1")
+ * val secondFoo = Foo(2, "Bar!", "Q2")
  *
- * firstFoo.shouldNotBeEqualToIgnoringFields(secondFoo, ,Foo::id) // Assertion passes
+ * firstFoo.shouldNotBeEqualToIgnoringFields(other = secondFoo, ignorePrivateFields = false, properties = Foo::id) // Assertion passes
+ * firstFoo.shouldNotBeEqualToIgnoringFields(other = secondFoo, ignorePrivateFields = true, properties = Foo::id) // Assertion fails
  * ```
  *
  */
