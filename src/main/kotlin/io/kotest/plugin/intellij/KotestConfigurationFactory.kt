@@ -11,5 +11,5 @@ class KotestConfigurationFactory(configurationType: ConfigurationType) : Configu
       return KotestConfiguration(Constants.FrameworkName, this, project)
    }
 
-   override fun getId(): String = Constants.FrameworkId
+   override fun getId(): String = Constants.FrameworkName
 }
