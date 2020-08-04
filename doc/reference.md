@@ -478,8 +478,14 @@ All specs allow you to control the isolation mode. Full instructions can be foun
 
 
 
+Clues
+------
 
+Sometimes a failed assertion does not convey enough information to be immediately useful.
 
+For example `user.name shouldNotBe null` would output simply `<null> should not equal <null>`.
+
+By using [clues](clues.md) we can add extra contextual information.
 
 
 Mocking

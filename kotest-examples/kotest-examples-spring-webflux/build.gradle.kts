@@ -34,6 +34,9 @@ dependencies {
 
 tasks.withType<Test> {
    useJUnitPlatform()
+   filter {
+      isFailOnNoMatchingTests = false
+   }
 }
 
 tasks.withType<KotlinCompile> {
