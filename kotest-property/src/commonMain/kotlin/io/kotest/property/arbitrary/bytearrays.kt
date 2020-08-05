@@ -13,7 +13,7 @@ fun Arb.Companion.byteArrays(generateArrayLength: Gen<Int>, generateContents: Ar
    return arb { rs ->
       val lengths = generateArrayLength.generate(rs).iterator()
       val bytes = generateContents.values(rs).iterator()
-      sequence<ByteArray> {
+      generateSequence {
          val length = lengths.next().value
          ByteArray(length) { bytes.next().value }
       }

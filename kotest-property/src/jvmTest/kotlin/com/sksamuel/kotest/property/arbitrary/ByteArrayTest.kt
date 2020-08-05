@@ -23,7 +23,7 @@ class ByteArrayTest : DescribeSpec() {
          }
          it("should populate random byte values") {
             Arb.byteArrays(Arb.constant(1000000), Arb.byte()).take(10).toList().forAll {
-               it.toSet().size shouldBe 255
+               it.toSet().size shouldBe 256
             }
          }
       }
