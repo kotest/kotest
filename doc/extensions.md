@@ -39,6 +39,28 @@ point to a [specific application context file](https://docs.spring.io/spring-boo
 
 There are two ways to enable spring wiring depending on if you want to use constructor injection, or field injection.
 
+### Ktor
+
+The ```kotest-assertions-ktor-jvm``` extension provides response matchers for a [Ktor]("https://ktor.io/") test application.
+
+To add Ktor matchers, add the following dependency to your project
+
+```groovy
+testImplementation("io.kotest:kotest-assertions-ktor-jvm:${version}")
+```
+
+Usage:
+```kotlin
+withTestApplication({ module(testing = true) }) {
+   handleRequest(HttpMethod.Get, "/").apply {
+      response shouldHaveStatus HttpStatusCode.OK
+      response shouldNotHaveContent "failure"
+      response.shouldHaveHeader(name = "Authorization", value = "Bearer")
+      response.shouldNotHaveCookie(name = "Set-Cookie", cookieValue = "id=1234")
+   }
+}
+```
+
 #### Field Injection
 
 If you wish to use field injection, then the `SpringListener` must be registered with any
