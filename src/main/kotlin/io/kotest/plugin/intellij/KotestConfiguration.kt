@@ -23,7 +23,6 @@ import com.intellij.psi.PsiMethod
 import com.intellij.refactoring.listeners.RefactoringElementListener
 import io.kotest.plugin.intellij.run.KotestRunnableState
 import io.kotest.plugin.intellij.run.RunData
-import io.kotest.plugin.intellij.run.actionName
 import io.kotest.plugin.intellij.run.suggestedName
 import org.jdom.Element
 import org.jetbrains.jps.model.serialization.PathMacroUtil
