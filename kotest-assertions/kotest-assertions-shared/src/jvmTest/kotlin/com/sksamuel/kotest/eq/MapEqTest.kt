@@ -145,4 +145,37 @@ class MapEqTest : FunSpec({
       }
    }
 
+
+   test("should compare complex structures") {
+      val complexStructure = mapOf(
+         "array" to arrayOf(1, 2),
+         "list" to listOf(1, 2, 3),
+         "bytearray" to byteArrayOf(1, 2, 3, 4),
+         "int" to 2,
+         "string" to "sss",
+         "map" to mapOf(
+            "2" to 2,
+            "list" to listOf("1", 2, "5", null, mapOf("1" to byteArrayOf(1, 2, 3, 5)), setOf(listOf(1, 2, 3))),
+            "bytearray" to byteArrayOf(1, 2, 3, 5)
+         ),
+         "null" to null
+      )
+
+      val complexStructureCopy = mapOf(
+         "array" to arrayOf(1, 2),
+         "list" to listOf(1, 2, 3),
+         "bytearray" to byteArrayOf(1, 2, 3, 4),
+         "int" to 2,
+         "string" to "sss",
+         "map" to mapOf(
+            "2" to 2,
+            "list" to listOf("1", 2, "5", null, mapOf("1" to byteArrayOf(1, 2, 3, 5)), setOf(listOf(1, 2, 3))),
+            "bytearray" to byteArrayOf(1, 2, 3, 5)
+         ),
+         "null" to null
+      )
+
+      complexStructure shouldBe complexStructureCopy
+   }
+
 })
