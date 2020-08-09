@@ -3,7 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.style.scopes.BehaviorSpecScope
+import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
 import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
@@ -20,13 +20,13 @@ fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFa
    return config.build()
 }
 
-class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecScope {
+class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootScope {
    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
 }
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecScope {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootScope {
 
    init {
       body()

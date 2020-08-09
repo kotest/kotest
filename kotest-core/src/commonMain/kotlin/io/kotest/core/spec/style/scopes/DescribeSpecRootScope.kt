@@ -4,13 +4,13 @@ import io.kotest.core.test.TestName
 import kotlin.time.ExperimentalTime
 
 /**
- * A context that allows tests to be registered using the syntax:
+ * A context that allows root tests to be registered using the syntax:
  *
  * describe("some test")
  * xdescribe("some disabled test")
  */
 @OptIn(ExperimentalTime::class)
-interface DescribeSpecScope : RootScope {
+interface DescribeSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend DescribeScope.() -> Unit) {
       val testName = TestName("Context: ", name)
@@ -30,11 +30,11 @@ interface DescribeSpecScope : RootScope {
    private fun test(testName: TestName, test: suspend DescribeScope.() -> Unit) {
       registration().addContainerTest(testName, xdisabled = false) {
          DescribeScope(
-            this@DescribeSpecScope.description().append(testName),
-            this@DescribeSpecScope.lifecycle(),
+            this@DescribeSpecRootScope.description().append(testName),
+            this@DescribeSpecRootScope.lifecycle(),
             this,
-            this@DescribeSpecScope.defaultConfig(),
-            this.coroutineContext
+            this@DescribeSpecRootScope.defaultConfig(),
+            this.coroutineContext,
          ).test()
       }
    }

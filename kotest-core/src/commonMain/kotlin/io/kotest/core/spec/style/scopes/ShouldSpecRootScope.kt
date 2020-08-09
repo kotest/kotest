@@ -18,7 +18,7 @@ import io.kotest.core.test.TestName
  *    // test here
  *  }
  */
-interface ShouldSpecScope : RootScope {
+interface ShouldSpecRootScope : RootScope {
 
    /**
     * Adds a top level context scope to the spec.
@@ -30,7 +30,7 @@ interface ShouldSpecScope : RootScope {
             lifecycle(),
             this,
             defaultConfig(),
-            this.coroutineContext
+            this.coroutineContext,
          ).test()
       }
    }

@@ -1,6 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.core.SourceRef
+import io.kotest.core.factory.TestFactoryId
 import io.kotest.core.sourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.KotestDsl
@@ -37,7 +38,7 @@ abstract class TestContext : CoroutineScope {
       config: TestCaseConfig,
       type: TestType
    ) {
-      val nested = NestedTest(name, test, config, type, sourceRef())
+      val nested = NestedTest(name, test, config, type, sourceRef(), testCase.factoryId)
       registerTestCase(nested)
    }
 
@@ -52,18 +53,19 @@ data class NestedTest(
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,
-   val sourceRef: SourceRef
+   val sourceRef: SourceRef,
+   val factoryId: TestFactoryId?
 )
 
 fun NestedTest.toTestCase(spec: Spec, parent: Description): TestCase {
    return TestCase(
-      parent.append(this.name),
-      spec,
-      test,
-      sourceRef,
-      type,
-      config,
-      null,
-      null
+      description = parent.append(this.name),
+      spec = spec,
+      test = test,
+      source = sourceRef,
+      type = type,
+      config = config,
+      factoryId = factoryId,
+      assertionMode = null
    )
 }

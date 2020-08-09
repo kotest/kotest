@@ -11,7 +11,7 @@ import io.kotest.core.test.TestResult
 fun TestFactoryConfiguration.build(): TestFactory {
 
    val factory = TestFactory(
-      factoryId = TestFactoryId.next(),
+      factoryId = factoryId,
       tests = this.tests,
       tags = this._tags,
       listeners = this._listeners,

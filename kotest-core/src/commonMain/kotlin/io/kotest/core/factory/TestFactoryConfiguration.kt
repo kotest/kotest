@@ -15,6 +15,13 @@ import io.kotest.core.test.*
 abstract class TestFactoryConfiguration : TestConfiguration() {
 
    /**
+    * This [factoryId] is a unique id across all factories. The id is used by
+    * lifecycle callbacks declared in this factory to ensure they only operate
+    * on tests declared in this factory.
+    */
+   val factoryId: TestFactoryId = TestFactoryId.next()
+
+   /**
     * Contains the [DynamicTest]s that have been added to this configuration.
     */
    internal var tests = emptyList<DynamicTest>()
@@ -113,9 +120,9 @@ abstract class TestFactoryConfiguration : TestConfiguration() {
       name: TestName,
       test: suspend TestContext.() -> Unit,
       config: TestCaseConfig,
-      type: TestType
+      type: TestType,
    ) {
       require(tests.none { it.name == name }) { "Cannot add test with duplicate name $name" }
-      this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef())
+      this.tests = this.tests + DynamicTest(name, test, config, type, sourceRef(), factoryId)
    }
 }

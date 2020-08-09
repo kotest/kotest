@@ -12,7 +12,7 @@ class FreeScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
@@ -22,7 +22,7 @@ class FreeScope(
             this@FreeScope.lifecycle,
             this,
             this@FreeScope.defaultConfig,
-            this@FreeScope.coroutineContext
+            this@FreeScope.coroutineContext,
          ).test()
       }
    }
@@ -41,7 +41,12 @@ class FreeScope(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
-   ) = TestWithConfigBuilder(TestName(this), testContext, defaultConfig, xdisabled = false).config(
+   ) = TestWithConfigBuilder(
+      TestName(this),
+      testContext,
+      defaultConfig,
+      xdisabled = false,
+   ).config(
       enabled,
       invocations,
       threads,

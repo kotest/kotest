@@ -21,7 +21,7 @@ class WordSpecShouldScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    @OptIn(ExperimentalTime::class)
@@ -35,7 +35,12 @@ class WordSpecShouldScope(
       enabledIf: EnabledIf? = null,
       invocationTimeout: Duration? = null,
       test: suspend TestContext.() -> Unit
-   ) = TestWithConfigBuilder(TestName(this), testContext, defaultConfig, false).config(
+   ) = TestWithConfigBuilder(
+      TestName(this),
+      testContext,
+      defaultConfig,
+      false,
+   ).config(
       enabled,
       invocations,
       threads,

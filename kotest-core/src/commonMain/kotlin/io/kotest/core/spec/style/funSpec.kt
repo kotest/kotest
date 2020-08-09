@@ -3,7 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.style.scopes.FunSpecScope
+import io.kotest.core.spec.style.scopes.FunSpecRootScope
 import io.kotest.core.spec.style.scopes.Lifecycle
 import io.kotest.core.spec.style.scopes.RootTestRegistration
 import io.kotest.core.test.TestCaseConfig
@@ -20,13 +20,13 @@ fun funSpec(block: FunSpecTestFactoryConfiguration.() -> Unit): TestFactory {
    return config.build()
 }
 
-class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecScope {
+class FunSpecTestFactoryConfiguration : TestFactoryConfiguration(), FunSpecRootScope {
    override fun lifecycle(): Lifecycle = Lifecycle.from(this)
    override fun registration(): RootTestRegistration = RootTestRegistration.from(this)
    override fun defaultConfig(): TestCaseConfig = resolvedDefaultConfig()
 }
 
-abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecScope {
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecRootScope {
 
    init {
       body()

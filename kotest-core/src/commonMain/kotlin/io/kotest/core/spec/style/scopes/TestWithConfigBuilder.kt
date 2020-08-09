@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.factory.TestFactoryId
 import io.kotest.core.test.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -11,7 +12,7 @@ class TestWithConfigBuilder(
    private val name: TestName,
    private val context: TestContext,
    private val defaultTestConfig: TestCaseConfig,
-   private val xdisabled: Boolean
+   private val xdisabled: Boolean,
 ) {
 
    init {

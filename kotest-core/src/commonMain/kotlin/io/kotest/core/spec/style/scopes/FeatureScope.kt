@@ -1,7 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.spec.style.KotestDsl
-import io.kotest.core.test.*
+import io.kotest.core.test.Description
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -24,7 +27,7 @@ class FeatureScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend fun feature(name: String, test: suspend FeatureScope.() -> Unit) {
@@ -35,7 +38,7 @@ class FeatureScope(
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,
-            this@FeatureScope.coroutineContext
+            this@FeatureScope.coroutineContext,
          ).test()
       }
    }
@@ -48,7 +51,7 @@ class FeatureScope(
             this@FeatureScope.lifecycle,
             this,
             this@FeatureScope.defaultConfig,
-            this@FeatureScope.coroutineContext
+            this@FeatureScope.coroutineContext,
          ).test()
       }
    }
@@ -62,10 +65,20 @@ class FeatureScope(
    }
 
    fun scenario(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Scenario: ", name), testContext, defaultConfig, false)
+      return TestWithConfigBuilder(
+         TestName("Scenario: ", name),
+         testContext,
+         defaultConfig,
+         false,
+      )
    }
 
    fun xscenario(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Scenario: ", name), testContext, defaultConfig, true)
+      return TestWithConfigBuilder(
+         TestName("Scenario: ", name),
+         testContext,
+         defaultConfig,
+         true,
+      )
    }
 }
