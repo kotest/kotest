@@ -23,7 +23,7 @@ class WhenScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend fun And(name: String, test: suspend WhenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
@@ -39,15 +39,22 @@ class WhenScope(
             this@WhenScope.lifecycle,
             this,
             this@WhenScope.defaultConfig,
-            this@WhenScope.coroutineContext
+            this@WhenScope.coroutineContext,
          ).test()
       }
    }
 
-   fun then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
-   fun Then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
-   fun xthen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
-   fun xThen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
+   fun then(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+
+   fun Then(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+
+   fun xthen(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
+
+   fun xThen(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
 
    suspend fun Then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)
    suspend fun then(name: String, test: suspend TestContext.() -> Unit) = addThen(name, test, xdisabled = false)

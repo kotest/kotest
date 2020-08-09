@@ -6,19 +6,31 @@ import io.kotest.core.test.TestName
 /**
  * Top level registration methods for ExpectSpec methods.
  */
-interface ExpectSpecScope : RootScope {
+interface ExpectSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = TestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = false) {
-         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
+         ExpectScope(
+            description().append(testName),
+            lifecycle(),
+            this,
+            defaultConfig(),
+            this.coroutineContext,
+         ).test()
       }
    }
 
    fun xcontext(name: String, test: suspend ExpectScope.() -> Unit) {
       val testName = TestName("Context: ", name)
       registration().addContainerTest(testName, xdisabled = true) {
-         ExpectScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
+         ExpectScope(
+            description().append(testName),
+            lifecycle(),
+            this,
+            defaultConfig(),
+            this.coroutineContext,
+         ).test()
       }
    }
 

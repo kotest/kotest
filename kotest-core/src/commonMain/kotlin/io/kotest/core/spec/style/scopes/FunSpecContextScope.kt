@@ -21,7 +21,7 @@ class FunSpecContextScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    /**
@@ -34,13 +34,16 @@ class FunSpecContextScope(
             this@FunSpecContextScope.lifecycle,
             this,
             this@FunSpecContextScope.defaultConfig,
-            this@FunSpecContextScope.coroutineContext
+            this@FunSpecContextScope.coroutineContext,
          ).test()
       }
    }
 
-   fun test(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
-   fun xtest(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
+   fun test(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+
+   fun xtest(name: String) =
+      TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
 
    suspend fun test(name: String, test: suspend TestContext.() -> Unit) =
       addTest(TestName(name), xdisabled = false, test = test)

@@ -21,7 +21,7 @@ class ShouldSpecContextScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    /**
@@ -34,16 +34,26 @@ class ShouldSpecContextScope(
             this@ShouldSpecContextScope.lifecycle,
             this,
             this@ShouldSpecContextScope.defaultConfig,
-            this@ShouldSpecContextScope.coroutineContext
+            this@ShouldSpecContextScope.coroutineContext,
          ).test()
       }
    }
 
    fun should(name: String) =
-      TestWithConfigBuilder(TestName("should ", name), testContext, defaultConfig, xdisabled = false)
+      TestWithConfigBuilder(
+         TestName("should ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = false,
+      )
 
    fun xshould(name: String) =
-      TestWithConfigBuilder(TestName("should ", name), testContext, defaultConfig, xdisabled = true)
+      TestWithConfigBuilder(
+         TestName("should ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = true,
+      )
 
    suspend fun should(name: String, test: suspend TestContext.() -> Unit) =
       addTest(TestName("should ", name), xdisabled = false, test = test)

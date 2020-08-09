@@ -27,7 +27,7 @@ class ExpectScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend fun context(name: String, test: suspend ExpectScope.() -> Unit) {
@@ -38,7 +38,7 @@ class ExpectScope(
             this@ExpectScope.lifecycle,
             this,
             this@ExpectScope.defaultConfig,
-            this@ExpectScope.coroutineContext
+            this@ExpectScope.coroutineContext,
          ).test()
       }
    }
@@ -51,7 +51,7 @@ class ExpectScope(
             this@ExpectScope.lifecycle,
             this,
             this@ExpectScope.defaultConfig,
-            this@ExpectScope.coroutineContext
+            this@ExpectScope.coroutineContext,
          ).test()
       }
    }
@@ -65,11 +65,21 @@ class ExpectScope(
    }
 
    fun expect(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Expect: ", name), testContext, defaultConfig, xdisabled = false)
+      return TestWithConfigBuilder(
+         TestName("Expect: ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = false,
+      )
    }
 
    fun xexpect(name: String): TestWithConfigBuilder {
-      return TestWithConfigBuilder(TestName("Expect: ", name), testContext, defaultConfig, xdisabled = true)
+      return TestWithConfigBuilder(
+         TestName("Expect: ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = true,
+      )
    }
 
 }

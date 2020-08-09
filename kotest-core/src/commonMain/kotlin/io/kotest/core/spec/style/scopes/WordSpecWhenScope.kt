@@ -14,7 +14,7 @@ class WordSpecWhenScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend infix fun String.Should(test: suspend WordSpecShouldScope.() -> Unit) = addShould(this, test, false)
@@ -29,7 +29,7 @@ class WordSpecWhenScope(
             this@WordSpecWhenScope.lifecycle,
             this,
             this@WordSpecWhenScope.defaultConfig,
-            this@WordSpecWhenScope.coroutineContext
+            this@WordSpecWhenScope.coroutineContext,
          ).test()
       }
    }

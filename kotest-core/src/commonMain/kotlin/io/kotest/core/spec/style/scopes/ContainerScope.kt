@@ -30,20 +30,29 @@ interface ContainerScope : CoroutineScope {
 
    val defaultConfig: TestCaseConfig
 
+   /**
+    * Adds a new test case to this scope with type [TestType.Container].
+    */
    suspend fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
    }
 
+   /**
+    * Adds a new test case to this scope with type [TestType.Test].
+    */
    suspend fun addTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) {
       addTest(name, xdisabled, defaultConfig, TestType.Test, test)
    }
 
+   /**
+    * Registerd a new test case to this scope with the given test type.
+    */
    suspend fun addTest(
       name: TestName,
       xdisabled: Boolean,
       config: TestCaseConfig,
       type: TestType,
-      test: suspend TestContext.() -> Unit
+      test: suspend TestContext.() -> Unit,
    ) {
       val activeConfig = if (xdisabled) config.copy(enabled = false) else config
       testContext.registerTestCase(name, test, activeConfig, type)

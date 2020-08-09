@@ -2,21 +2,38 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.spec.style.DslDrivenSpec
-import io.kotest.core.test.*
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestCaseConfig
+import io.kotest.core.test.TestContext
+import io.kotest.core.test.TestName
+import io.kotest.core.test.TestType
+import io.kotest.core.test.withXDisabled
 
+/**
+ * Handles registration of top level tests inside a [RootScope].
+ */
 interface RootTestRegistration {
 
    val defaultConfig: TestCaseConfig
 
+   /**
+    * Adds a new root [TestCase] to this scope with type [TestType.Container].
+    */
    fun addContainerTest(name: TestName, xdisabled: Boolean, test: suspend TestContext.() -> Unit) =
       addTest(name, xdisabled, defaultConfig, TestType.Container, test)
 
+   /**
+    * Adds a new root [TestCase] to this scope with type [TestType.Test].
+    */
    fun addTest(
       name: TestName,
       xdisabled: Boolean,
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, defaultConfig, TestType.Test, test)
 
+   /**
+    * Adds a new root [TestCase] to this scope with type [TestType.Test] and custom config.
+    */
    fun addTest(
       name: TestName,
       xdisabled: Boolean,
@@ -24,6 +41,11 @@ interface RootTestRegistration {
       test: suspend TestContext.() -> Unit
    ) = addTest(name, xdisabled, config, TestType.Test, test)
 
+   /**
+    * Adds a new root [TestCase] to this scope with the given test type and config.
+    *
+    * @param xdisabled if true then this test has been disabled by using an xKeyword dsl method.
+    */
    fun addTest(
       name: TestName,
       xdisabled: Boolean,

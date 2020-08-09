@@ -26,7 +26,7 @@ class DescribeScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend fun context(name: String, test: suspend DescribeScope.() -> Unit) {
@@ -60,16 +60,26 @@ class DescribeScope(
             this@DescribeScope.lifecycle,
             this,
             this@DescribeScope.defaultConfig,
-            this@DescribeScope.coroutineContext
+            this@DescribeScope.coroutineContext,
          ).test()
       }
    }
 
    fun it(name: String) =
-      TestWithConfigBuilder(TestName("It: ", name), testContext, defaultConfig, xdisabled = false)
+      TestWithConfigBuilder(
+         TestName("It: ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = false,
+      )
 
    fun xit(name: String) =
-      TestWithConfigBuilder(TestName("It: ", name), testContext, defaultConfig, xdisabled = true)
+      TestWithConfigBuilder(
+         TestName("It: ", name),
+         testContext,
+         defaultConfig,
+         xdisabled = true,
+      )
 
    suspend fun it(name: String, test: suspend TestContext.() -> Unit) =
       addTest(TestName(name), xdisabled = false, test = test)

@@ -3,7 +3,6 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.DslDrivenSpec
-import io.kotest.core.test.TestCaseConfig
 import io.kotest.core.test.TestContext
 
 /**

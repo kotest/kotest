@@ -27,7 +27,7 @@ class GivenScope(
    override val lifecycle: Lifecycle,
    override val testContext: TestContext,
    override val defaultConfig: TestCaseConfig,
-   override val coroutineContext: CoroutineContext
+   override val coroutineContext: CoroutineContext,
 ) : ContainerScope {
 
    suspend fun And(name: String, test: suspend GivenScope.() -> Unit) = addAnd(name, test, xdisabled = false)
@@ -43,7 +43,7 @@ class GivenScope(
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,
-            this@GivenScope.coroutineContext
+            this@GivenScope.coroutineContext,
          ).test()
       }
    }
@@ -61,13 +61,13 @@ class GivenScope(
             this@GivenScope.lifecycle,
             this,
             this@GivenScope.defaultConfig,
-            this@GivenScope.coroutineContext
+            this@GivenScope.coroutineContext,
          ).test()
       }
    }
 
-   fun then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
    fun Then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
+   fun then(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = false)
    fun xthen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
    fun xThen(name: String) = TestWithConfigBuilder(TestName(name), testContext, defaultConfig, xdisabled = true)
 

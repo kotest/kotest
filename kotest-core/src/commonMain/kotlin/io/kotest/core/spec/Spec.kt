@@ -91,6 +91,12 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
       })
    }
 
+   /**
+    * Registers a new before-container callback to be executed before every [TestCase]
+    * with type [TestType.Container].
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
    override fun beforeContainer(f: BeforeContainer) {
       listener(object : TestListener {
          override suspend fun beforeContainer(testCase: TestCase) {
@@ -107,6 +113,12 @@ abstract class Spec : TestConfiguration(), SpecConfigurationMethods {
       })
    }
 
+   /**
+    * Registers a new before-each callback to be executed before every [TestCase]
+    * with type [TestType.Test].
+    *
+    * The [TestCase] about to be executed is provided as the parameter.
+    */
    override fun beforeEach(f: BeforeEach) {
       listener(object : TestListener {
          override suspend fun beforeEach(testCase: TestCase) {

@@ -32,5 +32,6 @@ data class DynamicTest(
    val test: suspend TestContext.() -> Unit,
    val config: TestCaseConfig,
    val type: TestType,
-   val source: SourceRef
+   val source: SourceRef,
+   val factoryId: TestFactoryId
 )

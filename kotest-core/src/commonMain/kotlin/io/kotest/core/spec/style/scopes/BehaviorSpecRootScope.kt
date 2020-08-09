@@ -9,7 +9,7 @@ import io.kotest.core.test.TestName
  * xgiven("some disabled test")
  */
 @Suppress("FunctionName")
-interface BehaviorSpecScope : RootScope {
+interface BehaviorSpecRootScope : RootScope {
 
    /**
     * Adds a top level [GivenScope] to this spec.
@@ -34,7 +34,13 @@ interface BehaviorSpecScope : RootScope {
    private fun addGiven(name: String, xdisabled: Boolean, test: suspend GivenScope.() -> Unit) {
       val testName = TestName("Given: ", name)
       registration().addContainerTest(testName, xdisabled) {
-         GivenScope(description().append(testName), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
+         GivenScope(
+            description().append(testName),
+            lifecycle(),
+            this,
+            defaultConfig(),
+            this.coroutineContext,
+         ).test()
       }
    }
 }

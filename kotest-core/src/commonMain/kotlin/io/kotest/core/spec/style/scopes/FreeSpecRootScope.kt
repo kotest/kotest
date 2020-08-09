@@ -9,12 +9,18 @@ import io.kotest.core.test.deriveTestConfig
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-interface FreeSpecScope : RootScope {
+interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeScope.() -> Unit) {
       registration().addContainerTest(TestName(this), xdisabled = false) {
-         FreeScope(description().append(this@minus), lifecycle(), this, defaultConfig(), this.coroutineContext).test()
+         FreeScope(
+            description().append(this@minus),
+            lifecycle(),
+            this,
+            defaultConfig(),
+            this.coroutineContext,
+         ).test()
       }
    }
 
