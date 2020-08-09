@@ -6,6 +6,7 @@ object Projects {
    const val Core = ":kotest-core"
    const val CoreJvm = ":kotest-core-jvm"
    const val Extensions = ":kotest-extensions"
+   const val JunitXmlExtension = ":kotest-extensions:kotest-extensions-junitxml"
    const val JunitRunner = ":kotest-runner:kotest-runner-junit5"
    const val Property = ":kotest-property"
 }

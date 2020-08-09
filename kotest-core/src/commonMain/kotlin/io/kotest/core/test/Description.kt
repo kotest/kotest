@@ -80,6 +80,9 @@ data class Description(val parents: List<TestName>, val name: TestName) {
    fun tail() = if (parents.isEmpty()) throw NoSuchElementException() else
       Description(parents.drop(1), name)
 
+   /**
+    * Returns the full name including the spec.
+    */
    fun fullName(): String = (parents.map { it.displayName() } + name.displayName()).joinToString(" ")
 
    /**
