@@ -158,6 +158,8 @@ class SpecExecutor(private val listener: TestEngineListener) {
     */
    private suspend fun invokePrepareSpecListeners(kclass: KClass<out Spec>): Try<Unit> =
       Try {
+         // prepareSpec can only be registered at the project level
+         // It makes no sense to call prepareSpec after a spec has already been instantiated.
          val listeners = Project.testListeners()
          log("Notifying ${listeners.size} test listeners of callback 'prepareSpec'")
          listeners.forEach {
@@ -167,13 +169,15 @@ class SpecExecutor(private val listener: TestEngineListener) {
       }
 
    /**
-    * Notifies the user listeners that a [Spec] has finished completed.
+    * Notifies the user listeners that a [Spec] has finished all tests.
     */
    private suspend fun invokeFinalizeSpecListeners(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>
    ): Try<Map<TestCase, TestResult>> = Try {
       log("Notifying finalizeSpec")
+      // finalize spec's can be registered at the project level or using the dsl
+      // dsl callbacks are just registered at the project level with a spec class check
       Project.testListeners().forEach {
          it.finalizeSpec(kclass, results)
       }
