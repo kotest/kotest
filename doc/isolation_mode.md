@@ -26,7 +26,7 @@ class MyTestClass : WordSpec() {
   init {
     // tests here
   }
-})
+}
 ```
 
 ### Single Instance
@@ -193,3 +193,18 @@ a=0
 b=1
 a=0
 c=1
+
+
+### Global Isolation Mode
+
+Rather than setting the isolation mode in every spec, we can set it globally in project config.
+
+See the docs on setting up [project wide config](project_config.md), and then add the isolation mode you want to be the default. For example:
+
+```kotlin
+class ProjectConfig: AbstractProjectConfig() {
+   override val isolationMode = IsolationMode.InstancePerLeaf
+}
+```
+
+Setting an isolation mode in a Spec will always override the project wide setting.
