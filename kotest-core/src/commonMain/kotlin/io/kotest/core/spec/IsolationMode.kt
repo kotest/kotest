@@ -1,20 +1,5 @@
 package io.kotest.core.spec
 
-import io.kotest.core.spec.style.WordSpec
-
-class SingleInstanceExample : WordSpec({
-   val spec = this
-   "a" should {
-      println(spec)
-      "b" {
-         println(spec)
-      }
-      "c" {
-         println(spec)
-      }
-   }
-})
-
 enum class IsolationMode {
 
    /**
