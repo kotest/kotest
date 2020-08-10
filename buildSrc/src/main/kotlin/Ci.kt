@@ -1,33 +1,18 @@
 object Ci {
 
-   private const val lastRelease = "4.1.2"
-
+   // this is the version used for building snapshots
+   // .buildnumber-snapshot will be appended
    private const val snapshotBase = "4.2.0"
 
-   private val githubBuildNumber: String = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
-   private val snapshotVersion = "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
+   private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
 
-   private val releaseTag = detectReleaseTag().apply {
-      println("Release tag: $this")
+   private val snapshotVersion = when (githubBuildNumber) {
+      null -> "$snapshotBase-LOCAL"
+      else -> "$snapshotBase.${githubBuildNumber}-SNAPSHOT"
    }
 
-   private fun detectReleaseTag(): String? {
-      return try {
-         val process = Runtime.getRuntime().exec("git log -1 --pretty=%B")
-         val reader = process.inputStream.bufferedReader()
-         val tag: String? = reader.readLine()
-         if (tag != null && tag.isNotBlank() && tag.trim().startsWith("v")) tag.trim().removePrefix("v") else null
-      } catch (e: Exception) {
-         println("git tag failed " + e.message)
-         e.printStackTrace()
-         null
-      }
-   }
+   private val releaseVersion = System.getenv("RELEASE_VERSION")
 
-   val isRelease = releaseTag != null
-
-   val publishVersion: String = when (releaseTag) {
-      null -> snapshotVersion
-      else -> releaseTag
-   }
+   val isRelease = releaseVersion != null
+   val publishVersion = releaseVersion ?: snapshotVersion
 }
