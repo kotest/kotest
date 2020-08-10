@@ -1,9 +1,11 @@
 package io.kotest.core.spec
 
 import io.kotest.core.*
+import io.kotest.core.config.Project
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.*
 import io.kotest.core.listeners.TestListener
+import kotlin.reflect.KClass
 
 /**
  * Contains methods which can be overriden to set config in the same way that KotlinTest 3.x allowed.

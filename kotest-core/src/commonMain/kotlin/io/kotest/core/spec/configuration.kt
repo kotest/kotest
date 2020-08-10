@@ -170,6 +170,10 @@ abstract class TestConfiguration {
       })
    }
 
+   @Deprecated(
+      "Cannot use inline version of prepare spec since this must run before the spec is created",
+      level = DeprecationLevel.ERROR
+   )
    fun prepareSpec(f: PrepareSpec) {
       listeners(object : TestListener {
          override suspend fun prepareSpec(kclass: KClass<out Spec>) {
@@ -178,10 +182,17 @@ abstract class TestConfiguration {
       })
    }
 
+   /**
+    * Registers a callback that will execute after all tests in this spec have completed.
+    * This is a convenience method for creating a [TestListener] and registering it to only
+    * fire for this spec.
+    */
    fun finalizeSpec(f: FinalizeSpec) {
-      listeners(object : TestListener {
+      Project.registerListener(object : TestListener {
          override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            f(Tuple2(kclass, results))
+            if (kclass == this@TestConfiguration::class) {
+               f(Tuple2(kclass, results))
+            }
          }
       })
    }

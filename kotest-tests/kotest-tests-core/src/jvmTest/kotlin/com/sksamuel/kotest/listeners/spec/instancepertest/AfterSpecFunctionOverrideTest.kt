@@ -1,26 +1,31 @@
-package com.sksamuel.kotest.listeners
+package com.sksamuel.kotest.listeners.spec.instancepertest
 
-import io.kotest.assertions.fail
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class TestListenerAfterSpecTest : FunSpec() {
+class AfterSpecFunctionOverrideTest : FunSpec() {
 
    companion object {
-      private val counter = AtomicInteger(4)
+      private val counter = AtomicInteger(0)
    }
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
    // should be invoked once per isolated test
    override fun afterSpec(spec: Spec) {
-      if (counter.decrementAndGet() < 0)
-         fail("Error, after spec called too many times")
+      counter.incrementAndGet()
    }
 
    init {
+
+      afterProject {
+         counter.get() shouldBe 5
+      }
+
+      test("ignored test").config(enabled = false) {}
       test("a") { }
       test("b") { }
       test("c") { }

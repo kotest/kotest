@@ -1,27 +1,32 @@
-package com.sksamuel.kotest.listeners
+package com.sksamuel.kotest.listeners.spec.instancepertest
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
-class TestListenerBeforeSpecStartedTest : FunSpec() {
+/**
+ * Tests beforeSpec inside a spec using the dsl.
+ */
+class BeforeSpecInlineTest : FunSpec() {
 
-   private val counter = AtomicInteger(0)
+   companion object {
+      private val counter = AtomicInteger(0)
+   }
 
    override fun isolationMode(): IsolationMode = IsolationMode.InstancePerTest
 
    init {
 
-      // this should only be invoked once regardless of extra specs instantiated
-      prepareSpec {
+      beforeSpec {
          counter.incrementAndGet()
       }
 
-      finalizeSpec {
-         counter.get() shouldBe 1
+      afterProject {
+         counter.get() shouldBe 5
       }
 
+      test("ignored test").config(enabled = false) {}
       test("a") { }
       test("b") { }
       test("c") { }
