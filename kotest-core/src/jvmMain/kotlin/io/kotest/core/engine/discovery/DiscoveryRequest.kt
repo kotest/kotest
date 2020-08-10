@@ -90,7 +90,8 @@ sealed class DiscoverySelector {
          className == kclass.qualifiedName ?: kclass.java.canonicalName
    }
 
+   // accepts a package if it is a subpackage of the given name
    data class PackageDiscoverySelector(val packageName: String) : DiscoverySelector() {
-      override fun test(kclass: KClass<out Spec>): Boolean = packageName == kclass.java.`package`.name
+      override fun test(kclass: KClass<out Spec>): Boolean = kclass.java.packageName.startsWith(packageName)
    }
 }
