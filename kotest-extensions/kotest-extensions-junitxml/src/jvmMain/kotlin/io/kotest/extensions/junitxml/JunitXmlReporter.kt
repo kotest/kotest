@@ -81,7 +81,7 @@ class JunitXmlReporter(
       val document = Document()
       val testSuite = Element("testsuite")
       testSuite.setAttribute("timestamp", ISO_LOCAL_DATE_TIME.format(getCurrentDateTime()))
-      testSuite.setAttribute("time", Duration.ofMillis(duration).toSeconds().toString())
+      testSuite.setAttribute("time", (duration / 1000).toString())
       testSuite.setAttribute("hostname", hostname())
       testSuite.setAttribute("errors", filtered.filter { it.value.status == TestStatus.Error }.size.toString())
       testSuite.setAttribute("failures", filtered.filter { it.value.status == TestStatus.Failure }.size.toString())
