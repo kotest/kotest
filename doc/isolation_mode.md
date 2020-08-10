@@ -51,8 +51,8 @@ class SingleInstanceExample : WordSpec({
 })
 ```
 
-**Note**: This default is the same as ScalaTest (the inspiration for this framework) but different to JUnit. Whichever default
-is chosen, some developers will consider it _wrong_.
+**Note**: This default is the same as ScalaTest (the inspiration for this framework), Jest, Jasmine, and other JS frameworks
+ but different to JUnit. Whichever default is chosen, some developers will consider it _wrong_.
 
 ### InstancePerTest
 
