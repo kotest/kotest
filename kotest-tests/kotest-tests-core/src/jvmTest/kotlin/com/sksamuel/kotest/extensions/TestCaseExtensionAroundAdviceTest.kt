@@ -29,6 +29,7 @@ class TestCaseExtensionAroundAdviceTest : StringSpec() {
    override fun extensions() = listOf(MyExt)
 
    init {
+
       // this exception should not be thrown as the extension will skip evaluation of the test
       "test1" {
          throw RuntimeException()

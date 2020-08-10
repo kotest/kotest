@@ -21,7 +21,7 @@ actual fun detectConfig(): ProjectConf {
          // if the static field for an object cannot be found, then instantiate
          null -> {
             val zeroArgsConstructor = klass.constructors.find { it.parameterCount == 0 }
-                ?: throw IllegalArgumentException("Class ${klass.name} should have a zero-arg constructor")
+               ?: throw IllegalArgumentException("Class ${klass.name} should have a zero-arg constructor")
             zeroArgsConstructor.newInstance() as T
          }
          // if the static field can be found then use it
@@ -34,6 +34,7 @@ actual fun detectConfig(): ProjectConf {
          override suspend fun beforeProject() {
             confClass.beforeAll()
          }
+
          override suspend fun afterProject() {
             confClass.afterAll()
          }
@@ -80,9 +81,22 @@ actual fun detectConfig(): ProjectConf {
          .map { instantiate(it) }
    } else emptyList()
 
+   // some listeners moved to be auto scan, so we don't want to include those twice, but other listeners
+   // can be included twice
+   val autoscanNames = autoscanned.map { it.javaClass.name }
+
+   val listeners = autoscanned.filterIsInstance<Listener>() +
+      conf.listeners.filterNot { autoscanNames.contains(it.javaClass.name) }
+
+   val filters = autoscanned.filterIsInstance<Filter>() +
+      conf.filters.filterNot { autoscanNames.contains(it.javaClass.name) }
+
+   val extensions = autoscanned.filterIsInstance<Extension>() +
+      conf.extensions.filterNot { autoscanNames.contains(it.javaClass.name) }
+
    return conf.copy(
-      listeners = (conf.listeners + autoscanned.filterIsInstance<Listener>()).distinctBy { it::class.java.name },
-      filters = conf.filters + autoscanned.filterIsInstance<Filter>().distinctBy { it::class.java.name },
-      extensions = conf.extensions + autoscanned.filterIsInstance<Extension>().distinctBy { it::class.java.name }
+      listeners = listeners,
+      filters = filters,
+      extensions = extensions
    )
 }

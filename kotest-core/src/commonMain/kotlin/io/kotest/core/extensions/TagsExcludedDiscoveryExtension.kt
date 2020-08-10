@@ -6,7 +6,7 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 /**
- * Filters Specs that can be excluded based on the @Tags annotation at the Spec Level.
+ * Filters any [Spec] that can be excluded based on the @[Tags] annotation at the class level.
  */
 object TagsExcludedDiscoveryExtension : DiscoveryExtension {
 
