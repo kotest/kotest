@@ -13,14 +13,16 @@ import io.qameta.allure.util.ResultsUtils
 @Severity(SeverityLevel.BLOCKER)
 class AllureTestListenerTest : WordSpec() {
 
-   override fun listeners() = listOf(AllureTestListener)
+   private val allure = AllureTestReporter()
+
+   override fun listeners() = listOf(allure)
 
    init {
 
       "allure test listener" should {
          "detect label annotations" {
-            val desc = this.context.testCase.description
-            AllureTestListener.allure().updateTestCase(AllureTestListener.uuids[desc].toString()) { result ->
+            val id = allure.writer.id(this.context.testCase).toString()
+            allure.writer.allure.updateTestCase(id) { result ->
                result.labels.forOne {
                   it.name shouldBe ResultsUtils.OWNER_LABEL_NAME
                   it.value shouldBe "foo-owner"

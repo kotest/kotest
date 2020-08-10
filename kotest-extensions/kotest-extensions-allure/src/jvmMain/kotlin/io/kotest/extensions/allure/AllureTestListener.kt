@@ -14,7 +14,7 @@ class AllureTestReporter(private val includeContainers: Boolean = false) : TestL
 
    override val name = "AllureTestReporter"
 
-   private val writer = AllureWriter()
+   val writer = AllureWriter()
 
    override suspend fun beforeProject() {
       Paths.get("./allure-results").toFile().deleteRecursively()

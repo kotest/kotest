@@ -25,7 +25,7 @@ class AllureWriter {
    /**
     * Loads the [AllureLifecycle] object which is used to report test lifecycle events.
     */
-   private fun allure(): AllureLifecycle = try {
+   val allure = try {
       Allure.getLifecycle() ?: throw IllegalStateException("Allure lifecycle was null")
    } catch (t: Throwable) {
       log("Error getting allure lifecycle", t)
@@ -34,6 +34,8 @@ class AllureWriter {
    }
 
    private val uuids = mutableMapOf<Description, UUID>()
+
+   fun id(testCase: TestCase) = uuids[testCase.description]
 
    fun startAllureTestCase(testCase: TestCase) {
       log("Allure beforeTest $testCase")
@@ -67,8 +69,8 @@ class AllureWriter {
          .setLinks(links)
          .setDescription(testCase.description())
 
-      allure().scheduleTestCase(result)
-      allure().startTestCase(uuid.toString())
+      allure.scheduleTestCase(result)
+      allure.startTestCase(uuid.toString())
    }
 
    fun stopAllureTestCase(testCase: TestCase, result: TestResult) {
@@ -86,12 +88,12 @@ class AllureWriter {
       val details = StatusDetails()
       details.message = result.error?.message
 
-      allure().updateTestCase(uuid.toString()) {
+      allure.updateTestCase(uuid.toString()) {
          it.status = status
          it.statusDetails = details
       }
-      allure().stopTestCase(uuid.toString())
-      allure().writeTestCase(uuid.toString())
+      allure.stopTestCase(uuid.toString())
+      allure.writeTestCase(uuid.toString())
    }
 
    // returns an id that's acceptable in format for allure
