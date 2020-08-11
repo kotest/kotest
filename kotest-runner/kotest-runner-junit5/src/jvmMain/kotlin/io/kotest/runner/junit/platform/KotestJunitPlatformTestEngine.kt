@@ -58,10 +58,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val postFilters = request.postFilters()
       val specFilters = postFilters.map {
-         ClassMethodAdaptingFilter(
-            it,
-            uniqueId
-         )
+         ClassMethodAdaptingFilter(it, uniqueId)
       }
 
       // a method selector is passed by intellij to run just a single method inside a test file

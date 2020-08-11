@@ -108,7 +108,7 @@ object Discovery {
          .enableClassInfo()
          .enableExternalClasses()
          .ignoreClassVisibility()
-         .blacklistPackages(
+         .rejectPackages(
             "java.*",
             "javax.*",
             "sun.*",
