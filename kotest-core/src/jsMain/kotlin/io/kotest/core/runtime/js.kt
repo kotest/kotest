@@ -5,6 +5,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestContext
 import io.kotest.core.test.TestResult
+import io.kotest.core.test.isActive
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
@@ -13,7 +14,9 @@ import kotlin.coroutines.CoroutineContext
  * Note: we need to use this: https://youtrack.jetbrains.com/issue/KT-22228
  */
 actual fun executeSpec(spec: Spec) {
-   spec.rootTests().forEach { root ->
+   spec.rootTests()
+      .filter { it.testCase.isActive() }
+      .forEach { root ->
       // we have to always start the test so that the framework doesn't exit before we return
       // also it gives us a handle to the done callback
       it(root.testCase.description.name.displayName()) { done ->
@@ -31,7 +34,7 @@ actual fun executeSpec(spec: Spec) {
                override val testCase: TestCase = root.testCase
                override val coroutineContext: CoroutineContext = this@promise.coroutineContext
                override suspend fun registerTestCase(nested: NestedTest) {
-                  throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-js because the underlying JS frameworks do not support promises for outer root scopes. Please use FunSpec or StringSpec which ensure that only top level tests are used.")
+                  throw IllegalStateException("Spec styles that support nested tests are disabled in kotest-js because the underlying JS frameworks do not support promises for outer root scopes. Please use FunSpec, StringSpec, or ShouldSpec and ensure that only top level tests are used.")
                }
             }
             TestCaseExecutor(listener, CallingThreadExecutionContext).execute(root.testCase, context)

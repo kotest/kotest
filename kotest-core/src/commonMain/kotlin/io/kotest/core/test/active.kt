@@ -17,8 +17,8 @@ import io.kotest.mpp.sysprop
  *
  * - The `enabled` property is set to false in the [TestCaseConfig] associated with the test.
  * - The name of the test is prefixed with "!" and System.getProperty("kotest.bang.disable") has a null value (ie, not defined)
- * - Exclude tag filters have been specified and this test has a [Tag] which is one of those excluded
- * - Include tag filters have been specified and this test either has no tags, or does not have a tag that is one of those included
+ * - Excluded tags have been specified and this test has a [Tag] which is one of those excluded
+ * - Included tags have been specified and this test either has no tags, or does not have a tag that is one of those included
  * - The test is filtered out via a [TestCaseFilter]
  *
  * Note: tags are defined either through [TestCaseConfig] or in the [Spec] dsl.

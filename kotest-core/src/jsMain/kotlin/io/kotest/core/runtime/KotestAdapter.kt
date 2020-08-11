@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import kotlin.test.FrameworkAdapter
 
 /**
- * Kotest adapter for kotlin js test support.
+ * Kotest [FrameworkAdapter] for kotlin-js test support.
  */
 object KotestAdapter : FrameworkAdapter {
 

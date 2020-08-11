@@ -36,3 +36,5 @@ local.properties
 .kotest
 /kotest-examples/kotest-examples-javascript/node_modules/
 *.gpg.enc
+
+kotest-tests/kotest-tests-js/node_modules/
