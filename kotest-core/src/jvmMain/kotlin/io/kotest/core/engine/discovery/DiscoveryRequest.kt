@@ -92,6 +92,6 @@ sealed class DiscoverySelector {
 
    // accepts a package if it is a subpackage of the given name
    data class PackageDiscoverySelector(val packageName: String) : DiscoverySelector() {
-      override fun test(kclass: KClass<out Spec>): Boolean = kclass.java.packageName.startsWith(packageName)
+      override fun test(kclass: KClass<out Spec>): Boolean = kclass.java.`package`.name.startsWith(packageName)
    }
 }
