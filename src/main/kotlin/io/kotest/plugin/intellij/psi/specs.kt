@@ -35,8 +35,6 @@ fun PsiFile.specs(): List<KtClass> {
  */
 fun KtClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
 
-fun KtLightClass.isSubclassOfSpec(): Boolean = this.specStyle() != null
-
 /**
  * Returns true if this [KtClass] is a subclass of any Spec.
  * This method will not recursively check parents, it will only check the immediate parent.
@@ -243,6 +241,24 @@ enum class CallbackType {
    },
    AfterTest {
       override val text = "afterTest"
+   },
+   BeforeContainer {
+      override val text = "beforeContainer"
+   },
+   AfterContainer {
+      override val text = "afterContainer"
+   },
+   BeforeEach {
+      override val text = "beforeEach"
+   },
+   AfterEach {
+      override val text = "afterEach"
+   },
+   BeforeAny {
+      override val text = "beforeAny"
+   },
+   AfterAny {
+      override val text = "afterAny"
    },
    BeforeSpec {
       override val text = "beforeSpec"

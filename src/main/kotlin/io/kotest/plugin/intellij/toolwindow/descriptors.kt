@@ -121,6 +121,12 @@ class CallbackNodeDescriptor(project: Project,
          CallbackType.AfterTest -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
          CallbackType.BeforeSpec -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
          CallbackType.AfterSpec -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.BeforeContainer -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.AfterContainer -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.BeforeEach -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.AfterEach -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.BeforeAny -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
+         CallbackType.AfterAny -> templatePresentation.setIcon(AllIcons.Nodes.Controller)
       }
    }
 
