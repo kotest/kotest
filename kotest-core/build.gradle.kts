@@ -40,7 +40,6 @@ kotlin {
             implementation(project(Projects.AssertionsShared))
             implementation(project(Projects.Common))
             implementation(Libs.Coroutines.coreCommon)
-            implementation(Libs.Klock.klock)
          }
       }
 

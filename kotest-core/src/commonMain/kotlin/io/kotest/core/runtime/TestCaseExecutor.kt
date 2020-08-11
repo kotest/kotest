@@ -40,8 +40,8 @@ class TestCaseExecutor(
 
    suspend fun execute(testCase: TestCase, context: TestContext): TestResult {
       validateTestCase(testCase)
-      val mark = Mark()
-      return intercept(testCase, context, mark, testCase.extensions()).apply {
+      val start = timeInMillis()
+      return intercept(testCase, context, start, testCase.extensions()).apply {
          when (status) {
             TestStatus.Ignored -> listener.testIgnored(testCase)
             else -> listener.testFinished(testCase, this)
@@ -56,12 +56,12 @@ class TestCaseExecutor(
    private suspend fun intercept(
       testCase: TestCase,
       context: TestContext,
-      mark: Mark,
+      start: Long,
       extensions: List<TestCaseExtension>
    ): TestResult {
       return when {
-         extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, mark) }
-         else -> extensions.first().intercept(testCase) { intercept(it, context, mark, extensions.drop(1)) }
+         extensions.isEmpty() -> executeIfActive(testCase) { executeActiveTest(testCase, context, start) }
+         else -> extensions.first().intercept(testCase) { intercept(it, context, start, extensions.drop(1)) }
       }
    }
 
@@ -102,7 +102,7 @@ class TestCaseExecutor(
    private suspend fun executeActiveTest(
       testCase: TestCase,
       context: TestContext,
-      mark: Mark
+      start: Long
    ): TestResult {
 
       log("Executing active test $testCase")
@@ -110,17 +110,17 @@ class TestCaseExecutor(
 
       return testCase
          .invokeAllBeforeTestCallbacks()
-         .flatMap { invokeTestCase(executionContext, it, context, mark) }
+         .flatMap { invokeTestCase(executionContext, it, context, start) }
          .fold(
             {
-               TestResult.throwable(it, mark.elapsed()).apply {
+               TestResult.throwable(it, timeInMillis() - start).apply {
                   testCase.invokeAllAfterTestCallbacks(this)
                }
             },
             { result ->
                testCase.invokeAllAfterTestCallbacks(result)
                   .fold(
-                     { TestResult.throwable(it, mark.elapsed()) },
+                     { TestResult.throwable(it, timeInMillis() - start) },
                      { result }
                   )
             }
@@ -134,7 +134,7 @@ class TestCaseExecutor(
       ec: TimeoutExecutionContext,
       testCase: TestCase,
       context: TestContext,
-      mark: Mark
+      start: Long
    ): Try<TestResult> = Try {
       log("invokeTestCase $testCase")
 
@@ -143,7 +143,8 @@ class TestCaseExecutor(
 
       val t = executeAndWait(ec, testCase, context)
 
-      val result = if (t == null) TestResult.success(mark.elapsed()) else TestResult.throwable(t, mark.elapsed())
+      val result =
+         if (t == null) TestResult.success(timeInMillis() - start) else TestResult.throwable(t, timeInMillis() - start)
       log("Test completed with result $result")
       result
    }
