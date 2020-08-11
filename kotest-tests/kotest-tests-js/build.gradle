@@ -3,7 +3,7 @@ plugins {
    id("kotlin-multiplatform")
    id("java-library")
    id("com.adarshr.test-logger")
-   id "com.github.node-gradle.node" version "2.2.3"
+   id "com.github.node-gradle.node" version "2.2.4"
 }
 
 kotlin {
